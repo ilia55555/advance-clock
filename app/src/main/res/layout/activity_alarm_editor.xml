@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#070B14"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="کوک آلارم"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/alarm_label"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:hint="عنوان آلارم (اختیاری)"
+            android:inputType="textCapSentences"
+            android:paddingHorizontal="14dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#64748B" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="تاریخ"
+            android:textColor="#CBD5E1"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/pick_date"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="تاریخ"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="ساعت و دقیقه"
+            android:textColor="#CBD5E1"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/pick_time"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="00:00"
+            android:textAllCaps="false"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="تکرار"
+            android:textColor="#CBD5E1"
+            android:textSize="14sp" />
+
+        <Spinner
+            android:id="@+id/repeat_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="56dp" />
+
+        <Button
+            android:id="@+id/save_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="26dp"
+            android:text="ذخیره و فعال‌سازی"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/delete_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:text="حذف آلارم"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:text="انصراف"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</ScrollView>
