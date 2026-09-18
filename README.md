@@ -1,3 +1,27 @@
 # Advance Clock
 
-Native Android advanced alarm clock with date-aware alarms, full-screen ringing, notifications, and a resizable home-screen widget.
+اپ Native اندروید برای آلارم‌های معمولی و تاریخ‌دار.
+
+## قابلیت‌ها
+
+- انتخاب تاریخ + ساعت + دقیقه برای هر آلارم.
+- تکرار روزانه، هفتگی، ماهانه یا سالانه.
+- زمان‌بندی با `AlarmManager.setAlarmClock` تا آلارم مستقل از باز بودن اپ باشد.
+- هنگام رسیدن زمان، صدای حلقه‌ای و ویبره شروع می‌شود و Full-screen alarm نمایش داده می‌شود.
+- صفحه آلارم دکمه بزرگ **قطع آلارم** دارد؛ Notification نیز Action «قطع» دارد.
+- آلارم‌ها پس از Boot، تغییر ساعت سیستم، تغییر timezone و آپدیت برنامه دوباره ثبت می‌شوند.
+- Widget صفحه اصلی ساعت فعلی و آلارم‌های پیش رو را نشان می‌دهد.
+- Widget با resize شدن تعداد آلارم‌های بیشتر/کمتر را نمایش می‌دهد.
+- دکمه `+` روی Widget برای ساخت سریع آلارم جدید.
+
+## ساخت
+
+پروژه را با Android Studio باز کنید و Sync Gradle را بزنید. `minSdk=26`, `targetSdk=35` و Java 17 است.
+
+## Android 14+
+
+برای اینکه Full-screen alarm اجازه نمایش داشته باشد، داخل اپ دکمه «مجوزهای آلارم» وجود دارد. اگر Full-screen intent برای برنامه غیرفعال باشد، کاربر به تنظیم مربوط هدایت می‌شود.
+
+## تست
+
+چک‌لیست تست روی گوشی واقعی در [TEST_CHECKLIST.md](TEST_CHECKLIST.md) قرار دارد.
