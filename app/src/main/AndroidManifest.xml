@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Runtime permission on Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
+    <!-- User-controlled special access for exact alarms on Android 12+ -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Required for the alarm screen to appear over the lock screen -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- Normal permissions: no runtime dialog -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -18,9 +25,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdvanceClock">
 
+        <activity android:name=".AlarmEditorActivity" android:exported="false" />
+        <activity android:name=".NoForgetEditorActivity" android:exported="false" />
         <activity
-            android:name=".AlarmEditorActivity"
-            android:exported="false" />
+            android:name=".NoForgetQuickAddActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AdvanceClock.Dialog" />
 
         <activity
             android:name=".AlarmRingActivity"
@@ -44,13 +54,9 @@
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 
-        <receiver
-            android:name=".AlarmReceiver"
-            android:exported="false" />
-
-        <receiver
-            android:name=".StopAlarmReceiver"
-            android:exported="false" />
+        <receiver android:name=".AlarmReceiver" android:exported="false" />
+        <receiver android:name=".StopAlarmReceiver" android:exported="false" />
+        <receiver android:name=".NoForgetReminderReceiver" android:exported="false" />
 
         <receiver
             android:name=".BootReceiver"
@@ -74,6 +80,18 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/clock_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".NoForgetWidgetProvider"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/noforget_widget_info" />
         </receiver>
 
     </application>

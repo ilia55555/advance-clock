@@ -8,4 +8,11 @@
         <item name="android:colorAccent">#38BDF8</item>
         <item name="android:windowActionModeOverlay">true</item>
     </style>
+
+    <style name="Theme.AdvanceClock.Dialog" parent="android:style/Theme.Material.Dialog.Alert">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#38BDF8</item>
+        <item name="android:windowMinWidthMajor">88%</item>
+        <item name="android:windowMinWidthMinor">88%</item>
+    </style>
 </resources>

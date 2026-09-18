@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#111827"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ثبت سریع NoForget"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/quick_note_text"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="14dp"
+        android:gravity="top|start"
+        android:hint="چی رو نباید فراموش کنی؟"
+        android:inputType="textCapSentences|textMultiLine"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#64748B" />
+
+    <Button
+        android:id="@+id/quick_note_save"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="14dp"
+        android:text="اضافه کن"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/quick_note_more"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:text="جزئیات، سررسید یا دست‌نویس"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/quick_note_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="6dp"
+        android:text="انصراف"
+        android:textAllCaps="false" />
+</LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Advance Clock</string>
+    <string name="app_name">Advance</string>
     <string name="widget_description">ساعت پیشرفته و آلارم‌های پیش رو</string>
+    <string name="noforget_widget_description">یادداشت‌ها و یادآوری‌های NoForget</string>
 </resources>

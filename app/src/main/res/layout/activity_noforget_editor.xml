@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#070B14"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NoForget"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/note_title"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="18dp"
+            android:hint="عنوان"
+            android:inputType="textCapSentences"
+            android:paddingHorizontal="14dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#64748B" />
+
+        <EditText
+            android:id="@+id/note_body"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:gravity="top|start"
+            android:hint="هر چیزی که نمی‌خواهید فراموش شود..."
+            android:inputType="textCapSentences|textMultiLine"
+            android:padding="14dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#64748B" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="اهمیت"
+            android:textColor="#CBD5E1"
+            android:textSize="14sp" />
+
+        <Spinner
+            android:id="@+id/note_priority"
+            android:layout_width="match_parent"
+            android:layout_height="54dp" />
+
+        <CheckBox
+            android:id="@+id/note_has_due"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:text="سررسید دارد"
+            android:textColor="#E2E8F0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/note_date"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="تاریخ"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/note_time"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="ساعت"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/note_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="در زمان سررسید نوتیفیکیشن یادآوری بده"
+            android:textColor="#E2E8F0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="دست‌نویس / نقاشی"
+            android:textColor="#CBD5E1"
+            android:textSize="14sp" />
+
+        <com.ilia.advanceclock.SketchView
+            android:id="@+id/note_sketch"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/clear_sketch"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="6dp"
+            android:text="پاک کردن دست‌نویس"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/save_note"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="22dp"
+            android:text="ذخیره"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/delete_note"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:text="حذف"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/cancel_note"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:text="انصراف"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</ScrollView>

@@ -3,7 +3,11 @@ package com.ilia.advanceclock;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -102,9 +106,23 @@ public final class AlarmEditorActivity extends Activity {
         long id = alarmId >= 0 ? alarmId : System.currentTimeMillis();
         AlarmItem item = new AlarmItem(id, label.getText().toString().trim(), trigger, repeatType, true);
         new AlarmStore(this).save(item);
-        AlarmScheduler.schedule(this, item);
+
+        boolean scheduled = AlarmScheduler.schedule(this, item);
         ClockWidgetProvider.updateAll(this);
-        Toast.makeText(this, "آلارم ذخیره شد", Toast.LENGTH_SHORT).show();
+
+        if (!scheduled && !PermissionHelper.exactAlarmsGranted(this) && Build.VERSION.SDK_INT >= 31) {
+            Toast.makeText(this,
+                    "آلارم ذخیره شد؛ برای فعال شدن باید مجوز آلارم دقیق را بدهید.",
+                    Toast.LENGTH_LONG).show();
+            try {
+                startActivity(new Intent(
+                        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                        Uri.parse("package:" + getPackageName())
+                ));
+            } catch (Exception ignored) {}
+        } else {
+            Toast.makeText(this, "آلارم ذخیره و فعال شد", Toast.LENGTH_SHORT).show();
+        }
         finish();
     }
 
