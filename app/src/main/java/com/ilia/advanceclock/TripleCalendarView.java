@@ -23,14 +23,10 @@ public final class TripleCalendarView extends View {
     private static final int WHITE = 0xFFFFFFFF;
     private static final int CELL_LIGHT = 0xFFF8F8F8;
     private static final int CELL_DARK = 0xFF22272A;
-    private static final int HOLIDAY_BG_LIGHT = 0xFFFFF2E6;
-    private static final int HOLIDAY_BG_DARK = 0xFF3A2818;
     private static final int MAIN_TEXT_LIGHT = 0xFF637454;
     private static final int MAIN_TEXT_DARK = 0xFFDCE5E1;
     private static final int MUTED_LIGHT = 0xFF97A28E;
     private static final int MUTED_DARK = 0xFF98A7A2;
-    private static final int ORANGE = 0xFFCC6600;
-    private static final int ORANGE_MUTED = 0xFFE58B4B;
 
     private static final String[] WEEKDAYS = {
             "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه"
@@ -136,7 +132,19 @@ public final class TripleCalendarView extends View {
     }
 
     private int primary() { return AppSettings.primaryColor(getContext()); }
+    private int secondary() { return AppSettings.secondaryColor(getContext()); }
     private boolean dark() { return AppSettings.themeMode(getContext()) == AppSettings.THEME_DARK; }
+
+    private int blendOnSurface(int color, float amount) {
+        int base = dark() ? AppSettings.surface(getContext()) : 0xFFFFFFFF;
+        int r = Math.round(android.graphics.Color.red(base) * (1f - amount)
+                + android.graphics.Color.red(color) * amount);
+        int g = Math.round(android.graphics.Color.green(base) * (1f - amount)
+                + android.graphics.Color.green(color) * amount);
+        int b = Math.round(android.graphics.Color.blue(base) * (1f - amount)
+                + android.graphics.Color.blue(color) * amount);
+        return android.graphics.Color.rgb(r, g, b);
+    }
 
     private void drawHeader(Canvas c) {
         paint.setColor(primary());
@@ -168,7 +176,7 @@ public final class TripleCalendarView extends View {
     private void drawWeekdays(Canvas c) {
         for (int col = 0; col < 7; col++) {
             centered(c, WEEKDAYS[col], COL_CENTER[col], 129, 15,
-                    col == 6 ? ORANGE : primary(), bold);
+                    col == 6 ? secondary() : primary(), bold);
         }
     }
 
@@ -215,7 +223,7 @@ public final class TripleCalendarView extends View {
             float left = CELL_LEFT[col], top = CELL_TOP[row];
             int fill = selected ? primary()
                     : (holiday
-                    ? (dark() ? HOLIDAY_BG_DARK : HOLIDAY_BG_LIGHT)
+                    ? blendOnSurface(secondary(), dark() ? 0.20f : 0.10f)
                     : (dark() ? CELL_DARK : CELL_LIGHT));
 
             paint.setColor(fill);
@@ -240,9 +248,9 @@ public final class TripleCalendarView extends View {
             }
 
             int main = selected ? WHITE
-                    : (holiday ? ORANGE : (dark() ? MAIN_TEXT_DARK : MAIN_TEXT_LIGHT));
+                    : (holiday ? secondary() : (dark() ? MAIN_TEXT_DARK : MAIN_TEXT_LIGHT));
             int muted = selected ? 0xFFDDECEA
-                    : (holiday ? ORANGE_MUTED : (dark() ? MUTED_DARK : MUTED_LIGHT));
+                    : (holiday ? secondary() : (dark() ? MUTED_DARK : MUTED_LIGHT));
 
             centered(c, CalendarUtils.fa(day), left + CELL_W / 2f, top + 30,
                     29, main, regular);
@@ -254,8 +262,8 @@ public final class TripleCalendarView extends View {
                     ? String.valueOf(b.get(android.icu.util.Calendar.DAY_OF_MONTH))
                     : CalendarUtils.fa(b.get(android.icu.util.Calendar.DAY_OF_MONTH));
 
-            centered(c, smallLeft, left + 20, top + 62, 13, muted, regular);
-            centered(c, smallRight, left + 57, top + 62, 13, muted, regular);
+            centered(c, smallLeft, left + 20, top + 62, 16, muted, medium);
+            centered(c, smallRight, left + 57, top + 62, 16, muted, medium);
         }
     }
 
@@ -348,8 +356,9 @@ public final class TripleCalendarView extends View {
         float dy = y - downY;
 
         if (Math.abs(dx) > 58f && Math.abs(dx) > Math.abs(dy) * 1.15f) {
-            // Finger to the right = next month; finger to the left = previous month.
-            shiftMonth(dx > 0 ? 1 : -1);
+            // Right-to-left = next month; left-to-right = previous month.
+            // Header button actions stay unchanged.
+            shiftMonth(dx > 0 ? -1 : 1);
             performClick();
             return true;
         }

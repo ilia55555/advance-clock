@@ -38,6 +38,8 @@ import java.util.Locale;
 public final class MainActivity extends Activity {
     private static final int REQ_NOTIFICATIONS = 100;
     private static final int REQ_SETTINGS = 200;
+    private static final int REQ_QUICK_ALARM_IMAGE_1 = 310;
+    private static final int REQ_QUICK_ALARM_IMAGE_2 = 311;
     private static final String PREFS = "advance_clock_app";
     private static final String PERMISSION_ONBOARDING = "permission_onboarding_v2";
 
@@ -58,6 +60,8 @@ public final class MainActivity extends Activity {
     private LinearLayout noForgetList;
     private LinearLayout clockContent;
     private View alarmComposerCard;
+    private View noteComposerCard;
+    private View noteSketchCard;
     private View alertsHeader;
     private ScrollView clockPanel;
     private View noForgetPanel;
@@ -75,6 +79,8 @@ public final class MainActivity extends Activity {
     private Button quickAlarmTime;
     private Button quickAlarmRepeat;
     private Button quickAlarmReminders;
+    private Button quickAlarmImage1;
+    private Button quickAlarmImage2;
     private Spinner quickAlarmPriority;
     private EditText quickAlarmLabel;
     private Switch quickAlarmVibrate;
@@ -101,6 +107,8 @@ public final class MainActivity extends Activity {
     private String alarmCustomDates = "[]";
     private int alarmReminderMode = AlarmReminderUtils.MODE_NONE;
     private String alarmReminderMinutesJson = "[]";
+    private String quickAlarmImageUri1 = "";
+    private String quickAlarmImageUri2 = "";
 
     private int noteRecurrenceMode = RecurrenceUtils.NONE;
     private int noteIntervalDays = 1;
@@ -132,9 +140,12 @@ public final class MainActivity extends Activity {
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
 
-        clockFab.setOnClickListener(v -> openAlarmComposer());
+        clockFab.setOnClickListener(v ->
+                startActivity(new Intent(this, AlarmEditorActivity.class)
+                        .putExtra("modalCreate", true)));
         noteFab.setOnClickListener(v ->
-                startActivity(new Intent(this, NoForgetEditorActivity.class)));
+                startActivity(new Intent(this, NoForgetEditorActivity.class)
+                        .putExtra("modalCreate", true)));
 
         String requestedTab = getIntent().getStringExtra("openTab");
         showTab("noforget".equals(requestedTab) ? "noforget" : "clock");
@@ -153,6 +164,8 @@ public final class MainActivity extends Activity {
         noForgetList = findViewById(R.id.noforget_list);
         clockContent = findViewById(R.id.clock_content);
         alarmComposerCard = findViewById(R.id.alarm_composer_card);
+        noteComposerCard = findViewById(R.id.note_composer_card);
+        noteSketchCard = findViewById(R.id.note_sketch_card);
         alertsHeader = findViewById(R.id.alerts_header);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
@@ -170,6 +183,8 @@ public final class MainActivity extends Activity {
         quickAlarmTime = findViewById(R.id.quick_alarm_time);
         quickAlarmRepeat = findViewById(R.id.quick_alarm_repeat);
         quickAlarmReminders = findViewById(R.id.quick_alarm_reminders);
+        quickAlarmImage1 = findViewById(R.id.quick_alarm_image1);
+        quickAlarmImage2 = findViewById(R.id.quick_alarm_image2);
         quickAlarmPriority = findViewById(R.id.quick_alarm_priority);
         quickAlarmLabel = findViewById(R.id.quick_alarm_label);
         quickAlarmVibrate = findViewById(R.id.quick_alarm_vibrate);
@@ -341,6 +356,9 @@ public final class MainActivity extends Activity {
                     updateAlarmReminderLabel();
                 }));
 
+        quickAlarmImage1.setOnClickListener(v -> pickAlarmImage(REQ_QUICK_ALARM_IMAGE_1));
+        quickAlarmImage2.setOnClickListener(v -> pickAlarmImage(REQ_QUICK_ALARM_IMAGE_2));
+
         findViewById(R.id.save_quick_alarm).setOnClickListener(v -> saveQuickAlarm());
     }
 
@@ -459,25 +477,26 @@ public final class MainActivity extends Activity {
         clockContent.removeView(alertsHeader);
         clockContent.removeView(alarmList);
 
-        if (AppSettings.clockLayoutMode(this) == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST) {
+        boolean compact = AppSettings.clockLayoutMode(this)
+                == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
+
+        if (compact) {
             clockContent.addView(clockCalendar);
             clockContent.addView(alertsHeader);
             clockContent.addView(alarmList);
             clockContent.addView(alarmComposerCard);
             alarmComposerCard.setVisibility(View.GONE);
+            noteComposerCard.setVisibility(View.GONE);
+            noteSketchCard.setVisibility(View.GONE);
         } else {
             clockContent.addView(alarmComposerCard);
             clockContent.addView(clockCalendar);
             clockContent.addView(alertsHeader);
             clockContent.addView(alarmList);
             alarmComposerCard.setVisibility(View.VISIBLE);
+            noteComposerCard.setVisibility(View.VISIBLE);
+            noteSketchCard.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void openAlarmComposer() {
-        alarmComposerCard.setVisibility(View.VISIBLE);
-        alarmComposerCard.post(() ->
-                clockPanel.smoothScrollTo(0, Math.max(0, alarmComposerCard.getTop() - dp(8))));
     }
 
     private void applyDate(Calendar target, long sourceMillis) {
@@ -544,6 +563,8 @@ public final class MainActivity extends Activity {
                 15,
                 alarmReminderMode,
                 alarmReminderMinutesJson);
+        item.imageUri1 = quickAlarmImageUri1;
+        item.imageUri2 = quickAlarmImageUri2;
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
@@ -558,6 +579,10 @@ public final class MainActivity extends Activity {
         quickAlarmRepeat.setText("بدون تکرار");
         alarmReminderMode = AlarmReminderUtils.MODE_NONE;
         alarmReminderMinutesJson = "[]";
+        quickAlarmImageUri1 = "";
+        quickAlarmImageUri2 = "";
+        quickAlarmImage1.setText("افزودن عکس ۱");
+        quickAlarmImage2.setText("افزودن عکس ۲");
         updateAlarmReminderLabel();
 
         quickAlarm.setTimeInMillis(System.currentTimeMillis());
@@ -570,11 +595,6 @@ public final class MainActivity extends Activity {
         clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
         updateQuickAlarmLabels();
 
-        if (AppSettings.clockLayoutMode(this)
-                == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST) {
-            alarmComposerCard.setVisibility(View.GONE);
-            clockPanel.smoothScrollTo(0, 0);
-        }
 
         if (!scheduled
                 && Build.VERSION.SDK_INT >= 31
@@ -672,9 +692,41 @@ public final class MainActivity extends Activity {
             int resultCode,
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
             recreate();
+            return;
         }
+
+        if ((requestCode == REQ_QUICK_ALARM_IMAGE_1
+                || requestCode == REQ_QUICK_ALARM_IMAGE_2)
+                && resultCode == RESULT_OK
+                && data != null
+                && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                getContentResolver().takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } catch (Exception ignored) {}
+
+            if (requestCode == REQ_QUICK_ALARM_IMAGE_1) {
+                quickAlarmImageUri1 = uri.toString();
+                quickAlarmImage1.setText("عکس ۱ ✓");
+            } else {
+                quickAlarmImageUri2 = uri.toString();
+                quickAlarmImage2.setText("عکس ۲ ✓");
+            }
+        }
+    }
+
+    private void pickAlarmImage(int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        startActivityForResult(intent, requestCode);
     }
 
     @Override protected void onNewIntent(Intent intent) {
@@ -693,8 +745,10 @@ public final class MainActivity extends Activity {
         noForgetIndicator.setVisibility(clock ? View.INVISIBLE : View.VISIBLE);
         clockTab.setTextColor(clock ? 0xFFFFFFFF : 0xFFD6EFED);
         noForgetTab.setTextColor(clock ? 0xFFD6EFED : 0xFFFFFFFF);
-        clockFab.setVisibility(clock ? View.VISIBLE : View.GONE);
-        noteFab.setVisibility(clock ? View.GONE : View.VISIBLE);
+        boolean compact = AppSettings.clockLayoutMode(this)
+                == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
+        clockFab.setVisibility(clock && compact ? View.VISIBLE : View.GONE);
+        noteFab.setVisibility(!clock && compact ? View.VISIBLE : View.GONE);
     }
 
     private void startPermissionFlow() {

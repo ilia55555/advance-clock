@@ -46,7 +46,18 @@
         android:text="زمان زنگ هشدار رسیده است"
         android:textSize="15sp" />
 
+    <LinearLayout
+        android:id="@+id/ring_images"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone" />
+
     <Space
+        android:id="@+id/ring_spacer"
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_weight="1" />

@@ -29,6 +29,8 @@ public final class AlarmItem {
     public int reminderMode;
     public String reminderMinutesJson;
     public long lastFiredAtMillis;
+    public String imageUri1;
+    public String imageUri2;
 
     public AlarmItem(long id,String label,long triggerAtMillis,int repeatType,boolean enabled){
         this(id,label,triggerAtMillis,repeatType,enabled,true);
@@ -64,6 +66,8 @@ public final class AlarmItem {
         this.reminderMode=Math.max(0,Math.min(2,reminderMode));
         this.reminderMinutesJson=reminderMinutesJson==null?"[]":reminderMinutesJson;
         this.lastFiredAtMillis=0L;
+        this.imageUri1="";
+        this.imageUri2="";
     }
 
     public JSONObject toJson() throws JSONException{
@@ -75,6 +79,8 @@ public final class AlarmItem {
         o.put("customDatesJson",customDatesJson);o.put("snoozeMinutes",snoozeMinutes);
         o.put("reminderMode",reminderMode);o.put("reminderMinutesJson",reminderMinutesJson);
         o.put("lastFiredAtMillis",lastFiredAtMillis);
+        o.put("imageUri1",imageUri1);
+        o.put("imageUri2",imageUri2);
         return o;
     }
 
@@ -96,6 +102,8 @@ public final class AlarmItem {
                 o.optString("reminderMinutesJson","[]")
         );
         item.lastFiredAtMillis = o.optLong("lastFiredAtMillis", 0L);
+        item.imageUri1 = o.optString("imageUri1", "");
+        item.imageUri2 = o.optString("imageUri2", "");
         return item;
     }
 }

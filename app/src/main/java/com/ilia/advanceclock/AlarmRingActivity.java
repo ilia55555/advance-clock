@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -79,6 +81,57 @@ public final class AlarmRingActivity extends Activity {
         AlarmItem item = new AlarmStore(this).find(alarmId);
         int minutes = item == null ? 15 : item.snoozeMinutes;
         setSnoozeSelection(minutes);
+        renderAlarmImages(item);
+    }
+
+    private void renderAlarmImages(AlarmItem item) {
+        LinearLayout container = findViewById(R.id.ring_images);
+        View spacer = findViewById(R.id.ring_spacer);
+        container.removeAllViews();
+
+        java.util.ArrayList<String> uris = new java.util.ArrayList<>();
+        if (item != null) {
+            if (item.imageUri1 != null && !item.imageUri1.trim().isEmpty()) uris.add(item.imageUri1);
+            if (item.imageUri2 != null && !item.imageUri2.trim().isEmpty()) uris.add(item.imageUri2);
+        }
+
+        if (uris.isEmpty()) {
+            container.setVisibility(View.GONE);
+            spacer.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        container.setVisibility(View.VISIBLE);
+        spacer.setVisibility(View.GONE);
+
+        for (int i = 0; i < uris.size(); i++) {
+            ImageView image = new ImageView(this);
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setAdjustViewBounds(true);
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    1f);
+            if (uris.size() == 2) {
+                if (i == 0) lp.setMarginEnd(dp(4));
+                else lp.setMarginStart(dp(4));
+            }
+
+            image.setLayoutParams(lp);
+            image.setClipToOutline(true);
+
+            GradientDrawable bg = new GradientDrawable();
+            bg.setColor(0x11000000);
+            bg.setCornerRadius(dp(18));
+            image.setBackground(bg);
+
+            try {
+                image.setImageURI(Uri.parse(uris.get(i)));
+            } catch (Exception ignored) {}
+
+            container.addView(image);
+        }
     }
 
     private void applyStyle(int style) {

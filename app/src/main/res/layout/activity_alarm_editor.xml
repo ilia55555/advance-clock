@@ -162,6 +162,83 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)"
+                android:textColor="?attr/appTextSecondary"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                android:layoutDirection="rtl">
+
+                <Button
+                    android:id="@+id/alarm_image1_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_field"
+                    android:text="افزودن عکس ۱"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="12sp" />
+
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                <Button
+                    android:id="@+id/alarm_image2_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_field"
+                    android:text="افزودن عکس ۲"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/alarm_image_preview_row"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/alarm_image1_preview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/bg_field"
+                    android:contentDescription="عکس اول هشدار"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <Space
+                    android:id="@+id/alarm_image_preview_space"
+                    android:layout_width="8dp"
+                    android:layout_height="1dp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/alarm_image2_preview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/bg_field"
+                    android:contentDescription="عکس دوم هشدار"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="58dp"

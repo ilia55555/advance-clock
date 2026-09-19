@@ -29,22 +29,41 @@
             android:id="@+id/noforget_widget_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
             android:format12Hour="hh:mm"
             android:format24Hour="HH:mm"
             android:textColor="#173F3B"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/noforget_widget_add"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             android:gravity="center"
             android:text="+"
             android:textColor="#006666"
-            android:textSize="27sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/noforget_widget_theme"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="تم ویجت"
+            android:padding="7dp"
+            android:src="@drawable/ic_md_palette"
+            android:tint="#006666" />
+
+        <ImageView
+            android:id="@+id/noforget_widget_resize"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="تغییر اندازه ویجت"
+            android:padding="7dp"
+            android:src="@drawable/ic_md_aspect_ratio"
+            android:tint="#006666" />
     </LinearLayout>
 
     <TextView

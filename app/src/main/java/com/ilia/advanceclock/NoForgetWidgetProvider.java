@@ -35,17 +35,19 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         int rowCount = Math.max(0, Math.min(10, (height - 86) / 58));
 
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.widget_noforget);
-        boolean dark = AppSettings.themeMode(context) == AppSettings.THEME_DARK;
+        boolean dark = WidgetPrefs.isDark(context, widgetId);
         int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
         int muted = dark ? 0xFFAFBCB8 : 0xFF758783;
-        int primary = AppSettings.primaryColor(context);
+        int primary = WidgetPrefs.primary(context, widgetId);
 
         root.setInt(R.id.noforget_widget_root, "setBackgroundResource",
                 dark ? R.drawable.widget_background_dark : R.drawable.widget_background);
-        root.setTextColor(R.id.noforget_widget_time, text);
+        root.setTextColor(R.id.noforget_widget_time, primary);
         root.setTextColor(R.id.noforget_widget_date, muted);
-        root.setTextColor(R.id.noforget_widget_section_label, muted);
+        root.setTextColor(R.id.noforget_widget_section_label, primary);
         root.setTextColor(R.id.noforget_widget_add, primary);
+        root.setInt(R.id.noforget_widget_theme, "setColorFilter", primary);
+        root.setInt(R.id.noforget_widget_resize, "setColorFilter", primary);
         root.setTextColor(R.id.noforget_widget_empty, muted);
         root.setTextViewText(R.id.noforget_widget_date,
                 CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));
@@ -99,7 +101,31 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                 openApp,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
+        Intent themeIntent = new Intent(context, WidgetSettingsActivity.class)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                .putExtra("widgetKind", "note");
+        root.setOnClickPendingIntent(R.id.noforget_widget_theme, PendingIntent.getActivity(
+                context,
+                1_800_000 + widgetId,
+                themeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+
+        Intent resizeIntent = new Intent(context, WidgetSettingsActivity.class)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                .putExtra("widgetKind", "note")
+                .putExtra("focusResize", true);
+        root.setOnClickPendingIntent(R.id.noforget_widget_resize, PendingIntent.getActivity(
+                context,
+                1_900_000 + widgetId,
+                resizeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+
         manager.updateAppWidget(widgetId, root);
+    }
+
+    @Override public void onDeleted(Context context, int[] appWidgetIds) {
+        for (int id : appWidgetIds) WidgetPrefs.clear(context, id);
+        super.onDeleted(context, appWidgetIds);
     }
 
     private static List<NoForgetItem> widgetOrder(List<NoForgetItem> source, int limit) {

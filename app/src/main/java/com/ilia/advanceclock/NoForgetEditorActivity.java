@@ -41,6 +41,9 @@ public final class NoForgetEditorActivity extends Activity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
+        if (getIntent().getBooleanExtra("modalCreate", false)) {
+            AppSettings.applyModalOverlay(this);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noforget_editor);
 

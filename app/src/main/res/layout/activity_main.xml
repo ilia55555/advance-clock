@@ -294,6 +294,48 @@
                         android:textColorHint="?attr/appTextSecondary"
                         android:textSize="15sp" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)"
+                        android:textColor="?attr/appTextSecondary"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <Button
+                            android:id="@+id/quick_alarm_image1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:text="افزودن عکس ۱"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="12sp" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <Button
+                            android:id="@+id/quick_alarm_image2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:text="افزودن عکس ۲"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
                     <Button
                         android:id="@+id/save_quick_alarm"
                         android:layout_width="match_parent"
@@ -376,6 +418,7 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
+                    android:id="@+id/note_composer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -504,6 +547,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/note_sketch_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"

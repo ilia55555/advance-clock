@@ -126,14 +126,15 @@ public final class DateNotificationService extends Service {
         Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
-        Paint box = new Paint(Paint.ANTI_ALIAS_FLAG);
-        box.setColor(Color.WHITE);
-        canvas.drawRoundRect(new RectF(4, 4, 92, 92), 18, 18, box);
+        Paint circle = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circle.setColor(Color.WHITE);
+        canvas.drawCircle(48f, 48f, 47f, circle);
 
         Paint digits = new Paint(Paint.ANTI_ALIAS_FLAG);
         digits.setTextAlign(Paint.Align.CENTER);
         digits.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        digits.setTextSize(day >= 10 ? 50f : 58f);
+        digits.setTextSize(day >= 10 ? 67f : 76f);
+        digits.setLetterSpacing(-0.06f);
         digits.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
         String value = CalendarUtils.fa(day);
