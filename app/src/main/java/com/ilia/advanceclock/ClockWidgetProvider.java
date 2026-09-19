@@ -33,7 +33,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
     private static void update(Context context, AppWidgetManager manager, int widgetId) {
         Bundle options = manager.getAppWidgetOptions(widgetId);
         int height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 150);
-        int rowCount = Math.max(1, Math.min(10, (height - 86) / 52));
+        int rowCount = Math.max(0, Math.min(10, (height - 86) / 52));
 
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.widget_clock);
         boolean dark = AppSettings.themeMode(context) == AppSettings.THEME_DARK;
@@ -104,7 +104,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         for (AlarmItem item : source) {
             if (item.enabled && item.triggerAtMillis > now) upcoming.add(item);
         }
-        if (upcoming.isEmpty()) return upcoming;
+        if (limit <= 0 || upcoming.isEmpty()) return new ArrayList<>();
 
         AlarmItem nearest = null;
         for (AlarmItem item : upcoming) {
