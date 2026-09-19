@@ -25,6 +25,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
             context.startService(service);
         }
 
+        item.lastFiredAtMillis = firedAt;
         AlarmScheduler.schedulePostReminders(context, item, firedAt);
 
         long now = System.currentTimeMillis() + 1000L;
