@@ -224,11 +224,19 @@ public final class TripleCalendarView extends View {
             if (isToday) {
                 stroke.setStyle(Paint.Style.STROKE);
                 stroke.setStrokeWidth(2.8f);
-                stroke.setColor(selected ? WHITE : primary());
+                stroke.setColor(primary());
                 c.drawRoundRect(
                         new RectF(left + 1.5f, top + 1.5f,
                                 left + CELL_W - 1.5f, top + CELL_H - 1.5f),
                         10, 10, stroke);
+                if (selected) {
+                    stroke.setStrokeWidth(1.6f);
+                    stroke.setColor(WHITE);
+                    c.drawRoundRect(
+                            new RectF(left + 5f, top + 5f,
+                                    left + CELL_W - 5f, top + CELL_H - 5f),
+                            8, 8, stroke);
+                }
             }
 
             int main = selected ? WHITE
