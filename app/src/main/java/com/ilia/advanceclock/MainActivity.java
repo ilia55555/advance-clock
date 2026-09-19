@@ -2,6 +2,7 @@ package com.ilia.advanceclock;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -11,20 +12,23 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.app.TimePickerDialog;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -40,19 +44,37 @@ public final class MainActivity extends Activity {
     private final Calendar quickAlarm = Calendar.getInstance();
     private final Calendar quickNoteDue = Calendar.getInstance();
 
+    private final Handler headerHandler = new Handler(Looper.getMainLooper());
+    private final Runnable headerTicker = new Runnable() {
+        @Override public void run() {
+            updateHeaderClock();
+            long now = System.currentTimeMillis();
+            long delay = 60_000L - (now % 60_000L) + 60L;
+            headerHandler.postDelayed(this, delay);
+        }
+    };
+
     private LinearLayout alarmList;
     private LinearLayout noForgetList;
-    private View clockPanel;
+    private LinearLayout clockContent;
+    private View alarmComposerCard;
+    private View alertsHeader;
+    private ScrollView clockPanel;
     private View noForgetPanel;
     private TextView clockTab;
     private TextView noForgetTab;
     private View clockIndicator;
     private View noForgetIndicator;
-    private TextView appTitle;
+    private TextView headerTime;
+    private TextView headerDate;
+    private ImageButton themeToggle;
+    private Button clockFab;
+    private Button noteFab;
 
     private Button quickAlarmDate;
     private Button quickAlarmTime;
     private Button quickAlarmRepeat;
+    private Button quickAlarmReminders;
     private Spinner quickAlarmPriority;
     private EditText quickAlarmLabel;
     private Switch quickAlarmVibrate;
@@ -68,10 +90,14 @@ public final class MainActivity extends Activity {
     private Button quickNoteTime;
     private Button quickNoteRepeat;
     private SketchView quickNoteSketch;
+    private Spinner penSizeSpinner;
+    private CheckBox gridToggle;
 
     private int alarmRecurrenceMode = RecurrenceUtils.NONE;
     private int alarmIntervalDays = 1;
     private String alarmCustomDates = "[]";
+    private int alarmReminderMode = AlarmReminderUtils.MODE_NONE;
+    private String alarmReminderMinutesJson = "[]";
 
     private int noteRecurrenceMode = RecurrenceUtils.NONE;
     private int noteIntervalDays = 1;
@@ -91,13 +117,18 @@ public final class MainActivity extends Activity {
         setupAlarmComposer();
         setupNoteComposer();
         setupCalendars();
+        applyClockLayoutMode();
 
         clockTab.setOnClickListener(v -> showTab("clock"));
         noForgetTab.setOnClickListener(v -> showTab("noforget"));
 
-        findViewById(R.id.add_clock_widget).setOnClickListener(v -> pinWidget(ClockWidgetProvider.class));
-        findViewById(R.id.add_noforget_widget).setOnClickListener(v -> pinWidget(NoForgetWidgetProvider.class));
-        findViewById(R.id.open_full_note_editor).setOnClickListener(v ->
+        findViewById(R.id.add_clock_widget).setOnClickListener(v ->
+                pinWidgetAndExit(ClockWidgetProvider.class));
+        findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
+                pinWidgetAndExit(NoForgetWidgetProvider.class));
+
+        clockFab.setOnClickListener(v -> openAlarmComposer());
+        noteFab.setOnClickListener(v ->
                 startActivity(new Intent(this, NoForgetEditorActivity.class)));
 
         String requestedTab = getIntent().getStringExtra("openTab");
@@ -105,23 +136,35 @@ public final class MainActivity extends Activity {
 
         boolean onboardingDone = getSharedPreferences(PREFS, MODE_PRIVATE)
                 .getBoolean(PERMISSION_ONBOARDING, false);
-        if (!onboardingDone) getWindow().getDecorView().postDelayed(this::startPermissionFlow, 450);
+        if (!onboardingDone) {
+            getWindow().getDecorView().postDelayed(this::startPermissionFlow, 450);
+        }
+
+        headerHandler.post(headerTicker);
     }
 
     private void bindViews() {
         alarmList = findViewById(R.id.alarm_list);
         noForgetList = findViewById(R.id.noforget_list);
+        clockContent = findViewById(R.id.clock_content);
+        alarmComposerCard = findViewById(R.id.alarm_composer_card);
+        alertsHeader = findViewById(R.id.alerts_header);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
         clockTab = findViewById(R.id.tab_clock);
         noForgetTab = findViewById(R.id.tab_noforget);
         clockIndicator = findViewById(R.id.clock_indicator);
         noForgetIndicator = findViewById(R.id.noforget_indicator);
-        appTitle = findViewById(R.id.app_title);
+        headerTime = findViewById(R.id.header_time);
+        headerDate = findViewById(R.id.header_date);
+        themeToggle = findViewById(R.id.theme_toggle);
+        clockFab = findViewById(R.id.clock_fab);
+        noteFab = findViewById(R.id.note_fab);
 
         quickAlarmDate = findViewById(R.id.quick_alarm_date);
         quickAlarmTime = findViewById(R.id.quick_alarm_time);
         quickAlarmRepeat = findViewById(R.id.quick_alarm_repeat);
+        quickAlarmReminders = findViewById(R.id.quick_alarm_reminders);
         quickAlarmPriority = findViewById(R.id.quick_alarm_priority);
         quickAlarmLabel = findViewById(R.id.quick_alarm_label);
         quickAlarmVibrate = findViewById(R.id.quick_alarm_vibrate);
@@ -137,10 +180,14 @@ public final class MainActivity extends Activity {
         quickNoteTime = findViewById(R.id.quick_note_time);
         quickNoteRepeat = findViewById(R.id.quick_note_repeat);
         quickNoteSketch = findViewById(R.id.quick_note_sketch);
+        penSizeSpinner = findViewById(R.id.pen_size_spinner);
+        gridToggle = findViewById(R.id.grid_toggle);
     }
 
     private void setupHeader() {
-        findViewById(R.id.theme_toggle).setOnClickListener(v -> {
+        updateThemeIcon();
+
+        themeToggle.setOnClickListener(v -> {
             int next = AppSettings.themeMode(this) == AppSettings.THEME_DARK
                     ? AppSettings.THEME_LIGHT : AppSettings.THEME_DARK;
             AppSettings.setThemeMode(this, next);
@@ -158,8 +205,9 @@ public final class MainActivity extends Activity {
                     return true;
                 }
                 if (item.getItemId() == 2) {
-                    pinWidget(clockPanel.getVisibility() == View.VISIBLE
-                            ? ClockWidgetProvider.class : NoForgetWidgetProvider.class);
+                    pinWidgetAndExit(clockPanel.getVisibility() == View.VISIBLE
+                            ? ClockWidgetProvider.class
+                            : NoForgetWidgetProvider.class);
                     return true;
                 }
                 if (item.getItemId() == 3) {
@@ -172,39 +220,70 @@ public final class MainActivity extends Activity {
         });
     }
 
+    private void updateThemeIcon() {
+        themeToggle.setImageResource(
+                AppSettings.themeMode(this) == AppSettings.THEME_DARK
+                        ? R.drawable.ic_md_light
+                        : R.drawable.ic_md_dark);
+    }
+
+    private void updateHeaderClock() {
+        long now = System.currentTimeMillis();
+        String time = new java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
+                .format(new java.util.Date(now));
+        headerTime.setText(CalendarUtils.fa(time));
+        headerDate.setText(
+                CalendarUtils.formatDate(now, AppSettings.defaultCalendar(this)));
+    }
+
     private void setupCalendars() {
         int type = AppSettings.defaultCalendar(this);
         clockCalendar.setCalendarType(type);
         noteCalendar.setCalendarType(type);
 
-        TripleCalendarView.OnMonthYearClickListener monthClick = (visible, calendarType) ->
-                CalendarPickerDialog.showMonthYear(this, visible, calendarType, (picked, pickedType) -> {
-                    if (clockPanel.getVisibility() == View.VISIBLE) {
-                        clockCalendar.setVisibleMonthMillis(picked, pickedType);
-                    } else {
-                        noteCalendar.setVisibleMonthMillis(picked, pickedType);
-                    }
-                });
+        TripleCalendarView.OnMonthYearClickListener monthClick =
+                (visible, calendarType) -> CalendarPickerDialog.showMonthYear(
+                        this,
+                        visible,
+                        calendarType,
+                        (picked, pickedType) -> {
+                            if (clockPanel.getVisibility() == View.VISIBLE) {
+                                clockCalendar.setVisibleMonthMillis(picked, pickedType);
+                            } else {
+                                noteCalendar.setVisibleMonthMillis(picked, pickedType);
+                            }
+                        });
+
         clockCalendar.setOnMonthYearClickListener(monthClick);
         noteCalendar.setOnMonthYearClickListener(monthClick);
 
         clockCalendar.setOnDateSelectedListener(millis -> {
+            if (millis < startOfToday()) {
+                Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                return;
+            }
             applyDate(quickAlarm, millis);
             updateQuickAlarmLabels();
         });
+
         noteCalendar.setOnDateSelectedListener(millis -> {
+            if (millis < startOfToday()) {
+                Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                return;
+            }
             applyDate(quickNoteDue, millis);
             updateQuickNoteLabels();
         });
     }
 
     private void setupAlarmComposer() {
-        setPrioritySpinner(quickAlarmPriority, AlarmItem.PRIORITY_NORMAL);
+        setPrioritySpinner(quickAlarmPriority, PriorityUtils.MEDIUM);
 
         quickAlarm.add(Calendar.MINUTE, 1);
         quickAlarm.set(Calendar.SECOND, 0);
         quickAlarm.set(Calendar.MILLISECOND, 0);
         updateQuickAlarmLabels();
+        updateAlarmReminderLabel();
 
         quickAlarmDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
@@ -215,8 +294,7 @@ public final class MainActivity extends Activity {
                     clockCalendar.setCalendarType(type);
                     clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
                     updateQuickAlarmLabels();
-                }
-        ));
+                }));
 
         quickAlarmTime.setOnClickListener(v -> new TimePickerDialog(
                 this,
@@ -229,8 +307,7 @@ public final class MainActivity extends Activity {
                 },
                 quickAlarm.get(Calendar.HOUR_OF_DAY),
                 quickAlarm.get(Calendar.MINUTE),
-                true
-        ).show());
+                true).show());
 
         quickAlarmRepeat.setOnClickListener(v -> RecurrenceDialog.show(
                 this,
@@ -242,15 +319,32 @@ public final class MainActivity extends Activity {
                     alarmRecurrenceMode = mode;
                     alarmIntervalDays = interval;
                     alarmCustomDates = dates;
-                    quickAlarmRepeat.setText(RecurrenceUtils.summary(mode, interval, dates));
-                }
-        ));
+                    quickAlarmRepeat.setText(
+                            RecurrenceUtils.summary(mode, interval, dates));
+                }));
+
+        quickAlarmReminders.setOnClickListener(v -> AlarmReminderDialog.show(
+                this,
+                alarmReminderMode,
+                alarmReminderMinutesJson,
+                (mode, json) -> {
+                    alarmReminderMode = mode;
+                    alarmReminderMinutesJson = json;
+                    updateAlarmReminderLabel();
+                }));
 
         findViewById(R.id.save_quick_alarm).setOnClickListener(v -> saveQuickAlarm());
     }
 
+    private void updateAlarmReminderLabel() {
+        quickAlarmReminders.setText(
+                "یادآوری\n"
+                        + AlarmReminderUtils.summary(
+                        alarmReminderMode, alarmReminderMinutesJson));
+    }
+
     private void setupNoteComposer() {
-        setPrioritySpinner(quickNotePriority, NoForgetItem.PRIORITY_NORMAL);
+        setPrioritySpinner(quickNotePriority, PriorityUtils.MEDIUM);
 
         quickNoteDue.add(Calendar.HOUR_OF_DAY, 1);
         quickNoteDue.set(Calendar.SECOND, 0);
@@ -258,7 +352,8 @@ public final class MainActivity extends Activity {
         updateQuickNoteLabels();
 
         quickNoteAlarmSwitch.setOnCheckedChangeListener((button, checked) ->
-                quickNoteAlarmControls.setVisibility(checked ? View.VISIBLE : View.GONE));
+                quickNoteAlarmControls.setVisibility(
+                        checked ? View.VISIBLE : View.GONE));
 
         quickNoteDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
@@ -269,8 +364,7 @@ public final class MainActivity extends Activity {
                     noteCalendar.setCalendarType(type);
                     noteCalendar.setSelectedMillis(quickNoteDue.getTimeInMillis());
                     updateQuickNoteLabels();
-                }
-        ));
+                }));
 
         quickNoteTime.setOnClickListener(v -> new TimePickerDialog(
                 this,
@@ -283,8 +377,7 @@ public final class MainActivity extends Activity {
                 },
                 quickNoteDue.get(Calendar.HOUR_OF_DAY),
                 quickNoteDue.get(Calendar.MINUTE),
-                true
-        ).show());
+                true).show());
 
         quickNoteRepeat.setOnClickListener(v -> RecurrenceDialog.show(
                 this,
@@ -296,29 +389,86 @@ public final class MainActivity extends Activity {
                     noteRecurrenceMode = mode;
                     noteIntervalDays = interval;
                     noteCustomDates = dates;
-                    quickNoteRepeat.setText(RecurrenceUtils.summary(mode, interval, dates));
-                }
-        ));
+                    quickNoteRepeat.setText(
+                            RecurrenceUtils.summary(mode, interval, dates));
+                }));
 
         findViewById(R.id.save_quick_note).setOnClickListener(v -> saveQuickNote());
         findViewById(R.id.note_undo).setOnClickListener(v -> quickNoteSketch.undo());
-        findViewById(R.id.note_redo).setOnClickListener(v -> quickNoteSketch.redo());
         findViewById(R.id.note_clear).setOnClickListener(v -> quickNoteSketch.clearSketch());
+        findViewById(R.id.note_redo).setOnClickListener(v -> quickNoteSketch.redo());
         findViewById(R.id.note_palette).setOnClickListener(v ->
-                PaletteDialog.show(this, quickNoteSketch.getPenColor(), quickNoteSketch::setPenColor));
+                PaletteDialog.show(
+                        this,
+                        quickNoteSketch.getPenColor(),
+                        quickNoteSketch::setPenColor));
 
-        findViewById(R.id.pen_thin).setOnClickListener(v -> quickNoteSketch.setPenWidthDp(2f));
-        findViewById(R.id.pen_medium).setOnClickListener(v -> quickNoteSketch.setPenWidthDp(4f));
-        findViewById(R.id.pen_thick).setOnClickListener(v -> quickNoteSketch.setPenWidthDp(7f));
+        ArrayAdapter<String> sizeAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"قلم نازک", "قلم متوسط", "قلم ضخیم", "قلم خیلی ضخیم"});
+        sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        penSizeSpinner.setAdapter(sizeAdapter);
+        penSizeSpinner.setSelection(1);
+        penSizeSpinner.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override public void onItemSelected(
+                            android.widget.AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+                        float[] widths = {2f, 4f, 7f, 10f};
+                        quickNoteSketch.setPenWidthDp(
+                                widths[Math.max(0, Math.min(widths.length - 1, position))]);
+                    }
+                    @Override public void onNothingSelected(
+                            android.widget.AdapterView<?> parent) {}
+                });
+
+        gridToggle.setChecked(true);
+        gridToggle.setOnCheckedChangeListener(
+                (button, checked) -> quickNoteSketch.setGridVisible(checked));
     }
 
     private void setPrioritySpinner(Spinner spinner, int selection) {
+        String[] source = PriorityUtils.labels();
+        String[] values = new String[source.length];
+        for (int i = 0; i < source.length; i++) {
+            values[i] = "اهمیت " + source[i];
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item,
-                new String[]{"اهمیت کم", "اهمیت عادی", "اهمیت زیاد"});
+                this, android.R.layout.simple_spinner_item, values);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(Math.max(0, Math.min(2, selection)));
+        spinner.setSelection(PriorityUtils.clamp(selection));
+    }
+
+    private void applyClockLayoutMode() {
+        clockContent.removeView(alarmComposerCard);
+        clockContent.removeView(clockCalendar);
+        clockContent.removeView(alertsHeader);
+        clockContent.removeView(alarmList);
+
+        if (AppSettings.clockLayoutMode(this) == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST) {
+            clockContent.addView(clockCalendar);
+            clockContent.addView(alertsHeader);
+            clockContent.addView(alarmList);
+            clockContent.addView(alarmComposerCard);
+            alarmComposerCard.setVisibility(View.GONE);
+        } else {
+            clockContent.addView(alarmComposerCard);
+            clockContent.addView(clockCalendar);
+            clockContent.addView(alertsHeader);
+            clockContent.addView(alarmList);
+            alarmComposerCard.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void openAlarmComposer() {
+        alarmComposerCard.setVisibility(View.VISIBLE);
+        alarmComposerCard.post(() ->
+                clockPanel.smoothScrollTo(0, Math.max(0, alarmComposerCard.getTop() - dp(8))));
     }
 
     private void applyDate(Calendar target, long sourceMillis) {
@@ -331,29 +481,46 @@ public final class MainActivity extends Activity {
 
     private void updateQuickAlarmLabels() {
         int type = AppSettings.defaultCalendar(this);
-        quickAlarmDate.setText("تاریخ\n" + CalendarUtils.formatDate(quickAlarm.getTimeInMillis(), type));
-        String time = String.format(Locale.US, "%02d:%02d",
-                quickAlarm.get(Calendar.HOUR_OF_DAY), quickAlarm.get(Calendar.MINUTE));
+        quickAlarmDate.setText(
+                "تاریخ\n"
+                        + CalendarUtils.formatDate(
+                        quickAlarm.getTimeInMillis(), type));
+        String time = String.format(
+                Locale.US,
+                "%02d:%02d",
+                quickAlarm.get(Calendar.HOUR_OF_DAY),
+                quickAlarm.get(Calendar.MINUTE));
         quickAlarmTime.setText("ساعت\n" + CalendarUtils.fa(time));
     }
 
     private void updateQuickNoteLabels() {
         int type = AppSettings.defaultCalendar(this);
-        quickNoteDate.setText(CalendarUtils.formatDate(quickNoteDue.getTimeInMillis(), type));
-        String time = String.format(Locale.US, "%02d:%02d",
-                quickNoteDue.get(Calendar.HOUR_OF_DAY), quickNoteDue.get(Calendar.MINUTE));
+        quickNoteDate.setText(
+                CalendarUtils.formatDate(
+                        quickNoteDue.getTimeInMillis(), type));
+        String time = String.format(
+                Locale.US,
+                "%02d:%02d",
+                quickNoteDue.get(Calendar.HOUR_OF_DAY),
+                quickNoteDue.get(Calendar.MINUTE));
         quickNoteTime.setText(CalendarUtils.fa(time));
     }
 
     private void saveQuickAlarm() {
         long trigger = quickAlarm.getTimeInMillis();
-        if (trigger <= System.currentTimeMillis() && alarmRecurrenceMode == RecurrenceUtils.NONE) {
-            Toast.makeText(this, "تاریخ و ساعت باید در آینده باشد", Toast.LENGTH_LONG).show();
+        if (trigger <= System.currentTimeMillis()) {
+            Toast.makeText(
+                    this,
+                    "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
         long id = System.currentTimeMillis();
-        int compatRepeat = alarmRecurrenceMode <= RecurrenceUtils.YEARLY ? alarmRecurrenceMode : AlarmItem.REPEAT_NONE;
+        int compatRepeat = alarmRecurrenceMode <= RecurrenceUtils.YEARLY
+                ? alarmRecurrenceMode
+                : AlarmItem.REPEAT_NONE;
+
         AlarmItem item = new AlarmItem(
                 id,
                 quickAlarmLabel.getText().toString().trim(),
@@ -365,8 +532,9 @@ public final class MainActivity extends Activity {
                 alarmRecurrenceMode,
                 alarmIntervalDays,
                 alarmCustomDates,
-                15
-        );
+                15,
+                alarmReminderMode,
+                alarmReminderMinutesJson);
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
@@ -374,25 +542,40 @@ public final class MainActivity extends Activity {
         renderAlarms();
 
         quickAlarmLabel.setText("");
-        quickAlarmPriority.setSelection(AlarmItem.PRIORITY_NORMAL);
+        quickAlarmPriority.setSelection(PriorityUtils.MEDIUM);
         alarmRecurrenceMode = RecurrenceUtils.NONE;
         alarmIntervalDays = 1;
         alarmCustomDates = "[]";
         quickAlarmRepeat.setText("بدون تکرار");
+        alarmReminderMode = AlarmReminderUtils.MODE_NONE;
+        alarmReminderMinutesJson = "[]";
+        updateAlarmReminderLabel();
 
         quickAlarm.setTimeInMillis(System.currentTimeMillis());
         quickAlarm.add(Calendar.MINUTE, 1);
         quickAlarm.set(Calendar.SECOND, 0);
         quickAlarm.set(Calendar.MILLISECOND, 0);
+
         clockCalendar.setCalendarType(AppSettings.defaultCalendar(this));
         clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
         updateQuickAlarmLabels();
 
-        if (!scheduled && Build.VERSION.SDK_INT >= 31 && !PermissionHelper.exactAlarmsGranted(this)) {
-            Toast.makeText(this, "زنگ ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.", Toast.LENGTH_LONG).show();
+        if (AppSettings.clockLayoutMode(this)
+                == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST) {
+            alarmComposerCard.setVisibility(View.GONE);
+            clockPanel.smoothScrollTo(0, 0);
+        }
+
+        if (!scheduled
+                && Build.VERSION.SDK_INT >= 31
+                && !PermissionHelper.exactAlarmsGranted(this)) {
+            Toast.makeText(
+                    this,
+                    "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
+                    Toast.LENGTH_LONG).show();
             startPermissionFlow();
         } else {
-            Toast.makeText(this, "زنگ ذخیره شد", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -402,14 +585,21 @@ public final class MainActivity extends Activity {
         String sketch = quickNoteSketch.serialize();
 
         if (title.isEmpty() && body.isEmpty() && "[]".equals(sketch)) {
-            Toast.makeText(this, "یک متن یا نقاشی وارد کنید", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    this,
+                    "یک متن یا نقاشی وارد کنید",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
         boolean alarmEnabled = quickNoteAlarmSwitch.isChecked();
         long due = alarmEnabled ? quickNoteDue.getTimeInMillis() : 0L;
-        if (alarmEnabled && due <= System.currentTimeMillis() && noteRecurrenceMode == RecurrenceUtils.NONE) {
-            Toast.makeText(this, "زمان آلارم یادداشت باید در آینده باشد", Toast.LENGTH_LONG).show();
+
+        if (alarmEnabled && due <= System.currentTimeMillis()) {
+            Toast.makeText(
+                    this,
+                    "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -426,15 +616,15 @@ public final class MainActivity extends Activity {
                 now,
                 noteRecurrenceMode,
                 noteIntervalDays,
-                noteCustomDates
-        );
+                noteCustomDates);
+
         new NoForgetStore(this).save(item);
         if (alarmEnabled) NoForgetScheduler.schedule(this, item);
         NoForgetWidgetProvider.updateAll(this);
 
         quickNoteTitle.setText("");
         quickNoteBody.setText("");
-        quickNotePriority.setSelection(NoForgetItem.PRIORITY_NORMAL);
+        quickNotePriority.setSelection(PriorityUtils.MEDIUM);
         quickNoteAlarmSwitch.setChecked(false);
         quickNoteSketch.clearSketch();
         noteRecurrenceMode = RecurrenceUtils.NONE;
@@ -447,6 +637,7 @@ public final class MainActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
+        updateHeaderClock();
         NotificationHelper.ensureChannels(this);
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
         AlarmScheduler.rescheduleAll(this);
@@ -456,19 +647,32 @@ public final class MainActivity extends Activity {
 
         if (waitingForSettings) {
             waitingForSettings = false;
-            getWindow().getDecorView().postDelayed(this::advancePermissionFlow, 300);
+            getWindow().getDecorView().postDelayed(
+                    this::advancePermissionFlow, 300);
         }
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override protected void onDestroy() {
+        headerHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    @Override protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) recreate();
+        if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
+            recreate();
+        }
     }
 
     @Override protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        showTab("noforget".equals(intent.getStringExtra("openTab")) ? "noforget" : "clock");
+        showTab("noforget".equals(intent.getStringExtra("openTab"))
+                ? "noforget"
+                : "clock");
     }
 
     private void showTab(String tab) {
@@ -479,7 +683,8 @@ public final class MainActivity extends Activity {
         noForgetIndicator.setVisibility(clock ? View.INVISIBLE : View.VISIBLE);
         clockTab.setTextColor(clock ? 0xFFFFFFFF : 0xFFD6EFED);
         noForgetTab.setTextColor(clock ? 0xFFD6EFED : 0xFFFFFFFF);
-        appTitle.setText(clock ? "ساعت پیشرفته" : "یادداشت‌ها");
+        clockFab.setVisibility(clock ? View.VISIBLE : View.GONE);
+        noteFab.setVisibility(clock ? View.GONE : View.VISIBLE);
     }
 
     private void startPermissionFlow() {
@@ -494,18 +699,23 @@ public final class MainActivity extends Activity {
         if (permissionStage == 0) {
             permissionStage = 1;
             if (Build.VERSION.SDK_INT >= 33
-                    && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQ_NOTIFICATIONS);
+                    && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQ_NOTIFICATIONS);
                 return;
             }
         }
 
         if (permissionStage == 1) {
             permissionStage = 2;
-            if (Build.VERSION.SDK_INT >= 31 && !PermissionHelper.exactAlarmsGranted(this)) {
+            if (Build.VERSION.SDK_INT >= 31
+                    && !PermissionHelper.exactAlarmsGranted(this)) {
                 try {
                     waitingForSettings = true;
-                    startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                    startActivity(new Intent(
+                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                             Uri.parse("package:" + getPackageName())));
                     return;
                 } catch (Exception ignored) {
@@ -516,10 +726,12 @@ public final class MainActivity extends Activity {
 
         if (permissionStage == 2) {
             permissionStage = 3;
-            if (Build.VERSION.SDK_INT >= 34 && !PermissionHelper.fullScreenGranted(this)) {
+            if (Build.VERSION.SDK_INT >= 34
+                    && !PermissionHelper.fullScreenGranted(this)) {
                 try {
                     waitingForSettings = true;
-                    startActivity(new Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                    startActivity(new Intent(
+                            Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
                             Uri.parse("package:" + getPackageName())));
                     return;
                 } catch (Exception ignored) {
@@ -529,8 +741,10 @@ public final class MainActivity extends Activity {
         }
 
         permissionStage = -1;
-        getSharedPreferences(PREFS, MODE_PRIVATE).edit()
-                .putBoolean(PERMISSION_ONBOARDING, true).apply();
+        getSharedPreferences(PREFS, MODE_PRIVATE)
+                .edit()
+                .putBoolean(PERMISSION_ONBOARDING, true)
+                .apply();
 
         if (PermissionHelper.exactAlarmsGranted(this)) {
             AlarmScheduler.rescheduleAll(this);
@@ -539,39 +753,62 @@ public final class MainActivity extends Activity {
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
     }
 
-    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
+    @Override public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (requestCode == REQ_NOTIFICATIONS && permissionStage >= 0) {
             getWindow().getDecorView().post(this::advancePermissionFlow);
         }
     }
 
-    private void pinWidget(Class<?> provider) {
+    private void pinWidgetAndExit(Class<?> provider) {
         if (Build.VERSION.SDK_INT < 26) {
-            Toast.makeText(this, "ویجت را از فهرست ویجت‌های لانچر اضافه کنید", Toast.LENGTH_LONG).show();
+            Toast.makeText(
+                    this,
+                    "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
+                    Toast.LENGTH_LONG).show();
             return;
         }
+
         AppWidgetManager manager = getSystemService(AppWidgetManager.class);
         if (manager == null || !manager.isRequestPinAppWidgetSupported()) {
-            Toast.makeText(this, "ویجت را از فهرست ویجت‌های لانچر اضافه کنید", Toast.LENGTH_LONG).show();
+            Toast.makeText(
+                    this,
+                    "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
+                    Toast.LENGTH_LONG).show();
             return;
         }
-        manager.requestPinAppWidget(new ComponentName(this, provider), null, null);
+
+        boolean opened = manager.requestPinAppWidget(
+                new ComponentName(this, provider),
+                null,
+                null);
+
+        if (opened) {
+            getWindow().getDecorView().postDelayed(() -> {
+                moveTaskToBack(true);
+                finishAndRemoveTask();
+            }, 180);
+        }
     }
 
     private void renderAlarms() {
         alarmList.removeAllViews();
         List<AlarmItem> items = new AlarmStore(this).all();
         if (items.isEmpty()) {
-            alarmList.addView(emptyText("هنوز زنگی تنظیم نشده است."));
+            alarmList.addView(emptyText("هنوز هشداری تنظیم نشده است."));
             return;
         }
-        for (AlarmItem item : items) alarmList.addView(alarmCard(item));
+
+        for (AlarmItem item : items) {
+            alarmList.addView(alarmCard(item));
+        }
     }
 
     private LinearLayout alarmCard(AlarmItem item) {
-        int strokeColor = item.priority == AlarmItem.PRIORITY_HIGH ? 0xFFE69A9A
-                : item.priority == AlarmItem.PRIORITY_LOW ? 0xFFBFD9C8 : 0xFFD7E4E1;
+        int strokeColor = priorityStroke(item.priority);
         LinearLayout card = baseCard(strokeColor);
 
         LinearLayout top = new LinearLayout(this);
@@ -579,23 +816,46 @@ public final class MainActivity extends Activity {
         top.setGravity(Gravity.CENTER_VERTICAL);
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView title = cardTitle(item.label.trim().isEmpty() ? "زنگ هشدار" : item.label);
-        top.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        TextView title = cardTitle(
+                item.label.trim().isEmpty() ? "هشدار" : item.label);
+        top.addView(
+                title,
+                new LinearLayout.LayoutParams(
+                        0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        1f));
 
         TextView state = smallText(item.enabled ? "فعال" : "خاموش");
-        state.setTextColor(item.enabled ? AppSettings.primaryColor(this) : AppSettings.textSecondary(this));
+        state.setTextColor(
+                item.enabled
+                        ? AppSettings.primaryColor(this)
+                        : AppSettings.textSecondary(this));
         state.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         top.addView(state);
         card.addView(top);
 
-        String priority = item.priority == 2 ? "اهمیت زیاد" : item.priority == 0 ? "اهمیت کم" : "اهمیت عادی";
-        TextView time = smallText(formatAppDateTime(item.triggerAtMillis)
-                + "  •  " + RecurrenceUtils.summary(item.recurrenceMode, item.intervalDays, item.customDatesJson)
-                + "  •  " + priority + (item.vibrate ? "  •  لرزش" : ""));
+        String reminder = AlarmReminderUtils.summary(
+                item.reminderMode,
+                item.reminderMinutesJson);
+
+        TextView time = smallText(
+                formatAppDateTime(item.triggerAtMillis)
+                        + "  •  "
+                        + RecurrenceUtils.summary(
+                        item.recurrenceMode,
+                        item.intervalDays,
+                        item.customDatesJson)
+                        + "  •  اهمیت "
+                        + PriorityUtils.label(item.priority)
+                        + (item.reminderMode != AlarmReminderUtils.MODE_NONE
+                        ? "  •  یادآوری " + reminder
+                        : "")
+                        + (item.vibrate ? "  •  لرزش" : ""));
         time.setPadding(0, dp(6), 0, dp(10));
         card.addView(time);
 
         LinearLayout actions = actionRow();
+
         Button enabled = actionButton(item.enabled ? "خاموش" : "فعال");
         enabled.setOnClickListener(v -> {
             item.enabled = !item.enabled;
@@ -607,8 +867,9 @@ public final class MainActivity extends Activity {
         });
 
         Button edit = actionButton("ویرایش");
-        edit.setOnClickListener(v -> startActivity(new Intent(this, AlarmEditorActivity.class)
-                .putExtra("alarmId", item.id)));
+        edit.setOnClickListener(v ->
+                startActivity(new Intent(this, AlarmEditorActivity.class)
+                        .putExtra("alarmId", item.id)));
 
         Button delete = actionButton("حذف");
         delete.setOnClickListener(v -> {
@@ -632,17 +893,18 @@ public final class MainActivity extends Activity {
             noForgetList.addView(emptyText("هنوز یادداشتی ندارید."));
             return;
         }
-        long now = System.currentTimeMillis();
-        for (NoForgetItem item : items) noForgetList.addView(noteCard(item, now));
+
+        for (NoForgetItem item : items) {
+            noForgetList.addView(noteCard(item));
+        }
     }
 
-    private LinearLayout noteCard(NoForgetItem item, long now) {
-        int urgency = item.urgency(now);
-        int strokeColor = urgency >= 3 ? 0xFFE69A9A : urgency == 2 ? 0xFFE8C58C : 0xFFBFD9C8;
-        LinearLayout card = baseCard(strokeColor);
+    private LinearLayout noteCard(NoForgetItem item) {
+        LinearLayout card = baseCard(priorityStroke(item.priority));
 
         String titleText = item.title.trim().isEmpty()
-                ? (item.body.trim().isEmpty() ? "دست‌نویس" : item.body) : item.title;
+                ? (item.body.trim().isEmpty() ? "دست‌نویس" : item.body)
+                : item.title;
         card.addView(cardTitle(titleText));
 
         if (!item.body.trim().isEmpty() && !item.body.equals(titleText)) {
@@ -654,21 +916,30 @@ public final class MainActivity extends Activity {
         }
 
         StringBuilder meta = new StringBuilder();
-        meta.append(item.priority == 2 ? "اهمیت زیاد" : item.priority == 0 ? "اهمیت کم" : "اهمیت عادی");
-        if (item.hasDue) meta.append("  •  ").append(formatAppDateTime(item.dueAtMillis));
+        meta.append("اهمیت ").append(PriorityUtils.label(item.priority));
+        if (item.hasDue) {
+            meta.append("  •  ").append(formatAppDateTime(item.dueAtMillis));
+        }
         if (item.reminderEnabled) meta.append("  •  آلارم");
         if (item.recurrenceMode != RecurrenceUtils.NONE) {
-            meta.append("  •  ").append(RecurrenceUtils.summary(item.recurrenceMode, item.intervalDays, item.customDatesJson));
+            meta.append("  •  ")
+                    .append(RecurrenceUtils.summary(
+                            item.recurrenceMode,
+                            item.intervalDays,
+                            item.customDatesJson));
         }
         if (!"[]".equals(item.sketchJson)) meta.append("  •  نقاشی");
+
         TextView metaView = smallText(meta.toString());
         metaView.setPadding(0, dp(5), 0, dp(9));
         card.addView(metaView);
 
         LinearLayout actions = actionRow();
+
         Button edit = actionButton("ویرایش");
-        edit.setOnClickListener(v -> startActivity(new Intent(this, NoForgetEditorActivity.class)
-                .putExtra("noteId", item.id)));
+        edit.setOnClickListener(v ->
+                startActivity(new Intent(this, NoForgetEditorActivity.class)
+                        .putExtra("noteId", item.id)));
 
         Button delete = actionButton("حذف");
         delete.setOnClickListener(v -> {
@@ -684,6 +955,17 @@ public final class MainActivity extends Activity {
         return card;
     }
 
+    private int priorityStroke(int priority) {
+        switch (PriorityUtils.clamp(priority)) {
+            case PriorityUtils.VERY_HIGH: return 0xFFE26767;
+            case PriorityUtils.HIGH: return 0xFFE9A276;
+            case PriorityUtils.MEDIUM: return 0xFFE1C886;
+            case PriorityUtils.RELATIVELY_LOW: return 0xFFAFCFBF;
+            case PriorityUtils.LOW:
+            default: return 0xFFC9D8D4;
+        }
+    }
+
     private LinearLayout baseCard(int strokeColor) {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
@@ -691,7 +973,8 @@ public final class MainActivity extends Activity {
         card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 0, 0, dp(10));
         card.setLayoutParams(params);
 
@@ -750,23 +1033,44 @@ public final class MainActivity extends Activity {
         GradientDrawable bg = new GradientDrawable();
         bg.setColor(AppSettings.field(this));
         bg.setCornerRadius(dp(11));
-        bg.setStroke(dp(1), AppSettings.themeMode(this) == AppSettings.THEME_DARK ? 0xFF343D3A : 0xFFD8E8E7);
+        bg.setStroke(
+                dp(1),
+                AppSettings.themeMode(this) == AppSettings.THEME_DARK
+                        ? 0xFF343D3A
+                        : 0xFFD8E8E7);
         button.setBackground(bg);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, dp(40));
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                dp(40));
         params.setMargins(0, 0, dp(6), 0);
         button.setLayoutParams(params);
         return button;
     }
 
     private String formatAppDateTime(long millis) {
-        String time = new java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
+        String time = new java.text.SimpleDateFormat(
+                "HH:mm",
+                Locale.getDefault())
                 .format(new java.util.Date(millis));
-        return CalendarUtils.formatDate(millis, AppSettings.defaultCalendar(this)) + "  " + time;
+        return CalendarUtils.formatDate(
+                millis,
+                AppSettings.defaultCalendar(this))
+                + "  "
+                + time;
+    }
+
+    private static long startOfToday() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
     }
 
     private int dp(int value) {
-        return Math.round(value * getResources().getDisplayMetrics().density);
+        return Math.round(
+                value * getResources().getDisplayMetrics().density);
     }
 }

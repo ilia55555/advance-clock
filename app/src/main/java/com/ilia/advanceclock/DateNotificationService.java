@@ -11,6 +11,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -22,12 +25,13 @@ public final class DateNotificationService extends Service {
     public static final String CHANNEL = "advance_clock_date_v1";
     private static final int ID = 73;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private int lastDay = -1;
 
     private final Runnable refresh = new Runnable() {
         @Override public void run() {
             updateNotification();
-            handler.postDelayed(this, 60_000L);
+            long now = System.currentTimeMillis();
+            long nextMinute = 60_000L - (now % 60_000L) + 80L;
+            handler.postDelayed(this, nextMinute);
         }
     };
 
@@ -41,6 +45,7 @@ public final class DateNotificationService extends Service {
         super.onCreate();
         ensureChannel();
         startForeground(ID, buildNotification());
+        handler.removeCallbacksAndMessages(null);
         handler.post(refresh);
     }
 
@@ -53,35 +58,48 @@ public final class DateNotificationService extends Service {
         if (Build.VERSION.SDK_INT < 26) return;
         NotificationManager manager = getSystemService(NotificationManager.class);
         if (manager == null) return;
+
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL, "تاریخ روز", NotificationManager.IMPORTANCE_LOW);
         channel.setDescription("نمایش دائمی تاریخ روز در نوار وضعیت");
         channel.setShowBadge(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setSound(null, null);
+        channel.enableVibration(false);
         manager.createNotificationChannel(channel);
     }
 
     private Notification buildNotification() {
-        int type = AppSettings.defaultCalendar(this);
+        int selectedType = AppSettings.defaultCalendar(this);
         long now = System.currentTimeMillis();
-        android.icu.util.Calendar c = CalendarUtils.fromMillis(type, now);
-        int day = c.get(android.icu.util.Calendar.DAY_OF_MONTH);
-        lastDay = day;
+
+        android.icu.util.Calendar selected = CalendarUtils.fromMillis(selectedType, now);
+        int day = selected.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
         Intent open = new Intent(this, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent content = PendingIntent.getActivity(
-                this, 73, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                this, 73, open,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        String title = CalendarUtils.formatDate(now, selectedType);
+
+        StringBuilder twoOtherDates = new StringBuilder();
+        for (int type = CalendarUtils.PERSIAN; type <= CalendarUtils.HIJRI; type++) {
+            if (type == selectedType) continue;
+            if (twoOtherDates.length() > 0) twoOtherDates.append("\n");
+            twoOtherDates.append(CalendarUtils.calendarName(type))
+                    .append(": ")
+                    .append(CalendarUtils.formatDate(now, type));
+        }
 
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, CHANNEL)
                 : new Notification.Builder(this);
 
-        builder.setContentTitle(CalendarUtils.formatDate(now, type))
-                .setContentText(
-                        CalendarUtils.formatDate(now, CalendarUtils.PERSIAN)
-                                + "  •  " + CalendarUtils.formatDate(now, CalendarUtils.GREGORIAN)
-                                + "  •  " + CalendarUtils.formatDate(now, CalendarUtils.HIJRI))
+        builder.setContentTitle(title)
+                .setContentText(twoOtherDates.toString().replace("\n", "  •  "))
+                .setStyle(new Notification.BigTextStyle().bigText(twoOtherDates.toString()))
                 .setContentIntent(content)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -90,22 +108,40 @@ public final class DateNotificationService extends Service {
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setPriority(Notification.PRIORITY_LOW);
 
-        if (Build.VERSION.SDK_INT >= 23) builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
-        else builder.setSmallIcon(R.drawable.ic_alarm);
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
+        } else {
+            builder.setSmallIcon(R.drawable.ic_alarm);
+        }
         return builder.build();
     }
 
+    /**
+     * Android status-bar icons are rendered as a monochrome alpha mask.
+     * We therefore draw an opaque rounded square and cut the Persian day
+     * digits out of it. On a dark status bar this appears exactly as a
+     * white tile with dark/transparent Persian digits.
+     */
     private Bitmap dayIcon(int day) {
         Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        p.setColor(Color.WHITE);
-        p.setTextAlign(Paint.Align.CENTER);
-        p.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
-        p.setTextSize(day >= 10 ? 58f : 68f);
-        Paint.FontMetrics fm = p.getFontMetrics();
+
+        Paint box = new Paint(Paint.ANTI_ALIAS_FLAG);
+        box.setColor(Color.WHITE);
+        canvas.drawRoundRect(new RectF(4, 4, 92, 92), 18, 18, box);
+
+        Paint digits = new Paint(Paint.ANTI_ALIAS_FLAG);
+        digits.setTextAlign(Paint.Align.CENTER);
+        digits.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+        digits.setTextSize(day >= 10 ? 50f : 58f);
+        digits.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+
+        String value = CalendarUtils.fa(day);
+        Paint.FontMetrics fm = digits.getFontMetrics();
         float y = 48f - (fm.ascent + fm.descent) / 2f;
-        canvas.drawText(String.valueOf(day), 48f, y, p);
+        canvas.drawText(value, 48f, y, digits);
+        digits.setXfermode(null);
+
         return bitmap;
     }
 
@@ -119,5 +155,7 @@ public final class DateNotificationService extends Service {
         super.onDestroy();
     }
 
-    @Override public IBinder onBind(Intent intent) { return null; }
+    @Override public IBinder onBind(Intent intent) {
+        return null;
+    }
 }

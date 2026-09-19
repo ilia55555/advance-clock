@@ -1,16 +1,13 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 public final class SettingsActivity extends Activity {
@@ -33,30 +30,6 @@ public final class SettingsActivity extends Activity {
         title.setGravity(Gravity.START);
         root.addView(title, new LinearLayout.LayoutParams(-1, dp(60)));
 
-        root.addView(label("حالت نمایش"));
-        LinearLayout themeRow = new LinearLayout(this);
-        themeRow.setOrientation(LinearLayout.HORIZONTAL);
-        themeRow.setGravity(Gravity.CENTER_VERTICAL);
-        themeRow.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-
-        ImageView lightIcon = new ImageView(this);
-        lightIcon.setImageResource(R.drawable.ic_md_light);
-        lightIcon.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
-        themeRow.addView(lightIcon, new LinearLayout.LayoutParams(dp(34), dp(34)));
-
-        Switch dark = new Switch(this);
-        dark.setText("دارک مود");
-        dark.setGravity(Gravity.CENTER);
-        dark.setTextColor(AppSettings.textPrimary(this));
-        dark.setChecked(AppSettings.themeMode(this) == AppSettings.THEME_DARK);
-        themeRow.addView(dark, new LinearLayout.LayoutParams(0, dp(54), 1f));
-
-        ImageView darkIcon = new ImageView(this);
-        darkIcon.setImageResource(R.drawable.ic_md_dark);
-        darkIcon.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
-        themeRow.addView(darkIcon, new LinearLayout.LayoutParams(dp(34), dp(34)));
-        root.addView(themeRow, new LinearLayout.LayoutParams(-1, dp(58)));
-
         root.addView(label("رنگ اصلی کل اپ"));
         Spinner accent = spinner(new String[]{"سبزآبی", "آبی", "بنفش", "سبز", "نارنجی"});
         accent.setSelection(AppSettings.accent(this));
@@ -68,11 +41,19 @@ public final class SettingsActivity extends Activity {
         root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
         TextView calendarHint = new TextView(this);
-        calendarHint.setText("تقویم انتخاب‌شده در فیلدهای تاریخ، تقویم اصلی و تاریخ نوار وضعیت استفاده می‌شود.");
+        calendarHint.setText("تقویم انتخاب‌شده برای فیلدهای تاریخ، تقویم اصلی و تاریخ نوار وضعیت استفاده می‌شود.");
         calendarHint.setTextColor(AppSettings.textSecondary(this));
         calendarHint.setTextSize(12);
         calendarHint.setPadding(0, dp(4), 0, dp(8));
         root.addView(calendarHint);
+
+        root.addView(label("چیدمان صفحه ساعت"));
+        Spinner clockLayout = spinner(new String[]{
+                "پیش‌فرض: افزودن هشدار سپس تقویم",
+                "تقویم و هشدارها در ابتدا"
+        });
+        clockLayout.setSelection(AppSettings.clockLayoutMode(this));
+        root.addView(clockLayout, new LinearLayout.LayoutParams(-1, dp(54)));
 
         root.addView(label("استایل صفحه زنگ"));
         Spinner alarmStyle = spinner(new String[]{"کلاسیک روشن", "تمرکز تیره", "طلوع گرم"});
@@ -91,9 +72,9 @@ public final class SettingsActivity extends Activity {
         setContentView(root);
 
         save.setOnClickListener(v -> {
-            AppSettings.setThemeMode(this, dark.isChecked() ? AppSettings.THEME_DARK : AppSettings.THEME_LIGHT);
             AppSettings.setAccent(this, accent.getSelectedItemPosition());
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
+            AppSettings.setClockLayoutMode(this, clockLayout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
             try { DateNotificationService.start(this); } catch (Exception ignored) {}
             ClockWidgetProvider.updateAll(this);

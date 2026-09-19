@@ -170,97 +170,89 @@
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <com.ilia.advanceclock.GestureHorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layoutDirection="rtl">
+                android:fillViewport="true">
 
-                <ImageButton
-                    android:id="@+id/editor_undo"
-                    android:layout_width="48dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_soft_button"
-                    android:contentDescription="برگشت"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_md_undo"
-                    android:tint="?attr/appPrimary" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layoutDirection="rtl">
 
-                <Space android:layout_width="6dp" android:layout_height="1dp" />
+                    <ImageButton
+                        android:id="@+id/editor_undo"
+                        android:layout_width="48dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:contentDescription="قبلی"
+                        android:padding="11dp"
+                        android:src="@drawable/ic_md_undo"
+                        android:tint="?attr/appPrimary" />
 
-                <ImageButton
-                    android:id="@+id/editor_redo"
-                    android:layout_width="48dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_soft_button"
-                    android:contentDescription="انجام مجدد"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_md_redo"
-                    android:tint="?attr/appPrimary" />
+                    <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                <Space android:layout_width="6dp" android:layout_height="1dp" />
+                    <ImageButton
+                        android:id="@+id/clear_sketch"
+                        android:layout_width="48dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:contentDescription="حذف"
+                        android:padding="11dp"
+                        android:src="@drawable/ic_md_delete"
+                        android:tint="#C44C4C" />
 
-                <ImageButton
-                    android:id="@+id/clear_sketch"
-                    android:layout_width="48dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_soft_button"
-                    android:contentDescription="پاک کردن"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_md_delete"
-                    android:tint="#C44C4C" />
+                    <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                <Space android:layout_width="6dp" android:layout_height="1dp" />
+                    <ImageButton
+                        android:id="@+id/editor_redo"
+                        android:layout_width="48dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:contentDescription="بعدی"
+                        android:padding="11dp"
+                        android:src="@drawable/ic_md_redo"
+                        android:tint="?attr/appPrimary" />
 
-                <ImageButton
-                    android:id="@+id/editor_palette"
-                    android:layout_width="48dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_soft_button"
-                    android:contentDescription="پالت رنگ"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_md_palette"
-                    android:tint="?attr/appPrimary" />
+                    <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+                    <ImageButton
+                        android:id="@+id/editor_palette"
+                        android:layout_width="48dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:contentDescription="پالت"
+                        android:padding="11dp"
+                        android:src="@drawable/ic_md_palette"
+                        android:tint="?attr/appPrimary" />
 
-                <Button
-                    android:id="@+id/editor_pen_thin"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:background="@drawable/bg_soft_button"
-                    android:minWidth="0dp"
-                    android:text="•"
-                    android:textAllCaps="false"
-                    android:textColor="?attr/appPrimary"
-                    android:textSize="18sp" />
+                    <Space android:layout_width="8dp" android:layout_height="1dp" />
 
-                <Button
-                    android:id="@+id/editor_pen_medium"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_marginStart="5dp"
-                    android:background="@drawable/bg_teal_button"
-                    android:minWidth="0dp"
-                    android:text="●"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    <Spinner
+                        android:id="@+id/editor_pen_size"
+                        android:layout_width="126dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_field"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp" />
 
-                <Button
-                    android:id="@+id/editor_pen_thick"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_marginStart="5dp"
-                    android:background="@drawable/bg_soft_button"
-                    android:minWidth="0dp"
-                    android:text="●"
-                    android:textAllCaps="false"
-                    android:textColor="?attr/appPrimary"
-                    android:textSize="20sp" />
-            </LinearLayout>
+                    <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                    <CheckBox
+                        android:id="@+id/editor_grid_toggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:buttonTint="?attr/appPrimary"
+                        android:checked="true"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="نمایش گرید"
+                        android:textColor="?attr/appTextPrimary" />
+                </LinearLayout>
+            </com.ilia.advanceclock.GestureHorizontalScrollView>
 
             <com.ilia.advanceclock.SketchView
                 android:id="@+id/note_sketch"

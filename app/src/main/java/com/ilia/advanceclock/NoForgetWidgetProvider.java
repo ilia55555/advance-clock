@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class NoForgetWidgetProvider extends AppWidgetProvider {
@@ -31,7 +32,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
     private static void update(Context context, AppWidgetManager manager, int widgetId) {
         Bundle options = manager.getAppWidgetOptions(widgetId);
         int height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 160);
-        int rowCount = Math.max(1, Math.min(8, (height - 88) / 58));
+        int rowCount = Math.max(1, Math.min(10, (height - 86) / 58));
 
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.widget_noforget);
         boolean dark = AppSettings.themeMode(context) == AppSettings.THEME_DARK;
@@ -41,22 +42,24 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
         root.setInt(R.id.noforget_widget_root, "setBackgroundResource",
                 dark ? R.drawable.widget_background_dark : R.drawable.widget_background);
-        root.setTextColor(R.id.noforget_widget_title, text);
+        root.setTextColor(R.id.noforget_widget_time, text);
         root.setTextColor(R.id.noforget_widget_date, muted);
+        root.setTextColor(R.id.noforget_widget_section_label, muted);
         root.setTextColor(R.id.noforget_widget_add, primary);
         root.setTextColor(R.id.noforget_widget_empty, muted);
         root.setTextViewText(R.id.noforget_widget_date,
                 CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));
 
         root.removeAllViews(R.id.noforget_widget_list);
-        List<NoForgetItem> items = new NoForgetStore(context).top(rowCount);
+        List<NoForgetItem> items = widgetOrder(new NoForgetStore(context).all(), rowCount);
         root.setViewVisibility(R.id.noforget_widget_empty, items.isEmpty() ? View.VISIBLE : View.GONE);
-        long now = System.currentTimeMillis();
 
         for (NoForgetItem item : items) {
             RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.widget_noforget_row);
             row.setTextViewText(R.id.noforget_row_title,
-                    item.title.trim().isEmpty() ? (item.body.trim().isEmpty() ? "دست‌نویس" : item.body) : item.title);
+                    item.title.trim().isEmpty()
+                            ? (item.body.trim().isEmpty() ? "دست‌نویس" : item.body)
+                            : item.title);
 
             String meta = item.hasDue
                     ? CalendarUtils.formatDate(item.dueAtMillis, AppSettings.defaultCalendar(context))
@@ -64,37 +67,74 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
             if (item.reminderEnabled) meta = "آلارم • " + meta;
             row.setTextViewText(R.id.noforget_row_meta, meta);
             row.setTextViewText(R.id.noforget_row_priority,
-                    item.priority == NoForgetItem.PRIORITY_HIGH ? "زیاد"
-                            : item.priority == NoForgetItem.PRIORITY_LOW ? "کم" : "عادی");
+                    PriorityUtils.label(item.priority));
+
             row.setTextColor(R.id.noforget_row_title, text);
             row.setTextColor(R.id.noforget_row_meta, muted);
             row.setTextColor(R.id.noforget_row_priority,
-                    item.priority == NoForgetItem.PRIORITY_HIGH ? 0xFFC84D4D : primary);
-
-            int background;
-            int urgency = item.urgency(now);
-            if (urgency >= 3) background = R.drawable.noforget_row_red;
-            else if (urgency == 2) background = R.drawable.noforget_row_yellow;
-            else background = R.drawable.noforget_row_green;
-            row.setInt(R.id.noforget_row_root, "setBackgroundResource", background);
+                    item.priority >= PriorityUtils.HIGH ? 0xFFC84D4D : primary);
 
             Intent edit = new Intent(context, NoForgetEditorActivity.class).putExtra("noteId", item.id);
             row.setOnClickPendingIntent(R.id.noforget_row_root, PendingIntent.getActivity(
-                    context, 1_500_000 + (int) Math.abs(item.id % 1_000_000), edit,
+                    context,
+                    1_500_000 + (int) Math.abs(item.id % 1_000_000),
+                    edit,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
             root.addView(R.id.noforget_widget_list, row);
         }
 
         root.setOnClickPendingIntent(R.id.noforget_widget_add, PendingIntent.getActivity(
-                context, 1_600_000 + widgetId, new Intent(context, NoForgetQuickAddActivity.class),
+                context,
+                1_600_000 + widgetId,
+                new Intent(context, NoForgetQuickAddActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         Intent openApp = new Intent(context, MainActivity.class)
-                .putExtra("openTab", "noforget").addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                .putExtra("openTab", "noforget")
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         root.setOnClickPendingIntent(R.id.noforget_widget_header, PendingIntent.getActivity(
-                context, 1_700_000 + widgetId, openApp,
+                context,
+                1_700_000 + widgetId,
+                openApp,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         manager.updateAppWidget(widgetId, root);
+    }
+
+    private static List<NoForgetItem> widgetOrder(List<NoForgetItem> source, int limit) {
+        if (source.isEmpty()) return new ArrayList<>();
+
+        long now = System.currentTimeMillis();
+        NoForgetItem nearest = null;
+        long nearestDistance = Long.MAX_VALUE;
+
+        for (NoForgetItem item : source) {
+            if (!item.hasDue || item.dueAtMillis <= 0) continue;
+            long distance = Math.abs(item.dueAtMillis - now);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = item;
+            }
+        }
+
+        ArrayList<NoForgetItem> rest = new ArrayList<>(source);
+        if (nearest != null) rest.remove(nearest);
+
+        rest.sort((a, b) -> {
+            int p = Integer.compare(b.priority, a.priority);
+            if (p != 0) return p;
+
+            if (a.hasDue && b.hasDue) return Long.compare(a.dueAtMillis, b.dueAtMillis);
+            if (a.hasDue != b.hasDue) return a.hasDue ? -1 : 1;
+            return Long.compare(b.createdAt, a.createdAt);
+        });
+
+        ArrayList<NoForgetItem> out = new ArrayList<>();
+        if (nearest != null) out.add(nearest);
+        for (NoForgetItem item : rest) {
+            if (out.size() >= limit) break;
+            out.add(item);
+        }
+        return out;
     }
 }

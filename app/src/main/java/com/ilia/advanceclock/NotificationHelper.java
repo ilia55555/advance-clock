@@ -26,8 +26,8 @@ public final class NotificationHelper {
         manager.createNotificationChannel(alarm);
 
         NotificationChannel reminders = new NotificationChannel(
-                REMINDER_CHANNEL, "یادآوری‌های NoForget", NotificationManager.IMPORTANCE_HIGH);
-        reminders.setDescription("یادآوری کارها و یادداشت‌های NoForget");
+                REMINDER_CHANNEL, "یادآوری‌ها", NotificationManager.IMPORTANCE_HIGH);
+        reminders.setDescription("یادآوری هشدارها و یادداشت‌ها");
         reminders.enableVibration(true);
         reminders.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         manager.createNotificationChannel(reminders);

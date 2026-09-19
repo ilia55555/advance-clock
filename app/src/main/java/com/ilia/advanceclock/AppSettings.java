@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 public final class AppSettings {
     private static final String PREFS = "advance_clock_settings";
+
     public static final int THEME_LIGHT = 0;
     public static final int THEME_DARK = 1;
 
@@ -14,6 +15,9 @@ public final class AppSettings {
     public static final int ACCENT_PURPLE = 2;
     public static final int ACCENT_GREEN = 3;
     public static final int ACCENT_ORANGE = 4;
+
+    public static final int CLOCK_LAYOUT_CURRENT = 0;
+    public static final int CLOCK_LAYOUT_CALENDAR_FIRST = 1;
 
     private AppSettings() {}
 
@@ -51,6 +55,14 @@ public final class AppSettings {
 
     public static void setAlarmScreenStyle(Context context, int value) {
         prefs(context).edit().putInt("alarm_screen_style", value).apply();
+    }
+
+    public static int clockLayoutMode(Context context) {
+        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CURRENT);
+    }
+
+    public static void setClockLayoutMode(Context context, int value) {
+        prefs(context).edit().putInt("clock_layout_mode", value).apply();
     }
 
     public static int primaryColor(Context context) {

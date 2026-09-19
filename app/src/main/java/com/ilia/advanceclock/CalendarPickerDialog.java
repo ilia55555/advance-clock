@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -21,15 +22,15 @@ public final class CalendarPickerDialog {
     private CalendarPickerDialog() {}
 
     public static void showDate(Context context, long initialMillis, int initialType, Callback callback) {
-        show(context, initialMillis, initialType, false, callback);
+        show(context, initialMillis, initialType, false, true, callback);
     }
 
     public static void showMonthYear(Context context, long initialMillis, int initialType, Callback callback) {
-        show(context, initialMillis, initialType, true, callback);
+        show(context, initialMillis, initialType, true, false, callback);
     }
 
     private static void show(Context context, long initialMillis, int initialType,
-                             boolean monthYearOnly, Callback callback) {
+                             boolean monthYearOnly, boolean rejectPast, Callback callback) {
         int pad = dp(context, 18);
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -75,7 +76,7 @@ public final class CalendarPickerDialog {
             pickers.addView(day, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
         }
 
-        final long[] currentMillis = {initialMillis};
+        final long[] currentMillis = {Math.max(initialMillis, System.currentTimeMillis())};
         final boolean[] updating = {false};
 
         Runnable refresh = () -> {
@@ -128,9 +129,11 @@ public final class CalendarPickerDialog {
             if (updating[0]) return;
             int calType = type.getSelectedItemPosition();
             int d = monthYearOnly ? 1 : day.getValue();
-            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            int minute = Calendar.getInstance().get(Calendar.MINUTE);
-            currentMillis[0] = CalendarUtils.toMillis(calType, year.getValue(), month.getValue(), d, hour, minute);
+            Calendar time = Calendar.getInstance();
+            time.setTimeInMillis(initialMillis);
+            currentMillis[0] = CalendarUtils.toMillis(
+                    calType, year.getValue(), month.getValue(), d,
+                    time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
             refresh.run();
         };
         year.setOnValueChangedListener(changed);
@@ -158,10 +161,25 @@ public final class CalendarPickerDialog {
                     time.get(Calendar.HOUR_OF_DAY),
                     time.get(Calendar.MINUTE)
             );
+
+            if (rejectPast && millis < startOfToday()) {
+                Toast.makeText(context, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             callback.onPicked(millis, calType);
             dialog.dismiss();
         }));
         dialog.show();
+    }
+
+    private static long startOfToday() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
     }
 
     private static int dp(Context context, int value) {

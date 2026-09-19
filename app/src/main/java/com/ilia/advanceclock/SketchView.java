@@ -33,6 +33,7 @@ public final class SketchView extends View {
     private int activePointerId=MotionEvent.INVALID_POINTER_ID;
     private int penColor=0xFF087C77;
     private float penWidthDp=4f;
+    private boolean gridVisible=true;
     private final float density;
 
     public SketchView(Context context){this(context,null);}
@@ -64,6 +65,7 @@ public final class SketchView extends View {
     }
 
     private void drawGrid(Canvas canvas){
+        if(!gridVisible)return;
         float step=dp(24);
         for(float x=step;x<getWidth();x+=step)canvas.drawLine(x,0,x,getHeight(),gridPaint);
         for(float y=step;y<getHeight();y+=step)canvas.drawLine(0,y,getWidth(),y,gridPaint);
@@ -180,6 +182,8 @@ public final class SketchView extends View {
     public void setPenColor(int color){penColor=color;}
     public int getPenColor(){return penColor;}
     public void setPenWidthDp(float width){penWidthDp=Math.max(1f,Math.min(18f,width));}
+    public void setGridVisible(boolean visible){gridVisible=visible;invalidate();}
+    public boolean isGridVisible(){return gridVisible;}
     public void undo(){if(current!=null){current=null;invalidate();return;}if(strokes.isEmpty())return;redo.add(strokes.remove(strokes.size()-1));invalidate();}
     public void redo(){if(redo.isEmpty())return;strokes.add(redo.remove(redo.size()-1));invalidate();}
     public void clearSketch(){strokes.clear();redo.clear();current=null;invalidate();}

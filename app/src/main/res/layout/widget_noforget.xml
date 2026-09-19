@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_background"
     android:orientation="vertical"
-    android:padding="14dp">
+    android:padding="12dp">
 
     <LinearLayout
         android:id="@+id/noforget_widget_header"
@@ -14,49 +14,58 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/noforget_widget_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="امروز"
+            android:textColor="#758783"
+            android:textSize="11sp" />
 
-            <TextView
-                android:id="@+id/noforget_widget_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="یادداشت‌ها"
-                android:textColor="#173F3B"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/noforget_widget_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="امروز"
-                android:textColor="#758783"
-                android:textSize="10sp" />
-        </LinearLayout>
+        <TextClock
+            android:id="@+id/noforget_widget_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:format12Hour="hh:mm"
+            android:format24Hour="HH:mm"
+            android:textColor="#173F3B"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/noforget_widget_add"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="+"
             android:textColor="#006666"
-            android:textSize="28sp"
+            android:textSize="27sp"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/noforget_widget_section_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
+        android:text="یادداشت"
+        android:textColor="#758783"
+        android:textSize="10sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/noforget_widget_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="10dp"
+        android:paddingVertical="8dp"
         android:text="یادداشتی برای نمایش نیست"
         android:textColor="#758783"
-        android:textSize="13sp" />
+        android:textSize="12sp" />
 
     <LinearLayout
         android:id="@+id/noforget_widget_list"

@@ -15,11 +15,16 @@ public final class NoForgetQuickAddActivity extends Activity {
 
         EditText text = findViewById(R.id.quick_note_text);
         Spinner priority = findViewById(R.id.quick_note_priority);
-        ArrayAdapter<String> p = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
-                new String[]{"اهمیت کم","اهمیت عادی","اهمیت زیاد"});
+
+        String[] labels = PriorityUtils.labels();
+        String[] values = new String[labels.length];
+        for (int i = 0; i < labels.length; i++) values[i] = "اهمیت " + labels[i];
+
+        ArrayAdapter<String> p = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, values);
         p.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         priority.setAdapter(p);
-        priority.setSelection(NoForgetItem.PRIORITY_NORMAL);
+        priority.setSelection(PriorityUtils.MEDIUM);
 
         findViewById(R.id.quick_note_save).setOnClickListener(v -> {
             String value = text.getText().toString().trim();
@@ -27,12 +32,19 @@ public final class NoForgetQuickAddActivity extends Activity {
                 Toast.makeText(this, "یادداشت خالی است", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             long now = System.currentTimeMillis();
             NoForgetItem item = new NoForgetItem(
-                    now, value, "", "[]",
+                    now,
+                    value,
+                    "",
+                    "[]",
                     priority.getSelectedItemPosition(),
-                    false, 0L, false, now
-            );
+                    false,
+                    0L,
+                    false,
+                    now);
+
             new NoForgetStore(this).save(item);
             NoForgetWidgetProvider.updateAll(this);
             finish();

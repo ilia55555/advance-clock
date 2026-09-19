@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,9 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
 public final class RecurrenceDialog {
     public interface Callback {
@@ -54,7 +56,7 @@ public final class RecurrenceDialog {
         root.addView(customSummary);
 
         Button addDate = new Button(context);
-        addDate.setText("افزودن تاریخ دلخواه");
+        addDate.setText("افزودن تاریخ و ساعت");
         addDate.setAllCaps(false);
         root.addView(addDate, new LinearLayout.LayoutParams(-1, dp(context,50)));
 
@@ -76,9 +78,14 @@ public final class RecurrenceDialog {
             StringBuilder sb = new StringBuilder();
             for (Long date : customDates) {
                 if (sb.length() > 0) sb.append("\n");
-                sb.append("• ").append(CalendarUtils.formatDate(date, AppSettings.defaultCalendar(context)));
+                String clock = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                        .format(new java.util.Date(date));
+                sb.append("• ")
+                        .append(CalendarUtils.formatDate(date, AppSettings.defaultCalendar(context)))
+                        .append("  ")
+                        .append(clock);
             }
-            customSummary.setText(sb.length() == 0 ? "هنوز تاریخی انتخاب نشده" : sb.toString());
+            customSummary.setText(sb.length() == 0 ? "هنوز تاریخ و ساعتی انتخاب نشده" : sb.toString());
         };
 
         modeSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
@@ -90,20 +97,32 @@ public final class RecurrenceDialog {
 
         addDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 context,
-                baseMillis,
+                Math.max(baseMillis, System.currentTimeMillis()),
                 AppSettings.defaultCalendar(context),
                 (picked, type) -> {
-                    java.util.Calendar base = java.util.Calendar.getInstance();
+                    Calendar base = Calendar.getInstance();
                     base.setTimeInMillis(baseMillis);
-                    java.util.Calendar d = java.util.Calendar.getInstance();
-                    d.setTimeInMillis(picked);
-                    d.set(java.util.Calendar.HOUR_OF_DAY, base.get(java.util.Calendar.HOUR_OF_DAY));
-                    d.set(java.util.Calendar.MINUTE, base.get(java.util.Calendar.MINUTE));
-                    d.set(java.util.Calendar.SECOND, 0);
-                    d.set(java.util.Calendar.MILLISECOND, 0);
-                    customDates.add(d.getTimeInMillis());
-                    java.util.Collections.sort(customDates);
-                    refresh.run();
+                    Calendar chosen = Calendar.getInstance();
+                    chosen.setTimeInMillis(picked);
+
+                    int defaultHour = base.get(Calendar.HOUR_OF_DAY);
+                    int defaultMinute = base.get(Calendar.MINUTE);
+
+                    new TimePickerDialog(context, (timeView, hour, minute) -> {
+                        chosen.set(Calendar.HOUR_OF_DAY, hour);
+                        chosen.set(Calendar.MINUTE, minute);
+                        chosen.set(Calendar.SECOND, 0);
+                        chosen.set(Calendar.MILLISECOND, 0);
+
+                        if (chosen.getTimeInMillis() <= System.currentTimeMillis()) {
+                            Toast.makeText(context, "تاریخ و ساعت گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        customDates.add(chosen.getTimeInMillis());
+                        java.util.Collections.sort(customDates);
+                        refresh.run();
+                    }, defaultHour, defaultMinute, true).show();
                 }
         ));
 
