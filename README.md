@@ -37,6 +37,13 @@ Manifest فقط مجوزهای موردنیاز این قابلیت‌ها را 
 
 ## Build
 
-- compileSdk / targetSdk: 35
+- Android SDK Platform: Android 16 / API 36.1
+- compileSdk: 36.1 (API 36 + minor API level 1)
+- targetSdk: 36
 - minSdk: 26
+- Android SDK Platform-Tools: 36.0.2
+- Android Gradle Plugin: 8.13.2
+- Gradle: 8.13
 - Java: 17
+
+> Platform-Tools بخشی از نصب Android SDK است و داخل Gradle پین نمی‌شود؛ برای این پروژه نسخه 36.0.2 در SDK Manager نصب و استفاده شود.
