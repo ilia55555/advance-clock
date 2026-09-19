@@ -295,7 +295,7 @@ public final class MainActivity extends Activity {
         quickAlarmDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
                 quickAlarm.getTimeInMillis(),
-                AppSettings.defaultCalendar(this),
+                quickAlarmCalendarType,
                 (picked, type) -> {
                     quickAlarmCalendarType = type;
                     applyDate(quickAlarm, picked);
@@ -366,7 +366,7 @@ public final class MainActivity extends Activity {
         quickNoteDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
                 quickNoteDue.getTimeInMillis(),
-                AppSettings.defaultCalendar(this),
+                quickNoteCalendarType,
                 (picked, type) -> {
                     quickNoteCalendarType = type;
                     applyDate(quickNoteDue, picked);
