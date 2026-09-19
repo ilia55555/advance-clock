@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.icu.util.PersianCalendar;
+import android.icu.util.ULocale;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -222,7 +222,7 @@ public final class MainActivity extends Activity {
     }
 
     private void updateQuickAlarmLabels() {
-        PersianCalendar pc = new PersianCalendar();
+        android.icu.util.Calendar pc = newPersianCalendar();
         pc.setTimeInMillis(quickAlarm.getTimeInMillis());
         String[] months = {
                 "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
@@ -603,6 +603,12 @@ public final class MainActivity extends Activity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private static android.icu.util.Calendar newPersianCalendar() {
+        return android.icu.util.Calendar.getInstance(
+                new ULocale("fa_IR@calendar=persian")
+        );
     }
 
     private static String fa(int value) {
