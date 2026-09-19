@@ -32,7 +32,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
     private static void update(Context context, AppWidgetManager manager, int widgetId) {
         Bundle options = manager.getAppWidgetOptions(widgetId);
         int height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 160);
-        int rowCount = Math.max(1, Math.min(10, (height - 86) / 58));
+        int rowCount = Math.max(0, Math.min(10, (height - 86) / 58));
 
         RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.widget_noforget);
         boolean dark = AppSettings.themeMode(context) == AppSettings.THEME_DARK;
@@ -102,7 +102,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
     }
 
     private static List<NoForgetItem> widgetOrder(List<NoForgetItem> source, int limit) {
-        if (source.isEmpty()) return new ArrayList<>();
+        if (limit <= 0 || source.isEmpty()) return new ArrayList<>();
 
         long now = System.currentTimeMillis();
         NoForgetItem nearest = null;
