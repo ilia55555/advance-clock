@@ -18,7 +18,7 @@ public final class AlarmReminderUtils {
 
     public static String[] optionLabels() {
         return new String[]{
-                "بدون یادآوری", "خودکار",
+                "بدون یادآوری", "خودکار (هوشمند)",
                 "۵ دقیقه", "۱۵ دقیقه", "۳۰ دقیقه",
                 "۱ ساعت", "۲ ساعت", "۳ ساعت", "۶ ساعت", "۱۲ ساعت", "۲۴ ساعت"
         };
@@ -72,7 +72,7 @@ public final class AlarmReminderUtils {
 
     public static String summary(int mode, String customJson) {
         if (mode == MODE_NONE) return "بدون یادآوری";
-        if (mode == MODE_SMART) return "خودکار";
+        if (mode == MODE_SMART) return "خودکار (هوشمند)";
         List<Integer> values = effective(mode, customJson);
         if (values.isEmpty()) return "بدون یادآوری";
         if (values.size() == 1) return labelForMinutes(values.get(0));
