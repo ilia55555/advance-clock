@@ -5,15 +5,16 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -24,14 +25,24 @@ import android.os.Looper;
 public final class DateNotificationService extends Service {
     public static final String CHANNEL = "advance_clock_date_v1";
     private static final int ID = 73;
+
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean timeReceiverRegistered;
 
     private final Runnable refresh = new Runnable() {
         @Override public void run() {
-            updateNotification();
-            long now = System.currentTimeMillis();
-            long nextMinute = 60_000L - (now % 60_000L) + 80L;
-            handler.postDelayed(this, nextMinute);
+            refreshNow(DateNotificationService.this);
+            scheduleNextMinute();
+        }
+    };
+
+    private final BroadcastReceiver timeReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            // Manual date/time changes and midnight must replace the icon
+            // immediately instead of waiting for the minute ticker.
+            handler.removeCallbacks(refresh);
+            refreshNow(DateNotificationService.this);
+            scheduleNextMinute();
         }
     };
 
@@ -41,26 +52,65 @@ public final class DateNotificationService extends Service {
         else context.startService(intent);
     }
 
+    public static void refreshNow(Context context) {
+        ensureChannel(context);
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        if (manager == null) return;
+        try {
+            manager.notify(ID, buildNotification(context));
+        } catch (SecurityException ignored) {
+        }
+    }
+
     @Override public void onCreate() {
         super.onCreate();
-        ensureChannel();
-        startForeground(ID, buildNotification());
-        handler.removeCallbacksAndMessages(null);
+        ensureChannel(this);
+        startForeground(ID, buildNotification(this));
+        registerTimeReceiver();
+
+        handler.removeCallbacks(refresh);
         handler.post(refresh);
     }
 
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
-        updateNotification();
+        refreshNow(this);
+        handler.removeCallbacks(refresh);
+        scheduleNextMinute();
         return START_STICKY;
     }
 
-    private void ensureChannel() {
+    private void registerTimeReceiver() {
+        if (timeReceiverRegistered) return;
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(timeReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(timeReceiver, filter);
+        }
+        timeReceiverRegistered = true;
+    }
+
+    private void scheduleNextMinute() {
+        long now = System.currentTimeMillis();
+        long delay = 60_000L - Math.floorMod(now, 60_000L) + 60L;
+        handler.postDelayed(refresh, delay);
+    }
+
+    private static void ensureChannel(Context context) {
         if (Build.VERSION.SDK_INT < 26) return;
-        NotificationManager manager = getSystemService(NotificationManager.class);
+
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
         if (manager == null) return;
 
         NotificationChannel channel = new NotificationChannel(
-                CHANNEL, "تاریخ روز", NotificationManager.IMPORTANCE_LOW);
+                CHANNEL,
+                "تاریخ روز",
+                NotificationManager.IMPORTANCE_LOW);
         channel.setDescription("نمایش دائمی تاریخ روز در نوار وضعیت");
         channel.setShowBadge(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
@@ -69,23 +119,30 @@ public final class DateNotificationService extends Service {
         manager.createNotificationChannel(channel);
     }
 
-    private Notification buildNotification() {
-        int selectedType = AppSettings.defaultCalendar(this);
+    private static Notification buildNotification(Context context) {
+        int selectedType = AppSettings.defaultCalendar(context);
         long now = System.currentTimeMillis();
 
-        android.icu.util.Calendar selected = CalendarUtils.fromMillis(selectedType, now);
+        android.icu.util.Calendar selected =
+                CalendarUtils.fromMillis(selectedType, now);
         int day = selected.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
-        Intent open = new Intent(this, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent open = new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent content = PendingIntent.getActivity(
-                this, 73, open,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                context,
+                73,
+                open,
+                PendingIntent.FLAG_UPDATE_CURRENT
+                        | PendingIntent.FLAG_IMMUTABLE);
 
         String title = CalendarUtils.formatDate(now, selectedType);
 
         StringBuilder twoOtherDates = new StringBuilder();
-        for (int type = CalendarUtils.PERSIAN; type <= CalendarUtils.HIJRI; type++) {
+        for (int type = CalendarUtils.PERSIAN;
+             type <= CalendarUtils.HIJRI;
+             type++) {
             if (type == selectedType) continue;
             if (twoOtherDates.length() > 0) twoOtherDates.append("\n");
             twoOtherDates.append(CalendarUtils.calendarName(type))
@@ -94,12 +151,13 @@ public final class DateNotificationService extends Service {
         }
 
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
-                ? new Notification.Builder(this, CHANNEL)
-                : new Notification.Builder(this);
+                ? new Notification.Builder(context, CHANNEL)
+                : new Notification.Builder(context);
 
         builder.setContentTitle(title)
                 .setContentText(twoOtherDates.toString().replace("\n", "  •  "))
-                .setStyle(new Notification.BigTextStyle().bigText(twoOtherDates.toString()))
+                .setStyle(new Notification.BigTextStyle()
+                        .bigText(twoOtherDates.toString()))
                 .setContentIntent(content)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -116,13 +174,7 @@ public final class DateNotificationService extends Service {
         return builder.build();
     }
 
-    /**
-     * Android status-bar icons are rendered as a monochrome alpha mask.
-     * We therefore draw an opaque rounded square and cut the Persian day
-     * digits out of it. On a dark status bar this appears exactly as a
-     * white tile with dark/transparent Persian digits.
-     */
-    private Bitmap dayIcon(int day) {
+    private static Bitmap dayIcon(int day) {
         Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
@@ -146,13 +198,15 @@ public final class DateNotificationService extends Service {
         return bitmap;
     }
 
-    private void updateNotification() {
-        NotificationManager manager = getSystemService(NotificationManager.class);
-        if (manager != null) manager.notify(ID, buildNotification());
-    }
-
     @Override public void onDestroy() {
         handler.removeCallbacksAndMessages(null);
+        if (timeReceiverRegistered) {
+            try {
+                unregisterReceiver(timeReceiver);
+            } catch (Exception ignored) {
+            }
+            timeReceiverRegistered = false;
+        }
         super.onDestroy();
     }
 
