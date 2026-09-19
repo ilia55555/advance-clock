@@ -76,6 +76,14 @@ public final class MainActivity extends Activity {
         clockIndicator = findViewById(R.id.clock_indicator);
         noForgetIndicator = findViewById(R.id.noforget_indicator);
         appTitle = findViewById(R.id.app_title);
+        findViewById(R.id.permissions_icon).setOnClickListener(v -> startPermissionFlow());
+        findViewById(R.id.header_menu).setOnClickListener(v -> {
+            if (clockPanel.getVisibility() == View.VISIBLE) {
+                pinWidget(ClockWidgetProvider.class);
+            } else {
+                pinWidget(NoForgetWidgetProvider.class);
+            }
+        });
 
         quickAlarmDate = findViewById(R.id.quick_alarm_date);
         quickAlarmTime = findViewById(R.id.quick_alarm_time);

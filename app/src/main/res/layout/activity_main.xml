@@ -15,15 +15,42 @@
         android:paddingTop="14dp"
         android:paddingEnd="18dp">
 
-        <TextView
-            android:id="@+id/app_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:gravity="center"
-            android:text="ساعت پیشرفته"
-            android:textColor="#FFFFFF"
-            android:textSize="27sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layoutDirection="ltr">
+
+            <TextView
+                android:id="@+id/permissions_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="⚙"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/app_title"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="ساعت پیشرفته"
+                android:textColor="#FFFFFF"
+                android:textSize="27sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/header_menu"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="⋮"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
