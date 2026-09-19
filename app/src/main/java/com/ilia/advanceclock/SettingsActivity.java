@@ -55,18 +55,13 @@ public final class SettingsActivity extends Activity {
 
         root.addView(top);
 
-        root.addView(label("رنگ اصلی اپ"));
-        Spinner accent = spinner(AppSettings.accentNames());
-        accent.setSelection(AppSettings.accent(this));
-        root.addView(accent, new LinearLayout.LayoutParams(-1, dp(54)));
-
-        root.addView(label("رنگ مکمل اپ"));
-        Spinner secondaryAccent = spinner(AppSettings.accentNames());
-        secondaryAccent.setSelection(AppSettings.secondaryAccent(this));
-        root.addView(secondaryAccent, new LinearLayout.LayoutParams(-1, dp(54)));
+        root.addView(label("رنگ اپ"));
+        Spinner palette = spinner(AppSettings.paletteNames());
+        palette.setSelection(AppSettings.palette(this));
+        root.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
 
         TextView paletteHint = new TextView(this);
-        paletteHint.setText("رنگ اصلی برای هدر و کنترل‌های اصلی است و رنگ مکمل برای دکمه‌های تأکیدی و + استفاده می‌شود.");
+        paletteHint.setText("هر گزینه یک جفت رنگ کامل برای هدر، کنترل‌ها و دکمه‌های اصلی است.");
         paletteHint.setTextColor(AppSettings.textSecondary(this));
         paletteHint.setTextSize(12);
         paletteHint.setPadding(0, dp(4), 0, dp(8));
@@ -113,8 +108,7 @@ public final class SettingsActivity extends Activity {
         setContentView(scroll);
 
         save.setOnClickListener(v -> {
-            AppSettings.setAccent(this, accent.getSelectedItemPosition());
-            AppSettings.setSecondaryAccent(this, secondaryAccent.getSelectedItemPosition());
+            AppSettings.setPalette(this, palette.getSelectedItemPosition());
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());

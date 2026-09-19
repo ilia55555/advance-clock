@@ -15,7 +15,8 @@
         <item name="android:navigationBarColor">#F4F9F8</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowBackground">#F4F9F8</item>
-        <item name="appSecondary">#C64F79</item>
+        <item name="appPrimary">#005FA8</item>
+        <item name="appSecondary">#36BFEC</item>
         <item name="appSurface">#FFFFFF</item>
         <item name="appField">#F3F7F7</item>
         <item name="appBackground">#F4F9F8</item>
@@ -32,7 +33,8 @@
         <item name="android:navigationBarColor">#0F1214</item>
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowBackground">#0F1214</item>
-        <item name="appSecondary">#E888A8</item>
+        <item name="appPrimary">#005FA8</item>
+        <item name="appSecondary">#36BFEC</item>
         <item name="appSurface">#171A1C</item>
         <item name="appField">#22272A</item>
         <item name="appBackground">#0F1214</item>
@@ -41,39 +43,82 @@
         <item name="appBorder">#343D3A</item>
     </style>
 
-    <style name="Theme.AdvanceClock.Teal.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#087C77</item><item name="appPrimary">#087C77</item></style>
-    <style name="Theme.AdvanceClock.Teal.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#38AAA4</item><item name="appPrimary">#38AAA4</item></style>
-    <style name="Theme.AdvanceClock.Sapphire.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#2563A6</item><item name="appPrimary">#2563A6</item></style>
-    <style name="Theme.AdvanceClock.Sapphire.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#68A7DE</item><item name="appPrimary">#68A7DE</item></style>
-    <style name="Theme.AdvanceClock.Violet.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#6D4CC4</item><item name="appPrimary">#6D4CC4</item></style>
-    <style name="Theme.AdvanceClock.Violet.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#A58AE8</item><item name="appPrimary">#A58AE8</item></style>
-    <style name="Theme.AdvanceClock.Emerald.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#2F7D5B</item><item name="appPrimary">#2F7D5B</item></style>
-    <style name="Theme.AdvanceClock.Emerald.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#6BC79A</item><item name="appPrimary">#6BC79A</item></style>
-    <style name="Theme.AdvanceClock.Coral.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#CB5F47</item><item name="appPrimary">#CB5F47</item></style>
-    <style name="Theme.AdvanceClock.Coral.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#F08B74</item><item name="appPrimary">#F08B74</item></style>
-    <style name="Theme.AdvanceClock.Rose.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#C64F79</item><item name="appPrimary">#C64F79</item></style>
-    <style name="Theme.AdvanceClock.Rose.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#E888A8</item><item name="appPrimary">#E888A8</item></style>
-    <style name="Theme.AdvanceClock.Amber.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#B7791F</item><item name="appPrimary">#B7791F</item></style>
-    <style name="Theme.AdvanceClock.Amber.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#E2B05A</item><item name="appPrimary">#E2B05A</item></style>
-    <style name="Theme.AdvanceClock.Indigo.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#4355B9</item><item name="appPrimary">#4355B9</item></style>
-    <style name="Theme.AdvanceClock.Indigo.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#8E9BEA</item><item name="appPrimary">#8E9BEA</item></style>
+    <style name="Theme.AdvanceClock.Palette0.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#1E2A38</item>
+        <item name="appPrimary">#D96B43</item>
+        <item name="appSecondary">#1E2A38</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette0.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#1E2A38</item>
+        <item name="appPrimary">#D96B43</item>
+        <item name="appSecondary">#1E2A38</item>
+    </style>
 
-    <style name="OverlaySecondaryTealLight"><item name="appSecondary">#087C77</item></style>
-    <style name="OverlaySecondaryTealDark"><item name="appSecondary">#38AAA4</item></style>
-    <style name="OverlaySecondarySapphireLight"><item name="appSecondary">#2563A6</item></style>
-    <style name="OverlaySecondarySapphireDark"><item name="appSecondary">#68A7DE</item></style>
-    <style name="OverlaySecondaryVioletLight"><item name="appSecondary">#6D4CC4</item></style>
-    <style name="OverlaySecondaryVioletDark"><item name="appSecondary">#A58AE8</item></style>
-    <style name="OverlaySecondaryEmeraldLight"><item name="appSecondary">#2F7D5B</item></style>
-    <style name="OverlaySecondaryEmeraldDark"><item name="appSecondary">#6BC79A</item></style>
-    <style name="OverlaySecondaryCoralLight"><item name="appSecondary">#CB5F47</item></style>
-    <style name="OverlaySecondaryCoralDark"><item name="appSecondary">#F08B74</item></style>
-    <style name="OverlaySecondaryRoseLight"><item name="appSecondary">#C64F79</item></style>
-    <style name="OverlaySecondaryRoseDark"><item name="appSecondary">#E888A8</item></style>
-    <style name="OverlaySecondaryAmberLight"><item name="appSecondary">#B7791F</item></style>
-    <style name="OverlaySecondaryAmberDark"><item name="appSecondary">#E2B05A</item></style>
-    <style name="OverlaySecondaryIndigoLight"><item name="appSecondary">#4355B9</item></style>
-    <style name="OverlaySecondaryIndigoDark"><item name="appSecondary">#8E9BEA</item></style>
+    <style name="Theme.AdvanceClock.Palette1.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#5597E2</item>
+        <item name="appPrimary">#B422AF</item>
+        <item name="appSecondary">#5597E2</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette1.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#5597E2</item>
+        <item name="appPrimary">#B422AF</item>
+        <item name="appSecondary">#5597E2</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Palette2.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#3B3847</item>
+        <item name="appPrimary">#B422A8</item>
+        <item name="appSecondary">#3B3847</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette2.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#3B3847</item>
+        <item name="appPrimary">#B422A8</item>
+        <item name="appSecondary">#3B3847</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Palette3.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#B42222</item>
+        <item name="appPrimary">#00A89D</item>
+        <item name="appSecondary">#B42222</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette3.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#B42222</item>
+        <item name="appPrimary">#00A89D</item>
+        <item name="appSecondary">#B42222</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Palette4.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#ECCE36</item>
+        <item name="appPrimary">#6500A8</item>
+        <item name="appSecondary">#ECCE36</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette4.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#ECCE36</item>
+        <item name="appPrimary">#6500A8</item>
+        <item name="appSecondary">#ECCE36</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Palette5.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#22282A</item>
+        <item name="appPrimary">#D818F2</item>
+        <item name="appSecondary">#22282A</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette5.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#22282A</item>
+        <item name="appPrimary">#D818F2</item>
+        <item name="appSecondary">#22282A</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Palette6.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#36BFEC</item>
+        <item name="appPrimary">#005FA8</item>
+        <item name="appSecondary">#36BFEC</item>
+    </style>
+    <style name="Theme.AdvanceClock.Palette6.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#36BFEC</item>
+        <item name="appPrimary">#005FA8</item>
+        <item name="appSecondary">#36BFEC</item>
+    </style>
 
     <style name="OverlayAdvanceClockModal">
         <item name="android:windowIsFloating">true</item>
@@ -85,5 +130,5 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.AdvanceClock" parent="Theme.AdvanceClock.Teal.Light" />
+    <style name="Theme.AdvanceClock" parent="Theme.AdvanceClock.Palette6.Light" />
 </resources>

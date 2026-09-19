@@ -28,8 +28,29 @@ public final class WidgetPrefs {
         prefs(context).edit().putInt(key("theme", widgetId), Math.max(0, Math.min(2, mode))).apply();
     }
 
+    public static int palette(Context context, int widgetId) {
+        int stored = prefs(context).getInt(key("palette", widgetId), Integer.MIN_VALUE);
+        if (stored == Integer.MIN_VALUE) {
+            // Migrate the previous per-widget accent value when present.
+            stored = prefs(context).getInt(key("accent", widgetId), AppSettings.palette(context));
+        }
+        return Math.max(0, Math.min(6, stored));
+    }
+
+    public static void setPalette(Context context, int widgetId, int palette) {
+        prefs(context).edit()
+                .putInt(key("palette", widgetId), Math.max(0, Math.min(6, palette)))
+                .remove(key("accent", widgetId))
+                .apply();
+    }
+
+    // Compatibility aliases.
     public static int accent(Context context, int widgetId) {
-        return prefs(context).getInt(key("accent", widgetId), AppSettings.accent(context));
+        return palette(context, widgetId);
+    }
+
+    public static void setAccent(Context context, int widgetId, int accent) {
+        setPalette(context, widgetId, accent);
     }
 
     public static int widthCells(Context context, int widgetId) {
@@ -47,10 +68,6 @@ public final class WidgetPrefs {
                 .apply();
     }
 
-    public static void setAccent(Context context, int widgetId, int accent) {
-        prefs(context).edit().putInt(key("accent", widgetId), Math.max(0, Math.min(7, accent))).apply();
-    }
-
     public static boolean isDark(Context context, int widgetId) {
         int mode = themeMode(context, widgetId);
         if (mode == THEME_LIGHT) return false;
@@ -59,12 +76,17 @@ public final class WidgetPrefs {
     }
 
     public static int primary(Context context, int widgetId) {
-        return AppSettings.colorForAccent(accent(context, widgetId), isDark(context, widgetId));
+        return AppSettings.primaryColorForPalette(palette(context, widgetId));
+    }
+
+    public static int secondary(Context context, int widgetId) {
+        return AppSettings.secondaryColorForPalette(palette(context, widgetId));
     }
 
     public static void clear(Context context, int widgetId) {
         prefs(context).edit()
                 .remove(key("theme", widgetId))
+                .remove(key("palette", widgetId))
                 .remove(key("accent", widgetId))
                 .remove(key("width_cells", widgetId))
                 .remove(key("height_cells", widgetId))

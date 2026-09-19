@@ -10,6 +10,16 @@ public final class AppSettings {
     public static final int THEME_LIGHT = 0;
     public static final int THEME_DARK = 1;
 
+    public static final int PALETTE_TERRACOTTA_NAVY = 0;
+    public static final int PALETTE_MAGENTA_SKY = 1;
+    public static final int PALETTE_MAGENTA_CHARCOAL = 2;
+    public static final int PALETTE_TEAL_RED = 3;
+    public static final int PALETTE_PURPLE_GOLD = 4;
+    public static final int PALETTE_NEON_MAGENTA_GRAPHITE = 5;
+    public static final int PALETTE_BLUE_CYAN = 6;
+    public static final int DEFAULT_PALETTE = PALETTE_BLUE_CYAN;
+
+    // Compatibility aliases for older code/preferences.
     public static final int ACCENT_TEAL = 0;
     public static final int ACCENT_SAPPHIRE = 1;
     public static final int ACCENT_VIOLET = 2;
@@ -17,19 +27,19 @@ public final class AppSettings {
     public static final int ACCENT_CORAL = 4;
     public static final int ACCENT_ROSE = 5;
     public static final int ACCENT_AMBER = 6;
-    public static final int ACCENT_INDIGO = 7;
+    public static final int ACCENT_INDIGO = 6;
 
     public static final int CLOCK_LAYOUT_CURRENT = 0;
     public static final int CLOCK_LAYOUT_CALENDAR_FIRST = 1;
 
-    private static final int[] LIGHT_COLORS = {
-            0xFF087C77, 0xFF2563A6, 0xFF6D4CC4, 0xFF2F7D5B,
-            0xFFCB5F47, 0xFFC64F79, 0xFFB7791F, 0xFF4355B9
-    };
-
-    private static final int[] DARK_COLORS = {
-            0xFF38AAA4, 0xFF68A7DE, 0xFFA58AE8, 0xFF6BC79A,
-            0xFFF08B74, 0xFFE888A8, 0xFFE2B05A, 0xFF8E9BEA
+    private static final int[][] PALETTE_COLORS = {
+            {0xFFD96B43, 0xFF1E2A38},
+            {0xFFB422AF, 0xFF5597E2},
+            {0xFFB422A8, 0xFF3B3847},
+            {0xFF00A89D, 0xFFB42222},
+            {0xFF6500A8, 0xFFECCE36},
+            {0xFFD818F2, 0xFF22282A},
+            {0xFF005FA8, 0xFF36BFEC}
     };
 
     private AppSettings() {}
@@ -38,10 +48,15 @@ public final class AppSettings {
         return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    public static String[] accentNames() {
+    public static String[] paletteNames() {
         return new String[]{
-                "سبزآبی عمیق", "یاقوت کبود", "بنفش مخملی", "زمردی",
-                "مرجانی", "رز", "کهربایی", "نیلی"
+                "#D96B43  +  #1E2A38",
+                "#B422AF  +  #5597E2",
+                "#B422A8  +  #3B3847",
+                "#00A89D  +  #B42222",
+                "#6500A8  +  #ECCE36",
+                "#D818F2  +  #22282A",
+                "#005FA8  +  #36BFEC"
         };
     }
 
@@ -53,20 +68,12 @@ public final class AppSettings {
         prefs(context).edit().putInt("theme_mode", value).apply();
     }
 
-    public static int accent(Context context) {
-        return clampAccent(prefs(context).getInt("accent", ACCENT_TEAL));
+    public static int palette(Context context) {
+        return clampPalette(prefs(context).getInt("palette", DEFAULT_PALETTE));
     }
 
-    public static void setAccent(Context context, int value) {
-        prefs(context).edit().putInt("accent", clampAccent(value)).apply();
-    }
-
-    public static int secondaryAccent(Context context) {
-        return clampAccent(prefs(context).getInt("secondary_accent", ACCENT_ROSE));
-    }
-
-    public static void setSecondaryAccent(Context context, int value) {
-        prefs(context).edit().putInt("secondary_accent", clampAccent(value)).apply();
+    public static void setPalette(Context context, int value) {
+        prefs(context).edit().putInt("palette", clampPalette(value)).apply();
     }
 
     public static int defaultCalendar(Context context) {
@@ -94,20 +101,48 @@ public final class AppSettings {
     }
 
     public static int primaryColor(Context context) {
-        return colorForAccent(context, accent(context));
+        return primaryColorForPalette(palette(context));
     }
 
     public static int secondaryColor(Context context) {
-        return colorForAccent(context, secondaryAccent(context));
+        return secondaryColorForPalette(palette(context));
+    }
+
+    public static int primaryColorForPalette(int palette) {
+        return PALETTE_COLORS[clampPalette(palette)][0];
+    }
+
+    public static int secondaryColorForPalette(int palette) {
+        return PALETTE_COLORS[clampPalette(palette)][1];
+    }
+
+    // Legacy API kept so older callers and stored widget settings remain safe.
+    public static String[] accentNames() {
+        return paletteNames();
+    }
+
+    public static int accent(Context context) {
+        return palette(context);
+    }
+
+    public static void setAccent(Context context, int value) {
+        setPalette(context, value);
+    }
+
+    public static int secondaryAccent(Context context) {
+        return palette(context);
+    }
+
+    public static void setSecondaryAccent(Context context, int value) {
+        setPalette(context, value);
     }
 
     public static int colorForAccent(Context context, int accent) {
-        return colorForAccent(accent, themeMode(context) == THEME_DARK);
+        return primaryColorForPalette(accent);
     }
 
     public static int colorForAccent(int accent, boolean dark) {
-        accent = clampAccent(accent);
-        return dark ? DARK_COLORS[accent] : LIGHT_COLORS[accent];
+        return primaryColorForPalette(accent);
     }
 
     public static int surface(Context context) {
@@ -133,56 +168,47 @@ public final class AppSettings {
     public static void applyTheme(Activity activity) {
         boolean dark = themeMode(activity) == THEME_DARK;
         int style;
-        switch (accent(activity)) {
-            case ACCENT_SAPPHIRE:
-                style = dark ? R.style.Theme_AdvanceClock_Sapphire_Dark : R.style.Theme_AdvanceClock_Sapphire_Light;
+
+        switch (palette(activity)) {
+            case PALETTE_TERRACOTTA_NAVY:
+                style = dark ? R.style.Theme_AdvanceClock_Palette0_Dark
+                        : R.style.Theme_AdvanceClock_Palette0_Light;
                 break;
-            case ACCENT_VIOLET:
-                style = dark ? R.style.Theme_AdvanceClock_Violet_Dark : R.style.Theme_AdvanceClock_Violet_Light;
+            case PALETTE_MAGENTA_SKY:
+                style = dark ? R.style.Theme_AdvanceClock_Palette1_Dark
+                        : R.style.Theme_AdvanceClock_Palette1_Light;
                 break;
-            case ACCENT_EMERALD:
-                style = dark ? R.style.Theme_AdvanceClock_Emerald_Dark : R.style.Theme_AdvanceClock_Emerald_Light;
+            case PALETTE_MAGENTA_CHARCOAL:
+                style = dark ? R.style.Theme_AdvanceClock_Palette2_Dark
+                        : R.style.Theme_AdvanceClock_Palette2_Light;
                 break;
-            case ACCENT_CORAL:
-                style = dark ? R.style.Theme_AdvanceClock_Coral_Dark : R.style.Theme_AdvanceClock_Coral_Light;
+            case PALETTE_TEAL_RED:
+                style = dark ? R.style.Theme_AdvanceClock_Palette3_Dark
+                        : R.style.Theme_AdvanceClock_Palette3_Light;
                 break;
-            case ACCENT_ROSE:
-                style = dark ? R.style.Theme_AdvanceClock_Rose_Dark : R.style.Theme_AdvanceClock_Rose_Light;
+            case PALETTE_PURPLE_GOLD:
+                style = dark ? R.style.Theme_AdvanceClock_Palette4_Dark
+                        : R.style.Theme_AdvanceClock_Palette4_Light;
                 break;
-            case ACCENT_AMBER:
-                style = dark ? R.style.Theme_AdvanceClock_Amber_Dark : R.style.Theme_AdvanceClock_Amber_Light;
+            case PALETTE_NEON_MAGENTA_GRAPHITE:
+                style = dark ? R.style.Theme_AdvanceClock_Palette5_Dark
+                        : R.style.Theme_AdvanceClock_Palette5_Light;
                 break;
-            case ACCENT_INDIGO:
-                style = dark ? R.style.Theme_AdvanceClock_Indigo_Dark : R.style.Theme_AdvanceClock_Indigo_Light;
-                break;
-            case ACCENT_TEAL:
+            case PALETTE_BLUE_CYAN:
             default:
-                style = dark ? R.style.Theme_AdvanceClock_Teal_Dark : R.style.Theme_AdvanceClock_Teal_Light;
+                style = dark ? R.style.Theme_AdvanceClock_Palette6_Dark
+                        : R.style.Theme_AdvanceClock_Palette6_Light;
                 break;
         }
+
         activity.setTheme(style);
-        activity.getTheme().applyStyle(secondaryOverlay(secondaryAccent(activity), dark), true);
     }
 
     public static void applyModalOverlay(Activity activity) {
         activity.getTheme().applyStyle(R.style.OverlayAdvanceClockModal, true);
     }
 
-    private static int secondaryOverlay(int accent, boolean dark) {
-        switch (clampAccent(accent)) {
-            case ACCENT_SAPPHIRE: return dark ? R.style.OverlaySecondarySapphireDark : R.style.OverlaySecondarySapphireLight;
-            case ACCENT_VIOLET: return dark ? R.style.OverlaySecondaryVioletDark : R.style.OverlaySecondaryVioletLight;
-            case ACCENT_EMERALD: return dark ? R.style.OverlaySecondaryEmeraldDark : R.style.OverlaySecondaryEmeraldLight;
-            case ACCENT_CORAL: return dark ? R.style.OverlaySecondaryCoralDark : R.style.OverlaySecondaryCoralLight;
-            case ACCENT_ROSE: return dark ? R.style.OverlaySecondaryRoseDark : R.style.OverlaySecondaryRoseLight;
-            case ACCENT_AMBER: return dark ? R.style.OverlaySecondaryAmberDark : R.style.OverlaySecondaryAmberLight;
-            case ACCENT_INDIGO: return dark ? R.style.OverlaySecondaryIndigoDark : R.style.OverlaySecondaryIndigoLight;
-            case ACCENT_TEAL:
-            default: return dark ? R.style.OverlaySecondaryTealDark : R.style.OverlaySecondaryTealLight;
-        }
-    }
-
-    private static int clampAccent(int value) {
-        return Math.max(0, Math.min(7, value));
+    private static int clampPalette(int value) {
+        return Math.max(0, Math.min(PALETTE_COLORS.length - 1, value));
     }
 }
