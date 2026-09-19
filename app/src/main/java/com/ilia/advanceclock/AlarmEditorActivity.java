@@ -222,6 +222,9 @@ public final class AlarmEditorActivity extends Activity {
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
+        if (item.lastFiredAtMillis > 0L) {
+            AlarmScheduler.schedulePostReminders(this, item, item.lastFiredAtMillis);
+        }
         ClockWidgetProvider.updateAll(this);
 
         if (!scheduled
