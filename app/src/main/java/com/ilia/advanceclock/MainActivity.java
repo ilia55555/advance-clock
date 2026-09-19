@@ -93,6 +93,9 @@ public final class MainActivity extends Activity {
     private Spinner penSizeSpinner;
     private CheckBox gridToggle;
 
+    private int quickAlarmCalendarType;
+    private int quickNoteCalendarType;
+
     private int alarmRecurrenceMode = RecurrenceUtils.NONE;
     private int alarmIntervalDays = 1;
     private String alarmCustomDates = "[]";
@@ -113,6 +116,8 @@ public final class MainActivity extends Activity {
         NotificationHelper.ensureChannels(this);
 
         bindViews();
+        quickAlarmCalendarType = AppSettings.defaultCalendar(this);
+        quickNoteCalendarType = AppSettings.defaultCalendar(this);
         setupHeader();
         setupAlarmComposer();
         setupNoteComposer();
@@ -262,6 +267,7 @@ public final class MainActivity extends Activity {
                 Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
                 return;
             }
+            quickAlarmCalendarType = clockCalendar.getCalendarType();
             applyDate(quickAlarm, millis);
             updateQuickAlarmLabels();
         });
@@ -271,6 +277,7 @@ public final class MainActivity extends Activity {
                 Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
                 return;
             }
+            quickNoteCalendarType = noteCalendar.getCalendarType();
             applyDate(quickNoteDue, millis);
             updateQuickNoteLabels();
         });
@@ -290,6 +297,7 @@ public final class MainActivity extends Activity {
                 quickAlarm.getTimeInMillis(),
                 AppSettings.defaultCalendar(this),
                 (picked, type) -> {
+                    quickAlarmCalendarType = type;
                     applyDate(quickAlarm, picked);
                     clockCalendar.setCalendarType(type);
                     clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
@@ -360,6 +368,7 @@ public final class MainActivity extends Activity {
                 quickNoteDue.getTimeInMillis(),
                 AppSettings.defaultCalendar(this),
                 (picked, type) -> {
+                    quickNoteCalendarType = type;
                     applyDate(quickNoteDue, picked);
                     noteCalendar.setCalendarType(type);
                     noteCalendar.setSelectedMillis(quickNoteDue.getTimeInMillis());
@@ -480,7 +489,7 @@ public final class MainActivity extends Activity {
     }
 
     private void updateQuickAlarmLabels() {
-        int type = AppSettings.defaultCalendar(this);
+        int type = quickAlarmCalendarType;
         quickAlarmDate.setText(
                 "تاریخ\n"
                         + CalendarUtils.formatDate(
@@ -494,7 +503,7 @@ public final class MainActivity extends Activity {
     }
 
     private void updateQuickNoteLabels() {
-        int type = AppSettings.defaultCalendar(this);
+        int type = quickNoteCalendarType;
         quickNoteDate.setText(
                 CalendarUtils.formatDate(
                         quickNoteDue.getTimeInMillis(), type));
@@ -556,7 +565,8 @@ public final class MainActivity extends Activity {
         quickAlarm.set(Calendar.SECOND, 0);
         quickAlarm.set(Calendar.MILLISECOND, 0);
 
-        clockCalendar.setCalendarType(AppSettings.defaultCalendar(this));
+        quickAlarmCalendarType = AppSettings.defaultCalendar(this);
+        clockCalendar.setCalendarType(quickAlarmCalendarType);
         clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
         updateQuickAlarmLabels();
 
