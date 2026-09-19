@@ -131,6 +131,9 @@ public final class AlarmScheduler {
         long now = System.currentTimeMillis();
 
         for (AlarmItem item : store.all()) {
+            if (item.lastFiredAtMillis > 0L) {
+                schedulePostReminders(context, item, item.lastFiredAtMillis);
+            }
             if (!item.enabled) continue;
 
             long next = RecurrenceUtils.next(
