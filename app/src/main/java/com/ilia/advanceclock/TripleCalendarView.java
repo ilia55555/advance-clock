@@ -255,12 +255,13 @@ public final class TripleCalendarView extends View {
             centered(c, CalendarUtils.fa(day), left + CELL_W / 2f, top + 30,
                     29, main, regular);
 
-            String smallLeft = other1 == CalendarUtils.GREGORIAN
-                    ? String.valueOf(a.get(android.icu.util.Calendar.DAY_OF_MONTH))
-                    : CalendarUtils.fa(a.get(android.icu.util.Calendar.DAY_OF_MONTH));
-            String smallRight = other2 == CalendarUtils.GREGORIAN
-                    ? String.valueOf(b.get(android.icu.util.Calendar.DAY_OF_MONTH))
-                    : CalendarUtils.fa(b.get(android.icu.util.Calendar.DAY_OF_MONTH));
+            // Use the same Persian-digit glyph set, typeface and size for both
+            // secondary calendars so Gregorian and Hijri numbers have identical
+            // visual weight and readability.
+            String smallLeft = CalendarUtils.fa(
+                    a.get(android.icu.util.Calendar.DAY_OF_MONTH));
+            String smallRight = CalendarUtils.fa(
+                    b.get(android.icu.util.Calendar.DAY_OF_MONTH));
 
             centered(c, smallLeft, left + 20, top + 62, 16, muted, medium);
             centered(c, smallRight, left + 57, top + 62, 16, muted, medium);
