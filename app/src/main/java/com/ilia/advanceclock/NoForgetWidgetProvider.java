@@ -47,7 +47,6 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         root.setTextColor(R.id.noforget_widget_section_label, primary);
         root.setTextColor(R.id.noforget_widget_add, primary);
         root.setInt(R.id.noforget_widget_theme, "setColorFilter", primary);
-        root.setInt(R.id.noforget_widget_resize, "setColorFilter", primary);
         root.setTextColor(R.id.noforget_widget_empty, muted);
         root.setTextViewText(R.id.noforget_widget_date,
                 CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));
@@ -108,16 +107,6 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                 context,
                 1_800_000 + widgetId,
                 themeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
-
-        Intent resizeIntent = new Intent(context, WidgetSettingsActivity.class)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                .putExtra("widgetKind", "note")
-                .putExtra("focusResize", true);
-        root.setOnClickPendingIntent(R.id.noforget_widget_resize, PendingIntent.getActivity(
-                context,
-                1_900_000 + widgetId,
-                resizeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         manager.updateAppWidget(widgetId, root);
