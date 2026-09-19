@@ -38,6 +38,7 @@ public final class AlarmEditorActivity extends Activity {
     private int reminderMode = AlarmReminderUtils.MODE_NONE;
     private String reminderMinutesJson = "[]";
     private int snoozeMinutes = 15;
+    private long lastFiredAtMillis = 0L;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -160,6 +161,7 @@ public final class AlarmEditorActivity extends Activity {
         reminderMode = item.reminderMode;
         reminderMinutesJson = item.reminderMinutesJson;
         snoozeMinutes = item.snoozeMinutes;
+        lastFiredAtMillis = item.lastFiredAtMillis;
         updateReminderButton();
         updateButtons();
     }
@@ -216,6 +218,7 @@ public final class AlarmEditorActivity extends Activity {
                 snoozeMinutes,
                 reminderMode,
                 reminderMinutesJson);
+        item.lastFiredAtMillis = lastFiredAtMillis;
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
