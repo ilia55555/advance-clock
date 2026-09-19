@@ -133,7 +133,7 @@ public final class DateNotificationService extends Service {
         Paint digits = new Paint(Paint.ANTI_ALIAS_FLAG);
         digits.setTextAlign(Paint.Align.CENTER);
         digits.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        digits.setTextSize(day >= 10 ? 67f : 76f);
+        digits.setTextSize(day >= 10 ? 78f : 88f);
         digits.setLetterSpacing(-0.06f);
         digits.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
