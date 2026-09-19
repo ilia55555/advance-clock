@@ -94,14 +94,27 @@ public final class AlarmScheduler {
     }
 
     public static boolean snooze(Context context, long id, long delayMillis) {
-        AlarmStore store = new AlarmStore(context);
-        AlarmItem item = store.find(id);
+        AlarmItem item = new AlarmStore(context).find(id);
         if (item == null) return false;
 
-        item.enabled = true;
-        item.triggerAtMillis = System.currentTimeMillis() + Math.max(60_000L, delayMillis);
-        store.save(item);
-        return schedulePrimary(context, item, false);
+        AlarmManager manager = context.getSystemService(AlarmManager.class);
+        if (manager == null || !PermissionHelper.exactAlarmsGranted(context)) return false;
+
+        long when = System.currentTimeMillis() + Math.max(60_000L, delayMillis);
+        Intent intent = new Intent(context, AlarmSnoozeReceiver.class)
+                .putExtra("alarmId", id);
+        PendingIntent operation = PendingIntent.getBroadcast(
+                context,
+                2_050_000 + (int) Math.abs(id % 800_000L),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        try {
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, when, operation);
+            return true;
+        } catch (SecurityException error) {
+            return false;
+        }
     }
 
     public static void cancel(Context context, long id) {
