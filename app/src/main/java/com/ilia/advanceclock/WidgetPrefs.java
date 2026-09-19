@@ -32,6 +32,21 @@ public final class WidgetPrefs {
         return prefs(context).getInt(key("accent", widgetId), AppSettings.accent(context));
     }
 
+    public static int widthCells(Context context, int widgetId) {
+        return prefs(context).getInt(key("width_cells", widgetId), 3);
+    }
+
+    public static int heightCells(Context context, int widgetId) {
+        return prefs(context).getInt(key("height_cells", widgetId), 2);
+    }
+
+    public static void setSizeCells(Context context, int widgetId, int width, int height) {
+        prefs(context).edit()
+                .putInt(key("width_cells", widgetId), Math.max(2, Math.min(6, width)))
+                .putInt(key("height_cells", widgetId), Math.max(1, Math.min(6, height)))
+                .apply();
+    }
+
     public static void setAccent(Context context, int widgetId, int accent) {
         prefs(context).edit().putInt(key("accent", widgetId), Math.max(0, Math.min(7, accent))).apply();
     }
@@ -51,6 +66,8 @@ public final class WidgetPrefs {
         prefs(context).edit()
                 .remove(key("theme", widgetId))
                 .remove(key("accent", widgetId))
+                .remove(key("width_cells", widgetId))
+                .remove(key("height_cells", widgetId))
                 .apply();
     }
 }
