@@ -55,15 +55,6 @@
             android:padding="7dp"
             android:src="@drawable/ic_md_palette"
             android:tint="#006666" />
-
-        <ImageView
-            android:id="@+id/noforget_widget_resize"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="تغییر اندازه ویجت"
-            android:padding="7dp"
-            android:src="@drawable/ic_md_aspect_ratio"
-            android:tint="#006666" />
     </LinearLayout>
 
     <TextView
