@@ -118,10 +118,13 @@ public final class AlarmScheduler {
     }
 
     public static void cancel(Context context, long id) {
-        AlarmItem item = new AlarmStore(context).find(id);
+        AlarmStore store = new AlarmStore(context);
+        AlarmItem item = store.find(id);
         cancelPrimary(context, id);
         if (item != null && item.lastFiredAtMillis > 0L) {
             cancelPostReminders(context, item.id, item.lastFiredAtMillis);
+            item.lastFiredAtMillis = 0L;
+            store.save(item);
         }
     }
 
