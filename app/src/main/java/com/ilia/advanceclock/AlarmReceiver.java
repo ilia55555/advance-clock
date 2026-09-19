@@ -6,37 +6,26 @@ import android.content.Intent;
 import android.os.Build;
 
 public final class AlarmReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        long id = intent.getLongExtra("alarmId", -1L);
-        AlarmStore store = new AlarmStore(context);
-        AlarmItem item = store.find(id);
-        if (item == null || !item.enabled) return;
+    @Override public void onReceive(Context context,Intent intent){
+        long id=intent.getLongExtra("alarmId",-1L);
+        AlarmStore store=new AlarmStore(context);
+        AlarmItem item=store.find(id);
+        if(item==null||!item.enabled)return;
 
-        Intent service = AlarmSoundService.startIntent(
-                context,
-                item.id,
-                item.label,
-                item.vibrate
-        );
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(service);
-        } else {
-            context.startService(service);
-        }
+        Intent service=AlarmSoundService.startIntent(context,item.id,item.label,item.vibrate);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)context.startForegroundService(service);
+        else context.startService(service);
 
-        if (item.repeatType == AlarmItem.REPEAT_NONE) {
-            item.enabled = false;
+        long now=System.currentTimeMillis()+1000L;
+        long next=RecurrenceUtils.next(item.triggerAtMillis,item.recurrenceMode,item.intervalDays,item.customDatesJson,now);
+        if(next>now){
+            item.triggerAtMillis=next;
+            item.enabled=true;
             store.save(item);
-        } else {
-            item.triggerAtMillis = TimeUtils.nextOccurrence(item.triggerAtMillis, item.repeatType);
-            item.triggerAtMillis = TimeUtils.normalizeFuture(
-                    item.triggerAtMillis,
-                    item.repeatType,
-                    System.currentTimeMillis()
-            );
+            AlarmScheduler.schedule(context,item);
+        }else{
+            item.enabled=false;
             store.save(item);
-            AlarmScheduler.schedule(context, item);
         }
         ClockWidgetProvider.updateAll(context);
     }

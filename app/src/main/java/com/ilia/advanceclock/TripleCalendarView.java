@@ -6,127 +6,101 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.icu.util.IslamicCalendar;
-import android.icu.util.ULocale;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-/**
- * Pixel-faithful implementation of the calendar reference used by Advance Clock.
- *
- * The view is drawn against a 708 x 698 reference canvas (the supplied design)
- * and then scaled as a single unit. For five-row months, the geometry, spacing,
- * colors and proportions match the reference exactly. Six-row months extend the
- * grid by one row while preserving the same row rhythm and footer treatment.
- */
 public final class TripleCalendarView extends View {
-    public interface OnDateSelectedListener {
-        void onDateSelected(long timeInMillis);
-    }
+    public interface OnDateSelectedListener { void onDateSelected(long timeInMillis); }
+    public interface OnMonthYearClickListener { void onMonthYearClick(long visibleMonthMillis, int calendarType); }
 
     private static final float BASE_W = 708f;
     private static final float BASE_H_5 = 698f;
     private static final float EXTRA_ROW_H = 86f;
 
-    // Exact dominant colors sampled from the provided reference image.
-    private static final int WHITE = Color.rgb(255, 255, 255);      // #FFFFFF
-    private static final int TEAL = Color.rgb(0, 102, 102);        // #006666
-    private static final int SELECTED = Color.rgb(64, 128, 128);   // #408080
-    private static final int CELL = Color.rgb(248, 248, 248);      // #F8F8F8
-    private static final int HOLIDAY_BG = Color.rgb(255, 242, 230);// #FFF2E6
-    private static final int MAIN_TEXT = Color.rgb(99, 116, 84);   // #637454
-    private static final int MUTED = Color.rgb(151, 162, 142);     // #97A28E
-    private static final int ORANGE = Color.rgb(204, 102, 0);      // #CC6600
-    private static final int ORANGE_MUTED = Color.rgb(229, 139, 75);
-    private static final int SELECTED_MUTED = Color.rgb(222, 235, 232);
-    private static final int CHEVRON = Color.rgb(102, 153, 153);
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int CELL_LIGHT = 0xFFF8F8F8;
+    private static final int CELL_DARK = 0xFF22272A;
+    private static final int HOLIDAY_BG_LIGHT = 0xFFFFF2E6;
+    private static final int HOLIDAY_BG_DARK = 0xFF3A2818;
+    private static final int MAIN_TEXT_LIGHT = 0xFF637454;
+    private static final int MAIN_TEXT_DARK = 0xFFDCE5E1;
+    private static final int MUTED_LIGHT = 0xFF97A28E;
+    private static final int MUTED_DARK = 0xFF98A7A2;
+    private static final int ORANGE = 0xFFCC6600;
+    private static final int ORANGE_MUTED = 0xFFE58B4B;
 
-    private static final String[] PERSIAN_MONTHS = {
-            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
-    };
-
-    // Visual order in the reference is RTL: Saturday is right-most.
     private static final String[] WEEKDAYS = {
             "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه"
     };
-
-    private static final String[] HIJRI_MONTHS = {
-            "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی",
-            "رجب", "شعبان", "رمضان", "شوال", "ذی القعده", "ذی الحجه"
-    };
-
-    // Exact cell geometry measured from the supplied 708x698 reference.
-    private static final float[] CELL_LEFT = {
-            553f, 470f, 386f, 302f, 218f, 134f, 50f
-    };
-    private static final float[] CELL_TOP = {
-            161f, 247f, 334f, 420f, 506f, 592f
-    };
+    private static final float[] CELL_LEFT = {553f,470f,386f,302f,218f,134f,50f};
+    private static final float[] CELL_TOP = {161f,247f,334f,420f,506f,592f};
     private static final float CELL_W = 76f;
     private static final float CELL_H = 77f;
-    private static final float[] COL_CENTER = {
-            591f, 508f, 424f, 340f, 256f, 172f, 88f
-    };
+    private static final float[] COL_CENTER = {591f,508f,424f,340f,256f,172f,88f};
 
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
+    private final Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Typeface regular = Typeface.create("sans-serif", Typeface.NORMAL);
     private final Typeface medium = Typeface.create("sans-serif-medium", Typeface.NORMAL);
     private final Typeface bold = Typeface.create("sans-serif", Typeface.BOLD);
 
+    private int calendarType;
     private int displayYear;
     private int displayMonth;
     private long selectedMillis;
-    private OnDateSelectedListener listener;
+    private float downX;
+    private float downY;
+    private OnDateSelectedListener dateListener;
+    private OnMonthYearClickListener monthYearListener;
 
-    public TripleCalendarView(Context context) {
-        this(context, null);
-    }
-
-    public TripleCalendarView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
+    public TripleCalendarView(Context context) { this(context, null); }
+    public TripleCalendarView(Context context, AttributeSet attrs) { this(context, attrs, 0); }
     public TripleCalendarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setBackgroundColor(WHITE);
         setClickable(true);
         setFocusable(true);
-
-        android.icu.util.Calendar now = newPersianCalendar();
+        calendarType = AppSettings.defaultCalendar(context);
         selectedMillis = System.currentTimeMillis();
-        now.setTimeInMillis(selectedMillis);
-        displayYear = now.get(android.icu.util.Calendar.YEAR);
-        displayMonth = now.get(android.icu.util.Calendar.MONTH);
-
-        strokePaint.setStyle(Paint.Style.STROKE);
-        strokePaint.setStrokeCap(Paint.Cap.ROUND);
-        strokePaint.setStrokeJoin(Paint.Join.ROUND);
+        syncVisibleFrom(selectedMillis);
+        stroke.setStyle(Paint.Style.STROKE);
+        stroke.setStrokeCap(Paint.Cap.ROUND);
+        stroke.setStrokeJoin(Paint.Join.ROUND);
     }
 
-    public void setOnDateSelectedListener(OnDateSelectedListener listener) {
-        this.listener = listener;
+    public void setOnDateSelectedListener(OnDateSelectedListener l) { dateListener = l; }
+    public void setOnMonthYearClickListener(OnMonthYearClickListener l) { monthYearListener = l; }
+    public int getCalendarType() { return calendarType; }
+
+    public void setCalendarType(int type) {
+        calendarType = Math.max(0, Math.min(2, type));
+        syncVisibleFrom(selectedMillis);
+        requestLayout();
+        invalidate();
     }
 
-    public long getSelectedMillis() {
-        return selectedMillis;
-    }
+    public long getSelectedMillis() { return selectedMillis; }
 
     public void setSelectedMillis(long millis) {
         selectedMillis = millis;
-        android.icu.util.Calendar pc = newPersianCalendar();
-        pc.setTimeInMillis(millis);
-        displayYear = pc.get(android.icu.util.Calendar.YEAR);
-        displayMonth = pc.get(android.icu.util.Calendar.MONTH);
+        syncVisibleFrom(millis);
         requestLayout();
         invalidate();
+    }
+
+    public void setVisibleMonthMillis(long millis, int type) {
+        calendarType = Math.max(0, Math.min(2, type));
+        android.icu.util.Calendar visible = CalendarUtils.fromMillis(calendarType, millis);
+        displayYear = visible.get(android.icu.util.Calendar.YEAR);
+        displayMonth = visible.get(android.icu.util.Calendar.MONTH);
+        requestLayout();
+        invalidate();
+    }
+
+    private void syncVisibleFrom(long millis) {
+        android.icu.util.Calendar c = CalendarUtils.fromMillis(calendarType, millis);
+        displayYear = c.get(android.icu.util.Calendar.YEAR);
+        displayMonth = c.get(android.icu.util.Calendar.MONTH);
     }
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -134,356 +108,206 @@ public final class TripleCalendarView extends View {
         if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED || width <= 0) {
             width = Math.round(BASE_W * getResources().getDisplayMetrics().density);
         }
-
-        float baseH = baseHeight();
-        int desiredHeight = Math.round(width * (baseH / BASE_W));
-
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int height;
-        if (heightMode == MeasureSpec.EXACTLY) {
-            height = heightSize;
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            height = Math.min(desiredHeight, heightSize);
-        } else {
-            height = desiredHeight;
-        }
-        setMeasuredDimension(width, height);
+        int desired = Math.round(width * (baseHeight() / BASE_W));
+        int mode = MeasureSpec.getMode(heightMeasureSpec);
+        int size = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(width, mode == MeasureSpec.EXACTLY ? size : (mode == MeasureSpec.AT_MOST ? Math.min(desired,size) : desired));
     }
 
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        float scale = getWidth() / BASE_W;
+        float s = getWidth()/BASE_W;
         canvas.save();
-        canvas.scale(scale, scale);
-
-        // The reference is plain white with no enclosing card.
+        canvas.scale(s,s);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(WHITE);
-        canvas.drawRect(0f, 0f, BASE_W, baseHeight(), paint);
-
+        paint.setColor(AppSettings.surface(getContext()));
+        canvas.drawRect(0,0,BASE_W,baseHeight(),paint);
         drawHeader(canvas);
         drawWeekdays(canvas);
         drawDays(canvas);
         drawFooter(canvas);
-
         canvas.restore();
     }
 
-    private void drawHeader(Canvas canvas) {
+    private int primary() { return AppSettings.primaryColor(getContext()); }
+    private boolean dark() { return AppSettings.themeMode(getContext()) == AppSettings.THEME_DARK; }
+
+    private void drawHeader(Canvas c) {
+        int p = primary();
+        paint.setColor(p);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(TEAL);
-        canvas.drawRoundRect(new RectF(49f, 32f, 628f, 94f), 20f, 20f, paint);
-
-        drawCentered(canvas, "‹", 65f, 65f, 26f, WHITE, medium);
-        drawCentered(canvas, "ماه بعد", 108f, 65f, 16f, WHITE, medium);
-
-        drawDownChevron(canvas, 228f, 63f);
-
-        drawCentered(
-                canvas,
-                PERSIAN_MONTHS[displayMonth] + "  " + fa(displayYear),
-                338f,
-                65f,
-                23f,
-                WHITE,
-                bold
-        );
-
-        drawDownChevron(canvas, 447f, 63f);
-
-        drawCentered(canvas, "ماه قبل", 579f, 65f, 16f, WHITE, medium);
-        drawCentered(canvas, "›", 614f, 65f, 26f, WHITE, medium);
+        c.drawRoundRect(new RectF(49,32,628,94),20,20,paint);
+        centered(c,"‹",65,65,26,WHITE,medium);
+        centered(c,"ماه بعد",108,65,16,WHITE,medium);
+        chevron(c,228,63);
+        centered(c,CalendarUtils.monthName(calendarType,displayMonth)+"  "+CalendarUtils.fa(displayYear),338,65,23,WHITE,bold);
+        chevron(c,447,63);
+        centered(c,"ماه قبل",579,65,16,WHITE,medium);
+        centered(c,"›",614,65,26,WHITE,medium);
     }
 
-    private void drawDownChevron(Canvas canvas, float cx, float cy) {
-        strokePaint.setColor(CHEVRON);
-        strokePaint.setStrokeWidth(2.2f);
-        canvas.drawLine(cx - 6f, cy - 3f, cx, cy + 3f, strokePaint);
-        canvas.drawLine(cx, cy + 3f, cx + 6f, cy - 3f, strokePaint);
+    private void chevron(Canvas c,float cx,float cy){
+        stroke.setColor(0xFF9AD0CC);
+        stroke.setStrokeWidth(2.2f);
+        c.drawLine(cx-6,cy-3,cx,cy+3,stroke);
+        c.drawLine(cx,cy+3,cx+6,cy-3,stroke);
     }
 
-    private void drawWeekdays(Canvas canvas) {
-        for (int col = 0; col < 7; col++) {
-            int color = col == 6 ? ORANGE : TEAL;
-            drawCentered(canvas, WEEKDAYS[col], COL_CENTER[col], 129f, 15f, color, bold);
+    private void drawWeekdays(Canvas c){
+        for(int col=0;col<7;col++) centered(c,WEEKDAYS[col],COL_CENTER[col],129,15,col==6?ORANGE:primary(),bold);
+    }
+
+    private android.icu.util.Calendar first(){
+        android.icu.util.Calendar c=CalendarUtils.create(calendarType);
+        c.clear();
+        c.set(displayYear,displayMonth,1,12,0,0);
+        return c;
+    }
+
+    private void drawDays(Canvas c){
+        android.icu.util.Calendar first=first();
+        int leading=(first.get(android.icu.util.Calendar.DAY_OF_WEEK)+0)%7;
+        int days=first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
+
+        android.icu.util.Calendar sel=CalendarUtils.fromMillis(calendarType,selectedMillis);
+        android.icu.util.Calendar today=CalendarUtils.fromMillis(calendarType,System.currentTimeMillis());
+
+        int other1=CalendarUtils.otherTypeOne(calendarType);
+        int other2=CalendarUtils.otherTypeTwo(calendarType);
+
+        for(int day=1;day<=days;day++){
+            int slot=leading+day-1,row=slot/7,col=slot%7;
+            if(row>=CELL_TOP.length) break;
+
+            long millis=CalendarUtils.toMillis(calendarType,displayYear,displayMonth,day,12,0);
+            android.icu.util.Calendar a=CalendarUtils.fromMillis(other1,millis);
+            android.icu.util.Calendar b=CalendarUtils.fromMillis(other2,millis);
+
+            boolean selected=sel.get(android.icu.util.Calendar.YEAR)==displayYear
+                    && sel.get(android.icu.util.Calendar.MONTH)==displayMonth
+                    && sel.get(android.icu.util.Calendar.DAY_OF_MONTH)==day;
+            boolean isToday=today.get(android.icu.util.Calendar.YEAR)==displayYear
+                    && today.get(android.icu.util.Calendar.MONTH)==displayMonth
+                    && today.get(android.icu.util.Calendar.DAY_OF_MONTH)==day;
+            boolean holiday=col==6;
+
+            float left=CELL_LEFT[col],top=CELL_TOP[row];
+            int fill=selected?primary():(holiday?(dark()?HOLIDAY_BG_DARK:HOLIDAY_BG_LIGHT):(dark()?CELL_DARK:CELL_LIGHT));
+            paint.setColor(fill);
+            c.drawRoundRect(new RectF(left,top,left+CELL_W,top+CELL_H),11,11,paint);
+
+            if(isToday){
+                stroke.setStyle(Paint.Style.STROKE);
+                stroke.setStrokeWidth(2.6f);
+                stroke.setColor(selected?WHITE:primary());
+                c.drawRoundRect(new RectF(left+1.5f,top+1.5f,left+CELL_W-1.5f,top+CELL_H-1.5f),10,10,stroke);
+            }
+
+            int main=selected?WHITE:(holiday?ORANGE:(dark()?MAIN_TEXT_DARK:MAIN_TEXT_LIGHT));
+            int muted=selected?0xFFDDECEA:(holiday?ORANGE_MUTED:(dark()?MUTED_DARK:MUTED_LIGHT));
+            centered(c,CalendarUtils.fa(day),left+CELL_W/2,top+30,29,main,regular);
+            centered(c,CalendarUtils.fa(a.get(android.icu.util.Calendar.DAY_OF_MONTH)),left+20,top+62,13,muted,regular);
+            String right=other2==CalendarUtils.GREGORIAN
+                    ? String.valueOf(b.get(android.icu.util.Calendar.DAY_OF_MONTH))
+                    : CalendarUtils.fa(b.get(android.icu.util.Calendar.DAY_OF_MONTH));
+            centered(c,right,left+57,top+62,13,muted,regular);
         }
     }
 
-    private void drawDays(Canvas canvas) {
-        android.icu.util.Calendar first = firstOfDisplayedMonth();
-        Calendar firstGregorian = Calendar.getInstance();
-        firstGregorian.setTimeInMillis(first.getTimeInMillis());
-
-        int leading = firstGregorian.get(Calendar.DAY_OF_WEEK) % 7; // Sat=0 ... Fri=6
-        int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
-
-        android.icu.util.Calendar selected = newPersianCalendar();
-        selected.setTimeInMillis(selectedMillis);
-        int selYear = selected.get(android.icu.util.Calendar.YEAR);
-        int selMonth = selected.get(android.icu.util.Calendar.MONTH);
-        int selDay = selected.get(android.icu.util.Calendar.DAY_OF_MONTH);
-
-        for (int day = 1; day <= days; day++) {
-            int slot = leading + day - 1;
-            int row = slot / 7;
-            int col = slot % 7;
-            if (row >= CELL_TOP.length) break;
-
-            android.icu.util.Calendar pc = newPersianCalendar();
-            pc.clear();
-            pc.set(displayYear, displayMonth, day, 12, 0, 0);
-            long millis = pc.getTimeInMillis();
-
-            Calendar gc = Calendar.getInstance();
-            gc.setTimeInMillis(millis);
-
-            IslamicCalendar hc = new IslamicCalendar();
-            hc.setTimeInMillis(millis);
-
-            boolean isSelected = displayYear == selYear && displayMonth == selMonth && day == selDay;
-            boolean isHoliday = isHoliday(day, col);
-
-            float left = CELL_LEFT[col];
-            float top = CELL_TOP[row];
-            float right = left + CELL_W;
-            float bottom = top + CELL_H;
-
-            paint.setColor(isSelected ? SELECTED : (isHoliday ? HOLIDAY_BG : CELL));
-            paint.setStyle(Paint.Style.FILL);
-            canvas.drawRoundRect(new RectF(left, top, right, bottom), 11f, 11f, paint);
-
-            int mainColor = isSelected ? WHITE : (isHoliday ? ORANGE : MAIN_TEXT);
-            int subColor = isSelected ? SELECTED_MUTED : (isHoliday ? ORANGE_MUTED : MUTED);
-
-            drawCentered(
-                    canvas,
-                    fa(day),
-                    left + CELL_W / 2f,
-                    top + 30f,
-                    29f,
-                    mainColor,
-                    regular
-            );
-
-            drawCentered(
-                    canvas,
-                    fa(hc.get(android.icu.util.Calendar.DAY_OF_MONTH)),
-                    left + 20f,
-                    top + 62f,
-                    13f,
-                    subColor,
-                    regular
-            );
-
-            drawCentered(
-                    canvas,
-                    String.valueOf(gc.get(Calendar.DAY_OF_MONTH)),
-                    left + 57f,
-                    top + 62f,
-                    13f,
-                    subColor,
-                    regular
-            );
-        }
-    }
-
-    private boolean isHoliday(int day, int column) {
-        // Fridays are orange in the reference.
-        if (column == 6) return true;
-
-        // 8 Shahrivar 1405 is also orange in the supplied reference screenshot.
-        // Keeping this rule makes the current reference month pixel-faithful.
-        return displayYear == 1405 && displayMonth == 5 && day == 8;
-    }
-
-    private void drawFooter(Canvas canvas) {
-        int extraRows = Math.max(0, rowCount() - 5);
-        float shift = extraRows * EXTRA_ROW_H;
-
-        android.icu.util.Calendar first = firstOfDisplayedMonth();
-        android.icu.util.Calendar last = newPersianCalendar();
+    private void drawFooter(Canvas c){
+        float shift=Math.max(0,rowCount()-5)*EXTRA_ROW_H;
+        android.icu.util.Calendar first=first();
+        android.icu.util.Calendar last=CalendarUtils.create(calendarType);
         last.clear();
-        last.set(
-                displayYear,
-                displayMonth,
-                first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH),
-                12,
-                0,
-                0
-        );
+        last.set(displayYear,displayMonth,first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH),12,0,0);
 
-        SimpleDateFormat monthFmt = new SimpleDateFormat("MMMM", Locale.ENGLISH);
-        SimpleDateFormat yearFmt = new SimpleDateFormat("yyyy", Locale.ENGLISH);
-
-        String firstMonth = monthFmt.format(first.getTime());
-        String lastMonth = monthFmt.format(last.getTime());
-        String year = yearFmt.format(last.getTime());
-        String range = firstMonth.equals(lastMonth)
-                ? firstMonth + " " + year
-                : firstMonth + " - " + lastMonth + " " + year;
-
-        drawCentered(canvas, range, 340f, 620f + shift, 20f, TEAL, regular);
-
-        strokePaint.setColor(SELECTED);
-        strokePaint.setStrokeWidth(1f);
-        canvas.drawLine(46f, 642f + shift, 163f, 642f + shift, strokePaint);
-        canvas.drawLine(516f, 642f + shift, 634f, 642f + shift, strokePaint);
-
-        IslamicCalendar firstHijri = new IslamicCalendar();
-        firstHijri.setTimeInMillis(first.getTimeInMillis());
-        IslamicCalendar lastHijri = new IslamicCalendar();
-        lastHijri.setTimeInMillis(last.getTimeInMillis());
-
-        int firstMonthIndex = firstHijri.get(android.icu.util.Calendar.MONTH);
-        int lastMonthIndex = lastHijri.get(android.icu.util.Calendar.MONTH);
-        int hijriYear = lastHijri.get(android.icu.util.Calendar.YEAR);
-
-        String hijriRange;
-        if (firstMonthIndex == lastMonthIndex) {
-            hijriRange = HIJRI_MONTHS[lastMonthIndex] + " " + fa(hijriYear);
-        } else {
-            hijriRange = HIJRI_MONTHS[firstMonthIndex]
-                    + " - "
-                    + HIJRI_MONTHS[lastMonthIndex]
-                    + " "
-                    + fa(hijriYear);
-        }
-        drawCentered(canvas, hijriRange, 340f, 662f + shift, 16f, TEAL, regular);
+        int one=CalendarUtils.otherTypeOne(calendarType);
+        int two=CalendarUtils.otherTypeTwo(calendarType);
+        centered(c,rangeFor(one,first.getTimeInMillis(),last.getTimeInMillis()),340,620+shift,20,primary(),regular);
+        stroke.setColor(primary());
+        stroke.setStrokeWidth(1);
+        c.drawLine(46,642+shift,163,642+shift,stroke);
+        c.drawLine(516,642+shift,634,642+shift,stroke);
+        centered(c,rangeFor(two,first.getTimeInMillis(),last.getTimeInMillis()),340,662+shift,16,primary(),regular);
     }
 
-    private void drawCentered(Canvas canvas, String text, float cx, float cy,
-                              float textSize, int color, Typeface typeface) {
+    private String rangeFor(int type,long start,long end){
+        android.icu.util.Calendar a=CalendarUtils.fromMillis(type,start);
+        android.icu.util.Calendar b=CalendarUtils.fromMillis(type,end);
+        String am=CalendarUtils.monthName(type,a.get(android.icu.util.Calendar.MONTH));
+        String bm=CalendarUtils.monthName(type,b.get(android.icu.util.Calendar.MONTH));
+        String y=(type==CalendarUtils.GREGORIAN)
+                ? String.valueOf(b.get(android.icu.util.Calendar.YEAR))
+                : CalendarUtils.fa(b.get(android.icu.util.Calendar.YEAR));
+        return am.equals(bm)?am+" "+y:am+" - "+bm+" "+y;
+    }
+
+    private void centered(Canvas c,String text,float cx,float cy,float size,int color,Typeface tf){
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(color);
-        paint.setTextSize(textSize);
-        paint.setTypeface(typeface);
+        paint.setTextSize(size);
+        paint.setTypeface(tf);
         paint.setTextAlign(Paint.Align.CENTER);
-
-        Paint.FontMetrics fm = paint.getFontMetrics();
-        float baseline = cy - (fm.ascent + fm.descent) / 2f;
-        canvas.drawText(text, cx, baseline, paint);
+        Paint.FontMetrics fm=paint.getFontMetrics();
+        c.drawText(text,cx,cy-(fm.ascent+fm.descent)/2,paint);
     }
 
-    @Override public boolean onTouchEvent(MotionEvent event) {
-        if (event.getActionMasked() != MotionEvent.ACTION_UP) return true;
+    @Override public boolean onTouchEvent(MotionEvent e){
+        float s=getWidth()/BASE_W;
+        float x=e.getX()/s,y=e.getY()/s;
+        if(e.getActionMasked()==MotionEvent.ACTION_DOWN){
+            downX=x; downY=y; return true;
+        }
+        if(e.getActionMasked()!=MotionEvent.ACTION_UP) return true;
 
-        float scale = getWidth() / BASE_W;
-        float x = event.getX() / scale;
-        float y = event.getY() / scale;
+        float dx=x-downX;
+        if(Math.abs(dx)>58f && Math.abs(y-downY)<90f){
+            shiftMonth(dx<0?1:-1);
+            performClick();
+            return true;
+        }
 
-        if (y >= 32f && y <= 94f) {
-            if (x <= 180f) {
-                shiftMonth(1); // left side: ماه بعد
-                performClick();
-                return true;
-            }
-            if (x >= 500f) {
-                shiftMonth(-1); // right side: ماه قبل
-                performClick();
-                return true;
+        if(y>=32&&y<=94){
+            if(x<=180){ shiftMonth(1); performClick(); return true; }
+            if(x>=500){ shiftMonth(-1); performClick(); return true; }
+            if(x>=190&&x<=490){
+                if(monthYearListener!=null) monthYearListener.onMonthYearClick(first().getTimeInMillis(),calendarType);
+                performClick(); return true;
             }
         }
 
-        android.icu.util.Calendar first = firstOfDisplayedMonth();
-        Calendar firstGregorian = Calendar.getInstance();
-        firstGregorian.setTimeInMillis(first.getTimeInMillis());
-        int leading = firstGregorian.get(Calendar.DAY_OF_WEEK) % 7;
-        int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
-
-        for (int day = 1; day <= days; day++) {
-            int slot = leading + day - 1;
-            int row = slot / 7;
-            int col = slot % 7;
-            if (row >= CELL_TOP.length) break;
-
-            float left = CELL_LEFT[col];
-            float top = CELL_TOP[row];
-            if (x >= left && x <= left + CELL_W && y >= top && y <= top + CELL_H) {
-                android.icu.util.Calendar pc = newPersianCalendar();
-                pc.clear();
-                pc.set(displayYear, displayMonth, day, 12, 0, 0);
-                selectedMillis = pc.getTimeInMillis();
+        android.icu.util.Calendar first=first();
+        int leading=first.get(android.icu.util.Calendar.DAY_OF_WEEK)%7;
+        int days=first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
+        for(int day=1;day<=days;day++){
+            int slot=leading+day-1,row=slot/7,col=slot%7;
+            if(row>=CELL_TOP.length) break;
+            float l=CELL_LEFT[col],t=CELL_TOP[row];
+            if(x>=l&&x<=l+CELL_W&&y>=t&&y<=t+CELL_H){
+                selectedMillis=CalendarUtils.toMillis(calendarType,displayYear,displayMonth,day,12,0);
                 invalidate();
-                if (listener != null) listener.onDateSelected(selectedMillis);
-                performClick();
-                return true;
+                if(dateListener!=null) dateListener.onDateSelected(selectedMillis);
+                performClick(); return true;
             }
         }
-
-        performClick();
-        return true;
+        performClick(); return true;
     }
 
-    @Override public boolean performClick() {
-        super.performClick();
-        return true;
-    }
+    @Override public boolean performClick(){ super.performClick(); return true; }
 
-    private void shiftMonth(int delta) {
-        int month = displayMonth + delta;
-        int year = displayYear;
-
-        if (month < 0) {
-            month = 11;
-            year--;
-        } else if (month > 11) {
-            month = 0;
-            year++;
-        }
-
-        displayYear = year;
-        displayMonth = month;
-
-        android.icu.util.Calendar pc = newPersianCalendar();
-        pc.clear();
-        pc.set(displayYear, displayMonth, 1, 12, 0, 0);
-        selectedMillis = pc.getTimeInMillis();
-
+    private void shiftMonth(int delta){
+        int m=displayMonth+delta,y=displayYear;
+        if(m<0){m=11;y--;} else if(m>11){m=0;y++;}
+        displayMonth=m; displayYear=y;
         requestLayout();
         invalidate();
-
-        if (listener != null) listener.onDateSelected(selectedMillis);
     }
 
-    private android.icu.util.Calendar firstOfDisplayedMonth() {
-        android.icu.util.Calendar first = newPersianCalendar();
-        first.clear();
-        first.set(displayYear, displayMonth, 1, 12, 0, 0);
-        return first;
+    private int rowCount(){
+        android.icu.util.Calendar first=first();
+        int leading=first.get(android.icu.util.Calendar.DAY_OF_WEEK)%7;
+        return (leading+first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH)+6)/7;
     }
 
-    private int rowCount() {
-        android.icu.util.Calendar first = firstOfDisplayedMonth();
-        Calendar gc = Calendar.getInstance();
-        gc.setTimeInMillis(first.getTimeInMillis());
-        int leading = gc.get(Calendar.DAY_OF_WEEK) % 7;
-        int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
-        return (leading + days + 6) / 7;
-    }
-
-    private float baseHeight() {
-        return BASE_H_5 + Math.max(0, rowCount() - 5) * EXTRA_ROW_H;
-    }
-
-    private static android.icu.util.Calendar newPersianCalendar() {
-        return android.icu.util.Calendar.getInstance(
-                new ULocale("fa_IR@calendar=persian")
-        );
-    }
-
-    private static String fa(int value) {
-        return fa(String.valueOf(value));
-    }
-
-    private static String fa(String value) {
-        char[] en = {'0','1','2','3','4','5','6','7','8','9'};
-        char[] pe = {'۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'};
-        String out = value;
-        for (int i = 0; i < en.length; i++) {
-            out = out.replace(en[i], pe[i]);
-        }
-        return out;
-    }
+    private float baseHeight(){ return BASE_H_5+Math.max(0,rowCount()-5)*EXTRA_ROW_H; }
 }

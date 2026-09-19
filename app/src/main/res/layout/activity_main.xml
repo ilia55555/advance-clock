@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F9F8"
+    android:background="?attr/appBackground"
     android:orientation="vertical"
     android:layoutDirection="rtl">
 
     <LinearLayout
+        android:id="@+id/header_root"
         android:layout_width="match_parent"
         android:layout_height="126dp"
         android:background="@drawable/bg_header"
         android:orientation="vertical"
-        android:paddingStart="18dp"
-        android:paddingTop="14dp"
-        android:paddingEnd="18dp">
+        android:paddingStart="14dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="14dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,14 +24,15 @@
             android:orientation="horizontal"
             android:layoutDirection="ltr">
 
-            <TextView
-                android:id="@+id/permissions_icon"
+            <ImageButton
+                android:id="@+id/theme_toggle"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:gravity="center"
-                android:text="⚙"
-                android:textColor="#FFFFFF"
-                android:textSize="26sp" />
+                android:background="@android:color/transparent"
+                android:contentDescription="تغییر حالت نمایش"
+                android:padding="12dp"
+                android:src="@drawable/ic_md_dark"
+                android:tint="#FFFFFF" />
 
             <TextView
                 android:id="@+id/app_title"
@@ -42,14 +45,15 @@
                 android:textSize="27sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <ImageButton
                 android:id="@+id/header_menu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:gravity="center"
-                android:text="⋮"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp" />
+                android:background="@android:color/transparent"
+                android:contentDescription="منو"
+                android:padding="12dp"
+                android:src="@drawable/ic_md_more_vert"
+                android:tint="#FFFFFF" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:gravity="center"
-                    android:text="◷  ساعت"
+                    android:text="ساعت"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -78,7 +82,7 @@
                     android:id="@+id/clock_indicator"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="#FF8A00" />
+                    android:background="?attr/appSecondary" />
             </LinearLayout>
 
             <LinearLayout
@@ -92,7 +96,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:gravity="center"
-                    android:text="▣  یادداشت‌ها"
+                    android:text="یادداشت‌ها"
                     android:textColor="#D6EFED"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -101,7 +105,7 @@
                     android:id="@+id/noforget_indicator"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="#FF8A00"
+                    android:background="?attr/appSecondary"
                     android:visibility="invisible" />
             </LinearLayout>
         </LinearLayout>
@@ -116,6 +120,7 @@
             android:id="@+id/clock_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?attr/appBackground"
             android:fillViewport="true"
             android:clipToPadding="false">
 
@@ -123,57 +128,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="14dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="14dp"
-                android:paddingBottom="28dp">
+                android:padding="14dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_card"
-                    android:elevation="3dp"
                     android:orientation="vertical"
                     android:padding="18dp">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="ایجاد زنگ هشدار"
-                            android:textColor="#0C5F5B"
-                            android:textSize="21sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="46dp"
-                            android:layout_height="46dp"
-                            android:background="@drawable/bg_orange_button"
-                            android:gravity="center"
-                            android:text="+"
-                            android:textColor="#FFFFFF"
-                            android:textSize="30sp" />
-                    </LinearLayout>
+                        android:text="ایجاد زنگ هشدار"
+                        android:textColor="?attr/appTextPrimary"
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="زمان و تاریخ دلخواه خود را تنظیم کنید"
-                        android:textColor="#8A9995"
+                        android:text="تاریخ، زمان، اهمیت و تکرار را تنظیم کنید"
+                        android:textColor="?attr/appTextSecondary"
                         android:textSize="13sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="72dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
                         android:orientation="horizontal"
                         android:layoutDirection="rtl">
 
@@ -183,14 +166,12 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="ساعت&#10;۰۷:۳۰"
+                            android:text="ساعت"
                             android:textAllCaps="false"
-                            android:textColor="#0B6E69"
+                            android:textColor="?attr/appPrimary"
                             android:textSize="16sp" />
 
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="match_parent" />
+                        <Space android:layout_width="8dp" android:layout_height="1dp" />
 
                         <Button
                             android:id="@+id/quick_alarm_date"
@@ -200,98 +181,77 @@
                             android:background="@drawable/bg_field"
                             android:text="تاریخ"
                             android:textAllCaps="false"
-                            android:textColor="#0B6E69"
+                            android:textColor="?attr/appPrimary"
                             android:textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="64dp"
                         android:layout_marginTop="8dp"
                         android:orientation="horizontal"
                         android:layoutDirection="rtl">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:paddingHorizontal="10dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="لرزش"
-                                android:textColor="#758783"
-                                android:textSize="12sp" />
-
-                            <Switch
-                                android:id="@+id/quick_alarm_vibrate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="true"
-                                android:showText="false" />
-                        </LinearLayout>
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="match_parent" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="صدای زنگ"
-                                android:textColor="#758783"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="پیش‌فرض"
-                                android:textColor="#0B6E69"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="match_parent" />
-
                         <Spinner
+                            android:id="@+id/quick_alarm_priority"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp" />
+
+                        <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                        <Button
                             android:id="@+id/quick_alarm_repeat"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
+                            android:text="بدون تکرار"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_field"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="14dp"
+                        android:layoutDirection="rtl">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="لرزش"
+                            android:textColor="?attr/appTextSecondary"
+                            android:textSize="14sp" />
+
+                        <Switch
+                            android:id="@+id/quick_alarm_vibrate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:showText="false" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/quick_alarm_label"
                         android:layout_width="match_parent"
-                        android:layout_height="62dp"
+                        android:layout_height="58dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/bg_field"
-                        android:gravity="center_vertical|start"
                         android:hint="برچسب؛ مثلاً صبح بخیر!"
                         android:inputType="textCapSentences"
                         android:paddingHorizontal="14dp"
-                        android:textColor="#123D3A"
-                        android:textColorHint="#95A5A1"
+                        android:textColor="?attr/appTextPrimary"
+                        android:textColorHint="?attr/appTextSecondary"
                         android:textSize="15sp" />
 
                     <Button
@@ -316,7 +276,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:layoutDirection="rtl">
@@ -326,7 +286,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="زنگ‌های پیش رو"
-                        android:textColor="#0B5F5B"
+                        android:textColor="?attr/appTextPrimary"
                         android:textSize="19sp"
                         android:textStyle="bold" />
 
@@ -339,7 +299,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="+ ویجت"
                         android:textAllCaps="false"
-                        android:textColor="#0B6E69"
+                        android:textColor="?attr/appPrimary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -355,6 +315,7 @@
             android:id="@+id/noforget_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?attr/appBackground"
             android:fillViewport="true"
             android:clipToPadding="false"
             android:visibility="gone">
@@ -363,10 +324,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="14dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="14dp"
-                android:paddingBottom="28dp">
+                android:padding="14dp">
 
                 <com.ilia.advanceclock.TripleCalendarView
                     android:id="@+id/noforget_calendar"
@@ -376,61 +334,129 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="14dp"
                     android:background="@drawable/bg_card"
-                    android:elevation="3dp"
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <LinearLayout
+                    <EditText
+                        android:id="@+id/quick_note_title"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <EditText
-                            android:id="@+id/quick_note_title"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:hint="عنوان یادداشت"
-                            android:inputType="textCapSentences"
-                            android:paddingHorizontal="14dp"
-                            android:textColor="#123D3A"
-                            android:textColorHint="#96A6A2"
-                            android:textSize="15sp" />
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="match_parent" />
-
-                        <Button
-                            android:id="@+id/save_quick_note"
-                            android:layout_width="96dp"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/bg_orange_button"
-                            android:text="ذخیره"
-                            android:textAllCaps="false"
-                            android:textColor="#FFFFFF"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:background="@drawable/bg_field"
+                        android:hint="عنوان یادداشت"
+                        android:inputType="textCapSentences"
+                        android:paddingHorizontal="14dp"
+                        android:textColor="?attr/appTextPrimary"
+                        android:textColorHint="?attr/appTextSecondary"
+                        android:textSize="15sp" />
 
                     <EditText
                         android:id="@+id/quick_note_body"
                         android:layout_width="match_parent"
                         android:layout_height="118dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:background="@drawable/bg_field"
                         android:gravity="top|start"
                         android:hint="متن یادداشت خود را اینجا بنویسید..."
                         android:inputType="textCapSentences|textMultiLine"
                         android:padding="14dp"
-                        android:textColor="#123D3A"
-                        android:textColorHint="#96A6A2"
+                        android:textColor="?attr/appTextPrimary"
+                        android:textColorHint="?attr/appTextSecondary"
                         android:textSize="15sp" />
+
+                    <Spinner
+                        android:id="@+id/quick_note_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_field"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_field"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="14dp"
+                        android:layoutDirection="rtl">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="آلارم برای این یادداشت"
+                            android:textColor="?attr/appTextPrimary"
+                            android:textSize="14sp" />
+
+                        <Switch
+                            android:id="@+id/quick_note_alarm_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/quick_note_alarm_controls"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="58dp"
+                            android:orientation="horizontal"
+                            android:layoutDirection="rtl">
+
+                            <Button
+                                android:id="@+id/quick_note_date"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_field"
+                                android:text="تاریخ"
+                                android:textAllCaps="false"
+                                android:textColor="?attr/appPrimary" />
+
+                            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                            <Button
+                                android:id="@+id/quick_note_time"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_field"
+                                android:text="ساعت"
+                                android:textAllCaps="false"
+                                android:textColor="?attr/appPrimary" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/quick_note_repeat"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_field"
+                            android:text="بدون تکرار"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/appPrimary" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/save_quick_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_orange_button"
+                        android:text="ذخیره یادداشت"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -438,7 +464,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/bg_card"
-                    android:elevation="3dp"
                     android:orientation="vertical"
                     android:padding="14dp">
 
@@ -446,132 +471,101 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="نقاشی و ترسیم"
-                        android:textColor="#0B5F5B"
+                        android:textColor="?attr/appTextPrimary"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
-                    <HorizontalScrollView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="54dp"
+                        android:layout_height="52dp"
                         android:layout_marginTop="8dp"
-                        android:fillViewport="false"
-                        android:scrollbars="none">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layoutDirection="rtl">
+                        <ImageButton
+                            android:id="@+id/note_undo"
+                            android:layout_width="48dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:contentDescription="برگشت"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_md_undo"
+                            android:tint="?attr/appPrimary" />
 
-                            <Button
-                                android:id="@+id/note_undo"
-                                android:layout_width="48dp"
-                                android:layout_height="44dp"
-                                android:background="@drawable/bg_soft_button"
-                                android:minWidth="0dp"
-                                android:text="↶"
-                                android:textAllCaps="false"
-                                android:textColor="#0B6E69"
-                                android:textSize="20sp" />
+                        <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                            <Space android:layout_width="6dp" android:layout_height="1dp" />
+                        <ImageButton
+                            android:id="@+id/note_redo"
+                            android:layout_width="48dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:contentDescription="انجام مجدد"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_md_redo"
+                            android:tint="?attr/appPrimary" />
 
-                            <Button
-                                android:id="@+id/note_redo"
-                                android:layout_width="48dp"
-                                android:layout_height="44dp"
-                                android:background="@drawable/bg_soft_button"
-                                android:minWidth="0dp"
-                                android:text="↷"
-                                android:textAllCaps="false"
-                                android:textColor="#0B6E69"
-                                android:textSize="20sp" />
+                        <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                            <Space android:layout_width="6dp" android:layout_height="1dp" />
+                        <ImageButton
+                            android:id="@+id/note_clear"
+                            android:layout_width="48dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:contentDescription="پاک کردن"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_md_delete"
+                            android:tint="#C44C4C" />
 
-                            <Button
-                                android:id="@+id/note_clear"
-                                android:layout_width="58dp"
-                                android:layout_height="44dp"
-                                android:background="@drawable/bg_soft_button"
-                                android:minWidth="0dp"
-                                android:text="پاک"
-                                android:textAllCaps="false"
-                                android:textColor="#0B6E69"
-                                android:textSize="12sp" />
+                        <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                            <Space android:layout_width="10dp" android:layout_height="1dp" />
+                        <ImageButton
+                            android:id="@+id/note_palette"
+                            android:layout_width="48dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:contentDescription="پالت رنگ"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_md_palette"
+                            android:tint="?attr/appPrimary" />
 
-                            <TextView
-                                android:id="@+id/pen_teal"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:gravity="center"
-                                android:text="●"
-                                android:textColor="#087C77"
-                                android:textSize="30sp" />
-                            <TextView
-                                android:id="@+id/pen_orange"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:gravity="center"
-                                android:text="●"
-                                android:textColor="#F17600"
-                                android:textSize="30sp" />
-                            <TextView
-                                android:id="@+id/pen_black"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:gravity="center"
-                                android:text="●"
-                                android:textColor="#1B2423"
-                                android:textSize="30sp" />
-                            <TextView
-                                android:id="@+id/pen_blue"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:gravity="center"
-                                android:text="●"
-                                android:textColor="#2457D6"
-                                android:textSize="30sp" />
+                        <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
 
-                            <Space android:layout_width="10dp" android:layout_height="1dp" />
+                        <Button
+                            android:id="@+id/pen_thin"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:minWidth="0dp"
+                            android:text="•"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="18sp" />
 
-                            <Button
-                                android:id="@+id/pen_thin"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:background="@drawable/bg_soft_button"
-                                android:minWidth="0dp"
-                                android:text="•"
-                                android:textAllCaps="false"
-                                android:textColor="#0B6E69"
-                                android:textSize="18sp" />
-                            <Button
-                                android:id="@+id/pen_medium"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:layout_marginStart="5dp"
-                                android:background="@drawable/bg_teal_button"
-                                android:minWidth="0dp"
-                                android:text="●"
-                                android:textAllCaps="false"
-                                android:textColor="#FFFFFF"
-                                android:textSize="14sp" />
-                            <Button
-                                android:id="@+id/pen_thick"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:layout_marginStart="5dp"
-                                android:background="@drawable/bg_soft_button"
-                                android:minWidth="0dp"
-                                android:text="●"
-                                android:textAllCaps="false"
-                                android:textColor="#0B6E69"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-                    </HorizontalScrollView>
+                        <Button
+                            android:id="@+id/pen_medium"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_marginStart="5dp"
+                            android:background="@drawable/bg_teal_button"
+                            android:minWidth="0dp"
+                            android:text="●"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp" />
+
+                        <Button
+                            android:id="@+id/pen_thick"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_marginStart="5dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:minWidth="0dp"
+                            android:text="●"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="20sp" />
+                    </LinearLayout>
 
                     <com.ilia.advanceclock.SketchView
                         android:id="@+id/quick_note_sketch"
@@ -583,7 +577,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:layoutDirection="rtl">
@@ -593,7 +587,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="یادداشت‌های اخیر"
-                        android:textColor="#0B5F5B"
+                        android:textColor="?attr/appTextPrimary"
                         android:textSize="19sp"
                         android:textStyle="bold" />
 
@@ -604,9 +598,9 @@
                         android:background="@drawable/bg_soft_button"
                         android:minWidth="0dp"
                         android:paddingHorizontal="12dp"
-                        android:text="یادآوری و جزئیات"
+                        android:text="جزئیات"
                         android:textAllCaps="false"
-                        android:textColor="#0B6E69"
+                        android:textColor="?attr/appPrimary"
                         android:textSize="11sp" />
 
                     <Space android:layout_width="6dp" android:layout_height="1dp" />
@@ -620,7 +614,7 @@
                         android:paddingHorizontal="12dp"
                         android:text="+ ویجت"
                         android:textAllCaps="false"
-                        android:textColor="#0B6E69"
+                        android:textColor="?attr/appPrimary"
                         android:textSize="11sp" />
                 </LinearLayout>
 

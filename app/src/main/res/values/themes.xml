@@ -1,19 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.AdvanceClock" parent="android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:fontFamily">sans</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:statusBarColor">#006F6B</item>
-        <item name="android:navigationBarColor">#F4F9F8</item>
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:colorAccent">#087C77</item>
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowBackground">#F4F9F8</item>
+    <style name="Widget.AdvanceClock.FlatButton" parent="android:style/Widget.Material.Button">
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
     </style>
 
+    <style name="Theme.AdvanceClock.Base.Light" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:buttonStyle">@style/Widget.AdvanceClock.FlatButton</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">?attr/appPrimary</item>
+        <item name="android:navigationBarColor">#F4F9F8</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">#F4F9F8</item>
+        <item name="appSecondary">#F17600</item>
+        <item name="appSurface">#FFFFFF</item>
+        <item name="appField">#F3F7F7</item>
+        <item name="appBackground">#F4F9F8</item>
+        <item name="appTextPrimary">#173F3B</item>
+        <item name="appTextSecondary">#758783</item>
+        <item name="appBorder">#DCE8E6</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Base.Dark" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:buttonStyle">@style/Widget.AdvanceClock.FlatButton</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">?attr/appPrimary</item>
+        <item name="android:navigationBarColor">#0F1214</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowBackground">#0F1214</item>
+        <item name="appSecondary">#F59A3C</item>
+        <item name="appSurface">#171A1C</item>
+        <item name="appField">#22272A</item>
+        <item name="appBackground">#0F1214</item>
+        <item name="appTextPrimary">#F2F5F4</item>
+        <item name="appTextSecondary">#AFBCB8</item>
+        <item name="appBorder">#343D3A</item>
+    </style>
+
+    <style name="Theme.AdvanceClock.Teal.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#006666</item><item name="appPrimary">#006666</item>
+    </style>
+    <style name="Theme.AdvanceClock.Teal.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#2AA5A0</item><item name="appPrimary">#167E79</item>
+    </style>
+    <style name="Theme.AdvanceClock.Blue.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#1769AA</item><item name="appPrimary">#1769AA</item>
+    </style>
+    <style name="Theme.AdvanceClock.Blue.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#64A9E3</item><item name="appPrimary">#2A6C9E</item>
+    </style>
+    <style name="Theme.AdvanceClock.Purple.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#6B4CC2</item><item name="appPrimary">#6B4CC2</item>
+    </style>
+    <style name="Theme.AdvanceClock.Purple.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#A68BE8</item><item name="appPrimary">#6D55A8</item>
+    </style>
+    <style name="Theme.AdvanceClock.Green.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#2E7D59</item><item name="appPrimary">#2E7D59</item>
+    </style>
+    <style name="Theme.AdvanceClock.Green.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#68BA92</item><item name="appPrimary">#34785A</item>
+    </style>
+    <style name="Theme.AdvanceClock.Orange.Light" parent="Theme.AdvanceClock.Base.Light">
+        <item name="android:colorAccent">#B85C00</item><item name="appPrimary">#B85C00</item>
+    </style>
+    <style name="Theme.AdvanceClock.Orange.Dark" parent="Theme.AdvanceClock.Base.Dark">
+        <item name="android:colorAccent">#F0A04F</item><item name="appPrimary">#9A5B20</item>
+    </style>
+
+    <style name="Theme.AdvanceClock" parent="Theme.AdvanceClock.Teal.Light" />
     <style name="Theme.AdvanceClock.Dialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
         <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">#087C77</item>
+        <item name="android:colorAccent">#006666</item>
         <item name="android:windowMinWidthMajor">88%</item>
         <item name="android:windowMinWidthMinor">88%</item>
     </style>

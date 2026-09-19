@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F9F8"
+    android:background="?attr/appBackground"
     android:fillViewport="true"
     android:clipToPadding="false">
 
@@ -11,10 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layoutDirection="rtl"
-        android:paddingStart="14dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="14dp"
-        android:paddingBottom="26dp">
+        android:padding="14dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,8 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="متن، نقاشی و یادآوری"
-                android:textColor="#D7EFED"
+                android:text="متن، نقاشی، اهمیت و آلارم"
+                android:textColor="#E0F2F1"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -46,7 +43,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:background="@drawable/bg_card"
-            android:elevation="2dp"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -58,8 +54,8 @@
                 android:hint="عنوان یادداشت"
                 android:inputType="textCapSentences"
                 android:paddingHorizontal="14dp"
-                android:textColor="#123D3A"
-                android:textColorHint="#96A6A2"
+                android:textColor="?attr/appTextPrimary"
+                android:textColorHint="?attr/appTextSecondary"
                 android:textSize="15sp" />
 
             <EditText
@@ -72,73 +68,90 @@
                 android:hint="متن یادداشت خود را اینجا بنویسید..."
                 android:inputType="textCapSentences|textMultiLine"
                 android:padding="14dp"
-                android:textColor="#123D3A"
-                android:textColorHint="#96A6A2"
+                android:textColor="?attr/appTextPrimary"
+                android:textColorHint="?attr/appTextSecondary"
                 android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="اهمیت"
-                android:textColor="#667B77"
-                android:textSize="12sp" />
 
             <Spinner
                 android:id="@+id/note_priority"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_field"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp" />
 
-            <CheckBox
-                android:id="@+id/note_has_due"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginTop="6dp"
-                android:buttonTint="#087C77"
-                android:text="سررسید دارد"
-                android:textColor="#274743" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:paddingHorizontal="14dp"
                 android:layoutDirection="rtl">
 
-                <Button
-                    android:id="@+id/note_date"
+                <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_field"
-                    android:text="تاریخ"
-                    android:textAllCaps="false"
-                    android:textColor="#0B6E69" />
+                    android:text="آلارم برای این یادداشت"
+                    android:textColor="?attr/appTextPrimary"
+                    android:textSize="15sp" />
 
-                <Space
-                    android:layout_width="8dp"
-                    android:layout_height="match_parent" />
-
-                <Button
-                    android:id="@+id/note_time"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_field"
-                    android:text="ساعت"
-                    android:textAllCaps="false"
-                    android:textColor="#0B6E69" />
+                <Switch
+                    android:id="@+id/note_alarm_enabled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/note_reminder"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:buttonTint="#087C77"
-                android:text="در زمان سررسید یادآوری شود"
-                android:textColor="#274743" />
+            <LinearLayout
+                android:id="@+id/note_alarm_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:orientation="horizontal"
+                    android:layoutDirection="rtl">
+
+                    <Button
+                        android:id="@+id/note_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_field"
+                        android:text="تاریخ"
+                        android:textAllCaps="false"
+                        android:textColor="?attr/appPrimary" />
+
+                    <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                    <Button
+                        android:id="@+id/note_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_field"
+                        android:text="ساعت"
+                        android:textAllCaps="false"
+                        android:textColor="?attr/appPrimary" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/note_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_field"
+                    android:text="بدون تکرار"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -146,7 +159,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_card"
-            android:elevation="2dp"
             android:orientation="vertical"
             android:padding="14dp">
 
@@ -154,131 +166,101 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="نقاشی و ترسیم"
-                android:textColor="#0B5F5B"
+                android:textColor="?attr/appTextPrimary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="8dp"
-                android:scrollbars="none">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layoutDirection="rtl">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layoutDirection="rtl">
+                <ImageButton
+                    android:id="@+id/editor_undo"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:contentDescription="برگشت"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_md_undo"
+                    android:tint="?attr/appPrimary" />
 
-                    <Button
-                        android:id="@+id/editor_undo"
-                        android:layout_width="48dp"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_soft_button"
-                        android:minWidth="0dp"
-                        android:text="↶"
-                        android:textAllCaps="false"
-                        android:textColor="#0B6E69"
-                        android:textSize="20sp" />
+                <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                    <Space android:layout_width="6dp" android:layout_height="1dp" />
+                <ImageButton
+                    android:id="@+id/editor_redo"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:contentDescription="انجام مجدد"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_md_redo"
+                    android:tint="?attr/appPrimary" />
 
-                    <Button
-                        android:id="@+id/editor_redo"
-                        android:layout_width="48dp"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_soft_button"
-                        android:minWidth="0dp"
-                        android:text="↷"
-                        android:textAllCaps="false"
-                        android:textColor="#0B6E69"
-                        android:textSize="20sp" />
+                <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                    <Space android:layout_width="6dp" android:layout_height="1dp" />
+                <ImageButton
+                    android:id="@+id/clear_sketch"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:contentDescription="پاک کردن"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_md_delete"
+                    android:tint="#C44C4C" />
 
-                    <Button
-                        android:id="@+id/clear_sketch"
-                        android:layout_width="58dp"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_soft_button"
-                        android:minWidth="0dp"
-                        android:text="پاک"
-                        android:textAllCaps="false"
-                        android:textColor="#0B6E69"
-                        android:textSize="12sp" />
+                <Space android:layout_width="6dp" android:layout_height="1dp" />
 
-                    <Space android:layout_width="10dp" android:layout_height="1dp" />
+                <ImageButton
+                    android:id="@+id/editor_palette"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:contentDescription="پالت رنگ"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_md_palette"
+                    android:tint="?attr/appPrimary" />
 
-                    <TextView
-                        android:id="@+id/editor_pen_teal"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:gravity="center"
-                        android:text="●"
-                        android:textColor="#087C77"
-                        android:textSize="30sp" />
-                    <TextView
-                        android:id="@+id/editor_pen_orange"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:gravity="center"
-                        android:text="●"
-                        android:textColor="#F17600"
-                        android:textSize="30sp" />
-                    <TextView
-                        android:id="@+id/editor_pen_black"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:gravity="center"
-                        android:text="●"
-                        android:textColor="#1B2423"
-                        android:textSize="30sp" />
-                    <TextView
-                        android:id="@+id/editor_pen_blue"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:gravity="center"
-                        android:text="●"
-                        android:textColor="#2457D6"
-                        android:textSize="30sp" />
+                <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
 
-                    <Space android:layout_width="10dp" android:layout_height="1dp" />
+                <Button
+                    android:id="@+id/editor_pen_thin"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:minWidth="0dp"
+                    android:text="•"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="18sp" />
 
-                    <Button
-                        android:id="@+id/editor_pen_thin"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:background="@drawable/bg_soft_button"
-                        android:minWidth="0dp"
-                        android:text="•"
-                        android:textAllCaps="false"
-                        android:textColor="#0B6E69"
-                        android:textSize="18sp" />
-                    <Button
-                        android:id="@+id/editor_pen_medium"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:layout_marginStart="5dp"
-                        android:background="@drawable/bg_teal_button"
-                        android:minWidth="0dp"
-                        android:text="●"
-                        android:textAllCaps="false"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
-                    <Button
-                        android:id="@+id/editor_pen_thick"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:layout_marginStart="5dp"
-                        android:background="@drawable/bg_soft_button"
-                        android:minWidth="0dp"
-                        android:text="●"
-                        android:textAllCaps="false"
-                        android:textColor="#0B6E69"
-                        android:textSize="20sp" />
-                </LinearLayout>
-            </HorizontalScrollView>
+                <Button
+                    android:id="@+id/editor_pen_medium"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/bg_teal_button"
+                    android:minWidth="0dp"
+                    android:text="●"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/editor_pen_thick"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:minWidth="0dp"
+                    android:text="●"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
             <com.ilia.advanceclock.SketchView
                 android:id="@+id/note_sketch"
@@ -307,7 +289,7 @@
             android:background="@drawable/bg_soft_button"
             android:text="حذف یادداشت"
             android:textAllCaps="false"
-            android:textColor="#B64646" />
+            android:textColor="#C44C4C" />
 
         <Button
             android:id="@+id/cancel_note"
@@ -317,6 +299,6 @@
             android:background="@drawable/bg_soft_button"
             android:text="انصراف"
             android:textAllCaps="false"
-            android:textColor="#0B6E69" />
+            android:textColor="?attr/appPrimary" />
     </LinearLayout>
 </ScrollView>

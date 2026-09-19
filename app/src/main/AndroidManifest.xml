@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Runtime permission on Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <!-- User-controlled special access for exact alarms on Android 12+ -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
-    <!-- Required for the alarm screen to appear over the lock screen -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
-    <!-- Normal permissions: no runtime dialog -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:allowBackup="true"
@@ -25,12 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdvanceClock">
 
+        <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".AlarmEditorActivity" android:exported="false" />
         <activity android:name=".NoForgetEditorActivity" android:exported="false" />
         <activity
             android:name=".NoForgetQuickAddActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AdvanceClock.Dialog" />
+            android:exported="false" />
 
         <activity
             android:name=".AlarmRingActivity"
@@ -53,6 +48,15 @@
             android:name=".AlarmSoundService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <service
+            android:name=".DateNotificationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="persistent date display in the status bar" />
+        </service>
 
         <receiver android:name=".AlarmReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />

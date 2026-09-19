@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="appPrimary" format="color" />
+    <attr name="appSecondary" format="color" />
+    <attr name="appSurface" format="color" />
+    <attr name="appField" format="color" />
+    <attr name="appBackground" format="color" />
+    <attr name="appTextPrimary" format="color" />
+    <attr name="appTextSecondary" format="color" />
+    <attr name="appBorder" format="color" />
+</resources>
