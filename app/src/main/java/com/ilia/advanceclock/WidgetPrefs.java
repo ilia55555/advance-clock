@@ -29,11 +29,9 @@ public final class WidgetPrefs {
     }
 
     public static int palette(Context context, int widgetId) {
-        int stored = prefs(context).getInt(key("palette", widgetId), Integer.MIN_VALUE);
-        if (stored == Integer.MIN_VALUE) {
-            // Migrate the previous per-widget accent value when present.
-            stored = prefs(context).getInt(key("accent", widgetId), AppSettings.palette(context));
-        }
+        int stored = prefs(context).getInt(
+                key("palette", widgetId),
+                AppSettings.palette(context));
         return Math.max(0, Math.min(6, stored));
     }
 

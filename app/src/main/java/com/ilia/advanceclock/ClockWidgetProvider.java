@@ -40,14 +40,15 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
         int muted = dark ? 0xFFAFBCB8 : 0xFF758783;
         int primary = WidgetPrefs.primary(context, widgetId);
+        int secondary = WidgetPrefs.secondary(context, widgetId);
 
         root.setInt(R.id.widget_clock_root, "setBackgroundResource",
                 dark ? R.drawable.widget_background_dark : R.drawable.widget_background);
         root.setTextColor(R.id.widget_time, primary);
         root.setTextColor(R.id.widget_date, muted);
         root.setTextColor(R.id.widget_section_label, primary);
-        root.setTextColor(R.id.widget_add, primary);
-        root.setInt(R.id.widget_theme, "setColorFilter", primary);
+        root.setTextColor(R.id.widget_add, secondary);
+        root.setInt(R.id.widget_theme, "setColorFilter", secondary);
         root.setTextColor(R.id.widget_empty, muted);
         root.setTextViewText(R.id.widget_date,
                 CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));

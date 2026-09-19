@@ -39,14 +39,15 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
         int muted = dark ? 0xFFAFBCB8 : 0xFF758783;
         int primary = WidgetPrefs.primary(context, widgetId);
+        int secondary = WidgetPrefs.secondary(context, widgetId);
 
         root.setInt(R.id.noforget_widget_root, "setBackgroundResource",
                 dark ? R.drawable.widget_background_dark : R.drawable.widget_background);
         root.setTextColor(R.id.noforget_widget_time, primary);
         root.setTextColor(R.id.noforget_widget_date, muted);
         root.setTextColor(R.id.noforget_widget_section_label, primary);
-        root.setTextColor(R.id.noforget_widget_add, primary);
-        root.setInt(R.id.noforget_widget_theme, "setColorFilter", primary);
+        root.setTextColor(R.id.noforget_widget_add, secondary);
+        root.setInt(R.id.noforget_widget_theme, "setColorFilter", secondary);
         root.setTextColor(R.id.noforget_widget_empty, muted);
         root.setTextViewText(R.id.noforget_widget_date,
                 CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));
