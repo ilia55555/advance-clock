@@ -53,7 +53,8 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         root.removeAllViews(R.id.widget_alarm_list);
         List<AlarmItem> items = widgetOrder(new AlarmStore(context).all(), rowCount);
-        root.setViewVisibility(R.id.widget_empty, items.isEmpty() ? View.VISIBLE : View.GONE);
+        root.setViewVisibility(R.id.widget_empty,
+                rowCount > 0 && items.isEmpty() ? View.VISIBLE : View.GONE);
 
         for (AlarmItem item : items) {
             RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.widget_alarm_row);
