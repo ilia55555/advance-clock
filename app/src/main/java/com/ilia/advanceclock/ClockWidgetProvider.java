@@ -48,7 +48,6 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         root.setTextColor(R.id.widget_section_label, primary);
         root.setTextColor(R.id.widget_add, primary);
         root.setInt(R.id.widget_theme, "setColorFilter", primary);
-        root.setInt(R.id.widget_resize, "setColorFilter", primary);
         root.setTextColor(R.id.widget_empty, muted);
         root.setTextViewText(R.id.widget_date,
                 CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));
@@ -105,16 +104,6 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                 context,
                 80000 + widgetId,
                 themeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
-
-        Intent resizeIntent = new Intent(context, WidgetSettingsActivity.class)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                .putExtra("widgetKind", "clock")
-                .putExtra("focusResize", true);
-        root.setOnClickPendingIntent(R.id.widget_resize, PendingIntent.getActivity(
-                context,
-                90000 + widgetId,
-                resizeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         manager.updateAppWidget(widgetId, root);
