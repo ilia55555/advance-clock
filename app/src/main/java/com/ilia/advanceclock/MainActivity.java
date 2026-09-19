@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -97,7 +96,7 @@ public final class MainActivity extends Activity {
     private Button quickNoteRepeat;
     private SketchView quickNoteSketch;
     private Spinner penSizeSpinner;
-    private CheckBox gridToggle;
+    private ImageButton gridToggle;
 
     private int quickAlarmCalendarType;
     private int quickNoteCalendarType;
@@ -430,12 +429,7 @@ public final class MainActivity extends Activity {
                         quickNoteSketch.getPenColor(),
                         quickNoteSketch::setPenColor));
 
-        ArrayAdapter<String> sizeAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"قلم نازک", "قلم متوسط", "قلم ضخیم", "قلم خیلی ضخیم"});
-        sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        penSizeSpinner.setAdapter(sizeAdapter);
+        penSizeSpinner.setAdapter(new PenSizeAdapter(this));
         penSizeSpinner.setSelection(1);
         penSizeSpinner.setOnItemSelectedListener(
                 new android.widget.AdapterView.OnItemSelectedListener() {
@@ -452,9 +446,17 @@ public final class MainActivity extends Activity {
                             android.widget.AdapterView<?> parent) {}
                 });
 
-        gridToggle.setChecked(true);
-        gridToggle.setOnCheckedChangeListener(
-                (button, checked) -> quickNoteSketch.setGridVisible(checked));
+        final boolean[] gridVisible = {true};
+        quickNoteSketch.setGridVisible(true);
+        gridToggle.setImageResource(R.drawable.ic_grid);
+        gridToggle.setSelected(false);
+        gridToggle.setOnClickListener(v -> {
+            gridVisible[0] = !gridVisible[0];
+            quickNoteSketch.setGridVisible(gridVisible[0]);
+            gridToggle.setSelected(!gridVisible[0]);
+            gridToggle.setImageResource(
+                    gridVisible[0] ? R.drawable.ic_grid : R.drawable.ic_grid_off);
+        });
     }
 
     private void setPrioritySpinner(Spinner spinner, int selection) {
