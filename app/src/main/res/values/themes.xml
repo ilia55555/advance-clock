@@ -58,28 +58,28 @@
     <style name="Theme.AdvanceClock.Indigo.Light" parent="Theme.AdvanceClock.Base.Light"><item name="android:colorAccent">#4355B9</item><item name="appPrimary">#4355B9</item></style>
     <style name="Theme.AdvanceClock.Indigo.Dark" parent="Theme.AdvanceClock.Base.Dark"><item name="android:colorAccent">#8E9BEA</item><item name="appPrimary">#8E9BEA</item></style>
 
-    <style name="Overlay.Secondary.Teal.Light"><item name="appSecondary">#087C77</item></style>
-    <style name="Overlay.Secondary.Teal.Dark"><item name="appSecondary">#38AAA4</item></style>
-    <style name="Overlay.Secondary.Sapphire.Light"><item name="appSecondary">#2563A6</item></style>
-    <style name="Overlay.Secondary.Sapphire.Dark"><item name="appSecondary">#68A7DE</item></style>
-    <style name="Overlay.Secondary.Violet.Light"><item name="appSecondary">#6D4CC4</item></style>
-    <style name="Overlay.Secondary.Violet.Dark"><item name="appSecondary">#A58AE8</item></style>
-    <style name="Overlay.Secondary.Emerald.Light"><item name="appSecondary">#2F7D5B</item></style>
-    <style name="Overlay.Secondary.Emerald.Dark"><item name="appSecondary">#6BC79A</item></style>
-    <style name="Overlay.Secondary.Coral.Light"><item name="appSecondary">#CB5F47</item></style>
-    <style name="Overlay.Secondary.Coral.Dark"><item name="appSecondary">#F08B74</item></style>
-    <style name="Overlay.Secondary.Rose.Light"><item name="appSecondary">#C64F79</item></style>
-    <style name="Overlay.Secondary.Rose.Dark"><item name="appSecondary">#E888A8</item></style>
-    <style name="Overlay.Secondary.Amber.Light"><item name="appSecondary">#B7791F</item></style>
-    <style name="Overlay.Secondary.Amber.Dark"><item name="appSecondary">#E2B05A</item></style>
-    <style name="Overlay.Secondary.Indigo.Light"><item name="appSecondary">#4355B9</item></style>
-    <style name="Overlay.Secondary.Indigo.Dark"><item name="appSecondary">#8E9BEA</item></style>
+    <style name="OverlaySecondaryTealLight"><item name="appSecondary">#087C77</item></style>
+    <style name="OverlaySecondaryTealDark"><item name="appSecondary">#38AAA4</item></style>
+    <style name="OverlaySecondarySapphireLight"><item name="appSecondary">#2563A6</item></style>
+    <style name="OverlaySecondarySapphireDark"><item name="appSecondary">#68A7DE</item></style>
+    <style name="OverlaySecondaryVioletLight"><item name="appSecondary">#6D4CC4</item></style>
+    <style name="OverlaySecondaryVioletDark"><item name="appSecondary">#A58AE8</item></style>
+    <style name="OverlaySecondaryEmeraldLight"><item name="appSecondary">#2F7D5B</item></style>
+    <style name="OverlaySecondaryEmeraldDark"><item name="appSecondary">#6BC79A</item></style>
+    <style name="OverlaySecondaryCoralLight"><item name="appSecondary">#CB5F47</item></style>
+    <style name="OverlaySecondaryCoralDark"><item name="appSecondary">#F08B74</item></style>
+    <style name="OverlaySecondaryRoseLight"><item name="appSecondary">#C64F79</item></style>
+    <style name="OverlaySecondaryRoseDark"><item name="appSecondary">#E888A8</item></style>
+    <style name="OverlaySecondaryAmberLight"><item name="appSecondary">#B7791F</item></style>
+    <style name="OverlaySecondaryAmberDark"><item name="appSecondary">#E2B05A</item></style>
+    <style name="OverlaySecondaryIndigoLight"><item name="appSecondary">#4355B9</item></style>
+    <style name="OverlaySecondaryIndigoDark"><item name="appSecondary">#8E9BEA</item></style>
 
-    <style name="Overlay.AdvanceClock.Modal">
+    <style name="OverlayAdvanceClockModal">
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowDimAmount">0.42</item>
+        <item name="android:backgroundDimAmount">0.42</item>
         <item name="android:windowMinWidthMajor">94%</item>
         <item name="android:windowMinWidthMinor">94%</item>
         <item name="android:windowNoTitle">true</item>
