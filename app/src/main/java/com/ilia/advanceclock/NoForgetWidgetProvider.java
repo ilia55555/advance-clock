@@ -52,7 +52,8 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
         root.removeAllViews(R.id.noforget_widget_list);
         List<NoForgetItem> items = widgetOrder(new NoForgetStore(context).all(), rowCount);
-        root.setViewVisibility(R.id.noforget_widget_empty, items.isEmpty() ? View.VISIBLE : View.GONE);
+        root.setViewVisibility(R.id.noforget_widget_empty,
+                rowCount > 0 && items.isEmpty() ? View.VISIBLE : View.GONE);
 
         for (NoForgetItem item : items) {
             RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.widget_noforget_row);
