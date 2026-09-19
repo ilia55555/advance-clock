@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.icu.util.IslamicCalendar;
-import android.icu.util.PersianCalendar;
+import android.icu.util.ULocale;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -100,7 +100,7 @@ public final class TripleCalendarView extends View {
         setClickable(true);
         setFocusable(true);
 
-        PersianCalendar now = new PersianCalendar();
+        android.icu.util.Calendar now = newPersianCalendar();
         selectedMillis = System.currentTimeMillis();
         now.setTimeInMillis(selectedMillis);
         displayYear = now.get(android.icu.util.Calendar.YEAR);
@@ -121,7 +121,7 @@ public final class TripleCalendarView extends View {
 
     public void setSelectedMillis(long millis) {
         selectedMillis = millis;
-        PersianCalendar pc = new PersianCalendar();
+        android.icu.util.Calendar pc = newPersianCalendar();
         pc.setTimeInMillis(millis);
         displayYear = pc.get(android.icu.util.Calendar.YEAR);
         displayMonth = pc.get(android.icu.util.Calendar.MONTH);
@@ -212,14 +212,14 @@ public final class TripleCalendarView extends View {
     }
 
     private void drawDays(Canvas canvas) {
-        PersianCalendar first = firstOfDisplayedMonth();
+        android.icu.util.Calendar first = firstOfDisplayedMonth();
         Calendar firstGregorian = Calendar.getInstance();
         firstGregorian.setTimeInMillis(first.getTimeInMillis());
 
         int leading = firstGregorian.get(Calendar.DAY_OF_WEEK) % 7; // Sat=0 ... Fri=6
         int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
 
-        PersianCalendar selected = new PersianCalendar();
+        android.icu.util.Calendar selected = newPersianCalendar();
         selected.setTimeInMillis(selectedMillis);
         int selYear = selected.get(android.icu.util.Calendar.YEAR);
         int selMonth = selected.get(android.icu.util.Calendar.MONTH);
@@ -231,7 +231,7 @@ public final class TripleCalendarView extends View {
             int col = slot % 7;
             if (row >= CELL_TOP.length) break;
 
-            PersianCalendar pc = new PersianCalendar();
+            android.icu.util.Calendar pc = newPersianCalendar();
             pc.clear();
             pc.set(displayYear, displayMonth, day, 12, 0, 0);
             long millis = pc.getTimeInMillis();
@@ -302,8 +302,8 @@ public final class TripleCalendarView extends View {
         int extraRows = Math.max(0, rowCount() - 5);
         float shift = extraRows * EXTRA_ROW_H;
 
-        PersianCalendar first = firstOfDisplayedMonth();
-        PersianCalendar last = new PersianCalendar();
+        android.icu.util.Calendar first = firstOfDisplayedMonth();
+        android.icu.util.Calendar last = newPersianCalendar();
         last.clear();
         last.set(
                 displayYear,
@@ -386,7 +386,7 @@ public final class TripleCalendarView extends View {
             }
         }
 
-        PersianCalendar first = firstOfDisplayedMonth();
+        android.icu.util.Calendar first = firstOfDisplayedMonth();
         Calendar firstGregorian = Calendar.getInstance();
         firstGregorian.setTimeInMillis(first.getTimeInMillis());
         int leading = firstGregorian.get(Calendar.DAY_OF_WEEK) % 7;
@@ -401,7 +401,7 @@ public final class TripleCalendarView extends View {
             float left = CELL_LEFT[col];
             float top = CELL_TOP[row];
             if (x >= left && x <= left + CELL_W && y >= top && y <= top + CELL_H) {
-                PersianCalendar pc = new PersianCalendar();
+                android.icu.util.Calendar pc = newPersianCalendar();
                 pc.clear();
                 pc.set(displayYear, displayMonth, day, 12, 0, 0);
                 selectedMillis = pc.getTimeInMillis();
@@ -436,7 +436,7 @@ public final class TripleCalendarView extends View {
         displayYear = year;
         displayMonth = month;
 
-        PersianCalendar pc = new PersianCalendar();
+        android.icu.util.Calendar pc = newPersianCalendar();
         pc.clear();
         pc.set(displayYear, displayMonth, 1, 12, 0, 0);
         selectedMillis = pc.getTimeInMillis();
@@ -447,15 +447,15 @@ public final class TripleCalendarView extends View {
         if (listener != null) listener.onDateSelected(selectedMillis);
     }
 
-    private PersianCalendar firstOfDisplayedMonth() {
-        PersianCalendar first = new PersianCalendar();
+    private android.icu.util.Calendar firstOfDisplayedMonth() {
+        android.icu.util.Calendar first = newPersianCalendar();
         first.clear();
         first.set(displayYear, displayMonth, 1, 12, 0, 0);
         return first;
     }
 
     private int rowCount() {
-        PersianCalendar first = firstOfDisplayedMonth();
+        android.icu.util.Calendar first = firstOfDisplayedMonth();
         Calendar gc = Calendar.getInstance();
         gc.setTimeInMillis(first.getTimeInMillis());
         int leading = gc.get(Calendar.DAY_OF_WEEK) % 7;
@@ -465,6 +465,12 @@ public final class TripleCalendarView extends View {
 
     private float baseHeight() {
         return BASE_H_5 + Math.max(0, rowCount() - 5) * EXTRA_ROW_H;
+    }
+
+    private static android.icu.util.Calendar newPersianCalendar() {
+        return android.icu.util.Calendar.getInstance(
+                new ULocale("fa_IR@calendar=persian")
+        );
     }
 
     private static String fa(int value) {
