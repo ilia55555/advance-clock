@@ -10,6 +10,18 @@ public final class BootReceiver extends BroadcastReceiver {
         NoForgetScheduler.rescheduleAll(context);
         ClockWidgetProvider.updateAll(context);
         NoForgetWidgetProvider.updateAll(context);
-        try { DateNotificationService.start(context); } catch (Exception ignored) {}
+
+        // Updating the existing notification directly is allowed from this
+        // receiver and makes a manual date/time change visible immediately.
+        DateNotificationService.refreshNow(context);
+
+        String action = intent == null ? null : intent.getAction();
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action)
+                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
+            try {
+                DateNotificationService.start(context);
+            } catch (Exception ignored) {
+            }
+        }
     }
 }
