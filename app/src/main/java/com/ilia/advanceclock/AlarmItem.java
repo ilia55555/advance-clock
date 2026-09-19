@@ -28,6 +28,7 @@ public final class AlarmItem {
 
     public int reminderMode;
     public String reminderMinutesJson;
+    public long lastFiredAtMillis;
 
     public AlarmItem(long id,String label,long triggerAtMillis,int repeatType,boolean enabled){
         this(id,label,triggerAtMillis,repeatType,enabled,true);
@@ -62,6 +63,7 @@ public final class AlarmItem {
         this.snoozeMinutes=Math.max(5,snoozeMinutes);
         this.reminderMode=Math.max(0,Math.min(2,reminderMode));
         this.reminderMinutesJson=reminderMinutesJson==null?"[]":reminderMinutesJson;
+        this.lastFiredAtMillis=0L;
     }
 
     public JSONObject toJson() throws JSONException{
@@ -72,6 +74,7 @@ public final class AlarmItem {
         o.put("recurrenceMode",recurrenceMode);o.put("intervalDays",intervalDays);
         o.put("customDatesJson",customDatesJson);o.put("snoozeMinutes",snoozeMinutes);
         o.put("reminderMode",reminderMode);o.put("reminderMinutesJson",reminderMinutesJson);
+        o.put("lastFiredAtMillis",lastFiredAtMillis);
         return o;
     }
 
@@ -82,7 +85,7 @@ public final class AlarmItem {
                 ? PriorityUtils.clamp(rawPriority)
                 : PriorityUtils.migrateLegacy(rawPriority);
 
-        return new AlarmItem(
+        AlarmItem item = new AlarmItem(
                 o.optLong("id",0),o.optString("label",""),o.optLong("triggerAtMillis",0),
                 oldRepeat,o.optBoolean("enabled",true),o.optBoolean("vibrate",true),
                 priority,
@@ -92,5 +95,7 @@ public final class AlarmItem {
                 o.optInt("reminderMode",AlarmReminderUtils.MODE_NONE),
                 o.optString("reminderMinutesJson","[]")
         );
+        item.lastFiredAtMillis = o.optLong("lastFiredAtMillis", 0L);
+        return item;
     }
 }
