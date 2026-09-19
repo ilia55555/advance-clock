@@ -82,7 +82,7 @@ public final class AlarmScheduler {
 
             PendingIntent pi = PendingIntent.getBroadcast(
                     context,
-                    reminderRequestCode(item.id, firedAtMillis, i),
+                    reminderRequestCode(item.id, firedAtMillis, minutes),
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -118,7 +118,27 @@ public final class AlarmScheduler {
     }
 
     public static void cancel(Context context, long id) {
+        AlarmItem item = new AlarmStore(context).find(id);
         cancelPrimary(context, id);
+        if (item != null && item.lastFiredAtMillis > 0L) {
+            cancelPostReminders(context, item.id, item.lastFiredAtMillis);
+        }
+    }
+
+    private static void cancelPostReminders(Context context, long id, long firedAtMillis) {
+        AlarmManager manager = context.getSystemService(AlarmManager.class);
+        if (manager == null) return;
+
+        for (int minutes : AlarmReminderUtils.VALUES) {
+            Intent intent = new Intent(context, AlarmReminderReceiver.class);
+            PendingIntent pi = PendingIntent.getBroadcast(
+                    context,
+                    reminderRequestCode(id, firedAtMillis, minutes),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            manager.cancel(pi);
+            pi.cancel();
+        }
     }
 
     private static void cancelPrimary(Context context, long id) {
@@ -171,9 +191,12 @@ public final class AlarmScheduler {
         return (int) (10000 + Math.abs(id % 1_000_000));
     }
 
-    private static int reminderRequestCode(long id, long firedAt, int index) {
-        long occurrencePart = Math.abs((firedAt / 60_000L) % 100_000L);
-        long idPart = Math.abs(id % 50_000L);
-        return (int) (1_100_000L + ((idPart * 37L + occurrencePart * 11L + index) % 900_000L));
+    private static int reminderRequestCode(long id, long firedAt, int minutes) {
+        long mixed = id
+                ^ (id >>> 32)
+                ^ firedAt
+                ^ (firedAt >>> 32)
+                ^ (minutes * 2654435761L);
+        return 1_100_000 + (int) Math.abs(mixed % 900_000L);
     }
 }
