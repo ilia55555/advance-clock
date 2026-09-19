@@ -165,20 +165,20 @@ public final class AppSettings {
     }
 
     public static void applyModalOverlay(Activity activity) {
-        activity.getTheme().applyStyle(R.style.Overlay_AdvanceClock_Modal, true);
+        activity.getTheme().applyStyle(R.style.OverlayAdvanceClockModal, true);
     }
 
     private static int secondaryOverlay(int accent, boolean dark) {
         switch (clampAccent(accent)) {
-            case ACCENT_SAPPHIRE: return dark ? R.style.Overlay_Secondary_Sapphire_Dark : R.style.Overlay_Secondary_Sapphire_Light;
-            case ACCENT_VIOLET: return dark ? R.style.Overlay_Secondary_Violet_Dark : R.style.Overlay_Secondary_Violet_Light;
-            case ACCENT_EMERALD: return dark ? R.style.Overlay_Secondary_Emerald_Dark : R.style.Overlay_Secondary_Emerald_Light;
-            case ACCENT_CORAL: return dark ? R.style.Overlay_Secondary_Coral_Dark : R.style.Overlay_Secondary_Coral_Light;
-            case ACCENT_ROSE: return dark ? R.style.Overlay_Secondary_Rose_Dark : R.style.Overlay_Secondary_Rose_Light;
-            case ACCENT_AMBER: return dark ? R.style.Overlay_Secondary_Amber_Dark : R.style.Overlay_Secondary_Amber_Light;
-            case ACCENT_INDIGO: return dark ? R.style.Overlay_Secondary_Indigo_Dark : R.style.Overlay_Secondary_Indigo_Light;
+            case ACCENT_SAPPHIRE: return dark ? R.style.OverlaySecondarySapphireDark : R.style.OverlaySecondarySapphireLight;
+            case ACCENT_VIOLET: return dark ? R.style.OverlaySecondaryVioletDark : R.style.OverlaySecondaryVioletLight;
+            case ACCENT_EMERALD: return dark ? R.style.OverlaySecondaryEmeraldDark : R.style.OverlaySecondaryEmeraldLight;
+            case ACCENT_CORAL: return dark ? R.style.OverlaySecondaryCoralDark : R.style.OverlaySecondaryCoralLight;
+            case ACCENT_ROSE: return dark ? R.style.OverlaySecondaryRoseDark : R.style.OverlaySecondaryRoseLight;
+            case ACCENT_AMBER: return dark ? R.style.OverlaySecondaryAmberDark : R.style.OverlaySecondaryAmberLight;
+            case ACCENT_INDIGO: return dark ? R.style.OverlaySecondaryIndigoDark : R.style.OverlaySecondaryIndigoLight;
             case ACCENT_TEAL:
-            default: return dark ? R.style.Overlay_Secondary_Teal_Dark : R.style.Overlay_Secondary_Teal_Light;
+            default: return dark ? R.style.OverlaySecondaryTealDark : R.style.OverlaySecondaryTealLight;
         }
     }
 
