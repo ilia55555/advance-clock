@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -32,7 +32,7 @@ public final class NoForgetEditorActivity extends Activity {
     private Button deleteButton;
     private SketchView sketch;
     private Spinner penSize;
-    private CheckBox gridToggle;
+    private ImageButton gridToggle;
 
     private int dateCalendarType;
     private int recurrenceMode = RecurrenceUtils.NONE;
@@ -136,12 +136,7 @@ public final class NoForgetEditorActivity extends Activity {
         findViewById(R.id.editor_palette).setOnClickListener(v ->
                 PaletteDialog.show(this, sketch.getPenColor(), sketch::setPenColor));
 
-        ArrayAdapter<String> sizeAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"قلم نازک", "قلم متوسط", "قلم ضخیم", "قلم خیلی ضخیم"});
-        sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        penSize.setAdapter(sizeAdapter);
+        penSize.setAdapter(new PenSizeAdapter(this));
         penSize.setSelection(1);
         penSize.setOnItemSelectedListener(
                 new android.widget.AdapterView.OnItemSelectedListener() {
@@ -158,9 +153,17 @@ public final class NoForgetEditorActivity extends Activity {
                             android.widget.AdapterView<?> parent) {}
                 });
 
-        gridToggle.setChecked(true);
-        gridToggle.setOnCheckedChangeListener(
-                (button, checked) -> sketch.setGridVisible(checked));
+        final boolean[] gridVisible = {true};
+        sketch.setGridVisible(true);
+        gridToggle.setImageResource(R.drawable.ic_grid);
+        gridToggle.setSelected(false);
+        gridToggle.setOnClickListener(v -> {
+            gridVisible[0] = !gridVisible[0];
+            sketch.setGridVisible(gridVisible[0]);
+            gridToggle.setSelected(!gridVisible[0]);
+            gridToggle.setImageResource(
+                    gridVisible[0] ? R.drawable.ic_grid : R.drawable.ic_grid_off);
+        });
 
         findViewById(R.id.save_note).setOnClickListener(v -> save());
         deleteButton.setOnClickListener(v -> delete());
