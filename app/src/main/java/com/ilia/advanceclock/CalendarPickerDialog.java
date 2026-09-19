@@ -76,7 +76,9 @@ public final class CalendarPickerDialog {
             pickers.addView(day, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
         }
 
-        final long[] currentMillis = {Math.max(initialMillis, System.currentTimeMillis())};
+        final long[] currentMillis = {
+                monthYearOnly ? initialMillis : Math.max(initialMillis, System.currentTimeMillis())
+        };
         final boolean[] updating = {false};
 
         Runnable refresh = () -> {
