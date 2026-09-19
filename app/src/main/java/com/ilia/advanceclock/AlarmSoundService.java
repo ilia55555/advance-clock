@@ -24,12 +24,18 @@ public final class AlarmSoundService extends Service {
     private Vibrator vibrator;
     private PowerManager.WakeLock wakeLock;
     private long currentAlarmId = -1L;
+    private boolean currentVibrate = true;
 
     public static Intent startIntent(Context context, long id, String label) {
+        return startIntent(context, id, label, true);
+    }
+
+    public static Intent startIntent(Context context, long id, String label, boolean vibrate) {
         return new Intent(context, AlarmSoundService.class)
                 .setAction(ACTION_START)
                 .putExtra("alarmId", id)
-                .putExtra("label", label == null ? "" : label);
+                .putExtra("label", label == null ? "" : label)
+                .putExtra("vibrate", vibrate);
     }
 
     public static Intent stopIntent(Context context) {
@@ -50,11 +56,20 @@ public final class AlarmSoundService extends Service {
         }
 
         currentAlarmId = intent.getLongExtra("alarmId", -1L);
+        currentVibrate = intent.getBooleanExtra("vibrate", true);
         String label = intent.getStringExtra("label");
-        startForeground(NotificationHelper.notificationId(currentAlarmId), buildNotification(currentAlarmId, label));
+
+        startForeground(
+                NotificationHelper.notificationId(currentAlarmId),
+                buildNotification(currentAlarmId, label)
+        );
         acquireWakeLock();
         startSound();
-        startVibration();
+        if (currentVibrate) {
+            startVibration();
+        } else {
+            stopVibration();
+        }
         return START_NOT_STICKY;
     }
 
@@ -62,7 +77,10 @@ public final class AlarmSoundService extends Service {
         Intent ring = new Intent(this, AlarmRingActivity.class)
                 .putExtra("alarmId", id)
                 .putExtra("label", label)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         PendingIntent fullScreen = PendingIntent.getActivity(
                 this,
                 30000 + (int) Math.abs(id % 1_000_000),
@@ -82,6 +100,7 @@ public final class AlarmSoundService extends Service {
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, NotificationHelper.ALARM_CHANNEL)
                 : new Notification.Builder(this);
+
         return builder
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setContentTitle(title)
@@ -102,6 +121,7 @@ public final class AlarmSoundService extends Service {
         try {
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             if (uri == null) uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+
             player = new MediaPlayer();
             player.setAudioAttributes(new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_ALARM)
@@ -117,6 +137,7 @@ public final class AlarmSoundService extends Service {
     }
 
     private void startVibration() {
+        stopVibration();
         try {
             if (Build.VERSION.SDK_INT >= 31) {
                 VibratorManager manager = getSystemService(VibratorManager.class);
@@ -124,33 +145,57 @@ public final class AlarmSoundService extends Service {
             } else {
                 vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             }
+
             if (vibrator != null) {
                 long[] pattern = {0, 700, 300, 700, 300};
                 vibrator.vibrate(VibrationEffect.createWaveform(pattern, 1));
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void stopVibration() {
+        try {
+            if (vibrator != null) vibrator.cancel();
+        } catch (Exception ignored) {
+        }
+        vibrator = null;
     }
 
     private void acquireWakeLock() {
         try {
             PowerManager pm = getSystemService(PowerManager.class);
             if (pm != null) {
-                wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AdvanceClock:AlarmWake");
+                wakeLock = pm.newWakeLock(
+                        PowerManager.PARTIAL_WAKE_LOCK,
+                        "AdvanceClock:AlarmWake"
+                );
                 wakeLock.acquire(10 * 60 * 1000L);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     private void stopAlarm() {
         stopPlayer();
-        try { if (vibrator != null) vibrator.cancel(); } catch (Exception ignored) {}
-        try { if (wakeLock != null && wakeLock.isHeld()) wakeLock.release(); } catch (Exception ignored) {}
+        stopVibration();
+        try {
+            if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+        } catch (Exception ignored) {
+        }
+        wakeLock = null;
         stopForeground(STOP_FOREGROUND_REMOVE);
     }
 
     private void stopPlayer() {
-        try { if (player != null) player.stop(); } catch (Exception ignored) {}
-        try { if (player != null) player.release(); } catch (Exception ignored) {}
+        try {
+            if (player != null) player.stop();
+        } catch (Exception ignored) {
+        }
+        try {
+            if (player != null) player.release();
+        } catch (Exception ignored) {
+        }
         player = null;
     }
 
@@ -159,5 +204,7 @@ public final class AlarmSoundService extends Service {
         super.onDestroy();
     }
 
-    @Override public IBinder onBind(Intent intent) { return null; }
+    @Override public IBinder onBind(Intent intent) {
+        return null;
+    }
 }

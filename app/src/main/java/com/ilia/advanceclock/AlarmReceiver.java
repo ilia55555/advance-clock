@@ -13,16 +13,28 @@ public final class AlarmReceiver extends BroadcastReceiver {
         AlarmItem item = store.find(id);
         if (item == null || !item.enabled) return;
 
-        Intent service = AlarmSoundService.startIntent(context, item.id, item.label);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(service);
-        else context.startService(service);
+        Intent service = AlarmSoundService.startIntent(
+                context,
+                item.id,
+                item.label,
+                item.vibrate
+        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(service);
+        } else {
+            context.startService(service);
+        }
 
         if (item.repeatType == AlarmItem.REPEAT_NONE) {
             item.enabled = false;
             store.save(item);
         } else {
             item.triggerAtMillis = TimeUtils.nextOccurrence(item.triggerAtMillis, item.repeatType);
-            item.triggerAtMillis = TimeUtils.normalizeFuture(item.triggerAtMillis, item.repeatType, System.currentTimeMillis());
+            item.triggerAtMillis = TimeUtils.normalizeFuture(
+                    item.triggerAtMillis,
+                    item.repeatType,
+                    System.currentTimeMillis()
+            );
             store.save(item);
             AlarmScheduler.schedule(context, item);
         }

@@ -2,66 +2,82 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#070B14"
-    android:orientation="vertical">
+    android:background="#F4F9F8"
+    android:orientation="vertical"
+    android:layoutDirection="rtl">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="126dp"
+        android:background="@drawable/bg_header"
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingTop="18dp"
-        android:paddingEnd="20dp">
+        android:paddingStart="18dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="18dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Advance"
+            android:id="@+id/app_title"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:text="ساعت پیشرفته"
             android:textColor="#FFFFFF"
-            android:textSize="26sp"
+            android:textSize="27sp"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal">
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layoutDirection="rtl">
 
-            <Button
-                android:id="@+id/tab_clock"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="ساعت پیشرفته"
-                android:textAllCaps="false" />
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/tab_noforget"
+                <TextView
+                    android:id="@+id/tab_clock"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center"
+                    android:text="◷  ساعت"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/clock_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="#FF8A00" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="NoForget"
-                android:textAllCaps="false" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tab_noforget"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center"
+                    android:text="▣  یادداشت‌ها"
+                    android:textColor="#D6EFED"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/noforget_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="#FF8A00"
+                    android:visibility="invisible" />
+            </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/permission_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="وضعیت مجوزها"
-            android:textColor="#FBBF24"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/alarm_permissions"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="6dp"
-            android:text="بررسی و دریافت مجوزهای لازم"
-            android:textAllCaps="false" />
     </LinearLayout>
 
     <FrameLayout
@@ -73,57 +89,232 @@
             android:id="@+id/clock_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:paddingStart="14dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="28dp">
 
-                <TextClock
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:format12Hour="hh:mm a"
-                    android:format24Hour="HH:mm"
-                    android:textColor="#7DD3FC"
-                    android:textSize="52sp"
-                    android:textStyle="bold" />
+                    android:background="@drawable/bg_card"
+                    android:elevation="3dp"
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
-                <TextClock
-                    android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ایجاد زنگ هشدار"
+                            android:textColor="#0C5F5B"
+                            android:textSize="21sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:background="@drawable/bg_orange_button"
+                            android:gravity="center"
+                            android:text="+"
+                            android:textColor="#FFFFFF"
+                            android:textSize="30sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="زمان و تاریخ دلخواه خود را تنظیم کنید"
+                        android:textColor="#8A9995"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <Button
+                            android:id="@+id/quick_alarm_time"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:text="ساعت&#10;۰۷:۳۰"
+                            android:textAllCaps="false"
+                            android:textColor="#0B6E69"
+                            android:textSize="16sp" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="match_parent" />
+
+                        <Button
+                            android:id="@+id/quick_alarm_date"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:text="تاریخ"
+                            android:textAllCaps="false"
+                            android:textColor="#0B6E69"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="10dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="لرزش"
+                                android:textColor="#758783"
+                                android:textSize="12sp" />
+
+                            <Switch
+                                android:id="@+id/quick_alarm_vibrate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:showText="false" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="match_parent" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="صدای زنگ"
+                                android:textColor="#758783"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="پیش‌فرض"
+                                android:textColor="#0B6E69"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="match_parent" />
+
+                        <Spinner
+                            android:id="@+id/quick_alarm_repeat"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/quick_alarm_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="62dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_field"
+                        android:gravity="center_vertical|start"
+                        android:hint="برچسب؛ مثلاً صبح بخیر!"
+                        android:inputType="textCapSentences"
+                        android:paddingHorizontal="14dp"
+                        android:textColor="#123D3A"
+                        android:textColorHint="#95A5A1"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/save_quick_alarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_orange_button"
+                        android:text="ذخیره زنگ هشدار"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <com.ilia.advanceclock.TripleCalendarView
+                    android:id="@+id/clock_calendar"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:format12Hour="EEEE، d MMMM yyyy"
-                    android:format24Hour="EEEE، d MMMM yyyy"
-                    android:textColor="#94A3B8"
-                    android:textSize="15sp" />
+                    android:layout_marginTop="16dp" />
 
-                <Button
-                    android:id="@+id/add_alarm"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
-                    android:layout_marginTop="24dp"
-                    android:text="+ کوک آلارم جدید"
-                    android:textAllCaps="false"
-                    android:textSize="16sp" />
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layoutDirection="rtl">
 
-                <Button
-                    android:id="@+id/add_clock_widget"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="8dp"
-                    android:text="افزودن ویجت ساعت"
-                    android:textAllCaps="false" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="زنگ‌های پیش رو"
+                        android:textColor="#0B5F5B"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="آلارم‌ها"
-                    android:textColor="#E2E8F0"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/add_clock_widget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:minWidth="0dp"
+                        android:paddingHorizontal="14dp"
+                        android:text="+ ویجت"
+                        android:textAllCaps="false"
+                        android:textColor="#0B6E69"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/alarm_list"
@@ -138,72 +329,273 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
+            android:clipToPadding="false"
             android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:paddingStart="14dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="28dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NoForget"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                <TextView
+                <com.ilia.advanceclock.TripleCalendarView
+                    android:id="@+id/noforget_calendar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="یادداشت، دست‌نویس، سررسید و یادآوری روزانه"
-                    android:textColor="#94A3B8"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/add_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="20dp"
-                    android:text="+ یادداشت جدید"
-                    android:textAllCaps="false"
-                    android:textSize="16sp" />
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_card"
+                    android:elevation="3dp"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <EditText
+                            android:id="@+id/quick_note_title"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_field"
+                            android:hint="عنوان یادداشت"
+                            android:inputType="textCapSentences"
+                            android:paddingHorizontal="14dp"
+                            android:textColor="#123D3A"
+                            android:textColorHint="#96A6A2"
+                            android:textSize="15sp" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="match_parent" />
+
+                        <Button
+                            android:id="@+id/save_quick_note"
+                            android:layout_width="96dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_orange_button"
+                            android:text="ذخیره"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/quick_note_body"
+                        android:layout_width="match_parent"
+                        android:layout_height="118dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_field"
+                        android:gravity="top|start"
+                        android:hint="متن یادداشت خود را اینجا بنویسید..."
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="14dp"
+                        android:textColor="#123D3A"
+                        android:textColorHint="#96A6A2"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_card"
+                    android:elevation="3dp"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="نقاشی و ترسیم"
+                        android:textColor="#0B5F5B"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:layout_marginTop="8dp"
+                        android:fillViewport="false"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layoutDirection="rtl">
+
+                            <Button
+                                android:id="@+id/note_undo"
+                                android:layout_width="48dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/bg_soft_button"
+                                android:minWidth="0dp"
+                                android:text="↶"
+                                android:textAllCaps="false"
+                                android:textColor="#0B6E69"
+                                android:textSize="20sp" />
+
+                            <Space android:layout_width="6dp" android:layout_height="1dp" />
+
+                            <Button
+                                android:id="@+id/note_redo"
+                                android:layout_width="48dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/bg_soft_button"
+                                android:minWidth="0dp"
+                                android:text="↷"
+                                android:textAllCaps="false"
+                                android:textColor="#0B6E69"
+                                android:textSize="20sp" />
+
+                            <Space android:layout_width="6dp" android:layout_height="1dp" />
+
+                            <Button
+                                android:id="@+id/note_clear"
+                                android:layout_width="58dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/bg_soft_button"
+                                android:minWidth="0dp"
+                                android:text="پاک"
+                                android:textAllCaps="false"
+                                android:textColor="#0B6E69"
+                                android:textSize="12sp" />
+
+                            <Space android:layout_width="10dp" android:layout_height="1dp" />
+
+                            <TextView
+                                android:id="@+id/pen_teal"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:gravity="center"
+                                android:text="●"
+                                android:textColor="#087C77"
+                                android:textSize="30sp" />
+                            <TextView
+                                android:id="@+id/pen_orange"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:gravity="center"
+                                android:text="●"
+                                android:textColor="#F17600"
+                                android:textSize="30sp" />
+                            <TextView
+                                android:id="@+id/pen_black"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:gravity="center"
+                                android:text="●"
+                                android:textColor="#1B2423"
+                                android:textSize="30sp" />
+                            <TextView
+                                android:id="@+id/pen_blue"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:gravity="center"
+                                android:text="●"
+                                android:textColor="#2457D6"
+                                android:textSize="30sp" />
+
+                            <Space android:layout_width="10dp" android:layout_height="1dp" />
+
+                            <Button
+                                android:id="@+id/pen_thin"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:background="@drawable/bg_soft_button"
+                                android:minWidth="0dp"
+                                android:text="•"
+                                android:textAllCaps="false"
+                                android:textColor="#0B6E69"
+                                android:textSize="18sp" />
+                            <Button
+                                android:id="@+id/pen_medium"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:layout_marginStart="5dp"
+                                android:background="@drawable/bg_teal_button"
+                                android:minWidth="0dp"
+                                android:text="●"
+                                android:textAllCaps="false"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp" />
+                            <Button
+                                android:id="@+id/pen_thick"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:layout_marginStart="5dp"
+                                android:background="@drawable/bg_soft_button"
+                                android:minWidth="0dp"
+                                android:text="●"
+                                android:textAllCaps="false"
+                                android:textColor="#0B6E69"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                    <com.ilia.advanceclock.SketchView
+                        android:id="@+id/quick_note_sketch"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layoutDirection="rtl">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="یادداشت‌های اخیر"
+                        android:textColor="#0B5F5B"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/quick_add_note"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:text="ثبت سریع"
-                        android:textAllCaps="false" />
+                        android:id="@+id/open_full_note_editor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:minWidth="0dp"
+                        android:paddingHorizontal="12dp"
+                        android:text="یادآوری و جزئیات"
+                        android:textAllCaps="false"
+                        android:textColor="#0B6E69"
+                        android:textSize="11sp" />
+
+                    <Space android:layout_width="6dp" android:layout_height="1dp" />
 
                     <Button
                         android:id="@+id/add_noforget_widget"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:text="افزودن ویجت"
-                        android:textAllCaps="false" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:minWidth="0dp"
+                        android:paddingHorizontal="12dp"
+                        android:text="+ ویجت"
+                        android:textAllCaps="false"
+                        android:textColor="#0B6E69"
+                        android:textSize="11sp" />
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="یادداشت‌ها"
-                    android:textColor="#E2E8F0"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/noforget_list"

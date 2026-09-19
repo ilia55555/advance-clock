@@ -3,6 +3,7 @@ package com.ilia.advanceclock;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.icu.util.PersianCalendar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -43,9 +45,11 @@ public final class NoForgetEditorActivity extends Activity {
         deleteButton = findViewById(R.id.delete_note);
         sketch = findViewById(R.id.note_sketch);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
                 android.R.layout.simple_spinner_item,
-                new String[]{"کم", "عادی", "زیاد"});
+                new String[]{"کم", "عادی", "زیاد"}
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         priority.setAdapter(adapter);
         priority.setSelection(NoForgetItem.PRIORITY_NORMAL);
@@ -62,7 +66,20 @@ public final class NoForgetEditorActivity extends Activity {
         hasDue.setOnCheckedChangeListener((button, checked) -> updateDueControls());
         dateButton.setOnClickListener(v -> pickDate());
         timeButton.setOnClickListener(v -> pickTime());
+
+        findViewById(R.id.editor_undo).setOnClickListener(v -> sketch.undo());
+        findViewById(R.id.editor_redo).setOnClickListener(v -> sketch.redo());
         findViewById(R.id.clear_sketch).setOnClickListener(v -> sketch.clearSketch());
+
+        findViewById(R.id.editor_pen_teal).setOnClickListener(v -> sketch.setPenColor(0xFF087C77));
+        findViewById(R.id.editor_pen_orange).setOnClickListener(v -> sketch.setPenColor(0xFFF17600));
+        findViewById(R.id.editor_pen_black).setOnClickListener(v -> sketch.setPenColor(0xFF1B2423));
+        findViewById(R.id.editor_pen_blue).setOnClickListener(v -> sketch.setPenColor(0xFF2457D6));
+
+        findViewById(R.id.editor_pen_thin).setOnClickListener(v -> sketch.setPenWidthDp(2f));
+        findViewById(R.id.editor_pen_medium).setOnClickListener(v -> sketch.setPenWidthDp(4f));
+        findViewById(R.id.editor_pen_thick).setOnClickListener(v -> sketch.setPenWidthDp(7f));
+
         findViewById(R.id.save_note).setOnClickListener(v -> save());
         deleteButton.setOnClickListener(v -> delete());
         findViewById(R.id.cancel_note).setOnClickListener(v -> finish());
@@ -92,6 +109,9 @@ public final class NoForgetEditorActivity extends Activity {
         dateButton.setEnabled(enabled);
         timeButton.setEnabled(enabled);
         reminder.setEnabled(enabled);
+        dateButton.setAlpha(enabled ? 1f : 0.45f);
+        timeButton.setAlpha(enabled ? 1f : 0.45f);
+        reminder.setAlpha(enabled ? 1f : 0.45f);
         if (!enabled) reminder.setChecked(false);
     }
 
@@ -115,22 +135,34 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     private void updateDueButtons() {
-        dateButton.setText(new SimpleDateFormat("yyyy/MM/dd", new Locale("fa", "IR")).format(due.getTime()));
-        timeButton.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(due.getTime()));
+        PersianCalendar pc = new PersianCalendar();
+        pc.setTimeInMillis(due.getTimeInMillis());
+        String[] months = {
+                "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+                "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+        };
+        dateButton.setText(
+                fa(pc.get(android.icu.util.Calendar.DAY_OF_MONTH))
+                        + " " + months[pc.get(android.icu.util.Calendar.MONTH)]
+                        + " " + fa(pc.get(android.icu.util.Calendar.YEAR))
+        );
+        timeButton.setText(fa(new SimpleDateFormat("HH:mm", Locale.US).format(due.getTime())));
     }
 
     private void save() {
         String titleText = title.getText().toString().trim();
         String bodyText = body.getText().toString().trim();
         String sketchJson = sketch.serialize();
+
         if (titleText.isEmpty() && bodyText.isEmpty() && "[]".equals(sketchJson)) {
-            Toast.makeText(this, "یک متن یا دست‌نویس وارد کنید", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "یک متن یا نقاشی وارد کنید", Toast.LENGTH_SHORT).show();
             return;
         }
 
         boolean dueEnabled = hasDue.isChecked();
         boolean reminderEnabled = dueEnabled && reminder.isChecked();
         long dueAt = dueEnabled ? due.getTimeInMillis() : 0L;
+
         if (reminderEnabled && dueAt <= System.currentTimeMillis()) {
             Toast.makeText(this, "زمان یادآوری باید در آینده باشد", Toast.LENGTH_LONG).show();
             return;
@@ -138,19 +170,23 @@ public final class NoForgetEditorActivity extends Activity {
 
         long id = noteId >= 0 ? noteId : System.currentTimeMillis();
         NoForgetItem item = new NoForgetItem(
-                id, titleText, bodyText, sketchJson,
+                id,
+                titleText,
+                bodyText,
+                sketchJson,
                 priority.getSelectedItemPosition(),
-                dueEnabled, dueAt, reminderEnabled, createdAt
+                dueEnabled,
+                dueAt,
+                reminderEnabled,
+                createdAt
         );
-        NoForgetStore store = new NoForgetStore(this);
-        store.save(item);
 
+        new NoForgetStore(this).save(item);
         boolean scheduled = !reminderEnabled || NoForgetScheduler.schedule(this, item);
         NoForgetWidgetProvider.updateAll(this);
+
         if (!scheduled) {
-            Toast.makeText(this,
-                    "یادداشت ذخیره شد؛ برای یادآوری، مجوز آلارم دقیق را فعال کنید.",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "یادداشت ذخیره شد؛ دسترسی آلارم دقیق برای یادآوری لازم است.", Toast.LENGTH_LONG).show();
         }
         finish();
     }
@@ -160,5 +196,17 @@ public final class NoForgetEditorActivity extends Activity {
         new NoForgetStore(this).delete(noteId);
         NoForgetWidgetProvider.updateAll(this);
         finish();
+    }
+
+    private static String fa(int value) {
+        return fa(String.valueOf(value));
+    }
+
+    private static String fa(String value) {
+        char[] en = {'0','1','2','3','4','5','6','7','8','9'};
+        char[] pe = {'۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'};
+        String out = value;
+        for (int i = 0; i < en.length; i++) out = out.replace(en[i], pe[i]);
+        return out;
     }
 }

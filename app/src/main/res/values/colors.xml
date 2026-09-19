@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="app_teal">#007A75</color>
+    <color name="app_teal_dark">#00625E</color>
+    <color name="app_orange">#F17600</color>
+    <color name="app_background">#F4F9F8</color>
+    <color name="app_text">#173F3B</color>
+    <color name="app_muted">#7F918D</color>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.icu.util.PersianCalendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +14,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
+
 import java.util.Calendar;
+import java.util.Locale;
 
 public final class AlarmEditorActivity extends Activity {
     private final Calendar selected = Calendar.getInstance();
@@ -24,6 +28,7 @@ public final class AlarmEditorActivity extends Activity {
     private Button timeButton;
     private Spinner repeat;
     private Button deleteButton;
+    private Switch vibrate;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,15 +39,20 @@ public final class AlarmEditorActivity extends Activity {
         timeButton = findViewById(R.id.pick_time);
         repeat = findViewById(R.id.repeat_spinner);
         deleteButton = findViewById(R.id.delete_alarm);
+        vibrate = findViewById(R.id.alarm_vibrate);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
-                new String[]{"بدون تکرار", "هر روز", "هر هفته", "هر ماه", "هر سال"});
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"بدون تکرار", "هر روز", "هر هفته", "هر ماه", "هر سال"}
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         repeat.setAdapter(adapter);
 
         alarmId = getIntent().getLongExtra("alarmId", -1L);
-        if (alarmId >= 0) loadExisting();
-        else {
+        if (alarmId >= 0) {
+            loadExisting();
+        } else {
             selected.add(Calendar.MINUTE, 1);
             selected.set(Calendar.SECOND, 0);
             selected.set(Calendar.MILLISECOND, 0);
@@ -66,6 +76,7 @@ public final class AlarmEditorActivity extends Activity {
         label.setText(item.label);
         selected.setTimeInMillis(item.triggerAtMillis);
         repeat.setSelection(Math.max(0, Math.min(4, item.repeatType)));
+        vibrate.setChecked(item.vibrate);
         updateButtons();
     }
 
@@ -89,39 +100,59 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     private void updateButtons() {
-        java.text.SimpleDateFormat date = new java.text.SimpleDateFormat("yyyy/MM/dd", new java.util.Locale("fa", "IR"));
-        java.text.SimpleDateFormat time = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
-        dateButton.setText(date.format(selected.getTime()));
-        timeButton.setText(time.format(selected.getTime()));
+        PersianCalendar pc = new PersianCalendar();
+        pc.setTimeInMillis(selected.getTimeInMillis());
+        String[] months = {
+                "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+                "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+        };
+        dateButton.setText(
+                fa(pc.get(android.icu.util.Calendar.DAY_OF_MONTH))
+                        + " " + months[pc.get(android.icu.util.Calendar.MONTH)]
+                        + " " + fa(pc.get(android.icu.util.Calendar.YEAR))
+        );
+        String time = String.format(Locale.US, "%02d:%02d",
+                selected.get(Calendar.HOUR_OF_DAY),
+                selected.get(Calendar.MINUTE));
+        timeButton.setText(fa(time));
     }
 
     private void save() {
         int repeatType = repeat.getSelectedItemPosition();
         long trigger = selected.getTimeInMillis();
+
         if (trigger <= System.currentTimeMillis() && repeatType == AlarmItem.REPEAT_NONE) {
             Toast.makeText(this, "تاریخ و ساعت باید در آینده باشد", Toast.LENGTH_LONG).show();
             return;
         }
+
         trigger = TimeUtils.normalizeFuture(trigger, repeatType, System.currentTimeMillis());
         long id = alarmId >= 0 ? alarmId : System.currentTimeMillis();
-        AlarmItem item = new AlarmItem(id, label.getText().toString().trim(), trigger, repeatType, true);
+
+        AlarmItem item = new AlarmItem(
+                id,
+                label.getText().toString().trim(),
+                trigger,
+                repeatType,
+                true,
+                vibrate.isChecked()
+        );
         new AlarmStore(this).save(item);
 
         boolean scheduled = AlarmScheduler.schedule(this, item);
         ClockWidgetProvider.updateAll(this);
 
         if (!scheduled && !PermissionHelper.exactAlarmsGranted(this) && Build.VERSION.SDK_INT >= 31) {
-            Toast.makeText(this,
-                    "آلارم ذخیره شد؛ برای فعال شدن باید مجوز آلارم دقیق را بدهید.",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "زنگ ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.", Toast.LENGTH_LONG).show();
             try {
                 startActivity(new Intent(
                         Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                         Uri.parse("package:" + getPackageName())
                 ));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         } else {
-            Toast.makeText(this, "آلارم ذخیره و فعال شد", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "زنگ ذخیره شد", Toast.LENGTH_SHORT).show();
         }
         finish();
     }
@@ -131,5 +162,17 @@ public final class AlarmEditorActivity extends Activity {
         new AlarmStore(this).delete(alarmId);
         ClockWidgetProvider.updateAll(this);
         finish();
+    }
+
+    private static String fa(int value) {
+        return fa(String.valueOf(value));
+    }
+
+    private static String fa(String value) {
+        char[] en = {'0','1','2','3','4','5','6','7','8','9'};
+        char[] pe = {'۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'};
+        String out = value;
+        for (int i = 0; i < en.length; i++) out = out.replace(en[i], pe[i]);
+        return out;
     }
 }

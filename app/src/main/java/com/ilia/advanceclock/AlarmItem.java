@@ -15,13 +15,20 @@ public final class AlarmItem {
     public long triggerAtMillis;
     public int repeatType;
     public boolean enabled;
+    public boolean vibrate;
 
     public AlarmItem(long id, String label, long triggerAtMillis, int repeatType, boolean enabled) {
+        this(id, label, triggerAtMillis, repeatType, enabled, true);
+    }
+
+    public AlarmItem(long id, String label, long triggerAtMillis, int repeatType,
+                     boolean enabled, boolean vibrate) {
         this.id = id;
         this.label = label == null ? "" : label;
         this.triggerAtMillis = triggerAtMillis;
         this.repeatType = repeatType;
         this.enabled = enabled;
+        this.vibrate = vibrate;
     }
 
     public JSONObject toJson() throws JSONException {
@@ -31,6 +38,7 @@ public final class AlarmItem {
         o.put("triggerAtMillis", triggerAtMillis);
         o.put("repeatType", repeatType);
         o.put("enabled", enabled);
+        o.put("vibrate", vibrate);
         return o;
     }
 
@@ -40,7 +48,8 @@ public final class AlarmItem {
                 o.optString("label", ""),
                 o.optLong("triggerAtMillis", 0L),
                 o.optInt("repeatType", REPEAT_NONE),
-                o.optBoolean("enabled", true)
+                o.optBoolean("enabled", true),
+                o.optBoolean("vibrate", true)
         );
     }
 }
