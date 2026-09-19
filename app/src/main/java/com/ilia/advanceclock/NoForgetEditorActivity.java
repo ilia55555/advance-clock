@@ -3,7 +3,7 @@ package com.ilia.advanceclock;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.icu.util.PersianCalendar;
+import android.icu.util.ULocale;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -135,7 +135,7 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     private void updateDueButtons() {
-        PersianCalendar pc = new PersianCalendar();
+        android.icu.util.Calendar pc = newPersianCalendar();
         pc.setTimeInMillis(due.getTimeInMillis());
         String[] months = {
                 "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
@@ -196,6 +196,12 @@ public final class NoForgetEditorActivity extends Activity {
         new NoForgetStore(this).delete(noteId);
         NoForgetWidgetProvider.updateAll(this);
         finish();
+    }
+
+    private static android.icu.util.Calendar newPersianCalendar() {
+        return android.icu.util.Calendar.getInstance(
+                new ULocale("fa_IR@calendar=persian")
+        );
     }
 
     private static String fa(int value) {
