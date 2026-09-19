@@ -60,6 +60,7 @@
 
         <receiver android:name=".AlarmReceiver" android:exported="false" />
         <receiver android:name=".AlarmReminderReceiver" android:exported="false" />
+        <receiver android:name=".AlarmSnoozeReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />
         <receiver android:name=".NoForgetReminderReceiver" android:exported="false" />
 
