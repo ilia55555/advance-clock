@@ -218,8 +218,9 @@ public final class MainActivity extends Activity {
             PopupMenu menu = new PopupMenu(this, anchor);
             menu.getMenu().add(0, 1, 0, "تنظیمات");
             menu.getMenu().add(0, 4, 1, "تنظیمات اعلان");
-            menu.getMenu().add(0, 2, 2, "افزودن ویجت این بخش");
-            menu.getMenu().add(0, 3, 3, "مجوزهای آلارم و اعلان");
+            menu.getMenu().add(0, 5, 2, "ویجت‌ها و تنظیمات");
+            menu.getMenu().add(0, 2, 3, "افزودن ویجت این بخش");
+            menu.getMenu().add(0, 3, 4, "مجوزهای آلارم و اعلان");
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
@@ -229,6 +230,10 @@ public final class MainActivity extends Activity {
                     startActivityForResult(
                             new Intent(this, NotificationSettingsActivity.class),
                             REQ_NOTIFICATION_SETTINGS);
+                    return true;
+                }
+                if (item.getItemId() == 5) {
+                    startActivity(new Intent(this, WidgetCenterActivity.class));
                     return true;
                 }
                 if (item.getItemId() == 2) {
