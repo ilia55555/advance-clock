@@ -13,7 +13,7 @@
         android:id="@+id/media_item_preview"
         android:layout_width="64dp"
         android:layout_height="58dp"
-        android:background="@drawable/bg_field"
+        android:background="@android:color/transparent"
         android:contentDescription="پیش‌نمایش"
         android:padding="4dp"
         android:scaleType="centerCrop"
