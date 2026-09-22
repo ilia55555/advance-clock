@@ -13,5 +13,5 @@
     android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:configure="com.ilia.advanceclock.WidgetSettingsActivity"
-    android:widgetFeatures="reconfigurable|configuration_optional"
+    android:widgetFeatures="reconfigurable"
     android:widgetCategory="home_screen" />
