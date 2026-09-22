@@ -88,11 +88,16 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         root.setViewVisibility(
                 R.id.widget_header,
                 showHeader ? View.VISIBLE : View.GONE);
+        boolean showTime =
+                showHeader && WidgetPrefs.showTime(context, widgetId);
+        root.setViewVisibility(
+                R.id.widget_time,
+                showTime ? View.VISIBLE : View.GONE);
         root.setViewVisibility(
                 R.id.widget_date,
                 showHeader
                         && WidgetPrefs.showDate(context, widgetId)
-                        && width >= 180
+                        && (width >= 180 || !showTime)
                         ? View.VISIBLE : View.GONE);
         root.setViewVisibility(
                 R.id.widget_add,
@@ -110,6 +115,12 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         root.setTextColor(R.id.widget_time, primary);
         root.setTextColor(R.id.widget_date, muted);
+
+        applyTimeFormat(
+                root,
+                R.id.widget_time,
+                WidgetPrefs.timeFormatMode(context, widgetId),
+                WidgetPrefs.showSeconds(context, widgetId));
         root.setTextColor(R.id.widget_section_label, primary);
         root.setTextColor(R.id.widget_add, secondary);
         root.setInt(R.id.widget_theme, "setColorFilter", secondary);
@@ -261,6 +272,24 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
     @Override public void onDeleted(Context context, int[] appWidgetIds) {
         for (int id : appWidgetIds) WidgetPrefs.clear(context, id);
         super.onDeleted(context, appWidgetIds);
+    }
+
+    private static void applyTimeFormat(
+            RemoteViews root,
+            int viewId,
+            int mode,
+            boolean seconds) {
+        String format24 = seconds ? "HH:mm:ss" : "HH:mm";
+        String format12 = seconds ? "hh:mm:ss a" : "hh:mm a";
+
+        if (mode == 1) {
+            format12 = format24;
+        } else if (mode == 2) {
+            format24 = format12;
+        }
+
+        root.setCharSequence(viewId, "setFormat24Hour", format24);
+        root.setCharSequence(viewId, "setFormat12Hour", format12);
     }
 
     private static int backgroundResource(boolean dark, int mode) {
