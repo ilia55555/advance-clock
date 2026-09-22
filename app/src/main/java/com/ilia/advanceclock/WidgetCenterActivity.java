@@ -217,9 +217,13 @@ public final class WidgetCenterActivity extends Activity {
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+        int callbackRequestCode = "media".equals(kind)
+                ? 2_900_003
+                : ("note".equals(kind) ? 2_900_002 : 2_900_001);
+
         PendingIntent successCallback = PendingIntent.getActivity(
                 this,
-                2_900_000 + kind.hashCode(),
+                callbackRequestCode,
                 callbackIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
                         | PendingIntent.FLAG_MUTABLE);
