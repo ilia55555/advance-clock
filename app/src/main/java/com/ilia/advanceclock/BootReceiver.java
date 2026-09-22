@@ -1,6 +1,8 @@
 package com.ilia.advanceclock;
 
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -12,6 +14,22 @@ public final class BootReceiver extends BroadcastReceiver {
         NoForgetWidgetProvider.updateAll(context);
         MediaWidgetProvider.updateAll(context);
 
+        String action = intent == null ? null : intent.getAction();
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action)
+                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
+            AppWidgetManager widgetManager =
+                    AppWidgetManager.getInstance(context);
+            int[] mediaIds = widgetManager.getAppWidgetIds(
+                    new ComponentName(
+                            context,
+                            MediaWidgetProvider.class));
+            for (int mediaId : mediaIds) {
+                MediaPreviewScheduler.schedule(
+                        context,
+                        mediaId);
+            }
+        }
+
         // Refresh/start only when the user has enabled the persistent date
         // notification. Otherwise make sure an old service/notification is gone.
         if (AppSettings.persistentDateNotificationEnabled(context)) {
@@ -20,7 +38,6 @@ public final class BootReceiver extends BroadcastReceiver {
             DateNotificationService.stop(context);
         }
 
-        String action = intent == null ? null : intent.getAction();
         if ((Intent.ACTION_BOOT_COMPLETED.equals(action)
                 || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action))
                 && AppSettings.persistentDateNotificationEnabled(context)) {
