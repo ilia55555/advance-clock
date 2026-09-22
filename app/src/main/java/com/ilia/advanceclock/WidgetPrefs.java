@@ -66,6 +66,106 @@ public final class WidgetPrefs {
                 .apply();
     }
 
+    public static boolean showHeader(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_header", widgetId), true);
+    }
+
+    public static void setShowHeader(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_header", widgetId), value).apply();
+    }
+
+    public static boolean showDate(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_date", widgetId), true);
+    }
+
+    public static void setShowDate(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_date", widgetId), value).apply();
+    }
+
+    public static boolean showAddButton(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_add", widgetId), true);
+    }
+
+    public static void setShowAddButton(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_add", widgetId), value).apply();
+    }
+
+    public static boolean showSettingsButton(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_settings", widgetId), true);
+    }
+
+    public static void setShowSettingsButton(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_settings", widgetId), value).apply();
+    }
+
+    public static boolean showSectionLabel(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_section_label", widgetId), true);
+    }
+
+    public static void setShowSectionLabel(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_section_label", widgetId), value).apply();
+    }
+
+    public static boolean showPriority(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_priority", widgetId), true);
+    }
+
+    public static void setShowPriority(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_priority", widgetId), value).apply();
+    }
+
+    public static boolean showMetadata(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_metadata", widgetId), true);
+    }
+
+    public static void setShowMetadata(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_metadata", widgetId), value).apply();
+    }
+
+    public static int maxItems(Context context, int widgetId) {
+        return Math.max(1, Math.min(10,
+                prefs(context).getInt(key("max_items", widgetId), 10)));
+    }
+
+    public static void setMaxItems(Context context, int widgetId, int value) {
+        prefs(context).edit().putInt(
+                key("max_items", widgetId),
+                Math.max(1, Math.min(10, value))).apply();
+    }
+
+    public static int fontSizeMode(Context context, int widgetId) {
+        return Math.max(0, Math.min(2,
+                prefs(context).getInt(key("font_size", widgetId), 1)));
+    }
+
+    public static void setFontSizeMode(Context context, int widgetId, int value) {
+        prefs(context).edit().putInt(
+                key("font_size", widgetId),
+                Math.max(0, Math.min(2, value))).apply();
+    }
+
+    public static int backgroundOpacityMode(Context context, int widgetId) {
+        return Math.max(0, Math.min(2,
+                prefs(context).getInt(key("background_opacity", widgetId), 0)));
+    }
+
+    public static void setBackgroundOpacityMode(Context context, int widgetId, int value) {
+        prefs(context).edit().putInt(
+                key("background_opacity", widgetId),
+                Math.max(0, Math.min(2, value))).apply();
+    }
+
+    public static int sortMode(Context context, int widgetId) {
+        return Math.max(0, Math.min(2,
+                prefs(context).getInt(key("sort_mode", widgetId), 0)));
+    }
+
+    public static void setSortMode(Context context, int widgetId, int value) {
+        prefs(context).edit().putInt(
+                key("sort_mode", widgetId),
+                Math.max(0, Math.min(2, value))).apply();
+    }
+
     public static boolean isDark(Context context, int widgetId) {
         int mode = themeMode(context, widgetId);
         if (mode == THEME_LIGHT) return false;
@@ -88,6 +188,17 @@ public final class WidgetPrefs {
                 .remove(key("accent", widgetId))
                 .remove(key("width_cells", widgetId))
                 .remove(key("height_cells", widgetId))
+                .remove(key("show_header", widgetId))
+                .remove(key("show_date", widgetId))
+                .remove(key("show_add", widgetId))
+                .remove(key("show_settings", widgetId))
+                .remove(key("show_section_label", widgetId))
+                .remove(key("show_priority", widgetId))
+                .remove(key("show_metadata", widgetId))
+                .remove(key("max_items", widgetId))
+                .remove(key("font_size", widgetId))
+                .remove(key("background_opacity", widgetId))
+                .remove(key("sort_mode", widgetId))
                 .apply();
     }
 }
