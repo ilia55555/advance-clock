@@ -237,7 +237,7 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
                                 art.length);
                     }
                 }
-                return scale(bitmap, 180, 130);
+                return scale(bitmap, 128, 96);
             } catch (Exception ignored) {
                 return null;
             } finally {
@@ -270,7 +270,7 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
             try (InputStream second = context.getContentResolver().openInputStream(uri)) {
                 if (second == null) return null;
                 Bitmap bitmap = BitmapFactory.decodeStream(second, null, options);
-                return scale(bitmap, 180, 130);
+                return scale(bitmap, 128, 96);
             }
         } catch (Exception ignored) {
             return null;
