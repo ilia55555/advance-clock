@@ -155,9 +155,25 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
         root.setTextColor(
                 R.id.media_widget_empty,
                 muted);
-        root.setViewVisibility(
-                R.id.media_widget_empty,
-                items.isEmpty() ? View.VISIBLE : View.GONE);
+        if (items.isEmpty()) {
+            root.setTextViewText(
+                    R.id.media_widget_empty,
+                    "فایلی انتخاب نشده است\nبرای افزودن لمس کنید");
+            root.setViewVisibility(
+                    R.id.media_widget_empty,
+                    View.VISIBLE);
+        } else if (maxVisible <= 0) {
+            root.setTextViewText(
+                    R.id.media_widget_empty,
+                    "برای نمایش فایل‌ها، ارتفاع ویجت را بیشتر کنید");
+            root.setViewVisibility(
+                    R.id.media_widget_empty,
+                    View.VISIBLE);
+        } else {
+            root.setViewVisibility(
+                    R.id.media_widget_empty,
+                    View.GONE);
+        }
 
         root.removeAllViews(R.id.media_widget_list);
 
