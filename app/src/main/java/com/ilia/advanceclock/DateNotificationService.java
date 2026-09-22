@@ -1,5 +1,6 @@
 package com.ilia.advanceclock;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -47,12 +49,33 @@ public final class DateNotificationService extends Service {
     };
 
     public static void start(Context context) {
+        if (!AppSettings.persistentDateNotificationEnabled(context)
+                || (Build.VERSION.SDK_INT >= 33
+                && context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED)) {
+            stop(context);
+            return;
+        }
+
         Intent intent = new Intent(context, DateNotificationService.class);
         if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(intent);
         else context.startService(intent);
     }
 
+    public static void stop(Context context) {
+        try {
+            context.stopService(new Intent(context, DateNotificationService.class));
+        } catch (Exception ignored) {
+        }
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        if (manager != null) manager.cancel(ID);
+    }
+
     public static void refreshNow(Context context) {
+        if (!AppSettings.persistentDateNotificationEnabled(context)) {
+            stop(context);
+            return;
+        }
         ensureChannel(context);
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         if (manager == null) return;
@@ -64,6 +87,10 @@ public final class DateNotificationService extends Service {
 
     @Override public void onCreate() {
         super.onCreate();
+        if (!AppSettings.persistentDateNotificationEnabled(this)) {
+            stopSelf();
+            return;
+        }
         ensureChannel(this);
         startForeground(ID, buildNotification(this));
         registerTimeReceiver();
@@ -73,6 +100,11 @@ public final class DateNotificationService extends Service {
     }
 
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!AppSettings.persistentDateNotificationEnabled(this)) {
+            stopForeground(STOP_FOREGROUND_REMOVE);
+            stopSelf();
+            return START_NOT_STICKY;
+        }
         refreshNow(this);
         handler.removeCallbacks(refresh);
         scheduleNextMinute();
@@ -140,14 +172,16 @@ public final class DateNotificationService extends Service {
         String title = CalendarUtils.formatDate(now, selectedType);
 
         StringBuilder twoOtherDates = new StringBuilder();
-        for (int type = CalendarUtils.PERSIAN;
-             type <= CalendarUtils.HIJRI;
-             type++) {
-            if (type == selectedType) continue;
-            if (twoOtherDates.length() > 0) twoOtherDates.append("\n");
-            twoOtherDates.append(CalendarUtils.calendarName(type))
-                    .append(": ")
-                    .append(CalendarUtils.formatDate(now, type));
+        if (AppSettings.persistentDateExtraCalendars(context)) {
+            for (int type = CalendarUtils.PERSIAN;
+                 type <= CalendarUtils.HIJRI;
+                 type++) {
+                if (type == selectedType) continue;
+                if (twoOtherDates.length() > 0) twoOtherDates.append("\n");
+                twoOtherDates.append(CalendarUtils.calendarName(type))
+                        .append(": ")
+                        .append(CalendarUtils.formatDate(now, type));
+            }
         }
 
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
@@ -155,16 +189,21 @@ public final class DateNotificationService extends Service {
                 : new Notification.Builder(context);
 
         builder.setContentTitle(title)
-                .setContentText(twoOtherDates.toString().replace("\n", "  •  "))
-                .setStyle(new Notification.BigTextStyle()
-                        .bigText(twoOtherDates.toString()))
+                .setContentText(twoOtherDates.length() == 0
+                        ? "تاریخ امروز"
+                        : twoOtherDates.toString().replace("\n", "  •  "))
                 .setContentIntent(content)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setCategory(Notification.CATEGORY_STATUS)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setVisibility(AppSettings.notificationVisibility(context))
                 .setPriority(Notification.PRIORITY_LOW);
+
+        if (twoOtherDates.length() > 0) {
+            builder.setStyle(new Notification.BigTextStyle()
+                    .bigText(twoOtherDates.toString()));
+        }
 
         if (Build.VERSION.SDK_INT >= 23) {
             builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
