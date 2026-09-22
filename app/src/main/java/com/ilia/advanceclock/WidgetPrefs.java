@@ -82,6 +82,33 @@ public final class WidgetPrefs {
         prefs(context).edit().putBoolean(key("show_date", widgetId), value).apply();
     }
 
+    public static boolean showTime(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_time", widgetId), true);
+    }
+
+    public static void setShowTime(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_time", widgetId), value).apply();
+    }
+
+    public static int timeFormatMode(Context context, int widgetId) {
+        return Math.max(0, Math.min(2,
+                prefs(context).getInt(key("time_format", widgetId), 0)));
+    }
+
+    public static void setTimeFormatMode(Context context, int widgetId, int value) {
+        prefs(context).edit().putInt(
+                key("time_format", widgetId),
+                Math.max(0, Math.min(2, value))).apply();
+    }
+
+    public static boolean showSeconds(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("show_seconds", widgetId), false);
+    }
+
+    public static void setShowSeconds(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("show_seconds", widgetId), value).apply();
+    }
+
     public static boolean showAddButton(Context context, int widgetId) {
         return prefs(context).getBoolean(key("show_add", widgetId), true);
     }
@@ -206,6 +233,9 @@ public final class WidgetPrefs {
                 .remove(key("height_cells", widgetId))
                 .remove(key("show_header", widgetId))
                 .remove(key("show_date", widgetId))
+                .remove(key("show_time", widgetId))
+                .remove(key("time_format", widgetId))
+                .remove(key("show_seconds", widgetId))
                 .remove(key("show_add", widgetId))
                 .remove(key("show_settings", widgetId))
                 .remove(key("show_section_label", widgetId))
