@@ -181,6 +181,10 @@ public final class MediaWidgetRemoteViewsService
                     row.setImageViewResource(
                             R.id.media_item_preview,
                             fallbackIcon(item.mime));
+                    row.setInt(
+                            R.id.media_item_preview,
+                            "setColorFilter",
+                            secondary);
                 }
             }
 
