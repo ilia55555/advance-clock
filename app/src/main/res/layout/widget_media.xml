@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical|start"
-            android:text="فایل‌ها و رسانه‌ها"
+            android:text="یادآوری فایل‌ها"
             android:textColor="#173F3B"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -52,16 +52,23 @@
     <TextView
         android:id="@+id/media_widget_empty"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
-        android:padding="18dp"
+        android:padding="14dp"
         android:text="فایلی انتخاب نشده است&#10;برای افزودن لمس کنید"
         android:textColor="#758783"
         android:textSize="13sp" />
 
-    <LinearLayout
+    <ListView
         android:id="@+id/media_widget_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="4dp"
+        android:paddingBottom="2dp"
+        android:scrollbars="vertical"
+        android:visibility="gone" />
 </LinearLayout>
