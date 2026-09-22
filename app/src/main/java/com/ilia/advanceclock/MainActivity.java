@@ -2,6 +2,7 @@ package com.ilia.advanceclock;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -861,17 +862,37 @@ public final class MainActivity extends Activity {
             return;
         }
 
+        boolean note = provider == NoForgetWidgetProvider.class;
+        Intent callbackIntent = new Intent(
+                this,
+                WidgetSettingsActivity.class)
+                .putExtra(
+                        "widgetKind",
+                        note ? "note" : "clock")
+                .putExtra("editExisting", false)
+                .addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent successCallback =
+                PendingIntent.getActivity(
+                        this,
+                        note ? 2_910_002 : 2_910_001,
+                        callbackIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE);
+
         boolean opened = manager.requestPinAppWidget(
                 new ComponentName(this, provider),
                 null,
-                null);
+                successCallback);
 
-        if (opened) {
-            getWindow().getDecorView().postDelayed(() -> {
-                moveTaskToBack(true);
-                finishAndRemoveTask();
-            }, 180);
-        }
+        Toast.makeText(
+                this,
+                opened
+                        ? "درخواست افزودن ویجت ارسال شد؛ پس از تأیید لانچر، تنظیمات همان ویجت باز می‌شود."
+                        : "لانچر درخواست افزودن ویجت را نپذیرفت.",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void renderAlarms() {
