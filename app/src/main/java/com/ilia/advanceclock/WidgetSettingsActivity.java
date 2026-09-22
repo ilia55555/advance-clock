@@ -18,6 +18,7 @@ import android.widget.TextView;
 public final class WidgetSettingsActivity extends Activity {
     private int widgetId;
     private String kind;
+    private boolean returnToCenter;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -28,6 +29,7 @@ public final class WidgetSettingsActivity extends Activity {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         kind = getIntent().getStringExtra("widgetKind");
+        returnToCenter = getIntent().getBooleanExtra("returnToCenter", false);
 
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             returnToHome();
@@ -195,6 +197,11 @@ public final class WidgetSettingsActivity extends Activity {
     }
 
     private void returnToHome() {
+        if (returnToCenter) {
+            finish();
+            return;
+        }
+
         Intent home = new Intent(Intent.ACTION_MAIN);
         home.addCategory(Intent.CATEGORY_HOME);
         home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
