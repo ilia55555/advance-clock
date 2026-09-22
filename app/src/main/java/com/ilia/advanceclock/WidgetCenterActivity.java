@@ -204,7 +204,7 @@ public final class WidgetCenterActivity extends Activity {
         if (provider == MediaWidgetProvider.class) {
             kind = "media";
             callbackIntent = new Intent(this, MediaWidgetConfigActivity.class)
-                    .putExtra("editExisting", true);
+                    .putExtra("editExisting", false);
         } else {
             kind = provider == NoForgetWidgetProvider.class
                     ? "note"
@@ -226,7 +226,7 @@ public final class WidgetCenterActivity extends Activity {
                 callbackRequestCode,
                 callbackIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
-                        | PendingIntent.FLAG_MUTABLE);
+                        | PendingIntent.FLAG_IMMUTABLE);
 
         boolean opened = manager.requestPinAppWidget(
                 new ComponentName(this, provider),
