@@ -30,6 +30,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
     private int widgetId;
     private boolean editExisting;
+    private boolean savedSuccessfully;
     private final ArrayList<MediaWidgetPrefs.Item> items =
             new ArrayList<>();
 
@@ -632,6 +633,7 @@ public final class MediaWidgetConfigActivity extends Activity {
                 this,
                 widgetId,
                 items);
+        savedSuccessfully = true;
 
         MediaUriPermissionUtils.releaseUnused(
                 this,
@@ -759,6 +761,15 @@ public final class MediaWidgetConfigActivity extends Activity {
                         ? "اندازه هدف با اندازه دقیق گزارش‌شده توسط لانچر همگام شد."
                         : "اندازه هدف با بهترین برآورد لانچر همگام شد.",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override protected void onDestroy() {
+        if (!savedSuccessfully) {
+            MediaUriPermissionUtils.releaseUnused(
+                    this,
+                    new ArrayList<>(items));
+        }
+        super.onDestroy();
     }
 
     private Switch addSwitch(
