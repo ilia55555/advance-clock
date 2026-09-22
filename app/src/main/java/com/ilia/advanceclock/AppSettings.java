@@ -100,6 +100,52 @@ public final class AppSettings {
         prefs(context).edit().putInt("clock_layout_mode", value).apply();
     }
 
+    public static boolean persistentDateNotificationEnabled(Context context) {
+        return prefs(context).getBoolean("notification_persistent_date", true);
+    }
+
+    public static void setPersistentDateNotificationEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("notification_persistent_date", value).apply();
+    }
+
+    public static boolean persistentDateExtraCalendars(Context context) {
+        return prefs(context).getBoolean("notification_persistent_extra_calendars", true);
+    }
+
+    public static void setPersistentDateExtraCalendars(Context context, boolean value) {
+        prefs(context).edit().putBoolean("notification_persistent_extra_calendars", value).apply();
+    }
+
+    public static boolean alarmReminderNotificationsEnabled(Context context) {
+        return prefs(context).getBoolean("notification_alarm_reminders", true);
+    }
+
+    public static void setAlarmReminderNotificationsEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("notification_alarm_reminders", value).apply();
+    }
+
+    public static boolean noteReminderNotificationsEnabled(Context context) {
+        return prefs(context).getBoolean("notification_note_reminders", true);
+    }
+
+    public static void setNoteReminderNotificationsEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("notification_note_reminders", value).apply();
+    }
+
+    public static boolean notificationLockscreenDetails(Context context) {
+        return prefs(context).getBoolean("notification_lockscreen_details", true);
+    }
+
+    public static void setNotificationLockscreenDetails(Context context, boolean value) {
+        prefs(context).edit().putBoolean("notification_lockscreen_details", value).apply();
+    }
+
+    public static int notificationVisibility(Context context) {
+        return notificationLockscreenDetails(context)
+                ? android.app.Notification.VISIBILITY_PUBLIC
+                : android.app.Notification.VISIBILITY_PRIVATE;
+    }
+
     public static int primaryColor(Context context) {
         return primaryColorForPalette(palette(context));
     }
