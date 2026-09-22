@@ -46,10 +46,18 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         int height = options.getInt(
                 AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
                 0);
+        int width = options.getInt(
+                AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
+                0);
         if (height <= 0) {
             height = Math.max(
                     40,
                     WidgetPrefs.heightCells(context, widgetId) * 70 - 30);
+        }
+        if (width <= 0) {
+            width = Math.max(
+                    100,
+                    WidgetPrefs.widthCells(context, widgetId) * 70 - 30);
         }
 
         boolean showHeader = WidgetPrefs.showHeader(context, widgetId);
@@ -82,7 +90,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                 showHeader ? View.VISIBLE : View.GONE);
         root.setViewVisibility(
                 R.id.widget_date,
-                showHeader && WidgetPrefs.showDate(context, widgetId)
+                showHeader
+                        && WidgetPrefs.showDate(context, widgetId)
+                        && width >= 180
                         ? View.VISIBLE : View.GONE);
         root.setViewVisibility(
                 R.id.widget_add,
@@ -90,7 +100,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                         ? View.VISIBLE : View.GONE);
         root.setViewVisibility(
                 R.id.widget_theme,
-                showHeader && WidgetPrefs.showSettingsButton(context, widgetId)
+                showHeader
+                        && WidgetPrefs.showSettingsButton(context, widgetId)
+                        && width >= 145
                         ? View.VISIBLE : View.GONE);
         root.setViewVisibility(
                 R.id.widget_section_label,
@@ -129,9 +141,19 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                 rowCount,
                 WidgetPrefs.sortMode(context, widgetId));
 
-        root.setViewVisibility(
-                R.id.widget_empty,
-                rowCount > 0 && items.isEmpty() ? View.VISIBLE : View.GONE);
+        if (rowCount <= 0) {
+            root.setTextViewText(
+                    R.id.widget_empty,
+                    "برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید");
+            root.setViewVisibility(R.id.widget_empty, View.VISIBLE);
+        } else {
+            root.setTextViewText(
+                    R.id.widget_empty,
+                    "هشداری تنظیم نشده");
+            root.setViewVisibility(
+                    R.id.widget_empty,
+                    items.isEmpty() ? View.VISIBLE : View.GONE);
+        }
 
         boolean showPriority = WidgetPrefs.showPriority(context, widgetId);
         boolean showMetadata = WidgetPrefs.showMetadata(context, widgetId);
