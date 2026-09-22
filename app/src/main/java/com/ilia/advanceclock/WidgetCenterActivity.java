@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -197,10 +198,36 @@ public final class WidgetCenterActivity extends Activity {
             return;
         }
 
+        Intent callbackIntent;
+        String kind;
+
+        if (provider == MediaWidgetProvider.class) {
+            kind = "media";
+            callbackIntent = new Intent(this, MediaWidgetConfigActivity.class)
+                    .putExtra("editExisting", true);
+        } else {
+            kind = provider == NoForgetWidgetProvider.class
+                    ? "note"
+                    : "clock";
+            callbackIntent = new Intent(this, WidgetSettingsActivity.class)
+                    .putExtra("widgetKind", kind);
+        }
+
+        callbackIntent.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent successCallback = PendingIntent.getActivity(
+                this,
+                2_900_000 + kind.hashCode(),
+                callbackIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+                        | PendingIntent.FLAG_MUTABLE);
+
         boolean opened = manager.requestPinAppWidget(
                 new ComponentName(this, provider),
                 null,
-                null);
+                successCallback);
 
         Toast.makeText(
                 this,
