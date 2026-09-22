@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Locale;
 
 public final class MediaPreviewCache {
-    private static final int PREVIEW_WIDTH = 128;
-    private static final int PREVIEW_HEIGHT = 96;
+    private static final int PREVIEW_WIDTH = 72;
+    private static final int PREVIEW_HEIGHT = 54;
 
     private MediaPreviewCache() {}
 
