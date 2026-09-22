@@ -263,7 +263,7 @@ public final class MediaPreviewCache {
         }
     }
 
-    private static void cleanupUnusedPreviewFiles(Context context) {
+    public static void cleanupUnusedPreviewFiles(Context context) {
         File directory = new File(
                 context.getFilesDir(),
                 "media_widget_previews");
