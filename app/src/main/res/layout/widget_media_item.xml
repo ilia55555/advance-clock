@@ -3,7 +3,6 @@
     android:id="@+id/media_item_root"
     android:layout_width="match_parent"
     android:layout_height="66dp"
-    android:layout_marginBottom="4dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingHorizontal="6dp"
@@ -15,7 +14,7 @@
         android:layout_height="58dp"
         android:background="@android:color/transparent"
         android:contentDescription="پیش‌نمایش"
-        android:padding="4dp"
+        android:padding="3dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_note" />
 
@@ -47,4 +46,14 @@
             android:textColor="#758783"
             android:textSize="10sp" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/media_item_playback"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="پخش یا مکث"
+        android:padding="9dp"
+        android:src="@drawable/ic_md_play"
+        android:visibility="gone" />
 </LinearLayout>
