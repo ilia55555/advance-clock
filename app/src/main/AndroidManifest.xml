@@ -67,6 +67,11 @@
             android:foregroundServiceType="mediaPlayback" />
 
         <service
+            android:name=".MediaPreviewJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
+        <service
             android:name=".DateNotificationService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
