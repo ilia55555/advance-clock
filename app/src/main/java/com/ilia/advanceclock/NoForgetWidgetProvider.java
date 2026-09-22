@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -14,101 +15,232 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class NoForgetWidgetProvider extends AppWidgetProvider {
-    @Override public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
+    @Override public void onUpdate(
+            Context context,
+            AppWidgetManager manager,
+            int[] ids) {
         for (int id : ids) update(context, manager, id);
     }
 
-    @Override public void onAppWidgetOptionsChanged(Context context, AppWidgetManager manager,
-                                                     int appWidgetId, Bundle newOptions) {
+    @Override public void onAppWidgetOptionsChanged(
+            Context context,
+            AppWidgetManager manager,
+            int appWidgetId,
+            Bundle newOptions) {
         update(context, manager, appWidgetId);
     }
 
     public static void updateAll(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, NoForgetWidgetProvider.class));
+        int[] ids = manager.getAppWidgetIds(
+                new ComponentName(context, NoForgetWidgetProvider.class));
         for (int id : ids) update(context, manager, id);
     }
 
-    private static void update(Context context, AppWidgetManager manager, int widgetId) {
+    private static void update(
+            Context context,
+            AppWidgetManager manager,
+            int widgetId) {
         Bundle options = manager.getAppWidgetOptions(widgetId);
-        int height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 160);
-        int rowCount = Math.max(0, Math.min(10, (height - 86) / 58));
+        int height = options.getInt(
+                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
+                0);
+        if (height <= 0) {
+            height = Math.max(
+                    40,
+                    WidgetPrefs.heightCells(context, widgetId) * 70 - 30);
+        }
 
-        RemoteViews root = new RemoteViews(context.getPackageName(), R.layout.widget_noforget);
+        boolean showHeader = WidgetPrefs.showHeader(context, widgetId);
+        boolean showSection = WidgetPrefs.showSectionLabel(context, widgetId);
+        int reserved = 24 + (showHeader ? 45 : 0) + (showSection ? 20 : 0);
+        int rowCount = Math.max(0, (height - reserved) / 62);
+        rowCount = Math.min(
+                WidgetPrefs.maxItems(context, widgetId),
+                Math.min(10, rowCount));
+
+        RemoteViews root = new RemoteViews(
+                context.getPackageName(),
+                R.layout.widget_noforget);
+
         boolean dark = WidgetPrefs.isDark(context, widgetId);
         int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
         int muted = dark ? 0xFFAFBCB8 : 0xFF758783;
         int primary = WidgetPrefs.primary(context, widgetId);
         int secondary = WidgetPrefs.secondary(context, widgetId);
 
-        root.setInt(R.id.noforget_widget_root, "setBackgroundResource",
-                dark ? R.drawable.widget_background_dark : R.drawable.widget_background);
+        root.setInt(
+                R.id.noforget_widget_root,
+                "setBackgroundResource",
+                backgroundResource(
+                        dark,
+                        WidgetPrefs.backgroundOpacityMode(context, widgetId)));
+
+        root.setViewVisibility(
+                R.id.noforget_widget_header,
+                showHeader ? View.VISIBLE : View.GONE);
+        root.setViewVisibility(
+                R.id.noforget_widget_date,
+                showHeader && WidgetPrefs.showDate(context, widgetId)
+                        ? View.VISIBLE : View.GONE);
+        root.setViewVisibility(
+                R.id.noforget_widget_add,
+                showHeader && WidgetPrefs.showAddButton(context, widgetId)
+                        ? View.VISIBLE : View.GONE);
+        root.setViewVisibility(
+                R.id.noforget_widget_theme,
+                showHeader && WidgetPrefs.showSettingsButton(context, widgetId)
+                        ? View.VISIBLE : View.GONE);
+        root.setViewVisibility(
+                R.id.noforget_widget_section_label,
+                showSection ? View.VISIBLE : View.GONE);
+
         root.setTextColor(R.id.noforget_widget_time, primary);
         root.setTextColor(R.id.noforget_widget_date, muted);
         root.setTextColor(R.id.noforget_widget_section_label, primary);
         root.setTextColor(R.id.noforget_widget_add, secondary);
-        root.setInt(R.id.noforget_widget_theme, "setColorFilter", secondary);
+        root.setInt(
+                R.id.noforget_widget_theme,
+                "setColorFilter",
+                secondary);
         root.setTextColor(R.id.noforget_widget_empty, muted);
-        root.setTextViewText(R.id.noforget_widget_date,
-                CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(context)));
+
+        float[] sizes = fontSizes(
+                WidgetPrefs.fontSizeMode(context, widgetId));
+        root.setTextViewTextSize(
+                R.id.noforget_widget_time,
+                TypedValue.COMPLEX_UNIT_SP,
+                sizes[0]);
+        root.setTextViewTextSize(
+                R.id.noforget_widget_date,
+                TypedValue.COMPLEX_UNIT_SP,
+                sizes[1]);
+        root.setTextViewTextSize(
+                R.id.noforget_widget_section_label,
+                TypedValue.COMPLEX_UNIT_SP,
+                sizes[2]);
+
+        root.setTextViewText(
+                R.id.noforget_widget_date,
+                CalendarUtils.formatDate(
+                        System.currentTimeMillis(),
+                        AppSettings.defaultCalendar(context)));
 
         root.removeAllViews(R.id.noforget_widget_list);
-        List<NoForgetItem> items = widgetOrder(new NoForgetStore(context).all(), rowCount);
-        root.setViewVisibility(R.id.noforget_widget_empty,
-                rowCount > 0 && items.isEmpty() ? View.VISIBLE : View.GONE);
+        List<NoForgetItem> items = widgetOrder(
+                new NoForgetStore(context).all(),
+                rowCount,
+                WidgetPrefs.sortMode(context, widgetId));
+
+        root.setViewVisibility(
+                R.id.noforget_widget_empty,
+                rowCount > 0 && items.isEmpty()
+                        ? View.VISIBLE
+                        : View.GONE);
+
+        boolean showPriority = WidgetPrefs.showPriority(context, widgetId);
+        boolean showMetadata = WidgetPrefs.showMetadata(context, widgetId);
 
         for (NoForgetItem item : items) {
-            RemoteViews row = new RemoteViews(context.getPackageName(), R.layout.widget_noforget_row);
-            row.setTextViewText(R.id.noforget_row_title,
+            RemoteViews row = new RemoteViews(
+                    context.getPackageName(),
+                    R.layout.widget_noforget_row);
+
+            row.setTextViewText(
+                    R.id.noforget_row_title,
                     item.title.trim().isEmpty()
-                            ? (item.body.trim().isEmpty() ? "دست‌نویس" : item.body)
+                            ? (item.body.trim().isEmpty()
+                            ? "دست‌نویس"
+                            : item.body)
                             : item.title);
 
             String meta = item.hasDue
-                    ? CalendarUtils.formatDate(item.dueAtMillis, AppSettings.defaultCalendar(context))
+                    ? CalendarUtils.formatDate(
+                    item.dueAtMillis,
+                    AppSettings.defaultCalendar(context))
                     : "بدون آلارم";
             if (item.reminderEnabled) meta = "آلارم • " + meta;
+
             row.setTextViewText(R.id.noforget_row_meta, meta);
-            row.setTextViewText(R.id.noforget_row_priority,
+            row.setTextViewText(
+                    R.id.noforget_row_priority,
                     PriorityUtils.label(item.priority));
+
+            row.setViewVisibility(
+                    R.id.noforget_row_meta,
+                    showMetadata ? View.VISIBLE : View.GONE);
+            row.setViewVisibility(
+                    R.id.noforget_row_priority,
+                    showPriority ? View.VISIBLE : View.GONE);
 
             row.setTextColor(R.id.noforget_row_title, text);
             row.setTextColor(R.id.noforget_row_meta, muted);
-            row.setTextColor(R.id.noforget_row_priority,
-                    item.priority >= PriorityUtils.HIGH ? 0xFFC84D4D : primary);
+            row.setTextColor(
+                    R.id.noforget_row_priority,
+                    item.priority >= PriorityUtils.HIGH
+                            ? 0xFFC84D4D
+                            : primary);
 
-            Intent edit = new Intent(context, NoForgetEditorActivity.class).putExtra("noteId", item.id);
-            row.setOnClickPendingIntent(R.id.noforget_row_root, PendingIntent.getActivity(
-                    context,
-                    1_500_000 + (int) Math.abs(item.id % 1_000_000),
-                    edit,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+            row.setTextViewTextSize(
+                    R.id.noforget_row_title,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    sizes[3]);
+            row.setTextViewTextSize(
+                    R.id.noforget_row_meta,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    sizes[4]);
+            row.setTextViewTextSize(
+                    R.id.noforget_row_priority,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    sizes[5]);
+
+            Intent edit = new Intent(context, NoForgetEditorActivity.class)
+                    .putExtra("noteId", item.id);
+            row.setOnClickPendingIntent(
+                    R.id.noforget_row_root,
+                    PendingIntent.getActivity(
+                            context,
+                            1_500_000 + (int) Math.abs(
+                                    item.id % 1_000_000),
+                            edit,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                                    | PendingIntent.FLAG_IMMUTABLE));
+
             root.addView(R.id.noforget_widget_list, row);
         }
 
-        root.setOnClickPendingIntent(R.id.noforget_widget_add, PendingIntent.getActivity(
-                context,
-                1_600_000 + widgetId,
-                new Intent(context, NoForgetQuickAddActivity.class),
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        root.setOnClickPendingIntent(
+                R.id.noforget_widget_add,
+                PendingIntent.getActivity(
+                        context,
+                        1_600_000 + widgetId,
+                        new Intent(context, NoForgetQuickAddActivity.class),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE));
 
         Intent openApp = new Intent(context, MainActivity.class)
                 .putExtra("openTab", "noforget")
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        root.setOnClickPendingIntent(R.id.noforget_widget_header, PendingIntent.getActivity(
-                context,
-                1_700_000 + widgetId,
-                openApp,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        root.setOnClickPendingIntent(
+                R.id.noforget_widget_header,
+                PendingIntent.getActivity(
+                        context,
+                        1_700_000 + widgetId,
+                        openApp,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE));
 
-        Intent themeIntent = new Intent(context, WidgetSettingsActivity.class)
+        Intent settings = new Intent(context, WidgetSettingsActivity.class)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 .putExtra("widgetKind", "note");
-        root.setOnClickPendingIntent(R.id.noforget_widget_theme, PendingIntent.getActivity(
-                context,
-                1_800_000 + widgetId,
-                themeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        root.setOnClickPendingIntent(
+                R.id.noforget_widget_theme,
+                PendingIntent.getActivity(
+                        context,
+                        1_800_000 + widgetId,
+                        settings,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE));
 
         manager.updateAppWidget(widgetId, root);
     }
@@ -118,40 +250,72 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
     }
 
-    private static List<NoForgetItem> widgetOrder(List<NoForgetItem> source, int limit) {
+    private static int backgroundResource(boolean dark, int mode) {
+        if (dark) {
+            if (mode == 1) return R.drawable.widget_background_dark_85;
+            if (mode == 2) return R.drawable.widget_background_dark_70;
+            return R.drawable.widget_background_dark;
+        }
+        if (mode == 1) return R.drawable.widget_background_light_85;
+        if (mode == 2) return R.drawable.widget_background_light_70;
+        return R.drawable.widget_background;
+    }
+
+    private static float[] fontSizes(int mode) {
+        if (mode == 0) {
+            return new float[]{19f, 10f, 9f, 12f, 9f, 9f};
+        }
+        if (mode == 2) {
+            return new float[]{26f, 13f, 11f, 15f, 12f, 11f};
+        }
+        return new float[]{22f, 11f, 10f, 13f, 10f, 10f};
+    }
+
+    private static List<NoForgetItem> widgetOrder(
+            List<NoForgetItem> source,
+            int limit,
+            int sortMode) {
         if (limit <= 0 || source.isEmpty()) return new ArrayList<>();
 
-        long now = System.currentTimeMillis();
-        NoForgetItem nearest = null;
-        long nearestDistance = Long.MAX_VALUE;
+        ArrayList<NoForgetItem> items = new ArrayList<>(source);
 
-        for (NoForgetItem item : source) {
-            if (!item.hasDue || item.dueAtMillis <= 0) continue;
-            long distance = Math.abs(item.dueAtMillis - now);
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearest = item;
+        if (sortMode == 1) {
+            items.sort((a, b) ->
+                    Long.compare(b.createdAt, a.createdAt));
+        } else if (sortMode == 2) {
+            items.sort((a, b) -> {
+                int priority = Integer.compare(b.priority, a.priority);
+                if (priority != 0) return priority;
+                return Long.compare(b.createdAt, a.createdAt);
+            });
+        } else {
+            long now = System.currentTimeMillis();
+            NoForgetItem nearest = null;
+            long nearestDistance = Long.MAX_VALUE;
+
+            for (NoForgetItem item : items) {
+                if (!item.hasDue || item.dueAtMillis <= 0) continue;
+                long distance = Math.abs(item.dueAtMillis - now);
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                    nearest = item;
+                }
             }
+
+            if (nearest != null) items.remove(nearest);
+            items.sort((a, b) -> {
+                int priority = Integer.compare(b.priority, a.priority);
+                if (priority != 0) return priority;
+                if (a.hasDue && b.hasDue) {
+                    return Long.compare(a.dueAtMillis, b.dueAtMillis);
+                }
+                if (a.hasDue != b.hasDue) return a.hasDue ? -1 : 1;
+                return Long.compare(b.createdAt, a.createdAt);
+            });
+            if (nearest != null) items.add(0, nearest);
         }
 
-        ArrayList<NoForgetItem> rest = new ArrayList<>(source);
-        if (nearest != null) rest.remove(nearest);
-
-        rest.sort((a, b) -> {
-            int p = Integer.compare(b.priority, a.priority);
-            if (p != 0) return p;
-
-            if (a.hasDue && b.hasDue) return Long.compare(a.dueAtMillis, b.dueAtMillis);
-            if (a.hasDue != b.hasDue) return a.hasDue ? -1 : 1;
-            return Long.compare(b.createdAt, a.createdAt);
-        });
-
-        ArrayList<NoForgetItem> out = new ArrayList<>();
-        if (nearest != null) out.add(nearest);
-        for (NoForgetItem item : rest) {
-            if (out.size() >= limit) break;
-            out.add(item);
-        }
-        return out;
+        if (items.size() <= limit) return items;
+        return new ArrayList<>(items.subList(0, limit));
     }
 }
