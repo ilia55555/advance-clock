@@ -10,6 +10,7 @@ public final class BootReceiver extends BroadcastReceiver {
         NoForgetScheduler.rescheduleAll(context);
         ClockWidgetProvider.updateAll(context);
         NoForgetWidgetProvider.updateAll(context);
+        MediaWidgetProvider.updateAll(context);
 
         // Refresh/start only when the user has enabled the persistent date
         // notification. Otherwise make sure an old service/notification is gone.
