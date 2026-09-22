@@ -37,6 +37,7 @@ import java.util.Locale;
 public final class MainActivity extends Activity {
     private static final int REQ_NOTIFICATIONS = 100;
     private static final int REQ_SETTINGS = 200;
+    private static final int REQ_NOTIFICATION_SETTINGS = 201;
     private static final int REQ_QUICK_ALARM_IMAGE_1 = 310;
     private static final int REQ_QUICK_ALARM_IMAGE_2 = 311;
     private static final String PREFS = "advance_clock_app";
@@ -216,11 +217,18 @@ public final class MainActivity extends Activity {
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
             menu.getMenu().add(0, 1, 0, "تنظیمات");
-            menu.getMenu().add(0, 2, 1, "افزودن ویجت این بخش");
-            menu.getMenu().add(0, 3, 2, "مجوزهای آلارم و اعلان");
+            menu.getMenu().add(0, 4, 1, "تنظیمات اعلان");
+            menu.getMenu().add(0, 2, 2, "افزودن ویجت این بخش");
+            menu.getMenu().add(0, 3, 3, "مجوزهای آلارم و اعلان");
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
+                    return true;
+                }
+                if (item.getItemId() == 4) {
+                    startActivityForResult(
+                            new Intent(this, NotificationSettingsActivity.class),
+                            REQ_NOTIFICATION_SETTINGS);
                     return true;
                 }
                 if (item.getItemId() == 2) {
@@ -695,7 +703,8 @@ public final class MainActivity extends Activity {
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
+        if ((requestCode == REQ_SETTINGS || requestCode == REQ_NOTIFICATION_SETTINGS)
+                && resultCode == RESULT_OK) {
             recreate();
             return;
         }
