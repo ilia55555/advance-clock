@@ -21,6 +21,7 @@
         android:theme="@style/Theme.AdvanceClock">
 
         <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".NotificationSettingsActivity" android:exported="false" />
         <activity
             android:name=".WidgetSettingsActivity"
             android:exported="false"
