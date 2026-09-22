@@ -166,6 +166,22 @@ public final class WidgetPrefs {
                 Math.max(0, Math.min(2, value))).apply();
     }
 
+    public static boolean mediaShowPreview(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("media_show_preview", widgetId), true);
+    }
+
+    public static void setMediaShowPreview(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("media_show_preview", widgetId), value).apply();
+    }
+
+    public static boolean mediaShowFileName(Context context, int widgetId) {
+        return prefs(context).getBoolean(key("media_show_name", widgetId), true);
+    }
+
+    public static void setMediaShowFileName(Context context, int widgetId, boolean value) {
+        prefs(context).edit().putBoolean(key("media_show_name", widgetId), value).apply();
+    }
+
     public static boolean isDark(Context context, int widgetId) {
         int mode = themeMode(context, widgetId);
         if (mode == THEME_LIGHT) return false;
@@ -199,6 +215,8 @@ public final class WidgetPrefs {
                 .remove(key("font_size", widgetId))
                 .remove(key("background_opacity", widgetId))
                 .remove(key("sort_mode", widgetId))
+                .remove(key("media_show_preview", widgetId))
+                .remove(key("media_show_name", widgetId))
                 .apply();
     }
 }
