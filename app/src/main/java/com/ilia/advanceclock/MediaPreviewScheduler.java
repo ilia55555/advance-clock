@@ -48,6 +48,6 @@ public final class MediaPreviewScheduler {
     }
 
     private static int jobId(int widgetId) {
-        return BASE_JOB_ID ^ widgetId;
+        return (BASE_JOB_ID ^ widgetId) & 0x7FFFFFFF;
     }
 }
