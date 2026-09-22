@@ -17,12 +17,32 @@ public final class MediaWidgetPrefs {
         public final String uri;
         public final String name;
         public final String mime;
+        public final String previewPath;
+        public final String textPreview;
 
         public Item(String uri, String name, String mime) {
+            this(uri, name, mime, "", "");
+        }
+
+        public Item(
+                String uri,
+                String name,
+                String mime,
+                String previewPath,
+                String textPreview) {
             this.uri = uri == null ? "" : uri;
-            this.name = name == null || name.trim().isEmpty() ? "فایل" : name;
+            this.name = name == null || name.trim().isEmpty()
+                    ? "فایل"
+                    : name;
             this.mime = mime == null || mime.trim().isEmpty()
-                    ? "application/octet-stream" : mime;
+                    ? "application/octet-stream"
+                    : mime;
+            this.previewPath = previewPath == null ? "" : previewPath;
+            this.textPreview = textPreview == null ? "" : textPreview;
+        }
+
+        public Item withPreview(String path, String text) {
+            return new Item(uri, name, mime, path, text);
         }
     }
 
@@ -41,38 +61,67 @@ public final class MediaWidgetPrefs {
         String raw = prefs(context).getString(key(widgetId), "[]");
         try {
             JSONArray array = new JSONArray(raw);
-            for (int i = 0; i < array.length() && out.size() < MAX_ITEMS; i++) {
+            for (int i = 0;
+                 i < array.length() && out.size() < MAX_ITEMS;
+                 i++) {
                 JSONObject object = array.optJSONObject(i);
                 if (object == null) continue;
+
                 String uri = object.optString("uri", "");
                 if (uri.isEmpty()) continue;
+
                 out.add(new Item(
                         uri,
                         object.optString("name", "فایل"),
-                        object.optString("mime", "application/octet-stream")));
+                        object.optString(
+                                "mime",
+                                "application/octet-stream"),
+                        object.optString("previewPath", ""),
+                        object.optString("textPreview", "")));
             }
         } catch (Exception ignored) {
         }
         return out;
     }
 
-    public static void save(Context context, int widgetId, List<Item> items) {
+    public static void save(
+            Context context,
+            int widgetId,
+            List<Item> items) {
         JSONArray array = new JSONArray();
+
         if (items != null) {
-            for (int i = 0; i < items.size() && i < MAX_ITEMS; i++) {
+            for (int i = 0;
+                 i < items.size() && i < MAX_ITEMS;
+                 i++) {
                 Item item = items.get(i);
                 if (item == null || item.uri.isEmpty()) continue;
+
                 try {
                     JSONObject object = new JSONObject();
                     object.put("uri", item.uri);
                     object.put("name", item.name);
                     object.put("mime", item.mime);
+                    object.put("previewPath", item.previewPath);
+                    object.put("textPreview", item.textPreview);
                     array.put(object);
                 } catch (Exception ignored) {
                 }
             }
         }
-        prefs(context).edit().putString(key(widgetId), array.toString()).apply();
+
+        prefs(context)
+                .edit()
+                .putString(key(widgetId), array.toString())
+                .apply();
+    }
+
+    public static void migrate(
+            Context context,
+            int oldWidgetId,
+            int newWidgetId) {
+        save(context, newWidgetId, load(context, oldWidgetId));
+        clear(context, oldWidgetId);
     }
 
     public static void clear(Context context, int widgetId) {
