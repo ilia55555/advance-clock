@@ -95,8 +95,8 @@ public final class WidgetCenterActivity extends Activity {
                 "note");
 
         addWidgetCard(
-                "فایل و رسانه",
-                "عکس، صوت، ویدیو، متن، PDF و فایل‌های ترکیبی؛ با تشخیص خودکار نوع فایل",
+                "یادآوری فایل‌ها",
+                "دسترسی سریع و یادآوری عکس، صوت، ویدیو، متن، PDF و فایل‌های دیگر",
                 MediaWidgetProvider.class,
                 "media");
     }
