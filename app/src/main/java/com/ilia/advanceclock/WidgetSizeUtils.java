@@ -187,9 +187,7 @@ public final class WidgetSizeUtils {
     public static int dpToCells(float dp) {
         return Math.max(
                 1,
-                Math.min(
-                        8,
-                        Math.round((dp + 30f) / 70f)));
+                Math.round((dp + 30f) / 70f));
     }
 
     public static String describe(
