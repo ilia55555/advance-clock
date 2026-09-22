@@ -27,13 +27,16 @@ public final class WidgetSettingsActivity extends Activity {
     private Spinner palette;
     private Spinner opacity;
     private Spinner fontSize;
+    private Spinner timeFormat;
     private Spinner sortMode;
     private NumberPicker maxItems;
     private NumberPicker widthPicker;
     private NumberPicker heightPicker;
 
     private Switch showHeader;
+    private Switch showTime;
     private Switch showDate;
+    private Switch showSeconds;
     private Switch showAdd;
     private Switch showSettings;
     private Switch showSection;
@@ -166,6 +169,28 @@ public final class WidgetSettingsActivity extends Activity {
                 "ساعت، تاریخ و دکمه‌های بالای ویجت",
                 WidgetPrefs.showHeader(this, widgetId));
 
+        showTime = addSwitch(
+                root,
+                "نمایش ساعت",
+                "نمایش زمان جاری در هدر ویجت",
+                WidgetPrefs.showTime(this, widgetId));
+
+        root.addView(fieldLabel("قالب ساعت"));
+        timeFormat = spinner(new String[]{
+                "مطابق تنظیمات سیستم",
+                "۲۴ ساعته",
+                "۱۲ ساعته"
+        });
+        timeFormat.setSelection(
+                WidgetPrefs.timeFormatMode(this, widgetId));
+        root.addView(timeFormat, fieldLp());
+
+        showSeconds = addSwitch(
+                root,
+                "نمایش ثانیه",
+                "ثانیه را هم در زمان ویجت نمایش می‌دهد",
+                WidgetPrefs.showSeconds(this, widgetId));
+
         showDate = addSwitch(
                 root,
                 "نمایش تاریخ",
@@ -190,21 +215,11 @@ public final class WidgetSettingsActivity extends Activity {
                 "عنوان «هشدار» یا «یادداشت» بالای فهرست",
                 WidgetPrefs.showSectionLabel(this, widgetId));
 
-        showHeader.setOnCheckedChangeListener((button, checked) -> {
-            showDate.setEnabled(checked);
-            showAdd.setEnabled(checked);
-            showSettings.setEnabled(checked);
-            showDate.setAlpha(checked ? 1f : 0.5f);
-            showAdd.setAlpha(checked ? 1f : 0.5f);
-            showSettings.setAlpha(checked ? 1f : 0.5f);
-        });
-        boolean headerEnabled = showHeader.isChecked();
-        showDate.setEnabled(headerEnabled);
-        showAdd.setEnabled(headerEnabled);
-        showSettings.setEnabled(headerEnabled);
-        showDate.setAlpha(headerEnabled ? 1f : 0.5f);
-        showAdd.setAlpha(headerEnabled ? 1f : 0.5f);
-        showSettings.setAlpha(headerEnabled ? 1f : 0.5f);
+        showHeader.setOnCheckedChangeListener((button, checked) ->
+                updateHeaderControlState());
+        showTime.setOnCheckedChangeListener((button, checked) ->
+                updateHeaderControlState());
+        updateHeaderControlState();
     }
 
     private void addContentSection(LinearLayout root) {
@@ -339,6 +354,10 @@ public final class WidgetSettingsActivity extends Activity {
                 this, widgetId, fontSize.getSelectedItemPosition());
 
         WidgetPrefs.setShowHeader(this, widgetId, showHeader.isChecked());
+        WidgetPrefs.setShowTime(this, widgetId, showTime.isChecked());
+        WidgetPrefs.setTimeFormatMode(
+                this, widgetId, timeFormat.getSelectedItemPosition());
+        WidgetPrefs.setShowSeconds(this, widgetId, showSeconds.isChecked());
         WidgetPrefs.setShowDate(this, widgetId, showDate.isChecked());
         WidgetPrefs.setShowAddButton(this, widgetId, showAdd.isChecked());
         WidgetPrefs.setShowSettingsButton(this, widgetId, showSettings.isChecked());
@@ -363,6 +382,36 @@ public final class WidgetSettingsActivity extends Activity {
         setResult(RESULT_OK, result);
 
         if (finishAfter) finish();
+    }
+
+    private void updateHeaderControlState() {
+        boolean headerEnabled = showHeader != null && showHeader.isChecked();
+        boolean timeEnabled = headerEnabled && showTime != null && showTime.isChecked();
+
+        if (showTime != null) {
+            showTime.setEnabled(headerEnabled);
+            showTime.setAlpha(headerEnabled ? 1f : 0.5f);
+        }
+        if (showDate != null) {
+            showDate.setEnabled(headerEnabled);
+            showDate.setAlpha(headerEnabled ? 1f : 0.5f);
+        }
+        if (showAdd != null) {
+            showAdd.setEnabled(headerEnabled);
+            showAdd.setAlpha(headerEnabled ? 1f : 0.5f);
+        }
+        if (showSettings != null) {
+            showSettings.setEnabled(headerEnabled);
+            showSettings.setAlpha(headerEnabled ? 1f : 0.5f);
+        }
+        if (timeFormat != null) {
+            timeFormat.setEnabled(timeEnabled);
+            timeFormat.setAlpha(timeEnabled ? 1f : 0.5f);
+        }
+        if (showSeconds != null) {
+            showSeconds.setEnabled(timeEnabled);
+            showSeconds.setAlpha(timeEnabled ? 1f : 0.5f);
+        }
     }
 
     private void updateWidget() {
