@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/media_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layoutDirection="rtl">
+
+    <LinearLayout
+        android:id="@+id/media_widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layoutDirection="rtl">
+
+        <TextView
+            android:id="@+id/media_widget_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:text="فایل‌ها و رسانه‌ها"
+            android:textColor="#173F3B"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/media_widget_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="۰ مورد"
+            android:textColor="#758783"
+            android:textSize="11sp" />
+
+        <ImageButton
+            android:id="@+id/media_widget_settings"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="تنظیم ویجت"
+            android:padding="10dp"
+            android:src="@drawable/ic_md_settings"
+            android:tint="#006666" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/media_widget_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="18dp"
+        android:text="فایلی انتخاب نشده است&#10;برای افزودن لمس کنید"
+        android:textColor="#758783"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:id="@+id/media_widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+</LinearLayout>
