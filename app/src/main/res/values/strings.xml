@@ -3,5 +3,5 @@
     <string name="app_name">Advance</string>
     <string name="widget_description">ساعت پیشرفته و آلارم‌های پیش رو</string>
     <string name="noforget_widget_description">یادداشت‌ها و یادآوری‌های NoForget</string>
-    <string name="media_widget_description">عکس، صوت، ویدیو و فایل‌های ترکیبی</string>
+    <string name="media_widget_name">یادآوری فایل‌ها</string>\n    <string name="media_widget_description">یادآوری و دسترسی سریع به عکس، صوت، ویدیو و فایل‌ها</string>
 </resources>
