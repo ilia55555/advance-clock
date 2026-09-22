@@ -16,6 +16,7 @@ public final class AlarmReminderReceiver extends BroadcastReceiver {
         int minutes = intent.getIntExtra("delayMinutes", 0);
         AlarmItem item = new AlarmStore(context).find(alarmId);
         if (item == null) return;
+        if (!AppSettings.alarmReminderNotificationsEnabled(context)) return;
         if (!AlarmReminderUtils.effective(item.reminderMode, item.reminderMinutesJson)
                 .contains(minutes)) return;
 
@@ -51,6 +52,7 @@ public final class AlarmReminderReceiver extends BroadcastReceiver {
                 .setContentTitle(title)
                 .setContentText(content)
                 .setCategory(Notification.CATEGORY_REMINDER)
+                .setVisibility(AppSettings.notificationVisibility(context))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setContentIntent(open)
