@@ -454,6 +454,8 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
         MediaUriPermissionUtils.releaseUnused(
                 context,
                 removed);
+        MediaPreviewCache.cleanupUnusedPreviewFiles(
+                context);
 
         super.onDeleted(
                 context,
