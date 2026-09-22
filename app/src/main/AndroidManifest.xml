@@ -72,6 +72,16 @@
             android:exported="false" />
 
         <service
+            android:name=".MediaWidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <service
+            android:name=".MediaWidgetPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <service
             android:name=".DateNotificationService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
@@ -85,6 +95,7 @@
         <receiver android:name=".AlarmSnoozeReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />
         <receiver android:name=".NoForgetReminderReceiver" android:exported="false" />
+        <receiver android:name=".MediaWidgetActionReceiver" android:exported="false" />
 
         <receiver
             android:name=".BootReceiver"
@@ -126,7 +137,8 @@
         <receiver
             android:name=".MediaWidgetProvider"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/media_widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
