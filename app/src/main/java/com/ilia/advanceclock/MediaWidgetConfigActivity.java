@@ -47,7 +47,6 @@ public final class MediaWidgetConfigActivity extends Activity {
     private Switch showName;
     private Switch showMetadata;
 
-    private NumberPicker maxItems;
     private NumberPicker widthPicker;
     private NumberPicker heightPicker;
 
@@ -106,8 +105,8 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         TextView title = new TextView(this);
         title.setText(editExisting
-                ? "تنظیمات ویجت فایل و رسانه"
-                : "ساخت ویجت فایل و رسانه");
+                ? "تنظیمات یادآوری فایل‌ها"
+                : "ساخت یادآوری فایل‌ها");
         title.setTextSize(23);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -231,7 +230,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         showName = addSwitch(
                 root,
                 "نمایش نام فایل",
-                "نام هر فایل در کنار پیش‌نمایش",
+                "اگر خاموش باشد، پیش‌نمایش فایل بزرگ و واضح نمایش داده می‌شود.",
                 WidgetPrefs.mediaShowFileName(this, widgetId));
 
         showMetadata = addSwitch(
@@ -240,23 +239,25 @@ public final class MediaWidgetConfigActivity extends Activity {
                 "نوع فایل و برای فایل متنی، خلاصه‌ای از محتوا",
                 WidgetPrefs.showMetadata(this, widgetId));
 
+        showName.setOnCheckedChangeListener((button, checked) -> {
+            if (!checked) {
+                showPreview.setChecked(true);
+            }
+            showPreview.setEnabled(checked);
+            showPreview.setAlpha(checked ? 1f : 0.55f);
+        });
+        if (!showName.isChecked()) {
+            showPreview.setChecked(true);
+            showPreview.setEnabled(false);
+            showPreview.setAlpha(0.55f);
+        }
+
         showHeader.setOnCheckedChangeListener((button, checked) -> {
             showSettings.setEnabled(checked);
             showSettings.setAlpha(checked ? 1f : 0.5f);
         });
         showSettings.setEnabled(showHeader.isChecked());
         showSettings.setAlpha(showHeader.isChecked() ? 1f : 0.5f);
-
-        root.addView(fieldLabel("حداکثر فایل قابل نمایش"));
-        LinearLayout countBox = pickerBox(
-                "تعداد",
-                WidgetPrefs.maxItems(this, widgetId),
-                1,
-                10);
-        maxItems = (NumberPicker) countBox.getChildAt(1);
-        root.addView(countBox, new LinearLayout.LayoutParams(
-                -1,
-                dp(122)));
     }
 
     private void addSizeSection(LinearLayout root) {
@@ -274,8 +275,8 @@ public final class MediaWidgetConfigActivity extends Activity {
                 -2));
 
         root.addView(hint(
-                "قاب واقعی ویجت توسط لانچر Android کنترل می‌شود. پس از ریسایز روی صفحه اصلی، "
-                        + "ویجت فایل و رسانه فوراً تعداد آیتم و چیدمان خودش را با اندازه واقعی تطبیق می‌دهد."));
+                "اندازه پیش‌فرض ۶×۳ است، تا ۲×۲ کوچک می‌شود و برای بزرگ‌تر شدن سقف مصنوعی ندارد. "
+                        + "اندازه واقعی همچنان توسط لانچر Android کنترل می‌شود."));
 
         root.addView(fieldLabel("اندازه هدف / چیدمان پیشنهادی"));
 
@@ -285,9 +286,9 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         LinearLayout widthBox = pickerBox(
                 "عرض (خانه)",
-                WidgetPrefs.widthCells(this, widgetId),
+                mediaWidthCells(),
                 2,
-                6);
+                100);
         widthPicker = (NumberPicker) widthBox.getChildAt(1);
         sizeRow.addView(
                 widthBox,
@@ -305,9 +306,9 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         LinearLayout heightBox = pickerBox(
                 "ارتفاع (خانه)",
-                WidgetPrefs.heightCells(this, widgetId),
-                1,
-                6);
+                mediaHeightCells(),
+                2,
+                100);
         heightPicker = (NumberPicker) heightBox.getChildAt(1);
         sizeRow.addView(
                 heightBox,
@@ -676,11 +677,6 @@ public final class MediaWidgetConfigActivity extends Activity {
                 this,
                 widgetId,
                 showMetadata.isChecked());
-        WidgetPrefs.setMaxItems(
-                this,
-                widgetId,
-                maxItems.getValue());
-
         WidgetPrefs.setSizeCells(
                 this,
                 widgetId,
@@ -719,8 +715,8 @@ public final class MediaWidgetConfigActivity extends Activity {
                 WidgetSizeUtils.describe(
                         this,
                         options,
-                        WidgetPrefs.widthCells(this, widgetId),
-                        WidgetPrefs.heightCells(this, widgetId)));
+                        mediaWidthCells(),
+                        mediaHeightCells()));
     }
 
     private void syncTargetFromActual() {
@@ -732,18 +728,18 @@ public final class MediaWidgetConfigActivity extends Activity {
                 WidgetSizeUtils.currentSize(
                         this,
                         options,
-                        WidgetPrefs.widthCells(this, widgetId),
-                        WidgetPrefs.heightCells(this, widgetId));
+                        mediaWidthCells(),
+                        mediaHeightCells());
 
         int widthCells = Math.max(
                 2,
                 Math.min(
-                        6,
+                        widthPicker.getMaxValue(),
                         WidgetSizeUtils.dpToCells(size.widthDp)));
         int heightCells = Math.max(
-                1,
+                2,
                 Math.min(
-                        6,
+                        heightPicker.getMaxValue(),
                         WidgetSizeUtils.dpToCells(size.heightDp)));
 
         widthPicker.setValue(widthCells);
@@ -770,6 +766,20 @@ public final class MediaWidgetConfigActivity extends Activity {
                     new ArrayList<>(items));
         }
         super.onDestroy();
+    }
+
+    private int mediaWidthCells() {
+        if (!WidgetPrefs.hasSavedConfig(this, widgetId)) {
+            return 6;
+        }
+        return Math.max(2, WidgetPrefs.widthCells(this, widgetId));
+    }
+
+    private int mediaHeightCells() {
+        if (!WidgetPrefs.hasSavedConfig(this, widgetId)) {
+            return 3;
+        }
+        return Math.max(2, WidgetPrefs.heightCells(this, widgetId));
     }
 
     private Switch addSwitch(
