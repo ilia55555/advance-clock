@@ -20,6 +20,12 @@ public final class WidgetPrefs {
         return prefix + "_" + widgetId;
     }
 
+    public static boolean hasSavedConfig(Context context, int widgetId) {
+        return prefs(context).contains(key("theme", widgetId))
+                || prefs(context).contains(key("width_cells", widgetId))
+                || prefs(context).contains(key("show_header", widgetId));
+    }
+
     public static int themeMode(Context context, int widgetId) {
         return prefs(context).getInt(key("theme", widgetId), THEME_FOLLOW_APP);
     }
