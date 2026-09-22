@@ -106,7 +106,7 @@ public final class AlarmSoundService extends Service {
                 .setContentTitle(title)
                 .setContentText("زمان آلارم رسیده است")
                 .setCategory(Notification.CATEGORY_ALARM)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
