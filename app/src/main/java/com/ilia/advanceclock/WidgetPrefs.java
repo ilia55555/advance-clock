@@ -67,8 +67,8 @@ public final class WidgetPrefs {
 
     public static void setSizeCells(Context context, int widgetId, int width, int height) {
         prefs(context).edit()
-                .putInt(key("width_cells", widgetId), Math.max(2, Math.min(6, width)))
-                .putInt(key("height_cells", widgetId), Math.max(1, Math.min(6, height)))
+                .putInt(key("width_cells", widgetId), Math.max(2, width))
+                .putInt(key("height_cells", widgetId), Math.max(1, height))
                 .apply();
     }
 
