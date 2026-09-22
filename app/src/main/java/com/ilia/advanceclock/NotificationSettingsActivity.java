@@ -269,7 +269,11 @@ public final class NotificationSettingsActivity extends Activity {
 
     private void openChannel(String channelId) {
         try {
-            NotificationHelper.ensureChannels(this);
+            if (DateNotificationService.CHANNEL.equals(channelId)) {
+                DateNotificationService.ensureChannel(this);
+            } else {
+                NotificationHelper.ensureChannels(this);
+            }
             Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                     .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName())
                     .putExtra(Settings.EXTRA_CHANNEL_ID, channelId);
