@@ -224,6 +224,63 @@ public final class WidgetPrefs {
         return AppSettings.secondaryColorForPalette(palette(context, widgetId));
     }
 
+    public static void migrate(Context context, int oldWidgetId, int newWidgetId) {
+        setThemeMode(context, newWidgetId, themeMode(context, oldWidgetId));
+        setPalette(context, newWidgetId, palette(context, oldWidgetId));
+        setSizeCells(
+                context,
+                newWidgetId,
+                widthCells(context, oldWidgetId),
+                heightCells(context, oldWidgetId));
+        setShowHeader(context, newWidgetId, showHeader(context, oldWidgetId));
+        setShowDate(context, newWidgetId, showDate(context, oldWidgetId));
+        setShowTime(context, newWidgetId, showTime(context, oldWidgetId));
+        setTimeFormatMode(
+                context,
+                newWidgetId,
+                timeFormatMode(context, oldWidgetId));
+        setShowSeconds(context, newWidgetId, showSeconds(context, oldWidgetId));
+        setShowAddButton(
+                context,
+                newWidgetId,
+                showAddButton(context, oldWidgetId));
+        setShowSettingsButton(
+                context,
+                newWidgetId,
+                showSettingsButton(context, oldWidgetId));
+        setShowSectionLabel(
+                context,
+                newWidgetId,
+                showSectionLabel(context, oldWidgetId));
+        setShowPriority(
+                context,
+                newWidgetId,
+                showPriority(context, oldWidgetId));
+        setShowMetadata(
+                context,
+                newWidgetId,
+                showMetadata(context, oldWidgetId));
+        setMaxItems(context, newWidgetId, maxItems(context, oldWidgetId));
+        setFontSizeMode(
+                context,
+                newWidgetId,
+                fontSizeMode(context, oldWidgetId));
+        setBackgroundOpacityMode(
+                context,
+                newWidgetId,
+                backgroundOpacityMode(context, oldWidgetId));
+        setSortMode(context, newWidgetId, sortMode(context, oldWidgetId));
+        setMediaShowPreview(
+                context,
+                newWidgetId,
+                mediaShowPreview(context, oldWidgetId));
+        setMediaShowFileName(
+                context,
+                newWidgetId,
+                mediaShowFileName(context, oldWidgetId));
+        clear(context, oldWidgetId);
+    }
+
     public static void clear(Context context, int widgetId) {
         prefs(context).edit()
                 .remove(key("theme", widgetId))
