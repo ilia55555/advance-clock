@@ -56,6 +56,10 @@ public final class MediaWidgetPrefs {
         return "items_" + widgetId;
     }
 
+    public static boolean hasSavedConfig(Context context, int widgetId) {
+        return prefs(context).contains(key(widgetId));
+    }
+
     public static List<Item> load(Context context, int widgetId) {
         ArrayList<Item> out = new ArrayList<>();
         String raw = prefs(context).getString(key(widgetId), "[]");
