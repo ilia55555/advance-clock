@@ -133,7 +133,7 @@ public final class DateNotificationService extends Service {
         handler.postDelayed(refresh, delay);
     }
 
-    private static void ensureChannel(Context context) {
+    public static void ensureChannel(Context context) {
         if (Build.VERSION.SDK_INT < 26) return;
 
         NotificationManager manager = context.getSystemService(NotificationManager.class);
