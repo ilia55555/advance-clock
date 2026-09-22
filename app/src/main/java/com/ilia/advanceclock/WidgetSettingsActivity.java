@@ -22,6 +22,7 @@ import android.widget.Toast;
 public final class WidgetSettingsActivity extends Activity {
     private int widgetId;
     private String kind;
+    private boolean editExisting;
 
     private Spinner theme;
     private Spinner palette;
@@ -54,6 +55,8 @@ public final class WidgetSettingsActivity extends Activity {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         kind = getIntent().getStringExtra("widgetKind");
+        editExisting = getIntent().getBooleanExtra("editExisting", false)
+                || WidgetPrefs.hasSavedConfig(this, widgetId);
 
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
@@ -67,7 +70,7 @@ public final class WidgetSettingsActivity extends Activity {
         if ("media".equals(kind)) {
             Intent media = new Intent(this, MediaWidgetConfigActivity.class)
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                    .putExtra("editExisting", true);
+                    .putExtra("editExisting", editExisting);
             startActivity(media);
             finish();
             return;
@@ -307,20 +310,27 @@ public final class WidgetSettingsActivity extends Activity {
         sync.setOnClickListener(v -> syncTargetFromActual());
         root.addView(sync, buttonLp());
 
-        Button resize = softButton("رفتن به صفحه اصلی برای ریسایز واقعی");
-        resize.setOnClickListener(v -> {
-            saveSettings(false);
-            Toast.makeText(
-                    this,
-                    "روی ویجت لمس طولانی کنید و دسته‌های ریسایز را بکشید؛ تغییر اندازه همان لحظه اعمال می‌شود.",
-                    Toast.LENGTH_LONG).show();
+        if (editExisting) {
+            Button resize = softButton("رفتن به صفحه اصلی برای ریسایز واقعی");
+            resize.setOnClickListener(v -> {
+                saveSettings(false);
 
-            Intent home = new Intent(Intent.ACTION_MAIN);
-            home.addCategory(Intent.CATEGORY_HOME);
-            home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(home);
-        });
-        root.addView(resize, buttonLp());
+                Toast.makeText(
+                        this,
+                        "روی ویجت لمس طولانی کنید و دسته‌های ریسایز را بکشید؛ تغییر اندازه همان لحظه اعمال می‌شود.",
+                        Toast.LENGTH_LONG).show();
+
+                Intent home = new Intent(Intent.ACTION_MAIN);
+                home.addCategory(Intent.CATEGORY_HOME);
+                home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(home);
+                finish();
+            });
+            root.addView(resize, buttonLp());
+        } else {
+            root.addView(hint(
+                    "ابتدا ویجت را ذخیره کنید. بعد از قرار گرفتن روی صفحه اصلی می‌توانید با لمس طولانی، اندازهٔ قاب را تغییر دهید."));
+        }
     }
 
     private void addActions(LinearLayout root) {
@@ -422,72 +432,62 @@ public final class WidgetSettingsActivity extends Activity {
         }
     }
 
+    @Override protected void onResume() {
+        super.onResume();
+        if (actualSize != null) {
+            updateActualSize();
+        }
+    }
+
     private void updateActualSize() {
         Bundle options = AppWidgetManager.getInstance(this)
                 .getAppWidgetOptions(widgetId);
 
-        int minWidth = options.getInt(
-                AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
-        int minHeight = options.getInt(
-                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0);
-        int maxWidth = options.getInt(
-                AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, minWidth);
-        int maxHeight = options.getInt(
-                AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, minHeight);
-
-        if (minWidth <= 0 || minHeight <= 0) {
-            actualSize.setText(
-                    "اندازه فعلی: لانچر هنوز اندازه دقیق را گزارش نکرده است.");
-            return;
-        }
-
-        int approxWidthCells = dpToCells(minWidth);
-        int approxHeightCells = dpToCells(minHeight);
-
-        String range = (maxWidth != minWidth || maxHeight != minHeight)
-                ? " تا " + maxWidth + "×" + maxHeight + "dp"
-                : "";
-
         actualSize.setText(
-                "اندازه واقعی گزارش‌شده: "
-                        + minWidth + "×" + minHeight + "dp"
-                        + range
-                        + "\nتقریب شبکه: "
-                        + approxWidthCells + " × " + approxHeightCells
-                        + " خانه");
+                WidgetSizeUtils.describe(
+                        this,
+                        options,
+                        WidgetPrefs.widthCells(this, widgetId),
+                        WidgetPrefs.heightCells(this, widgetId)));
     }
 
     private void syncTargetFromActual() {
         Bundle options = AppWidgetManager.getInstance(this)
                 .getAppWidgetOptions(widgetId);
-        int width = options.getInt(
-                AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
-        int height = options.getInt(
-                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0);
 
-        if (width <= 0 || height <= 0) {
-            Toast.makeText(
-                    this,
-                    "لانچر اندازه دقیق را گزارش نکرده است.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
+        WidgetSizeUtils.WidgetSize size =
+                WidgetSizeUtils.currentSize(
+                        this,
+                        options,
+                        WidgetPrefs.widthCells(this, widgetId),
+                        WidgetPrefs.heightCells(this, widgetId));
 
-        widthPicker.setValue(Math.max(2, dpToCells(width)));
-        heightPicker.setValue(dpToCells(height));
+        int widthCells = Math.max(
+                2,
+                Math.min(
+                        6,
+                        WidgetSizeUtils.dpToCells(size.widthDp)));
+        int heightCells = Math.max(
+                1,
+                Math.min(
+                        6,
+                        WidgetSizeUtils.dpToCells(size.heightDp)));
+
+        widthPicker.setValue(widthCells);
+        heightPicker.setValue(heightCells);
+
         WidgetPrefs.setSizeCells(
                 this,
                 widgetId,
-                widthPicker.getValue(),
-                heightPicker.getValue());
+                widthCells,
+                heightCells);
+
         Toast.makeText(
                 this,
-                "اندازه هدف با قاب فعلی همگام شد.",
+                size.exact
+                        ? "اندازه هدف با اندازه دقیق گزارش‌شده توسط لانچر همگام شد."
+                        : "اندازه هدف با بهترین برآورد لانچر همگام شد.",
                 Toast.LENGTH_SHORT).show();
-    }
-
-    private int dpToCells(int dp) {
-        return Math.max(1, Math.min(6, Math.round((dp + 30f) / 70f)));
     }
 
     private String inferKind(int id) {
