@@ -424,7 +424,7 @@ public final class WidgetSettingsActivity extends Activity {
             return;
         }
 
-        widthPicker.setValue(dpToCells(width));
+        widthPicker.setValue(Math.max(2, dpToCells(width)));
         heightPicker.setValue(dpToCells(height));
         WidgetPrefs.setSizeCells(
                 this,
