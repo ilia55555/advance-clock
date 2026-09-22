@@ -32,6 +32,7 @@ public final class MediaPreviewJobService extends JobService {
         }
 
         final int jobId = params.getJobId();
+        stopped.remove(jobId);
 
         FutureTask<Void> task = new FutureTask<>(() -> {
             try {
