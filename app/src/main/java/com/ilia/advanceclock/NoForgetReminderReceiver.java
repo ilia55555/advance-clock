@@ -30,6 +30,7 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         }
         NoForgetWidgetProvider.updateAll(context);
 
+        if (!AppSettings.noteReminderNotificationsEnabled(context)) return;
         if(Build.VERSION.SDK_INT>=33&&context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)return;
 
         NotificationHelper.ensureChannels(context);
@@ -45,6 +46,7 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
                 .setContentText(item.body.trim().isEmpty()?"زمان یادداشت شما رسیده است":item.body)
                 .setStyle(new Notification.BigTextStyle().bigText(item.body))
                 .setCategory(Notification.CATEGORY_REMINDER)
+                .setVisibility(AppSettings.notificationVisibility(context))
                 .setPriority(Notification.PRIORITY_HIGH).setAutoCancel(true).setContentIntent(content).build();
         NotificationManager manager=context.getSystemService(NotificationManager.class);
         if(manager!=null)manager.notify(NotificationHelper.reminderNotificationId(id),n);
