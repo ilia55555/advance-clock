@@ -42,7 +42,7 @@
             android:id="@+id/media_item_fullscreen"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/bg_media_control_light"
             android:contentDescription="نمایش تمام صفحه"
             android:padding="9dp"
             android:src="@drawable/ic_md_fullscreen"
