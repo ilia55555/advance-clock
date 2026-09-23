@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -47,11 +46,6 @@ public final class MediaWidgetConfigActivity extends Activity {
     private Switch showName;
     private Switch showMetadata;
 
-    private NumberPicker widthPicker;
-    private NumberPicker heightPicker;
-
-    private TextView actualSize;
-
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         AppSettings.applyModalOverlay(this);
@@ -74,6 +68,10 @@ public final class MediaWidgetConfigActivity extends Activity {
         setResult(RESULT_CANCELED);
         items.addAll(MediaWidgetPrefs.load(this, widgetId));
 
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        page.setBackgroundColor(AppSettings.background(this));
+
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
         scroll.setBackgroundColor(AppSettings.background(this));
@@ -81,7 +79,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        root.setPadding(dp(18), dp(12), dp(18), dp(26));
+        root.setPadding(dp(18), dp(12), dp(18), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
@@ -89,12 +87,44 @@ public final class MediaWidgetConfigActivity extends Activity {
         addFilesSection(root);
         addAppearanceSection(root);
         addDisplaySection(root);
-        addSizeSection(root);
         addActions(root);
 
-        setContentView(scroll);
+        page.addView(
+                scroll,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        0,
+                        1f));
+
+        LinearLayout stickyBar = new LinearLayout(this);
+        stickyBar.setPadding(
+                dp(18),
+                dp(8),
+                dp(18),
+                dp(12));
+        stickyBar.setBackgroundColor(AppSettings.background(this));
+
+        Button save = primaryButton(
+                editExisting
+                        ? "ذخیره تغییرات"
+                        : "ساخت و ذخیره ویجت");
+        save.setBackgroundColor(
+                AppSettings.secondaryColor(this));
+        save.setOnClickListener(v -> save(true));
+        stickyBar.addView(
+                save,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        dp(56)));
+
+        page.addView(
+                stickyBar,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        -2));
+
+        setContentView(page);
         renderItems();
-        updateActualSize();
     }
 
     private void addTopBar(LinearLayout root) {
@@ -212,7 +242,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         showHeader = addSwitch(
                 root,
                 "نمایش هدر",
-                "عنوان ویجت، تعداد فایل‌ها و دکمه تنظیمات",
+                "نام ویجت و دکمه تنظیمات",
                 WidgetPrefs.showHeader(this, widgetId));
 
         showSettings = addSwitch(
@@ -260,109 +290,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         showSettings.setAlpha(showHeader.isChecked() ? 1f : 0.5f);
     }
 
-    private void addSizeSection(LinearLayout root) {
-        root.addView(sectionTitle("اندازه و ریسایز"));
-
-        actualSize = hint("");
-        actualSize.setBackgroundResource(R.drawable.bg_card);
-        actualSize.setPadding(
-                dp(12),
-                dp(10),
-                dp(12),
-                dp(10));
-        root.addView(actualSize, new LinearLayout.LayoutParams(
-                -1,
-                -2));
-
-        root.addView(hint(
-                "اندازه پیش‌فرض ۶×۳ است، تا ۲×۲ کوچک می‌شود و برای بزرگ‌تر شدن سقف مصنوعی ندارد. "
-                        + "اندازه واقعی همچنان توسط لانچر Android کنترل می‌شود."));
-
-        root.addView(fieldLabel("اندازه هدف / چیدمان پیشنهادی"));
-
-        LinearLayout sizeRow = new LinearLayout(this);
-        sizeRow.setOrientation(LinearLayout.HORIZONTAL);
-        sizeRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-        LinearLayout widthBox = pickerBox(
-                "عرض (خانه)",
-                mediaWidthCells(),
-                2,
-                100);
-        widthPicker = (NumberPicker) widthBox.getChildAt(1);
-        sizeRow.addView(
-                widthBox,
-                new LinearLayout.LayoutParams(
-                        0,
-                        dp(132),
-                        1f));
-
-        View spacer = new View(this);
-        sizeRow.addView(
-                spacer,
-                new LinearLayout.LayoutParams(
-                        dp(10),
-                        1));
-
-        LinearLayout heightBox = pickerBox(
-                "ارتفاع (خانه)",
-                mediaHeightCells(),
-                2,
-                100);
-        heightPicker = (NumberPicker) heightBox.getChildAt(1);
-        sizeRow.addView(
-                heightBox,
-                new LinearLayout.LayoutParams(
-                        0,
-                        dp(132),
-                        1f));
-
-        root.addView(sizeRow);
-
-        Button sync = softButton(
-                "همگام‌سازی عددها با اندازه فعلی لانچر");
-        sync.setOnClickListener(v -> syncTargetFromActual());
-        root.addView(sync, buttonLp());
-
-        if (editExisting) {
-            Button resize = softButton(
-                    "رفتن به صفحه اصلی برای ریسایز واقعی");
-            resize.setOnClickListener(v -> {
-                save(false);
-
-                Toast.makeText(
-                        this,
-                        "روی ویجت لمس طولانی کنید و دسته‌های ریسایز را بکشید.",
-                        Toast.LENGTH_LONG).show();
-
-                Intent home = new Intent(Intent.ACTION_MAIN);
-                home.addCategory(Intent.CATEGORY_HOME);
-                home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(home);
-                finish();
-            });
-            root.addView(resize, buttonLp());
-        } else {
-            root.addView(hint(
-                    "ابتدا ویجت را بسازید. پس از قرار گرفتن روی صفحه اصلی می‌توانید با لمس طولانی، قاب را ریسایز کنید."));
-        }
-    }
-
     private void addActions(LinearLayout root) {
-        Button save = primaryButton(
-                editExisting
-                        ? "ذخیره و اعمال"
-                        : "ساخت و ذخیره ویجت");
-        save.setBackgroundColor(
-                AppSettings.secondaryColor(this));
-        LinearLayout.LayoutParams saveLp =
-                new LinearLayout.LayoutParams(
-                        -1,
-                        dp(58));
-        saveLp.topMargin = dp(20);
-        root.addView(save, saveLp);
-        save.setOnClickListener(v -> save(true));
-
         Button reset = softButton(
                 "بازگردانی تنظیمات ظاهری این ویجت");
         LinearLayout.LayoutParams resetLp = buttonLp();
@@ -677,11 +605,14 @@ public final class MediaWidgetConfigActivity extends Activity {
                 this,
                 widgetId,
                 showMetadata.isChecked());
-        WidgetPrefs.setSizeCells(
-                this,
-                widgetId,
-                widthPicker.getValue(),
-                heightPicker.getValue());
+
+        if (!editExisting) {
+            WidgetPrefs.setSizeCells(
+                    this,
+                    widgetId,
+                    6,
+                    3);
+        }
 
         MediaWidgetProvider.update(
                 this,
@@ -696,67 +627,22 @@ public final class MediaWidgetConfigActivity extends Activity {
                 widgetId);
         setResult(RESULT_OK, result);
 
-        if (finishAfter) finish();
-    }
-
-    @Override protected void onResume() {
-        super.onResume();
-        if (actualSize != null) {
-            updateActualSize();
+        if (finishAfter) {
+            finishToHome();
         }
     }
 
-    private void updateActualSize() {
-        Bundle options =
-                AppWidgetManager.getInstance(this)
-                        .getAppWidgetOptions(widgetId);
-
-        actualSize.setText(
-                WidgetSizeUtils.describe(
-                        this,
-                        options,
-                        mediaWidthCells(),
-                        mediaHeightCells()));
-    }
-
-    private void syncTargetFromActual() {
-        Bundle options =
-                AppWidgetManager.getInstance(this)
-                        .getAppWidgetOptions(widgetId);
-
-        WidgetSizeUtils.WidgetSize size =
-                WidgetSizeUtils.currentSize(
-                        this,
-                        options,
-                        mediaWidthCells(),
-                        mediaHeightCells());
-
-        int widthCells = Math.max(
-                2,
-                Math.min(
-                        widthPicker.getMaxValue(),
-                        WidgetSizeUtils.dpToCells(size.widthDp)));
-        int heightCells = Math.max(
-                2,
-                Math.min(
-                        heightPicker.getMaxValue(),
-                        WidgetSizeUtils.dpToCells(size.heightDp)));
-
-        widthPicker.setValue(widthCells);
-        heightPicker.setValue(heightCells);
-
-        WidgetPrefs.setSizeCells(
-                this,
-                widgetId,
-                widthCells,
-                heightCells);
-
-        Toast.makeText(
-                this,
-                size.exact
-                        ? "اندازه هدف با اندازه دقیق گزارش‌شده توسط لانچر همگام شد."
-                        : "اندازه هدف با بهترین برآورد لانچر همگام شد.",
-                Toast.LENGTH_SHORT).show();
+    private void finishToHome() {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        home.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        try {
+            startActivity(home);
+        } catch (Exception ignored) {
+        }
+        finish();
     }
 
     @Override protected void onDestroy() {
@@ -766,20 +652,6 @@ public final class MediaWidgetConfigActivity extends Activity {
                     new ArrayList<>(items));
         }
         super.onDestroy();
-    }
-
-    private int mediaWidthCells() {
-        if (!WidgetPrefs.hasSavedConfig(this, widgetId)) {
-            return 6;
-        }
-        return Math.max(2, WidgetPrefs.widthCells(this, widgetId));
-    }
-
-    private int mediaHeightCells() {
-        if (!WidgetPrefs.hasSavedConfig(this, widgetId)) {
-            return 3;
-        }
-        return Math.max(2, WidgetPrefs.heightCells(this, widgetId));
     }
 
     private Switch addSwitch(
@@ -823,51 +695,6 @@ public final class MediaWidgetConfigActivity extends Activity {
         root.addView(card, lp);
 
         return sw;
-    }
-
-    private LinearLayout pickerBox(
-            String title,
-            int value,
-            int min,
-            int max) {
-        LinearLayout box = new LinearLayout(this);
-        box.setOrientation(LinearLayout.VERTICAL);
-        box.setGravity(Gravity.CENTER);
-        box.setBackgroundResource(R.drawable.bg_field);
-        box.setPadding(
-                dp(8),
-                dp(6),
-                dp(8),
-                dp(6));
-
-        TextView label = new TextView(this);
-        label.setText(title);
-        label.setTextColor(
-                AppSettings.textSecondary(this));
-        label.setTextSize(12);
-        label.setGravity(Gravity.CENTER);
-        box.addView(
-                label,
-                new LinearLayout.LayoutParams(
-                        -1,
-                        dp(28)));
-
-        NumberPicker picker = new NumberPicker(this);
-        picker.setMinValue(min);
-        picker.setMaxValue(max);
-        picker.setValue(
-                Math.max(
-                        min,
-                        Math.min(max, value)));
-        picker.setWrapSelectorWheel(false);
-        box.addView(
-                picker,
-                new LinearLayout.LayoutParams(
-                        -1,
-                        0,
-                        1f));
-
-        return box;
     }
 
     private TextView sectionTitle(String text) {
