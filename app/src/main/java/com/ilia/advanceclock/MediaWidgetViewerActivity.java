@@ -140,6 +140,8 @@ public final class MediaWidgetViewerActivity extends Activity {
     private void showVideo() {
         videoView = new VideoView(this);
         videoView.setVideoURI(uri);
+        videoView.setOnClickListener(
+                v -> showControlsTemporarily());
         videoView.setOnPreparedListener(mp -> {
             prepared = true;
             videoView.start();
