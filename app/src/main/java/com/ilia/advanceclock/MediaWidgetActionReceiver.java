@@ -24,6 +24,8 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
     public static final String EXTRA_URI = "media_widget_uri";
     public static final String EXTRA_MIME = "media_widget_mime";
     public static final String EXTRA_NAME = "media_widget_name";
+    public static final String EXTRA_START_POSITION =
+            "media_widget_start_position";
 
     @Override public void onReceive(
             Context context,
@@ -141,8 +143,13 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
                 ? ""
                 : mime.toLowerCase(Locale.ROOT);
 
+        int startPosition = 0;
         if (normalizedMime.startsWith("audio/")
                 || normalizedMime.startsWith("video/")) {
+            startPosition =
+                    MediaWidgetPlaybackService.positionMs(
+                            context,
+                            uriValue);
             try {
                 context.stopService(
                         new Intent(
@@ -158,6 +165,7 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
                 .putExtra(EXTRA_URI, uriValue)
                 .putExtra(EXTRA_MIME, mime)
                 .putExtra(EXTRA_NAME, name)
+                .putExtra(EXTRA_START_POSITION, startPosition)
                 .addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
