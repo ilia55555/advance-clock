@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Locale;
 
 public final class MediaPreviewCache {
-    private static final int PREVIEW_WIDTH = 72;
-    private static final int PREVIEW_HEIGHT = 54;
+    private static final int PREVIEW_WIDTH = 480;
+    private static final int PREVIEW_HEIGHT = 320;
 
     private MediaPreviewCache() {}
 
@@ -43,7 +43,7 @@ public final class MediaPreviewCache {
         String textPreview = item.textPreview;
 
         File cached = path.isEmpty() ? null : new File(path);
-        if (cached == null || !cached.isFile()) {
+        if (cached == null || !cached.isFile() || previewTooSmall(cached)) {
             Bitmap preview = createPreview(context, item);
             path = savePreview(context, item.uri, preview);
         }
@@ -53,6 +53,18 @@ public final class MediaPreviewCache {
         }
 
         return item.withPreview(path, textPreview);
+    }
+
+    private static boolean previewTooSmall(File file) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+            return options.outWidth < PREVIEW_WIDTH / 2
+                    || options.outHeight < PREVIEW_HEIGHT / 2;
+        } catch (Exception ignored) {
+            return true;
+        }
     }
 
     private static Bitmap createPreview(

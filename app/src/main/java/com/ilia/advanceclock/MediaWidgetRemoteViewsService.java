@@ -196,43 +196,6 @@ public final class MediaWidgetRemoteViewsService
                             ? View.VISIBLE
                             : View.GONE);
 
-            if (playable) {
-                boolean playing =
-                        MediaWidgetPlaybackService.isPlaying(
-                                context,
-                                item.uri);
-
-                row.setImageViewResource(
-                        R.id.media_item_playback,
-                        playing
-                                ? R.drawable.ic_md_pause
-                                : R.drawable.ic_md_play);
-                row.setInt(
-                        R.id.media_item_playback,
-                        "setColorFilter",
-                        secondary);
-
-                Intent toggle = new Intent()
-                        .setAction(
-                                MediaWidgetActionReceiver.ACTION_TOGGLE)
-                        .putExtra(
-                                MediaWidgetActionReceiver.EXTRA_URI,
-                                item.uri)
-                        .putExtra(
-                                MediaWidgetActionReceiver.EXTRA_MIME,
-                                item.mime)
-                        .putExtra(
-                                MediaWidgetActionReceiver.EXTRA_NAME,
-                                item.name)
-                        .putExtra(
-                                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                                widgetId);
-
-                row.setOnClickFillInIntent(
-                        R.id.media_item_playback,
-                        toggle);
-            }
-
             Intent open = new Intent()
                     .setAction(
                             MediaWidgetActionReceiver.ACTION_OPEN)
@@ -252,6 +215,19 @@ public final class MediaWidgetRemoteViewsService
             row.setOnClickFillInIntent(
                     R.id.media_item_root,
                     open);
+
+            if (playable) {
+                row.setImageViewResource(
+                        R.id.media_item_playback,
+                        R.drawable.ic_md_play);
+                row.setInt(
+                        R.id.media_item_playback,
+                        "setColorFilter",
+                        secondary);
+                row.setOnClickFillInIntent(
+                        R.id.media_item_playback,
+                        open);
+            }
 
             return row;
         }

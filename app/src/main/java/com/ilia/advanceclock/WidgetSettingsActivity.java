@@ -17,7 +17,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public final class WidgetSettingsActivity extends Activity {
     private int widgetId;
@@ -31,8 +30,6 @@ public final class WidgetSettingsActivity extends Activity {
     private Spinner timeFormat;
     private Spinner sortMode;
     private NumberPicker maxItems;
-    private NumberPicker widthPicker;
-    private NumberPicker heightPicker;
 
     private Switch showHeader;
     private Switch showTime;
@@ -43,7 +40,6 @@ public final class WidgetSettingsActivity extends Activity {
     private Switch showSection;
     private Switch showPriority;
     private Switch showMetadata;
-
     private TextView actualSize;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +75,10 @@ public final class WidgetSettingsActivity extends Activity {
         // Launcher configuration flows require RESULT_OK to keep the widget.
         setResult(RESULT_CANCELED);
 
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        page.setBackgroundColor(AppSettings.background(this));
+
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
         scroll.setBackgroundColor(AppSettings.background(this));
@@ -86,7 +86,7 @@ public final class WidgetSettingsActivity extends Activity {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        root.setPadding(dp(18), dp(12), dp(18), dp(26));
+        root.setPadding(dp(18), dp(12), dp(18), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
@@ -94,11 +94,43 @@ public final class WidgetSettingsActivity extends Activity {
         addAppearanceSection(root);
         addHeaderSection(root);
         addContentSection(root);
-        addSizeSection(root);
+        addResizeSection(root);
         addActions(root);
 
-        setContentView(scroll);
-        updateActualSize();
+        page.addView(
+                scroll,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        0,
+                        1f));
+
+        LinearLayout stickyBar = new LinearLayout(this);
+        stickyBar.setPadding(
+                dp(18),
+                dp(8),
+                dp(18),
+                dp(12));
+        stickyBar.setBackgroundColor(AppSettings.background(this));
+
+        Button save = new Button(this);
+        save.setText("ذخیره تغییرات");
+        save.setTextColor(0xFFFFFFFF);
+        save.setAllCaps(false);
+        save.setBackgroundColor(AppSettings.secondaryColor(this));
+        save.setOnClickListener(v -> saveSettings(true));
+        stickyBar.addView(
+                save,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        dp(56)));
+
+        page.addView(
+                stickyBar,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        -2));
+
+        setContentView(page);
     }
 
     private void addTopBar(LinearLayout root) {
@@ -265,85 +297,64 @@ public final class WidgetSettingsActivity extends Activity {
         root.addView(sortMode, fieldLp());
     }
 
-    private void addSizeSection(LinearLayout root) {
-        root.addView(sectionTitle("اندازه و ریسایز"));
+    private void addResizeSection(LinearLayout root) {
+        root.addView(sectionTitle("اندازه ویجت"));
 
         actualSize = hint("");
         actualSize.setBackgroundResource(R.drawable.bg_card);
-        actualSize.setPadding(dp(12), dp(10), dp(12), dp(10));
-        root.addView(actualSize, new LinearLayout.LayoutParams(-1, -2));
+        actualSize.setPadding(
+                dp(12),
+                dp(10),
+                dp(12),
+                dp(10));
+        root.addView(
+                actualSize,
+                new LinearLayout.LayoutParams(
+                        -1,
+                        -2));
 
-        TextView explanation = hint(
-                "اندازهٔ قاب ویجت را لانچر Android کنترل می‌کند. تنظیمات برنامه نمی‌تواند "
-                        + "قاب یک ویجت نصب‌شده را به زور جابه‌جا یا بزرگ کند؛ اما بازهٔ ریسایز "
-                        + "کاملاً فعال شده و ویجت پس از ریسایز لانچر فوراً خودش را با اندازهٔ واقعی تطبیق می‌دهد.");
-        root.addView(explanation);
-
-        root.addView(fieldLabel("اندازه هدف / چیدمان پیشنهادی"));
-
-        LinearLayout sizeRow = new LinearLayout(this);
-        sizeRow.setOrientation(LinearLayout.HORIZONTAL);
-        sizeRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-        LinearLayout widthBox = pickerBox(
-                "عرض (خانه)",
-                WidgetPrefs.widthCells(this, widgetId),
-                2,
-                6);
-        widthPicker = (NumberPicker) widthBox.getChildAt(1);
-        sizeRow.addView(widthBox, new LinearLayout.LayoutParams(0, dp(132), 1f));
-
-        View spacer = new View(this);
-        sizeRow.addView(spacer, new LinearLayout.LayoutParams(dp(10), 1));
-
-        LinearLayout heightBox = pickerBox(
-                "ارتفاع (خانه)",
-                WidgetPrefs.heightCells(this, widgetId),
-                1,
-                6);
-        heightPicker = (NumberPicker) heightBox.getChildAt(1);
-        sizeRow.addView(heightBox, new LinearLayout.LayoutParams(0, dp(132), 1f));
-
-        root.addView(sizeRow);
-
-        Button sync = softButton("همگام‌سازی عددها با اندازه فعلی لانچر");
-        sync.setOnClickListener(v -> syncTargetFromActual());
-        root.addView(sync, buttonLp());
+        root.addView(hint(
+                "عرض و ارتفاع از این پنل تنظیم نمی‌شود. "
+                        + "برای ریسایز، خود ویجت را روی صفحه اصلی لمس طولانی کنید."));
 
         if (editExisting) {
-            Button resize = softButton("رفتن به صفحه اصلی برای ریسایز واقعی");
+            Button resize = softButton(
+                    "رفتن به صفحه اصلی برای ریسایز");
             resize.setOnClickListener(v -> {
                 saveSettings(false);
-
-                Toast.makeText(
-                        this,
-                        "روی ویجت لمس طولانی کنید و دسته‌های ریسایز را بکشید؛ تغییر اندازه همان لحظه اعمال می‌شود.",
-                        Toast.LENGTH_LONG).show();
-
                 Intent home = new Intent(Intent.ACTION_MAIN);
                 home.addCategory(Intent.CATEGORY_HOME);
-                home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                home.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(home);
                 finish();
             });
             root.addView(resize, buttonLp());
-        } else {
-            root.addView(hint(
-                    "ابتدا ویجت را ذخیره کنید. بعد از قرار گرفتن روی صفحه اصلی می‌توانید با لمس طولانی، اندازهٔ قاب را تغییر دهید."));
         }
     }
 
-    private void addActions(LinearLayout root) {
-        Button save = new Button(this);
-        save.setText("ذخیره و اعمال");
-        save.setTextColor(0xFFFFFFFF);
-        save.setAllCaps(false);
-        save.setBackgroundColor(AppSettings.secondaryColor(this));
-        LinearLayout.LayoutParams saveLp = new LinearLayout.LayoutParams(-1, dp(58));
-        saveLp.topMargin = dp(20);
-        root.addView(save, saveLp);
-        save.setOnClickListener(v -> saveSettings(true));
+    private void updateActualSize() {
+        if (actualSize == null) return;
 
+        Bundle options =
+                AppWidgetManager.getInstance(this)
+                        .getAppWidgetOptions(widgetId);
+
+        actualSize.setText(
+                WidgetSizeUtils.describe(
+                        this,
+                        options,
+                        WidgetPrefs.widthCells(this, widgetId),
+                        WidgetPrefs.heightCells(this, widgetId)));
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        updateActualSize();
+    }
+
+    private void addActions(LinearLayout root) {
         Button reset = softButton("بازگردانی تنظیمات این ویجت");
         LinearLayout.LayoutParams resetLp = buttonLp();
         resetLp.topMargin = dp(8);
@@ -378,20 +389,15 @@ public final class WidgetSettingsActivity extends Activity {
         WidgetPrefs.setMaxItems(this, widgetId, maxItems.getValue());
         WidgetPrefs.setSortMode(this, widgetId, sortMode.getSelectedItemPosition());
 
-        // Stored as the user's preferred cell profile. The actual host frame remains launcher-owned.
-        WidgetPrefs.setSizeCells(
-                this,
-                widgetId,
-                widthPicker.getValue(),
-                heightPicker.getValue());
-
         updateWidget();
 
         Intent result = new Intent();
         result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         setResult(RESULT_OK, result);
 
-        if (finishAfter) finish();
+        if (finishAfter) {
+            finishToHome();
+        }
     }
 
     private void updateHeaderControlState() {
@@ -432,62 +438,17 @@ public final class WidgetSettingsActivity extends Activity {
         }
     }
 
-    @Override protected void onResume() {
-        super.onResume();
-        if (actualSize != null) {
-            updateActualSize();
+    private void finishToHome() {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        home.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        try {
+            startActivity(home);
+        } catch (Exception ignored) {
         }
-    }
-
-    private void updateActualSize() {
-        Bundle options = AppWidgetManager.getInstance(this)
-                .getAppWidgetOptions(widgetId);
-
-        actualSize.setText(
-                WidgetSizeUtils.describe(
-                        this,
-                        options,
-                        WidgetPrefs.widthCells(this, widgetId),
-                        WidgetPrefs.heightCells(this, widgetId)));
-    }
-
-    private void syncTargetFromActual() {
-        Bundle options = AppWidgetManager.getInstance(this)
-                .getAppWidgetOptions(widgetId);
-
-        WidgetSizeUtils.WidgetSize size =
-                WidgetSizeUtils.currentSize(
-                        this,
-                        options,
-                        WidgetPrefs.widthCells(this, widgetId),
-                        WidgetPrefs.heightCells(this, widgetId));
-
-        int widthCells = Math.max(
-                2,
-                Math.min(
-                        6,
-                        WidgetSizeUtils.dpToCells(size.widthDp)));
-        int heightCells = Math.max(
-                1,
-                Math.min(
-                        6,
-                        WidgetSizeUtils.dpToCells(size.heightDp)));
-
-        widthPicker.setValue(widthCells);
-        heightPicker.setValue(heightCells);
-
-        WidgetPrefs.setSizeCells(
-                this,
-                widgetId,
-                widthCells,
-                heightCells);
-
-        Toast.makeText(
-                this,
-                size.exact
-                        ? "اندازه هدف با اندازه دقیق گزارش‌شده توسط لانچر همگام شد."
-                        : "اندازه هدف با بهترین برآورد لانچر همگام شد.",
-                Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private String inferKind(int id) {
