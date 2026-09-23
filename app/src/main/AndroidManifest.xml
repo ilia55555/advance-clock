@@ -24,6 +24,10 @@
         <activity android:name=".NotificationSettingsActivity" android:exported="false" />
         <activity android:name=".WidgetCenterActivity" android:exported="false" />
         <activity
+            android:name=".MediaWidgetViewerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true" />
+        <activity
             android:name=".MediaWidgetConfigActivity"
             android:exported="true">
             <intent-filter>
@@ -76,10 +80,6 @@
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
 
-        <service
-            android:name=".MediaWidgetPlaybackService"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback" />
 
         <service
             android:name=".DateNotificationService"
