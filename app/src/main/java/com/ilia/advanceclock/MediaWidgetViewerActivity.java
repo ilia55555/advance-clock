@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -48,6 +49,7 @@ public final class MediaWidgetViewerActivity extends Activity {
     private String name = "";
     private boolean prepared;
     private boolean userSeeking;
+    private int startPositionMs;
 
     private final Runnable hideControls = () -> {
         if (controls == null) return;
@@ -95,6 +97,25 @@ public final class MediaWidgetViewerActivity extends Activity {
         uri = Uri.parse(uriValue);
         if (mime == null) mime = "";
         if (name == null) name = "";
+
+        startPositionMs = getIntent().getIntExtra(
+                MediaWidgetActionReceiver.EXTRA_START_POSITION,
+                MediaWidgetPlaybackService.positionMs(
+                        this,
+                        uriValue));
+
+        String normalizedMime =
+                mime.toLowerCase(Locale.ROOT);
+        if (normalizedMime.startsWith("audio/")
+                || normalizedMime.startsWith("video/")) {
+            try {
+                stopService(
+                        new Intent(
+                                this,
+                                MediaWidgetPlaybackService.class));
+            } catch (Exception ignored) {
+            }
+        }
 
         root = new FrameLayout(this);
         root.setBackgroundColor(Color.BLACK);
@@ -144,6 +165,12 @@ public final class MediaWidgetViewerActivity extends Activity {
                 v -> showControlsTemporarily());
         videoView.setOnPreparedListener(mp -> {
             prepared = true;
+            if (startPositionMs > 0) {
+                videoView.seekTo(
+                        Math.min(
+                                startPositionMs,
+                                Math.max(0, videoView.getDuration())));
+            }
             videoView.start();
             showControlsTemporarily();
         });
@@ -187,6 +214,12 @@ public final class MediaWidgetViewerActivity extends Activity {
             audioPlayer.setDataSource(this, uri);
             audioPlayer.setOnPreparedListener(mp -> {
                 prepared = true;
+                if (startPositionMs > 0) {
+                    mp.seekTo(
+                            Math.min(
+                                    startPositionMs,
+                                    Math.max(0, mp.getDuration())));
+                }
                 mp.start();
                 showControlsTemporarily();
             });
