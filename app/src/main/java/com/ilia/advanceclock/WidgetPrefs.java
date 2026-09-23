@@ -208,7 +208,7 @@ public final class WidgetPrefs {
     }
 
     public static boolean mediaShowFileName(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("media_show_name", widgetId), true);
+        return prefs(context).getBoolean(key("media_show_name", widgetId), false);
     }
 
     public static void setMediaShowFileName(Context context, int widgetId, boolean value) {
