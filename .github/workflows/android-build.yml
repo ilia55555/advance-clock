@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - Ilia
+      - fix/file-reminder-widget
   workflow_dispatch:
 
 jobs:
