@@ -45,7 +45,6 @@ public final class MediaWidgetConfigActivity extends Activity {
     private Switch showPreview;
     private Switch showName;
     private Switch showMetadata;
-    private TextView actualSize;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -293,60 +292,8 @@ public final class MediaWidgetConfigActivity extends Activity {
     }
 
     private void addResizeSection(LinearLayout root) {
-        root.addView(sectionTitle("اندازه ویجت"));
-
-        actualSize = hint("");
-        actualSize.setBackgroundResource(R.drawable.bg_card);
-        actualSize.setPadding(
-                dp(12),
-                dp(10),
-                dp(12),
-                dp(10));
-        root.addView(
-                actualSize,
-                new LinearLayout.LayoutParams(
-                        -1,
-                        -2));
-
         root.addView(hint(
-                "تغییر اندازه از خود صفحه اصلی انجام می‌شود. "
-                        + "این بخش فقط اندازه واقعی گزارش‌شده توسط لانچر را نشان می‌دهد."));
-
-        if (editExisting) {
-            Button resize = softButton(
-                    "رفتن به صفحه اصلی برای ریسایز");
-            resize.setOnClickListener(v -> {
-                save(false);
-                Intent home = new Intent(Intent.ACTION_MAIN);
-                home.addCategory(Intent.CATEGORY_HOME);
-                home.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(home);
-                finish();
-            });
-            root.addView(resize, buttonLp());
-        }
-    }
-
-    private void updateActualSize() {
-        if (actualSize == null) return;
-
-        Bundle options =
-                AppWidgetManager.getInstance(this)
-                        .getAppWidgetOptions(widgetId);
-
-        actualSize.setText(
-                WidgetSizeUtils.describe(
-                        this,
-                        options,
-                        6,
-                        3));
-    }
-
-    @Override protected void onResume() {
-        super.onResume();
-        updateActualSize();
+                "برای تغییر اندازه ویجت انگشتتان را روی ویجت نگهدارید و کمی جابه‌جا کنید و رها کنید تا تغییر سایز فعال شود"));
     }
 
     private void addActions(LinearLayout root) {
