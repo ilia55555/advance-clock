@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/media_item_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="4dp">
+
+    <ImageView
+        android:id="@+id/media_item_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxHeight="320dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="پیش‌نمایش تصویر"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_note" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layoutDirection="ltr">
+
+        <TextView
+            android:id="@+id/media_item_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="6dp"
+            android:text="تصویر"
+            android:textColor="#173F3B"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/media_item_fullscreen"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="نمایش تمام صفحه"
+            android:padding="9dp"
+            android:src="@drawable/ic_md_fullscreen"
+            android:tint="#006666" />
+    </LinearLayout>
+</LinearLayout>
