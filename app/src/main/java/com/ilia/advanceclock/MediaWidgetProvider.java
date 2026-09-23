@@ -117,10 +117,8 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
         int width = Math.max(1, Math.round(widthDp));
         int height = Math.max(1, Math.round(heightDp));
 
-        boolean compact = width < 180 || height < 150;
         boolean showHeader =
-                WidgetPrefs.showHeader(context, widgetId)
-                        && !compact;
+                WidgetPrefs.showHeader(context, widgetId);
 
         RemoteViews root = new RemoteViews(
                 context.getPackageName(),
@@ -129,7 +127,6 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
         boolean dark =
                 WidgetPrefs.isDark(context, widgetId);
         int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
-        int muted = dark ? 0xFFAFBCB8 : 0xFF758783;
         int secondary =
                 WidgetPrefs.secondary(context, widgetId);
 
@@ -163,9 +160,6 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
         root.setTextColor(
                 R.id.media_widget_title,
                 text);
-        root.setTextColor(
-                R.id.media_widget_count,
-                muted);
         root.setInt(
                 R.id.media_widget_settings,
                 "setColorFilter",
@@ -180,10 +174,6 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
                 R.id.media_widget_title,
                 TypedValue.COMPLEX_UNIT_SP,
                 sizes[0]);
-        root.setTextViewTextSize(
-                R.id.media_widget_count,
-                TypedValue.COMPLEX_UNIT_SP,
-                sizes[1]);
 
         Intent configIntent = new Intent(
                 context,
@@ -213,12 +203,9 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
                         context,
                         widgetId);
 
-        root.setTextViewText(
-                R.id.media_widget_count,
-                items.size() + " مورد");
         root.setTextColor(
                 R.id.media_widget_empty,
-                muted);
+                dark ? 0xFFAFBCB8 : 0xFF758783);
 
         if (items.isEmpty()) {
             root.setTextViewText(
@@ -336,17 +323,11 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
 
     private static float[] fontSizes(int mode) {
         if (mode == 0) {
-            return new float[]{
-                    13f, 10f
-            };
+            return new float[]{13f};
         }
         if (mode == 2) {
-            return new float[]{
-                    17f, 12f
-            };
+            return new float[]{17f};
         }
-        return new float[]{
-                15f, 11f
-        };
+        return new float[]{15f};
     }
 }
