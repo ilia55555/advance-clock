@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -18,14 +17,11 @@ import java.util.Locale;
 
 public final class MediaWidgetRemoteViewsService
         extends RemoteViewsService {
-    @Override public RemoteViewsFactory onGetViewFactory(
-            Intent intent) {
+    @Override public RemoteViewsFactory onGetViewFactory(Intent intent) {
         int widgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
-        return new Factory(
-                getApplicationContext(),
-                widgetId);
+        return new Factory(getApplicationContext(), widgetId);
     }
 
     private static final class Factory
@@ -60,9 +56,7 @@ public final class MediaWidgetRemoteViewsService
         private void reload() {
             items.clear();
             List<MediaWidgetPrefs.Item> loaded =
-                    MediaWidgetPrefs.load(
-                            context,
-                            widgetId);
+                    MediaWidgetPrefs.load(context, widgetId);
             items.addAll(loaded);
 
             showName =
@@ -112,93 +106,293 @@ public final class MediaWidgetRemoteViewsService
         }
 
         @Override public RemoteViews getViewAt(int position) {
-            if (position < 0
-                    || position >= items.size()) {
+            if (position < 0 || position >= items.size()) {
                 return null;
             }
 
-            MediaWidgetPrefs.Item item =
-                    items.get(position);
-            boolean previewOnly = !showName;
+            MediaWidgetPrefs.Item item = items.get(position);
+            String mime = normalizedMime(item.mime);
+
+            if (mime.startsWith("image/")) {
+                return imageRow(item);
+            }
+
+            if (mime.startsWith("audio/")
+                    || mime.startsWith("video/")) {
+                return playableRow(item, mime);
+            }
+
+            return fileRow(item);
+        }
+
+        private RemoteViews imageRow(MediaWidgetPrefs.Item item) {
+            RemoteViews row = new RemoteViews(
+                    context.getPackageName(),
+                    R.layout.widget_media_image_item);
+
+            row.setViewVisibility(
+                    R.id.media_item_preview,
+                    showPreview ? View.VISIBLE : View.GONE);
+            row.setViewVisibility(
+                    R.id.media_item_name,
+                    showName ? View.VISIBLE : View.INVISIBLE);
+            row.setTextViewText(
+                    R.id.media_item_name,
+                    item.name);
+            row.setTextColor(
+                    R.id.media_item_name,
+                    text);
+            row.setTextViewTextSize(
+                    R.id.media_item_name,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    nameSize);
+            row.setInt(
+                    R.id.media_item_fullscreen,
+                    "setColorFilter",
+                    secondary);
+
+            if (showPreview) {
+                setPreview(
+                        row,
+                        R.id.media_item_preview,
+                        item,
+                        true);
+            }
+
+            Intent fullscreen =
+                    action(
+                            MediaWidgetActionReceiver.ACTION_FULLSCREEN,
+                            item);
+            row.setOnClickFillInIntent(
+                    R.id.media_item_fullscreen,
+                    fullscreen);
+            row.setOnClickFillInIntent(
+                    R.id.media_item_root,
+                    fullscreen);
+
+            return row;
+        }
+
+        private RemoteViews playableRow(
+                MediaWidgetPrefs.Item item,
+                String mime) {
+            boolean audio = mime.startsWith("audio/");
+            boolean video = mime.startsWith("video/");
 
             RemoteViews row = new RemoteViews(
                     context.getPackageName(),
-                    previewOnly
-                            ? R.layout.widget_media_preview_item
-                            : R.layout.widget_media_item);
+                    R.layout.widget_media_playable_item);
 
-            if (!previewOnly) {
-                row.setViewVisibility(
-                        R.id.media_item_preview,
-                        showPreview
-                                ? View.VISIBLE
-                                : View.GONE);
-                row.setViewVisibility(
-                        R.id.media_item_name,
-                        View.VISIBLE);
-                row.setViewVisibility(
-                        R.id.media_item_meta,
-                        showMetadata
-                                ? View.VISIBLE
-                                : View.GONE);
-
-                row.setTextViewText(
-                        R.id.media_item_name,
-                        item.name);
-                row.setTextColor(
-                        R.id.media_item_name,
-                        text);
-                row.setTextColor(
-                        R.id.media_item_meta,
-                        muted);
-
-                row.setTextViewTextSize(
-                        R.id.media_item_name,
-                        TypedValue.COMPLEX_UNIT_SP,
-                        nameSize);
-                row.setTextViewTextSize(
-                        R.id.media_item_meta,
-                        TypedValue.COMPLEX_UNIT_SP,
-                        metaSize);
-
-                String meta = typeLabel(item.mime);
-                if (!item.textPreview.isEmpty()) {
-                    meta += " • " + item.textPreview;
-                }
-                row.setTextViewText(
-                        R.id.media_item_meta,
-                        meta);
-            }
-
-            if (showPreview) {
-                Bitmap preview =
-                        loadCachedPreview(item);
-                if (preview != null) {
-                    row.setImageViewBitmap(
-                            R.id.media_item_preview,
-                            preview);
-                } else {
-                    row.setImageViewResource(
-                            R.id.media_item_preview,
-                            fallbackIcon(item.mime));
-                    row.setInt(
-                            R.id.media_item_preview,
-                            "setColorFilter",
-                            secondary);
-                }
-            }
-
-            boolean playable =
-                    isPlayable(item.mime);
             row.setViewVisibility(
-                    R.id.media_item_playback,
-                    playable
+                    R.id.media_item_preview,
+                    video && showPreview
                             ? View.VISIBLE
                             : View.GONE);
 
-            Intent open = new Intent()
-                    .setAction(
-                            MediaWidgetActionReceiver.ACTION_OPEN)
+            // Audio names are always visible, regardless of the global
+            // "show file name" preference.
+            row.setViewVisibility(
+                    R.id.media_item_name,
+                    audio || showName
+                            ? View.VISIBLE
+                            : View.GONE);
+            row.setTextViewText(
+                    R.id.media_item_name,
+                    item.name);
+            row.setTextColor(
+                    R.id.media_item_name,
+                    text);
+            row.setTextViewTextSize(
+                    R.id.media_item_name,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    nameSize);
+
+            if (video && showPreview) {
+                setPreview(
+                        row,
+                        R.id.media_item_preview,
+                        item,
+                        true);
+            }
+
+            int duration =
+                    MediaWidgetPlaybackService.durationMs(
+                            context,
+                            item.uri);
+            int current =
+                    MediaWidgetPlaybackService.positionMs(
+                            context,
+                            item.uri);
+            boolean playing =
+                    MediaWidgetPlaybackService.isPlaying(
+                            context,
+                            item.uri);
+
+            int safeDuration = Math.max(1, duration);
+            int safeCurrent = Math.max(
+                    0,
+                    Math.min(safeDuration, current));
+
+            row.setProgressBar(
+                    R.id.media_item_progress,
+                    safeDuration,
+                    safeCurrent,
+                    false);
+            row.setTextViewText(
+                    R.id.media_item_position,
+                    formatTime(current));
+            row.setTextViewText(
+                    R.id.media_item_duration,
+                    duration > 0
+                            ? formatTime(duration)
+                            : "00:00");
+            row.setTextColor(
+                    R.id.media_item_position,
+                    muted);
+            row.setTextColor(
+                    R.id.media_item_duration,
+                    muted);
+
+            row.setImageViewResource(
+                    R.id.media_item_playback,
+                    playing
+                            ? R.drawable.ic_md_pause
+                            : R.drawable.ic_md_play);
+            row.setInt(
+                    R.id.media_item_playback,
+                    "setColorFilter",
+                    secondary);
+            row.setInt(
+                    R.id.media_item_fullscreen,
+                    "setColorFilter",
+                    secondary);
+            row.setTextColor(
+                    R.id.media_item_back_10,
+                    secondary);
+            row.setTextColor(
+                    R.id.media_item_forward_10,
+                    secondary);
+
+            row.setOnClickFillInIntent(
+                    R.id.media_item_playback,
+                    action(
+                            MediaWidgetActionReceiver.ACTION_TOGGLE,
+                            item));
+            row.setOnClickFillInIntent(
+                    R.id.media_item_back_10,
+                    action(
+                            MediaWidgetActionReceiver.ACTION_SEEK_BACK,
+                            item));
+            row.setOnClickFillInIntent(
+                    R.id.media_item_forward_10,
+                    action(
+                            MediaWidgetActionReceiver.ACTION_SEEK_FORWARD,
+                            item));
+            row.setOnClickFillInIntent(
+                    R.id.media_item_fullscreen,
+                    action(
+                            MediaWidgetActionReceiver.ACTION_FULLSCREEN,
+                            item));
+
+            return row;
+        }
+
+        private RemoteViews fileRow(MediaWidgetPrefs.Item item) {
+            RemoteViews row = new RemoteViews(
+                    context.getPackageName(),
+                    R.layout.widget_media_item);
+
+            row.setViewVisibility(
+                    R.id.media_item_preview,
+                    showPreview
+                            ? View.VISIBLE
+                            : View.GONE);
+            row.setViewVisibility(
+                    R.id.media_item_name,
+                    showName
+                            ? View.VISIBLE
+                            : View.GONE);
+            row.setViewVisibility(
+                    R.id.media_item_meta,
+                    showMetadata
+                            ? View.VISIBLE
+                            : View.GONE);
+            row.setViewVisibility(
+                    R.id.media_item_playback,
+                    View.GONE);
+
+            row.setTextViewText(
+                    R.id.media_item_name,
+                    item.name);
+            row.setTextColor(
+                    R.id.media_item_name,
+                    text);
+            row.setTextColor(
+                    R.id.media_item_meta,
+                    muted);
+            row.setTextViewTextSize(
+                    R.id.media_item_name,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    nameSize);
+            row.setTextViewTextSize(
+                    R.id.media_item_meta,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    metaSize);
+
+            String meta = typeLabel(item.mime);
+            if (!item.textPreview.isEmpty()) {
+                meta += " • " + item.textPreview;
+            }
+            row.setTextViewText(
+                    R.id.media_item_meta,
+                    meta);
+
+            if (showPreview) {
+                setPreview(
+                        row,
+                        R.id.media_item_preview,
+                        item,
+                        false);
+            }
+
+            row.setOnClickFillInIntent(
+                    R.id.media_item_root,
+                    action(
+                            MediaWidgetActionReceiver.ACTION_OPEN,
+                            item));
+
+            return row;
+        }
+
+        private void setPreview(
+                RemoteViews row,
+                int viewId,
+                MediaWidgetPrefs.Item item,
+                boolean fullImage) {
+            Bitmap preview = loadCachedPreview(item);
+            if (preview != null) {
+                row.setImageViewBitmap(
+                        viewId,
+                        preview);
+                return;
+            }
+
+            row.setImageViewResource(
+                    viewId,
+                    fallbackIcon(item.mime));
+            if (!fullImage) {
+                row.setInt(
+                        viewId,
+                        "setColorFilter",
+                        secondary);
+            }
+        }
+
+        private Intent action(
+                String action,
+                MediaWidgetPrefs.Item item) {
+            return new Intent()
+                    .setAction(action)
                     .putExtra(
                             MediaWidgetActionReceiver.EXTRA_URI,
                             item.uri)
@@ -211,25 +405,6 @@ public final class MediaWidgetRemoteViewsService
                     .putExtra(
                             AppWidgetManager.EXTRA_APPWIDGET_ID,
                             widgetId);
-
-            row.setOnClickFillInIntent(
-                    R.id.media_item_root,
-                    open);
-
-            if (playable) {
-                row.setImageViewResource(
-                        R.id.media_item_playback,
-                        R.drawable.ic_md_play);
-                row.setInt(
-                        R.id.media_item_playback,
-                        "setColorFilter",
-                        secondary);
-                row.setOnClickFillInIntent(
-                        R.id.media_item_playback,
-                        open);
-            }
-
-            return row;
         }
 
         @Override public RemoteViews getLoadingView() {
@@ -237,12 +412,11 @@ public final class MediaWidgetRemoteViewsService
         }
 
         @Override public int getViewTypeCount() {
-            return 2;
+            return 3;
         }
 
         @Override public long getItemId(int position) {
-            if (position < 0
-                    || position >= items.size()) {
+            if (position < 0 || position >= items.size()) {
                 return position;
             }
             return items.get(position).uri.hashCode();
@@ -271,28 +445,21 @@ public final class MediaWidgetRemoteViewsService
     }
 
     private static int fallbackIcon(String mime) {
-        String value = mime == null
-                ? ""
-                : mime.toLowerCase(Locale.ROOT);
-
+        String value = normalizedMime(mime);
         if (value.startsWith("image/")) {
             return R.drawable.ic_app;
         }
         return R.drawable.ic_note;
     }
 
-    private static boolean isPlayable(String mime) {
-        String value = mime == null
+    private static String normalizedMime(String mime) {
+        return mime == null
                 ? ""
                 : mime.toLowerCase(Locale.ROOT);
-        return value.startsWith("audio/")
-                || value.startsWith("video/");
     }
 
     private static String typeLabel(String mime) {
-        String value = mime == null
-                ? ""
-                : mime.toLowerCase(Locale.ROOT);
+        String value = normalizedMime(mime);
 
         if (value.startsWith("image/")) return "تصویر";
         if (value.startsWith("audio/")) return "صوت";
@@ -313,6 +480,27 @@ public final class MediaWidgetRemoteViewsService
             return "صفحه گسترده";
         }
         return "فایل";
+    }
+
+    private static String formatTime(int millis) {
+        int totalSeconds = Math.max(0, millis / 1000);
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        if (minutes >= 60) {
+            int hours = minutes / 60;
+            minutes %= 60;
+            return String.format(
+                    Locale.getDefault(),
+                    "%d:%02d:%02d",
+                    hours,
+                    minutes,
+                    seconds);
+        }
+        return String.format(
+                Locale.getDefault(),
+                "%02d:%02d",
+                minutes,
+                seconds);
     }
 
     private static float[] itemFontSizes(int mode) {
