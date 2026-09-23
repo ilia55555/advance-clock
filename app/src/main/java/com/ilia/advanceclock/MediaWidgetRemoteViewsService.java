@@ -37,6 +37,8 @@ public final class MediaWidgetRemoteViewsService
         private int text;
         private int muted;
         private int secondary;
+        private int controlBackground;
+        private int controlForeground;
         private float nameSize;
         private float metaSize;
 
@@ -88,6 +90,12 @@ public final class MediaWidgetRemoteViewsService
                     WidgetPrefs.secondary(
                             context,
                             widgetId);
+            controlBackground = dark
+                    ? R.drawable.bg_media_control_dark
+                    : R.drawable.bg_media_control_light;
+            controlForeground = dark
+                    ? 0xFF173F3B
+                    : 0xFFFFFFFF;
 
             float[] sizes = itemFontSizes(
                     WidgetPrefs.fontSizeMode(
@@ -146,10 +154,10 @@ public final class MediaWidgetRemoteViewsService
                     R.id.media_item_name,
                     TypedValue.COMPLEX_UNIT_SP,
                     nameSize);
-            row.setInt(
+            styleControlButton(
+                    row,
                     R.id.media_item_fullscreen,
-                    "setColorFilter",
-                    secondary);
+                    true);
 
             if (showPreview) {
                 setPreview(
@@ -258,20 +266,22 @@ public final class MediaWidgetRemoteViewsService
                     playing
                             ? R.drawable.ic_md_pause
                             : R.drawable.ic_md_play);
-            row.setInt(
+            styleControlButton(
+                    row,
                     R.id.media_item_playback,
-                    "setColorFilter",
-                    secondary);
-            row.setInt(
+                    true);
+            styleControlButton(
+                    row,
                     R.id.media_item_fullscreen,
-                    "setColorFilter",
-                    secondary);
-            row.setTextColor(
+                    true);
+            styleControlButton(
+                    row,
                     R.id.media_item_back_10,
-                    secondary);
-            row.setTextColor(
+                    false);
+            styleControlButton(
+                    row,
                     R.id.media_item_forward_10,
-                    secondary);
+                    false);
 
             row.setOnClickFillInIntent(
                     R.id.media_item_playback,
@@ -385,6 +395,26 @@ public final class MediaWidgetRemoteViewsService
                         viewId,
                         "setColorFilter",
                         secondary);
+            }
+        }
+
+        private void styleControlButton(
+                RemoteViews row,
+                int viewId,
+                boolean imageButton) {
+            row.setInt(
+                    viewId,
+                    "setBackgroundResource",
+                    controlBackground);
+            if (imageButton) {
+                row.setInt(
+                        viewId,
+                        "setColorFilter",
+                        controlForeground);
+            } else {
+                row.setTextColor(
+                        viewId,
+                        controlForeground);
             }
         }
 
