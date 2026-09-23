@@ -12,35 +12,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layoutDirection="ltr">
 
-        <TextView
-            android:id="@+id/noforget_widget_date"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="امروز"
-            android:textColor="#758783"
-            android:textSize="11sp" />
+            android:gravity="left"
+            android:orientation="vertical">
 
-        <TextClock
-            android:id="@+id/noforget_widget_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
-            android:format12Hour="hh:mm"
-            android:format24Hour="HH:mm"
-            android:textColor="#173F3B"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            <TextClock
+                android:id="@+id/noforget_widget_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:format12Hour="hh:mm"
+                android:format24Hour="HH:mm"
+                android:gravity="left"
+                android:textAlignment="viewStart"
+                android:textColor="#173F3B"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/noforget_widget_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:maxLines="1"
+                android:text="امروز"
+                android:textAlignment="viewStart"
+                android:textColor="#758783"
+                android:textSize="10sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/noforget_widget_add"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:gravity="center"
             android:text="+"
             android:textColor="#006666"
@@ -49,11 +59,11 @@
 
         <ImageView
             android:id="@+id/noforget_widget_theme"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="تم ویجت"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:contentDescription="تنظیمات ویجت"
             android:padding="7dp"
-            android:src="@drawable/ic_md_palette"
+            android:src="@drawable/ic_md_settings"
             android:tint="#006666" />
     </LinearLayout>
 
