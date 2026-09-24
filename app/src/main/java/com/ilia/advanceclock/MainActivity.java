@@ -255,8 +255,7 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 1, 0, "تنظیمات");
             menu.getMenu().add(0, 4, 1, "تنظیمات اعلان");
             menu.getMenu().add(0, 5, 2, "ویجت‌ها و تنظیمات");
-            menu.getMenu().add(0, 2, 3, "افزودن ویجت این بخش");
-            menu.getMenu().add(0, 3, 4, "مجوزهای آلارم و اعلان");
+            menu.getMenu().add(0, 3, 3, "مجوزهای آلارم و اعلان");
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
@@ -270,12 +269,6 @@ public final class MainActivity extends Activity {
                 }
                 if (item.getItemId() == 5) {
                     startActivity(new Intent(this, WidgetCenterActivity.class));
-                    return true;
-                }
-                if (item.getItemId() == 2) {
-                    pinWidgetAndExit(clockPanel.getVisibility() == View.VISIBLE
-                            ? ClockWidgetProvider.class
-                            : NoForgetWidgetProvider.class);
                     return true;
                 }
                 if (item.getItemId() == 3) {
@@ -305,6 +298,13 @@ public final class MainActivity extends Activity {
     }
 
     private void setupCalendars() {
+        View root = findViewById(R.id.root_main);
+        root.post(() -> {
+            int calendarWidth = Math.round(root.getWidth() * 0.98f);
+            applyCalendarWidth(clockCalendar, calendarWidth);
+            applyCalendarWidth(noteCalendar, calendarWidth);
+        });
+
         int type = AppSettings.defaultCalendar(this);
         clockCalendar.setCalendarType(type);
         noteCalendar.setCalendarType(type);
@@ -344,6 +344,14 @@ public final class MainActivity extends Activity {
             applyDate(quickNoteDue, millis);
             updateQuickNoteLabels();
         });
+    }
+
+    private void applyCalendarWidth(TripleCalendarView calendar, int width) {
+        LinearLayout.LayoutParams params =
+                (LinearLayout.LayoutParams) calendar.getLayoutParams();
+        params.width = width;
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        calendar.setLayoutParams(params);
     }
 
     private void setupAlarmComposer() {
