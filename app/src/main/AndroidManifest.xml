@@ -95,6 +95,7 @@
         </service>
 
         <receiver android:name=".AlarmReceiver" android:exported="false" />
+        <receiver android:name=".ToolAlarmReceiver" android:exported="false" />
         <receiver android:name=".AlarmReminderReceiver" android:exported="false" />
         <receiver android:name=".AlarmSnoozeReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />
@@ -112,6 +113,19 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".WorldClockWidgetProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:label="ساعت جهانی">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/world_clock_widget_info" />
         </receiver>
 
         <receiver
