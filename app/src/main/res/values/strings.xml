@@ -5,4 +5,5 @@
     <string name="noforget_widget_description">یادداشت‌ها و یادآوری‌های NoForget</string>
     <string name="media_widget_name">یادآوری فایل‌ها</string>
     <string name="media_widget_description">یادآوری و دسترسی سریع به عکس، صوت، ویدیو و فایل‌ها</string>
+    <string name="world_clock_widget_description">شبکه واکنش‌گرای ساعت‌های جهانی با پیمایش پله‌ای</string>
 </resources>

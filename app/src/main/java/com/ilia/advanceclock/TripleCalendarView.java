@@ -16,7 +16,8 @@ public final class TripleCalendarView extends View {
     public interface OnDateSelectedListener { void onDateSelected(long timeInMillis); }
     public interface OnMonthYearClickListener { void onMonthYearClick(long visibleMonthMillis, int calendarType); }
 
-    private static final float BASE_W = 708f;
+    private static final float BASE_W = 600f;
+    private static final float CONTENT_OFFSET_X = 40f;
     private static final float BASE_H_5 = 698f;
     private static final float EXTRA_ROW_H = 86f;
 
@@ -124,6 +125,7 @@ public final class TripleCalendarView extends View {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(AppSettings.surface(getContext()));
         canvas.drawRect(0, 0, BASE_W, baseHeight(), paint);
+        canvas.translate(-CONTENT_OFFSET_X, 0);
         drawHeader(canvas);
         drawWeekdays(canvas);
         drawDays(canvas);
@@ -314,7 +316,7 @@ public final class TripleCalendarView extends View {
 
     @Override public boolean onTouchEvent(MotionEvent e) {
         float s = getWidth() / BASE_W;
-        float x = e.getX() / s;
+        float x = e.getX() / s + CONTENT_OFFSET_X;
         float y = e.getY() / s;
 
         switch (e.getActionMasked()) {
