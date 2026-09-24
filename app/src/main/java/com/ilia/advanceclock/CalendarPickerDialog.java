@@ -144,34 +144,50 @@ public final class CalendarPickerDialog {
 
         refresh.run();
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setView(root)
                 .setNegativeButton("انصراف", null)
-                .setPositiveButton("تأیید", null)
-                .create();
+                .setPositiveButton("تأیید", null);
+        if (monthYearOnly) {
+            builder.setNeutralButton("بازگشت به امروز", null);
+        }
+        AlertDialog dialog = builder.create();
 
-        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            int calType = type.getSelectedItemPosition();
-            int selectedDay = monthYearOnly ? 1 : day.getValue();
-            Calendar time = Calendar.getInstance();
-            time.setTimeInMillis(initialMillis);
-            long millis = CalendarUtils.toMillis(
-                    calType,
-                    year.getValue(),
-                    month.getValue(),
-                    selectedDay,
-                    time.get(Calendar.HOUR_OF_DAY),
-                    time.get(Calendar.MINUTE)
-            );
+        dialog.setOnShowListener(d -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                int calType = type.getSelectedItemPosition();
+                int selectedDay = monthYearOnly ? 1 : day.getValue();
+                Calendar time = Calendar.getInstance();
+                time.setTimeInMillis(initialMillis);
+                long millis = CalendarUtils.toMillis(
+                        calType,
+                        year.getValue(),
+                        month.getValue(),
+                        selectedDay,
+                        time.get(Calendar.HOUR_OF_DAY),
+                        time.get(Calendar.MINUTE)
+                );
 
-            if (rejectPast && millis < startOfToday()) {
-                Toast.makeText(context, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
-                return;
+                if (rejectPast && millis < startOfToday()) {
+                    Toast.makeText(
+                            context,
+                            "تاریخ گذشته قابل انتخاب نیست",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                callback.onPicked(millis, calType);
+                dialog.dismiss();
+            });
+            if (monthYearOnly) {
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
+                    callback.onPicked(
+                            System.currentTimeMillis(),
+                            type.getSelectedItemPosition());
+                    dialog.dismiss();
+                });
             }
-
-            callback.onPicked(millis, calType);
-            dialog.dismiss();
-        }));
+        });
         dialog.show();
     }
 

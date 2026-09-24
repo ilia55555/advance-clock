@@ -10,7 +10,7 @@ public final class StopAlarmReceiver extends BroadcastReceiver {
         long id = intent.getLongExtra("alarmId", -1L);
         context.stopService(AlarmSoundService.stopIntent(context));
         NotificationManager nm = context.getSystemService(NotificationManager.class);
-        if (nm != null && id >= 0) nm.cancel(NotificationHelper.notificationId(id));
+        if (nm != null && id != -1L) nm.cancel(NotificationHelper.notificationId(id));
         AlarmRingActivity.finishIfShowing(id);
     }
 }

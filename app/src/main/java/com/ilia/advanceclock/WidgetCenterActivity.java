@@ -95,6 +95,12 @@ public final class WidgetCenterActivity extends Activity {
                 "note");
 
         addWidgetCard(
+                "ساعت جهانی",
+                "نمایش هم‌زمان سه منطقه زمانی اول تب ساعت جهانی",
+                WorldClockWidgetProvider.class,
+                "world");
+
+        addWidgetCard(
                 "یادآوری فایل‌ها",
                 "دسترسی سریع و یادآوری عکس، صوت، ویدیو، متن، PDF و فایل‌های دیگر",
                 MediaWidgetProvider.class,
@@ -205,10 +211,12 @@ public final class WidgetCenterActivity extends Activity {
             kind = "media";
             callbackIntent = new Intent(this, MediaWidgetConfigActivity.class)
                     .putExtra("editExisting", false);
+        } else if (provider == WorldClockWidgetProvider.class) {
+            kind = "world";
+            callbackIntent = new Intent(this, MainActivity.class)
+                    .putExtra("openTab", "world");
         } else {
-            kind = provider == NoForgetWidgetProvider.class
-                    ? "note"
-                    : "clock";
+            kind = provider == NoForgetWidgetProvider.class ? "note" : "clock";
             callbackIntent = new Intent(this, WidgetSettingsActivity.class)
                     .putExtra("widgetKind", kind);
         }
@@ -217,9 +225,9 @@ public final class WidgetCenterActivity extends Activity {
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        int callbackRequestCode = "media".equals(kind)
-                ? 2_900_003
-                : ("note".equals(kind) ? 2_900_002 : 2_900_001);
+        int callbackRequestCode = "media".equals(kind) ? 2_900_003
+                : ("world".equals(kind) ? 2_900_004
+                : ("note".equals(kind) ? 2_900_002 : 2_900_001));
 
         PendingIntent successCallback = PendingIntent.getActivity(
                 this,
@@ -243,7 +251,9 @@ public final class WidgetCenterActivity extends Activity {
 
     private void editWidget(String kind, int widgetId) {
         Intent intent;
-        if ("media".equals(kind)) {
+        if ("world".equals(kind)) {
+            intent = new Intent(this, MainActivity.class).putExtra("openTab", "world");
+        } else if ("media".equals(kind)) {
             intent = new Intent(this, MediaWidgetConfigActivity.class)
                     .putExtra("editExisting", true)
                     .putExtra("returnToCenter", true);

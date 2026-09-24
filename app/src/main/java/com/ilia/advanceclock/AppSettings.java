@@ -100,6 +100,14 @@ public final class AppSettings {
         prefs(context).edit().putInt("clock_layout_mode", value).apply();
     }
 
+    public static boolean tabEnabled(Context context, String tab) {
+        return prefs(context).getBoolean("tab_enabled_" + tab, true);
+    }
+
+    public static void setTabEnabled(Context context, String tab, boolean enabled) {
+        prefs(context).edit().putBoolean("tab_enabled_" + tab, enabled).apply();
+    }
+
     public static boolean persistentDateNotificationEnabled(Context context) {
         return prefs(context).getBoolean("notification_persistent_date", true);
     }

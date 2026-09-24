@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
 import android.widget.TextView;
 
 public final class SettingsActivity extends Activity {
@@ -87,6 +89,18 @@ public final class SettingsActivity extends Activity {
         layout.setSelection(AppSettings.clockLayoutMode(this));
         root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        root.addView(label("تب‌های قابل نمایش در صفحه اصلی"));
+        Switch tabClock = tabSwitch("ساعت", "clock");
+        Switch tabNotes = tabSwitch("یادداشت‌ها", "noforget");
+        Switch tabStopwatch = tabSwitch("کرنومتر", "stopwatch");
+        Switch tabTimer = tabSwitch("تایمر", "timer");
+        Switch tabWorld = tabSwitch("ساعت جهانی", "world");
+        root.addView(tabClock);
+        root.addView(tabNotes);
+        root.addView(tabStopwatch);
+        root.addView(tabTimer);
+        root.addView(tabWorld);
+
         root.addView(label("استایل صفحه زنگ"));
         Spinner alarmStyle = spinner(new String[]{
                 "کلاسیک روشن",
@@ -108,6 +122,17 @@ public final class SettingsActivity extends Activity {
         setContentView(scroll);
 
         save.setOnClickListener(v -> {
+            if (!tabClock.isChecked() && !tabNotes.isChecked()
+                    && !tabStopwatch.isChecked() && !tabTimer.isChecked()
+                    && !tabWorld.isChecked()) {
+                Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            AppSettings.setTabEnabled(this, "clock", tabClock.isChecked());
+            AppSettings.setTabEnabled(this, "noforget", tabNotes.isChecked());
+            AppSettings.setTabEnabled(this, "stopwatch", tabStopwatch.isChecked());
+            AppSettings.setTabEnabled(this, "timer", tabTimer.isChecked());
+            AppSettings.setTabEnabled(this, "world", tabWorld.isChecked());
             AppSettings.setPalette(this, palette.getSelectedItemPosition());
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
@@ -129,6 +154,16 @@ public final class SettingsActivity extends Activity {
         v.setTextSize(13);
         v.setPadding(0, dp(12), 0, dp(4));
         return v;
+    }
+
+    private Switch tabSwitch(String label, String key) {
+        Switch control = new Switch(this);
+        control.setText(label);
+        control.setTextColor(AppSettings.textPrimary(this));
+        control.setChecked(AppSettings.tabEnabled(this, key));
+        control.setPadding(0, dp(4), 0, dp(4));
+        control.setLayoutParams(new LinearLayout.LayoutParams(-1, dp(48)));
+        return control;
     }
 
     private Spinner spinner(String[] values) {
