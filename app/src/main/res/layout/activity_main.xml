@@ -80,6 +80,7 @@
             android:layoutDirection="rtl">
 
             <LinearLayout
+                android:id="@+id/tab_clock_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -103,6 +104,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/tab_noforget_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -146,6 +148,17 @@
                 android:text="تایمر"
                 android:textColor="#D6EFED"
                 android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tab_world"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="جهانی"
+                android:textColor="#D6EFED"
+                android:textSize="13sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -711,6 +724,33 @@
                     android:orientation="vertical" />
             </LinearLayout>
         </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/stopwatch_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <include layout="@layout/activity_stopwatch" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/timer_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <include layout="@layout/activity_timer" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/world_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <include layout="@layout/panel_world_clock" />
+        </FrameLayout>
 
         <Button
             android:id="@+id/clock_fab"

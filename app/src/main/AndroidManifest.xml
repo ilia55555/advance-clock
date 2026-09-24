@@ -118,6 +118,19 @@
         </receiver>
 
         <receiver
+            android:name=".WorldClockWidgetProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:label="ساعت جهانی">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/world_clock_widget_info" />
+        </receiver>
+
+        <receiver
             android:name=".ClockWidgetProvider"
             android:enabled="true"
             android:exported="true">

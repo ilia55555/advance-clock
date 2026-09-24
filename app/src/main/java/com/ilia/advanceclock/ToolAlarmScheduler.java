@@ -21,7 +21,9 @@ public final class ToolAlarmScheduler {
         if (manager == null || !PermissionHelper.exactAlarmsGranted(context)) return false;
         PendingIntent operation = pendingIntent(context, kind);
         PendingIntent show = PendingIntent.getActivity(context, requestCode(kind) + 1,
-                new Intent(context, TIMER.equals(kind) ? TimerActivity.class : StopwatchActivity.class),
+                new Intent(context, MainActivity.class)
+                        .putExtra("openTab", kind)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         try {
             manager.setAlarmClock(new AlarmManager.AlarmClockInfo(deadline, show), operation);
