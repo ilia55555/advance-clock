@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,12 +55,6 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         time.setSelection(colorPosition(WorldClockWidgetPrefs.timeColor(this, widgetId)));
         root.addView(time, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        CheckBox showTitle = new CheckBox(this);
-        showTitle.setText("نمایش عنوان ساعت جهانی");
-        showTitle.setTextColor(AppSettings.textPrimary(this));
-        showTitle.setChecked(WorldClockWidgetPrefs.showTitle(this, widgetId));
-        root.addView(showTitle, new LinearLayout.LayoutParams(-1, dp(52)));
-
         Button save = new Button(this);
         save.setText("ذخیره تنظیمات ویجت");
         save.setAllCaps(false);
@@ -75,7 +68,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         save.setOnClickListener(v -> {
             WorldClockWidgetPrefs.save(this, widgetId,
                     background.getSelectedItemPosition(), COLORS[text.getSelectedItemPosition()],
-                    COLORS[time.getSelectedItemPosition()], showTitle.isChecked());
+                    COLORS[time.getSelectedItemPosition()]);
             WorldClockWidgetProvider.updateAll(this);
             setResult(RESULT_OK, new Intent().putExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId));

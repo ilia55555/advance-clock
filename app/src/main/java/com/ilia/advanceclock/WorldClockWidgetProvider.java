@@ -66,16 +66,6 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
                 .getInt("capacity_" + id, 1);
     }
 
-    static boolean tripleLayout(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getBoolean("triple_" + id, false);
-    }
-
-    static int columns(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getInt("columns_" + id, 1);
-    }
-
     static int normalizedPage(Context context, int id, int count) {
         int pages = Math.max(1, (count + capacity(context, id) - 1) / capacity(context, id));
         int page = page(context, id);
@@ -98,27 +88,25 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
 
     private static void update(
             Context context, AppWidgetManager manager, int id, Bundle options) {
-        WidgetSizeUtils.WidgetSize size = WidgetSizeUtils.currentSize(context, options, 4, 2);
+        WidgetSizeUtils.WidgetSize size = WidgetSizeUtils.currentSize(context, options, 5, 2);
         int widthCells = WidgetSizeUtils.dpToCells(size.widthDp);
         int zoneCount = WorldClockStore.zones(context).size();
-        boolean triple = zoneCount % 2 == 1 && widthCells >= 6;
-        int clocksPerRow = triple ? 3 : Math.min(2, Math.max(1, widthCells / 2));
-        int rows = Math.max(1, (int) ((size.heightDp - 40f) / 66f));
-        int capacity = clocksPerRow * rows;
-        int visualColumns = triple || clocksPerRow == 2 ? 3 : 1;
+        boolean canShowThree = widthCells >= 6;
+        int visualColumns = zoneCount % 2 == 1 && canShowThree
+                ? 3 : Math.min(2, Math.max(1, widthCells / 2));
+        int rows = Math.max(1, (int) (size.heightDp / 100f));
+        int capacity = visualColumns * rows;
+        int pages = Math.max(1, (zoneCount + capacity - 1) / capacity);
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                 .putInt("capacity_" + id, capacity)
-                .putBoolean("triple_" + id, triple)
                 .putInt("columns_" + id, visualColumns).apply();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_world_clock);
         views.setInt(R.id.world_widget_grid, "setNumColumns", visualColumns);
         views.setInt(R.id.world_widget_root, "setBackgroundResource",
                 WorldClockWidgetPrefs.backgroundResource(context, id));
-        boolean showTitle = WorldClockWidgetPrefs.showTitle(context, id);
-        views.setViewVisibility(R.id.world_widget_title, showTitle ? View.VISIBLE : View.GONE);
-        views.setTextColor(R.id.world_widget_title,
-                WorldClockWidgetPrefs.textColor(context, id));
+        views.setViewVisibility(R.id.world_widget_controls,
+                pages > 1 ? View.VISIBLE : View.GONE);
         Intent service = new Intent(context, WorldClockWidgetService.class)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         service.setData(Uri.parse("advanceclock://world-widget/" + id + "/" + capacity));

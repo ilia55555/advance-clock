@@ -18,17 +18,12 @@ public final class WorldClockWidgetPrefs {
         return prefs(context).getInt("time_" + id, 0xFFFFFFFF);
     }
 
-    public static boolean showTitle(Context context, int id) {
-        return prefs(context).getBoolean("title_" + id, true);
-    }
-
     public static void save(Context context, int id, int background,
-                            int textColor, int timeColor, boolean showTitle) {
+                            int textColor, int timeColor) {
         prefs(context).edit()
                 .putInt("background_" + id, background)
                 .putInt("text_" + id, textColor)
                 .putInt("time_" + id, timeColor)
-                .putBoolean("title_" + id, showTitle)
                 .apply();
     }
 

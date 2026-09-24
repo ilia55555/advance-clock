@@ -25,6 +25,11 @@ public final class CalendarPickerDialog {
         show(context, initialMillis, initialType, false, true, callback);
     }
 
+    public static void showDateAny(Context context, long initialMillis, int initialType,
+                                   Callback callback) {
+        show(context, initialMillis, initialType, false, false, callback);
+    }
+
     public static void showMonthYear(Context context, long initialMillis, int initialType, Callback callback) {
         show(context, initialMillis, initialType, true, false, callback);
     }
@@ -77,7 +82,7 @@ public final class CalendarPickerDialog {
         }
 
         final long[] currentMillis = {
-                monthYearOnly ? initialMillis : Math.max(initialMillis, System.currentTimeMillis())
+                rejectPast ? Math.max(initialMillis, System.currentTimeMillis()) : initialMillis
         };
         final boolean[] updating = {false};
 
