@@ -76,6 +76,9 @@ public final class MainActivity extends Activity {
     private TextView noForgetTab;
     private View clockIndicator;
     private View noForgetIndicator;
+    private View stopwatchIndicator;
+    private View timerIndicator;
+    private View worldIndicator;
     private TextView headerTime;
     private TextView headerDate;
     private ImageButton themeToggle;
@@ -148,6 +151,7 @@ public final class MainActivity extends Activity {
         findViewById(R.id.tab_stopwatch).setOnClickListener(v -> showTab("stopwatch"));
         findViewById(R.id.tab_timer).setOnClickListener(v -> showTab("timer"));
         findViewById(R.id.tab_world).setOnClickListener(v -> showTab("world"));
+        applyTabOrder();
         applyTabVisibility();
 
         findViewById(R.id.add_clock_widget).setOnClickListener(v ->
@@ -195,6 +199,9 @@ public final class MainActivity extends Activity {
         noForgetTab = findViewById(R.id.tab_noforget);
         clockIndicator = findViewById(R.id.clock_indicator);
         noForgetIndicator = findViewById(R.id.noforget_indicator);
+        stopwatchIndicator = findViewById(R.id.stopwatch_indicator);
+        timerIndicator = findViewById(R.id.timer_indicator);
+        worldIndicator = findViewById(R.id.world_indicator);
         headerTime = findViewById(R.id.header_time);
         headerDate = findViewById(R.id.header_date);
         themeToggle = findViewById(R.id.theme_toggle);
@@ -271,7 +278,8 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 1, 0, "تنظیمات");
             menu.getMenu().add(0, 4, 1, "تنظیمات اعلان");
             menu.getMenu().add(0, 5, 2, "ویجت‌ها و تنظیمات");
-            menu.getMenu().add(0, 3, 3, "مجوزهای آلارم و اعلان");
+            menu.getMenu().add(0, 6, 3, "جابه‌جایی ترتیب تب‌ها");
+            menu.getMenu().add(0, 3, 4, "مجوزهای آلارم و اعلان");
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
@@ -285,6 +293,13 @@ public final class MainActivity extends Activity {
                 }
                 if (item.getItemId() == 5) {
                     startActivity(new Intent(this, WidgetCenterActivity.class));
+                    return true;
+                }
+                if (item.getItemId() == 6) {
+                    TabOrderDialog.show(this, () -> {
+                        applyTabOrder();
+                        applyTabVisibility();
+                    });
                     return true;
                 }
                 if (item.getItemId() == 3) {
@@ -745,6 +760,7 @@ public final class MainActivity extends Activity {
         stopwatchController.onResume();
         timerController.onResume();
         worldController.onResume();
+        applyTabOrder();
         applyTabVisibility();
         updateHeaderClock();
         NotificationHelper.ensureChannels(this);
@@ -843,6 +859,9 @@ public final class MainActivity extends Activity {
         worldPanel.setVisibility(world ? View.VISIBLE : View.GONE);
         clockIndicator.setVisibility(clock ? View.VISIBLE : View.INVISIBLE);
         noForgetIndicator.setVisibility(notes ? View.VISIBLE : View.INVISIBLE);
+        stopwatchIndicator.setVisibility(stopwatch ? View.VISIBLE : View.INVISIBLE);
+        timerIndicator.setVisibility(timer ? View.VISIBLE : View.INVISIBLE);
+        worldIndicator.setVisibility(world ? View.VISIBLE : View.INVISIBLE);
         clockTab.setTextColor(clock ? 0xFFFFFFFF : 0xFFD6EFED);
         noForgetTab.setTextColor(notes ? 0xFFFFFFFF : 0xFFD6EFED);
         ((TextView) findViewById(R.id.tab_stopwatch)).setTextColor(
@@ -857,21 +876,36 @@ public final class MainActivity extends Activity {
         noteFab.setVisibility(notes && compact ? View.VISIBLE : View.GONE);
     }
 
+    private void applyTabOrder() {
+        LinearLayout bar = findViewById(R.id.tab_bar);
+        java.util.HashMap<String, View> tabs = new java.util.HashMap<>();
+        tabs.put("clock", findViewById(R.id.tab_clock_container));
+        tabs.put("noforget", findViewById(R.id.tab_noforget_container));
+        tabs.put("stopwatch", findViewById(R.id.tab_stopwatch_container));
+        tabs.put("timer", findViewById(R.id.tab_timer_container));
+        tabs.put("world", findViewById(R.id.tab_world_container));
+        bar.removeAllViews();
+        for (String tab : AppSettings.tabOrder(this)) {
+            View view = tabs.get(tab);
+            if (view != null) bar.addView(view);
+        }
+    }
+
     private void applyTabVisibility() {
         findViewById(R.id.tab_clock_container).setVisibility(
                 AppSettings.tabEnabled(this, "clock") ? View.VISIBLE : View.GONE);
         findViewById(R.id.tab_noforget_container).setVisibility(
                 AppSettings.tabEnabled(this, "noforget") ? View.VISIBLE : View.GONE);
-        findViewById(R.id.tab_stopwatch).setVisibility(
+        findViewById(R.id.tab_stopwatch_container).setVisibility(
                 AppSettings.tabEnabled(this, "stopwatch") ? View.VISIBLE : View.GONE);
-        findViewById(R.id.tab_timer).setVisibility(
+        findViewById(R.id.tab_timer_container).setVisibility(
                 AppSettings.tabEnabled(this, "timer") ? View.VISIBLE : View.GONE);
-        findViewById(R.id.tab_world).setVisibility(
+        findViewById(R.id.tab_world_container).setVisibility(
                 AppSettings.tabEnabled(this, "world") ? View.VISIBLE : View.GONE);
     }
 
     private String firstEnabledTab() {
-        for (String tab : new String[]{"clock", "noforget", "stopwatch", "timer", "world"}) {
+        for (String tab : AppSettings.tabOrder(this)) {
             if (AppSettings.tabEnabled(this, tab)) return tab;
         }
         AppSettings.setTabEnabled(this, "clock", true);

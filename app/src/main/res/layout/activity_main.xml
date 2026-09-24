@@ -74,6 +74,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/tab_bar"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:orientation="horizontal"
@@ -128,38 +129,75 @@
                     android:visibility="invisible" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tab_stopwatch"
+            <LinearLayout
+                android:id="@+id/tab_stopwatch_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="کرنومتر"
-                android:textColor="#D6EFED"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tab_stopwatch"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="کرنومتر"
+                    android:textColor="#D6EFED"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/stopwatch_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="?attr/appSecondary"
+                    android:visibility="invisible" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tab_timer"
+            <LinearLayout
+                android:id="@+id/tab_timer_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="تایمر"
-                android:textColor="#D6EFED"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tab_timer"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="تایمر"
+                    android:textColor="#D6EFED"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/timer_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="?attr/appSecondary"
+                    android:visibility="invisible" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tab_world"
+            <LinearLayout
+                android:id="@+id/tab_world_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="جهانی"
-                android:textColor="#D6EFED"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tab_world"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="جهانی"
+                    android:textColor="#D6EFED"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/world_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="?attr/appSecondary"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

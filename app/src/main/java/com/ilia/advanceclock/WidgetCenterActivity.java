@@ -213,8 +213,7 @@ public final class WidgetCenterActivity extends Activity {
                     .putExtra("editExisting", false);
         } else if (provider == WorldClockWidgetProvider.class) {
             kind = "world";
-            callbackIntent = new Intent(this, MainActivity.class)
-                    .putExtra("openTab", "world");
+            callbackIntent = new Intent(this, WorldClockWidgetConfigActivity.class);
         } else {
             kind = provider == NoForgetWidgetProvider.class ? "note" : "clock";
             callbackIntent = new Intent(this, WidgetSettingsActivity.class)
@@ -252,7 +251,7 @@ public final class WidgetCenterActivity extends Activity {
     private void editWidget(String kind, int widgetId) {
         Intent intent;
         if ("world".equals(kind)) {
-            intent = new Intent(this, MainActivity.class).putExtra("openTab", "world");
+            intent = new Intent(this, WorldClockWidgetConfigActivity.class);
         } else if ("media".equals(kind)) {
             intent = new Intent(this, MediaWidgetConfigActivity.class)
                     .putExtra("editExisting", true)

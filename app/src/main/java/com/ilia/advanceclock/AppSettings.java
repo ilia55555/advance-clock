@@ -108,6 +108,32 @@ public final class AppSettings {
         prefs(context).edit().putBoolean("tab_enabled_" + tab, enabled).apply();
     }
 
+    public static String[] tabOrder(Context context) {
+        String saved = prefs(context).getString(
+                "tab_order", "clock,noforget,stopwatch,timer,world");
+        java.util.ArrayList<String> result = new java.util.ArrayList<>();
+        if (saved != null) {
+            for (String tab : saved.split(",")) {
+                if (isKnownTab(tab) && !result.contains(tab)) result.add(tab);
+            }
+        }
+        for (String tab : new String[]{"clock", "noforget", "stopwatch", "timer", "world"}) {
+            if (!result.contains(tab)) result.add(tab);
+        }
+        return result.toArray(new String[0]);
+    }
+
+    public static void setTabOrder(Context context, java.util.List<String> tabs) {
+        prefs(context).edit().putString(
+                "tab_order", android.text.TextUtils.join(",", tabs)).apply();
+    }
+
+    private static boolean isKnownTab(String tab) {
+        return "clock".equals(tab) || "noforget".equals(tab)
+                || "stopwatch".equals(tab) || "timer".equals(tab)
+                || "world".equals(tab);
+    }
+
     public static boolean persistentDateNotificationEnabled(Context context) {
         return prefs(context).getBoolean("notification_persistent_date", true);
     }
