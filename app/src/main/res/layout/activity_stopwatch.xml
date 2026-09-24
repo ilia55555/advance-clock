@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="?attr/appBackground" android:fillViewport="true" android:layoutDirection="rtl">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="72dp" android:background="@drawable/bg_header" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="12dp">
+            <Button android:id="@+id/back_button" android:layout_width="56dp" android:layout_height="48dp" android:background="@android:color/transparent" android:text="→" android:textColor="#FFFFFF" android:textSize="26sp" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="کرنومتر" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold" />
+            <Space android:layout_width="56dp" android:layout_height="1dp" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:padding="24dp">
+            <TextView android:id="@+id/stopwatch_time" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:gravity="center" android:text="00:00:00.00" android:textColor="?attr/appTextPrimary" android:textDirection="ltr" android:textSize="42sp" android:textStyle="bold" />
+            <Switch android:id="@+id/stopwatch_unlimited" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="24dp" android:checked="true" android:text="نامحدود" android:textColor="?attr/appTextPrimary" />
+            <LinearLayout android:id="@+id/stopwatch_limit_inputs" android:layout_width="match_parent" android:layout_height="72dp" android:orientation="horizontal" android:visibility="gone">
+                <EditText android:id="@+id/stopwatch_limit_seconds" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:gravity="center" android:hint="ثانیه" android:inputType="number" android:maxLength="2" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+                <EditText android:id="@+id/stopwatch_limit_minutes" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:gravity="center" android:hint="دقیقه" android:inputType="number" android:maxLength="2" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+                <EditText android:id="@+id/stopwatch_limit_hours" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:gravity="center" android:hint="ساعت" android:inputType="number" android:maxLength="3" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+            </LinearLayout>
+            <EditText android:id="@+id/stopwatch_label" android:layout_width="match_parent" android:layout_height="58dp" android:layout_marginTop="10dp" android:background="@drawable/bg_field" android:hint="عنوان هشدار حد نهایی (اختیاری)" android:paddingHorizontal="14dp" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="64dp" android:layout_marginTop="20dp" android:orientation="horizontal">
+                <Button android:id="@+id/stopwatch_reset" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_soft_button" android:text="صفر کردن" android:textAllCaps="false" android:textColor="?attr/appTextPrimary" />
+                <Space android:layout_width="12dp" android:layout_height="1dp" />
+                <Button android:id="@+id/stopwatch_start" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_teal_button" android:text="شروع" android:textAllCaps="false" android:textColor="#FFFFFF" android:textSize="17sp" />
+            </LinearLayout>
+            <Button android:id="@+id/stopwatch_lap" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="12dp" android:background="@drawable/bg_field" android:enabled="false" android:text="ثبت دور" android:textAllCaps="false" android:textColor="?attr/appPrimary" />
+            <LinearLayout android:id="@+id/lap_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

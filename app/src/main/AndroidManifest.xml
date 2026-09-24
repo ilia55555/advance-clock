@@ -21,6 +21,8 @@
         android:theme="@style/Theme.AdvanceClock">
 
         <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".StopwatchActivity" android:exported="false" />
+        <activity android:name=".TimerActivity" android:exported="false" />
         <activity android:name=".NotificationSettingsActivity" android:exported="false" />
         <activity android:name=".WidgetCenterActivity" android:exported="false" />
         <activity
@@ -95,6 +97,7 @@
         </service>
 
         <receiver android:name=".AlarmReceiver" android:exported="false" />
+        <receiver android:name=".ToolAlarmReceiver" android:exported="false" />
         <receiver android:name=".AlarmReminderReceiver" android:exported="false" />
         <receiver android:name=".AlarmSnoozeReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />

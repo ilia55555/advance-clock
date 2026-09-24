@@ -135,6 +135,10 @@ public final class MainActivity extends Activity {
 
         clockTab.setOnClickListener(v -> showTab("clock"));
         noForgetTab.setOnClickListener(v -> showTab("noforget"));
+        findViewById(R.id.tab_stopwatch).setOnClickListener(v ->
+                startActivity(new Intent(this, StopwatchActivity.class)));
+        findViewById(R.id.tab_timer).setOnClickListener(v ->
+                startActivity(new Intent(this, TimerActivity.class)));
 
         findViewById(R.id.add_clock_widget).setOnClickListener(v ->
                 pinWidgetAndExit(ClockWidgetProvider.class));
@@ -687,6 +691,7 @@ public final class MainActivity extends Activity {
         NotificationHelper.ensureChannels(this);
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
         AlarmScheduler.rescheduleAll(this);
+        ToolAlarmScheduler.rescheduleAll(this);
         NoForgetScheduler.rescheduleAll(this);
         renderAlarms();
         renderNoForget();
