@@ -92,7 +92,7 @@
                     android:gravity="center"
                     android:text="ساعت"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <View
@@ -115,7 +115,7 @@
                     android:gravity="center"
                     android:text="یادداشت‌ها"
                     android:textColor="#D6EFED"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <View
@@ -125,6 +125,28 @@
                     android:background="?attr/appSecondary"
                     android:visibility="invisible" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tab_stopwatch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="کرنومتر"
+                android:textColor="#D6EFED"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tab_timer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="تایمر"
+                android:textColor="#D6EFED"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import android.content.Intent;
 public final class BootReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context context, Intent intent) {
         AlarmScheduler.rescheduleAll(context);
+        ToolAlarmScheduler.rescheduleAll(context);
         NoForgetScheduler.rescheduleAll(context);
         ClockWidgetProvider.updateAll(context);
         NoForgetWidgetProvider.updateAll(context);
