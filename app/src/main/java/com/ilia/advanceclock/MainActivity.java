@@ -125,6 +125,7 @@ public final class MainActivity extends Activity {
         NotificationHelper.ensureChannels(this);
 
         bindViews();
+        configureHeaderForDisplayCutout();
         quickAlarmCalendarType = AppSettings.defaultCalendar(this);
         quickNoteCalendarType = AppSettings.defaultCalendar(this);
         setupHeader();
@@ -207,6 +208,36 @@ public final class MainActivity extends Activity {
         quickNoteSketch = findViewById(R.id.quick_note_sketch);
         penSizeSpinner = findViewById(R.id.pen_size_spinner);
         gridToggle = findViewById(R.id.grid_toggle);
+    }
+
+    private void configureHeaderForDisplayCutout() {
+        View header = findViewById(R.id.header_root);
+        int baseHeight = dp(132);
+        int basePaddingTop = dp(8);
+        int paddingStart = header.getPaddingStart();
+        int paddingEnd = header.getPaddingEnd();
+        int paddingBottom = header.getPaddingBottom();
+
+        header.setOnApplyWindowInsetsListener((view, insets) -> {
+            int cutoutInsetTop = 0;
+            if (Build.VERSION.SDK_INT >= 35 && insets.getDisplayCutout() != null) {
+                cutoutInsetTop = insets.getDisplayCutout().getSafeInsetTop();
+            }
+
+            view.setPaddingRelative(
+                    paddingStart,
+                    basePaddingTop + cutoutInsetTop,
+                    paddingEnd,
+                    paddingBottom);
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            int requiredHeight = baseHeight + cutoutInsetTop;
+            if (params.height != requiredHeight) {
+                params.height = requiredHeight;
+                view.setLayoutParams(params);
+            }
+            return insets;
+        });
+        header.requestApplyInsets();
     }
 
     private void setupHeader() {
