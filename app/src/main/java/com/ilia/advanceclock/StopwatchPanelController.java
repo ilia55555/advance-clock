@@ -54,7 +54,7 @@ final class StopwatchPanelController {
         lapButton = root.findViewById(R.id.stopwatch_lap);
         lapList = root.findViewById(R.id.lap_list);
         modeButtons = root.findViewById(R.id.stopwatch_mode_buttons);
-        unlimitedModeButton = root.findViewById(R.id.stopwatch_mode_unlimited);
+        unlimitedModeButton = root.findViewById(R.id.stopwatch_unlimited);
         durationModeButton = root.findViewById(R.id.stopwatch_mode_duration);
         dateTimeModeButton = root.findViewById(R.id.stopwatch_mode_datetime);
         limitInputs = root.findViewById(R.id.stopwatch_limit_inputs);
@@ -190,7 +190,7 @@ final class StopwatchPanelController {
     private void renderTime(long millis){timeView.setText(format(millis));}
     private void renderLaps(){lapList.removeAllViews();for(int i=0;i<laps.size();i++){TextView row=new TextView(host);row.setText(String.format(Locale.US,"دور %d     %s",laps.size()-i,format(laps.get(i))));row.setTextColor(AppSettings.textPrimary(host));row.setTextSize(17);row.setGravity(android.view.Gravity.CENTER);row.setPadding(12,18,12,18);lapList.addView(row);}}
     private static String format(long millis){long cs=millis/10;return String.format(Locale.US,"%02d:%02d:%02d.%02d",cs/360000,(cs/6000)%60,(cs/100)%60,cs%100);}
-    private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(encoded.length()>0)encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();}
+    private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(!encoded.isEmpty())encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();}
     private void restore(){SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);running=p.getBoolean("stopwatch_running",false);mode=p.getInt("stopwatch_mode",0);calendarType=p.getInt("stopwatch_calendar",AppSettings.defaultCalendar(host));selectedTarget=p.getLong("stopwatch_target",0);accumulatedMillis=p.getLong("stopwatch_accumulated",0);startedAtWall=p.getLong("stopwatch_started",0);limitMillis=p.getLong("stopwatch_limit",0);laps.clear();String encoded=p.getString("stopwatch_laps","");if(!encoded.isEmpty())for(String value:encoded.split(","))try{laps.add(Long.parseLong(value));}catch(NumberFormatException ignored){}if(running&&limitMillis>0&&currentElapsed()>=limitMillis){running=false;accumulatedMillis=limitMillis;startedAtWall=0;save();}}
     void onResume(){restore();renderTarget();renderLaps();updateControls();renderTime(currentElapsed());if(running)handler.post(ticker);}
     void onPause(){handler.removeCallbacks(ticker);save();}

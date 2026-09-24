@@ -9,7 +9,7 @@
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:padding="24dp">
             <TextView android:id="@+id/stopwatch_time" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:gravity="center" android:text="00:00:00.00" android:textColor="?attr/appTextPrimary" android:textDirection="ltr" android:textSize="42sp" android:textStyle="bold" />
             <LinearLayout android:id="@+id/stopwatch_mode_buttons" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="24dp" android:orientation="horizontal">
-                <Button android:id="@+id/stopwatch_mode_unlimited" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_teal_button" android:text="نامحدود" android:textAllCaps="false" android:textColor="#FFFFFF" />
+                <Button android:id="@+id/stopwatch_unlimited" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_teal_button" android:text="نامحدود" android:textAllCaps="false" android:textColor="#FFFFFF" />
                 <Space android:layout_width="6dp" android:layout_height="1dp" />
                 <Button android:id="@+id/stopwatch_mode_duration" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:text="مدت‌زمان" android:textAllCaps="false" android:textColor="?attr/appPrimary" />
                 <Space android:layout_width="6dp" android:layout_height="1dp" />
