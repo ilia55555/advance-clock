@@ -287,7 +287,7 @@ final class WorldClockPanelController {
                 }
                 removeZone(zoneId);
             });
-            row.addView(remove, new LinearLayout.LayoutParams(dp(24), dp(24)));
+            row.addView(remove, new LinearLayout.LayoutParams(dp(36), dp(36)));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
             lp.bottomMargin = dp(8);
             list.addView(row, lp);
