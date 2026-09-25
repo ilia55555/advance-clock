@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="?attr/appBackground" android:fillViewport="true" android:layoutDirection="rtl">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="72dp" android:background="@drawable/bg_header" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="12dp">
+            <Button android:id="@+id/back_button" android:layout_width="56dp" android:layout_height="48dp" android:background="@android:color/transparent" android:text="→" android:textColor="#FFFFFF" android:textSize="26sp" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/tab_timer" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold" />
+            <Space android:layout_width="56dp" android:layout_height="1dp" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:padding="24dp">
+            <TextView android:id="@+id/timer_time" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="28dp" android:gravity="center" android:text="00:05:00" android:textColor="?attr/appTextPrimary" android:textDirection="ltr" android:textSize="52sp" android:textStyle="bold" />
+            <TextView android:id="@+id/timer_target_summary" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:text="مدت‌زمان ۵ دقیقه" android:textColor="?attr/appTextSecondary" android:textSize="14sp" />
+            <LinearLayout android:id="@+id/timer_mode_buttons" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="28dp" android:orientation="horizontal">
+                <Button android:id="@+id/timer_mode_duration" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_teal_button" android:text="مدت‌زمان" android:textAllCaps="false" android:textColor="#FFFFFF" />
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+                <Button android:id="@+id/timer_mode_datetime" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:text="تاریخ و ساعت پایان" android:textAllCaps="false" android:textColor="?attr/appPrimary" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/timer_inputs" android:layout_width="match_parent" android:layout_height="76dp" android:layout_marginTop="14dp" android:orientation="horizontal">
+                <EditText android:id="@+id/timer_seconds" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:gravity="center" android:hint="ثانیه" android:inputType="number" android:maxLength="2" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+                <EditText android:id="@+id/timer_minutes" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:gravity="center" android:hint="دقیقه" android:inputType="number" android:maxLength="2" android:text="5" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+                <EditText android:id="@+id/timer_hours" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:gravity="center" android:hint="ساعت" android:inputType="number" android:maxLength="3" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/timer_datetime_inputs" android:layout_width="match_parent" android:layout_height="64dp" android:layout_marginTop="14dp" android:orientation="horizontal" android:visibility="gone">
+                <Button android:id="@+id/timer_date" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:text="انتخاب تاریخ" android:textAllCaps="false" android:textColor="?attr/appPrimary" />
+                <Space android:layout_width="8dp" android:layout_height="1dp" />
+                <Button android:id="@+id/timer_clock" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_field" android:text="انتخاب ساعت" android:textAllCaps="false" android:textColor="?attr/appPrimary" />
+            </LinearLayout>
+            <EditText android:id="@+id/timer_label" android:layout_width="match_parent" android:layout_height="58dp" android:layout_marginTop="12dp" android:background="@drawable/bg_field" android:hint="عنوان هشدار تایمر (اختیاری)" android:paddingHorizontal="14dp" android:textColor="?attr/appTextPrimary" android:textColorHint="?attr/appTextSecondary" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="64dp" android:layout_marginTop="20dp" android:orientation="horizontal">
+                <Button android:id="@+id/timer_reset" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_soft_button" android:text="لغو و بازنشانی" android:textAllCaps="false" android:textColor="?attr/appTextPrimary" />
+                <Space android:layout_width="12dp" android:layout_height="1dp" />
+                <Button android:id="@+id/timer_start" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_teal_button" android:text="شروع" android:textAllCaps="false" android:textColor="#FFFFFF" android:textSize="17sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -67,6 +67,7 @@ public final class AlarmRingActivity extends Activity {
     private void bind(android.content.Intent intent) {
         alarmId = intent == null ? -1L : intent.getLongExtra("alarmId", -1L);
         String label = intent == null ? "" : intent.getStringExtra("label");
+        String toolKind = intent == null ? null : intent.getStringExtra("toolKind");
 
         TextView title = findViewById(R.id.ring_title);
         title.setText(label == null || label.trim().isEmpty() ? "آلارم" : label);
@@ -81,6 +82,16 @@ public final class AlarmRingActivity extends Activity {
         AlarmItem item = new AlarmStore(this).find(alarmId);
         int minutes = item == null ? 15 : item.snoozeMinutes;
         setSnoozeSelection(minutes);
+        boolean timeTool = ToolAlarmScheduler.TIMER.equals(toolKind)
+                || ToolAlarmScheduler.STOPWATCH.equals(toolKind);
+        findViewById(R.id.snooze_label).setVisibility(timeTool ? View.GONE : View.VISIBLE);
+        findViewById(R.id.ring_snooze).setVisibility(timeTool ? View.GONE : View.VISIBLE);
+        findViewById(R.id.snooze_alarm).setVisibility(timeTool ? View.GONE : View.VISIBLE);
+        TextView subtitle = findViewById(R.id.ring_subtitle);
+        subtitle.setText(timeTool
+                ? ToolAlarmScheduler.TIMER.equals(toolKind)
+                ? "زمان تایمر به پایان رسیده است" : "کرنومتر به حد نهایی رسیده است"
+                : "زمان زنگ هشدار رسیده است");
         renderAlarmImages(item);
     }
 
@@ -207,7 +218,7 @@ public final class AlarmRingActivity extends Activity {
         stopService(AlarmSoundService.stopIntent(this));
         boolean ok = AlarmScheduler.snooze(this, alarmId, minutes * 60_000L);
         NotificationManager nm = getSystemService(NotificationManager.class);
-        if (nm != null && alarmId >= 0) nm.cancel(NotificationHelper.notificationId(alarmId));
+        if (nm != null && alarmId != -1L) nm.cancel(NotificationHelper.notificationId(alarmId));
         ClockWidgetProvider.updateAll(this);
         if (!ok) Toast.makeText(this, "برای یادآوری مجدد، دسترسی آلارم دقیق لازم است.", Toast.LENGTH_LONG).show();
         finishAndRemoveTask();
@@ -220,7 +231,7 @@ public final class AlarmRingActivity extends Activity {
     private void stopAndClose() {
         stopService(AlarmSoundService.stopIntent(this));
         NotificationManager nm = getSystemService(NotificationManager.class);
-        if (nm != null && alarmId >= 0) nm.cancel(NotificationHelper.notificationId(alarmId));
+        if (nm != null && alarmId != -1L) nm.cancel(NotificationHelper.notificationId(alarmId));
         finishAndRemoveTask();
     }
 
