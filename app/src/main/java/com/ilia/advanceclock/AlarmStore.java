@@ -1,7 +1,6 @@
 package com.ilia.advanceclock;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -12,15 +11,15 @@ import java.util.List;
 public final class AlarmStore {
     private static final String PREFS = "advance_clock_alarms";
     private static final String KEY = "items_v1";
-    private final SharedPreferences prefs;
+    private final Context context;
 
     public AlarmStore(Context context) {
-        prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        this.context = context.getApplicationContext();
     }
 
     public synchronized List<AlarmItem> all() {
         ArrayList<AlarmItem> out = new ArrayList<>();
-        String raw = prefs.getString(KEY, "[]");
+        String raw = SecurePreferences.read(context, PREFS, KEY, "[]");
         try {
             JSONArray array = new JSONArray(raw);
             for (int i = 0; i < array.length(); i++) {
@@ -72,6 +71,6 @@ public final class AlarmStore {
         for (AlarmItem item : items) {
             try { array.put(item.toJson()); } catch (Exception ignored) {}
         }
-        prefs.edit().putString(KEY, array.toString()).apply();
+        SecurePreferences.write(context, PREFS, KEY, array.toString());
     }
 }

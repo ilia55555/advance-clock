@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Clock Pro</string>
+    <string name="widget_description">Расширенные часы и предстоящие будильники</string>
+    <string name="noforget_widget_description">Заметки и напоминания NoForget</string>
+    <string name="media_widget_name">Напоминания о файлах</string>
+    <string name="media_widget_description">Напоминания и быстрый доступ к фото, аудио, видео и файлам</string>
+    <string name="world_clock_widget_description">Адаптивная сетка мирового времени с пошаговой прокруткой</string>
+    <string name="tab_clock">Часы</string>
+    <string name="tab_notes">Заметки</string>
+    <string name="tab_stopwatch">Секундомер</string>
+    <string name="tab_timer">Таймер</string>
+    <string name="tab_world">Мир</string>
+    <string name="world_clock_title">Мировое время</string>
+    <string name="first_setup_title">Первоначальная настройка</string>
+    <string name="first_setup_message">Выберите язык приложения и календарь по умолчанию. Их можно изменить позже в настройках.</string>
+    <string name="language_label">Язык приложения</string>
+    <string name="calendar_label">Календарь по умолчанию</string>
+    <string name="continue_label">Продолжить</string>
+    <string-array name="language_options">
+        <item>فارسی</item>
+        <item>English</item>
+        <item>简体中文</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Русский</item>
+        <item>Türkçe</item>
+        <item>Português</item>
+        <item>हिन्दी</item>
+        <item>日本語</item>
+        <item>العربية</item>
+    </string-array>
+    <string-array name="calendar_options">
+        <item>Персидский</item>
+        <item>Григорианский</item>
+        <item>Исламский</item>
+    </string-array>
+</resources>
