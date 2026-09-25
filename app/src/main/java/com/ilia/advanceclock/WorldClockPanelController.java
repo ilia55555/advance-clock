@@ -274,7 +274,7 @@ final class WorldClockPanelController {
             remove.setImageResource(R.drawable.ic_delete_red);
             remove.setBackgroundResource(R.drawable.bg_delete_outline);
             remove.setContentDescription("حذف " + cityName(zoneId));
-            remove.setPadding(dp(8), dp(8), dp(8), dp(8));
+            remove.setPadding(dp(5), dp(5), dp(5), dp(5));
             boolean[] deleteArmed = {false};
             remove.setOnClickListener(v -> {
                 if (!deleteArmed[0]) {
@@ -287,7 +287,7 @@ final class WorldClockPanelController {
                 }
                 removeZone(zoneId);
             });
-            row.addView(remove, new LinearLayout.LayoutParams(dp(36), dp(36)));
+            row.addView(remove, new LinearLayout.LayoutParams(dp(20), dp(20)));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
             lp.bottomMargin = dp(8);
             list.addView(row, lp);
