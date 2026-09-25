@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Clock Pro</string>
+    <string name="widget_description">Horloge avancée et alarmes à venir</string>
+    <string name="noforget_widget_description">Notes et rappels NoForget</string>
+    <string name="media_widget_name">Rappels de fichiers</string>
+    <string name="media_widget_description">Rappels et accès rapide aux photos, fichiers audio, vidéos et autres fichiers</string>
+    <string name="world_clock_widget_description">Grille réactive d’horloges mondiales avec défilement par étapes</string>
+    <string name="tab_clock">Horloge</string>
+    <string name="tab_notes">Notes</string>
+    <string name="tab_stopwatch">Chronomètre</string>
+    <string name="tab_timer">Minuteur</string>
+    <string name="tab_world">Monde</string>
+    <string name="world_clock_title">Horloge mondiale</string>
+    <string name="first_setup_title">Configuration initiale</string>
+    <string name="first_setup_message">Choisissez la langue de l’application et le calendrier par défaut. Vous pourrez les modifier plus tard dans les paramètres.</string>
+    <string name="language_label">Langue de l’application</string>
+    <string name="calendar_label">Calendrier par défaut</string>
+    <string name="continue_label">Continuer</string>
+    <string-array name="language_options">
+        <item>English</item>
+        <item>فارسی</item>
+        <item>简体中文</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Русский</item>
+        <item>Türkçe</item>
+        <item>Português</item>
+        <item>हिन्दी</item>
+        <item>日本語</item>
+        <item>العربية</item>
+    </string-array>
+    <string-array name="calendar_options">
+        <item>Persan</item>
+        <item>Grégorien</item>
+        <item>Hégirien</item>
+    </string-array>
+</resources>

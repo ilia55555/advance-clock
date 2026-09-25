@@ -5,4 +5,35 @@
     <string name="noforget_widget_description">یادداشت‌ها و یادآوری‌های NoForget</string>
     <string name="media_widget_name">یادآوری فایل‌ها</string>
     <string name="media_widget_description">یادآوری و دسترسی سریع به عکس، صوت، ویدیو و فایل‌ها</string>
+    <string name="world_clock_widget_description">شبکه واکنش‌گرای ساعت‌های جهانی با پیمایش پله‌ای</string>
+    <string name="tab_clock">ساعت</string>
+    <string name="tab_notes">یادداشت‌ها</string>
+    <string name="tab_stopwatch">کرنومتر</string>
+    <string name="tab_timer">تایمر</string>
+    <string name="tab_world">جهانی</string>
+    <string name="world_clock_title">ساعت جهانی</string>
+    <string name="first_setup_title">راه‌اندازی اولیه</string>
+    <string name="first_setup_message">زبان برنامه و تقویم پیش‌فرض را انتخاب کنید. بعداً می‌توانید آن‌ها را از تنظیمات تغییر دهید.</string>
+    <string name="language_label">زبان برنامه</string>
+    <string name="calendar_label">تقویم پیش‌فرض</string>
+    <string name="continue_label">ادامه</string>
+    <string-array name="language_options">
+        <item>English</item>
+        <item>فارسی</item>
+        <item>简体中文</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Русский</item>
+        <item>Türkçe</item>
+        <item>Português</item>
+        <item>हिन्दी</item>
+        <item>日本語</item>
+        <item>العربية</item>
+    </string-array>
+    <string-array name="calendar_options">
+        <item>شمسی</item>
+        <item>میلادی</item>
+        <item>قمری</item>
+    </string-array>
 </resources>

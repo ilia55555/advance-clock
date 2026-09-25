@@ -58,10 +58,11 @@ public final class AlarmSoundService extends Service {
         currentAlarmId = intent.getLongExtra("alarmId", -1L);
         currentVibrate = intent.getBooleanExtra("vibrate", true);
         String label = intent.getStringExtra("label");
+        String toolKind = intent.getStringExtra("toolKind");
 
         startForeground(
                 NotificationHelper.notificationId(currentAlarmId),
-                buildNotification(currentAlarmId, label)
+                buildNotification(currentAlarmId, label, toolKind)
         );
         acquireWakeLock();
         startSound();
@@ -73,10 +74,11 @@ public final class AlarmSoundService extends Service {
         return START_NOT_STICKY;
     }
 
-    private Notification buildNotification(long id, String label) {
+    private Notification buildNotification(long id, String label, String toolKind) {
         Intent ring = new Intent(this, AlarmRingActivity.class)
                 .putExtra("alarmId", id)
                 .putExtra("label", label)
+                .putExtra("toolKind", toolKind)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -97,6 +99,11 @@ public final class AlarmSoundService extends Service {
         );
 
         String title = label == null || label.trim().isEmpty() ? "آلارم" : label;
+        String message = ToolAlarmScheduler.TIMER.equals(toolKind)
+                ? "زمان تایمر به پایان رسید"
+                : ToolAlarmScheduler.STOPWATCH.equals(toolKind)
+                ? "کرنومتر به حد نهایی رسید"
+                : "زمان آلارم رسیده است";
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, NotificationHelper.ALARM_CHANNEL)
                 : new Notification.Builder(this);
@@ -104,7 +111,7 @@ public final class AlarmSoundService extends Service {
         return builder
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setContentTitle(title)
-                .setContentText("زمان آلارم رسیده است")
+                .setContentText(message)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)

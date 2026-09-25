@@ -74,12 +74,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/tab_bar"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:orientation="horizontal"
             android:layoutDirection="rtl">
 
             <LinearLayout
+                android:id="@+id/tab_clock_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -90,9 +92,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:gravity="center"
-                    android:text="ساعت"
+                    android:text="@string/tab_clock"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <View
@@ -103,6 +105,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/tab_noforget_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -113,9 +116,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:gravity="center"
-                    android:text="یادداشت‌ها"
+                    android:text="@string/tab_notes"
                     android:textColor="#D6EFED"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <View
@@ -125,6 +128,76 @@
                     android:background="?attr/appSecondary"
                     android:visibility="invisible" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_stopwatch_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tab_stopwatch"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="@string/tab_stopwatch"
+                    android:textColor="#D6EFED"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/stopwatch_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="?attr/appSecondary"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_timer_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tab_timer"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="@string/tab_timer"
+                    android:textColor="#D6EFED"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/timer_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="?attr/appSecondary"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_world_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tab_world"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="@string/tab_world"
+                    android:textColor="#D6EFED"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/world_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="?attr/appSecondary"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
@@ -689,6 +762,33 @@
                     android:orientation="vertical" />
             </LinearLayout>
         </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/stopwatch_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <include layout="@layout/activity_stopwatch" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/timer_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <include layout="@layout/activity_timer" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/world_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <include layout="@layout/panel_world_clock" />
+        </FrameLayout>
 
         <Button
             android:id="@+id/clock_fab"
