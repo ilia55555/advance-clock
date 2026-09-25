@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/world_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_world_transparent"
+    android:paddingStart="8dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="6dp">
+    <GridView
+        android:id="@+id/world_widget_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:horizontalSpacing="8dp"
+        android:numColumns="1"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="8dp" />
+    <LinearLayout
+        android:id="@+id/world_widget_controls"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/widget_world_dark_70"
+        android:orientation="horizontal"
+        android:paddingHorizontal="3dp">
+        <Button
+            android:id="@+id/world_widget_previous"
+            android:layout_width="40dp"
+            android:layout_height="28dp"
+            android:background="@android:color/transparent"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="↑"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/world_widget_next"
+            android:layout_width="40dp"
+            android:layout_height="28dp"
+            android:background="@android:color/transparent"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="↓"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+</FrameLayout>

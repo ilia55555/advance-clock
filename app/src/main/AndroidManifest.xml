@@ -23,6 +23,11 @@
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".NotificationSettingsActivity" android:exported="false" />
         <activity android:name=".WidgetCenterActivity" android:exported="false" />
+        <activity android:name=".WorldClockWidgetConfigActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MediaWidgetViewerActivity"
             android:exported="false"
@@ -76,6 +81,11 @@
             android:exported="false" />
 
         <service
+            android:name=".WorldClockWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <service
             android:name=".MediaWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
@@ -95,6 +105,7 @@
         </service>
 
         <receiver android:name=".AlarmReceiver" android:exported="false" />
+        <receiver android:name=".ToolAlarmReceiver" android:exported="false" />
         <receiver android:name=".AlarmReminderReceiver" android:exported="false" />
         <receiver android:name=".AlarmSnoozeReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />
@@ -112,6 +123,19 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".WorldClockWidgetProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:label="ساعت جهانی">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/world_clock_widget_info" />
         </receiver>
 
         <receiver
