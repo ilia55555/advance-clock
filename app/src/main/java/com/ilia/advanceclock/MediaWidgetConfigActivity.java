@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -45,6 +46,7 @@ public final class MediaWidgetConfigActivity extends Activity {
     private Switch showPreview;
     private Switch showName;
     private Switch showMetadata;
+    private WidgetPreviewView preview;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -84,11 +86,15 @@ public final class MediaWidgetConfigActivity extends Activity {
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
         addTopBar(root);
+        root.addView(sectionTitle("پیش‌نمایش زنده"));
+        preview = new WidgetPreviewView(this);
+        root.addView(preview, new LinearLayout.LayoutParams(-1, dp(150)));
         addFilesSection(root);
         addAppearanceSection(root);
         addDisplaySection(root);
         addResizeSection(root);
         addActions(root);
+        bindPreviewUpdates();
 
         page.addView(
                 scroll,
@@ -126,6 +132,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         setContentView(page);
         renderItems();
+        refreshPreview();
     }
 
     private void addTopBar(LinearLayout root) {
@@ -276,6 +283,7 @@ public final class MediaWidgetConfigActivity extends Activity {
             }
             showPreview.setEnabled(checked);
             showPreview.setAlpha(checked ? 1f : 0.55f);
+            refreshPreview();
         });
         if (!showName.isChecked()) {
             showPreview.setChecked(true);
@@ -286,6 +294,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         showHeader.setOnCheckedChangeListener((button, checked) -> {
             showSettings.setEnabled(checked);
             showSettings.setAlpha(checked ? 1f : 0.5f);
+            refreshPreview();
         });
         showSettings.setEnabled(showHeader.isChecked());
         showSettings.setAlpha(showHeader.isChecked() ? 1f : 0.5f);
@@ -307,6 +316,40 @@ public final class MediaWidgetConfigActivity extends Activity {
             MediaWidgetProvider.update(this, widgetId);
             recreate();
         });
+    }
+
+    private void bindPreviewUpdates() {
+        watch(themeSpinner);
+        watch(paletteSpinner);
+        watch(opacitySpinner);
+        watch(fontSpinner);
+        showSettings.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showPreview.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showMetadata.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+    }
+
+    private void watch(Spinner spinner) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(
+                    AdapterView<?> parent, View view, int position, long id) {
+                refreshPreview();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void refreshPreview() {
+        if (preview == null || themeSpinner == null || paletteSpinner == null) return;
+        boolean dark = themeSpinner.getSelectedItemPosition() == 2
+                || (themeSpinner.getSelectedItemPosition() == 0
+                && AppSettings.themeMode(this) == AppSettings.THEME_DARK);
+        int alpha = opacitySpinner.getSelectedItemPosition() == 0 ? 0xFF
+                : (opacitySpinner.getSelectedItemPosition() == 1 ? 0xD9 : 0xB3);
+        int background = (dark ? 0x00111418 : 0x00FFFFFF) | (alpha << 24);
+        int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
+        int accent = AppSettings.primaryColorForPalette(paletteSpinner.getSelectedItemPosition());
+        preview.configure("media", background, text, accent, showHeader.isChecked(),
+                showMetadata.isChecked(), Math.max(1, items.size()));
     }
 
     private void pickFiles() {
@@ -433,6 +476,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         if (fileList == null) return;
 
         fileList.removeAllViews();
+        refreshPreview();
 
         if (items.isEmpty()) {
             TextView empty = hint(

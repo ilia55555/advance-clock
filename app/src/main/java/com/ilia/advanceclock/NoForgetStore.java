@@ -1,7 +1,6 @@
 package com.ilia.advanceclock;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -11,16 +10,16 @@ import java.util.List;
 public final class NoForgetStore {
     private static final String PREFS = "noforget_notes";
     private static final String KEY = "items_v1";
-    private final SharedPreferences prefs;
+    private final Context context;
 
     public NoForgetStore(Context context) {
-        prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        this.context = context.getApplicationContext();
     }
 
     public synchronized List<NoForgetItem> all() {
         ArrayList<NoForgetItem> out = new ArrayList<>();
         try {
-            JSONArray array = new JSONArray(prefs.getString(KEY, "[]"));
+            JSONArray array = new JSONArray(SecurePreferences.read(context, PREFS, KEY, "[]"));
             for (int i = 0; i < array.length(); i++) {
                 JSONObject o = array.optJSONObject(i);
                 if (o != null) out.add(NoForgetItem.fromJson(o));
@@ -73,6 +72,6 @@ public final class NoForgetStore {
         for (NoForgetItem item : items) {
             try { array.put(item.toJson()); } catch (Exception ignored) {}
         }
-        prefs.edit().putString(KEY, array.toString()).apply();
+        SecurePreferences.write(context, PREFS, KEY, array.toString());
     }
 }

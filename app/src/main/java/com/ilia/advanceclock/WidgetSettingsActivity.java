@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -30,6 +31,7 @@ public final class WidgetSettingsActivity extends Activity {
     private Spinner timeFormat;
     private Spinner sortMode;
     private NumberPicker maxItems;
+    private WidgetPreviewView preview;
 
     private Switch showHeader;
     private Switch showTime;
@@ -90,11 +92,16 @@ public final class WidgetSettingsActivity extends Activity {
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
         addTopBar(root);
+        root.addView(sectionTitle("پیش‌نمایش زنده"));
+        preview = new WidgetPreviewView(this);
+        root.addView(preview, new LinearLayout.LayoutParams(-1, dp(150)));
         addAppearanceSection(root);
         addHeaderSection(root);
         addContentSection(root);
         addResizeSection(root);
         addActions(root);
+        bindPreviewUpdates();
+        refreshPreview();
 
         page.addView(
                 scroll,
@@ -249,10 +256,14 @@ public final class WidgetSettingsActivity extends Activity {
                 "عنوان «هشدار» یا «یادداشت» بالای فهرست",
                 WidgetPrefs.showSectionLabel(this, widgetId));
 
-        showHeader.setOnCheckedChangeListener((button, checked) ->
-                updateHeaderControlState());
-        showTime.setOnCheckedChangeListener((button, checked) ->
-                updateHeaderControlState());
+        showHeader.setOnCheckedChangeListener((button, checked) -> {
+            updateHeaderControlState();
+            refreshPreview();
+        });
+        showTime.setOnCheckedChangeListener((button, checked) -> {
+            updateHeaderControlState();
+            refreshPreview();
+        });
         updateHeaderControlState();
     }
 
@@ -383,6 +394,48 @@ public final class WidgetSettingsActivity extends Activity {
         } else {
             ClockWidgetProvider.updateAll(this);
         }
+    }
+
+    private void bindPreviewUpdates() {
+        watch(theme);
+        watch(palette);
+        watch(opacity);
+        watch(fontSize);
+        watch(timeFormat);
+        watch(sortMode);
+        showDate.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showSeconds.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showAdd.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showSettings.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showSection.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showPriority.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        showMetadata.setOnCheckedChangeListener((button, checked) -> refreshPreview());
+        maxItems.setOnValueChangedListener((picker, oldValue, newValue) -> refreshPreview());
+    }
+
+    private void watch(Spinner spinner) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(
+                    AdapterView<?> parent, View view, int position, long id) {
+                refreshPreview();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void refreshPreview() {
+        if (preview == null || theme == null || palette == null || maxItems == null) return;
+        boolean dark = theme.getSelectedItemPosition() == 2
+                || (theme.getSelectedItemPosition() == 0
+                && AppSettings.themeMode(this) == AppSettings.THEME_DARK);
+        int alpha = opacity.getSelectedItemPosition() == 0 ? 0xFF
+                : (opacity.getSelectedItemPosition() == 1 ? 0xD9 : 0xB3);
+        int base = dark ? 0x00111418 : 0x00FFFFFF;
+        int background = base | (alpha << 24);
+        int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
+        int accent = AppSettings.primaryColorForPalette(palette.getSelectedItemPosition());
+        preview.configure(kind, background, text, accent,
+                showHeader.isChecked(), showMetadata.isChecked(), maxItems.getValue());
     }
 
     private void finishToHome() {
