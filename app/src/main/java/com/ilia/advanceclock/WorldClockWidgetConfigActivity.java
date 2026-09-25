@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -40,6 +42,11 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         title.setGravity(Gravity.CENTER);
         root.addView(title, new LinearLayout.LayoutParams(-1, dp(60)));
 
+        WidgetPreviewView preview = new WidgetPreviewView(this);
+        LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(126));
+        previewLp.bottomMargin = dp(12);
+        root.addView(preview, previewLp);
+
         root.addView(label("پس‌زمینه", 13));
         Spinner background = spinner(new String[]{"شفاف (پیش‌فرض)", "مشکی ۷۰٪", "مشکی", "سفید"});
         background.setSelection(WorldClockWidgetPrefs.background(this, widgetId));
@@ -65,6 +72,15 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         root.addView(save, lp);
         setContentView(root);
 
+        Runnable refreshPreview = () -> preview.configure("world",
+                previewBackground(background.getSelectedItemPosition()),
+                COLORS[text.getSelectedItemPosition()], COLORS[time.getSelectedItemPosition()],
+                true, true, 3);
+        watch(background, refreshPreview);
+        watch(text, refreshPreview);
+        watch(time, refreshPreview);
+        refreshPreview.run();
+
         save.setOnClickListener(v -> {
             WorldClockWidgetPrefs.save(this, widgetId,
                     background.getSelectedItemPosition(), COLORS[text.getSelectedItemPosition()],
@@ -72,8 +88,35 @@ public final class WorldClockWidgetConfigActivity extends Activity {
             WorldClockWidgetProvider.updateAll(this);
             setResult(RESULT_OK, new Intent().putExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId));
-            finish();
+            finishToHome();
         });
+    }
+
+    private int previewBackground(int position) {
+        switch (position) {
+            case 1: return 0xB3111418;
+            case 2: return 0xFF111418;
+            case 3: return 0xFFFFFFFF;
+            default: return 0x22111418;
+        }
+    }
+
+    private void watch(Spinner spinner, Runnable changed) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(
+                    AdapterView<?> parent, View view, int position, long id) {
+                changed.run();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void finishToHome() {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        try { startActivity(home); } catch (Exception ignored) {}
+        finish();
     }
 
     private Spinner colorSpinner() {

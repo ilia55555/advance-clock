@@ -159,6 +159,8 @@ public final class MainActivity extends Activity {
                 pinWidgetAndExit(ClockWidgetProvider.class));
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
+        findViewById(R.id.world_add_widget).setOnClickListener(v ->
+                pinWidgetAndExit(WorldClockWidgetProvider.class));
 
         clockFab.setOnClickListener(v ->
                 startActivity(new Intent(this, AlarmEditorActivity.class)
@@ -1016,21 +1018,18 @@ public final class MainActivity extends Activity {
         }
 
         boolean note = provider == NoForgetWidgetProvider.class;
-        Intent callbackIntent = new Intent(
-                this,
-                WidgetSettingsActivity.class)
-                .putExtra(
-                        "widgetKind",
-                        note ? "note" : "clock")
-                .putExtra("editExisting", false)
-                .addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        boolean world = provider == WorldClockWidgetProvider.class;
+        Intent callbackIntent = world
+                ? new Intent(this, WorldClockWidgetConfigActivity.class)
+                : new Intent(this, WidgetSettingsActivity.class)
+                        .putExtra("widgetKind", note ? "note" : "clock")
+                        .putExtra("editExisting", false);
+        callbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent successCallback =
                 PendingIntent.getActivity(
                         this,
-                        note ? 2_910_002 : 2_910_001,
+                        world ? 2_910_003 : (note ? 2_910_002 : 2_910_001),
                         callbackIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                                 | PendingIntent.FLAG_IMMUTABLE);

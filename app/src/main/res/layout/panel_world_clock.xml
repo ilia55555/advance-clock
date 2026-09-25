@@ -92,5 +92,14 @@
             android:text="افزودن ساعت انتخاب‌شده"
             android:textAllCaps="false"
             android:textColor="#FFFFFF" />
+        <Button
+            android:id="@+id/world_add_widget"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_soft_button"
+            android:text="+ افزودن ویجت ساعت جهانی"
+            android:textAllCaps="false"
+            android:textColor="?attr/appPrimary" />
     </LinearLayout>
 </ScrollView>
