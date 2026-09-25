@@ -177,14 +177,14 @@ public final class AppSettings {
 
     public static String[] tabOrder(Context context) {
         String saved = prefs(context).getString(
-                "tab_order", "clock,noforget,stopwatch,timer,world");
+                "tab_order", "clock,world,noforget,timer,stopwatch");
         java.util.ArrayList<String> result = new java.util.ArrayList<>();
         if (saved != null) {
             for (String tab : saved.split(",")) {
                 if (isKnownTab(tab) && !result.contains(tab)) result.add(tab);
             }
         }
-        for (String tab : new String[]{"clock", "noforget", "stopwatch", "timer", "world"}) {
+        for (String tab : new String[]{"clock", "world", "noforget", "timer", "stopwatch"}) {
             if (!result.contains(tab)) result.add(tab);
         }
         return result.toArray(new String[0]);
