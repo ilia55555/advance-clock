@@ -43,6 +43,7 @@ public final class MainActivity extends Activity {
     private static final int REQ_QUICK_ALARM_IMAGE_2 = 311;
     private static final String PREFS = "advance_clock_app";
     private static final String PERMISSION_ONBOARDING = "permission_onboarding_v2";
+    private static final String INITIAL_SETUP = "language_calendar_setup_v1";
 
     private final Calendar quickAlarm = Calendar.getInstance();
     private final Calendar quickNoteDue = Calendar.getInstance();
@@ -173,9 +174,17 @@ public final class MainActivity extends Activity {
                 || "world".equals(requestedTab)
                 ? requestedTab : firstEnabledTab());
 
-        boolean onboardingDone = getSharedPreferences(PREFS, MODE_PRIVATE)
-                .getBoolean(PERMISSION_ONBOARDING, false);
-        if (!onboardingDone) {
+        android.content.SharedPreferences appPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        boolean setupDone = appPrefs.getBoolean(INITIAL_SETUP, false);
+        boolean onboardingDone = appPrefs.getBoolean(PERMISSION_ONBOARDING, false);
+        if (!setupDone) {
+            getWindow().getDecorView().postDelayed(() ->
+                    FirstRunSetupDialog.show(this, languageChanged -> {
+                        appPrefs.edit().putBoolean(INITIAL_SETUP, true).apply();
+                        if (languageChanged) recreate();
+                        else if (!onboardingDone) startPermissionFlow();
+                    }), 300);
+        } else if (!onboardingDone) {
             getWindow().getDecorView().postDelayed(this::startPermissionFlow, 450);
         }
 

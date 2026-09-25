@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Clock Pro</string>
+    <string name="widget_description">Gelişmiş saat ve yaklaşan alarmlar</string>
+    <string name="noforget_widget_description">NoForget notları ve hatırlatıcıları</string>
+    <string name="media_widget_name">Dosya hatırlatıcıları</string>
+    <string name="media_widget_description">Fotoğraf, ses, video ve dosyalara hızlı erişim ve hatırlatmalar</string>
+    <string name="world_clock_widget_description">Kademeli kaydırmalı duyarlı dünya saati ızgarası</string>
+    <string name="tab_clock">Saat</string>
+    <string name="tab_notes">Notlar</string>
+    <string name="tab_stopwatch">Kronometre</string>
+    <string name="tab_timer">Zamanlayıcı</string>
+    <string name="tab_world">Dünya</string>
+    <string name="world_clock_title">Dünya Saati</string>
+    <string name="first_setup_title">İlk kurulum</string>
+    <string name="first_setup_message">Uygulama dilini ve varsayılan takvimi seçin. Bunları daha sonra Ayarlar’dan değiştirebilirsiniz.</string>
+    <string name="language_label">Uygulama dili</string>
+    <string name="calendar_label">Varsayılan takvim</string>
+    <string name="continue_label">Devam</string>
+    <string-array name="language_options">
+        <item>فارسی</item>
+        <item>English</item>
+        <item>简体中文</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Русский</item>
+        <item>Türkçe</item>
+        <item>Português</item>
+        <item>हिन्दी</item>
+        <item>日本語</item>
+        <item>العربية</item>
+    </string-array>
+    <string-array name="calendar_options">
+        <item>Fars</item>
+        <item>Gregoryen</item>
+        <item>Hicri</item>
+    </string-array>
+</resources>

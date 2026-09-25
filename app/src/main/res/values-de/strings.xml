@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Clock Pro</string>
+    <string name="widget_description">Erweiterte Uhr und bevorstehende Alarme</string>
+    <string name="noforget_widget_description">NoForget-Notizen und Erinnerungen</string>
+    <string name="media_widget_name">Dateierinnerungen</string>
+    <string name="media_widget_description">Erinnerungen und Schnellzugriff auf Fotos, Audio, Videos und Dateien</string>
+    <string name="world_clock_widget_description">Anpassbares Weltzeituhr-Raster mit schrittweisem Scrollen</string>
+    <string name="tab_clock">Uhr</string>
+    <string name="tab_notes">Notizen</string>
+    <string name="tab_stopwatch">Stoppuhr</string>
+    <string name="tab_timer">Timer</string>
+    <string name="tab_world">Welt</string>
+    <string name="world_clock_title">Weltzeituhr</string>
+    <string name="first_setup_title">Ersteinrichtung</string>
+    <string name="first_setup_message">Wählen Sie die App-Sprache und den Standardkalender. Beides kann später in den Einstellungen geändert werden.</string>
+    <string name="language_label">App-Sprache</string>
+    <string name="calendar_label">Standardkalender</string>
+    <string name="continue_label">Weiter</string>
+    <string-array name="language_options">
+        <item>فارسی</item>
+        <item>English</item>
+        <item>简体中文</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Русский</item>
+        <item>Türkçe</item>
+        <item>Português</item>
+        <item>हिन्दी</item>
+        <item>日本語</item>
+        <item>العربية</item>
+    </string-array>
+    <string-array name="calendar_options">
+        <item>Persisch</item>
+        <item>Gregorianisch</item>
+        <item>Islamisch</item>
+    </string-array>
+</resources>

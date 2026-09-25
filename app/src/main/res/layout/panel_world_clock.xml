@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ساعت جهانی"
+            android:text="@string/world_clock_title"
             android:textColor="?attr/appTextPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />

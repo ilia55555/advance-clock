@@ -3,7 +3,7 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <LinearLayout android:layout_width="match_parent" android:layout_height="72dp" android:background="@drawable/bg_header" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="12dp">
             <Button android:id="@+id/back_button" android:layout_width="56dp" android:layout_height="48dp" android:background="@android:color/transparent" android:text="→" android:textColor="#FFFFFF" android:textSize="26sp" />
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="کرنومتر" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/tab_stopwatch" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold" />
             <Space android:layout_width="56dp" android:layout_height="1dp" />
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:padding="24dp">

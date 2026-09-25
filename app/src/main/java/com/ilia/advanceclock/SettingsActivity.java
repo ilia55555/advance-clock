@@ -69,6 +69,11 @@ public final class SettingsActivity extends Activity {
         paletteHint.setPadding(0, dp(4), 0, dp(8));
         root.addView(paletteHint);
 
+        root.addView(label(getString(R.string.language_label)));
+        Spinner language = spinner(getResources().getStringArray(R.array.language_options));
+        language.setSelection(AppSettings.languagePosition(this));
+        root.addView(language, new LinearLayout.LayoutParams(-1, dp(54)));
+
         root.addView(label("تقویم پیش‌فرض"));
         Spinner calendar = spinner(new String[]{"شمسی", "میلادی", "قمری"});
         calendar.setSelection(AppSettings.defaultCalendar(this));
@@ -134,6 +139,8 @@ public final class SettingsActivity extends Activity {
             AppSettings.setTabEnabled(this, "timer", tabTimer.isChecked());
             AppSettings.setTabEnabled(this, "world", tabWorld.isChecked());
             AppSettings.setPalette(this, palette.getSelectedItemPosition());
+            AppSettings.setLanguage(this,
+                    AppSettings.languageCodes()[language.getSelectedItemPosition()]);
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
