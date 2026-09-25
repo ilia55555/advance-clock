@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_world_transparent"
-    android:paddingStart="14dp"
+    android:paddingStart="8dp"
     android:paddingTop="6dp"
-    android:paddingEnd="14dp"
+    android:paddingEnd="8dp"
     android:paddingBottom="6dp">
     <GridView
         android:id="@+id/world_widget_grid"
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:gravity="center"
-        android:horizontalSpacing="24dp"
+        android:horizontalSpacing="8dp"
         android:numColumns="1"
         android:scrollbars="none"
         android:stretchMode="columnWidth"

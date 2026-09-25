@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -214,13 +215,24 @@ final class WorldClockPanelController {
             converted.addView(date);
             row.addView(converted, new LinearLayout.LayoutParams(dp(122), dp(58)));
 
-            Button remove = new Button(host);
-            remove.setText("حذف");
-            remove.setAllCaps(false);
-            remove.setTextColor(AppSettings.primaryColor(host));
-            remove.setBackgroundResource(R.drawable.bg_soft_button);
-            remove.setOnClickListener(v -> removeZone(zoneId));
-            row.addView(remove, new LinearLayout.LayoutParams(dp(68), dp(44)));
+            ImageButton remove = new ImageButton(host);
+            remove.setImageResource(R.drawable.ic_delete_red);
+            remove.setBackgroundResource(R.drawable.bg_delete_outline);
+            remove.setContentDescription("حذف " + cityName(zoneId));
+            remove.setPadding(dp(10), dp(10), dp(10), dp(10));
+            boolean[] deleteArmed = {false};
+            remove.setOnClickListener(v -> {
+                if (!deleteArmed[0]) {
+                    deleteArmed[0] = true;
+                    remove.setImageResource(R.drawable.ic_md_delete);
+                    remove.setBackgroundResource(R.drawable.bg_delete_confirm);
+                    remove.setContentDescription("تأیید حذف " + cityName(zoneId));
+                    Toast.makeText(host, "برای تأیید حذف دوباره بزنید", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                removeZone(zoneId);
+            });
+            row.addView(remove, new LinearLayout.LayoutParams(dp(44), dp(44)));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
             lp.bottomMargin = dp(8);
             list.addView(row, lp);
