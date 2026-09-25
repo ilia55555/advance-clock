@@ -40,7 +40,10 @@ public final class WorldClockWidgetService extends RemoteViewsService {
         @Override public RemoteViews getViewAt(int position) {
             if (position < 0 || position >= visible.size()) return null;
             String zone = visible.get(position);
-            RemoteViews item = new RemoteViews(context.getPackageName(), R.layout.widget_world_clock_item);
+            int layout = WorldClockWidgetProvider.compact(context, widgetId)
+                    ? R.layout.widget_world_clock_item_compact
+                    : R.layout.widget_world_clock_item;
+            RemoteViews item = new RemoteViews(context.getPackageName(), layout);
             item.setViewVisibility(R.id.world_item_root, android.view.View.VISIBLE);
             item.setTextViewText(R.id.world_item_name, cityName(zone));
             int textColor = WorldClockWidgetPrefs.textColor(context, widgetId);
@@ -55,7 +58,7 @@ public final class WorldClockWidgetService extends RemoteViewsService {
             return item;
         }
         @Override public RemoteViews getLoadingView() { return null; }
-        @Override public int getViewTypeCount() { return 1; }
+        @Override public int getViewTypeCount() { return 2; }
         @Override public long getItemId(int position) { return position; }
         @Override public boolean hasStableIds() { return true; }
 

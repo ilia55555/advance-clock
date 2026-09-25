@@ -48,4 +48,13 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
     </LinearLayout>
+    <Button
+        android:id="@+id/world_widget_scroll_trigger"
+        android:layout_width="88dp"
+        android:layout_height="34dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@android:color/transparent"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="" />
 </FrameLayout>

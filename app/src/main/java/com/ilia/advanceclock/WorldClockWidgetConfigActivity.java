@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 public final class WorldClockWidgetConfigActivity extends Activity {
     private static final int[] COLORS = {
-            0xFFFFFFFF, 0xFF111418, 0xFF005FA8, 0xFF36BFEC, 0xFFECCE36
+            0xFFFFFFFF, 0xFF111418, 0xFF005FA8, 0xFF36BFEC, 0xFFECCE36,
+            0xFFE53935, 0xFF43A047, 0xFF8E24AA, 0xFFFB8C00, 0xFFD81B60,
+            0xFFB0BEC5, 0xFF6D4C41
     };
     private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -48,7 +50,8 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         root.addView(preview, previewLp);
 
         root.addView(label("پس‌زمینه", 13));
-        Spinner background = spinner(new String[]{"شفاف (پیش‌فرض)", "مشکی ۷۰٪", "مشکی", "سفید"});
+        Spinner background = spinner(new String[]{"شفاف (پیش‌فرض)", "مشکی ۷۰٪", "مشکی", "سفید",
+                "آبی", "فیروزه‌ای", "بنفش", "زرشکی", "سبز"});
         background.setSelection(WorldClockWidgetPrefs.background(this, widgetId));
         root.addView(background, new LinearLayout.LayoutParams(-1, dp(54)));
 
@@ -97,6 +100,11 @@ public final class WorldClockWidgetConfigActivity extends Activity {
             case 1: return 0xB3111418;
             case 2: return 0xFF111418;
             case 3: return 0xFFFFFFFF;
+            case 4: return 0xFF005FA8;
+            case 5: return 0xFF00796B;
+            case 6: return 0xFF6A1B9A;
+            case 7: return 0xFF8E2430;
+            case 8: return 0xFF2E7D32;
             default: return 0x22111418;
         }
     }
@@ -120,7 +128,8 @@ public final class WorldClockWidgetConfigActivity extends Activity {
     }
 
     private Spinner colorSpinner() {
-        return spinner(new String[]{"سفید (پیش‌فرض)", "مشکی", "آبی", "فیروزه‌ای", "طلایی"});
+        return spinner(new String[]{"سفید (پیش‌فرض)", "مشکی", "آبی", "فیروزه‌ای", "طلایی",
+                "قرمز", "سبز", "بنفش", "نارنجی", "صورتی", "نقره‌ای", "قهوه‌ای"});
     }
 
     private Spinner spinner(String[] values) {

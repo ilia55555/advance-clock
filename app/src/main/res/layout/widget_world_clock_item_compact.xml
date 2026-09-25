@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/world_item_root"
     android:layout_width="match_parent"
-    android:layout_height="94dp"
+    android:layout_height="56dp"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="2dp">
+    android:padding="1dp">
     <TextView
         android:id="@+id/world_item_name"
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:includeFontPadding="false"
         android:maxLines="1"
         android:textColor="#FFFFFF"
-        android:textSize="17sp" />
+        android:textSize="10sp" />
     <TextClock
         android:id="@+id/world_item_time"
         android:layout_width="match_parent"
@@ -25,8 +25,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:textColor="#FFFFFF"
-        android:textSize="42sp"
-        android:textStyle="normal" />
+        android:textSize="24sp" />
     <TextClock
         android:id="@+id/world_item_date"
         android:layout_width="match_parent"
@@ -35,7 +34,8 @@
         android:format24Hour="EEE, MMM d"
         android:gravity="center"
         android:includeFontPadding="false"
+        android:maxLines="1"
         android:textColor="#FFFFFF"
-        android:textSize="13sp"
+        android:textSize="9sp"
         android:textStyle="bold" />
 </LinearLayout>

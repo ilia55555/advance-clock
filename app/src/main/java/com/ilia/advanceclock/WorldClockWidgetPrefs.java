@@ -37,6 +37,11 @@ public final class WorldClockWidgetPrefs {
             case 1: return R.drawable.widget_world_dark_70;
             case 2: return R.drawable.widget_world_dark;
             case 3: return R.drawable.widget_world_light;
+            case 4: return R.drawable.widget_world_blue;
+            case 5: return R.drawable.widget_world_teal;
+            case 6: return R.drawable.widget_world_purple;
+            case 7: return R.drawable.widget_world_burgundy;
+            case 8: return R.drawable.widget_world_green;
             default: return R.drawable.widget_world_transparent;
         }
     }
