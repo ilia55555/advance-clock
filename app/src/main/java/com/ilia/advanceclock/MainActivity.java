@@ -2,7 +2,6 @@ package com.ilia.advanceclock;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -1017,27 +1016,10 @@ public final class MainActivity extends Activity {
             return;
         }
 
-        boolean note = provider == NoForgetWidgetProvider.class;
-        boolean world = provider == WorldClockWidgetProvider.class;
-        Intent callbackIntent = world
-                ? new Intent(this, WorldClockWidgetConfigActivity.class)
-                : new Intent(this, WidgetSettingsActivity.class)
-                        .putExtra("widgetKind", note ? "note" : "clock")
-                        .putExtra("editExisting", false);
-        callbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        PendingIntent successCallback =
-                PendingIntent.getActivity(
-                        this,
-                        world ? 2_910_003 : (note ? 2_910_002 : 2_910_001),
-                        callbackIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE);
-
         boolean opened = manager.requestPinAppWidget(
                 new ComponentName(this, provider),
                 null,
-                successCallback);
+                null);
 
         Toast.makeText(
                 this,

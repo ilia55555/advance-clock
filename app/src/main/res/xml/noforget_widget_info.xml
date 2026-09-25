@@ -2,6 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/noforget_widget_description"
     android:initialLayout="@layout/widget_noforget"
+    android:previewImage="@drawable/preview_widget_notes"
     android:minWidth="220dp"
     android:minHeight="100dp"
     android:minResizeWidth="120dp"

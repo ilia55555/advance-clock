@@ -1,7 +1,6 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -139,6 +139,15 @@ public final class WidgetCenterActivity extends Activity {
         desc.setPadding(0, dp(4), 0, dp(10));
         card.addView(desc);
 
+        ImageView preview = new ImageView(this);
+        preview.setImageResource(previewResource(kind));
+        preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        preview.setAdjustViewBounds(true);
+        preview.setContentDescription("پیش‌نمایش " + titleText);
+        LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(170));
+        previewLp.bottomMargin = dp(10);
+        card.addView(preview, previewLp);
+
         Button add = new Button(this);
         add.setText("افزودن به صفحه اصلی");
         add.setAllCaps(false);
@@ -185,6 +194,13 @@ public final class WidgetCenterActivity extends Activity {
         list.addView(card, cardLp);
     }
 
+    private int previewResource(String kind) {
+        if ("note".equals(kind)) return R.drawable.preview_widget_notes;
+        if ("world".equals(kind)) return R.drawable.preview_widget_world;
+        if ("media".equals(kind)) return R.drawable.preview_widget_media;
+        return R.drawable.preview_widget_clock;
+    }
+
     private void pin(Class<?> provider) {
         if (Build.VERSION.SDK_INT < 26) {
             Toast.makeText(
@@ -204,41 +220,10 @@ public final class WidgetCenterActivity extends Activity {
             return;
         }
 
-        Intent callbackIntent;
-        String kind;
-
-        if (provider == MediaWidgetProvider.class) {
-            kind = "media";
-            callbackIntent = new Intent(this, MediaWidgetConfigActivity.class)
-                    .putExtra("editExisting", false);
-        } else if (provider == WorldClockWidgetProvider.class) {
-            kind = "world";
-            callbackIntent = new Intent(this, WorldClockWidgetConfigActivity.class);
-        } else {
-            kind = provider == NoForgetWidgetProvider.class ? "note" : "clock";
-            callbackIntent = new Intent(this, WidgetSettingsActivity.class)
-                    .putExtra("widgetKind", kind);
-        }
-
-        callbackIntent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        int callbackRequestCode = "media".equals(kind) ? 2_900_003
-                : ("world".equals(kind) ? 2_900_004
-                : ("note".equals(kind) ? 2_900_002 : 2_900_001));
-
-        PendingIntent successCallback = PendingIntent.getActivity(
-                this,
-                callbackRequestCode,
-                callbackIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-                        | PendingIntent.FLAG_IMMUTABLE);
-
         boolean opened = manager.requestPinAppWidget(
                 new ComponentName(this, provider),
                 null,
-                successCallback);
+                null);
 
         Toast.makeText(
                 this,
