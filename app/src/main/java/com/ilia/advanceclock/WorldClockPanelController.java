@@ -60,6 +60,9 @@ final class WorldClockPanelController {
 
         root.findViewById(R.id.world_fab).setOnClickListener(v -> showAddDialog());
         root.findViewById(R.id.world_pick_reference).setOnClickListener(v -> pickReferenceDate());
+        root.findViewById(R.id.world_alarm).setOnClickListener(v ->
+                host.startActivity(new android.content.Intent(host, AlarmEditorActivity.class)
+                        .putExtra("modalCreate", true)));
         nowButton.setOnClickListener(v -> {
             referenceMode = false;
             referenceMillis = 0L;
@@ -284,7 +287,7 @@ final class WorldClockPanelController {
                 }
                 removeZone(zoneId);
             });
-            row.addView(remove, new LinearLayout.LayoutParams(dp(24), dp(24)));
+            row.addView(remove, new LinearLayout.LayoutParams(dp(36), dp(36)));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
             lp.bottomMargin = dp(8);
             list.addView(row, lp);

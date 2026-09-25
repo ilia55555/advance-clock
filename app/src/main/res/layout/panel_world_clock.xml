@@ -22,70 +22,105 @@
             android:paddingEnd="16dp"
             android:paddingBottom="92dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/world_clock_title"
-                android:textColor="?attr/appTextPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layoutDirection="ltr">
 
-            <TextView
-                android:id="@+id/world_reference_summary"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:text="@string/world_clock_title"
+                    android:textColor="?attr/appTextPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/world_alarm"
+                    android:layout_width="78dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="4dp"
+                    android:text="تنظیم آلارم"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="10sp" />
+
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="1dp" />
+
+                <Button
+                    android:id="@+id/world_add_widget"
+                    android:layout_width="64dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="3dp"
+                    android:text="ویجت +"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="11sp" />
+
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="1dp" />
+
+                <Button
+                    android:id="@+id/world_pick_reference"
+                    android:layout_width="82dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_field"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="3dp"
+                    android:text="رفتن به تاریخ"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="زمان فعلی در مناطق انتخاب‌شده"
-                android:textColor="?attr/appTextSecondary"
-                android:textSize="13sp" />
+                android:layout_height="44dp"
+                android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layoutDirection="ltr">
+
+                <TextView
+                    android:id="@+id/world_reference_summary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="زمان فعلی در مناطق انتخاب‌شده"
+                    android:textColor="?attr/appTextSecondary"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/world_reference_now"
+                    android:layout_width="104dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:minWidth="0dp"
+                    android:paddingHorizontal="6dp"
+                    android:text="بازگشت به اکنون"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/world_clock_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:orientation="vertical" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/world_pick_reference"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_field"
-                    android:text="تبدیل تاریخ و ساعت دلخواه"
-                    android:textAllCaps="false"
-                    android:textColor="?attr/appPrimary" />
-
-                <Space
-                    android:layout_width="8dp"
-                    android:layout_height="1dp" />
-
-                <Button
-                    android:id="@+id/world_reference_now"
-                    android:layout_width="110dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_soft_button"
-                    android:text="بازگشت به اکنون"
-                    android:textAllCaps="false"
-                    android:textColor="?attr/appPrimary"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/world_add_widget"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_soft_button"
-                android:text="+ افزودن ویجت ساعت جهانی"
-                android:textAllCaps="false"
-                android:textColor="?attr/appPrimary" />
+                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 
