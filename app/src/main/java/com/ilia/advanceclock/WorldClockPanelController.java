@@ -274,7 +274,7 @@ final class WorldClockPanelController {
             remove.setImageResource(R.drawable.ic_delete_red);
             remove.setBackgroundResource(R.drawable.bg_delete_outline);
             remove.setContentDescription("حذف " + cityName(zoneId));
-            remove.setPadding(dp(3), dp(3), dp(3), dp(3));
+            remove.setPadding(dp(5), dp(5), dp(5), dp(5));
             boolean[] deleteArmed = {false};
             remove.setOnClickListener(v -> {
                 if (!deleteArmed[0]) {
