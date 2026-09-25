@@ -33,54 +33,55 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:maxLines="1"
                     android:text="@string/world_clock_title"
                     android:textColor="?attr/appTextPrimary"
-                    android:textSize="22sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/world_alarm"
-                    android:layout_width="82dp"
+                    android:layout_width="78dp"
                     android:layout_height="42dp"
                     android:background="@drawable/bg_soft_button"
                     android:minWidth="0dp"
-                    android:paddingHorizontal="6dp"
+                    android:paddingHorizontal="4dp"
                     android:text="تنظیم آلارم"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
-                    android:textSize="11sp" />
+                    android:textSize="10sp" />
 
                 <Space
-                    android:layout_width="6dp"
+                    android:layout_width="5dp"
                     android:layout_height="1dp" />
 
                 <Button
                     android:id="@+id/world_add_widget"
-                    android:layout_width="68dp"
+                    android:layout_width="64dp"
                     android:layout_height="42dp"
                     android:background="@drawable/bg_soft_button"
                     android:minWidth="0dp"
-                    android:paddingHorizontal="4dp"
+                    android:paddingHorizontal="3dp"
                     android:text="ویجت +"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
-                    android:textSize="12sp" />
+                    android:textSize="11sp" />
 
                 <Space
-                    android:layout_width="6dp"
+                    android:layout_width="5dp"
                     android:layout_height="1dp" />
 
                 <Button
                     android:id="@+id/world_pick_reference"
-                    android:layout_width="88dp"
+                    android:layout_width="82dp"
                     android:layout_height="42dp"
                     android:background="@drawable/bg_field"
                     android:minWidth="0dp"
-                    android:paddingHorizontal="4dp"
+                    android:paddingHorizontal="3dp"
                     android:text="رفتن به تاریخ"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
-                    android:textSize="11sp" />
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <LinearLayout
