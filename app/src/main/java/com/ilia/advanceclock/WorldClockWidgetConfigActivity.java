@@ -3,12 +3,13 @@ package com.ilia.advanceclock;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,9 +41,22 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         root.setPadding(dp(20), dp(18), dp(20), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         root.setLayoutDirection(android.view.View.LAYOUT_DIRECTION_RTL);
+        LinearLayout top = new LinearLayout(this);
+        top.setOrientation(LinearLayout.HORIZONTAL);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         TextView title = label("تنظیمات ویجت ساعت جهانی", 23);
-        title.setGravity(Gravity.CENTER);
-        root.addView(title, new LinearLayout.LayoutParams(-1, dp(60)));
+        title.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        top.addView(title, new LinearLayout.LayoutParams(0, dp(60), 1f));
+        ImageButton close = new ImageButton(this);
+        close.setImageResource(R.drawable.ic_md_close);
+        close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
+        close.setBackgroundColor(0x00000000);
+        close.setPadding(dp(12), dp(12), dp(12), dp(12));
+        close.setContentDescription("بستن");
+        close.setOnClickListener(v -> finish());
+        top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        root.addView(top);
 
         WidgetPreviewView preview = new WidgetPreviewView(this);
         LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(126));
@@ -65,34 +79,32 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         time.setSelection(colorPosition(WorldClockWidgetPrefs.timeColor(this, widgetId)));
         root.addView(time, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        Button save = new Button(this);
-        save.setText("ذخیره تنظیمات ویجت");
-        save.setAllCaps(false);
-        save.setTextColor(0xFFFFFFFF);
-        save.setBackgroundResource(R.drawable.bg_teal_button);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, dp(58));
-        lp.topMargin = dp(16);
-        root.addView(save, lp);
         setContentView(root);
+        AppSettings.applyFullscreenInsets(root);
+        AppSettings.playFullscreenEnter(this);
 
-        Runnable refreshPreview = () -> preview.configure("world",
-                previewBackground(background.getSelectedItemPosition()),
-                COLORS[text.getSelectedItemPosition()], COLORS[time.getSelectedItemPosition()],
-                true, true, 3);
-        watch(background, refreshPreview);
-        watch(text, refreshPreview);
-        watch(time, refreshPreview);
-        refreshPreview.run();
-
-        save.setOnClickListener(v -> {
+        Runnable refreshPreview = () -> {
+            preview.configure("world",
+                    previewBackground(background.getSelectedItemPosition()),
+                    COLORS[text.getSelectedItemPosition()], COLORS[time.getSelectedItemPosition()],
+                    true, true, 3);
             WorldClockWidgetPrefs.save(this, widgetId,
                     background.getSelectedItemPosition(), COLORS[text.getSelectedItemPosition()],
                     COLORS[time.getSelectedItemPosition()]);
             WorldClockWidgetProvider.updateAll(this);
             setResult(RESULT_OK, new Intent().putExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId));
-            finishToHome();
-        });
+        };
+        watch(background, refreshPreview);
+        watch(text, refreshPreview);
+        watch(time, refreshPreview);
+        refreshPreview.run();
+
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     private int previewBackground(int position) {
@@ -117,14 +129,6 @@ public final class WorldClockWidgetConfigActivity extends Activity {
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
-    }
-
-    private void finishToHome() {
-        Intent home = new Intent(Intent.ACTION_MAIN);
-        home.addCategory(Intent.CATEGORY_HOME);
-        home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        try { startActivity(home); } catch (Exception ignored) {}
-        finish();
     }
 
     private Spinner colorSpinner() {

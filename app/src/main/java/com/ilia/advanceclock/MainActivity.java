@@ -1128,28 +1128,9 @@ public final class MainActivity extends Activity {
         int strokeColor = priorityStroke(item.priority);
         LinearLayout card = baseCard(strokeColor);
 
-        LinearLayout top = new LinearLayout(this);
-        top.setOrientation(LinearLayout.HORIZONTAL);
-        top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
         TextView title = cardTitle(
                 item.label.trim().isEmpty() ? "هشدار" : item.label);
-        top.addView(
-                title,
-                new LinearLayout.LayoutParams(
-                        0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        1f));
-
-        TextView state = smallText(item.enabled ? "فعال" : "خاموش");
-        state.setTextColor(
-                item.enabled
-                        ? AppSettings.primaryColor(this)
-                        : AppSettings.textSecondary(this));
-        state.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        top.addView(state);
-        card.addView(top);
+        card.addView(title);
 
         String reminder = AlarmReminderUtils.summary(
                 item.reminderMode,
@@ -1173,7 +1154,8 @@ public final class MainActivity extends Activity {
 
         LinearLayout actions = actionRow();
 
-        Button enabled = actionButton(item.enabled ? "خاموش" : "فعال");
+        Button enabled = actionButton(item.enabled ? "فعال" : "غیرفعال");
+        applyAlarmStateStyle(enabled, item.enabled);
         enabled.setOnClickListener(v -> {
             item.enabled = !item.enabled;
             new AlarmStore(this).save(item);
@@ -1201,6 +1183,14 @@ public final class MainActivity extends Activity {
         actions.addView(delete);
         card.addView(actions);
         return card;
+    }
+
+    private void applyAlarmStateStyle(Button button, boolean enabled) {
+        button.setTextColor(0xFFFFFFFF);
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(enabled ? 0xFF2E9D68 : 0xFFD9534F);
+        background.setCornerRadius(dp(11));
+        button.setBackground(background);
     }
 
     private void renderNoForget() {

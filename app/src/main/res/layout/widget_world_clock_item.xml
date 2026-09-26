@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/world_item_root"
     android:layout_width="match_parent"
-    android:layout_height="94dp"
+    android:layout_height="98dp"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="2dp">
@@ -19,7 +19,7 @@
     <TextClock
         android:id="@+id/world_item_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
         android:autoSizeMaxTextSize="62sp"
         android:autoSizeMinTextSize="42sp"
         android:autoSizeStepGranularity="1sp"

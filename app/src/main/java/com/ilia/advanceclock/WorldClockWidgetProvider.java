@@ -109,11 +109,7 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
         boolean singleColumn = widthCells <= 3;
         int visualColumns = singleColumn ? 1 : 2;
         boolean compact = size.heightDp < 106f;
-        float itemHeight = compact ? 56f : 94f;
-        int rows = Math.max(1, (int) ((size.heightDp - 12f + 8f) / (itemHeight + 8f)));
-        int capacity = singleColumn
-                ? Math.max(1, zoneCount)
-                : visualColumns * rows;
+        int capacity = Math.max(1, zoneCount);
         int pages = Math.max(1, (zoneCount + capacity - 1) / capacity);
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                 .putInt("capacity_" + id, capacity)
