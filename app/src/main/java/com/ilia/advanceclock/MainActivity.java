@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -84,6 +85,10 @@ public final class MainActivity extends Activity {
     private ImageButton themeToggle;
     private Button clockFab;
     private Button noteFab;
+    private String currentTab;
+    private float swipeDownX;
+    private float swipeDownY;
+    private boolean swipeStartedOnCalendar;
 
     private Button quickAlarmDate;
     private Button quickAlarmTime;
@@ -138,6 +143,7 @@ public final class MainActivity extends Activity {
         timerController = new TimerPanelController(this, timerPanel);
         worldController = new WorldClockPanelController(this, worldPanel);
         configureHeaderForDisplayCutout();
+        configureFabNavigationInset();
         quickAlarmCalendarType = AppSettings.defaultCalendar(this);
         quickNoteCalendarType = AppSettings.defaultCalendar(this);
         setupHeader();
@@ -162,11 +168,9 @@ public final class MainActivity extends Activity {
                 pinWidgetAndExit(WorldClockWidgetProvider.class));
 
         clockFab.setOnClickListener(v ->
-                startActivity(new Intent(this, AlarmEditorActivity.class)
-                        .putExtra("modalCreate", true)));
+                launchCreateEditor(this, AlarmEditorActivity.class));
         noteFab.setOnClickListener(v ->
-                startActivity(new Intent(this, NoForgetEditorActivity.class)
-                        .putExtra("modalCreate", true)));
+                launchCreateEditor(this, NoForgetEditorActivity.class));
 
         String requestedTab = getIntent().getStringExtra("openTab");
         showTab("noforget".equals(requestedTab)
@@ -271,6 +275,33 @@ public final class MainActivity extends Activity {
             return insets;
         });
         header.requestApplyInsets();
+    }
+
+    private void configureFabNavigationInset() {
+        View root = findViewById(R.id.root_main);
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            int bottomInset = insets.getSystemWindowInsetBottom();
+            applyFabBottomMargin(clockFab, bottomInset);
+            applyFabBottomMargin(noteFab, bottomInset);
+            applyFabBottomMargin(findViewById(R.id.world_fab), bottomInset);
+            return insets;
+        });
+        root.requestApplyInsets();
+    }
+
+    private void applyFabBottomMargin(View fab, int bottomInset) {
+        ViewGroup.MarginLayoutParams params =
+                (ViewGroup.MarginLayoutParams) fab.getLayoutParams();
+        int requiredMargin = dp(18) + bottomInset;
+        if (params.bottomMargin != requiredMargin) {
+            params.bottomMargin = requiredMargin;
+            fab.setLayoutParams(params);
+        }
+    }
+
+    static void launchCreateEditor(Activity host, Class<? extends Activity> editorClass) {
+        host.startActivity(new Intent(host, editorClass).putExtra("modalCreate", true));
+        host.overridePendingTransition(R.anim.editor_enter, R.anim.editor_stay);
     }
 
     private void setupHeader() {
@@ -856,6 +887,7 @@ public final class MainActivity extends Activity {
 
     private void showTab(String tab) {
         if (!AppSettings.tabEnabled(this, tab)) tab = firstEnabledTab();
+        currentTab = tab;
         boolean clock = "clock".equals(tab);
         boolean notes = "noforget".equals(tab);
         boolean stopwatch = "stopwatch".equals(tab);
@@ -884,6 +916,56 @@ public final class MainActivity extends Activity {
                 == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
         clockFab.setVisibility(clock && compact ? View.VISIBLE : View.GONE);
         noteFab.setVisibility(notes && compact ? View.VISIBLE : View.GONE);
+    }
+
+    @Override public boolean dispatchTouchEvent(MotionEvent event) {
+        boolean switchTabs = false;
+        boolean towardRight = false;
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            swipeDownX = event.getRawX();
+            swipeDownY = event.getRawY();
+            swipeStartedOnCalendar = pointInside(clockCalendar, swipeDownX, swipeDownY)
+                    || pointInside(noteCalendar, swipeDownX, swipeDownY);
+        } else if (event.getActionMasked() == MotionEvent.ACTION_UP
+                && !swipeStartedOnCalendar) {
+            float deltaX = event.getRawX() - swipeDownX;
+            float deltaY = event.getRawY() - swipeDownY;
+            if (Math.abs(deltaX) >= dp(72)
+                    && Math.abs(deltaX) > Math.abs(deltaY) * 1.4f) {
+                switchTabs = true;
+                towardRight = deltaX < 0f;
+            }
+        }
+        boolean handled = super.dispatchTouchEvent(event);
+        if (switchTabs) moveToAdjacentTab(towardRight);
+        return handled;
+    }
+
+    private boolean pointInside(View view, float rawX, float rawY) {
+        if (view == null || !view.isShown()) return false;
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        return rawX >= location[0] && rawX < location[0] + view.getWidth()
+                && rawY >= location[1] && rawY < location[1] + view.getHeight();
+    }
+
+    private void moveToAdjacentTab(boolean towardRight) {
+        String[] order = AppSettings.tabOrder(this);
+        int currentIndex = -1;
+        for (int i = 0; i < order.length; i++) {
+            if (order[i].equals(currentTab)) {
+                currentIndex = i;
+                break;
+            }
+        }
+        if (currentIndex < 0) return;
+        int step = towardRight ? -1 : 1;
+        for (int i = currentIndex + step; i >= 0 && i < order.length; i += step) {
+            if (AppSettings.tabEnabled(this, order[i])) {
+                showTab(order[i]);
+                return;
+            }
+        }
     }
 
     private void applyTabOrder() {
@@ -1046,28 +1128,9 @@ public final class MainActivity extends Activity {
         int strokeColor = priorityStroke(item.priority);
         LinearLayout card = baseCard(strokeColor);
 
-        LinearLayout top = new LinearLayout(this);
-        top.setOrientation(LinearLayout.HORIZONTAL);
-        top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
         TextView title = cardTitle(
                 item.label.trim().isEmpty() ? "هشدار" : item.label);
-        top.addView(
-                title,
-                new LinearLayout.LayoutParams(
-                        0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        1f));
-
-        TextView state = smallText(item.enabled ? "فعال" : "خاموش");
-        state.setTextColor(
-                item.enabled
-                        ? AppSettings.primaryColor(this)
-                        : AppSettings.textSecondary(this));
-        state.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        top.addView(state);
-        card.addView(top);
+        card.addView(title);
 
         String reminder = AlarmReminderUtils.summary(
                 item.reminderMode,
@@ -1091,7 +1154,8 @@ public final class MainActivity extends Activity {
 
         LinearLayout actions = actionRow();
 
-        Button enabled = actionButton(item.enabled ? "خاموش" : "فعال");
+        Button enabled = actionButton(item.enabled ? "فعال" : "غیرفعال");
+        applyAlarmStateStyle(enabled, item.enabled);
         enabled.setOnClickListener(v -> {
             item.enabled = !item.enabled;
             new AlarmStore(this).save(item);
@@ -1119,6 +1183,14 @@ public final class MainActivity extends Activity {
         actions.addView(delete);
         card.addView(actions);
         return card;
+    }
+
+    private void applyAlarmStateStyle(Button button, boolean enabled) {
+        button.setTextColor(0xFFFFFFFF);
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(enabled ? 0xFF2E9D68 : 0xFFD9534F);
+        background.setCornerRadius(dp(11));
+        button.setBackground(background);
     }
 
     private void renderNoForget() {

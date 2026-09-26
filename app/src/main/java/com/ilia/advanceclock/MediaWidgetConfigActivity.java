@@ -103,36 +103,16 @@ public final class MediaWidgetConfigActivity extends Activity {
                         0,
                         1f));
 
-        LinearLayout stickyBar = new LinearLayout(this);
-        stickyBar.setPadding(
-                dp(18),
-                dp(8),
-                dp(18),
-                dp(12));
-        stickyBar.setBackgroundColor(AppSettings.background(this));
-
-        Button save = primaryButton(
-                editExisting
-                        ? "ذخیره تغییرات"
-                        : "ساخت و ذخیره ویجت");
-        save.setBackgroundColor(
-                AppSettings.secondaryColor(this));
-        save.setOnClickListener(v -> save(true));
-        stickyBar.addView(
-                save,
-                new LinearLayout.LayoutParams(
-                        -1,
-                        dp(56)));
-
-        page.addView(
-                stickyBar,
-                new LinearLayout.LayoutParams(
-                        -1,
-                        -2));
-
         setContentView(page);
+        AppSettings.applyFullscreenInsets(page);
+        AppSettings.playFullscreenEnter(this);
         renderItems();
         refreshPreview();
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     private void addTopBar(LinearLayout root) {
@@ -350,6 +330,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         int accent = AppSettings.primaryColorForPalette(paletteSpinner.getSelectedItemPosition());
         preview.configure("media", background, text, accent, showHeader.isChecked(),
                 showMetadata.isChecked(), Math.max(1, items.size()));
+        save();
     }
 
     private void pickFiles() {
@@ -604,7 +585,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         fileList.addView(count);
     }
 
-    private void save(boolean finishAfter) {
+    private void save() {
         java.util.List<MediaWidgetPrefs.Item> previousItems =
                 MediaWidgetPrefs.load(this, widgetId);
 
@@ -677,22 +658,6 @@ public final class MediaWidgetConfigActivity extends Activity {
                 widgetId);
         setResult(RESULT_OK, result);
 
-        if (finishAfter) {
-            finishToHome();
-        }
-    }
-
-    private void finishToHome() {
-        Intent home = new Intent(Intent.ACTION_MAIN);
-        home.addCategory(Intent.CATEGORY_HOME);
-        home.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        try {
-            startActivity(home);
-        } catch (Exception ignored) {
-        }
-        finish();
     }
 
     @Override protected void onDestroy() {

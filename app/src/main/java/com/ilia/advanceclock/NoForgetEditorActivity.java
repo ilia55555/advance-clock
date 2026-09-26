@@ -38,14 +38,14 @@ public final class NoForgetEditorActivity extends Activity {
     private int recurrenceMode = RecurrenceUtils.NONE;
     private int intervalDays = 1;
     private String customDatesJson = "[]";
+    private boolean createMode;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
-        if (getIntent().getBooleanExtra("modalCreate", false)) {
-            AppSettings.applyModalOverlay(this);
-        }
+        createMode = getIntent().getBooleanExtra("modalCreate", false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noforget_editor);
+        applySystemBarInsets(findViewById(R.id.note_editor_root));
 
         title = findViewById(R.id.note_title);
         body = findViewById(R.id.note_body);
@@ -172,6 +172,29 @@ public final class NoForgetEditorActivity extends Activity {
         updateDueButtons();
         alarmControls.setVisibility(
                 alarmEnabled.isChecked() ? View.VISIBLE : View.GONE);
+    }
+
+    private void applySystemBarInsets(View root) {
+        int start = root.getPaddingStart();
+        int top = root.getPaddingTop();
+        int end = root.getPaddingEnd();
+        int bottom = root.getPaddingBottom();
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            view.setPaddingRelative(
+                    start,
+                    top + insets.getSystemWindowInsetTop(),
+                    end,
+                    bottom + insets.getSystemWindowInsetBottom());
+            return insets;
+        });
+        root.requestApplyInsets();
+    }
+
+    @Override public void finish() {
+        super.finish();
+        if (createMode) {
+            overridePendingTransition(R.anim.editor_stay, R.anim.editor_exit);
+        }
     }
 
     private void loadExisting() {
