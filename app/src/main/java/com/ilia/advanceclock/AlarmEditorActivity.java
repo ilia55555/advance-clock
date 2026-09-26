@@ -50,14 +50,14 @@ public final class AlarmEditorActivity extends Activity {
     private long lastFiredAtMillis = 0L;
     private String imageUri1 = "";
     private String imageUri2 = "";
+    private boolean createMode;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
-        if (getIntent().getBooleanExtra("modalCreate", false)) {
-            AppSettings.applyModalOverlay(this);
-        }
+        createMode = getIntent().getBooleanExtra("modalCreate", false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_editor);
+        applySystemBarInsets(findViewById(R.id.alarm_editor_root));
 
         label = findViewById(R.id.alarm_label);
         dateButton = findViewById(R.id.pick_date);
@@ -158,6 +158,29 @@ public final class AlarmEditorActivity extends Activity {
         findViewById(R.id.save_alarm).setOnClickListener(v -> save());
         deleteButton.setOnClickListener(v -> delete());
         findViewById(R.id.cancel).setOnClickListener(v -> finish());
+    }
+
+    private void applySystemBarInsets(View root) {
+        int start = root.getPaddingStart();
+        int top = root.getPaddingTop();
+        int end = root.getPaddingEnd();
+        int bottom = root.getPaddingBottom();
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            view.setPaddingRelative(
+                    start,
+                    top + insets.getSystemWindowInsetTop(),
+                    end,
+                    bottom + insets.getSystemWindowInsetBottom());
+            return insets;
+        });
+        root.requestApplyInsets();
+    }
+
+    @Override public void finish() {
+        super.finish();
+        if (createMode) {
+            overridePendingTransition(R.anim.editor_stay, R.anim.editor_exit);
+        }
     }
 
     private void loadExisting() {

@@ -20,12 +20,17 @@
         android:id="@+id/world_item_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="62sp"
+        android:autoSizeMinTextSize="42sp"
+        android:autoSizeStepGranularity="1sp"
+        android:autoSizeTextType="uniform"
         android:format12Hour="HH:mm"
         android:format24Hour="HH:mm"
         android:gravity="center"
         android:includeFontPadding="false"
+        android:maxLines="1"
         android:textColor="#FFFFFF"
-        android:textSize="42sp"
+        android:textSize="62sp"
         android:textStyle="normal" />
     <TextClock
         android:id="@+id/world_item_date"
