@@ -125,13 +125,7 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowAnimationStyle">@style/AdvanceClockFullscreenWindowMotionV2</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
-    </style>
-
-    <style name="AdvanceClockFullscreenWindowMotionV2">
-        <item name="android:windowEnterAnimation">@anim/editor_enter</item>
-        <item name="android:windowExitAnimation">@anim/settings_exit</item>
     </style>
 
     <style name="Theme.AdvanceClock" parent="Theme.AdvanceClock.Palette6.Light" />

@@ -123,6 +123,13 @@ public final class NotificationSettingsActivity extends Activity {
                 (button, checked) -> saveSettings());
 
         setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     private Switch addSwitch(

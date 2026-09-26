@@ -191,7 +191,6 @@ final class WorldClockPanelController {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(AppSettings.background(host)));
-            window.setWindowAnimations(R.style.AdvanceClockFullscreenWindowMotionV2);
         }
         dialog.show();
         if (window != null) {
@@ -205,6 +204,13 @@ final class WorldClockPanelController {
             contentParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
             content.setLayoutParams(contentParams);
         }
+        content.setAlpha(0f);
+        content.setTranslationY(dp(16));
+        content.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(240L)
+                .start();
     }
 
     private void filterZones(Spinner spinner, String query) {

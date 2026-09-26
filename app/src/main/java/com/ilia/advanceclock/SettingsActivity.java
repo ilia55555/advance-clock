@@ -117,6 +117,8 @@ public final class SettingsActivity extends Activity {
         root.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
 
         setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
 
         Runnable saveSettings = () -> {
             if (!tabClock.isChecked() && !tabNotes.isChecked()
@@ -176,6 +178,11 @@ public final class SettingsActivity extends Activity {
         tabStopwatch.setOnCheckedChangeListener(saveTabs);
         tabTimer.setOnCheckedChangeListener(saveTabs);
         tabWorld.setOnCheckedChangeListener(saveTabs);
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     private TextView label(String text) {
