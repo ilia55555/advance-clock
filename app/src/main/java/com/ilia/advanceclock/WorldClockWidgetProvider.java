@@ -106,10 +106,8 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
         WidgetSizeUtils.WidgetSize size = WidgetSizeUtils.currentSize(context, options, 5, 2);
         int widthCells = WidgetSizeUtils.dpToCells(size.widthDp);
         int zoneCount = WorldClockStore.zones(context).size();
-        boolean singleColumn = widthCells < 5;
-        boolean canShowThree = widthCells >= 6;
-        int visualColumns = singleColumn ? 1
-                : zoneCount % 2 == 1 && canShowThree ? 3 : 2;
+        boolean singleColumn = widthCells <= 3;
+        int visualColumns = singleColumn ? 1 : 2;
         boolean compact = size.heightDp < 106f;
         float itemHeight = compact ? 56f : 94f;
         int rows = Math.max(1, (int) ((size.heightDp - 12f + 8f) / (itemHeight + 8f)));

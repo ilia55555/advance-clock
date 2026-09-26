@@ -130,5 +130,10 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="Animation.AdvanceClock.FullscreenDialog">
+        <item name="android:windowEnterAnimation">@anim/editor_enter</item>
+        <item name="android:windowExitAnimation">@anim/editor_exit</item>
+    </style>
+
     <style name="Theme.AdvanceClock" parent="Theme.AdvanceClock.Palette6.Light" />
 </resources>
