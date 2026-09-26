@@ -72,6 +72,13 @@ public final class WidgetCenterActivity extends Activity {
         root.addView(list, new LinearLayout.LayoutParams(-1, -2));
 
         setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     @Override protected void onResume() {

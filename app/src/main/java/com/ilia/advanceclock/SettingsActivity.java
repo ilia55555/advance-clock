@@ -5,8 +5,9 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -115,32 +116,38 @@ public final class SettingsActivity extends Activity {
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
         root.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        Button save = new Button(this);
-        save.setText("ذخیره تنظیمات");
-        save.setTextColor(0xFFFFFFFF);
-        save.setAllCaps(false);
-        save.setBackgroundColor(AppSettings.secondaryColor(this));
-        LinearLayout.LayoutParams saveLp = new LinearLayout.LayoutParams(-1, dp(58));
-        saveLp.topMargin = dp(22);
-        root.addView(save, saveLp);
-
         setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
 
-        save.setOnClickListener(v -> {
+        Runnable saveSettings = () -> {
             if (!tabClock.isChecked() && !tabNotes.isChecked()
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
                     && !tabWorld.isChecked()) {
                 Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
+            String selectedLanguage =
+                    AppSettings.languageCodes()[language.getSelectedItemPosition()];
+            boolean changed = AppSettings.tabEnabled(this, "clock") != tabClock.isChecked()
+                    || AppSettings.tabEnabled(this, "noforget") != tabNotes.isChecked()
+                    || AppSettings.tabEnabled(this, "stopwatch") != tabStopwatch.isChecked()
+                    || AppSettings.tabEnabled(this, "timer") != tabTimer.isChecked()
+                    || AppSettings.tabEnabled(this, "world") != tabWorld.isChecked()
+                    || AppSettings.palette(this) != palette.getSelectedItemPosition()
+                    || !AppSettings.language(this).equals(selectedLanguage)
+                    || AppSettings.defaultCalendar(this) != calendar.getSelectedItemPosition()
+                    || AppSettings.clockLayoutMode(this) != layout.getSelectedItemPosition()
+                    || AppSettings.alarmScreenStyle(this)
+                    != alarmStyle.getSelectedItemPosition();
+            if (!changed) return;
             AppSettings.setTabEnabled(this, "clock", tabClock.isChecked());
             AppSettings.setTabEnabled(this, "noforget", tabNotes.isChecked());
             AppSettings.setTabEnabled(this, "stopwatch", tabStopwatch.isChecked());
             AppSettings.setTabEnabled(this, "timer", tabTimer.isChecked());
             AppSettings.setTabEnabled(this, "world", tabWorld.isChecked());
             AppSettings.setPalette(this, palette.getSelectedItemPosition());
-            AppSettings.setLanguage(this,
-                    AppSettings.languageCodes()[language.getSelectedItemPosition()]);
+            AppSettings.setLanguage(this, selectedLanguage);
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
@@ -150,8 +157,32 @@ public final class SettingsActivity extends Activity {
             NoForgetWidgetProvider.updateAll(this);
 
             setResult(RESULT_OK);
-            finish();
-        });
+        };
+        watch(palette, saveSettings);
+        watch(language, saveSettings);
+        watch(calendar, saveSettings);
+        watch(layout, saveSettings);
+        watch(alarmStyle, saveSettings);
+        CompoundButton.OnCheckedChangeListener saveTabs = (button, checked) -> {
+            if (!checked && !tabClock.isChecked() && !tabNotes.isChecked()
+                    && !tabStopwatch.isChecked() && !tabTimer.isChecked()
+                    && !tabWorld.isChecked()) {
+                button.setChecked(true);
+                Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            saveSettings.run();
+        };
+        tabClock.setOnCheckedChangeListener(saveTabs);
+        tabNotes.setOnCheckedChangeListener(saveTabs);
+        tabStopwatch.setOnCheckedChangeListener(saveTabs);
+        tabTimer.setOnCheckedChangeListener(saveTabs);
+        tabWorld.setOnCheckedChangeListener(saveTabs);
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     private TextView label(String text) {
@@ -182,6 +213,16 @@ public final class SettingsActivity extends Activity {
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(a);
         return spinner;
+    }
+
+    private void watch(Spinner spinner, Runnable changed) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(
+                    AdapterView<?> parent, View view, int position, long id) {
+                changed.run();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private int dp(int value) {

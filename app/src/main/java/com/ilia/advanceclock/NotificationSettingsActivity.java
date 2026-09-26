@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -24,7 +23,7 @@ public final class NotificationSettingsActivity extends Activity {
     private Switch alarmReminders;
     private Switch noteReminders;
     private Switch lockscreenDetails;
-    private boolean finishAfterPermissionResult;
+    private boolean permissionRequestInFlight;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -107,24 +106,30 @@ public final class NotificationSettingsActivity extends Activity {
                     persistentExtraCalendars.setEnabled(isChecked);
                     persistentExtraCalendars.setAlpha(
                             isChecked ? 1f : 0.5f);
+                    saveSettings();
                 });
         persistentExtraCalendars.setEnabled(
                 persistentDate.isChecked());
         persistentExtraCalendars.setAlpha(
                 persistentDate.isChecked() ? 1f : 0.5f);
 
-        Button save = new Button(this);
-        save.setText("ذخیره");
-        save.setTextColor(0xFFFFFFFF);
-        save.setAllCaps(false);
-        save.setBackgroundColor(AppSettings.secondaryColor(this));
-        LinearLayout.LayoutParams saveLp =
-                new LinearLayout.LayoutParams(-1, dp(56));
-        saveLp.topMargin = dp(18);
-        root.addView(save, saveLp);
-        save.setOnClickListener(v -> saveAndClose());
+        persistentExtraCalendars.setOnCheckedChangeListener(
+                (button, checked) -> saveSettings());
+        alarmReminders.setOnCheckedChangeListener(
+                (button, checked) -> saveSettings());
+        noteReminders.setOnCheckedChangeListener(
+                (button, checked) -> saveSettings());
+        lockscreenDetails.setOnCheckedChangeListener(
+                (button, checked) -> saveSettings());
 
         setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
     }
 
     private Switch addSwitch(
@@ -148,7 +153,7 @@ public final class NotificationSettingsActivity extends Activity {
         return sw;
     }
 
-    private void saveAndClose() {
+    private void saveSettings() {
         AppSettings.setPersistentDateNotificationEnabled(
                 this,
                 persistentDate.isChecked());
@@ -165,17 +170,15 @@ public final class NotificationSettingsActivity extends Activity {
                 this,
                 lockscreenDetails.isChecked());
 
-        if (shouldRequestRuntimePermission()) {
-            finishAfterPermissionResult = true;
+        if (shouldRequestRuntimePermission() && !permissionRequestInFlight) {
+            permissionRequestInFlight = true;
             requestPermissions(
                     new String[]{Manifest.permission.POST_NOTIFICATIONS},
                     REQ_POST_NOTIFICATIONS);
-            return;
         }
 
         applyPersistentNotificationState();
         setResult(RESULT_OK);
-        finish();
     }
 
     private boolean shouldRequestRuntimePermission() {
@@ -234,12 +237,9 @@ public final class NotificationSettingsActivity extends Activity {
             return;
         }
 
+        permissionRequestInFlight = false;
         applyPersistentNotificationState();
-
-        if (finishAfterPermissionResult) {
-            setResult(RESULT_OK);
-            finish();
-        }
+        setResult(RESULT_OK);
     }
 
     private int dp(int value) {
