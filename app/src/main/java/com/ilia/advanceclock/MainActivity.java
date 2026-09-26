@@ -837,9 +837,12 @@ public final class MainActivity extends Activity {
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == REQ_SETTINGS || requestCode == REQ_NOTIFICATION_SETTINGS)
-                && resultCode == RESULT_OK) {
+        if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
             recreate();
+            return;
+        }
+
+        if (requestCode == REQ_NOTIFICATION_SETTINGS && resultCode == RESULT_OK) {
             return;
         }
 

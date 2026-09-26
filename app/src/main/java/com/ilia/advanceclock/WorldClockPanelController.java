@@ -191,7 +191,7 @@ final class WorldClockPanelController {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(AppSettings.background(host)));
-            window.setWindowAnimations(R.style.AnimationAdvanceClockFullscreenDialog);
+            window.setWindowAnimations(R.style.AdvanceClockFullscreenWindowMotionV2);
         }
         dialog.show();
         if (window != null) {

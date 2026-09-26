@@ -378,7 +378,7 @@ public final class AppSettings {
     }
 
     public static void playFullscreenExit(Activity activity) {
-        activity.overridePendingTransition(R.anim.editor_stay, R.anim.editor_exit);
+        activity.overridePendingTransition(R.anim.editor_stay, R.anim.settings_exit);
     }
 
     private static int clampPalette(int value) {

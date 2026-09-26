@@ -125,14 +125,27 @@ public final class SettingsActivity extends Activity {
                 Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
+            String selectedLanguage =
+                    AppSettings.languageCodes()[language.getSelectedItemPosition()];
+            boolean changed = AppSettings.tabEnabled(this, "clock") != tabClock.isChecked()
+                    || AppSettings.tabEnabled(this, "noforget") != tabNotes.isChecked()
+                    || AppSettings.tabEnabled(this, "stopwatch") != tabStopwatch.isChecked()
+                    || AppSettings.tabEnabled(this, "timer") != tabTimer.isChecked()
+                    || AppSettings.tabEnabled(this, "world") != tabWorld.isChecked()
+                    || AppSettings.palette(this) != palette.getSelectedItemPosition()
+                    || !AppSettings.language(this).equals(selectedLanguage)
+                    || AppSettings.defaultCalendar(this) != calendar.getSelectedItemPosition()
+                    || AppSettings.clockLayoutMode(this) != layout.getSelectedItemPosition()
+                    || AppSettings.alarmScreenStyle(this)
+                    != alarmStyle.getSelectedItemPosition();
+            if (!changed) return;
             AppSettings.setTabEnabled(this, "clock", tabClock.isChecked());
             AppSettings.setTabEnabled(this, "noforget", tabNotes.isChecked());
             AppSettings.setTabEnabled(this, "stopwatch", tabStopwatch.isChecked());
             AppSettings.setTabEnabled(this, "timer", tabTimer.isChecked());
             AppSettings.setTabEnabled(this, "world", tabWorld.isChecked());
             AppSettings.setPalette(this, palette.getSelectedItemPosition());
-            AppSettings.setLanguage(this,
-                    AppSettings.languageCodes()[language.getSelectedItemPosition()]);
+            AppSettings.setLanguage(this, selectedLanguage);
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
