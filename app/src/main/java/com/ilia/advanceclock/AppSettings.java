@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.LocaleList;
+import android.view.View;
 
 import java.util.Locale;
 
@@ -354,6 +355,30 @@ public final class AppSettings {
 
     public static void applyModalOverlay(Activity activity) {
         activity.getTheme().applyStyle(R.style.OverlayAdvanceClockModal, true);
+    }
+
+    public static void applyFullscreenInsets(View root) {
+        int start = root.getPaddingStart();
+        int top = root.getPaddingTop();
+        int end = root.getPaddingEnd();
+        int bottom = root.getPaddingBottom();
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            view.setPaddingRelative(
+                    start,
+                    top + insets.getSystemWindowInsetTop(),
+                    end,
+                    bottom + insets.getSystemWindowInsetBottom());
+            return insets;
+        });
+        root.requestApplyInsets();
+    }
+
+    public static void playFullscreenEnter(Activity activity) {
+        activity.overridePendingTransition(R.anim.editor_enter, R.anim.editor_stay);
+    }
+
+    public static void playFullscreenExit(Activity activity) {
+        activity.overridePendingTransition(R.anim.editor_stay, R.anim.settings_exit);
     }
 
     private static int clampPalette(int value) {

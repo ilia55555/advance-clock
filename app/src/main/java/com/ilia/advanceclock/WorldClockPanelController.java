@@ -3,6 +3,7 @@ package com.ilia.advanceclock;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,6 +11,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,8 +64,7 @@ final class WorldClockPanelController {
         root.findViewById(R.id.world_fab).setOnClickListener(v -> showAddDialog());
         root.findViewById(R.id.world_pick_reference).setOnClickListener(v -> pickReferenceDate());
         root.findViewById(R.id.world_alarm).setOnClickListener(v ->
-                host.startActivity(new android.content.Intent(host, AlarmEditorActivity.class)
-                        .putExtra("modalCreate", true)));
+                MainActivity.launchCreateEditor(host, AlarmEditorActivity.class));
         nowButton.setOnClickListener(v -> {
             referenceMode = false;
             referenceMillis = 0L;
@@ -109,17 +111,28 @@ final class WorldClockPanelController {
     private void showAddDialog() {
         LinearLayout content = new LinearLayout(host);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(dp(18), dp(10), dp(18), 0);
+        content.setPadding(dp(16), dp(16), dp(16), dp(16));
+        content.setBackgroundColor(AppSettings.background(host));
+
+        LinearLayout header = new LinearLayout(host);
+        header.setOrientation(LinearLayout.VERTICAL);
+        header.setGravity(Gravity.CENTER);
+        header.setPadding(dp(16), dp(12), dp(16), dp(12));
+        header.setBackgroundResource(R.drawable.bg_header);
 
         TextView title = text("افزودن منطقه زمانی", 19, AppSettings.textPrimary(host));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        content.addView(title, new LinearLayout.LayoutParams(-1, -2));
+        title.setTextColor(0xFFFFFFFF);
+        title.setGravity(Gravity.CENTER);
+        header.addView(title, new LinearLayout.LayoutParams(-1, -2));
 
         TextView hint = text("شهر، استان، کشور یا قاره را جست‌وجو کنید", 12,
-                AppSettings.textSecondary(host));
+                0xFFD9EFED);
+        hint.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams hintParams = new LinearLayout.LayoutParams(-1, -2);
         hintParams.topMargin = dp(3);
-        content.addView(hint, hintParams);
+        header.addView(hint, hintParams);
+        content.addView(header, new LinearLayout.LayoutParams(-1, dp(86)));
 
         EditText dialogSearch = new EditText(host);
         dialogSearch.setSingleLine(true);
@@ -149,9 +162,18 @@ final class WorldClockPanelController {
         buttonParams.topMargin = dp(10);
         content.addView(addButton, buttonParams);
 
+        Button cancelButton = new Button(host);
+        cancelButton.setText("انصراف");
+        cancelButton.setTextColor(AppSettings.primaryColor(host));
+        cancelButton.setTextSize(14);
+        cancelButton.setAllCaps(false);
+        cancelButton.setBackgroundResource(R.drawable.bg_soft_button);
+        LinearLayout.LayoutParams cancelParams = new LinearLayout.LayoutParams(-1, dp(52));
+        cancelParams.topMargin = dp(8);
+        content.addView(cancelButton, cancelParams);
+
         AlertDialog dialog = new AlertDialog.Builder(host)
                 .setView(content)
-                .setNegativeButton("انصراف", null)
                 .create();
 
         dialogSearch.addTextChangedListener(new TextWatcher() {
@@ -165,7 +187,24 @@ final class WorldClockPanelController {
         addButton.setOnClickListener(v -> {
             if (addSelected(dialogSpinner)) dialog.dismiss();
         });
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(AppSettings.background(host)));
+            window.setWindowAnimations(R.style.AdvanceClockFullscreenWindowMotionV2);
+        }
         dialog.show();
+        if (window != null) {
+            window.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+        ViewGroup.LayoutParams contentParams = content.getLayoutParams();
+        if (contentParams != null) {
+            contentParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            contentParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            content.setLayoutParams(contentParams);
+        }
     }
 
     private void filterZones(Spinner spinner, String query) {
