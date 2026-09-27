@@ -65,6 +65,7 @@ public final class MainActivity extends Activity {
     private View noteComposerCard;
     private View noteSketchCard;
     private View alertsHeader;
+    private View calendarEventsCard;
     private ScrollView clockPanel;
     private View noForgetPanel;
     private View stopwatchPanel;
@@ -151,6 +152,7 @@ public final class MainActivity extends Activity {
         setupNoteComposer();
         setupCalendars();
         applyClockLayoutMode();
+        applyCalendarEventsUi();
 
         clockTab.setOnClickListener(v -> showTab("clock"));
         noForgetTab.setOnClickListener(v -> showTab("noforget"));
@@ -162,6 +164,8 @@ public final class MainActivity extends Activity {
 
         findViewById(R.id.add_clock_widget).setOnClickListener(v ->
                 pinWidgetAndExit(ClockWidgetProvider.class));
+        findViewById(R.id.smart_alarm_button).setOnClickListener(v ->
+                startActivity(new Intent(this, SmartAlarmActivity.class)));
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
         findViewById(R.id.world_add_widget).setOnClickListener(v ->
@@ -204,6 +208,7 @@ public final class MainActivity extends Activity {
         noteComposerCard = findViewById(R.id.note_composer_card);
         noteSketchCard = findViewById(R.id.note_sketch_card);
         alertsHeader = findViewById(R.id.alerts_header);
+        calendarEventsCard = findViewById(R.id.calendar_events_card);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
         stopwatchPanel = findViewById(R.id.stopwatch_panel);
@@ -367,6 +372,24 @@ public final class MainActivity extends Activity {
         headerTime.setText(CalendarUtils.fa(time));
         headerDate.setText(
                 CalendarUtils.formatDate(now, AppSettings.defaultCalendar(this)));
+    }
+
+    private void applyCalendarEventsUi() {
+        if (calendarEventsCard == null) return;
+
+        calendarEventsCard.setVisibility(
+                AppSettings.showCalendarEvents(this) ? View.VISIBLE : View.GONE);
+
+        View persian = findViewById(R.id.calendar_event_source_persian);
+        View hijri = findViewById(R.id.calendar_event_source_hijri);
+        View gregorian = findViewById(R.id.calendar_event_source_gregorian);
+
+        persian.setVisibility(
+                AppSettings.persianCalendarEventsEnabled(this) ? View.VISIBLE : View.GONE);
+        hijri.setVisibility(
+                AppSettings.hijriCalendarEventsEnabled(this) ? View.VISIBLE : View.GONE);
+        gregorian.setVisibility(
+                AppSettings.gregorianCalendarEventsEnabled(this) ? View.VISIBLE : View.GONE);
     }
 
     private void setupCalendars() {
@@ -804,6 +827,7 @@ public final class MainActivity extends Activity {
         applyTabOrder();
         applyTabVisibility();
         updateHeaderClock();
+        applyCalendarEventsUi();
         NotificationHelper.ensureChannels(this);
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
         AlarmScheduler.rescheduleAll(this);
