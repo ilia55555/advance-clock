@@ -375,21 +375,65 @@ public final class MainActivity extends Activity {
     }
 
     private void applyCalendarEventsUi() {
-        if (calendarEventsCard == null) return;
+        if (calendarEventsCard == null || clockCalendar == null) return;
 
-        calendarEventsCard.setVisibility(
-                AppSettings.showCalendarEvents(this) ? View.VISIBLE : View.GONE);
+        boolean showBox = AppSettings.showCalendarEvents(this);
+        calendarEventsCard.setVisibility(showBox ? View.VISIBLE : View.GONE);
+        if (!showBox) return;
 
+        int type = clockCalendar.getCalendarType();
+        long millis = clockCalendar.getSelectedMillis();
+
+        TextView title = findViewById(R.id.calendar_events_title);
+        TextView content = findViewById(R.id.calendar_events_placeholder);
         View persian = findViewById(R.id.calendar_event_source_persian);
         View hijri = findViewById(R.id.calendar_event_source_hijri);
         View gregorian = findViewById(R.id.calendar_event_source_gregorian);
 
-        persian.setVisibility(
-                AppSettings.persianCalendarEventsEnabled(this) ? View.VISIBLE : View.GONE);
-        hijri.setVisibility(
-                AppSettings.hijriCalendarEventsEnabled(this) ? View.VISIBLE : View.GONE);
-        gregorian.setVisibility(
-                AppSettings.gregorianCalendarEventsEnabled(this) ? View.VISIBLE : View.GONE);
+        boolean enabled = CalendarEventRepository.sourceEnabled(this, type);
+        persian.setVisibility(type == CalendarUtils.PERSIAN && enabled
+                ? View.VISIBLE : View.GONE);
+        hijri.setVisibility(type == CalendarUtils.HIJRI && enabled
+                ? View.VISIBLE : View.GONE);
+        gregorian.setVisibility(type == CalendarUtils.GREGORIAN && enabled
+                ? View.VISIBLE : View.GONE);
+
+        title.setText("رویدادها و مناسبت‌ها • "
+                + CalendarUtils.formatDate(millis, type));
+
+        if (!enabled) {
+            content.setText("منبع رویدادهای "
+                    + CalendarEventRepository.sourceTitle(type)
+                    + " در تنظیمات خاموش است.");
+            return;
+        }
+
+        java.util.List<CalendarEventRepository.Event> events =
+                CalendarEventRepository.eventsFor(this, millis, type);
+
+        if (events.isEmpty()) {
+            boolean weekend = CalendarEventRepository.isWeekend(millis, type);
+            content.setText(weekend
+                    ? "تعطیل هفتگی"
+                    : "برای این روز مناسبت یا تعطیلی ثبت‌شده‌ای وجود ندارد.");
+            return;
+        }
+
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < events.size(); i++) {
+            CalendarEventRepository.Event event = events.get(i);
+            if (i > 0) text.append("\n");
+            text.append(event.holiday ? "● " : "• ");
+            text.append(event.title);
+            if (event.holiday) text.append("  • تعطیل رسمی");
+        }
+
+        if (CalendarEventRepository.isWeekend(millis, type)) {
+            if (text.length() > 0) text.append("\n");
+            text.append("● تعطیل هفتگی");
+        }
+
+        content.setText(text.toString());
     }
 
     private void setupCalendars() {
@@ -412,6 +456,7 @@ public final class MainActivity extends Activity {
                         (picked, pickedType) -> {
                             if (clockPanel.getVisibility() == View.VISIBLE) {
                                 clockCalendar.setVisibleMonthMillis(picked, pickedType);
+                                applyCalendarEventsUi();
                             } else {
                                 noteCalendar.setVisibleMonthMillis(picked, pickedType);
                             }
@@ -428,6 +473,7 @@ public final class MainActivity extends Activity {
             quickAlarmCalendarType = clockCalendar.getCalendarType();
             applyDate(quickAlarm, millis);
             updateQuickAlarmLabels();
+            applyCalendarEventsUi();
         });
 
         noteCalendar.setOnDateSelectedListener(millis -> {
@@ -468,6 +514,7 @@ public final class MainActivity extends Activity {
                     clockCalendar.setCalendarType(type);
                     clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
                     updateQuickAlarmLabels();
+                    applyCalendarEventsUi();
                 }));
 
         quickAlarmTime.setOnClickListener(v -> new TimePickerDialog(
