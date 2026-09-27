@@ -285,17 +285,51 @@ public final class SmartAlarmParser {
                 if (relative != null) addCandidatesForSegment(relative, line, result);
                 continue;
             }
+            int[] segmentStarts = new int[dates.size()];
+            int[] segmentEnds = new int[dates.size()];
+            segmentStarts[0] = 0;
+            for (int i = 1; i < dates.size(); i++) {
+                SegmentBoundary boundary = findSegmentBoundary(
+                        line, dates.get(i - 1).end, dates.get(i).start);
+                segmentEnds[i - 1] = boundary.previousEnd;
+                segmentStarts[i] = boundary.nextStart;
+            }
+            segmentEnds[dates.size() - 1] = line.length();
             for (int i = 0; i < dates.size(); i++) {
                 DateMatch match = dates.get(i);
-                int end = i + 1 < dates.size() ? dates.get(i + 1).start : line.length();
-                int start = i == 0 ? 0 : match.start;
-                String segment = line.substring(start, end).trim();
+                String segment = line.substring(
+                        segmentStarts[i], segmentEnds[i]).trim();
                 DateParts date = match.relative
                         ? relativeDate(context, segment)
                         : parseDate(context, match.raw, contextHint(segment));
                 if (date != null) addCandidatesForSegment(date, segment, result);
             }
         }
+    }
+
+    private static SegmentBoundary findSegmentBoundary(
+            String line, int searchStart, int nextDateStart) {
+        String between = line.substring(searchStart, nextDateStart);
+        Matcher separators = Pattern.compile("[،,؛;|]|\\s+و\\s+").matcher(between);
+        int separatorSearchStart = 0;
+        ArrayList<TimeHit> previousTimes = findTimes(between);
+        if (!previousTimes.isEmpty()) {
+            separatorSearchStart = previousTimes.get(previousTimes.size() - 1).end;
+        }
+        int separatorStart = -1;
+        int separatorEnd = -1;
+        while (separators.find()) {
+            if (separators.start() < separatorSearchStart) continue;
+            separatorStart = separators.start();
+            separatorEnd = separators.end();
+            break;
+        }
+        if (separatorStart < 0) {
+            return new SegmentBoundary(nextDateStart, nextDateStart);
+        }
+        return new SegmentBoundary(
+                searchStart + separatorStart,
+                searchStart + separatorEnd);
     }
 
     private static void addCandidatesForSegment(
@@ -766,6 +800,16 @@ public final class SmartAlarmParser {
             this.end = end;
             this.raw = raw;
             this.relative = relative;
+        }
+    }
+
+    private static final class SegmentBoundary {
+        final int previousEnd;
+        final int nextStart;
+
+        SegmentBoundary(int previousEnd, int nextStart) {
+            this.previousEnd = previousEnd;
+            this.nextStart = nextStart;
         }
     }
 

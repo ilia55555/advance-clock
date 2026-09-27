@@ -211,7 +211,7 @@ public final class PrayerSettingsActivity extends Activity {
 
         adhanScheduleStatus = text(
                 "اعلان و لرزش اوقات فعال، هر روز زمان‌بندی می‌شود. "
-                        + "پخش فایل صوتی مؤذن هنوز متصل نیست.",
+                        + "فایل صوتی مورد انتظار: app/src/main/res/raw/adhan.mp3",
                 11,
                 AppSettings.textSecondary(this));
         adhanScheduleStatus.setPadding(0, dp(6), 0, 0);
@@ -228,6 +228,11 @@ public final class PrayerSettingsActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
+        boolean permissionGranted = PermissionHelper.exactAlarmsGranted(this);
+        if (permissionGranted
+                && AdhanScheduler.status(this) == AdhanScheduler.Status.SCHEDULE_FAILED) {
+            AdhanScheduler.rescheduleAll(this);
+        }
         refresh();
     }
 
@@ -305,8 +310,7 @@ public final class PrayerSettingsActivity extends Activity {
                 break;
             case SCHEDULED:
             default:
-                message = "اعلان و لرزش اوقات فعال زمان‌بندی شده است. "
-                        + "پخش فایل صوتی مؤذن هنوز متصل نیست.";
+                message = "اذان فعال زمان‌بندی شده است. فایل صوتی: adhan.mp3";
                 break;
         }
         adhanScheduleStatus.setText(message);
@@ -467,22 +471,26 @@ public final class PrayerSettingsActivity extends Activity {
         locationHandler.postDelayed(locationTimeout, 20_000L);
         if (Build.VERSION.SDK_INT >= 30) {
             locationCancellation = new CancellationSignal();
-            manager.getCurrentLocation(
-                    selectedProvider,
-                    locationCancellation,
-                    command -> runOnUiThread(command),
-                    location -> {
-                        if (requestGeneration != locationRequestGeneration) return;
-                        clearLocationTimeout();
-                        handleLocation(location);
-                    });
+            try {
+                manager.getCurrentLocation(
+                        selectedProvider,
+                        locationCancellation,
+                        command -> runOnUiThread(command),
+                        location -> {
+                            if (requestGeneration != locationRequestGeneration) return;
+                            clearLocationTimeout();
+                            handleLocation(location, requestGeneration);
+                        });
+            } catch (RuntimeException error) {
+                failLocationRequest(requestGeneration);
+            }
             return;
         }
 
         activeLocationListener = new LocationListener() {
                     @Override public void onLocationChanged(Location location) {
                         if (requestGeneration != locationRequestGeneration) return;
-                        handleLocation(location);
+                        handleLocation(location, requestGeneration);
                     }
 
                     @Override public void onStatusChanged(
@@ -492,11 +500,26 @@ public final class PrayerSettingsActivity extends Activity {
 
                     @Override public void onProviderDisabled(String provider) {}
                 };
-        manager.requestSingleUpdate(
-                selectedProvider, activeLocationListener, Looper.getMainLooper());
+        try {
+            manager.requestSingleUpdate(
+                    selectedProvider, activeLocationListener, Looper.getMainLooper());
+        } catch (RuntimeException error) {
+            failLocationRequest(requestGeneration);
+        }
     }
 
-    private void handleLocation(Location location) {
+    private void failLocationRequest(int requestGeneration) {
+        if (requestGeneration != locationRequestGeneration) return;
+        cancelLocationRequest();
+        locationButton.setEnabled(true);
+        refresh();
+        Toast.makeText(
+                this,
+                "شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.",
+                Toast.LENGTH_LONG).show();
+    }
+
+    private void handleLocation(Location location, int requestGeneration) {
         clearLocationTimeout();
         if (location == null) {
             locationButton.setEnabled(true);
@@ -516,7 +539,8 @@ public final class PrayerSettingsActivity extends Activity {
         refresh();
         setResult(RESULT_OK);
 
-        new Thread(() -> resolveLocationName(lat, lon, fallback)).start();
+        new Thread(() -> resolveLocationName(
+                lat, lon, fallback, requestGeneration)).start();
     }
 
     private void clearLocationTimeout() {
@@ -542,7 +566,8 @@ public final class PrayerSettingsActivity extends Activity {
     }
 
     @SuppressWarnings("deprecation")
-    private void resolveLocationName(double lat, double lon, String fallback) {
+    private void resolveLocationName(
+            double lat, double lon, String fallback, int requestGeneration) {
         String label = fallback;
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -560,6 +585,10 @@ public final class PrayerSettingsActivity extends Activity {
 
         final String finalLabel = label;
         runOnUiThread(() -> {
+            if (requestGeneration != locationRequestGeneration || isFinishing()
+                    || (Build.VERSION.SDK_INT >= 17 && isDestroyed())) {
+                return;
+            }
             AppSettings.setPrayerLocation(this, lat, lon, finalLabel);
             refresh();
         });
