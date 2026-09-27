@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -87,6 +88,84 @@ public final class SettingsActivity extends Activity {
         calendarHint.setPadding(0, dp(4), 0, dp(8));
         root.addView(calendarHint);
 
+        root.addView(label("رویدادها و مناسبت‌ها"));
+
+        LinearLayout eventsCard = settingsCard();
+
+        TextView eventsTitle = new TextView(this);
+        eventsTitle.setText("نمایش مناسبت‌ها زیر تقویم");
+        eventsTitle.setTextColor(AppSettings.textPrimary(this));
+        eventsTitle.setTextSize(17);
+        eventsTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+        eventsCard.addView(eventsTitle);
+
+        TextView eventsDescription = new TextView(this);
+        eventsDescription.setText("منابع رویداد را از حالا انتخاب کنید؛ اتصال داده‌های واقعی در مرحله بعد انجام می‌شود.");
+        eventsDescription.setTextColor(AppSettings.textSecondary(this));
+        eventsDescription.setTextSize(12);
+        eventsDescription.setPadding(0, dp(4), 0, dp(8));
+        eventsCard.addView(eventsDescription);
+
+        Switch showCalendarEvents = settingSwitch(
+                "نمایش باکس رویداد زیر تقویم",
+                AppSettings.showCalendarEvents(this));
+        eventsCard.addView(showCalendarEvents);
+
+        TextView sourcesTitle = new TextView(this);
+        sourcesTitle.setText("منابع مناسبت‌ها");
+        sourcesTitle.setTextColor(AppSettings.textSecondary(this));
+        sourcesTitle.setTextSize(12);
+        sourcesTitle.setPadding(0, dp(8), 0, dp(2));
+        eventsCard.addView(sourcesTitle);
+
+        Switch persianEvents = settingSwitch(
+                "شمسی",
+                AppSettings.persianCalendarEventsEnabled(this));
+        Switch hijriEvents = settingSwitch(
+                "قمری",
+                AppSettings.hijriCalendarEventsEnabled(this));
+        Switch gregorianEvents = settingSwitch(
+                "میلادی",
+                AppSettings.gregorianCalendarEventsEnabled(this));
+        eventsCard.addView(persianEvents);
+        eventsCard.addView(hijriEvents);
+        eventsCard.addView(gregorianEvents);
+
+        persianEvents.setEnabled(showCalendarEvents.isChecked());
+        hijriEvents.setEnabled(showCalendarEvents.isChecked());
+        gregorianEvents.setEnabled(showCalendarEvents.isChecked());
+
+        root.addView(eventsCard, settingsCardParams());
+
+        root.addView(label("اذان"));
+
+        LinearLayout prayerCard = settingsCard();
+
+        TextView prayerTitle = new TextView(this);
+        prayerTitle.setText("اذان و اوقات شرعی");
+        prayerTitle.setTextColor(AppSettings.textPrimary(this));
+        prayerTitle.setTextSize(17);
+        prayerTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+        prayerCard.addView(prayerTitle);
+
+        TextView prayerDescription = new TextView(this);
+        prayerDescription.setText("چیدمان تنظیمات شهر، اذان صبح، ظهر، مغرب و صدا آماده شده است.");
+        prayerDescription.setTextColor(AppSettings.textSecondary(this));
+        prayerDescription.setTextSize(12);
+        prayerDescription.setPadding(0, dp(4), 0, dp(10));
+        prayerCard.addView(prayerDescription);
+
+        Button prayerSettings = new Button(this);
+        prayerSettings.setText("تنظیمات اذان");
+        prayerSettings.setAllCaps(false);
+        prayerSettings.setTextColor(AppSettings.primaryColor(this));
+        prayerSettings.setBackgroundResource(R.drawable.bg_soft_button);
+        prayerSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, PrayerSettingsActivity.class)));
+        prayerCard.addView(prayerSettings, new LinearLayout.LayoutParams(-1, dp(50)));
+
+        root.addView(prayerCard, settingsCardParams());
+
         root.addView(label("چیدمان صفحه ساعت و یادداشت"));
         Spinner layout = spinner(new String[]{
                 "پیش‌فرض: فرم ایجاد داخل صفحه، بدون دکمه +",
@@ -137,6 +216,10 @@ public final class SettingsActivity extends Activity {
                     || AppSettings.palette(this) != palette.getSelectedItemPosition()
                     || !AppSettings.language(this).equals(selectedLanguage)
                     || AppSettings.defaultCalendar(this) != calendar.getSelectedItemPosition()
+                    || AppSettings.showCalendarEvents(this) != showCalendarEvents.isChecked()
+                    || AppSettings.persianCalendarEventsEnabled(this) != persianEvents.isChecked()
+                    || AppSettings.hijriCalendarEventsEnabled(this) != hijriEvents.isChecked()
+                    || AppSettings.gregorianCalendarEventsEnabled(this) != gregorianEvents.isChecked()
                     || AppSettings.clockLayoutMode(this) != layout.getSelectedItemPosition()
                     || AppSettings.alarmScreenStyle(this)
                     != alarmStyle.getSelectedItemPosition();
@@ -149,6 +232,10 @@ public final class SettingsActivity extends Activity {
             AppSettings.setPalette(this, palette.getSelectedItemPosition());
             AppSettings.setLanguage(this, selectedLanguage);
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
+            AppSettings.setShowCalendarEvents(this, showCalendarEvents.isChecked());
+            AppSettings.setPersianCalendarEventsEnabled(this, persianEvents.isChecked());
+            AppSettings.setHijriCalendarEventsEnabled(this, hijriEvents.isChecked());
+            AppSettings.setGregorianCalendarEventsEnabled(this, gregorianEvents.isChecked());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
 
@@ -163,6 +250,17 @@ public final class SettingsActivity extends Activity {
         watch(calendar, saveSettings);
         watch(layout, saveSettings);
         watch(alarmStyle, saveSettings);
+
+        showCalendarEvents.setOnCheckedChangeListener((button, checked) -> {
+            persianEvents.setEnabled(checked);
+            hijriEvents.setEnabled(checked);
+            gregorianEvents.setEnabled(checked);
+            saveSettings.run();
+        });
+        persianEvents.setOnCheckedChangeListener((button, checked) -> saveSettings.run());
+        hijriEvents.setOnCheckedChangeListener((button, checked) -> saveSettings.run());
+        gregorianEvents.setOnCheckedChangeListener((button, checked) -> saveSettings.run());
+
         CompoundButton.OnCheckedChangeListener saveTabs = (button, checked) -> {
             if (!checked && !tabClock.isChecked() && !tabNotes.isChecked()
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
@@ -202,6 +300,32 @@ public final class SettingsActivity extends Activity {
         control.setPadding(0, dp(4), 0, dp(4));
         control.setLayoutParams(new LinearLayout.LayoutParams(-1, dp(48)));
         return control;
+    }
+
+    private Switch settingSwitch(String text, boolean checked) {
+        Switch control = new Switch(this);
+        control.setText(text);
+        control.setTextColor(AppSettings.textPrimary(this));
+        control.setTextSize(14);
+        control.setChecked(checked);
+        control.setPadding(0, dp(3), 0, dp(3));
+        control.setLayoutParams(new LinearLayout.LayoutParams(-1, dp(48)));
+        return control;
+    }
+
+    private LinearLayout settingsCard() {
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        card.setPadding(dp(14), dp(14), dp(14), dp(14));
+        card.setBackgroundResource(R.drawable.bg_card);
+        return card;
+    }
+
+    private LinearLayout.LayoutParams settingsCardParams() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        params.bottomMargin = dp(8);
+        return params;
     }
 
     private Spinner spinner(String[] values) {
