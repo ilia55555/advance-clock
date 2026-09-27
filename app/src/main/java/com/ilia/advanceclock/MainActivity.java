@@ -425,7 +425,10 @@ public final class MainActivity extends Activity {
             if (i > 0) text.append("\n");
             text.append(event.holiday ? "● " : "• ");
             text.append(event.title);
-            if (event.holiday) text.append("  • تعطیل رسمی");
+            if (event.holiday) {
+                text.append("  • ");
+                text.append(CalendarEventRepository.holidayLabel(type));
+            }
         }
 
         if (CalendarEventRepository.isWeekend(millis, type)) {
