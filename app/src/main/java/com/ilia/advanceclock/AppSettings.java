@@ -133,6 +133,94 @@ public final class AppSettings {
         prefs(context).edit().putBoolean("events_source_gregorian", value).apply();
     }
 
+    public static boolean additionalCalendarEventsEnabled(Context context, int calendarType) {
+        return prefs(context).getBoolean("additional_events_" + calendarType, false);
+    }
+
+    public static void setAdditionalCalendarEventsEnabled(
+            Context context, int calendarType, boolean value) {
+        prefs(context).edit().putBoolean("additional_events_" + calendarType, value).apply();
+    }
+
+    public static boolean adhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_enabled", false);
+    }
+
+    public static void setAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_enabled", value).apply();
+    }
+
+    public static boolean prayerLocationSet(Context context) {
+        return prefs(context).getBoolean("prayer_location_set", false);
+    }
+
+    public static double prayerLatitude(Context context) {
+        try {
+            return Double.parseDouble(
+                    prefs(context).getString("prayer_latitude", "0"));
+        } catch (Exception ignored) {
+            return 0.0;
+        }
+    }
+
+    public static double prayerLongitude(Context context) {
+        try {
+            return Double.parseDouble(
+                    prefs(context).getString("prayer_longitude", "0"));
+        } catch (Exception ignored) {
+            return 0.0;
+        }
+    }
+
+    public static String prayerLocationLabel(Context context) {
+        return prefs(context).getString(
+                "prayer_location_label", "موقعیت فعلی");
+    }
+
+    public static void setPrayerLocation(
+            Context context, double latitude, double longitude, String label) {
+        prefs(context).edit()
+                .putBoolean("prayer_location_set", true)
+                .putString("prayer_latitude", Double.toString(latitude))
+                .putString("prayer_longitude", Double.toString(longitude))
+                .putString("prayer_location_label",
+                        label == null || label.trim().isEmpty()
+                                ? "موقعیت فعلی" : label.trim())
+                .apply();
+    }
+
+    public static boolean fajrAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_fajr_enabled", true);
+    }
+
+    public static void setFajrAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_fajr_enabled", value).apply();
+    }
+
+    public static boolean dhuhrAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_dhuhr_enabled", true);
+    }
+
+    public static void setDhuhrAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_dhuhr_enabled", value).apply();
+    }
+
+    public static boolean maghribAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_maghrib_enabled", true);
+    }
+
+    public static void setMaghribAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_maghrib_enabled", value).apply();
+    }
+
+    public static boolean adhanVibrate(Context context) {
+        return prefs(context).getBoolean("adhan_vibrate", true);
+    }
+
+    public static void setAdhanVibrate(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_vibrate", value).apply();
+    }
+
     public static String language(Context context) {
         String saved = prefs(context).getString("app_language", null);
         return isSupportedLanguage(saved) ? saved : languageForDevice();
