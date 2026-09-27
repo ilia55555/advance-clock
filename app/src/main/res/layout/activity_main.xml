@@ -445,10 +445,11 @@
                         android:layoutDirection="rtl">
 
                         <TextView
+                            android:id="@+id/calendar_events_title"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="رویدادها و مناسبت‌های امروز"
+                            android:text="رویدادها و مناسبت‌ها"
                             android:textColor="?attr/appTextPrimary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -488,7 +489,7 @@
                             android:background="@drawable/bg_soft_button"
                             android:gravity="center"
                             android:paddingHorizontal="10dp"
-                            android:text="شمسی"
+                            android:text="شمسی • ایران"
                             android:textColor="?attr/appPrimary"
                             android:textSize="11sp" />
 
@@ -503,7 +504,7 @@
                             android:background="@drawable/bg_soft_button"
                             android:gravity="center"
                             android:paddingHorizontal="10dp"
-                            android:text="قمری"
+                            android:text="قمری • عربی"
                             android:textColor="?attr/appPrimary"
                             android:textSize="11sp" />
 
@@ -518,7 +519,7 @@
                             android:background="@drawable/bg_soft_button"
                             android:gravity="center"
                             android:paddingHorizontal="10dp"
-                            android:text="میلادی"
+                            android:text="میلادی • جهانی"
                             android:textColor="?attr/appPrimary"
                             android:textSize="11sp" />
                     </LinearLayout>
