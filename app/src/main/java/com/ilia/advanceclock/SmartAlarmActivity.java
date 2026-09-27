@@ -477,6 +477,8 @@ public final class SmartAlarmActivity extends Activity {
     private void editCandidate(int index) {
         if (index < 0 || index >= candidates.size()) return;
         SmartAlarmParser.Candidate candidate = candidates.get(index);
+        SmartAlarmParser.Candidate draft = copyCandidate(candidate);
+        CandidateUiState currentState = CandidateUiState.get(candidate);
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -486,7 +488,7 @@ public final class SmartAlarmActivity extends Activity {
         TextView labelTitle = dialogLabel("عنوان");
         root.addView(labelTitle);
 
-        EditText label = dialogEdit(candidate.label, false);
+        EditText label = dialogEdit(draft.label, false);
         root.addView(label, new LinearLayout.LayoutParams(-1, dp(52)));
 
         TextView dateTitle = dialogLabel("تاریخ و ساعت اصلی");
@@ -496,10 +498,10 @@ public final class SmartAlarmActivity extends Activity {
         dateRow.setOrientation(LinearLayout.HORIZONTAL);
         dateRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        Button date = fieldButton(candidate.dateText());
+        Button date = fieldButton(draft.dateText());
         dateRow.addView(date, new LinearLayout.LayoutParams(0, dp(52), 1f));
 
-        Button time = fieldButton(candidate.baseTimeText());
+        Button time = fieldButton(draft.baseTimeText());
         LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(dp(112), dp(52));
         timeParams.setMarginStart(dp(8));
         dateRow.addView(time, timeParams);
@@ -513,11 +515,11 @@ public final class SmartAlarmActivity extends Activity {
         ringRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         Spinner mode = spinner(new String[]{"سرِ وقت", "قبل از زمان", "بعد از زمان"});
-        mode.setSelection(candidate.offsetMode);
+        mode.setSelection(draft.offsetMode);
         ringRow.addView(mode, new LinearLayout.LayoutParams(0, dp(52), 1f));
 
         EditText minutes = dialogEdit(
-                String.valueOf(Math.max(0, candidate.offsetMinutes)),
+                String.valueOf(Math.max(0, draft.offsetMinutes)),
                 true);
         LinearLayout.LayoutParams mp = new LinearLayout.LayoutParams(dp(96), dp(52));
         mp.setMarginStart(dp(8));
@@ -529,39 +531,39 @@ public final class SmartAlarmActivity extends Activity {
         Spinner priority = spinner(new String[]{
                 "کم", "نسبتاً کم", "متوسط", "زیاد", "خیلی زیاد"
         });
-        priority.setSelection(PriorityUtils.MEDIUM);
+        priority.setSelection(currentState.priority);
         root.addView(priority, new LinearLayout.LayoutParams(-1, dp(52)));
 
         Switch vibrate = new Switch(this);
         vibrate.setText("لرزش همراه هشدار");
         vibrate.setTextColor(AppSettings.textPrimary(this));
-        vibrate.setChecked(true);
+        vibrate.setChecked(currentState.vibrate);
         vibrate.setPadding(0, dp(6), 0, 0);
         root.addView(vibrate, new LinearLayout.LayoutParams(-1, dp(52)));
 
         date.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
-                candidate.baseMillis(),
-                candidate.calendarType,
+                draft.baseMillis(),
+                draft.calendarType,
                 (picked, type) -> {
                     android.icu.util.Calendar c =
                             CalendarUtils.fromMillis(type, picked);
-                    candidate.calendarType = type;
-                    candidate.year = c.get(android.icu.util.Calendar.YEAR);
-                    candidate.month = c.get(android.icu.util.Calendar.MONTH) + 1;
-                    candidate.day = c.get(android.icu.util.Calendar.DAY_OF_MONTH);
-                    date.setText(candidate.dateText());
+                    draft.calendarType = type;
+                    draft.year = c.get(android.icu.util.Calendar.YEAR);
+                    draft.month = c.get(android.icu.util.Calendar.MONTH) + 1;
+                    draft.day = c.get(android.icu.util.Calendar.DAY_OF_MONTH);
+                    date.setText(draft.dateText());
                 }));
 
         time.setOnClickListener(v -> new TimePickerDialog(
                 this,
                 (view, hour, minute) -> {
-                    candidate.hour = hour;
-                    candidate.minute = minute;
-                    time.setText(candidate.baseTimeText());
+                    draft.hour = hour;
+                    draft.minute = minute;
+                    time.setText(draft.baseTimeText());
                 },
-                candidate.hour,
-                candidate.minute,
+                draft.hour,
+                draft.minute,
                 true).show());
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -579,11 +581,12 @@ public final class SmartAlarmActivity extends Activity {
                         return;
                     }
 
-                    candidate.label = newLabel;
-                    candidate.offsetMode = mode.getSelectedItemPosition();
-                    candidate.offsetMinutes = candidate.offsetMode == SmartAlarmParser.OFFSET_EXACT
+                    draft.label = newLabel;
+                    draft.offsetMode = mode.getSelectedItemPosition();
+                    draft.offsetMinutes = draft.offsetMode == SmartAlarmParser.OFFSET_EXACT
                             ? 0 : readPositiveInt(minutes, 5);
 
+                    copyCandidateInto(draft, candidate);
                     CandidateUiState.put(candidate, vibrate.isChecked(),
                             priority.getSelectedItemPosition());
                     dialog.dismiss();
@@ -699,6 +702,23 @@ public final class SmartAlarmActivity extends Activity {
         long id = seed;
         while (store.find(id) != null) id++;
         return id;
+    }
+
+    private void copyCandidateInto(
+            SmartAlarmParser.Candidate source,
+            SmartAlarmParser.Candidate target) {
+        target.label = source.label;
+        target.calendarType = source.calendarType;
+        target.year = source.year;
+        target.month = source.month;
+        target.day = source.day;
+        target.hour = source.hour;
+        target.minute = source.minute;
+        target.endHour = source.endHour;
+        target.endMinute = source.endMinute;
+        target.offsetMode = source.offsetMode;
+        target.offsetMinutes = source.offsetMinutes;
+        target.source = source.source;
     }
 
     private SmartAlarmParser.Candidate copyCandidate(
