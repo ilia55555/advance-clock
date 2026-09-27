@@ -9,6 +9,7 @@ import org.json.JSONTokener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -83,9 +84,15 @@ public final class SmartAlarmParser {
     private static final Pattern TIME_COLON = Pattern.compile(
             "(?<!\\d)([01]?\\d|2[0-3])\\s*[:٫.]\\s*([0-5]?\\d)(?!\\d)");
     private static final Pattern TIME_WORD = Pattern.compile(
-            "(?:ساعت|زمان|شروع|استارت|time|start)\\s*[:：]?\\s*"
+            "(?:ساعت|زمان|شروع|استارت|پایان|time|start|end)\\s*[:：]?\\s*"
                     + "(\\d{1,2})(?:\\s*[:٫.]\\s*([0-5]?\\d))?\\s*"
                     + "(صبح|بامداد|ظهر|عصر|شب|امشب|am|pm)?",
+            Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern TIME_RANGE = Pattern.compile(
+            "(?<!\\d)(\\d{1,2})(?:\\s*[:٫.]\\s*([0-5]?\\d))?\\s*"
+                    + "(?:تا|الی|لغایت|to|until|[-–—])\\s*"
+                    + "(\\d{1,2})(?:\\s*[:٫.]\\s*([0-5]?\\d))?(?!\\d)",
             Pattern.CASE_INSENSITIVE);
 
     private static final String[] PERSIAN_MONTHS = {
@@ -129,20 +136,60 @@ public final class SmartAlarmParser {
     }
 
     private static void parseJsonRoot(Context context, Object root, Result result) {
-        if (root instanceof JSONArray) {
-            parseJsonArray(context, (JSONArray) root, result);
+        parseJsonAny(context, root, result, "");
+    }
+
+    private static void parseJsonAny(
+            Context context,
+            Object value,
+            Result result,
+            String labelHint) {
+        if (value instanceof JSONArray) {
+            JSONArray array = (JSONArray) value;
+            for (int i = 0; i < array.length(); i++) {
+                parseJsonAny(context, array.opt(i), result, labelHint);
+            }
             return;
         }
-        if (!(root instanceof JSONObject)) return;
 
-        JSONObject object = (JSONObject) root;
-        JSONArray nested = firstArray(object,
-                "alarms", "events", "items", "data", "هشدارها", "رویدادها");
-        if (nested != null) {
-            parseJsonArray(context, nested, result);
-        } else {
-            Candidate c = candidateFromJson(context, object);
-            if (c != null) result.candidates.add(c);
+        if (value instanceof JSONObject) {
+            JSONObject object = (JSONObject) value;
+            Candidate direct = candidateFromJson(context, object);
+            if (direct != null) {
+                if ("هشدار هوشمند".equals(direct.label)
+                        && labelHint != null
+                        && !labelHint.trim().isEmpty()) {
+                    direct.label = cleanLabel(labelHint);
+                }
+                result.candidates.add(direct);
+                return;
+            }
+
+            Iterator<String> keys = object.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                Object nested = object.opt(key);
+                parseJsonAny(context, nested, result, key);
+            }
+            return;
+        }
+
+        if (value instanceof String) {
+            String text = normalize((String) value).trim();
+            if (text.isEmpty()) return;
+            int before = result.candidates.size();
+            parseNatural(context, text, result);
+            if (result.candidates.size() > before
+                    && labelHint != null
+                    && !labelHint.trim().isEmpty()) {
+                for (int i = before; i < result.candidates.size(); i++) {
+                    Candidate candidate = result.candidates.get(i);
+                    if ("هشدار هوشمند".equals(candidate.label)
+                            || candidate.label.matches("[\\d\\s:./\\-–—]+")) {
+                        candidate.label = cleanLabel(labelHint);
+                    }
+                }
+            }
         }
     }
 
@@ -286,31 +333,37 @@ public final class SmartAlarmParser {
 
     private static ArrayList<TimeHit> findTimes(String text) {
         ArrayList<TimeHit> out = new ArrayList<>();
-        Set<String> ranges = new HashSet<>();
+
+        Matcher range = TIME_RANGE.matcher(text);
+        while (range.find()) {
+            TimeParts first = new TimeParts(
+                    safeInt(range.group(1), -1),
+                    safeInt(range.group(2), 0));
+            TimeParts second = new TimeParts(
+                    safeInt(range.group(3), -1),
+                    safeInt(range.group(4), 0));
+            if (validTime(first) && validTime(second)) {
+                int firstEnd = range.group(2) == null
+                        ? range.end(1) : range.end(2);
+                int secondEnd = range.group(4) == null
+                        ? range.end(3) : range.end(4);
+                out.add(new TimeHit(range.start(1), firstEnd, first));
+                out.add(new TimeHit(range.start(3), secondEnd, second));
+            }
+        }
 
         Matcher colon = TIME_COLON.matcher(text);
         while (colon.find()) {
+            if (overlaps(out, colon.start(), colon.end())) continue;
             TimeParts t = new TimeParts(
                     safeInt(colon.group(1), -1),
                     safeInt(colon.group(2), 0));
-            if (validTime(t)) {
-                String key = colon.start() + ":" + colon.end();
-                ranges.add(key);
-                out.add(new TimeHit(colon.start(), colon.end(), t));
-            }
+            if (validTime(t)) out.add(new TimeHit(colon.start(), colon.end(), t));
         }
 
         Matcher word = TIME_WORD.matcher(text);
         while (word.find()) {
-            boolean overlaps = false;
-            for (TimeHit hit : out) {
-                if (word.start() < hit.end && word.end() > hit.start) {
-                    overlaps = true;
-                    break;
-                }
-            }
-            if (overlaps) continue;
-
+            if (overlaps(out, word.start(), word.end())) continue;
             int hour = safeInt(word.group(1), -1);
             int minute = safeInt(word.group(2), 0);
             hour = applyDayPart(hour, word.group(3));
@@ -320,6 +373,16 @@ public final class SmartAlarmParser {
 
         out.sort((a, b) -> Integer.compare(a.start, b.start));
         return out;
+    }
+
+    private static boolean overlaps(
+            List<TimeHit> existing,
+            int start,
+            int end) {
+        for (TimeHit hit : existing) {
+            if (start < hit.end && end > hit.start) return true;
+        }
+        return false;
     }
 
     private static DateParts parseDate(Context context, String raw, int hintedType) {
@@ -400,17 +463,25 @@ public final class SmartAlarmParser {
         for (int month = 0; month < PERSIAN_MONTHS.length; month++) {
             int pos = s.indexOf(PERSIAN_MONTHS[month]);
             if (pos < 0) continue;
-            Matcher dayMatcher = Pattern.compile("(\\d{1,2})\\s*" + PERSIAN_MONTHS[month])
+            Matcher dayMatcher = Pattern.compile(
+                    "(\\d{1,2})\\s*" + PERSIAN_MONTHS[month]
+                            + "(?:\\s+(\\d{4}))?")
                     .matcher(s);
             if (!dayMatcher.find()) continue;
 
             android.icu.util.Calendar now = CalendarUtils.fromMillis(
                     CalendarUtils.PERSIAN, System.currentTimeMillis());
-            int year = now.get(android.icu.util.Calendar.YEAR);
+            int explicitYear = safeInt(dayMatcher.group(2), -1);
+            int year = explicitYear > 0
+                    ? explicitYear
+                    : now.get(android.icu.util.Calendar.YEAR);
             int day = safeInt(dayMatcher.group(1), -1);
             long millis = CalendarUtils.toMillis(
                     CalendarUtils.PERSIAN, year, month, day, 12, 0);
-            if (millis < System.currentTimeMillis() - 86_400_000L) year++;
+            if (explicitYear <= 0
+                    && millis < System.currentTimeMillis() - 86_400_000L) {
+                year++;
+            }
             return new DateParts(CalendarUtils.PERSIAN, year, month + 1, day);
         }
 
@@ -504,7 +575,7 @@ public final class SmartAlarmParser {
 
     private static boolean looksLikeRangeSeparator(String value) {
         String s = normalize(value).trim().toLowerCase(Locale.ROOT);
-        return s.matches(".*(?:تا|الی|لغایت|to|until|[-–—]).*");
+        return s.matches(".*(?:تا|الی|لغایت|پایان|end|to|until|[-–—]).*");
     }
 
     private static int applyDayPart(int hour, String part) {
