@@ -43,6 +43,12 @@ public final class CalendarEventRepository {
         }
     }
 
+    public static String holidayLabel(int calendarType) {
+        if (calendarType == CalendarUtils.PERSIAN) return "تعطیل رسمی";
+        if (calendarType == CalendarUtils.HIJRI) return "تعطیل مشترک/رایج";
+        return "تعطیل رایج";
+    }
+
     public static List<Event> eventsFor(Context context, long millis, int calendarType) {
         if (!sourceEnabled(context, calendarType)) return Collections.emptyList();
 
