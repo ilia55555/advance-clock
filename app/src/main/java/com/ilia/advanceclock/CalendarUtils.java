@@ -50,18 +50,6 @@ public final class CalendarUtils {
         return c;
     }
 
-    /**
-     * Iranian religious dates must not be derived from Saudi Umm al-Qura.
-     * ICU's astronomical Islamic calendar is kept separate for the Iranian
-     * event source; year-specific official overrides belong in the repository.
-     */
-    public static android.icu.util.Calendar iranianHijriFromMillis(long millis) {
-        android.icu.util.Calendar calendar = android.icu.util.Calendar.getInstance(
-                new ULocale("fa_IR@calendar=islamic"));
-        calendar.setTimeInMillis(millis);
-        return calendar;
-    }
-
     public static long toMillis(int type, int year, int month, int day, int hour, int minute) {
         android.icu.util.Calendar c = create(type);
         c.clear();

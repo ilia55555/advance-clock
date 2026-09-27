@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#071B29"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="28dp"
+    android:paddingTop="72dp"
+    android:paddingEnd="28dp"
+    android:paddingBottom="32dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="وقت نیایش"
+        android:textColor="#8ED8D0"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/adhan_ring_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="00:00"
+        android:textColor="#FFFFFF"
+        android:textSize="76sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/adhan_ring_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:gravity="center"
+        android:text="اذان"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/adhan_ring_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="#A8BBC5"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="36dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="پاور یا کاهش صدا: قطع صدا\nنگه‌داشتن کاهش صدا: کم‌کردن تدریجی\nافزایش صدا: وصل و افزایش صدا"
+        android:textColor="#8FA9B7"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/adhan_sound_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_soft_button"
+        android:text="قطع کامل صدا"
+        android:textAllCaps="false"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/adhan_stop"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_teal_button"
+        android:text="پایان اذان"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+</LinearLayout>

@@ -73,6 +73,14 @@
             android:turnScreenOn="true" />
 
         <activity
+            android:name=".AdhanRingActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -83,6 +91,11 @@
 
         <service
             android:name=".AlarmSoundService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <service
+            android:name=".AdhanSoundService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 

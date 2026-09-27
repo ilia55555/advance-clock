@@ -199,27 +199,42 @@ public final class CalendarEventRepository {
         add(out, pm, pd, 12, 5, "روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس", false);
         add(out, pm, pd, 12, 15, "روز درختکاری", false);
 
-        android.icu.util.Calendar h = CalendarUtils.iranianHijriFromMillis(millis);
-        int hm = h.get(android.icu.util.Calendar.MONTH) + 1;
-        int hd = h.get(android.icu.util.Calendar.DAY_OF_MONTH);
+        addOfficialIranianReligiousEvents(out, millis);
+    }
 
-        add(out, hm, hd, 1, 9, "تاسوعای حسینی", true);
-        add(out, hm, hd, 1, 10, "عاشورای حسینی", true);
-        add(out, hm, hd, 2, 20, "اربعین حسینی", true);
-        add(out, hm, hd, 2, 28, "رحلت پیامبر اکرم و شهادت امام حسن مجتبی", true);
-        add(out, hm, hd, 2, 30, "شهادت امام رضا", true);
-        add(out, hm, hd, 3, 8, "شهادت امام حسن عسکری", true);
-        add(out, hm, hd, 3, 17, "میلاد پیامبر اکرم و امام جعفر صادق", true);
-        add(out, hm, hd, 6, 3, "شهادت حضرت فاطمه زهرا", true);
-        add(out, hm, hd, 7, 13, "میلاد امام علی", true);
-        add(out, hm, hd, 7, 27, "مبعث پیامبر اکرم", true);
-        add(out, hm, hd, 8, 15, "میلاد امام مهدی", true);
-        add(out, hm, hd, 9, 21, "شهادت امام علی", true);
-        add(out, hm, hd, 10, 1, "عید سعید فطر", true);
-        add(out, hm, hd, 10, 2, "تعطیل عید سعید فطر", true);
-        add(out, hm, hd, 10, 25, "شهادت امام جعفر صادق", true);
-        add(out, hm, hd, 12, 10, "عید قربان", true);
-        add(out, hm, hd, 12, 18, "عید غدیر خم", true);
+    /**
+     * Religious holidays are keyed by the civil date published for the reviewed
+     * Iranian calendar dataset. They must not be inferred from Umm al-Qura or a
+     * generic ICU Islamic calendar because official Iranian observance can differ.
+     */
+    private static void addOfficialIranianReligiousEvents(List<Event> out, long millis) {
+        android.icu.util.Calendar g = CalendarUtils.fromMillis(
+                CalendarUtils.GREGORIAN, millis);
+        int year = g.get(android.icu.util.Calendar.YEAR);
+        int month = g.get(android.icu.util.Calendar.MONTH) + 1;
+        int day = g.get(android.icu.util.Calendar.DAY_OF_MONTH);
+        if (year != 2026) return;
+
+        add(out, month, day, 1, 3, "میلاد امام علی", true);
+        add(out, month, day, 1, 17, "مبعث پیامبر اکرم", true);
+        add(out, month, day, 2, 4, "میلاد امام مهدی", true);
+        add(out, month, day, 3, 11, "شهادت امام علی", true);
+        add(out, month, day, 3, 21, "عید سعید فطر", true);
+        add(out, month, day, 3, 22, "تعطیل عید سعید فطر", true);
+        add(out, month, day, 4, 15, "شهادت امام جعفر صادق", true);
+        add(out, month, day, 5, 27, "عید قربان", true);
+        add(out, month, day, 6, 5, "عید غدیر خم", true);
+        add(out, month, day, 6, 25, "تاسوعای حسینی", true);
+        add(out, month, day, 6, 26, "عاشورای حسینی", true);
+        add(out, month, day, 8, 5, "اربعین حسینی", true);
+        add(out, month, day, 8, 13,
+                "رحلت پیامبر اکرم و شهادت امام حسن مجتبی", true);
+        add(out, month, day, 8, 15, "شهادت امام رضا", true);
+        add(out, month, day, 8, 22, "شهادت امام حسن عسکری", true);
+        add(out, month, day, 8, 31,
+                "میلاد پیامبر اکرم و امام جعفر صادق", true);
+        add(out, month, day, 11, 14, "شهادت حضرت فاطمه زهرا", true);
+        add(out, month, day, 12, 23, "میلاد امام علی", true);
     }
 
     private static void addArabHijriEvents(List<Event> out, long millis) {
