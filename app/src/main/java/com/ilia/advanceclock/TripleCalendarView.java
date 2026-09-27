@@ -29,8 +29,11 @@ public final class TripleCalendarView extends View {
     private static final int MUTED_LIGHT = 0xFF97A28E;
     private static final int MUTED_DARK = 0xFF98A7A2;
 
-    private static final String[] WEEKDAYS = {
+    private static final String[] WEEKDAYS_IRAN_HIJRI = {
             "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه"
+    };
+    private static final String[] WEEKDAYS_GREGORIAN = {
+            "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه", "یکشنبه"
     };
     private static final float[] CELL_LEFT = {553f,470f,386f,302f,218f,134f,50f};
     private static final float[] CELL_TOP = {161f,247f,334f,420f,506f,592f};
@@ -176,9 +179,11 @@ public final class TripleCalendarView extends View {
     }
 
     private void drawWeekdays(Canvas c) {
+        String[] weekdays = calendarType == CalendarUtils.GREGORIAN
+                ? WEEKDAYS_GREGORIAN : WEEKDAYS_IRAN_HIJRI;
         for (int col = 0; col < 7; col++) {
-            centered(c, WEEKDAYS[col], COL_CENTER[col], 129, 15,
-                    col == 6 ? secondary() : primary(), bold);
+            centered(c, weekdays[col], COL_CENTER[col], 129, 15,
+                    col == 6 ? holidayRed() : primary(), bold);
         }
     }
 
@@ -191,7 +196,7 @@ public final class TripleCalendarView extends View {
 
     private void drawDays(Canvas c) {
         android.icu.util.Calendar first = first();
-        int leading = first.get(android.icu.util.Calendar.DAY_OF_WEEK) % 7;
+        int leading = leadingDays(first);
         int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
 
         android.icu.util.Calendar sel = CalendarUtils.fromMillis(calendarType, selectedMillis);
@@ -220,12 +225,14 @@ public final class TripleCalendarView extends View {
                     today.get(android.icu.util.Calendar.YEAR) == displayYear
                     && today.get(android.icu.util.Calendar.MONTH) == displayMonth
                     && today.get(android.icu.util.Calendar.DAY_OF_MONTH) == day;
-            boolean holiday = col == 6;
+            boolean holiday = CalendarEventRepository.isWeekend(millis, calendarType)
+                    || CalendarEventRepository.isOfficialHoliday(
+                    getContext(), millis, calendarType);
 
             float left = CELL_LEFT[col], top = CELL_TOP[row];
             int fill = selected ? primary()
                     : (holiday
-                    ? blendOnSurface(secondary(), dark() ? 0.20f : 0.10f)
+                    ? blendOnSurface(holidayRed(), dark() ? 0.24f : 0.12f)
                     : (dark() ? CELL_DARK : CELL_LIGHT));
 
             paint.setColor(fill);
@@ -250,9 +257,9 @@ public final class TripleCalendarView extends View {
             }
 
             int main = selected ? WHITE
-                    : (holiday ? secondary() : (dark() ? MAIN_TEXT_DARK : MAIN_TEXT_LIGHT));
+                    : (holiday ? holidayRed() : (dark() ? MAIN_TEXT_DARK : MAIN_TEXT_LIGHT));
             int muted = selected ? 0xFFDDECEA
-                    : (holiday ? secondary() : (dark() ? MUTED_DARK : MUTED_LIGHT));
+                    : (holiday ? holidayRed() : (dark() ? MUTED_DARK : MUTED_LIGHT));
 
             centered(c, CalendarUtils.fa(day), left + CELL_W / 2f, top + 30,
                     29, main, regular);
@@ -387,7 +394,7 @@ public final class TripleCalendarView extends View {
         }
 
         android.icu.util.Calendar first = first();
-        int leading = first.get(android.icu.util.Calendar.DAY_OF_WEEK) % 7;
+        int leading = leadingDays(first);
         int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
 
         for (int day = 1; day <= days; day++) {
@@ -449,9 +456,23 @@ public final class TripleCalendarView extends View {
 
     private int rowCount() {
         android.icu.util.Calendar first = first();
-        int leading = first.get(android.icu.util.Calendar.DAY_OF_WEEK) % 7;
+        int leading = leadingDays(first);
         return (leading
                 + first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH) + 6) / 7;
+    }
+
+    private int leadingDays(android.icu.util.Calendar first) {
+        int dayOfWeek = first.get(android.icu.util.Calendar.DAY_OF_WEEK);
+        if (calendarType == CalendarUtils.GREGORIAN) {
+            // Monday = first column, Sunday = last column.
+            return (dayOfWeek + 5) % 7;
+        }
+        // Saturday = first column, Friday = last column.
+        return dayOfWeek % 7;
+    }
+
+    private int holidayRed() {
+        return dark() ? 0xFFFF7B7B : 0xFFC62828;
     }
 
     private float baseHeight() {
