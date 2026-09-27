@@ -334,8 +334,14 @@ public final class SmartAlarmParser {
 
         int type = hintedType;
         if (type < 0) {
-            if (year >= 1700) type = CalendarUtils.GREGORIAN;
-            else type = AppSettings.defaultCalendar(context);
+            if (year >= 1700) {
+                type = CalendarUtils.GREGORIAN;
+            } else {
+                int preferred = AppSettings.defaultCalendar(context);
+                type = preferred == CalendarUtils.GREGORIAN
+                        ? CalendarUtils.PERSIAN
+                        : preferred;
+            }
         }
 
         if (year < 100) {
