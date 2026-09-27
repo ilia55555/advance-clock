@@ -583,7 +583,6 @@ public final class MainActivity extends Activity {
                     updateQuickAlarmLabels();
                     applyPrayerTimesUi();
                     applyCalendarEventsUi();
-                    applyCalendarEventsUi();
                 }));
 
         quickAlarmTime.setOnClickListener(v -> new TimePickerDialog(
