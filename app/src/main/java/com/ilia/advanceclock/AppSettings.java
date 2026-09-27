@@ -143,7 +143,7 @@ public final class AppSettings {
     }
 
     public static boolean adhanEnabled(Context context) {
-        return prefs(context).getBoolean("adhan_enabled", false);
+        return prefs(context).getBoolean("adhan_enabled", true);
     }
 
     public static void setAdhanEnabled(Context context, boolean value) {
