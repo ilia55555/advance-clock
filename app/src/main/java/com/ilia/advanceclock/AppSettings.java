@@ -101,6 +101,38 @@ public final class AppSettings {
         prefs(context).edit().putInt("default_calendar", value).apply();
     }
 
+    public static boolean showCalendarEvents(Context context) {
+        return prefs(context).getBoolean("show_calendar_events", true);
+    }
+
+    public static void setShowCalendarEvents(Context context, boolean value) {
+        prefs(context).edit().putBoolean("show_calendar_events", value).apply();
+    }
+
+    public static boolean persianCalendarEventsEnabled(Context context) {
+        return prefs(context).getBoolean("events_source_persian", true);
+    }
+
+    public static void setPersianCalendarEventsEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("events_source_persian", value).apply();
+    }
+
+    public static boolean hijriCalendarEventsEnabled(Context context) {
+        return prefs(context).getBoolean("events_source_hijri", true);
+    }
+
+    public static void setHijriCalendarEventsEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("events_source_hijri", value).apply();
+    }
+
+    public static boolean gregorianCalendarEventsEnabled(Context context) {
+        return prefs(context).getBoolean("events_source_gregorian", true);
+    }
+
+    public static void setGregorianCalendarEventsEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("events_source_gregorian", value).apply();
+    }
+
     public static String language(Context context) {
         String saved = prefs(context).getString("app_language", null);
         return isSupportedLanguage(saved) ? saved : languageForDevice();
