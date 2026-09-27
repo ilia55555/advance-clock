@@ -34,6 +34,7 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class MainActivity extends Activity {
     private static final int REQ_NOTIFICATIONS = 100;
@@ -65,6 +66,7 @@ public final class MainActivity extends Activity {
     private View noteComposerCard;
     private View noteSketchCard;
     private View alertsHeader;
+    private View prayerTimesCard;
     private View calendarEventsCard;
     private ScrollView clockPanel;
     private View noForgetPanel;
@@ -152,6 +154,7 @@ public final class MainActivity extends Activity {
         setupNoteComposer();
         setupCalendars();
         applyClockLayoutMode();
+        applyPrayerTimesUi();
         applyCalendarEventsUi();
 
         clockTab.setOnClickListener(v -> showTab("clock"));
@@ -166,6 +169,8 @@ public final class MainActivity extends Activity {
                 pinWidgetAndExit(ClockWidgetProvider.class));
         findViewById(R.id.smart_alarm_button).setOnClickListener(v ->
                 startActivity(new Intent(this, SmartAlarmActivity.class)));
+        findViewById(R.id.prayer_times_settings).setOnClickListener(v ->
+                startActivity(new Intent(this, PrayerSettingsActivity.class)));
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
         findViewById(R.id.world_add_widget).setOnClickListener(v ->
@@ -208,6 +213,7 @@ public final class MainActivity extends Activity {
         noteComposerCard = findViewById(R.id.note_composer_card);
         noteSketchCard = findViewById(R.id.note_sketch_card);
         alertsHeader = findViewById(R.id.alerts_header);
+        prayerTimesCard = findViewById(R.id.prayer_times_card);
         calendarEventsCard = findViewById(R.id.calendar_events_card);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
@@ -374,6 +380,55 @@ public final class MainActivity extends Activity {
                 CalendarUtils.formatDate(now, AppSettings.defaultCalendar(this)));
     }
 
+    private void applyPrayerTimesUi() {
+        if (prayerTimesCard == null || clockCalendar == null) return;
+
+        boolean visible = AppSettings.adhanEnabled(this);
+        prayerTimesCard.setVisibility(visible ? View.VISIBLE : View.GONE);
+        if (!visible) return;
+
+        TextView title = findViewById(R.id.prayer_times_title);
+        TextView location = findViewById(R.id.prayer_times_location);
+        TextView note = findViewById(R.id.prayer_times_note);
+
+        long millis = clockCalendar.getSelectedMillis();
+        int type = clockCalendar.getCalendarType();
+        title.setText("اوقات شرعی • " + CalendarUtils.formatDate(millis, type));
+
+        if (!AppSettings.prayerLocationSet(this)) {
+            location.setText("موقعیت تنظیم نشده");
+            note.setText("برای محاسبه دقیق، «تنظیمات» را بزنید و موقعیت فعلی را ثبت کنید.");
+            setPrayerTimeText(R.id.prayer_fajr, "—:—");
+            setPrayerTimeText(R.id.prayer_sunrise, "—:—");
+            setPrayerTimeText(R.id.prayer_dhuhr, "—:—");
+            setPrayerTimeText(R.id.prayer_sunset, "—:—");
+            setPrayerTimeText(R.id.prayer_maghrib, "—:—");
+            setPrayerTimeText(R.id.prayer_midnight, "—:—");
+            return;
+        }
+
+        location.setText(AppSettings.prayerLocationLabel(this));
+        note.setText("مرجع: مؤسسه ژئوفیزیک دانشگاه تهران • محاسبه آفلاین بر اساس مختصات");
+
+        PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
+                millis,
+                AppSettings.prayerLatitude(this),
+                AppSettings.prayerLongitude(this),
+                TimeZone.getDefault());
+
+        setPrayerTimeText(R.id.prayer_fajr, times.fajr());
+        setPrayerTimeText(R.id.prayer_sunrise, times.sunrise());
+        setPrayerTimeText(R.id.prayer_dhuhr, times.dhuhr());
+        setPrayerTimeText(R.id.prayer_sunset, times.sunset());
+        setPrayerTimeText(R.id.prayer_maghrib, times.maghrib());
+        setPrayerTimeText(R.id.prayer_midnight, times.midnight());
+    }
+
+    private void setPrayerTimeText(int id, String value) {
+        TextView view = findViewById(id);
+        if (view != null) view.setText(value);
+    }
+
     private void applyCalendarEventsUi() {
         if (calendarEventsCard == null || clockCalendar == null) return;
 
@@ -381,7 +436,7 @@ public final class MainActivity extends Activity {
         calendarEventsCard.setVisibility(showBox ? View.VISIBLE : View.GONE);
         if (!showBox) return;
 
-        int type = clockCalendar.getCalendarType();
+        int primaryType = clockCalendar.getCalendarType();
         long millis = clockCalendar.getSelectedMillis();
 
         TextView title = findViewById(R.id.calendar_events_title);
@@ -390,53 +445,60 @@ public final class MainActivity extends Activity {
         View hijri = findViewById(R.id.calendar_event_source_hijri);
         View gregorian = findViewById(R.id.calendar_event_source_gregorian);
 
-        boolean enabled = CalendarEventRepository.sourceEnabled(this, type);
-        persian.setVisibility(type == CalendarUtils.PERSIAN && enabled
-                ? View.VISIBLE : View.GONE);
-        hijri.setVisibility(type == CalendarUtils.HIJRI && enabled
-                ? View.VISIBLE : View.GONE);
-        gregorian.setVisibility(type == CalendarUtils.GREGORIAN && enabled
-                ? View.VISIBLE : View.GONE);
+        boolean showPersian = CalendarEventRepository.sourceEnabled(
+                this, primaryType, CalendarUtils.PERSIAN);
+        boolean showHijri = CalendarEventRepository.sourceEnabled(
+                this, primaryType, CalendarUtils.HIJRI);
+        boolean showGregorian = CalendarEventRepository.sourceEnabled(
+                this, primaryType, CalendarUtils.GREGORIAN);
+
+        persian.setVisibility(showPersian ? View.VISIBLE : View.GONE);
+        hijri.setVisibility(showHijri ? View.VISIBLE : View.GONE);
+        gregorian.setVisibility(showGregorian ? View.VISIBLE : View.GONE);
 
         title.setText("رویدادها و مناسبت‌ها • "
-                + CalendarUtils.formatDate(millis, type));
-
-        if (!enabled) {
-            content.setText("منبع رویدادهای "
-                    + CalendarEventRepository.sourceTitle(type)
-                    + " در تنظیمات خاموش است.");
-            return;
-        }
-
-        java.util.List<CalendarEventRepository.Event> events =
-                CalendarEventRepository.eventsFor(this, millis, type);
-
-        if (events.isEmpty()) {
-            boolean weekend = CalendarEventRepository.isWeekend(millis, type);
-            content.setText(weekend
-                    ? "تعطیل هفتگی"
-                    : "برای این روز مناسبت یا تعطیلی ثبت‌شده‌ای وجود ندارد.");
-            return;
-        }
+                + CalendarUtils.formatDate(millis, primaryType));
 
         StringBuilder text = new StringBuilder();
-        for (int i = 0; i < events.size(); i++) {
-            CalendarEventRepository.Event event = events.get(i);
-            if (i > 0) text.append("\n");
-            text.append(event.holiday ? "● " : "• ");
-            text.append(event.title);
-            if (event.holiday) {
-                text.append("  • ");
-                text.append(CalendarEventRepository.holidayLabel(type));
-            }
-        }
+        appendEventSource(
+                text, millis, CalendarUtils.PERSIAN, showPersian);
+        appendEventSource(
+                text, millis, CalendarUtils.HIJRI, showHijri);
+        appendEventSource(
+                text, millis, CalendarUtils.GREGORIAN, showGregorian);
 
-        if (CalendarEventRepository.isWeekend(millis, type)) {
+        if (CalendarEventRepository.isWeekend(millis, primaryType)) {
             if (text.length() > 0) text.append("\n");
             text.append("● تعطیل هفتگی");
         }
 
+        if (text.length() == 0) {
+            text.append("برای این روز در منابع فعال، مناسبت ثبت‌شده‌ای وجود ندارد.");
+        }
+
         content.setText(text.toString());
+    }
+
+    private void appendEventSource(
+            StringBuilder out,
+            long millis,
+            int sourceType,
+            boolean enabled) {
+        if (!enabled) return;
+
+        java.util.List<CalendarEventRepository.Event> events =
+                CalendarEventRepository.eventsFor(this, millis, sourceType);
+        for (CalendarEventRepository.Event event : events) {
+            if (out.length() > 0) out.append("\n");
+            out.append(event.holiday ? "● " : "• ");
+            out.append(CalendarUtils.calendarName(sourceType));
+            out.append(": ");
+            out.append(event.title);
+            if (event.holiday) {
+                out.append("  • ");
+                out.append(CalendarEventRepository.holidayLabel(sourceType));
+            }
+        }
     }
 
     private void setupCalendars() {
@@ -459,6 +521,7 @@ public final class MainActivity extends Activity {
                         (picked, pickedType) -> {
                             if (clockPanel.getVisibility() == View.VISIBLE) {
                                 clockCalendar.setVisibleMonthMillis(picked, pickedType);
+                                applyPrayerTimesUi();
                                 applyCalendarEventsUi();
                             } else {
                                 noteCalendar.setVisibleMonthMillis(picked, pickedType);
@@ -476,6 +539,7 @@ public final class MainActivity extends Activity {
             quickAlarmCalendarType = clockCalendar.getCalendarType();
             applyDate(quickAlarm, millis);
             updateQuickAlarmLabels();
+            applyPrayerTimesUi();
             applyCalendarEventsUi();
         });
 
@@ -517,6 +581,8 @@ public final class MainActivity extends Activity {
                     clockCalendar.setCalendarType(type);
                     clockCalendar.setSelectedMillis(quickAlarm.getTimeInMillis());
                     updateQuickAlarmLabels();
+                    applyPrayerTimesUi();
+                    applyCalendarEventsUi();
                     applyCalendarEventsUi();
                 }));
 
@@ -877,6 +943,7 @@ public final class MainActivity extends Activity {
         applyTabOrder();
         applyTabVisibility();
         updateHeaderClock();
+        applyPrayerTimesUi();
         applyCalendarEventsUi();
         NotificationHelper.ensureChannels(this);
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
