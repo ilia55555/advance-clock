@@ -120,13 +120,13 @@ public final class SettingsActivity extends Activity {
         eventsCard.addView(sourcesTitle);
 
         Switch persianEvents = settingSwitch(
-                "شمسی",
+                "شمسی • مناسبت‌ها و تعطیلات رسمی ایران",
                 AppSettings.persianCalendarEventsEnabled(this));
         Switch hijriEvents = settingSwitch(
-                "قمری",
+                "قمری • مناسبت‌های مشترک کشورهای عربی",
                 AppSettings.hijriCalendarEventsEnabled(this));
         Switch gregorianEvents = settingSwitch(
-                "میلادی",
+                "میلادی • مناسبت‌های بین‌المللی",
                 AppSettings.gregorianCalendarEventsEnabled(this));
         eventsCard.addView(persianEvents);
         eventsCard.addView(hijriEvents);
