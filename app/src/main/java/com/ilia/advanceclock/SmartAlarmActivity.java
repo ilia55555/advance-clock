@@ -639,9 +639,18 @@ public final class SmartAlarmActivity extends Activity {
                     AlarmReminderUtils.MODE_NONE,
                     "[]");
 
-            store.save(item);
+            try {
+                store.save(item);
+            } catch (RuntimeException error) {
+                scheduleFailed++;
+                continue;
+            }
+            if (!AlarmScheduler.schedule(this, item)) {
+                store.delete(item.id);
+                scheduleFailed++;
+                continue;
+            }
             existing.add(item);
-            if (!AlarmScheduler.schedule(this, item)) scheduleFailed++;
             saved++;
         }
 
@@ -659,13 +668,11 @@ public final class SmartAlarmActivity extends Activity {
                     .append(CalendarUtils.fa(skippedDuplicate))
                     .append(" مورد تکراری ذخیره نشد");
         }
-
-        if (saved == 0) {
-            Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
-            return;
+        if (scheduleFailed > 0) {
+            message.append("\n")
+                    .append(CalendarUtils.fa(scheduleFailed))
+                    .append(" مورد زمان‌بندی نشد و ذخیره نشد");
         }
-
-        setResult(RESULT_OK);
 
         if (scheduleFailed > 0
                 && !PermissionHelper.exactAlarmsGranted(this)
@@ -679,6 +686,13 @@ public final class SmartAlarmActivity extends Activity {
             } catch (Exception ignored) {}
             return;
         }
+
+        if (saved == 0) {
+            Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        setResult(RESULT_OK);
 
         Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
         finish();

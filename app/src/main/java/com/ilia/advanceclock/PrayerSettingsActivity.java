@@ -3,6 +3,7 @@ package com.ilia.advanceclock;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -12,7 +13,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.os.Handler;
 import android.os.Looper;
+import android.net.Uri;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +35,7 @@ import java.util.TimeZone;
 
 public final class PrayerSettingsActivity extends Activity {
     private static final int REQ_LOCATION = 740;
+    private static final int REQ_NOTIFICATIONS = 741;
 
     private Button locationButton;
     private TextView locationStatus;
@@ -41,6 +47,13 @@ public final class PrayerSettingsActivity extends Activity {
     private TextView maghribTime;
     private TextView ishaTime;
     private TextView midnightTime;
+    private TextView adhanScheduleStatus;
+    private final Handler locationHandler = new Handler(Looper.getMainLooper());
+    private CancellationSignal locationCancellation;
+    private Runnable locationTimeout;
+    private LocationManager activeLocationManager;
+    private LocationListener activeLocationListener;
+    private int locationRequestGeneration;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -169,21 +182,24 @@ public final class PrayerSettingsActivity extends Activity {
                 "اذان صبح",
                 AppSettings.fajrAdhanEnabled(this));
         fajr.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setFajrAdhanEnabled(this, checked));
+                updateAdhanSetting(
+                        () -> AppSettings.setFajrAdhanEnabled(this, checked), checked));
         azanCard.addView(fajr);
 
         Switch dhuhr = toggle(
                 "اذان ظهر",
                 AppSettings.dhuhrAdhanEnabled(this));
         dhuhr.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setDhuhrAdhanEnabled(this, checked));
+                updateAdhanSetting(
+                        () -> AppSettings.setDhuhrAdhanEnabled(this, checked), checked));
         azanCard.addView(dhuhr);
 
         Switch maghrib = toggle(
                 "اذان مغرب",
                 AppSettings.maghribAdhanEnabled(this));
         maghrib.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setMaghribAdhanEnabled(this, checked));
+                updateAdhanSetting(
+                        () -> AppSettings.setMaghribAdhanEnabled(this, checked), checked));
         azanCard.addView(maghrib);
 
         Switch vibrate = toggle(
@@ -193,13 +209,14 @@ public final class PrayerSettingsActivity extends Activity {
                 AppSettings.setAdhanVibrate(this, checked));
         azanCard.addView(vibrate);
 
-        TextView schedulingNote = text(
-                "این سوییچ‌ها برای موتور پخش اذان ذخیره می‌شوند؛ "
-                        + "نمایش اوقات شرعی مستقل از انتخاب صدای مؤذن است.",
+        adhanScheduleStatus = text(
+                "اعلان و لرزش اوقات فعال، هر روز زمان‌بندی می‌شود. "
+                        + "پخش فایل صوتی مؤذن هنوز متصل نیست.",
                 11,
                 AppSettings.textSecondary(this));
-        schedulingNote.setPadding(0, dp(6), 0, 0);
-        azanCard.addView(schedulingNote);
+        adhanScheduleStatus.setPadding(0, dp(6), 0, 0);
+        adhanScheduleStatus.setOnClickListener(v -> resolveAdhanScheduleStatus());
+        azanCard.addView(adhanScheduleStatus);
 
         root.addView(azanCard, cardParams());
 
@@ -220,6 +237,7 @@ public final class PrayerSettingsActivity extends Activity {
     }
 
     private void refresh() {
+        refreshAdhanScheduleStatus();
         boolean hasLocation = AppSettings.prayerLocationSet(this);
         if (hasLocation) {
             String label = AppSettings.prayerLocationLabel(this);
@@ -255,6 +273,70 @@ public final class PrayerSettingsActivity extends Activity {
         maghribTime.setText(times.maghrib());
         ishaTime.setText(times.isha());
         midnightTime.setText(times.midnight());
+    }
+
+    private void updateAdhanSetting(Runnable update, boolean enabled) {
+        update.run();
+        refreshAdhanScheduleStatus();
+        if (enabled && AdhanScheduler.status(this) != AdhanScheduler.Status.SCHEDULED) {
+            resolveAdhanScheduleStatus();
+        }
+    }
+
+    private void refreshAdhanScheduleStatus() {
+        if (adhanScheduleStatus == null) return;
+        AdhanScheduler.Status status = AdhanScheduler.status(this);
+        String message;
+        switch (status) {
+            case DISABLED:
+                message = "همه اعلان‌های اذان خاموش‌اند.";
+                break;
+            case LOCATION_MISSING:
+                message = "⚠ اذان زمان‌بندی نشده است؛ برای ثبت موقعیت اینجا بزنید.";
+                break;
+            case EXACT_PERMISSION_MISSING:
+                message = "⚠ اذان زمان‌بندی نشده است؛ مجوز آلارم دقیق را فعال کنید.";
+                break;
+            case NOTIFICATION_PERMISSION_MISSING:
+                message = "⚠ زمان اذان ثبت شده، اما مجوز نمایش اعلان داده نشده است.";
+                break;
+            case SCHEDULE_FAILED:
+                message = "⚠ زمان‌بندی اذان ناموفق بود؛ برای تلاش دوباره اینجا بزنید.";
+                break;
+            case SCHEDULED:
+            default:
+                message = "اعلان و لرزش اوقات فعال زمان‌بندی شده است. "
+                        + "پخش فایل صوتی مؤذن هنوز متصل نیست.";
+                break;
+        }
+        adhanScheduleStatus.setText(message);
+        boolean problem = status != AdhanScheduler.Status.SCHEDULED
+                && status != AdhanScheduler.Status.DISABLED;
+        adhanScheduleStatus.setTextColor(problem
+                ? 0xFFC44C4C : AppSettings.textSecondary(this));
+        adhanScheduleStatus.setClickable(problem);
+    }
+
+    private void resolveAdhanScheduleStatus() {
+        AdhanScheduler.Status status = AdhanScheduler.status(this);
+        if (status == AdhanScheduler.Status.LOCATION_MISSING) {
+            requestPreciseLocation();
+        } else if (status == AdhanScheduler.Status.EXACT_PERMISSION_MISSING) {
+            try {
+                startActivity(new Intent(
+                        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                        Uri.parse("package:" + getPackageName())));
+            } catch (Exception ignored) {
+            }
+        } else if (status == AdhanScheduler.Status.NOTIFICATION_PERMISSION_MISSING
+                && Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    REQ_NOTIFICATIONS);
+        } else if (status == AdhanScheduler.Status.SCHEDULE_FAILED) {
+            AdhanScheduler.rescheduleAll(this);
+            refreshAdhanScheduleStatus();
+        }
     }
 
     private void setAllTimes(String value) {
@@ -309,6 +391,10 @@ public final class PrayerSettingsActivity extends Activity {
             String[] permissions,
             int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_NOTIFICATIONS) {
+            refreshAdhanScheduleStatus();
+            return;
+        }
         if (requestCode != REQ_LOCATION) return;
 
         boolean granted = false;
@@ -366,19 +452,36 @@ public final class PrayerSettingsActivity extends Activity {
         locationButton.setText("در حال دریافت موقعیت…");
 
         final String selectedProvider = provider;
+        final int requestGeneration = ++locationRequestGeneration;
+        activeLocationManager = manager;
+        locationTimeout = () -> {
+            if (requestGeneration != locationRequestGeneration) return;
+            cancelLocationRequest();
+            locationButton.setEnabled(true);
+            refresh();
+            Toast.makeText(
+                    this,
+                    "دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.",
+                    Toast.LENGTH_LONG).show();
+        };
+        locationHandler.postDelayed(locationTimeout, 20_000L);
         if (Build.VERSION.SDK_INT >= 30) {
+            locationCancellation = new CancellationSignal();
             manager.getCurrentLocation(
                     selectedProvider,
-                    null,
+                    locationCancellation,
                     command -> runOnUiThread(command),
-                    location -> handleLocation(location));
+                    location -> {
+                        if (requestGeneration != locationRequestGeneration) return;
+                        clearLocationTimeout();
+                        handleLocation(location);
+                    });
             return;
         }
 
-        manager.requestSingleUpdate(
-                selectedProvider,
-                new LocationListener() {
+        activeLocationListener = new LocationListener() {
                     @Override public void onLocationChanged(Location location) {
+                        if (requestGeneration != locationRequestGeneration) return;
                         handleLocation(location);
                     }
 
@@ -388,11 +491,13 @@ public final class PrayerSettingsActivity extends Activity {
                     @Override public void onProviderEnabled(String provider) {}
 
                     @Override public void onProviderDisabled(String provider) {}
-                },
-                Looper.getMainLooper());
+                };
+        manager.requestSingleUpdate(
+                selectedProvider, activeLocationListener, Looper.getMainLooper());
     }
 
     private void handleLocation(Location location) {
+        clearLocationTimeout();
         if (location == null) {
             locationButton.setEnabled(true);
             refresh();
@@ -412,6 +517,28 @@ public final class PrayerSettingsActivity extends Activity {
         setResult(RESULT_OK);
 
         new Thread(() -> resolveLocationName(lat, lon, fallback)).start();
+    }
+
+    private void clearLocationTimeout() {
+        if (locationTimeout != null) locationHandler.removeCallbacks(locationTimeout);
+        locationTimeout = null;
+        locationCancellation = null;
+        if (activeLocationManager != null && activeLocationListener != null) {
+            activeLocationManager.removeUpdates(activeLocationListener);
+        }
+        activeLocationManager = null;
+        activeLocationListener = null;
+    }
+
+    private void cancelLocationRequest() {
+        locationRequestGeneration++;
+        if (locationCancellation != null) locationCancellation.cancel();
+        clearLocationTimeout();
+    }
+
+    @Override protected void onDestroy() {
+        cancelLocationRequest();
+        super.onDestroy();
     }
 
     @SuppressWarnings("deprecation")

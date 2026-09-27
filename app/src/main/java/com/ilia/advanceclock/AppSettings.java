@@ -187,6 +187,7 @@ public final class AppSettings {
                         label == null || label.trim().isEmpty()
                                 ? "موقعیت فعلی" : label.trim())
                 .apply();
+        AdhanScheduler.rescheduleAll(context);
     }
 
     public static boolean fajrAdhanEnabled(Context context) {
@@ -195,6 +196,7 @@ public final class AppSettings {
 
     public static void setFajrAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_fajr_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
     }
 
     public static boolean dhuhrAdhanEnabled(Context context) {
@@ -203,6 +205,7 @@ public final class AppSettings {
 
     public static void setDhuhrAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_dhuhr_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
     }
 
     public static boolean maghribAdhanEnabled(Context context) {
@@ -211,6 +214,7 @@ public final class AppSettings {
 
     public static void setMaghribAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_maghrib_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
     }
 
     public static boolean adhanVibrate(Context context) {

@@ -11,6 +11,7 @@ public final class BootReceiver extends BroadcastReceiver {
         AlarmScheduler.rescheduleAll(context);
         ToolAlarmScheduler.rescheduleAll(context);
         NoForgetScheduler.rescheduleAll(context);
+        AdhanScheduler.rescheduleAll(context);
         ClockWidgetProvider.updateAll(context);
         WorldClockWidgetProvider.updateAll(context);
         NoForgetWidgetProvider.updateAll(context);

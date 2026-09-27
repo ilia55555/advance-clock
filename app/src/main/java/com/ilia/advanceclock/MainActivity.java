@@ -401,8 +401,10 @@ public final class MainActivity extends Activity {
             setPrayerTimeText(R.id.prayer_fajr, "—:—");
             setPrayerTimeText(R.id.prayer_sunrise, "—:—");
             setPrayerTimeText(R.id.prayer_dhuhr, "—:—");
+            setPrayerTimeText(R.id.prayer_asr, "—:—");
             setPrayerTimeText(R.id.prayer_sunset, "—:—");
             setPrayerTimeText(R.id.prayer_maghrib, "—:—");
+            setPrayerTimeText(R.id.prayer_isha, "—:—");
             setPrayerTimeText(R.id.prayer_midnight, "—:—");
             return;
         }
@@ -419,8 +421,10 @@ public final class MainActivity extends Activity {
         setPrayerTimeText(R.id.prayer_fajr, times.fajr());
         setPrayerTimeText(R.id.prayer_sunrise, times.sunrise());
         setPrayerTimeText(R.id.prayer_dhuhr, times.dhuhr());
+        setPrayerTimeText(R.id.prayer_asr, times.asr());
         setPrayerTimeText(R.id.prayer_sunset, times.sunset());
         setPrayerTimeText(R.id.prayer_maghrib, times.maghrib());
+        setPrayerTimeText(R.id.prayer_isha, times.isha());
         setPrayerTimeText(R.id.prayer_midnight, times.midnight());
     }
 
@@ -475,6 +479,9 @@ public final class MainActivity extends Activity {
         if (text.length() == 0) {
             text.append("برای این روز در منابع فعال، مناسبت ثبت‌شده‌ای وجود ندارد.");
         }
+
+        text.append("\n\n").append(CalendarEventRepository.datasetNotice(
+                millis, showPersian, showHijri, showGregorian));
 
         content.setText(text.toString());
     }
@@ -533,7 +540,9 @@ public final class MainActivity extends Activity {
 
         clockCalendar.setOnDateSelectedListener(millis -> {
             if (millis < startOfToday()) {
-                Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                applyPrayerTimesUi();
+                applyCalendarEventsUi();
+                Toast.makeText(this, "این تاریخ فقط برای مشاهده انتخاب شد", Toast.LENGTH_SHORT).show();
                 return;
             }
             quickAlarmCalendarType = clockCalendar.getCalendarType();
@@ -949,6 +958,7 @@ public final class MainActivity extends Activity {
         AlarmScheduler.rescheduleAll(this);
         ToolAlarmScheduler.rescheduleAll(this);
         NoForgetScheduler.rescheduleAll(this);
+        AdhanScheduler.rescheduleAll(this);
         renderAlarms();
         renderNoForget();
 

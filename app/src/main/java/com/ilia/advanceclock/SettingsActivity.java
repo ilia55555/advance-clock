@@ -162,7 +162,9 @@ public final class SettingsActivity extends Activity {
         prayerCard.addView(prayerTitle);
 
         TextView prayerDescription = new TextView(this);
-        prayerDescription.setText("چیدمان تنظیمات شهر، اذان صبح، ظهر، مغرب و صدا آماده شده است.");
+        prayerDescription.setText(
+                "اعلان و لرزش اذان صبح، ظهر و مغرب زمان‌بندی می‌شود؛ "
+                        + "فایل صوتی مؤذن هنوز متصل نیست.");
         prayerDescription.setTextColor(AppSettings.textSecondary(this));
         prayerDescription.setTextSize(12);
         prayerDescription.setPadding(0, dp(4), 0, dp(10));
