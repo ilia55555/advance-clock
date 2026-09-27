@@ -429,6 +429,102 @@
                     android:layout_marginTop="12dp" />
 
                 <LinearLayout
+                    android:id="@+id/calendar_events_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_card"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="رویدادها و مناسبت‌های امروز"
+                            android:textColor="?attr/appTextPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:text="تقویم"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/calendar_events_placeholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:text="پس از اتصال داده‌ها، مناسبت‌های فعال اینجا نمایش داده می‌شوند."
+                        android:textColor="?attr/appTextSecondary"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="start|center_vertical"
+                        android:orientation="horizontal"
+                        android:layoutDirection="rtl">
+
+                        <TextView
+                            android:id="@+id/calendar_event_source_persian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:text="شمسی"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="11sp" />
+
+                        <Space
+                            android:layout_width="6dp"
+                            android:layout_height="1dp" />
+
+                        <TextView
+                            android:id="@+id/calendar_event_source_hijri"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:text="قمری"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="11sp" />
+
+                        <Space
+                            android:layout_width="6dp"
+                            android:layout_height="1dp" />
+
+                        <TextView
+                            android:id="@+id/calendar_event_source_gregorian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:background="@drawable/bg_soft_button"
+                            android:gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:text="میلادی"
+                            android:textColor="?attr/appPrimary"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/alerts_header"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
@@ -447,16 +543,32 @@
                         android:textStyle="bold" />
 
                     <Button
+                        android:id="@+id/smart_alarm_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:minWidth="0dp"
+                        android:paddingHorizontal="11dp"
+                        android:text="هشدار هوشمند"
+                        android:textAllCaps="false"
+                        android:textColor="?attr/appPrimary"
+                        android:textSize="11sp" />
+
+                    <Space
+                        android:layout_width="6dp"
+                        android:layout_height="1dp" />
+
+                    <Button
                         android:id="@+id/add_clock_widget"
                         android:layout_width="wrap_content"
                         android:layout_height="42dp"
                         android:background="@drawable/bg_soft_button"
                         android:minWidth="0dp"
-                        android:paddingHorizontal="14dp"
+                        android:paddingHorizontal="11dp"
                         android:text="+ ویجت"
                         android:textAllCaps="false"
                         android:textColor="?attr/appPrimary"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
                 </LinearLayout>
 
                 <LinearLayout
