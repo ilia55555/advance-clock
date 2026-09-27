@@ -10,8 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
-import java.util.Calendar;
-
 public final class TripleCalendarView extends View {
     public interface OnDateSelectedListener { void onDateSelected(long timeInMillis); }
     public interface OnMonthYearClickListener { void onMonthYearClick(long visibleMonthMillis, int calendarType); }
@@ -226,7 +224,7 @@ public final class TripleCalendarView extends View {
                     && today.get(android.icu.util.Calendar.MONTH) == displayMonth
                     && today.get(android.icu.util.Calendar.DAY_OF_MONTH) == day;
             boolean holiday = CalendarEventRepository.isWeekend(millis, calendarType)
-                    || CalendarEventRepository.isOfficialHoliday(
+                    || CalendarEventRepository.isOfficialHolidayInEnabledSources(
                     getContext(), millis, calendarType);
 
             float left = CELL_LEFT[col], top = CELL_TOP[row];
@@ -408,11 +406,6 @@ public final class TripleCalendarView extends View {
                 long candidate = CalendarUtils.toMillis(
                         calendarType, displayYear, displayMonth, day, 12, 0);
 
-                if (candidate < startOfToday()) {
-                    performClick();
-                    return true;
-                }
-
                 selectedMillis = candidate;
                 invalidate();
                 if (dateListener != null) dateListener.onDateSelected(selectedMillis);
@@ -479,12 +472,4 @@ public final class TripleCalendarView extends View {
         return BASE_H_5 + Math.max(0, rowCount() - 5) * EXTRA_ROW_H;
     }
 
-    private static long startOfToday() {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        return c.getTimeInMillis();
-    }
 }

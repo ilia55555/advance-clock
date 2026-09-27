@@ -31,7 +31,10 @@ public final class CalendarUtils {
                 locale = new ULocale("en_US@calendar=gregorian");
                 break;
             case HIJRI:
-                locale = new ULocale("ar_SA@calendar=islamic");
+                // Use the published Umm al-Qura calendar instead of ICU's
+                // generic tabular Islamic calendar. This is the civil calendar
+                // used for the shared Saudi/Arab occasion source.
+                locale = new ULocale("ar_SA@calendar=islamic-umalqura");
                 break;
             case PERSIAN:
             default:
@@ -45,6 +48,18 @@ public final class CalendarUtils {
         android.icu.util.Calendar c = create(type);
         c.setTimeInMillis(millis);
         return c;
+    }
+
+    /**
+     * Iranian religious dates must not be derived from Saudi Umm al-Qura.
+     * ICU's astronomical Islamic calendar is kept separate for the Iranian
+     * event source; year-specific official overrides belong in the repository.
+     */
+    public static android.icu.util.Calendar iranianHijriFromMillis(long millis) {
+        android.icu.util.Calendar calendar = android.icu.util.Calendar.getInstance(
+                new ULocale("fa_IR@calendar=islamic"));
+        calendar.setTimeInMillis(millis);
+        return calendar;
     }
 
     public static long toMillis(int type, int year, int month, int day, int hour, int minute) {

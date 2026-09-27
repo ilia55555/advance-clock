@@ -94,11 +94,17 @@ public final class SmartAlarmParser {
                     + "(?:تا|الی|لغایت|to|until|[-–—])\\s*"
                     + "(\\d{1,2})(?:\\s*[:٫.]\\s*([0-5]?\\d))?(?!\\d)",
             Pattern.CASE_INSENSITIVE);
+    private static final Pattern RELATIVE_DATE_ANCHOR = Pattern.compile(
+            "پس\\s*فردا|پس‌فردا|فردا|امروز|امشب|"
+                    + "یکشنبه|دوشنبه|سه[\\s‌]شنبه|چهارشنبه|پنجشنبه|جمعه|شنبه");
 
     private static final String[] PERSIAN_MONTHS = {
             "فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور",
             "مهر","آبان","آذر","دی","بهمن","اسفند"
     };
+    private static final Pattern PERSIAN_NAMED_DATE = Pattern.compile(
+            "(?<!\\d)(\\d{1,2})\\s*(?:" + String.join("|", PERSIAN_MONTHS)
+                    + ")(?:\\s+\\d{4})?(?!\\d)");
 
     private SmartAlarmParser() {}
 
@@ -255,28 +261,40 @@ public final class SmartAlarmParser {
     }
 
     private static void parseNatural(Context context, String text, Result result) {
-        Matcher matcher = DATE.matcher(text);
-        ArrayList<DateMatch> dates = new ArrayList<>();
-        while (matcher.find()) {
-            dates.add(new DateMatch(matcher.start(), matcher.end(), matcher.group()));
-        }
-
-        if (!dates.isEmpty()) {
-            for (int i = 0; i < dates.size(); i++) {
-                DateMatch dm = dates.get(i);
-                int end = i + 1 < dates.size() ? dates.get(i + 1).start : text.length();
-                String segment = text.substring(dm.start, end).trim();
-                DateParts date = parseDate(context, dm.raw, contextHint(segment));
-                if (date == null) continue;
-                addCandidatesForSegment(date, segment, result);
-            }
-            return;
-        }
-
         String[] lines = text.split("[\\n\\r]+");
         for (String line : lines) {
-            DateParts relative = relativeDate(context, line);
-            if (relative != null) addCandidatesForSegment(relative, line, result);
+            ArrayList<DateMatch> dates = new ArrayList<>();
+            Matcher numeric = DATE.matcher(line);
+            while (numeric.find()) {
+                dates.add(new DateMatch(
+                        numeric.start(), numeric.end(), numeric.group(), false));
+            }
+            Matcher anchors = RELATIVE_DATE_ANCHOR.matcher(line);
+            while (anchors.find()) {
+                dates.add(new DateMatch(
+                        anchors.start(), anchors.end(), anchors.group(), true));
+            }
+            Matcher named = PERSIAN_NAMED_DATE.matcher(line);
+            while (named.find()) {
+                dates.add(new DateMatch(
+                        named.start(), named.end(), named.group(), true));
+            }
+            dates.sort((a, b) -> Integer.compare(a.start, b.start));
+            if (dates.isEmpty()) {
+                DateParts relative = relativeDate(context, line);
+                if (relative != null) addCandidatesForSegment(relative, line, result);
+                continue;
+            }
+            for (int i = 0; i < dates.size(); i++) {
+                DateMatch match = dates.get(i);
+                int end = i + 1 < dates.size() ? dates.get(i + 1).start : line.length();
+                int start = i == 0 ? 0 : match.start;
+                String segment = line.substring(start, end).trim();
+                DateParts date = match.relative
+                        ? relativeDate(context, segment)
+                        : parseDate(context, match.raw, contextHint(segment));
+                if (date != null) addCandidatesForSegment(date, segment, result);
+            }
         }
     }
 
@@ -478,6 +496,13 @@ public final class SmartAlarmParser {
             int day = safeInt(dayMatcher.group(1), -1);
             long millis = CalendarUtils.toMillis(
                     CalendarUtils.PERSIAN, year, month, day, 12, 0);
+            android.icu.util.Calendar check = CalendarUtils.fromMillis(
+                    CalendarUtils.PERSIAN, millis);
+            if (check.get(android.icu.util.Calendar.YEAR) != year
+                    || check.get(android.icu.util.Calendar.MONTH) != month
+                    || check.get(android.icu.util.Calendar.DAY_OF_MONTH) != day) {
+                return null;
+            }
             if (explicitYear <= 0
                     && millis < System.currentTimeMillis() - 86_400_000L) {
                 year++;
@@ -584,6 +609,7 @@ public final class SmartAlarmParser {
         boolean pm = p.equals("pm") || p.contains("عصر")
                 || p.contains("شب") || p.contains("ظهر");
         boolean am = p.equals("am") || p.contains("صبح") || p.contains("بامداد");
+        if (hour == 12 && p.contains("شب")) return 0;
         if (pm && hour < 12) hour += 12;
         if (am && hour == 12) hour = 0;
         return hour;
@@ -597,7 +623,11 @@ public final class SmartAlarmParser {
     private static String deriveLabel(String segment) {
         String s = normalize(segment);
         s = DATE.matcher(s).replaceAll(" ");
+        s = PERSIAN_NAMED_DATE.matcher(s).replaceAll(" ");
+        s = RELATIVE_DATE_ANCHOR.matcher(s).replaceAll(" ");
+        s = TIME_RANGE.matcher(s).replaceAll(" ");
         s = TIME_COLON.matcher(s).replaceAll(" ");
+        s = TIME_WORD.matcher(s).replaceAll(" ");
         s = s.replaceAll(
                 "(?i)(ساعت|زمان|شروع|پایان|از|تا|الی|لغایت|تاریخ|date|time|start|end)\\s*[:：]?",
                 " ");
@@ -618,7 +648,10 @@ public final class SmartAlarmParser {
         ArrayList<Candidate> unique = new ArrayList<>();
         for (Candidate c : result.candidates) {
             String key = c.calendarType + ":" + c.year + ":" + c.month + ":" + c.day
-                    + ":" + c.hour + ":" + c.minute + ":" + c.label;
+                    + ":" + c.hour + ":" + c.minute
+                    + ":" + c.endHour + ":" + c.endMinute
+                    + ":" + c.offsetMode + ":" + c.offsetMinutes
+                    + ":" + c.label;
             if (seen.add(key)) unique.add(c);
         }
         result.candidates.clear();
@@ -726,11 +759,13 @@ public final class SmartAlarmParser {
         final int start;
         final int end;
         final String raw;
+        final boolean relative;
 
-        DateMatch(int start, int end, String raw) {
+        DateMatch(int start, int end, String raw, boolean relative) {
             this.start = start;
             this.end = end;
             this.raw = raw;
+            this.relative = relative;
         }
     }
 
