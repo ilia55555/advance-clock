@@ -101,7 +101,9 @@ public final class SettingsActivity extends Activity {
         eventsCard.addView(eventsTitle);
 
         TextView eventsDescription = new TextView(this);
-        eventsDescription.setText("منابع رویداد را از حالا انتخاب کنید؛ اتصال داده‌های واقعی در مرحله بعد انجام می‌شود.");
+        eventsDescription.setText(
+                "مناسبت‌های تقویم اصلی همیشه نمایش داده می‌شوند. "
+                        + "با دو سوییچ زیر می‌توانید مناسبت‌های دو تقویم دیگر را هم اضافه کنید.");
         eventsDescription.setTextColor(AppSettings.textSecondary(this));
         eventsDescription.setTextSize(12);
         eventsDescription.setPadding(0, dp(4), 0, dp(8));
@@ -113,28 +115,38 @@ public final class SettingsActivity extends Activity {
         eventsCard.addView(showCalendarEvents);
 
         TextView sourcesTitle = new TextView(this);
-        sourcesTitle.setText("منابع مناسبت‌ها");
+        sourcesTitle.setText("نمایش هم‌زمان مناسبت‌های تقویم‌های دیگر");
         sourcesTitle.setTextColor(AppSettings.textSecondary(this));
         sourcesTitle.setTextSize(12);
         sourcesTitle.setPadding(0, dp(8), 0, dp(2));
         eventsCard.addView(sourcesTitle);
 
-        Switch persianEvents = settingSwitch(
-                "شمسی • مناسبت‌ها و تعطیلات رسمی ایران",
-                AppSettings.persianCalendarEventsEnabled(this));
-        Switch hijriEvents = settingSwitch(
-                "قمری • مناسبت‌های مشترک کشورهای عربی",
-                AppSettings.hijriCalendarEventsEnabled(this));
-        Switch gregorianEvents = settingSwitch(
-                "میلادی • مناسبت‌های بین‌المللی",
-                AppSettings.gregorianCalendarEventsEnabled(this));
-        eventsCard.addView(persianEvents);
-        eventsCard.addView(hijriEvents);
-        eventsCard.addView(gregorianEvents);
+        int[] initialExtraTypes = extraCalendarTypes(calendar.getSelectedItemPosition());
+        Switch extraEventsOne = settingSwitch(
+                eventSourceLabel(initialExtraTypes[0]),
+                AppSettings.additionalCalendarEventsEnabled(this, initialExtraTypes[0]));
+        Switch extraEventsTwo = settingSwitch(
+                eventSourceLabel(initialExtraTypes[1]),
+                AppSettings.additionalCalendarEventsEnabled(this, initialExtraTypes[1]));
+        eventsCard.addView(extraEventsOne);
+        eventsCard.addView(extraEventsTwo);
 
-        persianEvents.setEnabled(showCalendarEvents.isChecked());
-        hijriEvents.setEnabled(showCalendarEvents.isChecked());
-        gregorianEvents.setEnabled(showCalendarEvents.isChecked());
+        boolean[] bindingExtraSources = {false};
+        Runnable refreshExtraSources = () -> {
+            bindingExtraSources[0] = true;
+            int[] types = extraCalendarTypes(calendar.getSelectedItemPosition());
+            extraEventsOne.setText(eventSourceLabel(types[0]));
+            extraEventsTwo.setText(eventSourceLabel(types[1]));
+            extraEventsOne.setChecked(
+                    AppSettings.additionalCalendarEventsEnabled(this, types[0]));
+            extraEventsTwo.setChecked(
+                    AppSettings.additionalCalendarEventsEnabled(this, types[1]));
+            boolean enabled = showCalendarEvents.isChecked();
+            extraEventsOne.setEnabled(enabled);
+            extraEventsTwo.setEnabled(enabled);
+            bindingExtraSources[0] = false;
+        };
+        refreshExtraSources.run();
 
         root.addView(eventsCard, settingsCardParams());
 
@@ -218,9 +230,6 @@ public final class SettingsActivity extends Activity {
                     || !AppSettings.language(this).equals(selectedLanguage)
                     || AppSettings.defaultCalendar(this) != calendar.getSelectedItemPosition()
                     || AppSettings.showCalendarEvents(this) != showCalendarEvents.isChecked()
-                    || AppSettings.persianCalendarEventsEnabled(this) != persianEvents.isChecked()
-                    || AppSettings.hijriCalendarEventsEnabled(this) != hijriEvents.isChecked()
-                    || AppSettings.gregorianCalendarEventsEnabled(this) != gregorianEvents.isChecked()
                     || AppSettings.clockLayoutMode(this) != layout.getSelectedItemPosition()
                     || AppSettings.alarmScreenStyle(this)
                     != alarmStyle.getSelectedItemPosition();
@@ -234,9 +243,6 @@ public final class SettingsActivity extends Activity {
             AppSettings.setLanguage(this, selectedLanguage);
             AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
             AppSettings.setShowCalendarEvents(this, showCalendarEvents.isChecked());
-            AppSettings.setPersianCalendarEventsEnabled(this, persianEvents.isChecked());
-            AppSettings.setHijriCalendarEventsEnabled(this, hijriEvents.isChecked());
-            AppSettings.setGregorianCalendarEventsEnabled(this, gregorianEvents.isChecked());
             AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
             AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
 
@@ -248,19 +254,51 @@ public final class SettingsActivity extends Activity {
         };
         watch(palette, saveSettings);
         watch(language, saveSettings);
-        watch(calendar, saveSettings);
         watch(layout, saveSettings);
         watch(alarmStyle, saveSettings);
 
-        showCalendarEvents.setOnCheckedChangeListener((button, checked) -> {
-            persianEvents.setEnabled(checked);
-            hijriEvents.setEnabled(checked);
-            gregorianEvents.setEnabled(checked);
-            saveSettings.run();
+        calendar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private boolean first = true;
+
+            @Override public void onItemSelected(
+                    AdapterView<?> parent, View view, int position, long id) {
+                if (first) {
+                    first = false;
+                    refreshExtraSources.run();
+                    return;
+                }
+                AppSettings.setDefaultCalendar(SettingsActivity.this, position);
+                refreshExtraSources.run();
+                setResult(RESULT_OK);
+                try { DateNotificationService.start(SettingsActivity.this); }
+                catch (Exception ignored) {}
+                ClockWidgetProvider.updateAll(SettingsActivity.this);
+                NoForgetWidgetProvider.updateAll(SettingsActivity.this);
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
-        persianEvents.setOnCheckedChangeListener((button, checked) -> saveSettings.run());
-        hijriEvents.setOnCheckedChangeListener((button, checked) -> saveSettings.run());
-        gregorianEvents.setOnCheckedChangeListener((button, checked) -> saveSettings.run());
+
+        showCalendarEvents.setOnCheckedChangeListener((button, checked) -> {
+            AppSettings.setShowCalendarEvents(this, checked);
+            extraEventsOne.setEnabled(checked);
+            extraEventsTwo.setEnabled(checked);
+            setResult(RESULT_OK);
+        });
+
+        extraEventsOne.setOnCheckedChangeListener((button, checked) -> {
+            if (bindingExtraSources[0]) return;
+            int[] types = extraCalendarTypes(calendar.getSelectedItemPosition());
+            AppSettings.setAdditionalCalendarEventsEnabled(this, types[0], checked);
+            setResult(RESULT_OK);
+        });
+
+        extraEventsTwo.setOnCheckedChangeListener((button, checked) -> {
+            if (bindingExtraSources[0]) return;
+            int[] types = extraCalendarTypes(calendar.getSelectedItemPosition());
+            AppSettings.setAdditionalCalendarEventsEnabled(this, types[1], checked);
+            setResult(RESULT_OK);
+        });
 
         CompoundButton.OnCheckedChangeListener saveTabs = (button, checked) -> {
             if (!checked && !tabClock.isChecked() && !tabNotes.isChecked()
@@ -327,6 +365,26 @@ public final class SettingsActivity extends Activity {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.bottomMargin = dp(8);
         return params;
+    }
+
+    private int[] extraCalendarTypes(int primary) {
+        if (primary == CalendarUtils.PERSIAN) {
+            return new int[]{CalendarUtils.HIJRI, CalendarUtils.GREGORIAN};
+        }
+        if (primary == CalendarUtils.GREGORIAN) {
+            return new int[]{CalendarUtils.PERSIAN, CalendarUtils.HIJRI};
+        }
+        return new int[]{CalendarUtils.PERSIAN, CalendarUtils.GREGORIAN};
+    }
+
+    private String eventSourceLabel(int type) {
+        if (type == CalendarUtils.PERSIAN) {
+            return "نمایش رویدادهای شمسی ایران";
+        }
+        if (type == CalendarUtils.HIJRI) {
+            return "نمایش رویدادهای قمری کشورهای عربی";
+        }
+        return "نمایش رویدادهای میلادی بین‌المللی";
     }
 
     private Spinner spinner(String[] values) {
