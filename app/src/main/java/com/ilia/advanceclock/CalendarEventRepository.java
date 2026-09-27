@@ -3,7 +3,6 @@ package com.ilia.advanceclock;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public final class CalendarEventRepository {
@@ -19,16 +18,11 @@ public final class CalendarEventRepository {
 
     private CalendarEventRepository() {}
 
-    public static boolean sourceEnabled(Context context, int calendarType) {
-        switch (calendarType) {
-            case CalendarUtils.GREGORIAN:
-                return AppSettings.gregorianCalendarEventsEnabled(context);
-            case CalendarUtils.HIJRI:
-                return AppSettings.hijriCalendarEventsEnabled(context);
-            case CalendarUtils.PERSIAN:
-            default:
-                return AppSettings.persianCalendarEventsEnabled(context);
-        }
+    public static boolean sourceEnabled(
+            Context context, int primaryCalendarType, int sourceCalendarType) {
+        return sourceCalendarType == primaryCalendarType
+                || AppSettings.additionalCalendarEventsEnabled(
+                context, sourceCalendarType);
     }
 
     public static String sourceTitle(int calendarType) {
@@ -50,8 +44,6 @@ public final class CalendarEventRepository {
     }
 
     public static List<Event> eventsFor(Context context, long millis, int calendarType) {
-        if (!sourceEnabled(context, calendarType)) return Collections.emptyList();
-
         ArrayList<Event> out = new ArrayList<>();
         if (calendarType == CalendarUtils.PERSIAN) {
             addIranianEvents(out, millis);
