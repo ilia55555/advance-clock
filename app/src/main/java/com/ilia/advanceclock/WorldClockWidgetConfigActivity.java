@@ -31,7 +31,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            Toast.makeText(this, "شناسه ویجت معتبر نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "شناسه ویجت معتبر نیست", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

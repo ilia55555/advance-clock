@@ -115,7 +115,7 @@ public final class RecurrenceDialog {
                         chosen.set(Calendar.MILLISECOND, 0);
 
                         if (chosen.getTimeInMillis() <= System.currentTimeMillis()) {
-                            Toast.makeText(context, "تاریخ و ساعت گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                            LogoToast.makeText(context, "تاریخ و ساعت گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
                             return;
                         }
 

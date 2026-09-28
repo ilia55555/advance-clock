@@ -179,7 +179,7 @@ public final class SettingsActivity extends Activity {
             if (!tabClock.isChecked() && !tabNotes.isChecked()
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
                     && !tabWorld.isChecked()) {
-                Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             String selectedLanguage =
@@ -268,7 +268,7 @@ public final class SettingsActivity extends Activity {
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
                     && !tabWorld.isChecked()) {
                 button.setChecked(true);
-                Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             saveSettings.run();

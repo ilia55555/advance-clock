@@ -233,14 +233,14 @@ final class WorldClockPanelController {
     private boolean addSelected(Spinner spinner) {
         int position = spinner.getSelectedItemPosition();
         if (position < 0 || position >= filteredZones.size()) {
-            Toast.makeText(host, "ابتدا یک شهر، استان، کشور یا قاره را جست‌وجو کنید",
+            LogoToast.makeText(host, "ابتدا یک شهر، استان، کشور یا قاره را جست‌وجو کنید",
                     Toast.LENGTH_SHORT).show();
             return false;
         }
         String zone = filteredZones.get(position).id;
         List<String> zones = WorldClockStore.zones(host);
         if (zones.contains(zone)) {
-            Toast.makeText(host, "این منطقه زمانی قبلاً اضافه شده است", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, "این منطقه زمانی قبلاً اضافه شده است", Toast.LENGTH_SHORT).show();
             return false;
         }
         zones.add(zone);
@@ -327,7 +327,7 @@ final class WorldClockPanelController {
                     remove.setImageResource(R.drawable.ic_md_delete);
                     remove.setBackgroundResource(R.drawable.bg_delete_confirm);
                     remove.setContentDescription("تأیید حذف " + cityName(zoneId));
-                    Toast.makeText(host, "برای تأیید حذف دوباره بزنید", Toast.LENGTH_SHORT).show();
+                    LogoToast.makeText(host, "برای تأیید حذف دوباره بزنید", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 removeZone(zoneId);
@@ -342,7 +342,7 @@ final class WorldClockPanelController {
     private void removeZone(String zoneId) {
         List<String> updated = WorldClockStore.zones(host);
         if (updated.size() == 1) {
-            Toast.makeText(host, "حداقل یک ساعت جهانی باید باقی بماند", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, "حداقل یک ساعت جهانی باید باقی بماند", Toast.LENGTH_SHORT).show();
             return;
         }
         updated.remove(zoneId);

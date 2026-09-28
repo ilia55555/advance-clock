@@ -123,9 +123,17 @@ public final class PrayerSettingsActivity extends Activity {
         locationStatus.setPadding(0, dp(4), 0, dp(8));
         locationCard.addView(locationStatus);
 
+        Button searchLocation = fieldButton("جستجوی شهر یا روستا");
+        searchLocation.setOnClickListener(v ->
+                startActivity(new Intent(this, PrayerLocationSearchActivity.class)));
+        locationCard.addView(searchLocation, new LinearLayout.LayoutParams(-1, dp(52)));
+
         locationButton = fieldButton("دریافت موقعیت دقیق فعلی");
         locationButton.setOnClickListener(v -> requestPreciseLocation());
-        locationCard.addView(locationButton, new LinearLayout.LayoutParams(-1, dp(52)));
+        LinearLayout.LayoutParams locationButtonParams =
+                new LinearLayout.LayoutParams(-1, dp(52));
+        locationButtonParams.topMargin = dp(8);
+        locationCard.addView(locationButton, locationButtonParams);
 
         root.addView(locationCard, cardParams());
 
@@ -386,9 +394,9 @@ public final class PrayerSettingsActivity extends Activity {
         if (granted) {
             fetchCurrentLocation();
         } else {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
-                    "بدون دسترسی موقعیت، محاسبه دقیق اوقات شرعی ممکن نیست.",
+                    "مجوز موقعیت داده نشد؛ شهر یا روستا را جستجو کنید.",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -406,7 +414,7 @@ public final class PrayerSettingsActivity extends Activity {
         LocationManager manager =
                 (LocationManager) getSystemService(LOCATION_SERVICE);
         if (manager == null) {
-            Toast.makeText(this, "سرویس موقعیت در دسترس نیست.", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "سرویس موقعیت در دسترس نیست.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -420,7 +428,7 @@ public final class PrayerSettingsActivity extends Activity {
         } catch (Exception ignored) {}
 
         if (provider == null) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "مکان دستگاه را روشن کنید و دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();
@@ -438,7 +446,7 @@ public final class PrayerSettingsActivity extends Activity {
             cancelLocationRequest();
             locationButton.setEnabled(true);
             refresh();
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();
@@ -488,7 +496,7 @@ public final class PrayerSettingsActivity extends Activity {
         cancelLocationRequest();
         locationButton.setEnabled(true);
         refresh();
-        Toast.makeText(
+        LogoToast.makeText(
                 this,
                 "شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.",
                 Toast.LENGTH_LONG).show();
@@ -499,7 +507,7 @@ public final class PrayerSettingsActivity extends Activity {
         if (location == null) {
             locationButton.setEnabled(true);
             refresh();
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "موقعیت دقیق دریافت نشد؛ دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();

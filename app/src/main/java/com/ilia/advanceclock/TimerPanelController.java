@@ -107,7 +107,7 @@ final class TimerPanelController {
         long value = remainingMillis > 0 ? remainingMillis
                 : dateTimeMode ? selectedTarget - System.currentTimeMillis() : readDuration();
         if (value <= 0L) {
-            Toast.makeText(host, dateTimeMode ? "تاریخ و ساعت آینده را انتخاب کنید" : "یک زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, dateTimeMode ? "تاریخ و ساعت آینده را انتخاب کنید" : "یک زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
             return;
         }
         deadline = System.currentTimeMillis() + value;
@@ -115,7 +115,7 @@ final class TimerPanelController {
         String label = labelInput.getText().toString().trim();
         if (label.isEmpty()) label = ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER);
         boolean scheduled = ToolAlarmScheduler.schedule(host, ToolAlarmScheduler.TIMER, deadline, label);
-        if (!scheduled) Toast.makeText(host, "برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید", Toast.LENGTH_LONG).show();
+        if (!scheduled) LogoToast.makeText(host, "برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید", Toast.LENGTH_LONG).show();
         save(); updateControls(); handler.post(ticker);
     }
 

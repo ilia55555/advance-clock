@@ -241,7 +241,7 @@ public final class AlarmEditorActivity extends Activity {
         long trigger = selected.getTimeInMillis();
 
         if (trigger <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -281,7 +281,7 @@ public final class AlarmEditorActivity extends Activity {
         if (!scheduled
                 && !PermissionHelper.exactAlarmsGranted(this)
                 && Build.VERSION.SDK_INT >= 31) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
                     Toast.LENGTH_LONG).show();
@@ -291,7 +291,7 @@ public final class AlarmEditorActivity extends Activity {
                         Uri.parse("package:" + getPackageName())));
             } catch (Exception ignored) {}
         } else {
-            Toast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
         }
         finish();
     }

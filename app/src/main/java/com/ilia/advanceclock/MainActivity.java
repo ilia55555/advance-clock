@@ -513,7 +513,6 @@ public final class MainActivity extends Activity {
             if (millis < startOfToday()) {
                 applyPrayerTimesUi();
                 applyCalendarEventsUi();
-                Toast.makeText(this, "این تاریخ فقط برای مشاهده انتخاب شد", Toast.LENGTH_SHORT).show();
                 return;
             }
             quickAlarmCalendarType = clockCalendar.getCalendarType();
@@ -525,7 +524,7 @@ public final class MainActivity extends Activity {
 
         noteCalendar.setOnDateSelectedListener(millis -> {
             if (millis < startOfToday()) {
-                Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
                 return;
             }
             quickNoteCalendarType = noteCalendar.getCalendarType();
@@ -792,7 +791,7 @@ public final class MainActivity extends Activity {
     private void saveQuickAlarm() {
         long trigger = quickAlarm.getTimeInMillis();
         if (trigger <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -854,13 +853,13 @@ public final class MainActivity extends Activity {
         if (!scheduled
                 && Build.VERSION.SDK_INT >= 31
                 && !PermissionHelper.exactAlarmsGranted(this)) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
                     Toast.LENGTH_LONG).show();
             startPermissionFlow();
         } else {
-            Toast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -870,7 +869,7 @@ public final class MainActivity extends Activity {
         String sketch = quickNoteSketch.serialize();
 
         if (title.isEmpty() && body.isEmpty() && "[]".equals(sketch)) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "یک متن یا نقاشی وارد کنید",
                     Toast.LENGTH_SHORT).show();
@@ -881,7 +880,7 @@ public final class MainActivity extends Activity {
         long due = alarmEnabled ? quickNoteDue.getTimeInMillis() : 0L;
 
         if (alarmEnabled && due <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -917,7 +916,7 @@ public final class MainActivity extends Activity {
         noteCustomDates = "[]";
         quickNoteRepeat.setText("بدون تکرار");
         renderNoForget();
-        Toast.makeText(this, "یادداشت ذخیره شد", Toast.LENGTH_SHORT).show();
+        LogoToast.makeText(this, "یادداشت ذخیره شد", Toast.LENGTH_SHORT).show();
     }
 
     @Override protected void onResume() {
@@ -1212,7 +1211,7 @@ public final class MainActivity extends Activity {
 
     private void pinWidgetAndExit(Class<?> provider) {
         if (Build.VERSION.SDK_INT < 26) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
                     Toast.LENGTH_LONG).show();
@@ -1221,7 +1220,7 @@ public final class MainActivity extends Activity {
 
         AppWidgetManager manager = getSystemService(AppWidgetManager.class);
         if (manager == null || !manager.isRequestPinAppWidgetSupported()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
                     Toast.LENGTH_LONG).show();
@@ -1233,7 +1232,7 @@ public final class MainActivity extends Activity {
                 null,
                 null);
 
-        Toast.makeText(
+        LogoToast.makeText(
                 this,
                 opened
                         ? "درخواست افزودن ویجت ارسال شد؛ پس از تأیید لانچر، تنظیمات همان ویجت باز می‌شود."
