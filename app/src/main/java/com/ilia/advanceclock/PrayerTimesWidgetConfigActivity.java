@@ -160,7 +160,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(hint);
 
         Button manage = new Button(this);
-        manage.setText("مدیریت و مرتب‌سازی افق‌ها");
+        manage.setText("مدیریت افق‌ها");
         manage.setAllCaps(false);
         manage.setTextColor(AppSettings.primaryColor(this));
         manage.setBackgroundResource(R.drawable.bg_soft_button);
