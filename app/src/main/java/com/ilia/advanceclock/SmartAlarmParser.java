@@ -261,14 +261,14 @@ public final class SmartAlarmParser {
     }
 
     private static void parseNatural(Context context, String text, Result result) {
+        parseNumericDateTimePairs(context, text, result);
+
         String[] lines = text.split("[\\n\\r]+");
         for (String line : lines) {
+            // Numeric dates are paired with the nearest times across the complete text above.
+            // Processing their individual lines again would lose multiline start/end times.
+            if (DATE.matcher(line).find()) continue;
             ArrayList<DateMatch> dates = new ArrayList<>();
-            Matcher numeric = DATE.matcher(line);
-            while (numeric.find()) {
-                dates.add(new DateMatch(
-                        numeric.start(), numeric.end(), numeric.group(), false));
-            }
             Matcher anchors = RELATIVE_DATE_ANCHOR.matcher(line);
             while (anchors.find()) {
                 dates.add(new DateMatch(
@@ -305,6 +305,158 @@ public final class SmartAlarmParser {
                 if (date != null) addCandidatesForSegment(date, segment, result);
             }
         }
+    }
+
+    /**
+     * Pairs every numeric date with the nearest colon-formatted times in the whole input. This is
+     * intentionally independent of line breaks because copied schedules commonly put the date,
+     * start time, end time and reason on separate lines.
+     */
+    private static void parseNumericDateTimePairs(
+            Context context, String text, Result result) {
+        ArrayList<DateMatch> dates = new ArrayList<>();
+        Matcher dateMatcher = DATE.matcher(text);
+        while (dateMatcher.find()) {
+            dates.add(new DateMatch(
+                    dateMatcher.start(), dateMatcher.end(), dateMatcher.group(), false));
+        }
+        if (dates.isEmpty()) return;
+
+        ArrayList<TimeHit> times = findTimes(text);
+        if (times.isEmpty()) return;
+
+        ArrayList<ArrayList<TimeHit>> assigned = new ArrayList<>();
+        for (int i = 0; i < dates.size(); i++) assigned.add(new ArrayList<>());
+        for (TimeHit time : times) {
+            assigned.get(linkedDateIndex(dates, time)).add(time);
+        }
+
+        for (int dateIndex = 0; dateIndex < dates.size(); dateIndex++) {
+            ArrayList<TimeHit> linkedTimes = assigned.get(dateIndex);
+            if (linkedTimes.isEmpty()) continue;
+
+            DateMatch match = dates.get(dateIndex);
+            int segmentStart = dateIndex == 0 ? 0
+                    : (dates.get(dateIndex - 1).end + match.start) / 2;
+            int segmentEnd = dateIndex + 1 == dates.size() ? text.length()
+                    : (match.end + dates.get(dateIndex + 1).start) / 2;
+            String segment = text.substring(segmentStart, segmentEnd).trim();
+            DateParts date = parseDate(context, match.raw, contextHint(segment));
+            if (date == null) continue;
+
+            String baseLabel = preferredLabel(segment);
+            if (baseLabel.isEmpty()) baseLabel = "هشدار هوشمند";
+            OffsetParts offset = offsetFromText(segment);
+
+            for (int timeIndex = 0; timeIndex < linkedTimes.size(); timeIndex++) {
+                TimeHit hit = linkedTimes.get(timeIndex);
+                String role = timeRole(text, segmentStart, hit.start);
+
+                Candidate candidate = new Candidate();
+                candidate.calendarType = date.type;
+                candidate.year = date.year;
+                candidate.month = date.month;
+                candidate.day = date.day;
+                candidate.hour = hit.time.hour;
+                candidate.minute = hit.time.minute;
+                candidate.label = role.isEmpty() ? baseLabel : baseLabel + " (" + role + ")";
+                candidate.source = segment;
+                candidate.offsetMode = offset.mode;
+                candidate.offsetMinutes = offset.minutes;
+
+                if (timeIndex + 1 < linkedTimes.size()) {
+                    TimeHit next = linkedTimes.get(timeIndex + 1);
+                    String between = text.substring(hit.end, next.start);
+                    String nextRole = timeRole(text, segmentStart, next.start);
+                    if (looksLikeRangeSeparator(between) || "پایان".equals(nextRole)) {
+                        candidate.endHour = next.time.hour;
+                        candidate.endMinute = next.time.minute;
+                    }
+                }
+                result.candidates.add(candidate);
+            }
+        }
+    }
+
+    private static int linkedDateIndex(List<DateMatch> dates, TimeHit time) {
+        // A time after a date belongs to that date's block until another date starts. A time that
+        // appears before the first date ("ساعت ... متن ... تاریخ ...") is linked to that date.
+        if (time.start < dates.get(0).start) return 0;
+        for (int i = dates.size() - 1; i >= 0; i--) {
+            if (time.start >= dates.get(i).end) return i;
+        }
+
+        int timeCenter = (time.start + time.end) / 2;
+        int bestIndex = 0;
+        int bestDistance = Integer.MAX_VALUE;
+        for (int i = 0; i < dates.size(); i++) {
+            DateMatch date = dates.get(i);
+            int distance = Math.abs(timeCenter - (date.start + date.end) / 2);
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                bestIndex = i;
+            }
+        }
+        return bestIndex;
+    }
+
+    private static String timeRole(String text, int segmentStart, int timeStart) {
+        int start = Math.max(segmentStart, timeStart - 48);
+        String prefix = normalize(text.substring(start, timeStart)).toLowerCase(Locale.ROOT);
+        int endPosition = Math.max(prefix.lastIndexOf("پایان"), prefix.lastIndexOf("end"));
+        int startPosition = Math.max(prefix.lastIndexOf("شروع"), prefix.lastIndexOf("start"));
+        if (endPosition > startPosition) return "پایان";
+        if (startPosition >= 0) return "شروع";
+        return "";
+    }
+
+    private static String preferredLabel(String segment) {
+        String[] lines = segment.split("[\\n\\r]+");
+        for (int i = lines.length - 1; i >= 0; i--) {
+            String line = normalize(lines[i]).trim();
+            if (!line.contains("علت") && !line.toLowerCase(Locale.ROOT).contains("reason")) {
+                continue;
+            }
+            int colon = Math.max(line.indexOf(':'), line.indexOf('：'));
+            String value = colon >= 0 ? line.substring(colon + 1).trim() : line;
+            value = value.replaceFirst("^[^\\p{L}\\p{N}]+", "").trim();
+            if (!value.isEmpty()) return cleanLabel(value);
+        }
+        return deriveLabel(segment);
+    }
+
+    /** Returns one editable line per date with all nearest times and discards unrelated prose. */
+    public static String simplify(String raw) {
+        String text = normalize(raw);
+        ArrayList<DateMatch> dates = new ArrayList<>();
+        Matcher dateMatcher = DATE.matcher(text);
+        while (dateMatcher.find()) {
+            dates.add(new DateMatch(
+                    dateMatcher.start(), dateMatcher.end(), dateMatcher.group(), false));
+        }
+        if (dates.isEmpty()) return "";
+
+        ArrayList<ArrayList<TimeHit>> assigned = new ArrayList<>();
+        for (int i = 0; i < dates.size(); i++) assigned.add(new ArrayList<>());
+        for (TimeHit time : findTimes(text)) {
+            assigned.get(linkedDateIndex(dates, time)).add(time);
+        }
+
+        StringBuilder simplified = new StringBuilder();
+        for (int i = 0; i < dates.size(); i++) {
+            if (assigned.get(i).isEmpty()) continue;
+            if (simplified.length() > 0) simplified.append('\n');
+            simplified.append(dates.get(i).raw);
+            int segmentStart = i == 0 ? 0
+                    : (dates.get(i - 1).end + dates.get(i).start) / 2;
+            for (TimeHit time : assigned.get(i)) {
+                String role = timeRole(text, segmentStart, time.start);
+                if (!role.isEmpty()) simplified.append(' ').append(role);
+                simplified.append(' ').append(String.format(
+                        Locale.US, "%02d:%02d", time.time.hour, time.time.minute));
+            }
+        }
+        return simplified.toString();
     }
 
     private static SegmentBoundary findSegmentBoundary(

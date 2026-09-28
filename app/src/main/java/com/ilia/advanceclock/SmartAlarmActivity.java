@@ -163,6 +163,20 @@ public final class SmartAlarmActivity extends Activity {
         inputParams.topMargin = dp(8);
         card.addView(input, inputParams);
 
+        Button simplify = softButton("ساده‌سازی: فقط تاریخ و ساعت");
+        simplify.setOnClickListener(v -> simplifyInput());
+        LinearLayout.LayoutParams simplifyParams = new LinearLayout.LayoutParams(-1, dp(46));
+        simplifyParams.topMargin = dp(8);
+        card.addView(simplify, simplifyParams);
+
+        TextView simplifyHint = text(
+                "هر خط یک تاریخ و نزدیک‌ترین ساعت‌های آن است؛ متن را انتخاب، جابه‌جا یا "
+                        + "ویرایش کنید و سپس تحلیل را بزنید.",
+                11,
+                AppSettings.textSecondary(this));
+        simplifyHint.setPadding(0, dp(4), 0, 0);
+        card.addView(simplifyHint);
+
         analyze = primaryButton("تحلیل متن و ساخت پیش‌نمایش");
         analyze.setEnabled(false);
         analyze.setAlpha(0.55f);
@@ -190,6 +204,23 @@ public final class SmartAlarmActivity extends Activity {
 
         analyze.setOnClickListener(v -> analyzeInput());
         return card;
+    }
+
+    private void simplifyInput() {
+        String simplified = SmartAlarmParser.simplify(input.getText().toString());
+        if (simplified.isEmpty()) {
+            LogoToast.makeText(
+                    this,
+                    "تاریخ و ساعت قابل ساده‌سازی پیدا نشد",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        input.setText(simplified);
+        input.setSelection(input.length());
+        candidates.clear();
+        warning.setText("");
+        detection.setText("متن ساده‌شده؛ برای ساخت هشدار تحلیل را بزنید");
+        refreshPreview();
     }
 
     private View buildTimingCard() {
