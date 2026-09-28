@@ -210,7 +210,7 @@ public final class WidgetCenterActivity extends Activity {
 
     private void pin(Class<?> provider) {
         if (Build.VERSION.SDK_INT < 26) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "ویجت را از فهرست ویجت‌های لانچر اضافه کنید.",
                     Toast.LENGTH_LONG).show();
@@ -219,7 +219,7 @@ public final class WidgetCenterActivity extends Activity {
 
         AppWidgetManager manager = getSystemService(AppWidgetManager.class);
         if (manager == null || !manager.isRequestPinAppWidgetSupported()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "لانچر شما افزودن مستقیم ویجت را پشتیبانی نمی‌کند؛ "
                             + "از فهرست ویجت‌های صفحه اصلی استفاده کنید.",
@@ -232,7 +232,7 @@ public final class WidgetCenterActivity extends Activity {
                 null,
                 null);
 
-        Toast.makeText(
+        LogoToast.makeText(
                 this,
                 opened
                         ? "درخواست افزودن ویجت به لانچر ارسال شد."

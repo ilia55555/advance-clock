@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -53,6 +54,7 @@ public final class MainActivity extends Activity {
     private final Runnable headerTicker = new Runnable() {
         @Override public void run() {
             updateHeaderClock();
+            applyPrayerTimesUi();
             long now = System.currentTimeMillis();
             long delay = 60_000L - (now % 60_000L) + 60L;
             headerHandler.postDelayed(this, delay);
@@ -67,6 +69,9 @@ public final class MainActivity extends Activity {
     private View noteSketchCard;
     private View alertsHeader;
     private View prayerTimesCard;
+    private HorizontalScrollView prayerTimesScroll;
+    private View prayerScrollLeft;
+    private View prayerScrollRight;
     private View calendarEventsCard;
     private ScrollView clockPanel;
     private View noForgetPanel;
@@ -92,6 +97,7 @@ public final class MainActivity extends Activity {
     private float swipeDownX;
     private float swipeDownY;
     private boolean swipeStartedOnCalendar;
+    private int lastPrayerAutoIndex = -1;
 
     private Button quickAlarmDate;
     private Button quickAlarmTime;
@@ -169,8 +175,6 @@ public final class MainActivity extends Activity {
                 pinWidgetAndExit(ClockWidgetProvider.class));
         findViewById(R.id.smart_alarm_button).setOnClickListener(v ->
                 startActivity(new Intent(this, SmartAlarmActivity.class)));
-        findViewById(R.id.prayer_times_settings).setOnClickListener(v ->
-                startActivity(new Intent(this, PrayerSettingsActivity.class)));
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
         findViewById(R.id.world_add_widget).setOnClickListener(v ->
@@ -214,6 +218,11 @@ public final class MainActivity extends Activity {
         noteSketchCard = findViewById(R.id.note_sketch_card);
         alertsHeader = findViewById(R.id.alerts_header);
         prayerTimesCard = findViewById(R.id.prayer_times_card);
+        prayerTimesScroll = findViewById(R.id.prayer_times_scroll);
+        prayerScrollLeft = findViewById(R.id.prayer_scroll_left);
+        prayerScrollRight = findViewById(R.id.prayer_scroll_right);
+        prayerTimesScroll.setOnScrollChangeListener(
+                (view, x, y, oldX, oldY) -> updatePrayerScrollArrows());
         calendarEventsCard = findViewById(R.id.calendar_events_card);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
@@ -328,13 +337,18 @@ public final class MainActivity extends Activity {
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
             menu.getMenu().add(0, 1, 0, "تنظیمات");
-            menu.getMenu().add(0, 4, 1, "تنظیمات اعلان");
-            menu.getMenu().add(0, 5, 2, "ویجت‌ها و تنظیمات");
-            menu.getMenu().add(0, 6, 3, "جابه‌جایی ترتیب تب‌ها");
-            menu.getMenu().add(0, 3, 4, "مجوزهای آلارم و اعلان");
+            menu.getMenu().add(0, 7, 1, "تنظیمات اذان و اوقات شرعی");
+            menu.getMenu().add(0, 4, 2, "تنظیمات اعلان");
+            menu.getMenu().add(0, 5, 3, "ویجت‌ها و تنظیمات");
+            menu.getMenu().add(0, 6, 4, "جابه‌جایی ترتیب تب‌ها");
+            menu.getMenu().add(0, 3, 5, "مجوزهای آلارم و اعلان");
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
+                    return true;
+                }
+                if (item.getItemId() == 7) {
+                    startActivity(new Intent(this, PrayerSettingsActivity.class));
                     return true;
                 }
                 if (item.getItemId() == 4) {
@@ -387,17 +401,9 @@ public final class MainActivity extends Activity {
         prayerTimesCard.setVisibility(visible ? View.VISIBLE : View.GONE);
         if (!visible) return;
 
-        TextView title = findViewById(R.id.prayer_times_title);
-        TextView location = findViewById(R.id.prayer_times_location);
-        TextView note = findViewById(R.id.prayer_times_note);
-
         long millis = clockCalendar.getSelectedMillis();
-        int type = clockCalendar.getCalendarType();
-        title.setText("اوقات شرعی • " + CalendarUtils.formatDate(millis, type));
 
         if (!AppSettings.prayerLocationSet(this)) {
-            location.setText("موقعیت تنظیم نشده");
-            note.setText("برای محاسبه دقیق، «تنظیمات» را بزنید و موقعیت فعلی را ثبت کنید.");
             setPrayerTimeText(R.id.prayer_fajr, "—:—");
             setPrayerTimeText(R.id.prayer_sunrise, "—:—");
             setPrayerTimeText(R.id.prayer_dhuhr, "—:—");
@@ -409,14 +415,11 @@ public final class MainActivity extends Activity {
             return;
         }
 
-        location.setText(AppSettings.prayerLocationLabel(this));
-        note.setText("مرجع: مؤسسه ژئوفیزیک دانشگاه تهران • محاسبه آفلاین بر اساس مختصات");
-
         PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
                 millis,
                 AppSettings.prayerLatitude(this),
                 AppSettings.prayerLongitude(this),
-                TimeZone.getDefault());
+                AppSettings.prayerTimeZone(this));
 
         setPrayerTimeText(R.id.prayer_fajr, times.fajr());
         setPrayerTimeText(R.id.prayer_sunrise, times.sunrise());
@@ -426,6 +429,40 @@ public final class MainActivity extends Activity {
         setPrayerTimeText(R.id.prayer_maghrib, times.maghrib());
         setPrayerTimeText(R.id.prayer_isha, times.isha());
         setPrayerTimeText(R.id.prayer_midnight, times.midnight());
+        positionPrayerTimes(times);
+    }
+
+    private void positionPrayerTimes(PrayerTimeCalculator.Times times) {
+        if (prayerTimesScroll == null) return;
+        Calendar now = Calendar.getInstance(AppSettings.prayerTimeZone(this));
+        int minute = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+        int index = minute >= times.ishaMinutes ? 6
+                : minute >= times.maghribMinutes ? 5
+                : minute >= times.sunsetMinutes ? 4
+                : minute >= times.asrMinutes ? 3
+                : minute >= times.dhuhrMinutes ? 2
+                : minute >= times.sunriseMinutes ? 1 : 0;
+        if (index == lastPrayerAutoIndex) {
+            updatePrayerScrollArrows();
+            return;
+        }
+        lastPrayerAutoIndex = index;
+        prayerTimesScroll.post(() -> {
+            View content = prayerTimesScroll.getChildAt(0);
+            if (content == null) return;
+            int maximum = Math.max(0, content.getWidth() - prayerTimesScroll.getWidth());
+            int target = Math.max(0, maximum - dp(72) * index);
+            prayerTimesScroll.smoothScrollTo(target, 0);
+            prayerTimesScroll.postDelayed(this::updatePrayerScrollArrows, 250);
+        });
+    }
+
+    private void updatePrayerScrollArrows() {
+        if (prayerTimesScroll == null) return;
+        prayerScrollLeft.setVisibility(
+                prayerTimesScroll.canScrollHorizontally(-1) ? View.VISIBLE : View.GONE);
+        prayerScrollRight.setVisibility(
+                prayerTimesScroll.canScrollHorizontally(1) ? View.VISIBLE : View.GONE);
     }
 
     private void setPrayerTimeText(int id, String value) {
@@ -443,11 +480,7 @@ public final class MainActivity extends Activity {
         int primaryType = clockCalendar.getCalendarType();
         long millis = clockCalendar.getSelectedMillis();
 
-        TextView title = findViewById(R.id.calendar_events_title);
         TextView content = findViewById(R.id.calendar_events_placeholder);
-        View persian = findViewById(R.id.calendar_event_source_persian);
-        View hijri = findViewById(R.id.calendar_event_source_hijri);
-        View gregorian = findViewById(R.id.calendar_event_source_gregorian);
 
         boolean showPersian = CalendarEventRepository.sourceEnabled(
                 this, primaryType, CalendarUtils.PERSIAN);
@@ -455,13 +488,6 @@ public final class MainActivity extends Activity {
                 this, primaryType, CalendarUtils.HIJRI);
         boolean showGregorian = CalendarEventRepository.sourceEnabled(
                 this, primaryType, CalendarUtils.GREGORIAN);
-
-        persian.setVisibility(showPersian ? View.VISIBLE : View.GONE);
-        hijri.setVisibility(showHijri ? View.VISIBLE : View.GONE);
-        gregorian.setVisibility(showGregorian ? View.VISIBLE : View.GONE);
-
-        title.setText("رویدادها و مناسبت‌ها • "
-                + CalendarUtils.formatDate(millis, primaryType));
 
         StringBuilder text = new StringBuilder();
         appendEventSource(
@@ -473,15 +499,12 @@ public final class MainActivity extends Activity {
 
         if (CalendarEventRepository.isWeekend(millis, primaryType)) {
             if (text.length() > 0) text.append("\n");
-            text.append("● تعطیل هفتگی");
+            text.append("تعطیل هفتگی");
         }
 
         if (text.length() == 0) {
-            text.append("برای این روز در منابع فعال، مناسبت ثبت‌شده‌ای وجود ندارد.");
+            text.append("رویدادی ثبت نشده است");
         }
-
-        text.append("\n\n").append(CalendarEventRepository.datasetNotice(
-                millis, showPersian, showHijri, showGregorian));
 
         content.setText(text.toString());
     }
@@ -497,14 +520,7 @@ public final class MainActivity extends Activity {
                 CalendarEventRepository.eventsFor(this, millis, sourceType);
         for (CalendarEventRepository.Event event : events) {
             if (out.length() > 0) out.append("\n");
-            out.append(event.holiday ? "● " : "• ");
-            out.append(CalendarUtils.calendarName(sourceType));
-            out.append(": ");
             out.append(event.title);
-            if (event.holiday) {
-                out.append("  • ");
-                out.append(CalendarEventRepository.holidayLabel(sourceType));
-            }
         }
     }
 
@@ -542,7 +558,6 @@ public final class MainActivity extends Activity {
             if (millis < startOfToday()) {
                 applyPrayerTimesUi();
                 applyCalendarEventsUi();
-                Toast.makeText(this, "این تاریخ فقط برای مشاهده انتخاب شد", Toast.LENGTH_SHORT).show();
                 return;
             }
             quickAlarmCalendarType = clockCalendar.getCalendarType();
@@ -554,7 +569,7 @@ public final class MainActivity extends Activity {
 
         noteCalendar.setOnDateSelectedListener(millis -> {
             if (millis < startOfToday()) {
-                Toast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
                 return;
             }
             quickNoteCalendarType = noteCalendar.getCalendarType();
@@ -752,6 +767,8 @@ public final class MainActivity extends Activity {
     private void applyClockLayoutMode() {
         clockContent.removeView(alarmComposerCard);
         clockContent.removeView(clockCalendar);
+        clockContent.removeView(prayerTimesCard);
+        clockContent.removeView(calendarEventsCard);
         clockContent.removeView(alertsHeader);
         clockContent.removeView(alarmList);
 
@@ -760,15 +777,19 @@ public final class MainActivity extends Activity {
 
         if (compact) {
             clockContent.addView(clockCalendar);
+            clockContent.addView(prayerTimesCard);
+            clockContent.addView(calendarEventsCard);
             clockContent.addView(alertsHeader);
             clockContent.addView(alarmList);
             clockContent.addView(alarmComposerCard);
             alarmComposerCard.setVisibility(View.GONE);
-            noteComposerCard.setVisibility(View.GONE);
-            noteSketchCard.setVisibility(View.GONE);
+            noteComposerCard.setVisibility(View.VISIBLE);
+            noteSketchCard.setVisibility(View.VISIBLE);
         } else {
             clockContent.addView(alarmComposerCard);
             clockContent.addView(clockCalendar);
+            clockContent.addView(prayerTimesCard);
+            clockContent.addView(calendarEventsCard);
             clockContent.addView(alertsHeader);
             clockContent.addView(alarmList);
             alarmComposerCard.setVisibility(View.VISIBLE);
@@ -815,7 +836,7 @@ public final class MainActivity extends Activity {
     private void saveQuickAlarm() {
         long trigger = quickAlarm.getTimeInMillis();
         if (trigger <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -877,13 +898,13 @@ public final class MainActivity extends Activity {
         if (!scheduled
                 && Build.VERSION.SDK_INT >= 31
                 && !PermissionHelper.exactAlarmsGranted(this)) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
                     Toast.LENGTH_LONG).show();
             startPermissionFlow();
         } else {
-            Toast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -893,7 +914,7 @@ public final class MainActivity extends Activity {
         String sketch = quickNoteSketch.serialize();
 
         if (title.isEmpty() && body.isEmpty() && "[]".equals(sketch)) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "یک متن یا نقاشی وارد کنید",
                     Toast.LENGTH_SHORT).show();
@@ -904,7 +925,7 @@ public final class MainActivity extends Activity {
         long due = alarmEnabled ? quickNoteDue.getTimeInMillis() : 0L;
 
         if (alarmEnabled && due <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -940,7 +961,7 @@ public final class MainActivity extends Activity {
         noteCustomDates = "[]";
         quickNoteRepeat.setText("بدون تکرار");
         renderNoForget();
-        Toast.makeText(this, "یادداشت ذخیره شد", Toast.LENGTH_SHORT).show();
+        LogoToast.makeText(this, "یادداشت ذخیره شد", Toast.LENGTH_SHORT).show();
     }
 
     @Override protected void onResume() {
@@ -1068,7 +1089,7 @@ public final class MainActivity extends Activity {
         boolean compact = AppSettings.clockLayoutMode(this)
                 == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
         clockFab.setVisibility(clock && compact ? View.VISIBLE : View.GONE);
-        noteFab.setVisibility(notes && compact ? View.VISIBLE : View.GONE);
+        noteFab.setVisibility(View.GONE);
     }
 
     @Override public boolean dispatchTouchEvent(MotionEvent event) {
@@ -1078,7 +1099,8 @@ public final class MainActivity extends Activity {
             swipeDownX = event.getRawX();
             swipeDownY = event.getRawY();
             swipeStartedOnCalendar = pointInside(clockCalendar, swipeDownX, swipeDownY)
-                    || pointInside(noteCalendar, swipeDownX, swipeDownY);
+                    || pointInside(noteCalendar, swipeDownX, swipeDownY)
+                    || pointInside(prayerTimesCard, swipeDownX, swipeDownY);
         } else if (event.getActionMasked() == MotionEvent.ACTION_UP
                 && !swipeStartedOnCalendar) {
             float deltaX = event.getRawX() - swipeDownX;
@@ -1235,7 +1257,7 @@ public final class MainActivity extends Activity {
 
     private void pinWidgetAndExit(Class<?> provider) {
         if (Build.VERSION.SDK_INT < 26) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
                     Toast.LENGTH_LONG).show();
@@ -1244,7 +1266,7 @@ public final class MainActivity extends Activity {
 
         AppWidgetManager manager = getSystemService(AppWidgetManager.class);
         if (manager == null || !manager.isRequestPinAppWidgetSupported()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
                     Toast.LENGTH_LONG).show();
@@ -1256,7 +1278,7 @@ public final class MainActivity extends Activity {
                 null,
                 null);
 
-        Toast.makeText(
+        LogoToast.makeText(
                 this,
                 opened
                         ? "درخواست افزودن ویجت ارسال شد؛ پس از تأیید لانچر، تنظیمات همان ویجت باز می‌شود."

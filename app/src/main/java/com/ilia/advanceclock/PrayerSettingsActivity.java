@@ -31,7 +31,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public final class PrayerSettingsActivity extends Activity {
     private static final int REQ_LOCATION = 740;
@@ -39,14 +38,6 @@ public final class PrayerSettingsActivity extends Activity {
 
     private Button locationButton;
     private TextView locationStatus;
-    private TextView fajrTime;
-    private TextView sunriseTime;
-    private TextView dhuhrTime;
-    private TextView asrTime;
-    private TextView sunsetTime;
-    private TextView maghribTime;
-    private TextView ishaTime;
-    private TextView midnightTime;
     private TextView adhanScheduleStatus;
     private final Handler locationHandler = new Handler(Looper.getMainLooper());
     private CancellationSignal locationCancellation;
@@ -93,14 +84,6 @@ public final class PrayerSettingsActivity extends Activity {
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
-        TextView intro = text(
-                "محاسبه آفلاین بر پایه روش مرکز تقویم مؤسسه ژئوفیزیک دانشگاه تهران "
-                        + "(فجر ۱۷٫۷° و مغرب ۴٫۵°) و مختصات دقیق دستگاه انجام می‌شود.",
-                12,
-                AppSettings.textSecondary(this));
-        intro.setPadding(0, 0, 0, dp(10));
-        root.addView(intro);
-
         LinearLayout masterCard = card();
         TextView masterTitle = text(
                 "نمایش اوقات شرعی",
@@ -110,7 +93,7 @@ public final class PrayerSettingsActivity extends Activity {
         masterCard.addView(masterTitle);
 
         Switch master = toggle(
-                "نمایش باکس اوقات شرعی زیر تقویم",
+                "نمایش نوار اوقات شرعی زیر تقویم",
                 AppSettings.adhanEnabled(this));
         master.setOnCheckedChangeListener((button, checked) -> {
             AppSettings.setAdhanEnabled(this, checked);
@@ -131,44 +114,19 @@ public final class PrayerSettingsActivity extends Activity {
         locationStatus.setPadding(0, dp(4), 0, dp(8));
         locationCard.addView(locationStatus);
 
+        Button searchLocation = fieldButton("جستجوی شهر یا روستا");
+        searchLocation.setOnClickListener(v ->
+                startActivity(new Intent(this, PrayerLocationSearchActivity.class)));
+        locationCard.addView(searchLocation, new LinearLayout.LayoutParams(-1, dp(52)));
+
         locationButton = fieldButton("دریافت موقعیت دقیق فعلی");
         locationButton.setOnClickListener(v -> requestPreciseLocation());
-        locationCard.addView(locationButton, new LinearLayout.LayoutParams(-1, dp(52)));
-
-        Button method = fieldButton(
-                "روش محاسبه: ژئوفیزیک دانشگاه تهران • همسان با اوقات رسمی ایران");
-        method.setEnabled(false);
-        method.setAlpha(0.82f);
-        LinearLayout.LayoutParams methodParams =
+        LinearLayout.LayoutParams locationButtonParams =
                 new LinearLayout.LayoutParams(-1, dp(52));
-        methodParams.topMargin = dp(8);
-        locationCard.addView(method, methodParams);
+        locationButtonParams.topMargin = dp(8);
+        locationCard.addView(locationButton, locationButtonParams);
+
         root.addView(locationCard, cardParams());
-
-        LinearLayout prayersCard = card();
-        TextView prayersTitle = text(
-                "اوقات امروز",
-                17,
-                AppSettings.textPrimary(this));
-        prayersTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prayersCard.addView(prayersTitle);
-
-        TextView timesHint = text(
-                "زمان‌ها هر روز از نو برای مختصات ذخیره‌شده و منطقه زمانی دستگاه محاسبه می‌شوند.",
-                12,
-                AppSettings.textSecondary(this));
-        timesHint.setPadding(0, dp(3), 0, dp(6));
-        prayersCard.addView(timesHint);
-
-        fajrTime = addTimeRow(prayersCard, "اذان صبح");
-        sunriseTime = addTimeRow(prayersCard, "طلوع آفتاب");
-        dhuhrTime = addTimeRow(prayersCard, "اذان ظهر");
-        asrTime = addTimeRow(prayersCard, "عصر");
-        sunsetTime = addTimeRow(prayersCard, "غروب آفتاب");
-        maghribTime = addTimeRow(prayersCard, "اذان مغرب");
-        ishaTime = addTimeRow(prayersCard, "عشاء");
-        midnightTime = addTimeRow(prayersCard, "نیمه‌شب شرعی");
-        root.addView(prayersCard, cardParams());
 
         LinearLayout azanCard = card();
         TextView azanTitle = text(
@@ -178,40 +136,42 @@ public final class PrayerSettingsActivity extends Activity {
         azanTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         azanCard.addView(azanTitle);
 
-        Switch fajr = toggle(
-                "اذان صبح",
-                AppSettings.fajrAdhanEnabled(this));
-        fajr.setOnCheckedChangeListener((button, checked) ->
-                updateAdhanSetting(
-                        () -> AppSettings.setFajrAdhanEnabled(this, checked), checked));
-        azanCard.addView(fajr);
+        Switch fajr = adhanSwitch("اذان صبح", AppSettings.fajrAdhanEnabled(this),
+                value -> AppSettings.setFajrAdhanEnabled(this, value));
+        Switch dhuhr = adhanSwitch("اذان ظهر", AppSettings.dhuhrAdhanEnabled(this),
+                value -> AppSettings.setDhuhrAdhanEnabled(this, value));
+        Switch asr = adhanSwitch("عصر", AppSettings.asrAdhanEnabled(this),
+                value -> AppSettings.setAsrAdhanEnabled(this, value));
+        Switch maghrib = adhanSwitch("اذان مغرب", AppSettings.maghribAdhanEnabled(this),
+                value -> AppSettings.setMaghribAdhanEnabled(this, value));
+        Switch isha = adhanSwitch("عشاء", AppSettings.ishaAdhanEnabled(this),
+                value -> AppSettings.setIshaAdhanEnabled(this, value));
+        azanCard.addView(fajr); azanCard.addView(dhuhr); azanCard.addView(asr);
+        azanCard.addView(maghrib); azanCard.addView(isha);
 
-        Switch dhuhr = toggle(
-                "اذان ظهر",
-                AppSettings.dhuhrAdhanEnabled(this));
-        dhuhr.setOnCheckedChangeListener((button, checked) ->
-                updateAdhanSetting(
-                        () -> AppSettings.setDhuhrAdhanEnabled(this, checked), checked));
-        azanCard.addView(dhuhr);
+        addSoundButton(azanCard, "موذن اذان صبح", AdhanScheduler.FAJR);
+        addSoundButton(azanCard, "موذن اذان ظهر", AdhanScheduler.DHUHR);
+        addSoundButton(azanCard, "موذن عصر", AdhanScheduler.ASR);
+        addSoundButton(azanCard, "موذن اذان مغرب", AdhanScheduler.MAGHRIB);
+        addSoundButton(azanCard, "موذن عشاء", AdhanScheduler.ISHA);
 
-        Switch maghrib = toggle(
-                "اذان مغرب",
-                AppSettings.maghribAdhanEnabled(this));
-        maghrib.setOnCheckedChangeListener((button, checked) ->
-                updateAdhanSetting(
-                        () -> AppSettings.setMaghribAdhanEnabled(this, checked), checked));
-        azanCard.addView(maghrib);
-
-        Switch vibrate = toggle(
-                "لرزش همراه اذان/اعلان",
-                AppSettings.adhanVibrate(this));
-        vibrate.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanVibrate(this, checked));
-        azanCard.addView(vibrate);
+        LinearLayout outputCard = card();
+        TextView outputTitle = text("نحوه اعلام اذان", 17, AppSettings.textPrimary(this));
+        outputTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        outputCard.addView(outputTitle);
+        Switch fullscreen = toggle("صفحه تمام‌صفحه اذان", AppSettings.adhanFullscreen(this));
+        fullscreen.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanFullscreen(this, checked));
+        Switch notification = toggle("اعلان اذان", AppSettings.adhanNotification(this));
+        notification.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanNotification(this, checked));
+        Switch vibrate = toggle("لرزش اذان", AppSettings.adhanVibrate(this));
+        vibrate.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanVibrate(this, checked));
+        Switch sound = toggle("صدای اذان", AppSettings.adhanSound(this));
+        sound.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanSound(this, checked));
+        outputCard.addView(fullscreen); outputCard.addView(notification);
+        outputCard.addView(vibrate); outputCard.addView(sound);
 
         adhanScheduleStatus = text(
-                "اعلان و لرزش اوقات فعال، هر روز زمان‌بندی می‌شود. "
-                        + "فایل صوتی مورد انتظار: app/src/main/res/raw/adhan.mp3",
+                "",
                 11,
                 AppSettings.textSecondary(this));
         adhanScheduleStatus.setPadding(0, dp(6), 0, 0);
@@ -219,6 +179,7 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(adhanScheduleStatus);
 
         root.addView(azanCard, cardParams());
+        root.addView(outputCard, cardParams());
 
         setContentView(scroll);
         AppSettings.applyFullscreenInsets(scroll);
@@ -254,30 +215,10 @@ public final class PrayerSettingsActivity extends Activity {
                             AppSettings.prayerLongitude(this)));
             locationButton.setText("به‌روزرسانی موقعیت دقیق فعلی");
         } else {
-            locationStatus.setText(
-                    "برای محاسبه دقیقه‌به‌دقیقه، یک‌بار موقعیت فعلی را ثبت کنید.");
+            locationStatus.setText("موقعیت تنظیم نشده");
             locationButton.setText("دریافت موقعیت دقیق فعلی");
         }
 
-        if (!hasLocation) {
-            setAllTimes("—:—");
-            return;
-        }
-
-        PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
-                System.currentTimeMillis(),
-                AppSettings.prayerLatitude(this),
-                AppSettings.prayerLongitude(this),
-                TimeZone.getDefault());
-
-        fajrTime.setText(times.fajr());
-        sunriseTime.setText(times.sunrise());
-        dhuhrTime.setText(times.dhuhr());
-        asrTime.setText(times.asr());
-        sunsetTime.setText(times.sunset());
-        maghribTime.setText(times.maghrib());
-        ishaTime.setText(times.isha());
-        midnightTime.setText(times.midnight());
     }
 
     private void updateAdhanSetting(Runnable update, boolean enabled) {
@@ -310,7 +251,7 @@ public final class PrayerSettingsActivity extends Activity {
                 break;
             case SCHEDULED:
             default:
-                message = "اذان فعال زمان‌بندی شده است. فایل صوتی: adhan.mp3";
+                message = "اذان فعال است";
                 break;
         }
         adhanScheduleStatus.setText(message);
@@ -343,34 +284,30 @@ public final class PrayerSettingsActivity extends Activity {
         }
     }
 
-    private void setAllTimes(String value) {
-        fajrTime.setText(value);
-        sunriseTime.setText(value);
-        dhuhrTime.setText(value);
-        asrTime.setText(value);
-        sunsetTime.setText(value);
-        maghribTime.setText(value);
-        ishaTime.setText(value);
-        midnightTime.setText(value);
+    private Switch adhanSwitch(
+            String label, boolean checked, java.util.function.Consumer<Boolean> update) {
+        Switch value = toggle(label, checked);
+        value.setOnCheckedChangeListener((button, enabled) ->
+                updateAdhanSetting(() -> update.accept(enabled), enabled));
+        return value;
     }
 
-    private TextView addTimeRow(LinearLayout parent, String label) {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        row.setPadding(dp(2), dp(2), dp(2), dp(2));
+    private void addSoundButton(LinearLayout parent, String label, int type) {
+        Button button = fieldButton(label + " • "
+                + SoundLibrary.name(this, AppSettings.adhanSoundUri(this, type)));
+        button.setOnClickListener(v -> startActivityForResult(
+                new Intent(this, SoundPickerActivity.class), 800 + type));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(52));
+        params.topMargin = dp(6);
+        parent.addView(button, params);
+    }
 
-        TextView name = text(label, 14, AppSettings.textPrimary(this));
-        row.addView(name, new LinearLayout.LayoutParams(0, dp(42), 1f));
-
-        TextView time = text("—:—", 16, AppSettings.primaryColor(this));
-        time.setGravity(Gravity.CENTER);
-        time.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        row.addView(time, new LinearLayout.LayoutParams(dp(92), dp(42)));
-
-        parent.addView(row, new LinearLayout.LayoutParams(-1, dp(46)));
-        return time;
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode < 800 || requestCode > 804 || resultCode != RESULT_OK || data == null) return;
+        AppSettings.setAdhanSoundUri(
+                this, requestCode - 800, data.getStringExtra(SoundPickerActivity.EXTRA_URI));
+        recreate();
     }
 
     private void requestPreciseLocation() {
@@ -411,9 +348,9 @@ public final class PrayerSettingsActivity extends Activity {
         if (granted) {
             fetchCurrentLocation();
         } else {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
-                    "بدون دسترسی موقعیت، محاسبه دقیق اوقات شرعی ممکن نیست.",
+                    "مجوز موقعیت داده نشد؛ شهر یا روستا را جستجو کنید.",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -431,7 +368,7 @@ public final class PrayerSettingsActivity extends Activity {
         LocationManager manager =
                 (LocationManager) getSystemService(LOCATION_SERVICE);
         if (manager == null) {
-            Toast.makeText(this, "سرویس موقعیت در دسترس نیست.", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "سرویس موقعیت در دسترس نیست.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -445,7 +382,7 @@ public final class PrayerSettingsActivity extends Activity {
         } catch (Exception ignored) {}
 
         if (provider == null) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "مکان دستگاه را روشن کنید و دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();
@@ -463,7 +400,7 @@ public final class PrayerSettingsActivity extends Activity {
             cancelLocationRequest();
             locationButton.setEnabled(true);
             refresh();
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();
@@ -513,7 +450,7 @@ public final class PrayerSettingsActivity extends Activity {
         cancelLocationRequest();
         locationButton.setEnabled(true);
         refresh();
-        Toast.makeText(
+        LogoToast.makeText(
                 this,
                 "شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.",
                 Toast.LENGTH_LONG).show();
@@ -524,7 +461,7 @@ public final class PrayerSettingsActivity extends Activity {
         if (location == null) {
             locationButton.setEnabled(true);
             refresh();
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "موقعیت دقیق دریافت نشد؛ دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();

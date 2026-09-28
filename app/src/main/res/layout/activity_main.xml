@@ -428,407 +428,268 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp" />
 
-                <LinearLayout
+                <FrameLayout
                     android:id="@+id/prayer_times_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_card"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                    android:layout_height="72dp"
+                    android:layout_marginTop="8dp">
+
+                    <HorizontalScrollView
+                        android:id="@+id/prayer_times_scroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_card"
+                    android:fillViewport="true"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layoutDirection="rtl"
                         android:orientation="horizontal"
-                        android:layoutDirection="rtl">
+                        android:paddingHorizontal="28dp">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/prayer_times_title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="اوقات شرعی"
-                                android:textColor="?attr/appTextPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="اذان صبح"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
 
-                            <TextView
-                                android:id="@+id/prayer_times_location"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="موقعیت تنظیم نشده"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="11sp" />
-                        </LinearLayout>
+                                <TextView
+                                    android:id="@+id/prayer_fajr"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
 
-                        <Button
-                            android:id="@+id/prayer_times_settings"
-                            android:layout_width="wrap_content"
-                            android:layout_height="38dp"
-                            android:background="@drawable/bg_soft_button"
-                            android:minWidth="0dp"
-                            android:paddingHorizontal="10dp"
-                            android:text="تنظیمات"
-                            android:textAllCaps="false"
-                            android:textColor="?attr/appPrimary"
-                            android:textSize="11sp" />
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="طلوع"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_sunrise"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="اذان ظهر"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_dhuhr"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="عصر"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_asr"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="غروب"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_sunset"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="اذان مغرب"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_maghrib"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="عشاء"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_isha"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:text="نیمه‌شب"
+                                    android:textColor="?attr/appTextSecondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/prayer_midnight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="—:—"
+                                    android:textColor="?attr/appPrimary"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="اذان صبح"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_fajr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <Space android:layout_width="6dp" android:layout_height="1dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="طلوع"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_sunrise"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <Space android:layout_width="6dp" android:layout_height="1dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="اذان ظهر"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_dhuhr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="غروب"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_sunset"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <Space android:layout_width="6dp" android:layout_height="1dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="اذان مغرب"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_maghrib"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <Space android:layout_width="6dp" android:layout_height="1dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="نیمه‌شب"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_midnight"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="عصر"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_asr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <Space android:layout_width="6dp" android:layout_height="1dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="58dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_field"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="عشاء"
-                                android:textColor="?attr/appTextSecondary"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:id="@+id/prayer_isha"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="—:—"
-                                android:textColor="?attr/appPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
+                    </HorizontalScrollView>
 
                     <TextView
-                        android:id="@+id/prayer_times_note"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="مرجع محاسبه: مؤسسه ژئوفیزیک دانشگاه تهران"
-                        android:textColor="?attr/appTextSecondary"
-                        android:textSize="10sp" />
-                </LinearLayout>
+                        android:id="@+id/prayer_scroll_left"
+                        android:layout_width="24dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left"
+                        android:background="?attr/appSurface"
+                        android:gravity="center"
+                        android:text="‹"
+                        android:textColor="?attr/appPrimary"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/prayer_scroll_right"
+                        android:layout_width="24dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:background="?attr/appSurface"
+                        android:gravity="center"
+                        android:text="›"
+                        android:textColor="?attr/appPrimary"
+                        android:textSize="22sp" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:id="@+id/calendar_events_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/bg_card"
                     android:orientation="vertical"
                     android:padding="14dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <TextView
-                            android:id="@+id/calendar_events_title"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="رویدادها و مناسبت‌ها"
-                            android:textColor="?attr/appTextPrimary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="34dp"
-                            android:background="@drawable/bg_soft_button"
-                            android:gravity="center"
-                            android:paddingHorizontal="10dp"
-                            android:text="تقویم"
-                            android:textColor="?attr/appPrimary"
-                            android:textSize="11sp" />
-                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/calendar_events_placeholder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp"
-                        android:text="پس از اتصال داده‌ها، مناسبت‌های فعال اینجا نمایش داده می‌شوند."
-                        android:textColor="?attr/appTextSecondary"
-                        android:textSize="12sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:gravity="start|center_vertical"
-                        android:orientation="horizontal"
-                        android:layoutDirection="rtl">
-
-                        <TextView
-                            android:id="@+id/calendar_event_source_persian"
-                            android:layout_width="wrap_content"
-                            android:layout_height="34dp"
-                            android:background="@drawable/bg_soft_button"
-                            android:gravity="center"
-                            android:paddingHorizontal="10dp"
-                            android:text="شمسی • ایران"
-                            android:textColor="?attr/appPrimary"
-                            android:textSize="11sp" />
-
-                        <Space
-                            android:layout_width="6dp"
-                            android:layout_height="1dp" />
-
-                        <TextView
-                            android:id="@+id/calendar_event_source_hijri"
-                            android:layout_width="wrap_content"
-                            android:layout_height="34dp"
-                            android:background="@drawable/bg_soft_button"
-                            android:gravity="center"
-                            android:paddingHorizontal="10dp"
-                            android:text="قمری • عربی"
-                            android:textColor="?attr/appPrimary"
-                            android:textSize="11sp" />
-
-                        <Space
-                            android:layout_width="6dp"
-                            android:layout_height="1dp" />
-
-                        <TextView
-                            android:id="@+id/calendar_event_source_gregorian"
-                            android:layout_width="wrap_content"
-                            android:layout_height="34dp"
-                            android:background="@drawable/bg_soft_button"
-                            android:gravity="center"
-                            android:paddingHorizontal="10dp"
-                            android:text="میلادی • جهانی"
-                            android:textColor="?attr/appPrimary"
-                            android:textSize="11sp" />
-                    </LinearLayout>
+                        android:textColor="?attr/appTextPrimary"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout

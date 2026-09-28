@@ -10,6 +10,13 @@ public final class AdhanReceiver extends BroadcastReceiver {
         int type = intent == null
                 ? AdhanScheduler.FAJR
                 : intent.getIntExtra("adhanType", AdhanScheduler.FAJR);
+        if (!AppSettings.adhanSound(context)
+                && !AppSettings.adhanVibrate(context)
+                && !AppSettings.adhanNotification(context)
+                && !AppSettings.adhanFullscreen(context)) {
+            AdhanScheduler.scheduleNext(context, type);
+            return;
+        }
         Intent service = AdhanSoundService.startIntent(context, type);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(service);

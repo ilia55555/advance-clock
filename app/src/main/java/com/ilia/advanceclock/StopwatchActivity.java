@@ -66,15 +66,15 @@ public final class StopwatchActivity extends Activity {
         } else {
             if (accumulatedMillis==0L) {
                 limitMillis=unlimitedSwitch.isChecked()?0L:readLimit();
-                if(!unlimitedSwitch.isChecked()&&limitMillis<=0L){Toast.makeText(this,"حد نهایی بیشتر از صفر وارد کنید",Toast.LENGTH_SHORT).show();return;}
+                if(!unlimitedSwitch.isChecked()&&limitMillis<=0L){LogoToast.makeText(this,"حد نهایی بیشتر از صفر وارد کنید",Toast.LENGTH_SHORT).show();return;}
             }
-            if(limitMillis>0L&&accumulatedMillis>=limitMillis){Toast.makeText(this,"ابتدا کرنومتر را صفر کنید",Toast.LENGTH_SHORT).show();return;}
+            if(limitMillis>0L&&accumulatedMillis>=limitMillis){LogoToast.makeText(this,"ابتدا کرنومتر را صفر کنید",Toast.LENGTH_SHORT).show();return;}
             startedAtWall=System.currentTimeMillis(); running=true;
             if(limitMillis>0L){
                 String label=labelInput.getText().toString().trim();
                 if(label.isEmpty())label=ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH);
                 boolean scheduled=ToolAlarmScheduler.schedule(this,ToolAlarmScheduler.STOPWATCH,startedAtWall+(limitMillis-accumulatedMillis),label);
-                if(!scheduled)Toast.makeText(this,"برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید",Toast.LENGTH_LONG).show();
+                if(!scheduled)LogoToast.makeText(this,"برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید",Toast.LENGTH_LONG).show();
             }
             handler.post(ticker);
         }

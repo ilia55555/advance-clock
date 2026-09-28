@@ -177,8 +177,31 @@ public final class AppSettings {
                 "prayer_location_label", "موقعیت فعلی");
     }
 
+    public static String prayerTimeZoneId(Context context) {
+        return prefs(context).getString(
+                "prayer_time_zone", java.util.TimeZone.getDefault().getID());
+    }
+
+    public static java.util.TimeZone prayerTimeZone(Context context) {
+        return java.util.TimeZone.getTimeZone(prayerTimeZoneId(context));
+    }
+
     public static void setPrayerLocation(
             Context context, double latitude, double longitude, String label) {
+        setPrayerLocation(
+                context,
+                latitude,
+                longitude,
+                label,
+                java.util.TimeZone.getDefault().getID());
+    }
+
+    public static void setPrayerLocation(
+            Context context,
+            double latitude,
+            double longitude,
+            String label,
+            String timeZoneId) {
         prefs(context).edit()
                 .putBoolean("prayer_location_set", true)
                 .putString("prayer_latitude", Double.toString(latitude))
@@ -186,6 +209,10 @@ public final class AppSettings {
                 .putString("prayer_location_label",
                         label == null || label.trim().isEmpty()
                                 ? "موقعیت فعلی" : label.trim())
+                .putString("prayer_time_zone",
+                        timeZoneId == null || timeZoneId.trim().isEmpty()
+                                ? java.util.TimeZone.getDefault().getID()
+                                : timeZoneId.trim())
                 .apply();
         AdhanScheduler.rescheduleAll(context);
     }
@@ -215,6 +242,55 @@ public final class AppSettings {
     public static void setMaghribAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_maghrib_enabled", value).apply();
         AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean asrAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_asr_enabled", false);
+    }
+
+    public static void setAsrAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_asr_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean ishaAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_isha_enabled", false);
+    }
+
+    public static void setIshaAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_isha_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean adhanFullscreen(Context context) {
+        return prefs(context).getBoolean("adhan_fullscreen", true);
+    }
+    public static void setAdhanFullscreen(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_fullscreen", value).apply();
+    }
+    public static boolean adhanNotification(Context context) {
+        return prefs(context).getBoolean("adhan_notification", true);
+    }
+    public static void setAdhanNotification(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_notification", value).apply();
+    }
+    public static boolean adhanSound(Context context) {
+        return prefs(context).getBoolean("adhan_sound", true);
+    }
+    public static void setAdhanSound(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_sound", value).apply();
+    }
+    public static String adhanSoundUri(Context context, int type) {
+        return prefs(context).getString("adhan_sound_uri_" + type, "");
+    }
+    public static void setAdhanSoundUri(Context context, int type, String uri) {
+        prefs(context).edit().putString("adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
+    }
+    public static String defaultAlarmSoundUri(Context context) {
+        return prefs(context).getString("default_alarm_sound_uri", "");
+    }
+    public static void setDefaultAlarmSoundUri(Context context, String uri) {
+        prefs(context).edit().putString("default_alarm_sound_uri", uri == null ? "" : uri).apply();
     }
 
     public static boolean adhanVibrate(Context context) {
@@ -285,7 +361,7 @@ public final class AppSettings {
     }
 
     public static int clockLayoutMode(Context context) {
-        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CURRENT);
+        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CALENDAR_FIRST);
     }
 
     public static void setClockLayoutMode(Context context, int value) {

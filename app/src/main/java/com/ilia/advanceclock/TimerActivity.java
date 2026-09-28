@@ -94,7 +94,7 @@ public final class TimerActivity extends Activity {
         long value = remainingMillis > 0 ? remainingMillis
                 : dateTimeMode ? selectedTarget - System.currentTimeMillis() : readDuration();
         if (value <= 0L) {
-            Toast.makeText(this, dateTimeMode ? "تاریخ و ساعت آینده را انتخاب کنید" : "یک زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, dateTimeMode ? "تاریخ و ساعت آینده را انتخاب کنید" : "یک زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
             return;
         }
         deadline = System.currentTimeMillis() + value;
@@ -102,7 +102,7 @@ public final class TimerActivity extends Activity {
         String label = labelInput.getText().toString().trim();
         if (label.isEmpty()) label = ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER);
         boolean scheduled = ToolAlarmScheduler.schedule(this, ToolAlarmScheduler.TIMER, deadline, label);
-        if (!scheduled) Toast.makeText(this, "برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید", Toast.LENGTH_LONG).show();
+        if (!scheduled) LogoToast.makeText(this, "برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید", Toast.LENGTH_LONG).show();
         save(); updateControls(); handler.post(ticker);
     }
 

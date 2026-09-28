@@ -122,16 +122,16 @@ final class StopwatchPanelController {
                     limitMillis = selectedTarget - System.currentTimeMillis();
                 }
                 if (mode != 0 && limitMillis <= 0L) {
-                    Toast.makeText(host, mode == 2
+                    LogoToast.makeText(host, mode == 2
                             ? "تاریخ و ساعت آینده را انتخاب کنید"
                             : "مدت‌زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
-            if(limitMillis>0L&&accumulatedMillis>=limitMillis){Toast.makeText(host,"ابتدا کرنومتر را صفر کنید",Toast.LENGTH_SHORT).show();return;}
+            if(limitMillis>0L&&accumulatedMillis>=limitMillis){LogoToast.makeText(host,"ابتدا کرنومتر را صفر کنید",Toast.LENGTH_SHORT).show();return;}
             startedAtWall=System.currentTimeMillis();
             if (mode == 2 && selectedTarget <= startedAtWall) {
-                Toast.makeText(host, "تاریخ و ساعت پایان گذشته است", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(host, "تاریخ و ساعت پایان گذشته است", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (mode == 2) limitMillis = accumulatedMillis + selectedTarget - startedAtWall;
@@ -140,7 +140,7 @@ final class StopwatchPanelController {
                 String label=labelInput.getText().toString().trim();
                 if(label.isEmpty())label=ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH);
                 boolean scheduled=ToolAlarmScheduler.schedule(host,ToolAlarmScheduler.STOPWATCH,startedAtWall+(limitMillis-accumulatedMillis),label);
-                if(!scheduled)Toast.makeText(host,"برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید",Toast.LENGTH_LONG).show();
+                if(!scheduled)LogoToast.makeText(host,"برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید",Toast.LENGTH_LONG).show();
             }
             handler.post(ticker);
         }

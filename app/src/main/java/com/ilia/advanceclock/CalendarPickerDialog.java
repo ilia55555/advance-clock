@@ -174,7 +174,7 @@ public final class CalendarPickerDialog {
                 );
 
                 if (rejectPast && millis < startOfToday()) {
-                    Toast.makeText(
+                    LogoToast.makeText(
                             context,
                             "تاریخ گذشته قابل انتخاب نیست",
                             Toast.LENGTH_SHORT).show();

@@ -15,7 +15,8 @@ public final class AlarmSnoozeReceiver extends BroadcastReceiver {
                 context,
                 item.id,
                 item.label,
-                item.vibrate);
+                item.vibrate,
+                item.soundUri);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(service);
