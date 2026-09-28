@@ -2,7 +2,6 @@ package com.ilia.advanceclock;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +14,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Small localization bridge for legacy UI that historically used hard-coded Persian strings.
- * New UI should still prefer normal Android string resources. This bridge lets us migrate the
- * existing app without leaving dialogs, toasts, dynamically-created controls, or old layouts in
- * Persian when another app language is selected.
+ * Localization bridge for legacy screens that historically used hard-coded Persian UI strings.
+ * New code should prefer normal Android string resources. The catalog itself is stored in the
+ * locale-specific resource files, so the app remains fully offline.
  */
 public final class UiText {
     private static volatile Context appContext;
     private static final Object CACHE_LOCK = new Object();
     private static String cachedLanguage = "";
-    private static Map<String, Integer> cachedIds = Collections.emptyMap();
+    private static Map<String, String> cachedValues = Collections.emptyMap();
     private static List<String> cachedKeysByLength = Collections.emptyList();
     private static final WeakHashMap<Activity, ViewTreeObserver.OnGlobalLayoutListener> LISTENERS =
             new WeakHashMap<>();
@@ -45,7 +42,7 @@ public final class UiText {
     public static void invalidate() {
         synchronized (CACHE_LOCK) {
             cachedLanguage = "";
-            cachedIds = Collections.emptyMap();
+            cachedValues = Collections.emptyMap();
             cachedKeysByLength = Collections.emptyList();
         }
     }
@@ -57,37 +54,36 @@ public final class UiText {
 
     public static String tr(Context context, String source) {
         if (source == null || source.isEmpty() || context == null) return source;
-        Integer id = catalog(context).get(source);
-        if (id != null) return context.getString(id);
+        String value = catalog(context).get(source);
+        if (value != null) return value;
 
         String trimmed = source.trim();
         if (!trimmed.equals(source)) {
-            id = catalog(context).get(trimmed);
-            if (id != null) {
+            value = catalog(context).get(trimmed);
+            if (value != null) {
                 int start = source.indexOf(trimmed);
                 String before = start > 0 ? source.substring(0, start) : "";
                 int end = start + trimmed.length();
                 String after = end < source.length() ? source.substring(end) : "";
-                return before + context.getString(id) + after;
+                return before + value + after;
             }
         }
         return source;
     }
 
-    /** Translate a completed UI label while preserving numbers and separators around known text. */
+    /** Translate completed labels while keeping dynamic numbers and separators around known text. */
     public static String trComposite(Context context, String source) {
         if (source == null || source.isEmpty() || context == null) return source;
         String exact = tr(context, source);
         if (!exact.equals(source)) return exact;
 
         String result = source;
-        Map<String, Integer> ids = catalog(context);
+        Map<String, String> values = catalog(context);
         for (String key : keysByLength(context)) {
             if (key.length() < 2 || !result.contains(key)) continue;
-            Integer id = ids.get(key);
-            if (id == null) continue;
-            String translated = context.getString(id);
-            if (!key.equals(translated)) result = result.replace(key, translated);
+            String translated = values.get(key);
+            if (translated != null && !key.equals(translated))
+                result = result.replace(key, translated);
         }
         return result;
     }
@@ -166,7 +162,7 @@ public final class UiText {
                 String value = trComposite(context, old);
                 if (!old.equals(value)) textView.setHint(value);
             }
-            // Never rewrite user-entered text in editable fields; only their hints/descriptions.
+            // Never rewrite user-entered text in editable fields; only their hint/description.
             if (!(view instanceof EditText)) {
                 CharSequence text = textView.getText();
                 if (!TextUtils.isEmpty(text)) {
@@ -184,9 +180,9 @@ public final class UiText {
         }
     }
 
-    private static Map<String, Integer> catalog(Context context) {
+    private static Map<String, String> catalog(Context context) {
         ensureCatalog(context);
-        return cachedIds;
+        return cachedValues;
     }
 
     private static List<String> keysByLength(Context context) {
@@ -197,16 +193,19 @@ public final class UiText {
     private static void ensureCatalog(Context context) {
         String language = AppSettings.language(context);
         synchronized (CACHE_LOCK) {
-            if (language.equals(cachedLanguage) && !cachedIds.isEmpty()) return;
-            HashMap<String, Integer> ids = new HashMap<>();
-            for (UiTextCatalog.Entry entry : UiTextCatalog.entries()) {
-                if (entry.source != null && !entry.source.isEmpty()) ids.put(entry.source, entry.resId);
+            if (language.equals(cachedLanguage) && !cachedValues.isEmpty()) return;
+            String[] keys = context.getResources().getStringArray(R.array.ui_text_keys);
+            String[] values = context.getResources().getStringArray(R.array.ui_text_values);
+            HashMap<String, String> map = new HashMap<>();
+            int count = Math.min(keys.length, values.length);
+            for (int i = 0; i < count; i++) {
+                if (keys[i] != null && !keys[i].isEmpty()) map.put(keys[i], values[i]);
             }
-            ArrayList<String> keys = new ArrayList<>(ids.keySet());
-            keys.sort(Comparator.comparingInt(String::length).reversed());
+            ArrayList<String> sorted = new ArrayList<>(map.keySet());
+            sorted.sort(Comparator.comparingInt(String::length).reversed());
             cachedLanguage = language;
-            cachedIds = ids;
-            cachedKeysByLength = keys;
+            cachedValues = map;
+            cachedKeysByLength = sorted;
         }
     }
 }
