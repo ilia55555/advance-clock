@@ -28,8 +28,12 @@ FOLDERS = {
     "ar": "values-ar",
 }
 
+def android_escape(value):
+    # Android's resource parser requires apostrophes and literal backslashes escaped.
+    return escape(value.replace("\\", "\\\\").replace("'", "\\'"))
+
 def items(values):
-    return "\n".join(f"        <item>{escape(value)}</item>" for value in values)
+    return "\n".join(f"        <item>{android_escape(value)}</item>" for value in values)
 
 def base_xml():
     return f'''<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <!-- Complete Persian source catalog. Array order must match runtime_translation. -->\n    <string-array name="runtime_source_fa" translatable="false">\n{items(sources)}\n    </string-array>\n    <string-array name="runtime_translation">\n{items(translations['fa'])}\n    </string-array>\n    <string-array name="palette_names">\n{items(palettes['fa'])}\n    </string-array>\n</resources>\n'''
