@@ -124,21 +124,25 @@ public final class SettingsActivity extends Activity {
 
         LinearLayout prayerCard = settingsCard();
 
-        TextView prayerTitle = new TextView(this);
-        prayerTitle.setText("اذان و اوقات شرعی");
-        prayerTitle.setTextColor(AppSettings.textPrimary(this));
-        prayerTitle.setTextSize(17);
-        prayerTitle.setTypeface(null, android.graphics.Typeface.BOLD);
-        prayerCard.addView(prayerTitle);
-
+        LinearLayout prayerRow = new LinearLayout(this);
+        prayerRow.setOrientation(LinearLayout.HORIZONTAL);
+        prayerRow.setGravity(Gravity.CENTER_VERTICAL);
+        prayerRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        Switch adhanEnabled = settingSwitch("نمایش بخش اذان", AppSettings.adhanEnabled(this));
+        prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, dp(50), 1f));
         Button prayerSettings = new Button(this);
-        prayerSettings.setText("تنظیمات اذان");
+        prayerSettings.setText("تنظیمات");
         prayerSettings.setAllCaps(false);
         prayerSettings.setTextColor(AppSettings.primaryColor(this));
         prayerSettings.setBackgroundResource(R.drawable.bg_soft_button);
         prayerSettings.setOnClickListener(v ->
                 startActivity(new Intent(this, PrayerSettingsActivity.class)));
-        prayerCard.addView(prayerSettings, new LinearLayout.LayoutParams(-1, dp(50)));
+        prayerRow.addView(prayerSettings, new LinearLayout.LayoutParams(dp(100), dp(44)));
+        prayerCard.addView(prayerRow);
+        adhanEnabled.setOnCheckedChangeListener((button, checked) -> {
+            AppSettings.setAdhanEnabled(this, checked);
+            setResult(RESULT_OK);
+        });
 
         root.addView(prayerCard, settingsCardParams());
 

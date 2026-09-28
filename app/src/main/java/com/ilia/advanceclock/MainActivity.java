@@ -72,6 +72,7 @@ public final class MainActivity extends Activity {
     private HorizontalScrollView prayerTimesScroll;
     private View prayerScrollLeft;
     private View prayerScrollRight;
+    private LinearLayout prayerAdditionalHorizons;
     private View calendarEventsCard;
     private ScrollView clockPanel;
     private View noForgetPanel;
@@ -221,8 +222,15 @@ public final class MainActivity extends Activity {
         prayerTimesScroll = findViewById(R.id.prayer_times_scroll);
         prayerScrollLeft = findViewById(R.id.prayer_scroll_left);
         prayerScrollRight = findViewById(R.id.prayer_scroll_right);
+        prayerAdditionalHorizons = findViewById(R.id.prayer_additional_horizons);
         prayerTimesScroll.setOnScrollChangeListener(
                 (view, x, y, oldX, oldY) -> updatePrayerScrollArrows());
+        prayerScrollLeft.setOnClickListener(v -> prayerTimesScroll.smoothScrollTo(0, 0));
+        prayerScrollRight.setOnClickListener(v -> {
+            View content = prayerTimesScroll.getChildAt(0);
+            if (content != null) prayerTimesScroll.smoothScrollTo(
+                    Math.max(0, content.getWidth() - prayerTimesScroll.getWidth()), 0);
+        });
         calendarEventsCard = findViewById(R.id.calendar_events_card);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
@@ -337,7 +345,8 @@ public final class MainActivity extends Activity {
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
             menu.getMenu().add(0, 1, 0, "تنظیمات");
-            menu.getMenu().add(0, 7, 1, "تنظیمات اذان و اوقات شرعی");
+            if (AppSettings.adhanEnabled(this))
+                menu.getMenu().add(0, 7, 1, "تنظیمات اذان و اوقات شرعی");
             menu.getMenu().add(0, 4, 2, "تنظیمات اعلان");
             menu.getMenu().add(0, 5, 3, "ویجت‌ها و تنظیمات");
             menu.getMenu().add(0, 6, 4, "جابه‌جایی ترتیب تب‌ها");
@@ -430,6 +439,55 @@ public final class MainActivity extends Activity {
         setPrayerTimeText(R.id.prayer_isha, times.isha());
         setPrayerTimeText(R.id.prayer_midnight, times.midnight());
         positionPrayerTimes(times);
+        renderAdditionalPrayerHorizons(millis);
+    }
+
+    private void renderAdditionalPrayerHorizons(long millis) {
+        if (prayerAdditionalHorizons == null) return;
+        prayerAdditionalHorizons.removeAllViews();
+        double primaryLat = AppSettings.prayerLatitude(this);
+        double primaryLon = AppSettings.prayerLongitude(this);
+        for (AppSettings.PrayerHorizon horizon : AppSettings.prayerHorizons(this)) {
+            if (Math.abs(horizon.latitude - primaryLat) < 0.0001
+                    && Math.abs(horizon.longitude - primaryLon) < 0.0001) continue;
+            PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
+                    millis, horizon.latitude, horizon.longitude,
+                    TimeZone.getTimeZone(horizon.timeZoneId));
+            HorizontalScrollView scroll = new HorizontalScrollView(this);
+            scroll.setHorizontalScrollBarEnabled(false);
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            TextView city = prayerCell(shortHorizonLabel(horizon.label), "افق");
+            city.setTextColor(AppSettings.textPrimary(this));
+            row.addView(city, new LinearLayout.LayoutParams(dp(92), dp(72)));
+            String[] labels = {"صبح", "طلوع", "ظهر", "عصر", "غروب", "مغرب", "عشاء", "نیمه‌شب"};
+            String[] values = {times.fajr(), times.sunrise(), times.dhuhr(), times.asr(),
+                    times.sunset(), times.maghrib(), times.isha(), times.midnight()};
+            for (int index = 0; index < labels.length; index++)
+                row.addView(prayerCell(labels[index], values[index]),
+                        new LinearLayout.LayoutParams(dp(72), dp(72)));
+            scroll.addView(row, new HorizontalScrollView.LayoutParams(-2, dp(72)));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(72));
+            params.topMargin = dp(6);
+            prayerAdditionalHorizons.addView(scroll, params);
+        }
+    }
+
+    private TextView prayerCell(String label, String value) {
+        TextView cell = new TextView(this);
+        cell.setGravity(Gravity.CENTER);
+        cell.setText(label + "\n" + value);
+        cell.setTextColor(AppSettings.textSecondary(this));
+        cell.setTextSize(11);
+        cell.setBackgroundResource(R.drawable.bg_card);
+        return cell;
+    }
+
+    private String shortHorizonLabel(String label) {
+        if (label == null || label.trim().isEmpty()) return "افق";
+        int comma = label.indexOf('،');
+        return comma > 0 ? label.substring(0, comma) : label;
     }
 
     private void positionPrayerTimes(PrayerTimeCalculator.Times times) {
@@ -1273,10 +1331,16 @@ public final class MainActivity extends Activity {
             return;
         }
 
+        android.app.PendingIntent pinned = android.app.PendingIntent.getBroadcast(
+                this,
+                provider.getName().hashCode(),
+                new Intent(this, WidgetPinnedReceiver.class),
+                android.app.PendingIntent.FLAG_UPDATE_CURRENT
+                        | android.app.PendingIntent.FLAG_IMMUTABLE);
         boolean opened = manager.requestPinAppWidget(
                 new ComponentName(this, provider),
                 null,
-                null);
+                pinned);
 
         LogoToast.makeText(
                 this,

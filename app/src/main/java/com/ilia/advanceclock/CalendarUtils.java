@@ -79,12 +79,8 @@ public final class CalendarUtils {
 
     public static String formatDate(long millis, int type) {
         android.icu.util.Calendar c = fromMillis(type, millis);
-        String day = type == GREGORIAN
-                ? String.valueOf(c.get(android.icu.util.Calendar.DAY_OF_MONTH))
-                : fa(c.get(android.icu.util.Calendar.DAY_OF_MONTH));
-        String year = type == GREGORIAN
-                ? String.valueOf(c.get(android.icu.util.Calendar.YEAR))
-                : fa(c.get(android.icu.util.Calendar.YEAR));
+        String day = fa(c.get(android.icu.util.Calendar.DAY_OF_MONTH));
+        String year = fa(c.get(android.icu.util.Calendar.YEAR));
         return day + " " + monthName(type, c.get(android.icu.util.Calendar.MONTH)) + " " + year;
     }
 
@@ -94,7 +90,7 @@ public final class CalendarUtils {
                 c.get(android.icu.util.Calendar.YEAR),
                 c.get(android.icu.util.Calendar.MONTH) + 1,
                 c.get(android.icu.util.Calendar.DAY_OF_MONTH));
-        return type == GREGORIAN ? value : fa(value);
+        return fa(value);
     }
 
     public static int otherTypeOne(int primary) {
@@ -112,10 +108,14 @@ public final class CalendarUtils {
     }
 
     public static String fa(String value) {
+        String language = Locale.getDefault().getLanguage();
+        if (!"fa".equals(language) && !"ar".equals(language)) return value;
         char[] en = {'0','1','2','3','4','5','6','7','8','9'};
-        char[] pe = {'۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'};
+        char[] localized = "ar".equals(language)
+                ? new char[]{'٠','١','٢','٣','٤','٥','٦','٧','٨','٩'}
+                : new char[]{'۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'};
         String out = value;
-        for (int i = 0; i < en.length; i++) out = out.replace(en[i], pe[i]);
+        for (int i = 0; i < en.length; i++) out = out.replace(en[i], localized[i]);
         return out;
     }
 }

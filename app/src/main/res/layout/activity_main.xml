@@ -431,8 +431,13 @@
                 <FrameLayout
                     android:id="@+id/prayer_times_card"
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_marginTop="8dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp">
 
                     <HorizontalScrollView
                         android:id="@+id/prayer_times_scroll"
@@ -448,7 +453,7 @@
                         android:layout_height="match_parent"
                         android:layoutDirection="rtl"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="28dp">
+                        android:paddingHorizontal="8dp">
 
                             <LinearLayout
                                 android:layout_width="72dp"
@@ -657,9 +662,11 @@
                         android:layout_width="24dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="left"
-                        android:background="?attr/appSurface"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
-                        android:text="‹"
+                        android:text="&lt;"
                         android:textColor="?attr/appPrimary"
                         android:textSize="22sp" />
 
@@ -668,12 +675,21 @@
                         android:layout_width="24dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="right"
-                        android:background="?attr/appSurface"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
-                        android:text="›"
+                        android:text="&gt;"
                         android:textColor="?attr/appPrimary"
                         android:textSize="22sp" />
-                </FrameLayout>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/prayer_additional_horizons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/calendar_events_card"

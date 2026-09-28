@@ -1,5 +1,6 @@
 package com.ilia.advanceclock;
 
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -116,19 +117,25 @@ public final class AlarmSoundService extends Service {
                 ? new Notification.Builder(this, NotificationHelper.ALARM_CHANNEL)
                 : new Notification.Builder(this);
 
-        return builder
-                .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(title)
-                .setContentText(message)
+        builder.setSmallIcon(R.drawable.ic_alarm)
+                .setContentTitle(CalendarUtils.fa(title))
+                .setContentText(CalendarUtils.fa(message))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
-                .setFullScreenIntent(fullScreen, true)
                 .setContentIntent(fullScreen)
-                .addAction(new Notification.Action.Builder(null, "قطع", stopAction).build())
-                .build();
+                .addAction(new Notification.Action.Builder(null, "قطع", stopAction).build());
+        if (shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
+        return builder.build();
+    }
+
+    private boolean shouldOpenFullscreen() {
+        KeyguardManager keyguard = getSystemService(KeyguardManager.class);
+        boolean locked = keyguard != null && keyguard.isKeyguardLocked();
+        return locked ? AppSettings.alarmFullscreenLocked(this)
+                : AppSettings.alarmFullscreenUnlocked(this);
     }
 
     private void startSound() {

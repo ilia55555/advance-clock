@@ -1,5 +1,6 @@
 package com.ilia.advanceclock;
 
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -93,15 +94,22 @@ public final class AdhanSoundService extends Service {
         Notification.Builder builder = new Notification.Builder(
                 this, NotificationHelper.ADHAN_CHANNEL)
                 .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(AdhanScheduler.title(type))
-                .setContentText(AppSettings.adhanNotification(this)
-                        ? AppSettings.prayerLocationLabel(this) : "اذان در حال اجرا")
+                .setContentTitle(CalendarUtils.fa(AdhanScheduler.title(type)))
+                .setContentText(CalendarUtils.fa(AppSettings.adhanNotification(this)
+                        ? AppSettings.prayerLocationLabel(this) : "اذان در حال اجرا"))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setOngoing(true)
                 .setContentIntent(open)
                 .addAction(new Notification.Action.Builder(null, "قطع اذان", stop).build());
-        if (AppSettings.adhanFullscreen(this)) builder.setFullScreenIntent(open, true);
+        if (shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
         return builder.build();
+    }
+
+    private boolean shouldOpenFullscreen() {
+        KeyguardManager keyguard = getSystemService(KeyguardManager.class);
+        boolean locked = keyguard != null && keyguard.isKeyguardLocked();
+        return locked ? AppSettings.adhanFullscreenLocked(this)
+                : AppSettings.adhanFullscreenUnlocked(this);
     }
 
     private void startPlayback() {

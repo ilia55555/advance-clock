@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -72,6 +73,13 @@ final class FirstRunSetupDialog {
         calendar.setSelection(AppSettings.defaultCalendar(activity), false);
         content.addView(calendar, fieldParams(activity));
 
+        Switch adhan = new Switch(activity);
+        adhan.setText("نمایش بخش اذان و اوقات شرعی");
+        adhan.setTextColor(AppSettings.textPrimary(activity));
+        adhan.setChecked(false);
+        adhan.setPadding(0, dp(activity, 12), 0, 0);
+        content.addView(adhan, new LinearLayout.LayoutParams(-1, dp(activity, 56)));
+
         AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(content)
                 .setPositiveButton(R.string.continue_label, null)
@@ -115,6 +123,7 @@ final class FirstRunSetupDialog {
                 boolean languageChanged = !selectedLanguage.equals(AppSettings.language(activity));
                 AppSettings.setLanguage(activity, selectedLanguage);
                 AppSettings.setDefaultCalendar(activity, calendar.getSelectedItemPosition());
+                AppSettings.setAdhanEnabled(activity, adhan.isChecked());
                 dialog.dismiss();
                 completed.onCompleted(languageChanged);
             });

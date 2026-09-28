@@ -149,25 +149,40 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(fajr); azanCard.addView(dhuhr); azanCard.addView(asr);
         azanCard.addView(maghrib); azanCard.addView(isha);
 
-        addSoundButton(azanCard, "موذن اذان صبح", AdhanScheduler.FAJR);
-        addSoundButton(azanCard, "موذن اذان ظهر", AdhanScheduler.DHUHR);
-        addSoundButton(azanCard, "موذن عصر", AdhanScheduler.ASR);
-        addSoundButton(azanCard, "موذن اذان مغرب", AdhanScheduler.MAGHRIB);
-        addSoundButton(azanCard, "موذن عشاء", AdhanScheduler.ISHA);
+        LinearLayout muezzinCard = card();
+        TextView muezzinTitle = text("انتخاب موذن", 17, AppSettings.textPrimary(this));
+        muezzinTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        muezzinCard.addView(muezzinTitle);
+        LinearLayout[] soundRows = {soundRow(), soundRow(), soundRow()};
+        addSoundButton(soundRows[0], "موذن برای همه", 899);
+        addSoundButton(soundRows[0], "اذان صبح", AdhanScheduler.FAJR);
+        addSoundButton(soundRows[1], "اذان ظهر", AdhanScheduler.DHUHR);
+        addSoundButton(soundRows[1], "عصر", AdhanScheduler.ASR);
+        addSoundButton(soundRows[2], "اذان مغرب", AdhanScheduler.MAGHRIB);
+        addSoundButton(soundRows[2], "عشاء", AdhanScheduler.ISHA);
+        for (LinearLayout row : soundRows) muezzinCard.addView(row,
+                new LinearLayout.LayoutParams(-1, dp(58)));
 
         LinearLayout outputCard = card();
         TextView outputTitle = text("نحوه اعلام اذان", 17, AppSettings.textPrimary(this));
         outputTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         outputCard.addView(outputTitle);
-        Switch fullscreen = toggle("صفحه تمام‌صفحه اذان", AppSettings.adhanFullscreen(this));
-        fullscreen.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanFullscreen(this, checked));
+        Switch fullscreenUnlocked = toggle(
+                "تمام‌صفحه اذان وقتی گوشی باز است", AppSettings.adhanFullscreenUnlocked(this));
+        fullscreenUnlocked.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanFullscreenUnlocked(this, checked));
+        Switch fullscreenLocked = toggle(
+                "تمام‌صفحه اذان روی صفحه قفل", AppSettings.adhanFullscreenLocked(this));
+        fullscreenLocked.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanFullscreenLocked(this, checked));
         Switch notification = toggle("اعلان اذان", AppSettings.adhanNotification(this));
         notification.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanNotification(this, checked));
         Switch vibrate = toggle("لرزش اذان", AppSettings.adhanVibrate(this));
         vibrate.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanVibrate(this, checked));
         Switch sound = toggle("صدای اذان", AppSettings.adhanSound(this));
         sound.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanSound(this, checked));
-        outputCard.addView(fullscreen); outputCard.addView(notification);
+        outputCard.addView(fullscreenUnlocked); outputCard.addView(fullscreenLocked);
+        outputCard.addView(notification);
         outputCard.addView(vibrate); outputCard.addView(sound);
 
         adhanScheduleStatus = text(
@@ -179,7 +194,11 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(adhanScheduleStatus);
 
         root.addView(azanCard, cardParams());
+        root.addView(muezzinCard, cardParams());
         root.addView(outputCard, cardParams());
+        Button preview = fieldButton("پیش‌نمایش صفحه اذان");
+        preview.setOnClickListener(v -> previewAdhan());
+        root.addView(preview, new LinearLayout.LayoutParams(-1, dp(54)));
 
         setContentView(scroll);
         AppSettings.applyFullscreenInsets(scroll);
@@ -293,21 +312,42 @@ public final class PrayerSettingsActivity extends Activity {
     }
 
     private void addSoundButton(LinearLayout parent, String label, int type) {
-        Button button = fieldButton(label + " • "
-                + SoundLibrary.name(this, AppSettings.adhanSoundUri(this, type)));
+        String selected = type == 899 ? AppSettings.adhanSoundUri(this, AdhanScheduler.FAJR)
+                : AppSettings.adhanSoundUri(this, type);
+        Button button = fieldButton(label + " • " + SoundLibrary.name(this, selected));
         button.setOnClickListener(v -> startActivityForResult(
-                new Intent(this, SoundPickerActivity.class), 800 + type));
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(52));
-        params.topMargin = dp(6);
+                new Intent(this, SoundPickerActivity.class), type == 899 ? 899 : 800 + type));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, dp(52), 1f);
+        params.setMarginStart(dp(4));
+        params.setMarginEnd(dp(4));
         parent.addView(button, params);
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode < 800 || requestCode > 804 || resultCode != RESULT_OK || data == null) return;
-        AppSettings.setAdhanSoundUri(
-                this, requestCode - 800, data.getStringExtra(SoundPickerActivity.EXTRA_URI));
+        if ((requestCode < 800 || requestCode > 804) && requestCode != 899
+                || resultCode != RESULT_OK || data == null) return;
+        String uri = data.getStringExtra(SoundPickerActivity.EXTRA_URI);
+        if (requestCode == 899) {
+            for (int type = AdhanScheduler.FAJR; type <= AdhanScheduler.ISHA; type++)
+                AppSettings.setAdhanSoundUri(this, type, uri);
+        } else AppSettings.setAdhanSoundUri(this, requestCode - 800, uri);
         recreate();
+    }
+
+    private LinearLayout soundRow() {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        return row;
+    }
+
+    private void previewAdhan() {
+        Intent service = AdhanSoundService.startIntent(this, AdhanScheduler.FAJR);
+        if (Build.VERSION.SDK_INT >= 26) startForegroundService(service);
+        else startService(service);
+        startActivity(new Intent(this, AdhanRingActivity.class)
+                .putExtra("adhanType", AdhanScheduler.FAJR));
     }
 
     private void requestPreciseLocation() {

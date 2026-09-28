@@ -24,6 +24,8 @@ public final class NotificationSettingsActivity extends Activity {
     private Switch alarmReminders;
     private Switch noteReminders;
     private Switch lockscreenDetails;
+    private Switch alarmFullscreenUnlocked;
+    private Switch alarmFullscreenLocked;
     private boolean permissionRequestInFlight;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,13 @@ public final class NotificationSettingsActivity extends Activity {
                 "نمایش جزئیات روی صفحه قفل",
                 AppSettings.notificationLockscreenDetails(this));
 
+        alarmFullscreenUnlocked = addSwitch(root,
+                "تمام‌صفحه هشدار وقتی گوشی باز است",
+                AppSettings.alarmFullscreenUnlocked(this));
+        alarmFullscreenLocked = addSwitch(root,
+                "تمام‌صفحه هشدار روی صفحه قفل",
+                AppSettings.alarmFullscreenLocked(this));
+
         Button alarmSound = new Button(this);
         alarmSound.setText("صدای پیش‌فرض هشدار • "
                 + SoundLibrary.name(this, AppSettings.defaultAlarmSoundUri(this)));
@@ -134,6 +143,8 @@ public final class NotificationSettingsActivity extends Activity {
                 (button, checked) -> saveSettings());
         lockscreenDetails.setOnCheckedChangeListener(
                 (button, checked) -> saveSettings());
+        alarmFullscreenUnlocked.setOnCheckedChangeListener((button, checked) -> saveSettings());
+        alarmFullscreenLocked.setOnCheckedChangeListener((button, checked) -> saveSettings());
 
         setContentView(scroll);
         AppSettings.applyFullscreenInsets(scroll);
@@ -191,6 +202,8 @@ public final class NotificationSettingsActivity extends Activity {
         AppSettings.setNotificationLockscreenDetails(
                 this,
                 lockscreenDetails.isChecked());
+        AppSettings.setAlarmFullscreenUnlocked(this, alarmFullscreenUnlocked.isChecked());
+        AppSettings.setAlarmFullscreenLocked(this, alarmFullscreenLocked.isChecked());
 
         if (shouldRequestRuntimePermission() && !permissionRequestInFlight) {
             permissionRequestInFlight = true;

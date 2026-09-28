@@ -370,12 +370,42 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private void select(LocationResult location) {
+        if ("Asia/Tehran".equals(location.timeZoneId)) {
+            saveLocation(location, location.timeZoneId);
+            return;
+        }
+        progress.setVisibility(View.VISIBLE);
+        status.setText("در حال تنظیم منطقه زمانی…");
+        new Thread(() -> {
+            String zone = resolveTimeZone(location.latitude, location.longitude);
+            runOnUiThread(() -> saveLocation(location,
+                    zone.isEmpty() ? location.timeZoneId : zone));
+        }).start();
+    }
+
+    private String resolveTimeZone(double latitude, double longitude) {
+        HttpURLConnection connection = null;
+        try {
+            Uri uri = Uri.parse("https://timeapi.io/api/timezone/coordinate").buildUpon()
+                    .appendQueryParameter("latitude", Double.toString(latitude))
+                    .appendQueryParameter("longitude", Double.toString(longitude)).build();
+            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+            connection.setConnectTimeout(10_000); connection.setReadTimeout(10_000);
+            connection.setRequestProperty("Accept", "application/json");
+            if (connection.getResponseCode() < 200 || connection.getResponseCode() >= 300)
+                return "";
+            return new JSONObject(readFully(connection.getInputStream()))
+                    .optString("timeZone", "");
+        } catch (Exception ignored) {
+            return "";
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
+    private void saveLocation(LocationResult location, String timeZoneId) {
         AppSettings.setPrayerLocation(
-                this,
-                location.latitude,
-                location.longitude,
-                location.label,
-                location.timeZoneId);
+                this, location.latitude, location.longitude, location.label, timeZoneId);
         setResult(RESULT_OK);
         finish();
     }
