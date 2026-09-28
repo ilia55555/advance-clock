@@ -14,17 +14,21 @@ public final class AdvanceClockApplication extends Application {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override public void onActivityCreated(Activity activity, Bundle state) {
                 fixPrayerArrows(activity);
+                NoteComposerVisibilityController.apply(activity);
             }
 
             @Override public void onActivityResumed(Activity activity) {
                 fixPrayerArrows(activity);
+                NoteComposerVisibilityController.apply(activity);
             }
 
             @Override public void onActivityStarted(Activity activity) {}
             @Override public void onActivityPaused(Activity activity) {}
             @Override public void onActivityStopped(Activity activity) {}
             @Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
-            @Override public void onActivityDestroyed(Activity activity) {}
+            @Override public void onActivityDestroyed(Activity activity) {
+                NoteComposerVisibilityController.forget(activity);
+            }
         });
     }
 
