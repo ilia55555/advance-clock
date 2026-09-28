@@ -2,14 +2,26 @@ plugins {
     id 'com.android.application'
 }
 
-def generateLocalizations = tasks.register('generateLocalizations', Exec) {
-    workingDir rootProject.projectDir
-    commandLine 'python3', 'tools/generate_localizations.py'
-    inputs.dir rootProject.file('tools/localization_payload')
-    inputs.file rootProject.file('tools/generate_localizations.py')
-    outputs.files(fileTree('src/main/res') {
-        include 'values*/localization_full.xml'
-    })
+def localizationResourceFiles = [
+        'values', 'values-ar', 'values-de', 'values-en', 'values-es', 'values-fa',
+        'values-fr', 'values-hi', 'values-ja', 'values-pt', 'values-ru', 'values-tr',
+        'values-zh-rCN'
+].collect { file("src/main/res/${it}/localization_full.xml") }
+
+// Localization XML files are version-controlled. Keep this compatibility task so old Android
+// Studio run configurations can request it without requiring Python on the developer PC.
+tasks.register('generateLocalizations') {
+    group = 'build setup'
+    description = 'Verifies the localization XML files committed under src/main/res.'
+    inputs.files(localizationResourceFiles)
+    doLast {
+        def missingFiles = localizationResourceFiles.findAll { !it.isFile() }
+        if (!missingFiles.isEmpty()) {
+            throw new GradleException('Missing committed localization resources: '
+                    + missingFiles.join(', '))
+        }
+        logger.lifecycle('All committed localization resources are present.')
+    }
 }
 
 android {
@@ -36,5 +48,5 @@ android {
 }
 
 tasks.named('preBuild').configure {
-    dependsOn generateLocalizations
+    dependsOn tasks.named('generateLocalizations')
 }
