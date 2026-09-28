@@ -2,7 +2,6 @@ package com.ilia.advanceclock;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +14,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Small localization bridge for legacy UI that historically used hard-coded Persian strings.
- * New UI should still prefer normal Android string resources. This bridge lets us migrate the
- * existing app without leaving dialogs, toasts, dynamically-created controls, or old layouts in
- * Persian when another app language is selected.
+ * Localization bridge for legacy screens that historically used hard-coded Persian UI strings.
+ * New code should prefer normal Android string resources. The catalog itself is stored in the
+ * locale-specific resource files, so the app remains fully offline.
  */
 public final class UiText {
     private static volatile Context appContext;
@@ -74,7 +71,7 @@ public final class UiText {
         return source;
     }
 
-    /** Translate a completed UI label while preserving numbers and separators around known text. */
+    /** Translate completed labels while keeping dynamic numbers and separators around known text. */
     public static String trComposite(Context context, String source) {
         if (source == null || source.isEmpty() || context == null) return source;
         String exact = tr(context, source);
@@ -165,7 +162,7 @@ public final class UiText {
                 String value = trComposite(context, old);
                 if (!old.equals(value)) textView.setHint(value);
             }
-            // Never rewrite user-entered text in editable fields; only their hints/descriptions.
+            // Never rewrite user-entered text in editable fields; only their hint/description.
             if (!(view instanceof EditText)) {
                 CharSequence text = textView.getText();
                 if (!TextUtils.isEmpty(text)) {
