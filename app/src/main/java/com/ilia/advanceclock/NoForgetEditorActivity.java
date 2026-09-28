@@ -351,9 +351,10 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     private void showSketchModal(){
-        LinearLayout root=new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(12),dp(8),dp(12),dp(8));
+        LinearLayout root=NoteModalStyler.content(
+                this,
+                "ترسیم",
+                "با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «ذخیره ترسیم» ثبت می‌شود.");
 
         LinearLayout toolbar=new LinearLayout(this);
         toolbar.setOrientation(LinearLayout.HORIZONTAL);
@@ -425,8 +426,7 @@ public final class NoForgetEditorActivity extends Activity {
         cp.topMargin=dp(8);
         root.addView(canvas,cp);
 
-        new AlertDialog.Builder(this)
-                .setTitle("ترسیم")
+        AlertDialog dialog=new AlertDialog.Builder(this)
                 .setView(root)
                 .setNegativeButton("انصراف",null)
                 .setPositiveButton(
@@ -435,7 +435,8 @@ public final class NoForgetEditorActivity extends Activity {
                             sketch.load(canvas.serialize());
                             updateActionButtons();
                         })
-                .show();
+                .create();
+        NoteModalStyler.show(dialog);
     }
 
     private Button smallToolButton(String text){
@@ -445,6 +446,8 @@ public final class NoForgetEditorActivity extends Activity {
         button.setTextSize(11);
         button.setMinWidth(0);
         button.setPadding(0,0,0,0);
+        button.setTextColor(AppSettings.primaryColor(this));
+        button.setBackgroundResource(R.drawable.bg_soft_button);
         return button;
     }
 
@@ -460,17 +463,10 @@ public final class NoForgetEditorActivity extends Activity {
             filesDialog.dismiss();
         }
 
-        LinearLayout root=new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(12),dp(8),dp(12),dp(8));
-
-        TextView hint=new TextView(this);
-        hint.setText("هر تعداد فایل یا تصویر که می‌خواهید اضافه کنید. برای باز کردن روی مورد بزنید.");
-        hint.setTextColor(AppSettings.textPrimary(this));
-        hint.setTextSize(12);
-        root.addView(hint,new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout root=NoteModalStyler.content(
+                this,
+                "فایل‌ها و تصاویر",
+                "هر تعداد فایل یا تصویر اضافه کنید؛ برای باز کردن هر مورد روی آن بزنید.");
 
         Button add=makeModalPrimaryButton("+ افزودن فایل یا تصویر");
         LinearLayout.LayoutParams ap=new LinearLayout.LayoutParams(
@@ -490,7 +486,6 @@ public final class NoForgetEditorActivity extends Activity {
         root.addView(scroll,sp);
 
         filesDialog=new AlertDialog.Builder(this)
-                .setTitle("فایل‌ها و تصاویر")
                 .setView(root)
                 .setNegativeButton("بستن",null)
                 .create();
@@ -502,7 +497,7 @@ public final class NoForgetEditorActivity extends Activity {
         });
 
         renderFileModalList();
-        filesDialog.show();
+        NoteModalStyler.show(filesDialog);
     }
 
     private void renderFileModalList(){
@@ -531,9 +526,10 @@ public final class NoForgetEditorActivity extends Activity {
             appSiteDialog.dismiss();
         }
 
-        LinearLayout root=new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(12),dp(8),dp(12),dp(8));
+        LinearLayout root=NoteModalStyler.content(
+                this,
+                "افزودن اپ یا سایت",
+                "یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.");
 
         Button chooseApp=makeModalPrimaryButton("انتخاب برنامه نصب‌شده");
         root.addView(
@@ -549,6 +545,8 @@ public final class NoForgetEditorActivity extends Activity {
                 InputType.TYPE_CLASS_TEXT
                         |InputType.TYPE_TEXT_VARIATION_URI);
         url.setBackgroundResource(R.drawable.bg_field);
+        url.setTextColor(AppSettings.textPrimary(this));
+        url.setHintTextColor(AppSettings.textSecondary(this));
         url.setPadding(dp(12),0,dp(12),0);
         LinearLayout.LayoutParams up=new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -574,7 +572,6 @@ public final class NoForgetEditorActivity extends Activity {
         root.addView(scroll,sp);
 
         appSiteDialog=new AlertDialog.Builder(this)
-                .setTitle("افزودن اپ یا سایت")
                 .setView(root)
                 .setNegativeButton("بستن",null)
                 .create();
@@ -610,7 +607,7 @@ public final class NoForgetEditorActivity extends Activity {
         });
 
         renderAppSiteModalList();
-        appSiteDialog.show();
+        NoteModalStyler.show(appSiteDialog);
     }
 
     private void renderAppSiteModalList(){
@@ -639,8 +636,9 @@ public final class NoForgetEditorActivity extends Activity {
         Button button=new Button(this);
         button.setText(text);
         button.setAllCaps(false);
-        button.setTextColor(AppSettings.primaryColor(this));
-        button.setBackgroundResource(R.drawable.bg_soft_button);
+        button.setTextColor(0xFFFFFFFF);
+        button.setTextSize(13);
+        button.setBackgroundResource(R.drawable.bg_orange_button);
         return button;
     }
 

@@ -108,6 +108,12 @@ public final class WidgetCenterActivity extends Activity {
                 "world");
 
         addWidgetCard(
+                "اوقات شرعی افق‌ها",
+                "نمایش پنج وقت شرعی برای همه شهرها و افق‌های انتخاب‌شده",
+                PrayerTimesWidgetProvider.class,
+                "prayer");
+
+        addWidgetCard(
                 "یادآوری فایل‌ها",
                 "دسترسی سریع و یادآوری عکس، صوت، ویدیو، متن، PDF و فایل‌های دیگر",
                 MediaWidgetProvider.class,
@@ -244,6 +250,8 @@ public final class WidgetCenterActivity extends Activity {
         Intent intent;
         if ("world".equals(kind)) {
             intent = new Intent(this, WorldClockWidgetConfigActivity.class);
+        } else if ("prayer".equals(kind)) {
+            intent = new Intent(this, PrayerSettingsActivity.class);
         } else if ("media".equals(kind)) {
             intent = new Intent(this, MediaWidgetConfigActivity.class)
                     .putExtra("editExisting", true)

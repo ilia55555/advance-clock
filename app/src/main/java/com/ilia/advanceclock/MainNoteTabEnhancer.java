@@ -167,9 +167,10 @@ final class MainNoteTabEnhancer {
         SketchView stored = activity.findViewById(R.id.quick_note_sketch);
         if (stored == null) return;
 
-        LinearLayout root = new LinearLayout(activity);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(activity, 10), dp(activity, 6), dp(activity, 10), dp(activity, 6));
+        LinearLayout root = NoteModalStyler.content(
+                activity,
+                "ترسیم",
+                "با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «ذخیره ترسیم» ثبت می‌شود.");
 
         HorizontalScrollView scroll = new HorizontalScrollView(activity);
         scroll.setHorizontalScrollBarEnabled(false);
@@ -222,26 +223,24 @@ final class MainNoteTabEnhancer {
         canvasParams.topMargin = dp(activity, 8);
         root.addView(canvas, canvasParams);
 
-        new AlertDialog.Builder(activity)
-                .setTitle("ترسیم")
+        AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(root)
                 .setNegativeButton("انصراف", null)
                 .setPositiveButton("ذخیره ترسیم", (dialog, which) -> {
                     stored.load(canvas.serialize());
                     updateActionButtons(activity, state);
                 })
-                .show();
+                .create();
+        NoteModalStyler.show(dialog);
     }
 
     private static void showFilesDialog(Activity activity, State state) {
         if (state.dialog != null && state.dialog.isShowing()) state.dialog.dismiss();
 
-        LinearLayout root = dialogRoot(activity);
-        TextView hint = new TextView(activity);
-        hint.setText("هر تعداد فایل یا تصویر که می‌خواهید اضافه کنید. برای باز کردن روی مورد بزنید.");
-        hint.setTextColor(AppSettings.textPrimary(activity));
-        hint.setTextSize(12);
-        root.addView(hint);
+        LinearLayout root = NoteModalStyler.content(
+                activity,
+                "فایل‌ها و تصاویر",
+                "هر تعداد فایل یا تصویر اضافه کنید؛ برای باز کردن هر مورد روی آن بزنید.");
 
         Button add = modalButton(activity, "+ افزودن فایل یا تصویر");
         addBlock(root, add, activity, 50);
@@ -257,7 +256,6 @@ final class MainNoteTabEnhancer {
         renderAttachmentList(activity, state, list, NoteAttachment.KIND_FILE);
 
         state.dialog = new AlertDialog.Builder(activity)
-                .setTitle("فایل‌ها و تصاویر")
                 .setView(root)
                 .setNegativeButton("بستن", null)
                 .create();
@@ -266,13 +264,16 @@ final class MainNoteTabEnhancer {
             state.dialog.dismiss();
             launchBridge(activity, "files");
         });
-        state.dialog.show();
+        NoteModalStyler.show(state.dialog);
     }
 
     private static void showTargetsDialog(Activity activity, State state) {
         if (state.dialog != null && state.dialog.isShowing()) state.dialog.dismiss();
 
-        LinearLayout root = dialogRoot(activity);
+        LinearLayout root = NoteModalStyler.content(
+                activity,
+                "افزودن اپ یا سایت",
+                "یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.");
         Button chooseApp = modalButton(activity, "انتخاب برنامه نصب‌شده");
         root.addView(chooseApp, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, dp(activity, 50)));
@@ -282,6 +283,8 @@ final class MainNoteTabEnhancer {
         url.setSingleLine(true);
         url.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         url.setBackgroundResource(R.drawable.bg_field);
+        url.setTextColor(AppSettings.textPrimary(activity));
+        url.setHintTextColor(AppSettings.textSecondary(activity));
         url.setPadding(dp(activity, 12), 0, dp(activity, 12), 0);
         LinearLayout.LayoutParams urlParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, dp(activity, 52));
@@ -302,7 +305,6 @@ final class MainNoteTabEnhancer {
         renderAttachmentList(activity, state, list, "targets");
 
         state.dialog = new AlertDialog.Builder(activity)
-                .setTitle("افزودن اپ یا سایت")
                 .setView(root)
                 .setNegativeButton("بستن", null)
                 .create();
@@ -328,7 +330,7 @@ final class MainNoteTabEnhancer {
             renderAttachmentList(activity, state, list, "targets");
             updateActionButtons(activity, state);
         });
-        state.dialog.show();
+        NoteModalStyler.show(state.dialog);
     }
 
     private static void renderAttachmentList(Activity activity, State state, LinearLayout list, String filter) {
@@ -567,13 +569,6 @@ final class MainNoteTabEnhancer {
                 .putExtra("pickerMode", mode));
     }
 
-    private static LinearLayout dialogRoot(Activity activity) {
-        LinearLayout root = new LinearLayout(activity);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(activity, 12), dp(activity, 8), dp(activity, 12), dp(activity, 8));
-        return root;
-    }
-
     private static Button actionButton(Activity activity, String text) {
         Button button = new Button(activity);
         button.setText(text);
@@ -599,8 +594,9 @@ final class MainNoteTabEnhancer {
         Button button = new Button(activity);
         button.setText(text);
         button.setAllCaps(false);
-        button.setTextColor(AppSettings.primaryColor(activity));
-        button.setBackgroundResource(R.drawable.bg_soft_button);
+        button.setTextColor(0xFFFFFFFF);
+        button.setTextSize(13);
+        button.setBackgroundResource(R.drawable.bg_orange_button);
         return button;
     }
 
@@ -611,6 +607,8 @@ final class MainNoteTabEnhancer {
         button.setTextSize(11);
         button.setMinWidth(0);
         button.setPadding(0, 0, 0, 0);
+        button.setTextColor(AppSettings.primaryColor(activity));
+        button.setBackgroundResource(R.drawable.bg_soft_button);
         return button;
     }
 
