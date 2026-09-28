@@ -35,19 +35,18 @@ final class PrayerTimeZoneRepair {
         double zoneHours = stored.getOffset(System.currentTimeMillis()) / 3600000.0;
         double solarHours = longitude / 15.0;
 
-        // Real political timezone boundaries can differ from solar longitude,
-        // but a gap this large is a strong sign of the old phone-timezone bug.
+        // Real timezone boundaries can differ from solar longitude, but a gap this large is a
+        // strong sign of the historical phone-timezone fallback bug.
         if (circularHourDifference(zoneHours, solarHours) < 3.5) return;
 
         running = true;
         new Thread(() -> {
             try {
                 double latitude = AppSettings.prayerLatitude(context);
-                String resolved = resolve(latitude, longitude);
-                if (!isUsable(resolved)) return;
-                if (resolved.equals(storedId)) return;
-
                 String label = AppSettings.prayerLocationLabel(context);
+                String resolved = resolve(label, latitude, longitude);
+                if (!isUsable(resolved) || resolved.equals(storedId)) return;
+
                 AppSettings.setPrayerLocation(
                         context, latitude, longitude, label, resolved);
                 repairSavedHorizon(context, latitude, longitude, resolved);
@@ -62,8 +61,13 @@ final class PrayerTimeZoneRepair {
         return d > 12.0 ? 24.0 - d : d;
     }
 
-    private static String resolve(double latitude, double longitude) {
-        String zone = fromTimeApi(latitude, longitude);
+    private static String resolve(String label, double latitude, double longitude) {
+        // First repair completely offline when the stored label identifies a supported country.
+        String zone = OfflineTimeZoneResolver.resolveFromLabel(label, latitude, longitude);
+        if (isUsable(zone)) return zone;
+
+        // Network is fallback only for locations that cannot be confidently identified offline.
+        zone = fromTimeApi(latitude, longitude);
         if (isUsable(zone)) return zone;
         zone = fromOpenMeteo(latitude, longitude);
         return isUsable(zone) ? zone : "";
