@@ -251,7 +251,7 @@ public final class PrayerSettingsActivity extends Activity {
                 System.currentTimeMillis(),
                 AppSettings.prayerLatitude(this),
                 AppSettings.prayerLongitude(this),
-                TimeZone.getDefault());
+                AppSettings.prayerTimeZone(this));
 
         fajrTime.setText(times.fajr());
         sunriseTime.setText(times.sunrise());

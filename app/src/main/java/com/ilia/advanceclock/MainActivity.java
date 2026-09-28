@@ -408,7 +408,7 @@ public final class MainActivity extends Activity {
                 millis,
                 AppSettings.prayerLatitude(this),
                 AppSettings.prayerLongitude(this),
-                TimeZone.getDefault());
+                AppSettings.prayerTimeZone(this));
 
         setPrayerTimeText(R.id.prayer_fajr, times.fajr());
         setPrayerTimeText(R.id.prayer_sunrise, times.sunrise());
