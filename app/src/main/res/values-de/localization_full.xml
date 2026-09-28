@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="runtime_translation">
+        <item>Einstellungen</item>
+        <item>Schließen</item>
+        <item>Abbrechen</item>
+        <item>Bestätigen</item>
+        <item>Speichern</item>
+        <item>Löschen</item>
+        <item>Bearbeiten</item>
+        <item>Hinzufügen</item>
+        <item>Leeren</item>
+        <item>Starten</item>
+        <item>Stoppen</item>
+        <item>Fortsetzen</item>
+        <item>Uhr</item>
+        <item>Datum</item>
+        <item>Notiz</item>
+        <item>Notizen</item>
+        <item>Alarm</item>
+        <item>Alarme</item>
+        <item>Alarm</item>
+        <item>Erinnerung</item>
+        <item>Erinnerungen</item>
+        <item>Vibration</item>
+        <item>Priorität</item>
+        <item>Niedrig</item>
+        <item>Eher niedrig</item>
+        <item>Mittel</item>
+        <item>Hoch</item>
+        <item>Sehr hoch</item>
+        <item>Keine Wiederholung</item>
+        <item>Täglich</item>
+        <item>Wöchentlich</item>
+        <item>Monatlich</item>
+        <item>Jährlich</item>
+        <item>Heute</item>
+        <item>Keine Erinnerung</item>
+        <item>Automatisch (smart)</item>
+        <item>Minute</item>
+        <item>Sekunde</item>
+        <item>Weltzeituhr</item>
+        <item>Timer</item>
+        <item>Stoppuhr</item>
+        <item>Darstellung</item>
+        <item>Design</item>
+        <item>Hell</item>
+        <item>Dunkel</item>
+        <item>Farbpalette</item>
+        <item>Hintergrund-Deckkraft</item>
+        <item>Textgröße</item>
+        <item>Klein</item>
+        <item>Normal</item>
+        <item>Groß</item>
+        <item>Kopfzeile anzeigen</item>
+        <item>Uhr anzeigen</item>
+        <item>Datum anzeigen</item>
+        <item>Einstellungsschaltfläche anzeigen</item>
+        <item>Priorität anzeigen</item>
+        <item>Details anzeigen</item>
+        <item>Sortierung</item>
+        <item>Datei</item>
+        <item>Dateien</item>
+        <item>Bild</item>
+        <item>Audio</item>
+        <item>Video</item>
+        <item>Text</item>
+        <item>Dokument</item>
+        <item>Tabelle</item>
+        <item>Medien</item>
+        <item>Wiedergabe/Pause</item>
+        <item>Benachrichtigungseinstellungen</item>
+        <item>Benachrichtigungen</item>
+        <item>Dauerhafte Datumsbenachrichtigung</item>
+        <item>Weitere Kalender anzeigen</item>
+        <item>Alarmerinnerungen</item>
+        <item>Notizerinnerungen</item>
+        <item>Details auf Sperrbildschirm anzeigen</item>
+        <item>Adhan- und Gebetszeiteinstellungen</item>
+        <item>Adhan</item>
+        <item>Fajr-Adhan</item>
+        <item>Dhuhr-Adhan</item>
+        <item>Maghrib-Adhan</item>
+        <item>Isha</item>
+        <item>Asr</item>
+        <item>Sonnenaufgang</item>
+        <item>Sonnenuntergang</item>
+        <item>Mitternacht</item>
+        <item>Gebetszeiten anzeigen</item>
+        <item>Standort</item>
+        <item>Stadt oder Dorf suchen</item>
+        <item>Aktuellen genauen Standort abrufen</item>
+        <item>Aktivierte Adhans</item>
+        <item>Muezzin auswählen</item>
+        <item>Adhan-Benachrichtigung</item>
+        <item>Adhan-Benachrichtigung</item>
+        <item>Adhan-Vibration</item>
+        <item>Adhan-Ton</item>
+        <item>Adhan-Bildschirmvorschau</item>
+        <item>Standort nicht festgelegt</item>
+        <item>Standort wird ermittelt…</item>
+        <item>Stadt oder Dorf auswählen</item>
+        <item>Name von Stadt, Dorf, Region oder Land</item>
+        <item>Ergebnisse werden beim Tippen sofort aktualisiert</item>
+        <item>Keine Ergebnisse gefunden</item>
+        <item>Zeitzone hinzufügen</item>
+        <item>Ausgewählte Uhr hinzufügen</item>
+        <item>Zurück zu jetzt</item>
+        <item>Zu Datum gehen</item>
+        <item>Tab-Reihenfolge</item>
+        <item>Tabs neu anordnen</item>
+        <item>Alarm- und Benachrichtigungsberechtigungen</item>
+        <item>Widgets und Einstellungen</item>
+        <item>Widget-Einstellungen</item>
+        <item>Live-Vorschau</item>
+        <item>Zum Startbildschirm hinzufügen</item>
+        <item>Installierte Instanzen</item>
+        <item>Dateierinnerungen</item>
+        <item>Datei hinzufügen</item>
+        <item>App oder Website hinzufügen</item>
+        <item>Zeichnen</item>
+        <item>Zeichnen und Skizzieren</item>
+        <item>Notiz speichern</item>
+        <item>Notiz löschen</item>
+        <item>Notiztitel</item>
+        <item>Notiz hier eingeben...</item>
+        <item>Alarm für diese Notiz</item>
+        <item>Alarmton</item>
+        <item>Vollbild</item>
+        <item>Entsperrter Bildschirm</item>
+        <item>Sperrbildschirm</item>
+        <item>Dateien und Bilder</item>
+        <item>Installierte App auswählen</item>
+        <item>Website-Link eingeben</item>
+        <item>Gültigen Link eingeben</item>
+        <item>Noch keine Datei hinzugefügt.</item>
+        <item>Noch keine App oder Website hinzugefügt.</item>
+        <item>Text, Zeichnung, Datei, App oder Website hinzufügen</item>
+        <item>Notiz gespeichert</item>
+        <item>Alarm einstellen</item>
+        <item>Alarmtitel</item>
+        <item>Alarm speichern</item>
+        <item>Alarm löschen</item>
+        <item>Bild 1 hinzufügen</item>
+        <item>Bild 2 hinzufügen</item>
+        <item>Alarmbilder (optional, max. 2)</item>
+        <item>Systemstandard</item>
+        <item>Alarm gespeichert</item>
+        <item>Ein vergangenes Datum kann nicht gewählt werden</item>
+        <item>Alarm kann nicht für vergangene Zeit eingestellt werden</item>
+        <item>Notizalarm kann nicht in der Vergangenheit liegen</item>
+        <item>Für genaue Alarme die Berechtigung „Exakter Alarm“ aktivieren</item>
+        <item>Ton auswählen</item>
+        <item>+ Neuen Ton hochladen</item>
+        <item>App-Farbe</item>
+        <item>Ereignisse und Anlässe</item>
+        <item>Ereignisse unter dem Kalender anzeigen</item>
+        <item>Ereignisfeld unter dem Kalender anzeigen</item>
+        <item>Layout der Uhrseite</item>
+        <item>Erstellformular auf der Seite, ohne +-Taste</item>
+        <item>Kompakt: Formular im Dialog mit +-Taste</item>
+        <item>Tabs auf der Startseite</item>
+        <item>Alarmbildschirm-Stil</item>
+        <item>Heller Klassiker</item>
+        <item>Dunkler Fokus</item>
+        <item>Warmer Sonnenaufgang</item>
+        <item>Mindestens ein Tab muss aktiviert sein</item>
+        <item>Zukünftiges Datum und Uhrzeit wählen</item>
+        <item>Zeit größer als null eingeben</item>
+        <item>Zurücksetzen</item>
+        <item>Runde</item>
+        <item>Datum wählen</item>
+        <item>Uhrzeit wählen</item>
+        <item>Abbrechen und zurücksetzen</item>
+        <item>Dauer</item>
+        <item>Endzeit</item>
+        <item>Zurück zu heute</item>
+        <item>Vorheriger Monat</item>
+        <item>Nächster Monat</item>
+        <item>Persisch</item>
+        <item>Gregorianisch</item>
+        <item>Hidschri</item>
+        <item>Samstag</item>
+        <item>Sonntag</item>
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>
+        <item>Donnerstag</item>
+        <item>Freitag</item>
+        <item>Farvardin</item>
+        <item>Ordibehesht</item>
+        <item>Khordad</item>
+        <item>Tir</item>
+        <item>Mordad</item>
+        <item>Shahrivar</item>
+        <item>Mehr</item>
+        <item>Aban</item>
+        <item>Azar</item>
+        <item>Dey</item>
+        <item>Bahman</item>
+        <item>Esfand</item>
+        <item>Zeichnung ✓</item>
+        <item>Ohne Raster</item>
+        <item>Raster</item>
+        <item>Farbe</item>
+        <item>Löschen</item>
+        <item>Zeichnung speichern</item>
+        <item>Datei oder Bild hinzufügen</item>
+        <item>App auswählen</item>
+        <item>Website hinzufügen</item>
+        <item>Website-Link, z. B. https://example.com</item>
+        <item>Erinnerung vor Fälligkeit</item>
+        <item>Vollbild bei entsperrtem Telefon</item>
+        <item>Vollbild auf dem Sperrbildschirm</item>
+        <item>Aktiviert</item>
+        <item>Deaktiviert</item>
+        <item>Handschrift</item>
+        <item>Zeichnung</item>
+        <item>Kein Alarm</item>
+        <item>Vollbildalarm bei entsperrtem Telefon</item>
+        <item>Vollbildalarm auf dem Sperrbildschirm</item>
+        <item>Standard-Alarmton</item>
+        <item>App-Theme übernehmen</item>
+        <item>Inhaltsanzeige</item>
+        <item>Vorschau anzeigen</item>
+        <item>Dateinamen anzeigen</item>
+        <item>Dateityp und Details anzeigen</item>
+        <item>Kopfzeile und Steuerelemente</item>
+        <item>Zeitformat</item>
+        <item>Systemeinstellungen verwenden</item>
+        <item>24 Stunden</item>
+        <item>12 Stunden</item>
+        <item>Sekunden anzeigen</item>
+        <item>Bereichstitel anzeigen</item>
+        <item>Inhalt</item>
+        <item>Maximale Anzahl</item>
+        <item>Anzahl</item>
+        <item>Smart: nächster Alarm zuerst</item>
+        <item>Zeit: früheste zuerst</item>
+        <item>Priorität: höchste zuerst</item>
+        <item>Smart: nächste Fälligkeit zuerst</item>
+        <item>Neueste Notiz zuerst</item>
+        <item>Uhr-Widget-Einstellungen</item>
+        <item>Notiz-Widget-Einstellungen</item>
+        <item>Weltuhr-Widget-Einstellungen</item>
+        <item>Hintergrund</item>
+        <item>Transparent (Standard)</item>
+        <item>Schwarz 70 %</item>
+        <item>Schwarz</item>
+        <item>Weiß</item>
+        <item>Blau</item>
+        <item>Türkis</item>
+        <item>Lila</item>
+        <item>Rot</item>
+        <item>Grün</item>
+        <item>Gold</item>
+        <item>Orange</item>
+        <item>Rosa</item>
+        <item>Vorschau</item>
+        <item>Dateityp</item>
+        <item>Vollbild anzeigen</item>
+        <item>Wiedergabesteuerung öffnen</item>
+        <item>Wird vorbereitet</item>
+        <item>Wiedergabe</item>
+        <item>Pausiert</item>
+        <item>Smart Alarm</item>
+        <item>Smart-Eingabe</item>
+        <item>Einfügen</item>
+        <item>Automatisch erkennen</item>
+        <item>Text analysieren und Vorschau erstellen</item>
+        <item>Alarmzeit für alle</item>
+        <item>Pünktlich</item>
+        <item>Vor der Zeit</item>
+        <item>Nach der Zeit</item>
+        <item>Alarmvorschau</item>
+        <item>Alle löschen</item>
+        <item>Alle Alarme speichern</item>
+        <item>Titel</item>
+        <item>Ursprüngliches Datum und Uhrzeit</item>
+        <item>Alarmzeit</item>
+        <item>Priorität</item>
+        <item>Mit Alarm vibrieren</item>
+        <item>Alarm bearbeiten</item>
+        <item>Titel darf nicht leer sein</item>
+        <item>Kein Text in der Zwischenablage</item>
+        <item>Zuerst den Text analysieren</item>
+        <item>Noch keine Alarme erkannt.</item>
+        <item>Element</item>
+        <item>Alarm erkannt</item>
+        <item>Wiederholung einstellen</item>
+        <item>Wiederholungsintervall in Tagen</item>
+        <item>Wiederholungsintervall in Wochen</item>
+        <item>Datum und Uhrzeit hinzufügen</item>
+        <item>Benutzerdefinierte Daten löschen</item>
+        <item>Noch kein Datum und keine Uhrzeit gewählt</item>
+        <item>Vergangenes Datum und Uhrzeit können nicht gewählt werden</item>
+        <item>Alle paar Tage</item>
+        <item>Benutzerdefinierte Daten</item>
+        <item>Wochentage</item>
+        <item>Runde</item>
+        <item>Dauer größer als null eingeben</item>
+        <item>Stoppuhr zuerst zurücksetzen</item>
+        <item>Enddatum und -zeit liegen in der Vergangenheit</item>
+        <item>Timer beendet</item>
+        <item>Stoppuhr hat das Limit erreicht</item>
+        <item>Gebetszeit</item>
+        <item>Adhan beenden</item>
+        <item>Vollständig stummschalten</item>
+        <item>Ton einschalten</item>
+        <item>Adhan stoppen</item>
+        <item>Notiz öffnen</item>
+        <item>Alarm stoppen</item>
+        <item>Dateien, Bilder, Apps und Websites</item>
+        <item>Notizerinnerung</item>
+        <item>Die Zeit für Ihre Notiz ist gekommen</item>
+        <item>Alarme</item>
+        <item>Gebetszeit-Benachrichtigungen</item>
+        <item>Notizalarme</item>
+        <item>Zeitgesteuerte Notizalarme</item>
+    </string-array>
+    <string-array name="palette_names">
+        <item>Orange</item>
+        <item>Rosa Blau</item>
+        <item>Lila</item>
+        <item>Grün Rot</item>
+        <item>Lila Gelb</item>
+        <item>Dunkelrosa</item>
+        <item>Blau</item>
+    </string-array>
+</resources>
