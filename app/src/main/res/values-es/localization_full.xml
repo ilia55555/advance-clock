@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="runtime_translation">
+        <item>Configuración</item>
+        <item>Cerrar</item>
+        <item>Cancelar</item>
+        <item>Confirmar</item>
+        <item>Guardar</item>
+        <item>Eliminar</item>
+        <item>Editar</item>
+        <item>Añadir</item>
+        <item>Borrar</item>
+        <item>Iniciar</item>
+        <item>Detener</item>
+        <item>Reanudar</item>
+        <item>Reloj</item>
+        <item>Fecha</item>
+        <item>Nota</item>
+        <item>Notas</item>
+        <item>Alarma</item>
+        <item>Alarmas</item>
+        <item>Alarma</item>
+        <item>Recordatorio</item>
+        <item>Recordatorios</item>
+        <item>Vibración</item>
+        <item>Prioridad</item>
+        <item>Baja</item>
+        <item>Algo baja</item>
+        <item>Media</item>
+        <item>Alta</item>
+        <item>Muy alta</item>
+        <item>Sin repetición</item>
+        <item>Todos los días</item>
+        <item>Cada semana</item>
+        <item>Cada mes</item>
+        <item>Cada año</item>
+        <item>Hoy</item>
+        <item>Sin recordatorio</item>
+        <item>Automático (inteligente)</item>
+        <item>minuto</item>
+        <item>segundo</item>
+        <item>Reloj mundial</item>
+        <item>Temporizador</item>
+        <item>Cronómetro</item>
+        <item>Apariencia</item>
+        <item>Tema</item>
+        <item>Claro</item>
+        <item>Oscuro</item>
+        <item>Paleta de colores</item>
+        <item>Opacidad del fondo</item>
+        <item>Tamaño del texto</item>
+        <item>Pequeño</item>
+        <item>Normal</item>
+        <item>Grande</item>
+        <item>Mostrar encabezado</item>
+        <item>Mostrar reloj</item>
+        <item>Mostrar fecha</item>
+        <item>Mostrar botón de ajustes</item>
+        <item>Mostrar prioridad</item>
+        <item>Mostrar detalles</item>
+        <item>Orden</item>
+        <item>Archivo</item>
+        <item>Archivos</item>
+        <item>Imagen</item>
+        <item>Audio</item>
+        <item>Vídeo</item>
+        <item>Texto</item>
+        <item>Documento</item>
+        <item>Hoja de cálculo</item>
+        <item>Multimedia</item>
+        <item>Reproducir o pausar</item>
+        <item>Configuración de notificaciones</item>
+        <item>Notificaciones</item>
+        <item>Notificación permanente de fecha</item>
+        <item>Mostrar otros calendarios</item>
+        <item>Recordatorios de alarmas</item>
+        <item>Recordatorios de notas</item>
+        <item>Mostrar detalles en la pantalla de bloqueo</item>
+        <item>Ajustes de adhan y horarios de oración</item>
+        <item>Adhan</item>
+        <item>Adhan del Fajr</item>
+        <item>Adhan del Dhuhr</item>
+        <item>Adhan del Maghrib</item>
+        <item>Isha</item>
+        <item>Asr</item>
+        <item>Amanecer</item>
+        <item>Atardecer</item>
+        <item>Medianoche</item>
+        <item>Mostrar horarios de oración</item>
+        <item>Ubicación</item>
+        <item>Buscar ciudad o pueblo</item>
+        <item>Obtener ubicación precisa actual</item>
+        <item>Adhanes activados</item>
+        <item>Elegir muecín</item>
+        <item>Avisos de adhan</item>
+        <item>Notificación de adhan</item>
+        <item>Vibración del adhan</item>
+        <item>Sonido del adhan</item>
+        <item>Vista previa de la pantalla de adhan</item>
+        <item>Ubicación no establecida</item>
+        <item>Obteniendo ubicación…</item>
+        <item>Elegir ciudad o pueblo</item>
+        <item>Nombre de ciudad, pueblo, provincia o país</item>
+        <item>Los resultados se actualizan mientras escribes</item>
+        <item>No se encontraron resultados</item>
+        <item>Añadir zona horaria</item>
+        <item>Añadir reloj seleccionado</item>
+        <item>Volver a ahora</item>
+        <item>Ir a fecha</item>
+        <item>Orden de pestañas</item>
+        <item>Reordenar pestañas</item>
+        <item>Permisos de alarma y notificación</item>
+        <item>Widgets y configuración</item>
+        <item>Configuración del widget</item>
+        <item>Vista previa en vivo</item>
+        <item>Añadir a pantalla de inicio</item>
+        <item>Instancias instaladas</item>
+        <item>Recordatorios de archivos</item>
+        <item>Añadir archivo</item>
+        <item>Añadir app o sitio web</item>
+        <item>Dibujo</item>
+        <item>Dibujo y boceto</item>
+        <item>Guardar nota</item>
+        <item>Eliminar nota</item>
+        <item>Título de la nota</item>
+        <item>Escribe tu nota aquí...</item>
+        <item>Alarma para esta nota</item>
+        <item>Sonido de alarma</item>
+        <item>Pantalla completa</item>
+        <item>Pantalla desbloqueada</item>
+        <item>Pantalla de bloqueo</item>
+        <item>Archivos e imágenes</item>
+        <item>Elegir app instalada</item>
+        <item>Introduce el enlace del sitio</item>
+        <item>Introduce un enlace válido</item>
+        <item>Aún no se ha añadido ningún archivo.</item>
+        <item>Aún no se ha añadido ninguna app ni sitio.</item>
+        <item>Añade texto, un dibujo, un archivo, una app o un sitio</item>
+        <item>Nota guardada</item>
+        <item>Configurar alarma</item>
+        <item>Título de la alarma</item>
+        <item>Guardar alarma</item>
+        <item>Eliminar alarma</item>
+        <item>Añadir imagen 1</item>
+        <item>Añadir imagen 2</item>
+        <item>Imágenes de alarma (opcional, máx. 2)</item>
+        <item>Predeterminado del sistema</item>
+        <item>Alarma guardada</item>
+        <item>No se puede seleccionar una fecha pasada</item>
+        <item>No se puede fijar una alarma para una fecha u hora pasada</item>
+        <item>La alarma de la nota no puede fijarse en el pasado</item>
+        <item>Activa el permiso de alarma exacta para avisos precisos</item>
+        <item>Elegir sonido</item>
+        <item>+ Subir sonido nuevo</item>
+        <item>Color de la app</item>
+        <item>Eventos y fechas señaladas</item>
+        <item>Mostrar eventos bajo el calendario</item>
+        <item>Mostrar cuadro de eventos bajo el calendario</item>
+        <item>Diseño de la página Reloj</item>
+        <item>Formulario de creación en la página, sin botón +</item>
+        <item>Compacto: formulario en modal con botón +</item>
+        <item>Pestañas visibles en Inicio</item>
+        <item>Estilo de pantalla de alarma</item>
+        <item>Clásico claro</item>
+        <item>Enfoque oscuro</item>
+        <item>Amanecer cálido</item>
+        <item>Debe haber al menos una pestaña activa</item>
+        <item>Elige una fecha y hora futuras</item>
+        <item>Introduce un tiempo mayor que cero</item>
+        <item>Reiniciar</item>
+        <item>Vuelta</item>
+        <item>Elegir fecha</item>
+        <item>Elegir hora</item>
+        <item>Cancelar y reiniciar</item>
+        <item>Duración</item>
+        <item>Hora de fin</item>
+        <item>Volver a hoy</item>
+        <item>Mes anterior</item>
+        <item>Mes siguiente</item>
+        <item>Persa</item>
+        <item>Gregoriano</item>
+        <item>Hiyri</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Farvardin</item>
+        <item>Ordibehesht</item>
+        <item>Khordad</item>
+        <item>Tir</item>
+        <item>Mordad</item>
+        <item>Shahrivar</item>
+        <item>Mehr</item>
+        <item>Aban</item>
+        <item>Azar</item>
+        <item>Dey</item>
+        <item>Bahman</item>
+        <item>Esfand</item>
+        <item>Dibujo ✓</item>
+        <item>Sin cuadrícula</item>
+        <item>Cuadrícula</item>
+        <item>Color</item>
+        <item>Limpiar</item>
+        <item>Guardar dibujo</item>
+        <item>Añadir archivo o imagen</item>
+        <item>Elegir app</item>
+        <item>Añadir sitio</item>
+        <item>Enlace del sitio, p. ej. https://example.com</item>
+        <item>Recordatorio antes del vencimiento</item>
+        <item>Pantalla completa con el teléfono desbloqueado</item>
+        <item>Pantalla completa en la pantalla de bloqueo</item>
+        <item>Activado</item>
+        <item>Desactivado</item>
+        <item>Manuscrito</item>
+        <item>Dibujo</item>
+        <item>Sin alarma</item>
+        <item>Alarma a pantalla completa con el teléfono desbloqueado</item>
+        <item>Alarma a pantalla completa en la pantalla de bloqueo</item>
+        <item>Sonido de alarma predeterminado</item>
+        <item>Seguir tema de la app</item>
+        <item>Mostrar contenido</item>
+        <item>Mostrar vista previa</item>
+        <item>Mostrar nombre del archivo</item>
+        <item>Mostrar tipo y detalles del archivo</item>
+        <item>Encabezado y controles</item>
+        <item>Formato de hora</item>
+        <item>Seguir ajustes del sistema</item>
+        <item>24 horas</item>
+        <item>12 horas</item>
+        <item>Mostrar segundos</item>
+        <item>Mostrar título de sección</item>
+        <item>Contenido</item>
+        <item>Máximo de elementos</item>
+        <item>Cantidad</item>
+        <item>Inteligente: alarma más próxima primero</item>
+        <item>Hora: de más temprano a más tarde</item>
+        <item>Prioridad: mayor primero</item>
+        <item>Inteligente: vencimiento más próximo primero</item>
+        <item>Nota más reciente primero</item>
+        <item>Ajustes del widget de reloj</item>
+        <item>Ajustes del widget de notas</item>
+        <item>Ajustes del widget de reloj mundial</item>
+        <item>Fondo</item>
+        <item>Transparente (predeterminado)</item>
+        <item>Negro 70 %</item>
+        <item>Negro</item>
+        <item>Blanco</item>
+        <item>Azul</item>
+        <item>Turquesa</item>
+        <item>Morado</item>
+        <item>Rojo</item>
+        <item>Verde</item>
+        <item>Dorado</item>
+        <item>Naranja</item>
+        <item>Rosa</item>
+        <item>Vista previa</item>
+        <item>Tipo de archivo</item>
+        <item>Ver a pantalla completa</item>
+        <item>Abrir controles de reproducción</item>
+        <item>Preparando</item>
+        <item>Reproduciendo</item>
+        <item>En pausa</item>
+        <item>Alarma inteligente</item>
+        <item>Entrada inteligente</item>
+        <item>Pegar</item>
+        <item>Detección automática</item>
+        <item>Analizar texto y crear vista previa</item>
+        <item>Hora de alarma para todos</item>
+        <item>A la hora</item>
+        <item>Antes de la hora</item>
+        <item>Después de la hora</item>
+        <item>Vista previa de alarmas</item>
+        <item>Eliminar todo</item>
+        <item>Guardar todas las alarmas</item>
+        <item>Título</item>
+        <item>Fecha y hora originales</item>
+        <item>Hora de la alarma</item>
+        <item>Prioridad</item>
+        <item>Vibrar con la alarma</item>
+        <item>Editar alarma</item>
+        <item>El título no puede estar vacío</item>
+        <item>No hay texto en el portapapeles</item>
+        <item>Analiza primero el texto</item>
+        <item>Aún no se han detectado alarmas.</item>
+        <item>elemento</item>
+        <item>alarma detectada</item>
+        <item>Configurar repetición</item>
+        <item>Intervalo de repetición en días</item>
+        <item>Intervalo de repetición en semanas</item>
+        <item>Añadir fecha y hora</item>
+        <item>Borrar fechas personalizadas</item>
+        <item>Aún no se ha elegido fecha y hora</item>
+        <item>No se pueden elegir fecha y hora pasadas</item>
+        <item>Cada varios días</item>
+        <item>Fechas personalizadas</item>
+        <item>Días de la semana</item>
+        <item>Vuelta</item>
+        <item>Introduce una duración mayor que cero</item>
+        <item>Reinicia primero el cronómetro</item>
+        <item>La fecha y hora de fin ya pasaron</item>
+        <item>Temporizador terminado</item>
+        <item>El cronómetro alcanzó el límite</item>
+        <item>Hora de oración</item>
+        <item>Finalizar adhan</item>
+        <item>Silenciar por completo</item>
+        <item>Activar sonido</item>
+        <item>Detener adhan</item>
+        <item>Abrir nota</item>
+        <item>Detener alarma</item>
+        <item>Archivos, imágenes, apps y sitios</item>
+        <item>Recordatorio de nota</item>
+        <item>Ha llegado la hora de tu nota</item>
+        <item>Alarmas</item>
+        <item>Notificaciones de horas de oración</item>
+        <item>Alarmas de notas</item>
+        <item>Alarmas programadas de notas</item>
+    </string-array>
+    <string-array name="palette_names">
+        <item>Naranja</item>
+        <item>Rosa azul</item>
+        <item>Morado</item>
+        <item>Verde rojo</item>
+        <item>Morado amarillo</item>
+        <item>Rosa oscuro</item>
+        <item>Azul</item>
+    </string-array>
+</resources>

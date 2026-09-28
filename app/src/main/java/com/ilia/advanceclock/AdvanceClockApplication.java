@@ -17,6 +17,7 @@ public final class AdvanceClockApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
         AppSettings.applyLanguage(this);
+        UiText.init(this);
         PrayerTimeZoneRepair.repairIfNeeded(this);
         MainNoteTabEnhancer.install(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -24,11 +25,13 @@ public final class AdvanceClockApplication extends Application {
                 synchronized (OPEN_ACTIVITIES) { OPEN_ACTIVITIES.put(activity, true); }
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
+                UiText.install(activity);
             }
 
             @Override public void onActivityResumed(Activity activity) {
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
+                UiText.install(activity);
             }
 
             @Override public void onActivityStarted(Activity activity) {}
@@ -38,6 +41,7 @@ public final class AdvanceClockApplication extends Application {
             @Override public void onActivityDestroyed(Activity activity) {
                 synchronized (OPEN_ACTIVITIES) { OPEN_ACTIVITIES.remove(activity); }
                 NoteComposerVisibilityController.forget(activity);
+                UiText.uninstall(activity);
             }
         });
     }
