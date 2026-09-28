@@ -251,10 +251,21 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         }
 
         private void applyFontSize(RemoteViews row, int mode) {
-            float city = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
-            float label = mode == 0 ? 7f : (mode == 2 ? 9f : 8f);
-            float value = mode == 0 ? 9f : (mode == 2 ? 12f : 10f);
-            float icon = mode == 0 ? 10f : (mode == 2 ? 14f : 12f);
+            float city;
+            float label;
+            float value;
+            float icon;
+            if (compact) {
+                city = mode == 0 ? 10f : (mode == 2 ? 12f : 11f);
+                label = mode == 0 ? 6f : (mode == 2 ? 8f : 7f);
+                value = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
+                icon = 8f;
+            } else {
+                city = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
+                label = mode == 0 ? 7f : (mode == 2 ? 9f : 8f);
+                value = mode == 0 ? 9f : (mode == 2 ? 12f : 10f);
+                icon = mode == 0 ? 10f : (mode == 2 ? 14f : 12f);
+            }
             row.setTextViewTextSize(
                     R.id.prayer_widget_city, TypedValue.COMPLEX_UNIT_SP, city);
 
