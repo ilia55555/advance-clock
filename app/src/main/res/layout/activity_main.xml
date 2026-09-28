@@ -428,7 +428,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp" />
 
-                <LinearLayout
+                <FrameLayout
                     android:id="@+id/prayer_times_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
