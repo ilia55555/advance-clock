@@ -250,6 +250,59 @@ public final class AppSettings {
         return values;
     }
 
+    public static boolean isPrimaryPrayerHorizon(
+            Context context, double latitude, double longitude) {
+        return prayerLocationSet(context)
+                && Math.abs(prayerLatitude(context) - latitude) < 0.0001
+                && Math.abs(prayerLongitude(context) - longitude) < 0.0001;
+    }
+
+    public static void setPrimaryPrayerHorizon(
+            Context context,
+            double latitude,
+            double longitude,
+            String label,
+            String timeZoneId) {
+        setPrayerLocation(context, latitude, longitude, label, timeZoneId);
+
+        java.util.List<PrayerHorizon> current = prayerHorizons(context);
+        java.util.ArrayList<PrayerHorizon> ordered = new java.util.ArrayList<>();
+        PrayerHorizon selected = null;
+
+        for (PrayerHorizon item : current) {
+            if (Math.abs(item.latitude - latitude) < 0.0001
+                    && Math.abs(item.longitude - longitude) < 0.0001) {
+                selected = item;
+                break;
+            }
+        }
+        if (selected == null) {
+            selected = new PrayerHorizon(label, latitude, longitude, timeZoneId);
+        }
+        ordered.add(selected);
+
+        for (PrayerHorizon item : current) {
+            if (Math.abs(item.latitude - latitude) >= 0.0001
+                    || Math.abs(item.longitude - longitude) >= 0.0001) {
+                ordered.add(item);
+            }
+        }
+
+        org.json.JSONArray array = new org.json.JSONArray();
+        for (PrayerHorizon item : ordered) {
+            org.json.JSONObject value = new org.json.JSONObject();
+            try {
+                value.put("label", item.label);
+                value.put("lat", item.latitude);
+                value.put("lon", item.longitude);
+                value.put("zone", item.timeZoneId);
+                array.put(value);
+            } catch (Exception ignored) {}
+        }
+        prefs(context).edit().putString("prayer_horizons", array.toString()).apply();
+        PrayerTimesWidgetProvider.updateAll(context);
+    }
+
     public static void addPrayerHorizon(
             Context context, String label, double latitude, double longitude, String timeZoneId) {
         java.util.List<PrayerHorizon> current = prayerHorizons(context);
