@@ -26,7 +26,7 @@ public final class UiText {
     private static volatile Context appContext;
     private static final Object CACHE_LOCK = new Object();
     private static String cachedLanguage = "";
-    private static Map<String, String> cachedValues = Collections.emptyMap();
+    private static Map<String, String> cachedTranslations = Collections.emptyMap();
     private static List<String> cachedKeysByLength = Collections.emptyList();
     private static final WeakHashMap<Activity, ViewTreeObserver.OnGlobalLayoutListener> LISTENERS =
             new WeakHashMap<>();
@@ -42,7 +42,7 @@ public final class UiText {
     public static void invalidate() {
         synchronized (CACHE_LOCK) {
             cachedLanguage = "";
-            cachedValues = Collections.emptyMap();
+            cachedTranslations = Collections.emptyMap();
             cachedKeysByLength = Collections.emptyList();
         }
     }
@@ -54,18 +54,18 @@ public final class UiText {
 
     public static String tr(Context context, String source) {
         if (source == null || source.isEmpty() || context == null) return source;
-        String value = catalog(context).get(source);
-        if (value != null) return value;
+        String translation = catalog(context).get(source);
+        if (translation != null) return translation;
 
         String trimmed = source.trim();
         if (!trimmed.equals(source)) {
-            value = catalog(context).get(trimmed);
-            if (value != null) {
+            translation = catalog(context).get(trimmed);
+            if (translation != null) {
                 int start = source.indexOf(trimmed);
                 String before = start > 0 ? source.substring(0, start) : "";
                 int end = start + trimmed.length();
                 String after = end < source.length() ? source.substring(end) : "";
-                return before + value + after;
+                return before + translation + after;
             }
         }
         return source;
@@ -78,12 +78,12 @@ public final class UiText {
         if (!exact.equals(source)) return exact;
 
         String result = source;
-        Map<String, String> values = catalog(context);
+        Map<String, String> translations = catalog(context);
         for (String key : keysByLength(context)) {
             if (key.length() < 2 || !result.contains(key)) continue;
-            String translated = values.get(key);
-            if (translated != null && !key.equals(translated))
-                result = result.replace(key, translated);
+            String translated = translations.get(key);
+            if (translated == null) continue;
+            if (!key.equals(translated)) result = result.replace(key, translated);
         }
         return result;
     }
@@ -182,7 +182,7 @@ public final class UiText {
 
     private static Map<String, String> catalog(Context context) {
         ensureCatalog(context);
-        return cachedValues;
+        return cachedTranslations;
     }
 
     private static List<String> keysByLength(Context context) {
@@ -193,19 +193,21 @@ public final class UiText {
     private static void ensureCatalog(Context context) {
         String language = AppSettings.language(context);
         synchronized (CACHE_LOCK) {
-            if (language.equals(cachedLanguage) && !cachedValues.isEmpty()) return;
-            String[] keys = context.getResources().getStringArray(R.array.ui_text_keys);
-            String[] values = context.getResources().getStringArray(R.array.ui_text_values);
-            HashMap<String, String> map = new HashMap<>();
-            int count = Math.min(keys.length, values.length);
-            for (int i = 0; i < count; i++) {
-                if (keys[i] != null && !keys[i].isEmpty()) map.put(keys[i], values[i]);
+            if (language.equals(cachedLanguage) && !cachedTranslations.isEmpty()) return;
+            String[] sources = context.getResources().getStringArray(R.array.runtime_source_fa);
+            String[] localized = context.getResources().getStringArray(R.array.runtime_translation);
+            HashMap<String, String> translations = new HashMap<>();
+            int entryCount = Math.min(sources.length, localized.length);
+            for (int i = 0; i < entryCount; i++) {
+                if (sources[i] != null && !sources[i].isEmpty()) {
+                    translations.put(sources[i], localized[i]);
+                }
             }
-            ArrayList<String> sorted = new ArrayList<>(map.keySet());
-            sorted.sort(Comparator.comparingInt(String::length).reversed());
+            ArrayList<String> keys = new ArrayList<>(translations.keySet());
+            keys.sort(Comparator.comparingInt(String::length).reversed());
             cachedLanguage = language;
-            cachedValues = map;
-            cachedKeysByLength = sorted;
+            cachedTranslations = translations;
+            cachedKeysByLength = keys;
         }
     }
 }

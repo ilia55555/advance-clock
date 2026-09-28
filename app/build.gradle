@@ -2,6 +2,16 @@ plugins {
     id 'com.android.application'
 }
 
+def generateLocalizations = tasks.register('generateLocalizations', Exec) {
+    workingDir rootProject.projectDir
+    commandLine 'python3', 'tools/generate_localizations.py'
+    inputs.dir rootProject.file('tools/localization_payload')
+    inputs.file rootProject.file('tools/generate_localizations.py')
+    outputs.files(fileTree('src/main/res') {
+        include 'values*/localization_full.xml'
+    })
+}
+
 android {
     namespace 'com.ilia.advanceclock'
 
@@ -23,4 +33,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn generateLocalizations
 }
