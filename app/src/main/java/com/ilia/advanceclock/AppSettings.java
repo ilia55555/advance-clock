@@ -177,8 +177,31 @@ public final class AppSettings {
                 "prayer_location_label", "موقعیت فعلی");
     }
 
+    public static String prayerTimeZoneId(Context context) {
+        return prefs(context).getString(
+                "prayer_time_zone", java.util.TimeZone.getDefault().getID());
+    }
+
+    public static java.util.TimeZone prayerTimeZone(Context context) {
+        return java.util.TimeZone.getTimeZone(prayerTimeZoneId(context));
+    }
+
     public static void setPrayerLocation(
             Context context, double latitude, double longitude, String label) {
+        setPrayerLocation(
+                context,
+                latitude,
+                longitude,
+                label,
+                java.util.TimeZone.getDefault().getID());
+    }
+
+    public static void setPrayerLocation(
+            Context context,
+            double latitude,
+            double longitude,
+            String label,
+            String timeZoneId) {
         prefs(context).edit()
                 .putBoolean("prayer_location_set", true)
                 .putString("prayer_latitude", Double.toString(latitude))
@@ -186,6 +209,10 @@ public final class AppSettings {
                 .putString("prayer_location_label",
                         label == null || label.trim().isEmpty()
                                 ? "موقعیت فعلی" : label.trim())
+                .putString("prayer_time_zone",
+                        timeZoneId == null || timeZoneId.trim().isEmpty()
+                                ? java.util.TimeZone.getDefault().getID()
+                                : timeZoneId.trim())
                 .apply();
         AdhanScheduler.rescheduleAll(context);
     }
@@ -285,7 +312,7 @@ public final class AppSettings {
     }
 
     public static int clockLayoutMode(Context context) {
-        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CURRENT);
+        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CALENDAR_FIRST);
     }
 
     public static void setClockLayoutMode(Context context, int value) {

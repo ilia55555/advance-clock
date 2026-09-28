@@ -47,7 +47,7 @@ public final class AdhanScheduler {
         }
 
         long now = System.currentTimeMillis();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(AppSettings.prayerTimeZone(context));
         for (int offset = 0; offset <= 2; offset++) {
             if (offset > 0) day.add(Calendar.DAY_OF_YEAR, 1);
             long when = prayerMillis(context, day, type);
@@ -92,7 +92,7 @@ public final class AdhanScheduler {
     }
 
     private static long prayerMillis(Context context, Calendar day, int type) {
-        TimeZone zone = TimeZone.getDefault();
+        TimeZone zone = AppSettings.prayerTimeZone(context);
         PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
                 day.getTimeInMillis(),
                 AppSettings.prayerLatitude(context),

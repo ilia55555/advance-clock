@@ -220,7 +220,7 @@ public final class AlarmRingActivity extends Activity {
         NotificationManager nm = getSystemService(NotificationManager.class);
         if (nm != null && alarmId != -1L) nm.cancel(NotificationHelper.notificationId(alarmId));
         ClockWidgetProvider.updateAll(this);
-        if (!ok) Toast.makeText(this, "برای یادآوری مجدد، دسترسی آلارم دقیق لازم است.", Toast.LENGTH_LONG).show();
+        if (!ok) LogoToast.makeText(this, "برای یادآوری مجدد، دسترسی آلارم دقیق لازم است.", Toast.LENGTH_LONG).show();
         finishAndRemoveTask();
     }
 

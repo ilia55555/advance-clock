@@ -247,7 +247,7 @@ public final class NoForgetEditorActivity extends Activity {
         if (titleText.isEmpty()
                 && bodyText.isEmpty()
                 && "[]".equals(sketchJson)) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "یک متن یا نقاشی وارد کنید",
                     Toast.LENGTH_SHORT).show();
@@ -258,7 +258,7 @@ public final class NoForgetEditorActivity extends Activity {
         long dueAt = enabled ? due.getTimeInMillis() : 0L;
 
         if (enabled && dueAt <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -286,7 +286,7 @@ public final class NoForgetEditorActivity extends Activity {
         NoForgetWidgetProvider.updateAll(this);
 
         if (!scheduled) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "یادداشت ذخیره شد؛ برای آلارم، دسترسی آلارم دقیق لازم است.",
                     Toast.LENGTH_LONG).show();
