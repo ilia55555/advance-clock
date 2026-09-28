@@ -29,6 +29,8 @@ public final class NoForgetItem {
     public String soundUri = "";
     public boolean fullscreenUnlocked = true;
     public boolean fullscreenLocked = true;
+    public int reminderMode = AlarmReminderUtils.MODE_NONE;
+    public String reminderMinutesJson = "[]";
 
     public NoForgetItem(long id,String title,String body,String sketchJson,int priority,
                         boolean hasDue,long dueAtMillis,boolean reminderEnabled,long createdAt){
@@ -69,6 +71,7 @@ public final class NoForgetItem {
         o.put("recurrenceMode",recurrenceMode);o.put("intervalDays",intervalDays);o.put("customDatesJson",customDatesJson);
         o.put("attachmentsJson",attachmentsJson);o.put("vibrate",vibrate);o.put("soundUri",soundUri);
         o.put("fullscreenUnlocked",fullscreenUnlocked);o.put("fullscreenLocked",fullscreenLocked);
+        o.put("reminderMode",reminderMode);o.put("reminderMinutesJson",reminderMinutesJson);
         return o;
     }
 
@@ -87,6 +90,8 @@ public final class NoForgetItem {
         item.vibrate=o.optBoolean("vibrate",true); item.soundUri=o.optString("soundUri","");
         item.fullscreenUnlocked=o.optBoolean("fullscreenUnlocked",true);
         item.fullscreenLocked=o.optBoolean("fullscreenLocked",true);
+        item.reminderMode=o.optInt("reminderMode",AlarmReminderUtils.MODE_NONE);
+        item.reminderMinutesJson=o.optString("reminderMinutesJson","[]");
         return item;
     }
 }
