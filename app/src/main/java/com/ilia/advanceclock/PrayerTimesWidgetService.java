@@ -20,7 +20,8 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         int widgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
-        return new Factory(this, widgetId);
+        boolean compact = intent.getBooleanExtra("compact", false);
+        return new Factory(this, widgetId, compact);
     }
 
     private static final class Factory implements RemoteViewsFactory {
@@ -32,11 +33,13 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
 
         private final Context context;
         private final int widgetId;
+        private final boolean compact;
         private List<AppSettings.PrayerHorizon> horizons = Collections.emptyList();
 
-        Factory(Context context, int widgetId) {
+        Factory(Context context, int widgetId, boolean compact) {
             this.context = context;
             this.widgetId = widgetId;
+            this.compact = compact;
         }
 
         @Override public void onCreate() {}
@@ -65,7 +68,10 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
 
         @Override public RemoteViews getViewAt(int position) {
             RemoteViews row = new RemoteViews(
-                    context.getPackageName(), R.layout.widget_prayer_times_row);
+                    context.getPackageName(),
+                    compact
+                            ? R.layout.widget_prayer_times_row_compact
+                            : R.layout.widget_prayer_times_row);
 
             int main = PrayerTimesWidgetPrefs.mainTextColor(context, widgetId);
             int secondary = PrayerTimesWidgetPrefs.secondaryTextColor(context, widgetId);
@@ -114,7 +120,8 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     badge ? View.VISIBLE : View.GONE);
             row.setTextColor(R.id.prayer_widget_current_chip, accent);
 
-            boolean countdown = primary
+            boolean countdown = !compact
+                    && primary
                     && PrayerTimesWidgetPrefs.showCountdown(context, widgetId)
                     && next != null;
             row.setViewVisibility(
@@ -147,7 +154,8 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             resetHighlights(row);
             if (next != null) highlightNext(row, next.kind, active);
 
-            boolean icons = PrayerTimesWidgetPrefs.showIcons(context, widgetId);
+            boolean icons = !compact
+                    && PrayerTimesWidgetPrefs.showIcons(context, widgetId);
             int iconVisibility = icons ? View.VISIBLE : View.GONE;
             row.setViewVisibility(R.id.prayer_icon_fajr, iconVisibility);
             row.setViewVisibility(R.id.prayer_icon_sunrise, iconVisibility);
