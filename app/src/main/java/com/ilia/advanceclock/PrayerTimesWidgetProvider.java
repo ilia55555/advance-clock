@@ -38,8 +38,16 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
     }
 
     private static void update(Context context, AppWidgetManager manager, int id) {
+        Bundle options = manager.getAppWidgetOptions(id);
+        int minHeight = options == null ? 110
+                : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110);
+        boolean compact = minHeight < 175;
+
         RemoteViews views = new RemoteViews(
-                context.getPackageName(), R.layout.widget_prayer_times);
+                context.getPackageName(),
+                compact
+                        ? R.layout.widget_prayer_times_compact
+                        : R.layout.widget_prayer_times);
 
         views.setInt(
                 R.id.prayer_widget_root,
@@ -71,14 +79,17 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                 R.id.prayer_widget_manage, showManage ? View.VISIBLE : View.GONE);
 
         int horizonCount = AppSettings.prayerHorizons(context).size();
-        boolean showHint = PrayerTimesWidgetPrefs.showScrollHint(context, id)
+        boolean showHint = !compact
+                && PrayerTimesWidgetPrefs.showScrollHint(context, id)
                 && horizonCount > 1;
         views.setViewVisibility(
                 R.id.prayer_widget_scroll_hint, showHint ? View.VISIBLE : View.GONE);
 
         Intent service = new Intent(context, PrayerTimesWidgetService.class)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
+                .putExtra("compact", compact);
         service.setData(Uri.parse("advanceclock://prayer-widget/" + id + "/"
+                + (compact ? "compact/" : "full/")
                 + System.currentTimeMillis()));
         views.setRemoteAdapter(R.id.prayer_widget_list, service);
 
