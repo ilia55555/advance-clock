@@ -24,6 +24,15 @@ tasks.register('generateLocalizations') {
     }
 }
 
+def removeLegacyLocalizationResources = tasks.register(
+        'removeLegacyLocalizationResources', Delete) {
+    group = 'build setup'
+    description = 'Removes obsolete generated resources that duplicate localization_full.xml.'
+    delete fileTree('src/main/res') {
+        include 'values*/ui_text_values.xml'
+    }
+}
+
 android {
     namespace 'com.ilia.advanceclock'
 
@@ -49,4 +58,5 @@ android {
 
 tasks.named('preBuild').configure {
     dependsOn tasks.named('generateLocalizations')
+    dependsOn removeLegacyLocalizationResources
 }

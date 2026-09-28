@@ -7,3 +7,6 @@ app/build/
 captures/
 .externalNativeBuild/
 .cxx/
+
+# Obsolete localization generator output; localization_full.xml is the canonical resource.
+app/src/main/res/values*/ui_text_values.xml
