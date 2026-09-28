@@ -285,7 +285,7 @@ public final class AppSettings {
     }
 
     public static int clockLayoutMode(Context context) {
-        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CURRENT);
+        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CALENDAR_FIRST);
     }
 
     public static void setClockLayoutMode(Context context, int value) {

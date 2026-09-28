@@ -65,13 +65,6 @@ public final class SettingsActivity extends Activity {
         palette.setSelection(AppSettings.palette(this));
         root.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        TextView paletteHint = new TextView(this);
-        paletteHint.setText("هر گزینه یک جفت رنگ کامل برای هدر، کنترل‌ها و دکمه‌های اصلی است.");
-        paletteHint.setTextColor(AppSettings.textSecondary(this));
-        paletteHint.setTextSize(12);
-        paletteHint.setPadding(0, dp(4), 0, dp(8));
-        root.addView(paletteHint);
-
         root.addView(label(getString(R.string.language_label)));
         Spinner language = spinner(getResources().getStringArray(R.array.language_options));
         language.setSelection(AppSettings.languagePosition(this));
@@ -81,13 +74,6 @@ public final class SettingsActivity extends Activity {
         Spinner calendar = spinner(new String[]{"شمسی", "میلادی", "قمری"});
         calendar.setSelection(AppSettings.defaultCalendar(this));
         root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
-
-        TextView calendarHint = new TextView(this);
-        calendarHint.setText("تقویم انتخاب‌شده برای فیلدهای تاریخ، تقویم اصلی و تاریخ نوار وضعیت استفاده می‌شود.");
-        calendarHint.setTextColor(AppSettings.textSecondary(this));
-        calendarHint.setTextSize(12);
-        calendarHint.setPadding(0, dp(4), 0, dp(8));
-        root.addView(calendarHint);
 
         root.addView(label("رویدادها و مناسبت‌ها"));
 
@@ -100,26 +86,10 @@ public final class SettingsActivity extends Activity {
         eventsTitle.setTypeface(null, android.graphics.Typeface.BOLD);
         eventsCard.addView(eventsTitle);
 
-        TextView eventsDescription = new TextView(this);
-        eventsDescription.setText(
-                "مناسبت‌های تقویم اصلی همیشه نمایش داده می‌شوند. "
-                        + "با دو سوییچ زیر می‌توانید مناسبت‌های دو تقویم دیگر را هم اضافه کنید.");
-        eventsDescription.setTextColor(AppSettings.textSecondary(this));
-        eventsDescription.setTextSize(12);
-        eventsDescription.setPadding(0, dp(4), 0, dp(8));
-        eventsCard.addView(eventsDescription);
-
         Switch showCalendarEvents = settingSwitch(
                 "نمایش باکس رویداد زیر تقویم",
                 AppSettings.showCalendarEvents(this));
         eventsCard.addView(showCalendarEvents);
-
-        TextView sourcesTitle = new TextView(this);
-        sourcesTitle.setText("نمایش هم‌زمان مناسبت‌های تقویم‌های دیگر");
-        sourcesTitle.setTextColor(AppSettings.textSecondary(this));
-        sourcesTitle.setTextSize(12);
-        sourcesTitle.setPadding(0, dp(8), 0, dp(2));
-        eventsCard.addView(sourcesTitle);
 
         int[] initialExtraTypes = extraCalendarTypes(calendar.getSelectedItemPosition());
         Switch extraEventsOne = settingSwitch(
@@ -161,15 +131,6 @@ public final class SettingsActivity extends Activity {
         prayerTitle.setTypeface(null, android.graphics.Typeface.BOLD);
         prayerCard.addView(prayerTitle);
 
-        TextView prayerDescription = new TextView(this);
-        prayerDescription.setText(
-                "اعلان و لرزش اذان صبح، ظهر و مغرب زمان‌بندی می‌شود؛ "
-                        + "فایل صوتی مؤذن هنوز متصل نیست.");
-        prayerDescription.setTextColor(AppSettings.textSecondary(this));
-        prayerDescription.setTextSize(12);
-        prayerDescription.setPadding(0, dp(4), 0, dp(10));
-        prayerCard.addView(prayerDescription);
-
         Button prayerSettings = new Button(this);
         prayerSettings.setText("تنظیمات اذان");
         prayerSettings.setAllCaps(false);
@@ -181,10 +142,10 @@ public final class SettingsActivity extends Activity {
 
         root.addView(prayerCard, settingsCardParams());
 
-        root.addView(label("چیدمان صفحه ساعت و یادداشت"));
+        root.addView(label("چیدمان صفحه ساعت"));
         Spinner layout = spinner(new String[]{
-                "پیش‌فرض: فرم ایجاد داخل صفحه، بدون دکمه +",
-                "فشرده: فرم ایجاد در مودال با دکمه +"
+                "فرم ایجاد داخل صفحه، بدون دکمه +",
+                "پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +"
         });
         layout.setSelection(AppSettings.clockLayoutMode(this));
         root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));

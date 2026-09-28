@@ -93,14 +93,6 @@ public final class PrayerSettingsActivity extends Activity {
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
-        TextView intro = text(
-                "محاسبه آفلاین بر پایه روش مرکز تقویم مؤسسه ژئوفیزیک دانشگاه تهران "
-                        + "(فجر ۱۷٫۷° و مغرب ۴٫۵°) و مختصات دقیق دستگاه انجام می‌شود.",
-                12,
-                AppSettings.textSecondary(this));
-        intro.setPadding(0, 0, 0, dp(10));
-        root.addView(intro);
-
         LinearLayout masterCard = card();
         TextView masterTitle = text(
                 "نمایش اوقات شرعی",
@@ -110,7 +102,7 @@ public final class PrayerSettingsActivity extends Activity {
         masterCard.addView(masterTitle);
 
         Switch master = toggle(
-                "نمایش باکس اوقات شرعی زیر تقویم",
+                "نمایش نوار اوقات شرعی زیر تقویم",
                 AppSettings.adhanEnabled(this));
         master.setOnCheckedChangeListener((button, checked) -> {
             AppSettings.setAdhanEnabled(this, checked);
@@ -135,14 +127,6 @@ public final class PrayerSettingsActivity extends Activity {
         locationButton.setOnClickListener(v -> requestPreciseLocation());
         locationCard.addView(locationButton, new LinearLayout.LayoutParams(-1, dp(52)));
 
-        Button method = fieldButton(
-                "روش محاسبه: ژئوفیزیک دانشگاه تهران • همسان با اوقات رسمی ایران");
-        method.setEnabled(false);
-        method.setAlpha(0.82f);
-        LinearLayout.LayoutParams methodParams =
-                new LinearLayout.LayoutParams(-1, dp(52));
-        methodParams.topMargin = dp(8);
-        locationCard.addView(method, methodParams);
         root.addView(locationCard, cardParams());
 
         LinearLayout prayersCard = card();
@@ -152,13 +136,6 @@ public final class PrayerSettingsActivity extends Activity {
                 AppSettings.textPrimary(this));
         prayersTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         prayersCard.addView(prayersTitle);
-
-        TextView timesHint = text(
-                "زمان‌ها هر روز از نو برای مختصات ذخیره‌شده و منطقه زمانی دستگاه محاسبه می‌شوند.",
-                12,
-                AppSettings.textSecondary(this));
-        timesHint.setPadding(0, dp(3), 0, dp(6));
-        prayersCard.addView(timesHint);
 
         fajrTime = addTimeRow(prayersCard, "اذان صبح");
         sunriseTime = addTimeRow(prayersCard, "طلوع آفتاب");
@@ -210,8 +187,7 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(vibrate);
 
         adhanScheduleStatus = text(
-                "اعلان و لرزش اوقات فعال، هر روز زمان‌بندی می‌شود. "
-                        + "فایل صوتی مورد انتظار: app/src/main/res/raw/adhan.mp3",
+                "",
                 11,
                 AppSettings.textSecondary(this));
         adhanScheduleStatus.setPadding(0, dp(6), 0, 0);
@@ -254,8 +230,7 @@ public final class PrayerSettingsActivity extends Activity {
                             AppSettings.prayerLongitude(this)));
             locationButton.setText("به‌روزرسانی موقعیت دقیق فعلی");
         } else {
-            locationStatus.setText(
-                    "برای محاسبه دقیقه‌به‌دقیقه، یک‌بار موقعیت فعلی را ثبت کنید.");
+            locationStatus.setText("موقعیت تنظیم نشده");
             locationButton.setText("دریافت موقعیت دقیق فعلی");
         }
 
@@ -310,7 +285,7 @@ public final class PrayerSettingsActivity extends Activity {
                 break;
             case SCHEDULED:
             default:
-                message = "اذان فعال زمان‌بندی شده است. فایل صوتی: adhan.mp3";
+                message = "اذان فعال است";
                 break;
         }
         adhanScheduleStatus.setText(message);
