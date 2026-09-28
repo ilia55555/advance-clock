@@ -37,20 +37,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class PrayerLocationSearchActivity extends Activity {
-    private EditText searchInput;
-    private Button searchButton;
-    private ProgressBar progress;
-    private TextView status;
     private static final String SEARCH_PREFS = "prayer_location_search_cache";
     private static final String CACHE_QUERY = "query";
     private static final String CACHE_RESPONSE = "response";
     private static final String NOMINATIM_SEARCH =
             "https://nominatim.openstreetmap.org/search";
+    private static final String TIMEAPI_COORDINATE =
+            "https://timeapi.io/api/timezone/coordinate";
+    private static final String OPEN_METEO_FORECAST =
+            "https://api.open-meteo.com/v1/forecast";
     private static final Object REQUEST_LOCK = new Object();
     private static long lastRequestStarted;
 
+    private EditText searchInput;
+    private Button searchButton;
+    private ProgressBar progress;
+    private TextView status;
     private LinearLayout results;
     private int searchGeneration;
 
@@ -159,12 +164,14 @@ public final class PrayerLocationSearchActivity extends Activity {
             status.setText("نام مکان را وارد کنید");
             return;
         }
+
         List<IranOfflineLocations.Location> offline =
                 IranOfflineLocations.search(query, 20);
         if (!offline.isEmpty()) {
             showOfflineResults(offline);
             return;
         }
+
         if (!hasInternetConnection()) {
             String message = "این مکان در فهرست آفلاین نیست؛ اینترنت را روشن کنید";
             status.setText(message);
@@ -289,7 +296,7 @@ public final class PrayerLocationSearchActivity extends Activity {
             String countryCode = address == null
                     ? "" : address.optString("country_code", "");
             String timeZoneId = "ir".equalsIgnoreCase(countryCode)
-                    ? "Asia/Tehran" : java.util.TimeZone.getDefault().getID();
+                    ? "Asia/Tehran" : "";
             parsed.add(new LocationResult(label, latitude, longitude, timeZoneId));
         }
         return parsed;
@@ -305,7 +312,7 @@ public final class PrayerLocationSearchActivity extends Activity {
             for (Address address : addresses) {
                 if (!address.hasLatitude() || !address.hasLongitude()) continue;
                 String timeZoneId = "IR".equalsIgnoreCase(address.getCountryCode())
-                        ? "Asia/Tehran" : java.util.TimeZone.getDefault().getID();
+                        ? "Asia/Tehran" : "";
                 found.add(new LocationResult(
                         addressLabel(address),
                         address.getLatitude(),
@@ -370,32 +377,52 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private void select(LocationResult location) {
-        if ("Asia/Tehran".equals(location.timeZoneId)) {
+        if (isUsableTimeZone(location.timeZoneId)) {
             saveLocation(location, location.timeZoneId);
             return;
         }
+
         progress.setVisibility(View.VISIBLE);
-        status.setText("در حال تنظیم منطقه زمانی…");
+        status.setText("در حال تشخیص منطقه زمانی شهر…");
         new Thread(() -> {
             String zone = resolveTimeZone(location.latitude, location.longitude);
-            runOnUiThread(() -> saveLocation(location,
-                    zone.isEmpty() ? location.timeZoneId : zone));
+            runOnUiThread(() -> {
+                progress.setVisibility(View.GONE);
+                if (!isUsableTimeZone(zone)) {
+                    String message = "منطقه زمانی این مکان تشخیص داده نشد؛ دوباره تلاش کنید";
+                    status.setText(message);
+                    LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                saveLocation(location, zone);
+            });
         }).start();
     }
 
     private String resolveTimeZone(double latitude, double longitude) {
+        String zone = resolveTimeZoneViaTimeApi(latitude, longitude);
+        if (isUsableTimeZone(zone)) return zone;
+        zone = resolveTimeZoneViaOpenMeteo(latitude, longitude);
+        return isUsableTimeZone(zone) ? zone : "";
+    }
+
+    private String resolveTimeZoneViaTimeApi(double latitude, double longitude) {
         HttpURLConnection connection = null;
         try {
-            Uri uri = Uri.parse("https://timeapi.io/api/timezone/coordinate").buildUpon()
+            Uri uri = Uri.parse(TIMEAPI_COORDINATE).buildUpon()
                     .appendQueryParameter("latitude", Double.toString(latitude))
-                    .appendQueryParameter("longitude", Double.toString(longitude)).build();
+                    .appendQueryParameter("longitude", Double.toString(longitude))
+                    .build();
             connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            connection.setConnectTimeout(10_000); connection.setReadTimeout(10_000);
+            connection.setConnectTimeout(8_000);
+            connection.setReadTimeout(8_000);
             connection.setRequestProperty("Accept", "application/json");
-            if (connection.getResponseCode() < 200 || connection.getResponseCode() >= 300)
-                return "";
+            connection.setRequestProperty(
+                    "User-Agent", "AdvanceClock/1.0 (Android; com.ilia.advanceclock)");
+            int code = connection.getResponseCode();
+            if (code < 200 || code >= 300) return "";
             return new JSONObject(readFully(connection.getInputStream()))
-                    .optString("timeZone", "");
+                    .optString("timeZone", "").trim();
         } catch (Exception ignored) {
             return "";
         } finally {
@@ -403,9 +430,51 @@ public final class PrayerLocationSearchActivity extends Activity {
         }
     }
 
+    private String resolveTimeZoneViaOpenMeteo(double latitude, double longitude) {
+        HttpURLConnection connection = null;
+        try {
+            Uri uri = Uri.parse(OPEN_METEO_FORECAST).buildUpon()
+                    .appendQueryParameter("latitude", Double.toString(latitude))
+                    .appendQueryParameter("longitude", Double.toString(longitude))
+                    .appendQueryParameter("current", "temperature_2m")
+                    .appendQueryParameter("timezone", "auto")
+                    .appendQueryParameter("forecast_days", "1")
+                    .build();
+            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+            connection.setConnectTimeout(8_000);
+            connection.setReadTimeout(8_000);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty(
+                    "User-Agent", "AdvanceClock/1.0 (Android; com.ilia.advanceclock)");
+            int code = connection.getResponseCode();
+            if (code < 200 || code >= 300) return "";
+            return new JSONObject(readFully(connection.getInputStream()))
+                    .optString("timezone", "").trim();
+        } catch (Exception ignored) {
+            return "";
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
+    private boolean isUsableTimeZone(String id) {
+        if (id == null || id.trim().isEmpty()) return false;
+        String normalized = id.trim();
+        TimeZone zone = TimeZone.getTimeZone(normalized);
+        if (!"GMT".equals(zone.getID())) return true;
+        return "GMT".equalsIgnoreCase(normalized)
+                || normalized.toUpperCase(Locale.US).startsWith("GMT+")
+                || normalized.toUpperCase(Locale.US).startsWith("GMT-")
+                || normalized.startsWith("Etc/GMT");
+    }
+
     private void saveLocation(LocationResult location, String timeZoneId) {
         AppSettings.setPrayerLocation(
-                this, location.latitude, location.longitude, location.label, timeZoneId);
+                this,
+                location.latitude,
+                location.longitude,
+                location.label,
+                timeZoneId);
         setResult(RESULT_OK);
         finish();
     }
@@ -422,8 +491,11 @@ public final class PrayerLocationSearchActivity extends Activity {
             }
         }
         if (label.length() == 0) {
-            return String.format(Locale.getDefault(), "%.5f, %.5f",
-                    address.getLatitude(), address.getLongitude());
+            return String.format(
+                    Locale.getDefault(),
+                    "%.5f, %.5f",
+                    address.getLatitude(),
+                    address.getLongitude());
         }
         return label.toString();
     }
@@ -443,7 +515,10 @@ public final class PrayerLocationSearchActivity extends Activity {
         final String timeZoneId;
 
         LocationResult(
-                String label, double latitude, double longitude, String timeZoneId) {
+                String label,
+                double latitude,
+                double longitude,
+                String timeZoneId) {
             this.label = label;
             this.latitude = latitude;
             this.longitude = longitude;
