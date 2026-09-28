@@ -241,6 +241,9 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/alarm_sound_button"
+                android:clickable="true"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="8dp"
@@ -259,6 +262,7 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/alarm_sound_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="پیش‌فرض سیستم"

@@ -244,6 +244,55 @@ public final class AppSettings {
         AdhanScheduler.rescheduleAll(context);
     }
 
+    public static boolean asrAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_asr_enabled", false);
+    }
+
+    public static void setAsrAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_asr_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean ishaAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_isha_enabled", false);
+    }
+
+    public static void setIshaAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_isha_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean adhanFullscreen(Context context) {
+        return prefs(context).getBoolean("adhan_fullscreen", true);
+    }
+    public static void setAdhanFullscreen(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_fullscreen", value).apply();
+    }
+    public static boolean adhanNotification(Context context) {
+        return prefs(context).getBoolean("adhan_notification", true);
+    }
+    public static void setAdhanNotification(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_notification", value).apply();
+    }
+    public static boolean adhanSound(Context context) {
+        return prefs(context).getBoolean("adhan_sound", true);
+    }
+    public static void setAdhanSound(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_sound", value).apply();
+    }
+    public static String adhanSoundUri(Context context, int type) {
+        return prefs(context).getString("adhan_sound_uri_" + type, "");
+    }
+    public static void setAdhanSoundUri(Context context, int type, String uri) {
+        prefs(context).edit().putString("adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
+    }
+    public static String defaultAlarmSoundUri(Context context) {
+        return prefs(context).getString("default_alarm_sound_uri", "");
+    }
+    public static void setDefaultAlarmSoundUri(Context context, String uri) {
+        prefs(context).edit().putString("default_alarm_sound_uri", uri == null ? "" : uri).apply();
+    }
+
     public static boolean adhanVibrate(Context context) {
         return prefs(context).getBoolean("adhan_vibrate", true);
     }

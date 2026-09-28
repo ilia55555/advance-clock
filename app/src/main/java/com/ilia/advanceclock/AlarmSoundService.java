@@ -25,17 +25,24 @@ public final class AlarmSoundService extends Service {
     private PowerManager.WakeLock wakeLock;
     private long currentAlarmId = -1L;
     private boolean currentVibrate = true;
+    private String currentSoundUri = "";
 
     public static Intent startIntent(Context context, long id, String label) {
-        return startIntent(context, id, label, true);
+        return startIntent(context, id, label, true, "");
     }
 
     public static Intent startIntent(Context context, long id, String label, boolean vibrate) {
+        return startIntent(context, id, label, vibrate, "");
+    }
+
+    public static Intent startIntent(
+            Context context, long id, String label, boolean vibrate, String soundUri) {
         return new Intent(context, AlarmSoundService.class)
                 .setAction(ACTION_START)
                 .putExtra("alarmId", id)
                 .putExtra("label", label == null ? "" : label)
-                .putExtra("vibrate", vibrate);
+                .putExtra("vibrate", vibrate)
+                .putExtra("soundUri", soundUri == null ? "" : soundUri);
     }
 
     public static Intent stopIntent(Context context) {
@@ -57,6 +64,7 @@ public final class AlarmSoundService extends Service {
 
         currentAlarmId = intent.getLongExtra("alarmId", -1L);
         currentVibrate = intent.getBooleanExtra("vibrate", true);
+        currentSoundUri = intent.getStringExtra("soundUri");
         String label = intent.getStringExtra("label");
         String toolKind = intent.getStringExtra("toolKind");
 
@@ -126,7 +134,11 @@ public final class AlarmSoundService extends Service {
     private void startSound() {
         stopPlayer();
         try {
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Uri uri = currentSoundUri == null || currentSoundUri.isEmpty()
+                    ? Uri.parse(AppSettings.defaultAlarmSoundUri(this))
+                    : Uri.parse(currentSoundUri);
+            if (uri == null || uri.toString().isEmpty())
+                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             if (uri == null) uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
 
             player = new MediaPlayer();

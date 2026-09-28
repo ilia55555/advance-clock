@@ -31,6 +31,7 @@ public final class AlarmItem {
     public long lastFiredAtMillis;
     public String imageUri1;
     public String imageUri2;
+    public String soundUri;
 
     public AlarmItem(long id,String label,long triggerAtMillis,int repeatType,boolean enabled){
         this(id,label,triggerAtMillis,repeatType,enabled,true);
@@ -68,6 +69,7 @@ public final class AlarmItem {
         this.lastFiredAtMillis=0L;
         this.imageUri1="";
         this.imageUri2="";
+        this.soundUri="";
     }
 
     public JSONObject toJson() throws JSONException{
@@ -81,6 +83,7 @@ public final class AlarmItem {
         o.put("lastFiredAtMillis",lastFiredAtMillis);
         o.put("imageUri1",imageUri1);
         o.put("imageUri2",imageUri2);
+        o.put("soundUri",soundUri);
         return o;
     }
 
@@ -104,6 +107,7 @@ public final class AlarmItem {
         item.lastFiredAtMillis = o.optLong("lastFiredAtMillis", 0L);
         item.imageUri1 = o.optString("imageUri1", "");
         item.imageUri2 = o.optString("imageUri2", "");
+        item.soundUri = o.optString("soundUri", "");
         return item;
     }
 }

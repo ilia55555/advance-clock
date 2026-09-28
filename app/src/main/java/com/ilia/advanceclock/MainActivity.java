@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -53,6 +54,7 @@ public final class MainActivity extends Activity {
     private final Runnable headerTicker = new Runnable() {
         @Override public void run() {
             updateHeaderClock();
+            applyPrayerTimesUi();
             long now = System.currentTimeMillis();
             long delay = 60_000L - (now % 60_000L) + 60L;
             headerHandler.postDelayed(this, delay);
@@ -67,6 +69,9 @@ public final class MainActivity extends Activity {
     private View noteSketchCard;
     private View alertsHeader;
     private View prayerTimesCard;
+    private HorizontalScrollView prayerTimesScroll;
+    private View prayerScrollLeft;
+    private View prayerScrollRight;
     private View calendarEventsCard;
     private ScrollView clockPanel;
     private View noForgetPanel;
@@ -92,6 +97,7 @@ public final class MainActivity extends Activity {
     private float swipeDownX;
     private float swipeDownY;
     private boolean swipeStartedOnCalendar;
+    private int lastPrayerAutoIndex = -1;
 
     private Button quickAlarmDate;
     private Button quickAlarmTime;
@@ -212,6 +218,11 @@ public final class MainActivity extends Activity {
         noteSketchCard = findViewById(R.id.note_sketch_card);
         alertsHeader = findViewById(R.id.alerts_header);
         prayerTimesCard = findViewById(R.id.prayer_times_card);
+        prayerTimesScroll = findViewById(R.id.prayer_times_scroll);
+        prayerScrollLeft = findViewById(R.id.prayer_scroll_left);
+        prayerScrollRight = findViewById(R.id.prayer_scroll_right);
+        prayerTimesScroll.setOnScrollChangeListener(
+                (view, x, y, oldX, oldY) -> updatePrayerScrollArrows());
         calendarEventsCard = findViewById(R.id.calendar_events_card);
         clockPanel = findViewById(R.id.clock_panel);
         noForgetPanel = findViewById(R.id.noforget_panel);
@@ -418,6 +429,40 @@ public final class MainActivity extends Activity {
         setPrayerTimeText(R.id.prayer_maghrib, times.maghrib());
         setPrayerTimeText(R.id.prayer_isha, times.isha());
         setPrayerTimeText(R.id.prayer_midnight, times.midnight());
+        positionPrayerTimes(times);
+    }
+
+    private void positionPrayerTimes(PrayerTimeCalculator.Times times) {
+        if (prayerTimesScroll == null) return;
+        Calendar now = Calendar.getInstance(AppSettings.prayerTimeZone(this));
+        int minute = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+        int index = minute >= times.ishaMinutes ? 6
+                : minute >= times.maghribMinutes ? 5
+                : minute >= times.sunsetMinutes ? 4
+                : minute >= times.asrMinutes ? 3
+                : minute >= times.dhuhrMinutes ? 2
+                : minute >= times.sunriseMinutes ? 1 : 0;
+        if (index == lastPrayerAutoIndex) {
+            updatePrayerScrollArrows();
+            return;
+        }
+        lastPrayerAutoIndex = index;
+        prayerTimesScroll.post(() -> {
+            View content = prayerTimesScroll.getChildAt(0);
+            if (content == null) return;
+            int maximum = Math.max(0, content.getWidth() - prayerTimesScroll.getWidth());
+            int target = Math.max(0, maximum - dp(72) * index);
+            prayerTimesScroll.smoothScrollTo(target, 0);
+            prayerTimesScroll.postDelayed(this::updatePrayerScrollArrows, 250);
+        });
+    }
+
+    private void updatePrayerScrollArrows() {
+        if (prayerTimesScroll == null) return;
+        prayerScrollLeft.setVisibility(
+                prayerTimesScroll.canScrollHorizontally(-1) ? View.VISIBLE : View.GONE);
+        prayerScrollRight.setVisibility(
+                prayerTimesScroll.canScrollHorizontally(1) ? View.VISIBLE : View.GONE);
     }
 
     private void setPrayerTimeText(int id, String value) {
@@ -1054,7 +1099,8 @@ public final class MainActivity extends Activity {
             swipeDownX = event.getRawX();
             swipeDownY = event.getRawY();
             swipeStartedOnCalendar = pointInside(clockCalendar, swipeDownX, swipeDownY)
-                    || pointInside(noteCalendar, swipeDownX, swipeDownY);
+                    || pointInside(noteCalendar, swipeDownX, swipeDownY)
+                    || pointInside(prayerTimesCard, swipeDownX, swipeDownY);
         } else if (event.getActionMasked() == MotionEvent.ACTION_UP
                 && !swipeStartedOnCalendar) {
             float deltaX = event.getRawX() - swipeDownX;
