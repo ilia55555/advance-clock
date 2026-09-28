@@ -210,6 +210,7 @@ public final class WidgetCenterActivity extends Activity {
     private int previewResource(String kind) {
         if ("note".equals(kind)) return R.drawable.preview_widget_notes;
         if ("world".equals(kind)) return R.drawable.preview_widget_world;
+        if ("prayer".equals(kind)) return R.drawable.widget_prayer_bg_navy;
         if ("media".equals(kind)) return R.drawable.preview_widget_media;
         return R.drawable.preview_widget_clock;
     }
@@ -251,7 +252,8 @@ public final class WidgetCenterActivity extends Activity {
         if ("world".equals(kind)) {
             intent = new Intent(this, WorldClockWidgetConfigActivity.class);
         } else if ("prayer".equals(kind)) {
-            intent = new Intent(this, PrayerSettingsActivity.class);
+            intent = new Intent(this, PrayerTimesWidgetConfigActivity.class)
+                    .putExtra("editExisting", true);
         } else if ("media".equals(kind)) {
             intent = new Intent(this, MediaWidgetConfigActivity.class)
                     .putExtra("editExisting", true)
