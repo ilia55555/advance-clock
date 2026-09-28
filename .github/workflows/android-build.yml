@@ -15,6 +15,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Audit UI strings
+        run: |
+          python3 - <<'PY'
+          import pathlib,re
+          roots=[pathlib.Path('app/src/main/java'), pathlib.Path('app/src/main/res')]
+          rx=re.compile(r'([\u0600-\u06FF].*?)')
+          quoted=re.compile(r'"((?:\\.|[^"\\])*)"')
+          print('===LOCALIZATION_AUDIT_BEGIN===')
+          for root in roots:
+              for p in sorted(root.rglob('*')):
+                  if p.suffix not in {'.java','.xml'}: continue
+                  try: text=p.read_text(encoding='utf-8')
+                  except: continue
+                  for i,line in enumerate(text.splitlines(),1):
+                      vals=[]
+                      for m in quoted.finditer(line):
+                          s=m.group(1)
+                          if rx.search(s): vals.append(s)
+                      if vals:
+                          print(f'{p}:{i}: ' + ' || '.join(vals))
+          print('===LOCALIZATION_AUDIT_END===')
+          PY
+
       - name: Set up Java 17
         uses: actions/setup-java@v6
         with:
