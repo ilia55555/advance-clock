@@ -143,11 +143,12 @@ public final class AppSettings {
     }
 
     public static boolean adhanEnabled(Context context) {
-        return prefs(context).getBoolean("adhan_enabled", true);
+        return prefs(context).getBoolean("adhan_enabled", false);
     }
 
     public static void setAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
     }
 
     public static boolean prayerLocationSet(Context context) {
@@ -177,8 +178,31 @@ public final class AppSettings {
                 "prayer_location_label", "موقعیت فعلی");
     }
 
+    public static String prayerTimeZoneId(Context context) {
+        return prefs(context).getString(
+                "prayer_time_zone", java.util.TimeZone.getDefault().getID());
+    }
+
+    public static java.util.TimeZone prayerTimeZone(Context context) {
+        return java.util.TimeZone.getTimeZone(prayerTimeZoneId(context));
+    }
+
     public static void setPrayerLocation(
             Context context, double latitude, double longitude, String label) {
+        setPrayerLocation(
+                context,
+                latitude,
+                longitude,
+                label,
+                java.util.TimeZone.getDefault().getID());
+    }
+
+    public static void setPrayerLocation(
+            Context context,
+            double latitude,
+            double longitude,
+            String label,
+            String timeZoneId) {
         prefs(context).edit()
                 .putBoolean("prayer_location_set", true)
                 .putString("prayer_latitude", Double.toString(latitude))
@@ -186,8 +210,58 @@ public final class AppSettings {
                 .putString("prayer_location_label",
                         label == null || label.trim().isEmpty()
                                 ? "موقعیت فعلی" : label.trim())
+                .putString("prayer_time_zone",
+                        timeZoneId == null || timeZoneId.trim().isEmpty()
+                                ? java.util.TimeZone.getDefault().getID()
+                                : timeZoneId.trim())
                 .apply();
+        addPrayerHorizon(context, label, latitude, longitude, timeZoneId);
         AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static final class PrayerHorizon {
+        public final String label;
+        public final double latitude;
+        public final double longitude;
+        public final String timeZoneId;
+        PrayerHorizon(String label, double latitude, double longitude, String timeZoneId) {
+            this.label = label; this.latitude = latitude; this.longitude = longitude;
+            this.timeZoneId = timeZoneId;
+        }
+    }
+
+    public static java.util.List<PrayerHorizon> prayerHorizons(Context context) {
+        java.util.ArrayList<PrayerHorizon> values = new java.util.ArrayList<>();
+        try {
+            org.json.JSONArray array = new org.json.JSONArray(
+                    prefs(context).getString("prayer_horizons", "[]"));
+            for (int i = 0; i < array.length(); i++) {
+                org.json.JSONObject item = array.optJSONObject(i);
+                if (item != null) values.add(new PrayerHorizon(
+                        item.optString("label", "افق"), item.optDouble("lat"),
+                        item.optDouble("lon"), item.optString("zone", "Asia/Tehran")));
+            }
+        } catch (Exception ignored) {}
+        return values;
+    }
+
+    private static void addPrayerHorizon(
+            Context context, String label, double latitude, double longitude, String timeZoneId) {
+        java.util.List<PrayerHorizon> current = prayerHorizons(context);
+        for (PrayerHorizon item : current)
+            if (Math.abs(item.latitude - latitude) < 0.0001
+                    && Math.abs(item.longitude - longitude) < 0.0001) return;
+        org.json.JSONArray array = new org.json.JSONArray();
+        for (PrayerHorizon item : current) {
+            org.json.JSONObject value = new org.json.JSONObject();
+            try { value.put("label", item.label); value.put("lat", item.latitude);
+                value.put("lon", item.longitude); value.put("zone", item.timeZoneId); array.put(value); }
+            catch (Exception ignored) {}
+        }
+        org.json.JSONObject added = new org.json.JSONObject();
+        try { added.put("label", label); added.put("lat", latitude); added.put("lon", longitude);
+            added.put("zone", timeZoneId); array.put(added); } catch (Exception ignored) {}
+        prefs(context).edit().putString("prayer_horizons", array.toString()).apply();
     }
 
     public static boolean fajrAdhanEnabled(Context context) {
@@ -215,6 +289,80 @@ public final class AppSettings {
     public static void setMaghribAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_maghrib_enabled", value).apply();
         AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean asrAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_asr_enabled", false);
+    }
+
+    public static void setAsrAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_asr_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean ishaAdhanEnabled(Context context) {
+        return prefs(context).getBoolean("adhan_isha_enabled", false);
+    }
+
+    public static void setIshaAdhanEnabled(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_isha_enabled", value).apply();
+        AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static boolean adhanFullscreenUnlocked(Context context) {
+        return prefs(context).getBoolean("adhan_fullscreen_unlocked", true);
+    }
+    public static void setAdhanFullscreenUnlocked(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_fullscreen_unlocked", value).apply();
+    }
+    public static boolean adhanFullscreenLocked(Context context) {
+        return prefs(context).getBoolean("adhan_fullscreen_locked", true);
+    }
+    public static void setAdhanFullscreenLocked(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_fullscreen_locked", value).apply();
+    }
+    public static boolean alarmFullscreenUnlocked(Context context) {
+        return prefs(context).getBoolean("alarm_fullscreen_unlocked", true);
+    }
+    public static void setAlarmFullscreenUnlocked(Context context, boolean value) {
+        prefs(context).edit().putBoolean("alarm_fullscreen_unlocked", value).apply();
+    }
+    public static boolean alarmFullscreenLocked(Context context) {
+        return prefs(context).getBoolean("alarm_fullscreen_locked", true);
+    }
+    public static void setAlarmFullscreenLocked(Context context, boolean value) {
+        prefs(context).edit().putBoolean("alarm_fullscreen_locked", value).apply();
+    }
+
+    public static boolean adhanFullscreen(Context context) {
+        return prefs(context).getBoolean("adhan_fullscreen", true);
+    }
+    public static void setAdhanFullscreen(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_fullscreen", value).apply();
+    }
+    public static boolean adhanNotification(Context context) {
+        return prefs(context).getBoolean("adhan_notification", true);
+    }
+    public static void setAdhanNotification(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_notification", value).apply();
+    }
+    public static boolean adhanSound(Context context) {
+        return prefs(context).getBoolean("adhan_sound", true);
+    }
+    public static void setAdhanSound(Context context, boolean value) {
+        prefs(context).edit().putBoolean("adhan_sound", value).apply();
+    }
+    public static String adhanSoundUri(Context context, int type) {
+        return prefs(context).getString("adhan_sound_uri_" + type, "");
+    }
+    public static void setAdhanSoundUri(Context context, int type, String uri) {
+        prefs(context).edit().putString("adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
+    }
+    public static String defaultAlarmSoundUri(Context context) {
+        return prefs(context).getString("default_alarm_sound_uri", "");
+    }
+    public static void setDefaultAlarmSoundUri(Context context, String uri) {
+        prefs(context).edit().putString("default_alarm_sound_uri", uri == null ? "" : uri).apply();
     }
 
     public static boolean adhanVibrate(Context context) {
@@ -285,7 +433,7 @@ public final class AppSettings {
     }
 
     public static int clockLayoutMode(Context context) {
-        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CURRENT);
+        return prefs(context).getInt("clock_layout_mode", CLOCK_LAYOUT_CALENDAR_FIRST);
     }
 
     public static void setClockLayoutMode(Context context, int value) {

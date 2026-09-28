@@ -29,7 +29,7 @@ public final class NoForgetQuickAddActivity extends Activity {
         findViewById(R.id.quick_note_save).setOnClickListener(v -> {
             String value = text.getText().toString().trim();
             if (value.isEmpty()) {
-                Toast.makeText(this, "یادداشت خالی است", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "یادداشت خالی است", Toast.LENGTH_SHORT).show();
                 return;
             }
 

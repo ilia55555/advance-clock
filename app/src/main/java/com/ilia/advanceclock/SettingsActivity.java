@@ -65,13 +65,6 @@ public final class SettingsActivity extends Activity {
         palette.setSelection(AppSettings.palette(this));
         root.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        TextView paletteHint = new TextView(this);
-        paletteHint.setText("هر گزینه یک جفت رنگ کامل برای هدر، کنترل‌ها و دکمه‌های اصلی است.");
-        paletteHint.setTextColor(AppSettings.textSecondary(this));
-        paletteHint.setTextSize(12);
-        paletteHint.setPadding(0, dp(4), 0, dp(8));
-        root.addView(paletteHint);
-
         root.addView(label(getString(R.string.language_label)));
         Spinner language = spinner(getResources().getStringArray(R.array.language_options));
         language.setSelection(AppSettings.languagePosition(this));
@@ -81,13 +74,6 @@ public final class SettingsActivity extends Activity {
         Spinner calendar = spinner(new String[]{"شمسی", "میلادی", "قمری"});
         calendar.setSelection(AppSettings.defaultCalendar(this));
         root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
-
-        TextView calendarHint = new TextView(this);
-        calendarHint.setText("تقویم انتخاب‌شده برای فیلدهای تاریخ، تقویم اصلی و تاریخ نوار وضعیت استفاده می‌شود.");
-        calendarHint.setTextColor(AppSettings.textSecondary(this));
-        calendarHint.setTextSize(12);
-        calendarHint.setPadding(0, dp(4), 0, dp(8));
-        root.addView(calendarHint);
 
         root.addView(label("رویدادها و مناسبت‌ها"));
 
@@ -100,26 +86,10 @@ public final class SettingsActivity extends Activity {
         eventsTitle.setTypeface(null, android.graphics.Typeface.BOLD);
         eventsCard.addView(eventsTitle);
 
-        TextView eventsDescription = new TextView(this);
-        eventsDescription.setText(
-                "مناسبت‌های تقویم اصلی همیشه نمایش داده می‌شوند. "
-                        + "با دو سوییچ زیر می‌توانید مناسبت‌های دو تقویم دیگر را هم اضافه کنید.");
-        eventsDescription.setTextColor(AppSettings.textSecondary(this));
-        eventsDescription.setTextSize(12);
-        eventsDescription.setPadding(0, dp(4), 0, dp(8));
-        eventsCard.addView(eventsDescription);
-
         Switch showCalendarEvents = settingSwitch(
                 "نمایش باکس رویداد زیر تقویم",
                 AppSettings.showCalendarEvents(this));
         eventsCard.addView(showCalendarEvents);
-
-        TextView sourcesTitle = new TextView(this);
-        sourcesTitle.setText("نمایش هم‌زمان مناسبت‌های تقویم‌های دیگر");
-        sourcesTitle.setTextColor(AppSettings.textSecondary(this));
-        sourcesTitle.setTextSize(12);
-        sourcesTitle.setPadding(0, dp(8), 0, dp(2));
-        eventsCard.addView(sourcesTitle);
 
         int[] initialExtraTypes = extraCalendarTypes(calendar.getSelectedItemPosition());
         Switch extraEventsOne = settingSwitch(
@@ -154,37 +124,32 @@ public final class SettingsActivity extends Activity {
 
         LinearLayout prayerCard = settingsCard();
 
-        TextView prayerTitle = new TextView(this);
-        prayerTitle.setText("اذان و اوقات شرعی");
-        prayerTitle.setTextColor(AppSettings.textPrimary(this));
-        prayerTitle.setTextSize(17);
-        prayerTitle.setTypeface(null, android.graphics.Typeface.BOLD);
-        prayerCard.addView(prayerTitle);
-
-        TextView prayerDescription = new TextView(this);
-        prayerDescription.setText(
-                "اعلان و لرزش اذان صبح، ظهر و مغرب زمان‌بندی می‌شود؛ "
-                        + "فایل صوتی مؤذن هنوز متصل نیست.");
-        prayerDescription.setTextColor(AppSettings.textSecondary(this));
-        prayerDescription.setTextSize(12);
-        prayerDescription.setPadding(0, dp(4), 0, dp(10));
-        prayerCard.addView(prayerDescription);
-
+        LinearLayout prayerRow = new LinearLayout(this);
+        prayerRow.setOrientation(LinearLayout.HORIZONTAL);
+        prayerRow.setGravity(Gravity.CENTER_VERTICAL);
+        prayerRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        Switch adhanEnabled = settingSwitch("نمایش بخش اذان", AppSettings.adhanEnabled(this));
+        prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, dp(50), 1f));
         Button prayerSettings = new Button(this);
-        prayerSettings.setText("تنظیمات اذان");
+        prayerSettings.setText("تنظیمات");
         prayerSettings.setAllCaps(false);
         prayerSettings.setTextColor(AppSettings.primaryColor(this));
         prayerSettings.setBackgroundResource(R.drawable.bg_soft_button);
         prayerSettings.setOnClickListener(v ->
                 startActivity(new Intent(this, PrayerSettingsActivity.class)));
-        prayerCard.addView(prayerSettings, new LinearLayout.LayoutParams(-1, dp(50)));
+        prayerRow.addView(prayerSettings, new LinearLayout.LayoutParams(dp(100), dp(44)));
+        prayerCard.addView(prayerRow);
+        adhanEnabled.setOnCheckedChangeListener((button, checked) -> {
+            AppSettings.setAdhanEnabled(this, checked);
+            setResult(RESULT_OK);
+        });
 
         root.addView(prayerCard, settingsCardParams());
 
-        root.addView(label("چیدمان صفحه ساعت و یادداشت"));
+        root.addView(label("چیدمان صفحه ساعت"));
         Spinner layout = spinner(new String[]{
-                "پیش‌فرض: فرم ایجاد داخل صفحه، بدون دکمه +",
-                "فشرده: فرم ایجاد در مودال با دکمه +"
+                "فرم ایجاد داخل صفحه، بدون دکمه +",
+                "پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +"
         });
         layout.setSelection(AppSettings.clockLayoutMode(this));
         root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
@@ -218,7 +183,7 @@ public final class SettingsActivity extends Activity {
             if (!tabClock.isChecked() && !tabNotes.isChecked()
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
                     && !tabWorld.isChecked()) {
-                Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             String selectedLanguage =
@@ -307,7 +272,7 @@ public final class SettingsActivity extends Activity {
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
                     && !tabWorld.isChecked()) {
                 button.setChecked(true);
-                Toast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             saveSettings.run();

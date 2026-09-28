@@ -24,6 +24,11 @@ public final class NoForgetItem {
     public int recurrenceMode;
     public int intervalDays;
     public String customDatesJson;
+    public String attachmentsJson = "[]";
+    public boolean vibrate = true;
+    public String soundUri = "";
+    public boolean fullscreenUnlocked = true;
+    public boolean fullscreenLocked = true;
 
     public NoForgetItem(long id,String title,String body,String sketchJson,int priority,
                         boolean hasDue,long dueAtMillis,boolean reminderEnabled,long createdAt){
@@ -43,7 +48,7 @@ public final class NoForgetItem {
         this.dueAtMillis=dueAtMillis;
         this.reminderEnabled=reminderEnabled;
         this.createdAt=createdAt;
-        this.recurrenceMode=Math.max(0,Math.min(6,recurrenceMode));
+        this.recurrenceMode=Math.max(0,Math.min(7,recurrenceMode));
         this.intervalDays=Math.max(1,intervalDays);
         this.customDatesJson=customDatesJson==null?"[]":customDatesJson;
     }
@@ -62,6 +67,8 @@ public final class NoForgetItem {
         o.put("hasDue",hasDue);o.put("dueAtMillis",dueAtMillis);
         o.put("reminderEnabled",reminderEnabled);o.put("createdAt",createdAt);
         o.put("recurrenceMode",recurrenceMode);o.put("intervalDays",intervalDays);o.put("customDatesJson",customDatesJson);
+        o.put("attachmentsJson",attachmentsJson);o.put("vibrate",vibrate);o.put("soundUri",soundUri);
+        o.put("fullscreenUnlocked",fullscreenUnlocked);o.put("fullscreenLocked",fullscreenLocked);
         return o;
     }
 
@@ -70,11 +77,16 @@ public final class NoForgetItem {
         int priority=o.optInt("priorityVersion",1)>=2
                 ? PriorityUtils.clamp(rawPriority)
                 : PriorityUtils.migrateLegacy(rawPriority);
-        return new NoForgetItem(
+        NoForgetItem item = new NoForgetItem(
                 o.optLong("id",0),o.optString("title",""),o.optString("body",""),o.optString("sketchJson","[]"),
                 priority,o.optBoolean("hasDue",false),o.optLong("dueAtMillis",0),
                 o.optBoolean("reminderEnabled",false),o.optLong("createdAt",System.currentTimeMillis()),
                 o.optInt("recurrenceMode",RecurrenceUtils.NONE),o.optInt("intervalDays",1),o.optString("customDatesJson","[]")
         );
+        item.attachmentsJson=o.optString("attachmentsJson","[]");
+        item.vibrate=o.optBoolean("vibrate",true); item.soundUri=o.optString("soundUri","");
+        item.fullscreenUnlocked=o.optBoolean("fullscreenUnlocked",true);
+        item.fullscreenLocked=o.optBoolean("fullscreenLocked",true);
+        return item;
     }
 }

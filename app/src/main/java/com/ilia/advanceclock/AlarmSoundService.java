@@ -1,5 +1,6 @@
 package com.ilia.advanceclock;
 
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -25,17 +26,24 @@ public final class AlarmSoundService extends Service {
     private PowerManager.WakeLock wakeLock;
     private long currentAlarmId = -1L;
     private boolean currentVibrate = true;
+    private String currentSoundUri = "";
 
     public static Intent startIntent(Context context, long id, String label) {
-        return startIntent(context, id, label, true);
+        return startIntent(context, id, label, true, "");
     }
 
     public static Intent startIntent(Context context, long id, String label, boolean vibrate) {
+        return startIntent(context, id, label, vibrate, "");
+    }
+
+    public static Intent startIntent(
+            Context context, long id, String label, boolean vibrate, String soundUri) {
         return new Intent(context, AlarmSoundService.class)
                 .setAction(ACTION_START)
                 .putExtra("alarmId", id)
                 .putExtra("label", label == null ? "" : label)
-                .putExtra("vibrate", vibrate);
+                .putExtra("vibrate", vibrate)
+                .putExtra("soundUri", soundUri == null ? "" : soundUri);
     }
 
     public static Intent stopIntent(Context context) {
@@ -57,6 +65,7 @@ public final class AlarmSoundService extends Service {
 
         currentAlarmId = intent.getLongExtra("alarmId", -1L);
         currentVibrate = intent.getBooleanExtra("vibrate", true);
+        currentSoundUri = intent.getStringExtra("soundUri");
         String label = intent.getStringExtra("label");
         String toolKind = intent.getStringExtra("toolKind");
 
@@ -108,25 +117,35 @@ public final class AlarmSoundService extends Service {
                 ? new Notification.Builder(this, NotificationHelper.ALARM_CHANNEL)
                 : new Notification.Builder(this);
 
-        return builder
-                .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(title)
-                .setContentText(message)
+        builder.setSmallIcon(R.drawable.ic_alarm)
+                .setContentTitle(CalendarUtils.fa(title))
+                .setContentText(CalendarUtils.fa(message))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
-                .setFullScreenIntent(fullScreen, true)
                 .setContentIntent(fullScreen)
-                .addAction(new Notification.Action.Builder(null, "قطع", stopAction).build())
-                .build();
+                .addAction(new Notification.Action.Builder(null, "قطع", stopAction).build());
+        if (shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
+        return builder.build();
+    }
+
+    private boolean shouldOpenFullscreen() {
+        KeyguardManager keyguard = getSystemService(KeyguardManager.class);
+        boolean locked = keyguard != null && keyguard.isKeyguardLocked();
+        return locked ? AppSettings.alarmFullscreenLocked(this)
+                : AppSettings.alarmFullscreenUnlocked(this);
     }
 
     private void startSound() {
         stopPlayer();
         try {
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Uri uri = currentSoundUri == null || currentSoundUri.isEmpty()
+                    ? Uri.parse(AppSettings.defaultAlarmSoundUri(this))
+                    : Uri.parse(currentSoundUri);
+            if (uri == null || uri.toString().isEmpty())
+                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             if (uri == null) uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
 
             player = new MediaPlayer();

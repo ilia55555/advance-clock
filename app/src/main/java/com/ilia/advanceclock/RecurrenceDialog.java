@@ -34,7 +34,7 @@ public final class RecurrenceDialog {
                 android.R.layout.simple_spinner_item, RecurrenceUtils.labels());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modeSpinner.setAdapter(adapter);
-        modeSpinner.setSelection(Math.max(0, Math.min(6, mode)));
+        modeSpinner.setSelection(Math.max(0, Math.min(7, mode)));
         root.addView(modeSpinner, new LinearLayout.LayoutParams(-1, dp(context,54)));
 
         TextView intervalLabel = new TextView(context);
@@ -48,6 +48,34 @@ public final class RecurrenceDialog {
         interval.setMaxValue(365);
         interval.setValue(Math.max(1, intervalDays));
         root.addView(interval, new LinearLayout.LayoutParams(-1, dp(context,110)));
+
+        TextView weekIntervalLabel = new TextView(context);
+        weekIntervalLabel.setText("فاصله تکرار بر حسب هفته");
+        weekIntervalLabel.setTextColor(AppSettings.textSecondary(context));
+        root.addView(weekIntervalLabel);
+        NumberPicker weekInterval = new NumberPicker(context);
+        weekInterval.setMinValue(1); weekInterval.setMaxValue(52);
+        weekInterval.setValue(Math.max(1, intervalDays));
+        root.addView(weekInterval, new LinearLayout.LayoutParams(-1, dp(context, 90)));
+
+        LinearLayout weekdayGrid = new LinearLayout(context);
+        weekdayGrid.setOrientation(LinearLayout.VERTICAL);
+        String[] dayNames = {"شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"};
+        int[] dayValues = {Calendar.SATURDAY, Calendar.SUNDAY, Calendar.MONDAY,
+                Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY};
+        java.util.List<Integer> selectedWeekdays = RecurrenceUtils.parseWeekdays(customDatesJson);
+        android.widget.CheckBox[] dayChecks = new android.widget.CheckBox[7];
+        for (int rowIndex = 0; rowIndex < 2; rowIndex++) {
+            LinearLayout row = new LinearLayout(context);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            for (int index = rowIndex * 4; index < Math.min(7, rowIndex * 4 + 4); index++) {
+                android.widget.CheckBox check = new android.widget.CheckBox(context);
+                check.setText(dayNames[index]); check.setChecked(selectedWeekdays.contains(dayValues[index]));
+                dayChecks[index] = check; row.addView(check, new LinearLayout.LayoutParams(0, dp(context,48),1));
+            }
+            weekdayGrid.addView(row);
+        }
+        root.addView(weekdayGrid);
 
         ArrayList<Long> customDates = new ArrayList<>(RecurrenceUtils.parseDates(customDatesJson));
         TextView customSummary = new TextView(context);
@@ -69,11 +97,15 @@ public final class RecurrenceDialog {
             int selectedMode = modeSpinner.getSelectedItemPosition();
             boolean intervalVisible = selectedMode == RecurrenceUtils.INTERVAL_DAYS;
             boolean datesVisible = selectedMode == RecurrenceUtils.CUSTOM_DATES;
+            boolean weekdaysVisible = selectedMode == RecurrenceUtils.WEEKDAYS;
             intervalLabel.setVisibility(intervalVisible ? View.VISIBLE : View.GONE);
             interval.setVisibility(intervalVisible ? View.VISIBLE : View.GONE);
             customSummary.setVisibility(datesVisible ? View.VISIBLE : View.GONE);
             addDate.setVisibility(datesVisible ? View.VISIBLE : View.GONE);
             clearDates.setVisibility(datesVisible ? View.VISIBLE : View.GONE);
+            weekIntervalLabel.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
+            weekInterval.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
+            weekdayGrid.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
 
             StringBuilder sb = new StringBuilder();
             for (Long date : customDates) {
@@ -115,7 +147,7 @@ public final class RecurrenceDialog {
                         chosen.set(Calendar.MILLISECOND, 0);
 
                         if (chosen.getTimeInMillis() <= System.currentTimeMillis()) {
-                            Toast.makeText(context, "تاریخ و ساعت گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                            LogoToast.makeText(context, "تاریخ و ساعت گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -137,11 +169,19 @@ public final class RecurrenceDialog {
                 .setTitle("تنظیم تکرار")
                 .setView(root)
                 .setNegativeButton("انصراف", null)
-                .setPositiveButton("تأیید", (d,w) -> callback.onConfigured(
-                        modeSpinner.getSelectedItemPosition(),
-                        interval.getValue(),
-                        RecurrenceUtils.toJson(customDates)
-                ))
+                .setPositiveButton("تأیید", (d,w) -> {
+                    int selectedMode = modeSpinner.getSelectedItemPosition();
+                    ArrayList<Integer> weekdays = new ArrayList<>();
+                    for (int index = 0; index < dayChecks.length; index++)
+                        if (dayChecks[index].isChecked()) weekdays.add(dayValues[index]);
+                    callback.onConfigured(
+                            selectedMode,
+                            selectedMode == RecurrenceUtils.WEEKDAYS
+                                    ? weekInterval.getValue() : interval.getValue(),
+                            selectedMode == RecurrenceUtils.WEEKDAYS
+                                    ? RecurrenceUtils.weekdaysToJson(weekdays)
+                                    : RecurrenceUtils.toJson(customDates));
+                })
                 .show();
     }
 

@@ -9,6 +9,7 @@ import android.os.Build;
 public final class NotificationHelper {
     public static final String ALARM_CHANNEL = "advance_clock_alarms_v1";
     public static final String REMINDER_CHANNEL = "advance_clock_reminders_v1";
+    public static final String NOTE_ALARM_CHANNEL = "advance_clock_note_alarms_v1";
     public static final String ADHAN_CHANNEL = "advance_clock_adhan_v1";
 
     private NotificationHelper() {}
@@ -32,6 +33,15 @@ public final class NotificationHelper {
         reminders.enableVibration(true);
         reminders.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         manager.createNotificationChannel(reminders);
+
+        NotificationChannel noteAlarms = new NotificationChannel(
+                NOTE_ALARM_CHANNEL, "هشدار یادداشت‌ها", NotificationManager.IMPORTANCE_HIGH);
+        noteAlarms.setDescription("هشدارهای زمان‌دار یادداشت‌ها");
+        noteAlarms.enableVibration(false);
+        noteAlarms.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+        noteAlarms.setSound(null, new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM).build());
+        manager.createNotificationChannel(noteAlarms);
 
         NotificationChannel adhan = new NotificationChannel(
                 ADHAN_CHANNEL, "اذان", NotificationManager.IMPORTANCE_HIGH);

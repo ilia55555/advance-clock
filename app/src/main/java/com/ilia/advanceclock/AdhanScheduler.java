@@ -14,7 +14,9 @@ import java.util.TimeZone;
 public final class AdhanScheduler {
     public static final int FAJR = 0;
     public static final int DHUHR = 1;
-    public static final int MAGHRIB = 2;
+    public static final int ASR = 2;
+    public static final int MAGHRIB = 3;
+    public static final int ISHA = 4;
     private static final String STATE_PREFS = "advance_clock_adhan_schedule_state";
 
     public enum Status {
@@ -29,14 +31,19 @@ public final class AdhanScheduler {
     private AdhanScheduler() {}
 
     public static void rescheduleAll(Context context) {
-        for (int type = FAJR; type <= MAGHRIB; type++) {
+        if (!AppSettings.adhanEnabled(context)) {
+            for (int type = FAJR; type <= ISHA; type++) cancel(context, type);
+            return;
+        }
+        for (int type = FAJR; type <= ISHA; type++) {
             cancel(context, type);
             if (isEnabled(context, type)) scheduleNext(context, type);
         }
     }
 
     public static boolean scheduleNext(Context context, int type) {
-        if (!AppSettings.prayerLocationSet(context) || !isEnabled(context, type)) {
+        if (!AppSettings.adhanEnabled(context)
+                || !AppSettings.prayerLocationSet(context) || !isEnabled(context, type)) {
             setScheduled(context, type, false);
             return false;
         }
@@ -47,7 +54,7 @@ public final class AdhanScheduler {
         }
 
         long now = System.currentTimeMillis();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(AppSettings.prayerTimeZone(context));
         for (int offset = 0; offset <= 2; offset++) {
             if (offset > 0) day.add(Calendar.DAY_OF_YEAR, 1);
             long when = prayerMillis(context, day, type);
@@ -67,17 +74,18 @@ public final class AdhanScheduler {
     }
 
     public static Status status(Context context) {
-        if (!anyEnabled(context)) return Status.DISABLED;
+        if (!AppSettings.adhanEnabled(context) || !anyEnabled(context)) return Status.DISABLED;
         if (!AppSettings.prayerLocationSet(context)) return Status.LOCATION_MISSING;
         if (!PermissionHelper.exactAlarmsGranted(context)) {
             return Status.EXACT_PERMISSION_MISSING;
         }
-        if (Build.VERSION.SDK_INT >= 33
+        if (AppSettings.adhanNotification(context)
+                && Build.VERSION.SDK_INT >= 33
                 && context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             return Status.NOTIFICATION_PERMISSION_MISSING;
         }
-        for (int type = FAJR; type <= MAGHRIB; type++) {
+        for (int type = FAJR; type <= ISHA; type++) {
             if (isEnabled(context, type) && !isScheduled(context, type)) {
                 return Status.SCHEDULE_FAILED;
             }
@@ -88,18 +96,22 @@ public final class AdhanScheduler {
     public static String title(int type) {
         if (type == FAJR) return "اذان صبح";
         if (type == DHUHR) return "اذان ظهر";
-        return "اذان مغرب";
+        if (type == ASR) return "عصر";
+        if (type == MAGHRIB) return "اذان مغرب";
+        return "عشاء";
     }
 
     private static long prayerMillis(Context context, Calendar day, int type) {
-        TimeZone zone = TimeZone.getDefault();
+        TimeZone zone = AppSettings.prayerTimeZone(context);
         PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
                 day.getTimeInMillis(),
                 AppSettings.prayerLatitude(context),
                 AppSettings.prayerLongitude(context),
                 zone);
         int minutes = type == FAJR ? times.fajrMinutes
-                : type == DHUHR ? times.dhuhrMinutes : times.maghribMinutes;
+                : type == DHUHR ? times.dhuhrMinutes
+                : type == ASR ? times.asrMinutes
+                : type == MAGHRIB ? times.maghribMinutes : times.ishaMinutes;
         if (minutes < 0) return -1L;
         Calendar result = Calendar.getInstance(zone);
         result.clear();
@@ -112,13 +124,17 @@ public final class AdhanScheduler {
     private static boolean isEnabled(Context context, int type) {
         if (type == FAJR) return AppSettings.fajrAdhanEnabled(context);
         if (type == DHUHR) return AppSettings.dhuhrAdhanEnabled(context);
-        return AppSettings.maghribAdhanEnabled(context);
+        if (type == ASR) return AppSettings.asrAdhanEnabled(context);
+        if (type == MAGHRIB) return AppSettings.maghribAdhanEnabled(context);
+        return AppSettings.ishaAdhanEnabled(context);
     }
 
     private static boolean anyEnabled(Context context) {
         return isEnabled(context, FAJR)
                 || isEnabled(context, DHUHR)
-                || isEnabled(context, MAGHRIB);
+                || isEnabled(context, ASR)
+                || isEnabled(context, MAGHRIB)
+                || isEnabled(context, ISHA);
     }
 
     private static boolean isScheduled(Context context, int type) {

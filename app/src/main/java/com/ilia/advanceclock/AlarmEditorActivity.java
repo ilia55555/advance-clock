@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -22,6 +23,7 @@ import java.util.Locale;
 public final class AlarmEditorActivity extends Activity {
     private static final int REQ_IMAGE_1 = 410;
     private static final int REQ_IMAGE_2 = 411;
+    private static final int REQ_SOUND = 412;
     private final Calendar selected = Calendar.getInstance();
 
     private long alarmId = -1L;
@@ -39,6 +41,7 @@ public final class AlarmEditorActivity extends Activity {
     private ImageView image2Preview;
     private View imagePreviewRow;
     private View imagePreviewSpace;
+    private TextView soundValue;
 
     private int dateCalendarType;
     private int recurrenceMode = RecurrenceUtils.NONE;
@@ -50,6 +53,7 @@ public final class AlarmEditorActivity extends Activity {
     private long lastFiredAtMillis = 0L;
     private String imageUri1 = "";
     private String imageUri2 = "";
+    private String soundUri = "";
     private boolean createMode;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public final class AlarmEditorActivity extends Activity {
         image2Preview = findViewById(R.id.alarm_image2_preview);
         imagePreviewRow = findViewById(R.id.alarm_image_preview_row);
         imagePreviewSpace = findViewById(R.id.alarm_image_preview_space);
+        soundValue = findViewById(R.id.alarm_sound_value);
         dateCalendarType = AppSettings.defaultCalendar(this);
 
         String[] labels = PriorityUtils.labels();
@@ -154,6 +159,8 @@ public final class AlarmEditorActivity extends Activity {
 
         image1Button.setOnClickListener(v -> pickImage(REQ_IMAGE_1));
         image2Button.setOnClickListener(v -> pickImage(REQ_IMAGE_2));
+        findViewById(R.id.alarm_sound_button).setOnClickListener(v ->
+                startActivityForResult(new Intent(this, SoundPickerActivity.class), REQ_SOUND));
 
         findViewById(R.id.save_alarm).setOnClickListener(v -> save());
         deleteButton.setOnClickListener(v -> delete());
@@ -210,6 +217,8 @@ public final class AlarmEditorActivity extends Activity {
         lastFiredAtMillis = item.lastFiredAtMillis;
         imageUri1 = item.imageUri1;
         imageUri2 = item.imageUri2;
+        soundUri = item.soundUri;
+        soundValue.setText(SoundLibrary.name(this, soundUri));
         updateReminderButton();
         updateButtons();
         updateImagePreviews();
@@ -241,7 +250,7 @@ public final class AlarmEditorActivity extends Activity {
         long trigger = selected.getTimeInMillis();
 
         if (trigger <= System.currentTimeMillis()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
                     Toast.LENGTH_LONG).show();
@@ -270,6 +279,7 @@ public final class AlarmEditorActivity extends Activity {
         item.lastFiredAtMillis = lastFiredAtMillis;
         item.imageUri1 = imageUri1;
         item.imageUri2 = imageUri2;
+        item.soundUri = soundUri;
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
@@ -281,7 +291,7 @@ public final class AlarmEditorActivity extends Activity {
         if (!scheduled
                 && !PermissionHelper.exactAlarmsGranted(this)
                 && Build.VERSION.SDK_INT >= 31) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
                     Toast.LENGTH_LONG).show();
@@ -291,7 +301,7 @@ public final class AlarmEditorActivity extends Activity {
                         Uri.parse("package:" + getPackageName())));
             } catch (Exception ignored) {}
         } else {
-            Toast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
         }
         finish();
     }
@@ -301,6 +311,12 @@ public final class AlarmEditorActivity extends Activity {
             int resultCode,
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQ_SOUND && resultCode == RESULT_OK && data != null) {
+            soundUri = data.getStringExtra(SoundPickerActivity.EXTRA_URI);
+            soundValue.setText(data.getStringExtra(SoundPickerActivity.EXTRA_NAME));
+            return;
+        }
 
         if ((requestCode == REQ_IMAGE_1 || requestCode == REQ_IMAGE_2)
                 && resultCode == RESULT_OK

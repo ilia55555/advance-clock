@@ -1,5 +1,6 @@
 package com.ilia.advanceclock;
 
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -89,16 +91,25 @@ public final class AdhanSoundService extends Service {
         PendingIntent stop = PendingIntent.getService(
                 this, 3_400_000 + type, command(this, ACTION_STOP),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        return new Notification.Builder(this, NotificationHelper.ADHAN_CHANNEL)
+        Notification.Builder builder = new Notification.Builder(
+                this, NotificationHelper.ADHAN_CHANNEL)
                 .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(AdhanScheduler.title(type))
-                .setContentText(AppSettings.prayerLocationLabel(this))
+                .setContentTitle(CalendarUtils.fa(AdhanScheduler.title(type)))
+                .setContentText(CalendarUtils.fa(AppSettings.adhanNotification(this)
+                        ? AppSettings.prayerLocationLabel(this) : "اذان در حال اجرا"))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setOngoing(true)
-                .setFullScreenIntent(open, true)
                 .setContentIntent(open)
-                .addAction(new Notification.Action.Builder(null, "قطع اذان", stop).build())
-                .build();
+                .addAction(new Notification.Action.Builder(null, "قطع اذان", stop).build());
+        if (shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
+        return builder.build();
+    }
+
+    private boolean shouldOpenFullscreen() {
+        KeyguardManager keyguard = getSystemService(KeyguardManager.class);
+        boolean locked = keyguard != null && keyguard.isKeyguardLocked();
+        return locked ? AppSettings.adhanFullscreenLocked(this)
+                : AppSettings.adhanFullscreenUnlocked(this);
     }
 
     private void startPlayback() {
@@ -107,23 +118,29 @@ public final class AdhanSoundService extends Service {
         muted = false;
         stopHandler.removeCallbacks(maximumDuration);
         stopHandler.postDelayed(maximumDuration, 10 * 60_000L);
-        int resource = getResources().getIdentifier(
-                AUDIO_RESOURCE_NAME, "raw", getPackageName());
-        if (resource != 0) {
-            try {
-                player = new MediaPlayer();
-                player.setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
-                player.setDataSource(this, Uri.parse(
-                        "android.resource://" + getPackageName() + "/" + resource));
-                player.setLooping(false);
-                player.prepare();
-                applyVolume();
-                player.start();
-                player.setOnCompletionListener(value -> stopSelf());
-            } catch (Exception ignored) {
-                stopPlayback();
+        if (AppSettings.adhanSound(this)) {
+            String selected = AppSettings.adhanSoundUri(this, type);
+            Uri audioUri = selected == null || selected.isEmpty() ? null : Uri.parse(selected);
+            if (audioUri == null) {
+                int resource = getResources().getIdentifier(
+                        AUDIO_RESOURCE_NAME, "raw", getPackageName());
+                if (resource != 0) audioUri = Uri.parse(
+                        "android.resource://" + getPackageName() + "/" + resource);
+                else audioUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            }
+            if (audioUri != null) {
+                try {
+                    player = new MediaPlayer();
+                    player.setAudioAttributes(new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
+                    player.setDataSource(this, audioUri);
+                    player.setLooping(false);
+                    player.prepare();
+                    applyVolume();
+                    player.start();
+                    player.setOnCompletionListener(value -> stopSelf());
+                } catch (Exception ignored) { stopPlayback(); }
             }
         }
         if (AppSettings.adhanVibrate(this)) {
