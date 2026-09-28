@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/prayer_widget_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background_dark_85"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="4dp"
+    android:padding="8dp"
+    android:scrollbars="vertical" />

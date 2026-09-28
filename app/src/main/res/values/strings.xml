@@ -17,6 +17,7 @@
     <string name="language_label">زبان برنامه</string>
     <string name="calendar_label">تقویم پیش‌فرض</string>
     <string name="continue_label">ادامه</string>
+    <string name="prayer_times_widget_description">نمایش اوقات شرعی همه افق‌های انتخاب‌شده</string>
     <string-array name="language_options">
         <item>English</item>
         <item>فارسی</item>

@@ -1147,7 +1147,7 @@ public final class MainActivity extends Activity {
         boolean compact = AppSettings.clockLayoutMode(this)
                 == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
         clockFab.setVisibility(clock && compact ? View.VISIBLE : View.GONE);
-        noteFab.setVisibility(View.GONE);
+        noteFab.setVisibility(notes && compact ? View.VISIBLE : View.GONE);
     }
 
     @Override public boolean dispatchTouchEvent(MotionEvent event) {

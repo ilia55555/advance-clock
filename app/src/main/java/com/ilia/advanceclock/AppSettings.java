@@ -242,15 +242,23 @@ public final class AppSettings {
                         item.optDouble("lon"), item.optString("zone", "Asia/Tehran")));
             }
         } catch (Exception ignored) {}
+        if (values.isEmpty() && prayerLocationSet(context)) {
+            values.add(new PrayerHorizon(
+                    prayerLocationLabel(context), prayerLatitude(context),
+                    prayerLongitude(context), prayerTimeZoneId(context)));
+        }
         return values;
     }
 
-    private static void addPrayerHorizon(
+    public static void addPrayerHorizon(
             Context context, String label, double latitude, double longitude, String timeZoneId) {
         java.util.List<PrayerHorizon> current = prayerHorizons(context);
         for (PrayerHorizon item : current)
             if (Math.abs(item.latitude - latitude) < 0.0001
-                    && Math.abs(item.longitude - longitude) < 0.0001) return;
+                    && Math.abs(item.longitude - longitude) < 0.0001) {
+                PrayerTimesWidgetProvider.updateAll(context);
+                return;
+            }
         org.json.JSONArray array = new org.json.JSONArray();
         for (PrayerHorizon item : current) {
             org.json.JSONObject value = new org.json.JSONObject();
@@ -262,6 +270,41 @@ public final class AppSettings {
         try { added.put("label", label); added.put("lat", latitude); added.put("lon", longitude);
             added.put("zone", timeZoneId); array.put(added); } catch (Exception ignored) {}
         prefs(context).edit().putString("prayer_horizons", array.toString()).apply();
+        PrayerTimesWidgetProvider.updateAll(context);
+    }
+
+    public static boolean hasPrayerHorizon(Context context, double latitude, double longitude) {
+        for (PrayerHorizon item : prayerHorizons(context)) {
+            if (Math.abs(item.latitude - latitude) < 0.0001
+                    && Math.abs(item.longitude - longitude) < 0.0001) return true;
+        }
+        return false;
+    }
+
+    public static void removePrayerHorizon(Context context, double latitude, double longitude) {
+        java.util.ArrayList<PrayerHorizon> kept = new java.util.ArrayList<>();
+        for (PrayerHorizon item : prayerHorizons(context)) {
+            if (Math.abs(item.latitude - latitude) >= 0.0001
+                    || Math.abs(item.longitude - longitude) >= 0.0001) kept.add(item);
+        }
+        org.json.JSONArray array = new org.json.JSONArray();
+        for (PrayerHorizon item : kept) {
+            org.json.JSONObject value = new org.json.JSONObject();
+            try { value.put("label", item.label); value.put("lat", item.latitude);
+                value.put("lon", item.longitude); value.put("zone", item.timeZoneId);
+                array.put(value); } catch (Exception ignored) {}
+        }
+        android.content.SharedPreferences.Editor editor = prefs(context).edit()
+                .putString("prayer_horizons", array.toString());
+        boolean removedPrimary = Math.abs(prayerLatitude(context) - latitude) < 0.0001
+                && Math.abs(prayerLongitude(context) - longitude) < 0.0001;
+        if (removedPrimary && kept.isEmpty()) editor.putBoolean("prayer_location_set", false);
+        editor.apply();
+        if (removedPrimary && !kept.isEmpty()) {
+            PrayerHorizon first = kept.get(0);
+            setPrayerLocation(context, first.latitude, first.longitude, first.label, first.timeZoneId);
+        }
+        PrayerTimesWidgetProvider.updateAll(context);
     }
 
     public static boolean fajrAdhanEnabled(Context context) {

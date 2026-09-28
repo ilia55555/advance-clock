@@ -35,10 +35,12 @@ import java.util.Locale;
 public final class PrayerSettingsActivity extends Activity {
     private static final int REQ_LOCATION = 740;
     private static final int REQ_NOTIFICATIONS = 741;
+    private static final int REQ_HORIZON = 742;
 
     private Button locationButton;
     private TextView locationStatus;
     private TextView adhanScheduleStatus;
+    private LinearLayout horizonList;
     private final Handler locationHandler = new Handler(Looper.getMainLooper());
     private CancellationSignal locationCancellation;
     private Runnable locationTimeout;
@@ -104,7 +106,7 @@ public final class PrayerSettingsActivity extends Activity {
 
         LinearLayout locationCard = card();
         TextView locationTitle = text(
-                "موقعیت جغرافیایی",
+                "افق‌ها",
                 17,
                 AppSettings.textPrimary(this));
         locationTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -114,17 +116,17 @@ public final class PrayerSettingsActivity extends Activity {
         locationStatus.setPadding(0, dp(4), 0, dp(8));
         locationCard.addView(locationStatus);
 
-        Button searchLocation = fieldButton("جستجوی شهر یا روستا");
-        searchLocation.setOnClickListener(v ->
-                startActivity(new Intent(this, PrayerLocationSearchActivity.class)));
+        Button searchLocation = fieldButton("افزودن افق +");
+        searchLocation.setOnClickListener(v -> startActivityForResult(
+                new Intent(this, PrayerLocationSearchActivity.class), REQ_HORIZON));
         locationCard.addView(searchLocation, new LinearLayout.LayoutParams(-1, dp(52)));
 
         locationButton = fieldButton("دریافت موقعیت دقیق فعلی");
-        locationButton.setOnClickListener(v -> requestPreciseLocation());
-        LinearLayout.LayoutParams locationButtonParams =
-                new LinearLayout.LayoutParams(-1, dp(52));
-        locationButtonParams.topMargin = dp(8);
-        locationCard.addView(locationButton, locationButtonParams);
+        horizonList = new LinearLayout(this);
+        horizonList.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams horizonParams = new LinearLayout.LayoutParams(-1, -2);
+        horizonParams.topMargin = dp(8);
+        locationCard.addView(horizonList, horizonParams);
 
         root.addView(locationCard, cardParams());
 
@@ -237,7 +239,48 @@ public final class PrayerSettingsActivity extends Activity {
             locationStatus.setText("موقعیت تنظیم نشده");
             locationButton.setText("دریافت موقعیت دقیق فعلی");
         }
+        renderHorizons();
 
+    }
+
+    private void renderHorizons() {
+        if (horizonList == null) return;
+        horizonList.removeAllViews();
+        List<AppSettings.PrayerHorizon> horizons = AppSettings.prayerHorizons(this);
+        if (horizons.isEmpty()) {
+            TextView empty = text("هنوز افقی اضافه نشده است.", 12,
+                    AppSettings.textSecondary(this));
+            empty.setPadding(dp(10), dp(14), dp(10), dp(14));
+            horizonList.addView(empty);
+            return;
+        }
+        for (AppSettings.PrayerHorizon horizon : horizons) {
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            row.setBackgroundResource(R.drawable.bg_field);
+            row.setPadding(dp(12), 0, dp(8), 0);
+            TextView label = text(horizon.label, 13, AppSettings.textPrimary(this));
+            row.addView(label, new LinearLayout.LayoutParams(0, dp(54), 1f));
+            Button remove = fieldButton("−");
+            final boolean[] armed = {false};
+            remove.setOnClickListener(v -> {
+                if (!armed[0]) {
+                    armed[0] = true;
+                    remove.setText("تأیید −");
+                    return;
+                }
+                AppSettings.removePrayerHorizon(
+                        this, horizon.latitude, horizon.longitude);
+                setResult(RESULT_OK);
+                refresh();
+            });
+            row.addView(remove, new LinearLayout.LayoutParams(dp(82), dp(44)));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(58));
+            params.bottomMargin = dp(6);
+            horizonList.addView(row, params);
+        }
     }
 
     private void updateAdhanSetting(Runnable update, boolean enabled) {
@@ -325,6 +368,12 @@ public final class PrayerSettingsActivity extends Activity {
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_HORIZON) {
+            if (resultCode == RESULT_OK && data != null
+                    && data.getBooleanExtra("requestGps", false)) requestPreciseLocation();
+            refresh();
+            return;
+        }
         if ((requestCode < 800 || requestCode > 804) && requestCode != 899
                 || resultCode != RESULT_OK || data == null) return;
         String uri = data.getStringExtra(SoundPickerActivity.EXTRA_URI);

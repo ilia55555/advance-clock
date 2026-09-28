@@ -81,7 +81,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         toolbar.setGravity(Gravity.CENTER_VERTICAL);
         toolbar.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView title = text("انتخاب شهر یا روستا", 24, AppSettings.textPrimary(this));
+        TextView title = text("افزودن افق", 24, AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         toolbar.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
 
@@ -94,6 +94,19 @@ public final class PrayerLocationSearchActivity extends Activity {
         close.setOnClickListener(v -> finish());
         toolbar.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(toolbar);
+
+        Button gps = new Button(this);
+        gps.setText("گرفتن افق از GPS");
+        gps.setAllCaps(false);
+        gps.setTextColor(0xFFFFFFFF);
+        gps.setBackgroundResource(R.drawable.bg_orange_button);
+        gps.setOnClickListener(v -> {
+            setResult(RESULT_OK, new Intent().putExtra("requestGps", true));
+            finish();
+        });
+        LinearLayout.LayoutParams gpsParams = new LinearLayout.LayoutParams(-1, dp(50));
+        gpsParams.bottomMargin = dp(8);
+        root.addView(gps, gpsParams);
 
         searchInput = new EditText(this);
         searchInput.setSingleLine(true);
@@ -427,15 +440,29 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private void addResultButton(LocationResult location) {
-        Button row = new Button(this);
-        row.setAllCaps(false);
-        row.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
-        row.setText(location.label);
-        row.setTextColor(AppSettings.textPrimary(this));
-        row.setTextSize(14);
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         row.setBackgroundResource(R.drawable.bg_card);
-        row.setPadding(dp(14), 0, dp(14), 0);
-        row.setOnClickListener(v -> select(location));
+        row.setPadding(dp(14), 0, dp(8), 0);
+        TextView label = text(location.label, 14, AppSettings.textPrimary(this));
+        row.addView(label, new LinearLayout.LayoutParams(0, dp(64), 1f));
+        boolean added = AppSettings.hasPrayerHorizon(
+                this, location.latitude, location.longitude);
+        Button toggle = new Button(this);
+        toggle.setText(added ? "−" : "+");
+        toggle.setTextSize(22);
+        toggle.setTextColor(AppSettings.primaryColor(this));
+        toggle.setBackgroundResource(R.drawable.bg_soft_button);
+        toggle.setOnClickListener(v -> {
+            if (AppSettings.hasPrayerHorizon(this, location.latitude, location.longitude)) {
+                AppSettings.removePrayerHorizon(this, location.latitude, location.longitude);
+                setResult(RESULT_OK);
+                scheduleSearch(true);
+            } else select(location);
+        });
+        row.addView(toggle, new LinearLayout.LayoutParams(dp(52), dp(46)));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(72));
         params.bottomMargin = dp(8);
         results.addView(row, params);
@@ -552,14 +579,16 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private void saveLocation(LocationResult location, String timeZoneId) {
-        AppSettings.setPrayerLocation(
-                this,
-                location.latitude,
-                location.longitude,
-                location.label,
-                timeZoneId);
+        if (AppSettings.prayerLocationSet(this)) {
+            AppSettings.addPrayerHorizon(
+                    this, location.label, location.latitude, location.longitude, timeZoneId);
+        } else {
+            AppSettings.setPrayerLocation(
+                    this, location.latitude, location.longitude, location.label, timeZoneId);
+        }
         setResult(RESULT_OK);
-        finish();
+        status.setText("افق اضافه شد");
+        scheduleSearch(true);
     }
 
     private String addressLabel(Address address) {
