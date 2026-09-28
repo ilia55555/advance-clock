@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Persian source catalog used to localize legacy hard-coded UI text at runtime. -->
+    <string-array name="runtime_source_fa" translatable="false">
+        <item>تنظیمات</item>
+        <item>بستن</item>
+        <item>انصراف</item>
+        <item>تأیید</item>
+        <item>ذخیره</item>
+        <item>حذف</item>
+        <item>ویرایش</item>
+        <item>افزودن</item>
+        <item>پاک کردن</item>
+        <item>شروع</item>
+        <item>توقف</item>
+        <item>ادامه</item>
+        <item>ساعت</item>
+        <item>تاریخ</item>
+        <item>یادداشت</item>
+        <item>یادداشت‌ها</item>
+        <item>هشدار</item>
+        <item>هشدارها</item>
+        <item>آلارم</item>
+        <item>یادآوری</item>
+        <item>یادآوری‌ها</item>
+        <item>لرزش</item>
+        <item>اهمیت</item>
+        <item>کم</item>
+        <item>نسبتاً کم</item>
+        <item>متوسط</item>
+        <item>زیاد</item>
+        <item>خیلی زیاد</item>
+        <item>بدون تکرار</item>
+        <item>هر روز</item>
+        <item>هر هفته</item>
+        <item>هر ماه</item>
+        <item>هر سال</item>
+        <item>بدون یادآوری</item>
+        <item>خودکار (هوشمند)</item>
+        <item>۵ دقیقه</item>
+        <item>۱۵ دقیقه</item>
+        <item>۳۰ دقیقه</item>
+        <item>۱ ساعت</item>
+        <item>۲ ساعت</item>
+        <item>۳ ساعت</item>
+        <item>۶ ساعت</item>
+        <item>۱۲ ساعت</item>
+        <item>۲۴ ساعت</item>
+        <item>دقیقه</item>
+        <item>ثانیه</item>
+        <item>امروز</item>
+        <item>روشن</item>
+        <item>تیره</item>
+        <item>تم</item>
+        <item>ظاهر</item>
+        <item>پالت رنگ</item>
+        <item>شفافیت پس‌زمینه</item>
+        <item>اندازه متن</item>
+        <item>کوچک</item>
+        <item>معمولی</item>
+        <item>بزرگ</item>
+        <item>نمایش هدر</item>
+        <item>نمایش دکمه تنظیمات</item>
+        <item>نمایش ساعت</item>
+        <item>نمایش تاریخ</item>
+        <item>نمایش دکمه +</item>
+        <item>نمایش اهمیت</item>
+        <item>نمایش جزئیات</item>
+        <item>مرتب‌سازی</item>
+        <item>فایل</item>
+        <item>فایل‌ها</item>
+        <item>تصویر</item>
+        <item>صوت</item>
+        <item>ویدیو</item>
+        <item>متن</item>
+        <item>سند</item>
+        <item>صفحه گسترده</item>
+        <item>فشرده</item>
+        <item>پخش یا مکث</item>
+        <item>اعلان‌ها</item>
+        <item>تنظیمات اعلان</item>
+        <item>اعلان دائمی تاریخ</item>
+        <item>نمایش تقویم‌های دیگر</item>
+        <item>یادآوری هشدارها</item>
+        <item>یادآوری یادداشت‌ها</item>
+        <item>نمایش جزئیات روی صفحه قفل</item>
+        <item>اذان</item>
+        <item>اذان صبح</item>
+        <item>اذان ظهر</item>
+        <item>عصر</item>
+        <item>اذان مغرب</item>
+        <item>عشاء</item>
+        <item>طلوع</item>
+        <item>غروب</item>
+        <item>نیمه‌شب</item>
+        <item>تنظیمات اذان و اوقات شرعی</item>
+        <item>نمایش اوقات شرعی</item>
+        <item>موقعیت جغرافیایی</item>
+        <item>جستجوی شهر یا روستا</item>
+        <item>دریافت موقعیت دقیق فعلی</item>
+        <item>اذان‌های فعال</item>
+        <item>انتخاب موذن</item>
+        <item>موذن برای همه</item>
+        <item>اعلان اذان</item>
+        <item>لرزش اذان</item>
+        <item>صدای اذان</item>
+        <item>انتخاب شهر یا روستا</item>
+        <item>نام شهر، روستا، استان یا کشور</item>
+        <item>با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند</item>
+        <item>در حال جستجوی لحظه‌ای…</item>
+        <item>در حال تشخیص منطقه زمانی…</item>
+        <item>مکانی پیدا نشد؛ عبارت را تغییر دهید</item>
+        <item>ساعت جهانی</item>
+        <item>افزودن منطقه زمانی</item>
+        <item>افزودن ساعت انتخاب‌شده</item>
+        <item>نتیجه‌ای پیدا نشد</item>
+        <item>این منطقه زمانی قبلاً اضافه شده است</item>
+        <item>تبدیل زمان محلی شما</item>
+        <item>ویجت‌ها و تنظیمات</item>
+        <item>افزودن به صفحه اصلی</item>
+        <item>پیش‌نمایش زنده</item>
+        <item>یادآوری فایل‌ها</item>
+        <item>افزودن فایل</item>
+        <item>افزودن اپ یا سایت</item>
+        <item>ترسیم</item>
+        <item>نقاشی و ترسیم</item>
+        <item>ذخیره یادداشت</item>
+        <item>حذف یادداشت</item>
+        <item>عنوان یادداشت</item>
+        <item>متن یادداشت خود را اینجا بنویسید...</item>
+        <item>آلارم برای این یادداشت</item>
+        <item>صدای هشدار</item>
+        <item>فول‌اسکرین</item>
+        <item>صفحه باز</item>
+        <item>صفحه قفل</item>
+        <item>فایل‌ها و تصاویر</item>
+        <item>انتخاب برنامه نصب‌شده</item>
+        <item>لینک سایت را وارد کنید</item>
+        <item>لینک معتبر وارد کنید</item>
+        <item>هنوز فایلی اضافه نشده است.</item>
+        <item>هنوز برنامه یا سایتی اضافه نشده است.</item>
+        <item>یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید</item>
+        <item>یادداشت ذخیره شد</item>
+        <item>تنظیم هشدار</item>
+        <item>عنوان هشدار</item>
+        <item>ذخیره هشدار</item>
+        <item>حذف هشدار</item>
+        <item>افزودن عکس ۱</item>
+        <item>افزودن عکس ۲</item>
+        <item>عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)</item>
+        <item>پیش‌فرض سیستم</item>
+        <item>هشدار ذخیره شد</item>
+        <item>تاریخ گذشته قابل انتخاب نیست</item>
+        <item>هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد</item>
+        <item>آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد</item>
+        <item>برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید</item>
+        <item>انتخاب صدا</item>
+        <item>+ آپلود صدای جدید</item>
+        <item>رنگ اپ</item>
+        <item>رویدادها و مناسبت‌ها</item>
+        <item>نمایش مناسبت‌ها زیر تقویم</item>
+        <item>نمایش باکس رویداد زیر تقویم</item>
+        <item>چیدمان صفحه ساعت</item>
+        <item>فرم ایجاد داخل صفحه، بدون دکمه +</item>
+        <item>پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +</item>
+        <item>تب‌های قابل نمایش در صفحه اصلی</item>
+        <item>استایل صفحه زنگ</item>
+        <item>کلاسیک روشن</item>
+        <item>تمرکز تیره</item>
+        <item>طلوع گرم</item>
+        <item>حداقل یک تب باید فعال باشد</item>
+        <item>تاریخ و ساعت آینده را انتخاب کنید</item>
+        <item>یک زمان بیشتر از صفر وارد کنید</item>
+        <item>صفر کردن</item>
+        <item>ثبت دور</item>
+        <item>انتخاب تاریخ</item>
+        <item>انتخاب ساعت</item>
+        <item>لغو و بازنشانی</item>
+        <item>مدت‌زمان</item>
+        <item>زمان پایان</item>
+        <item>بازگشت به امروز</item>
+        <item>ماه قبل</item>
+        <item>ماه بعد</item>
+        <item>شمسی</item>
+        <item>میلادی</item>
+        <item>قمری</item>
+        <item>شنبه</item>
+        <item>یکشنبه</item>
+        <item>دوشنبه</item>
+        <item>سه‌شنبه</item>
+        <item>چهارشنبه</item>
+        <item>پنجشنبه</item>
+        <item>جمعه</item>
+        <item>فروردین</item>
+        <item>اردیبهشت</item>
+        <item>خرداد</item>
+        <item>تیر</item>
+        <item>مرداد</item>
+        <item>شهریور</item>
+        <item>مهر</item>
+        <item>آبان</item>
+        <item>آذر</item>
+        <item>دی</item>
+        <item>بهمن</item>
+        <item>اسفند</item>
+        <item>ترسیم ✓</item>
+        <item>بدون گرید</item>
+        <item>گرید</item>
+        <item>رنگ</item>
+        <item>پاک</item>
+        <item>ذخیره ترسیم</item>
+        <item>افزودن فایل یا تصویر</item>
+        <item>انتخاب برنامه</item>
+        <item>افزودن سایت</item>
+        <item>لینک سایت، مثلاً https://example.com</item>
+        <item>یادآوری قبل از موعد</item>
+        <item>تمام‌صفحه وقتی گوشی باز است</item>
+        <item>تمام‌صفحه روی صفحه قفل</item>
+        <item>فعال</item>
+        <item>غیرفعال</item>
+        <item>دست‌نویس</item>
+        <item>نقاشی</item>
+        <item>بدون آلارم</item>
+        <item>تمام‌صفحه هشدار وقتی گوشی باز است</item>
+        <item>تمام‌صفحه هشدار روی صفحه قفل</item>
+        <item>صدای پیش‌فرض هشدار</item>
+        <item>هماهنگ با تم برنامه</item>
+        <item>نمایش محتوا</item>
+        <item>نمایش پیش‌نمایش</item>
+        <item>نمایش نام فایل</item>
+        <item>نمایش نوع و جزئیات فایل</item>
+        <item>هدر و کنترل‌ها</item>
+        <item>قالب ساعت</item>
+        <item>مطابق تنظیمات سیستم</item>
+        <item>۲۴ ساعته</item>
+        <item>۱۲ ساعته</item>
+        <item>نمایش ثانیه</item>
+        <item>نمایش عنوان بخش</item>
+        <item>محتوا</item>
+        <item>حداکثر تعداد آیتم</item>
+        <item>تعداد</item>
+        <item>هوشمند: نزدیک‌ترین هشدار اول</item>
+        <item>زمان: زودترین تا دیرترین</item>
+        <item>اهمیت: مهم‌ترین اول</item>
+        <item>هوشمند: نزدیک‌ترین موعد اول</item>
+        <item>جدیدترین یادداشت اول</item>
+        <item>تنظیمات ویجت ساعت</item>
+        <item>تنظیمات ویجت یادداشت</item>
+        <item>تنظیمات ویجت ساعت جهانی</item>
+        <item>پس‌زمینه</item>
+        <item>شفاف (پیش‌فرض)</item>
+        <item>مشکی ۷۰٪</item>
+        <item>مشکی</item>
+        <item>سفید</item>
+        <item>آبی</item>
+        <item>فیروزه‌ای</item>
+        <item>بنفش</item>
+        <item>قرمز</item>
+        <item>سبز</item>
+        <item>طلایی</item>
+        <item>نارنجی</item>
+        <item>صورتی</item>
+        <item>پیش‌نمایش</item>
+        <item>نوع فایل</item>
+        <item>نمایش تمام صفحه</item>
+        <item>باز کردن کنترل پخش</item>
+        <item>در حال آماده‌سازی</item>
+        <item>در حال پخش</item>
+        <item>مکث</item>
+        <item>هشدار هوشمند</item>
+        <item>ورودی هوشمند</item>
+        <item>پیست</item>
+        <item>تشخیص خودکار</item>
+        <item>تحلیل متن و ساخت پیش‌نمایش</item>
+        <item>زمان زنگ برای همه</item>
+        <item>سرِ وقت</item>
+        <item>قبل از زمان</item>
+        <item>بعد از زمان</item>
+        <item>پیش‌نمایش هشدارها</item>
+        <item>حذف همه</item>
+        <item>ذخیره همه هشدارها</item>
+        <item>عنوان</item>
+        <item>تاریخ و ساعت اصلی</item>
+        <item>زمان زنگ</item>
+        <item>اولویت</item>
+        <item>لرزش همراه هشدار</item>
+        <item>ویرایش هشدار</item>
+        <item>عنوان نمی‌تواند خالی باشد</item>
+        <item>متنی در کلیپ‌بورد نیست</item>
+        <item>ابتدا متن را تحلیل کنید</item>
+        <item>هنوز هشداری شناسایی نشده است.</item>
+        <item>مورد</item>
+        <item>هشدار شناسایی شد</item>
+        <item>تنظیم تکرار</item>
+        <item>فاصله تکرار بر حسب روز</item>
+        <item>فاصله تکرار بر حسب هفته</item>
+        <item>افزودن تاریخ و ساعت</item>
+        <item>پاک کردن تاریخ‌های دلخواه</item>
+        <item>هنوز تاریخ و ساعتی انتخاب نشده</item>
+        <item>تاریخ و ساعت گذشته قابل انتخاب نیست</item>
+        <item>هر چند روز</item>
+        <item>تاریخ‌های دلخواه</item>
+        <item>روزهای هفته</item>
+        <item>دور</item>
+        <item>مدت‌زمان بیشتر از صفر وارد کنید</item>
+        <item>ابتدا کرنومتر را صفر کنید</item>
+        <item>تاریخ و ساعت پایان گذشته است</item>
+        <item>تایمر تمام شد</item>
+        <item>کرنومتر به حد نهایی رسید</item>
+        <item>وقت نیایش</item>
+        <item>پایان اذان</item>
+        <item>قطع کامل صدا</item>
+        <item>وصل صدا</item>
+        <item>قطع اذان</item>
+        <item>باز کردن یادداشت</item>
+        <item>قطع هشدار</item>
+        <item>فایل‌ها، تصاویر، برنامه‌ها و سایت‌ها</item>
+        <item>یادآوری یادداشت</item>
+        <item>زمان یادداشت شما رسیده است</item>
+        <item>آلارم‌ها</item>
+        <item>اعلان اوقات اذان</item>
+        <item>هشدار یادداشت‌ها</item>
+        <item>هشدارهای زمان‌دار یادداشت‌ها</item>
+    </string-array>
+    <string-array name="runtime_translation">
+        <item>تنظیمات</item><item>بستن</item><item>انصراف</item><item>تأیید</item><item>ذخیره</item><item>حذف</item><item>ویرایش</item><item>افزودن</item><item>پاک کردن</item><item>شروع</item><item>توقف</item><item>ادامه</item><item>ساعت</item><item>تاریخ</item><item>یادداشت</item><item>یادداشت‌ها</item><item>هشدار</item><item>هشدارها</item><item>آلارم</item><item>یادآوری</item><item>یادآوری‌ها</item><item>لرزش</item><item>اهمیت</item><item>کم</item><item>نسبتاً کم</item><item>متوسط</item><item>زیاد</item><item>خیلی زیاد</item><item>بدون تکرار</item><item>هر روز</item><item>هر هفته</item><item>هر ماه</item><item>هر سال</item><item>بدون یادآوری</item><item>خودکار (هوشمند)</item><item>۵ دقیقه</item><item>۱۵ دقیقه</item><item>۳۰ دقیقه</item><item>۱ ساعت</item><item>۲ ساعت</item><item>۳ ساعت</item><item>۶ ساعت</item><item>۱۲ ساعت</item><item>۲۴ ساعت</item><item>دقیقه</item><item>ثانیه</item><item>امروز</item><item>روشن</item><item>تیره</item><item>تم</item><item>ظاهر</item><item>پالت رنگ</item><item>شفافیت پس‌زمینه</item><item>اندازه متن</item><item>کوچک</item><item>معمولی</item><item>بزرگ</item><item>نمایش هدر</item><item>نمایش دکمه تنظیمات</item><item>نمایش ساعت</item><item>نمایش تاریخ</item><item>نمایش دکمه +</item><item>نمایش اهمیت</item><item>نمایش جزئیات</item><item>مرتب‌سازی</item><item>فایل</item><item>فایل‌ها</item><item>تصویر</item><item>صوت</item><item>ویدیو</item><item>متن</item><item>سند</item><item>صفحه گسترده</item><item>فشرده</item><item>پخش یا مکث</item><item>اعلان‌ها</item><item>تنظیمات اعلان</item><item>اعلان دائمی تاریخ</item><item>نمایش تقویم‌های دیگر</item><item>یادآوری هشدارها</item><item>یادآوری یادداشت‌ها</item><item>نمایش جزئیات روی صفحه قفل</item><item>اذان</item><item>اذان صبح</item><item>اذان ظهر</item><item>عصر</item><item>اذان مغرب</item><item>عشاء</item><item>طلوع</item><item>غروب</item><item>نیمه‌شب</item><item>تنظیمات اذان و اوقات شرعی</item><item>نمایش اوقات شرعی</item><item>موقعیت جغرافیایی</item><item>جستجوی شهر یا روستا</item><item>دریافت موقعیت دقیق فعلی</item><item>اذان‌های فعال</item><item>انتخاب موذن</item><item>موذن برای همه</item><item>اعلان اذان</item><item>لرزش اذان</item><item>صدای اذان</item><item>انتخاب شهر یا روستا</item><item>نام شهر، روستا، استان یا کشور</item><item>با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند</item><item>در حال جستجوی لحظه‌ای…</item><item>در حال تشخیص منطقه زمانی…</item><item>مکانی پیدا نشد؛ عبارت را تغییر دهید</item><item>ساعت جهانی</item><item>افزودن منطقه زمانی</item><item>افزودن ساعت انتخاب‌شده</item><item>نتیجه‌ای پیدا نشد</item><item>این منطقه زمانی قبلاً اضافه شده است</item><item>تبدیل زمان محلی شما</item><item>ویجت‌ها و تنظیمات</item><item>افزودن به صفحه اصلی</item><item>پیش‌نمایش زنده</item><item>یادآوری فایل‌ها</item><item>افزودن فایل</item><item>افزودن اپ یا سایت</item><item>ترسیم</item><item>نقاشی و ترسیم</item><item>ذخیره یادداشت</item><item>حذف یادداشت</item><item>عنوان یادداشت</item><item>متن یادداشت خود را اینجا بنویسید...</item><item>آلارم برای این یادداشت</item><item>صدای هشدار</item><item>فول‌اسکرین</item><item>صفحه باز</item><item>صفحه قفل</item><item>فایل‌ها و تصاویر</item><item>انتخاب برنامه نصب‌شده</item><item>لینک سایت را وارد کنید</item><item>لینک معتبر وارد کنید</item><item>هنوز فایلی اضافه نشده است.</item><item>هنوز برنامه یا سایتی اضافه نشده است.</item><item>یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید</item><item>یادداشت ذخیره شد</item><item>تنظیم هشدار</item><item>عنوان هشدار</item><item>ذخیره هشدار</item><item>حذف هشدار</item><item>افزودن عکس ۱</item><item>افزودن عکس ۲</item><item>عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)</item><item>پیش‌فرض سیستم</item><item>هشدار ذخیره شد</item><item>تاریخ گذشته قابل انتخاب نیست</item><item>هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد</item><item>آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد</item><item>برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید</item><item>انتخاب صدا</item><item>+ آپلود صدای جدید</item><item>رنگ اپ</item><item>رویدادها و مناسبت‌ها</item><item>نمایش مناسبت‌ها زیر تقویم</item><item>نمایش باکس رویداد زیر تقویم</item><item>چیدمان صفحه ساعت</item><item>فرم ایجاد داخل صفحه، بدون دکمه +</item><item>پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +</item><item>تب‌های قابل نمایش در صفحه اصلی</item><item>استایل صفحه زنگ</item><item>کلاسیک روشن</item><item>تمرکز تیره</item><item>طلوع گرم</item><item>حداقل یک تب باید فعال باشد</item><item>تاریخ و ساعت آینده را انتخاب کنید</item><item>یک زمان بیشتر از صفر وارد کنید</item><item>صفر کردن</item><item>ثبت دور</item><item>انتخاب تاریخ</item><item>انتخاب ساعت</item><item>لغو و بازنشانی</item><item>مدت‌زمان</item><item>زمان پایان</item><item>بازگشت به امروز</item><item>ماه قبل</item><item>ماه بعد</item><item>شمسی</item><item>میلادی</item><item>قمری</item><item>شنبه</item><item>یکشنبه</item><item>دوشنبه</item><item>سه‌شنبه</item><item>چهارشنبه</item><item>پنجشنبه</item><item>جمعه</item><item>فروردین</item><item>اردیبهشت</item><item>خرداد</item><item>تیر</item><item>مرداد</item><item>شهریور</item><item>مهر</item><item>آبان</item><item>آذر</item><item>دی</item><item>بهمن</item><item>اسفند</item><item>ترسیم ✓</item><item>بدون گرید</item><item>گرید</item><item>رنگ</item><item>پاک</item><item>ذخیره ترسیم</item><item>افزودن فایل یا تصویر</item><item>انتخاب برنامه</item><item>افزودن سایت</item><item>لینک سایت، مثلاً https://example.com</item><item>یادآوری قبل از موعد</item><item>تمام‌صفحه وقتی گوشی باز است</item><item>تمام‌صفحه روی صفحه قفل</item><item>فعال</item><item>غیرفعال</item><item>دست‌نویس</item><item>نقاشی</item><item>بدون آلارم</item><item>تمام‌صفحه هشدار وقتی گوشی باز است</item><item>تمام‌صفحه هشدار روی صفحه قفل</item><item>صدای پیش‌فرض هشدار</item><item>هماهنگ با تم برنامه</item><item>نمایش محتوا</item><item>نمایش پیش‌نمایش</item><item>نمایش نام فایل</item><item>نمایش نوع و جزئیات فایل</item><item>هدر و کنترل‌ها</item><item>قالب ساعت</item><item>مطابق تنظیمات سیستم</item><item>۲۴ ساعته</item><item>۱۲ ساعته</item><item>نمایش ثانیه</item><item>نمایش عنوان بخش</item><item>محتوا</item><item>حداکثر تعداد آیتم</item><item>تعداد</item><item>هوشمند: نزدیک‌ترین هشدار اول</item><item>زمان: زودترین تا دیرترین</item><item>اهمیت: مهم‌ترین اول</item><item>هوشمند: نزدیک‌ترین موعد اول</item><item>جدیدترین یادداشت اول</item><item>تنظیمات ویجت ساعت</item><item>تنظیمات ویجت یادداشت</item><item>تنظیمات ویجت ساعت جهانی</item><item>پس‌زمینه</item><item>شفاف (پیش‌فرض)</item><item>مشکی ۷۰٪</item><item>مشکی</item><item>سفید</item><item>آبی</item><item>فیروزه‌ای</item><item>بنفش</item><item>قرمز</item><item>سبز</item><item>طلایی</item><item>نارنجی</item><item>صورتی</item><item>پیش‌نمایش</item><item>نوع فایل</item><item>نمایش تمام صفحه</item><item>باز کردن کنترل پخش</item><item>در حال آماده‌سازی</item><item>در حال پخش</item><item>مکث</item><item>هشدار هوشمند</item><item>ورودی هوشمند</item><item>پیست</item><item>تشخیص خودکار</item><item>تحلیل متن و ساخت پیش‌نمایش</item><item>زمان زنگ برای همه</item><item>سرِ وقت</item><item>قبل از زمان</item><item>بعد از زمان</item><item>پیش‌نمایش هشدارها</item><item>حذف همه</item><item>ذخیره همه هشدارها</item><item>عنوان</item><item>تاریخ و ساعت اصلی</item><item>زمان زنگ</item><item>اولویت</item><item>لرزش همراه هشدار</item><item>ویرایش هشدار</item><item>عنوان نمی‌تواند خالی باشد</item><item>متنی در کلیپ‌بورد نیست</item><item>ابتدا متن را تحلیل کنید</item><item>هنوز هشداری شناسایی نشده است.</item><item>مورد</item><item>هشدار شناسایی شد</item><item>تنظیم تکرار</item><item>فاصله تکرار بر حسب روز</item><item>فاصله تکرار بر حسب هفته</item><item>افزودن تاریخ و ساعت</item><item>پاک کردن تاریخ‌های دلخواه</item><item>هنوز تاریخ و ساعتی انتخاب نشده</item><item>تاریخ و ساعت گذشته قابل انتخاب نیست</item><item>هر چند روز</item><item>تاریخ‌های دلخواه</item><item>روزهای هفته</item><item>دور</item><item>مدت‌زمان بیشتر از صفر وارد کنید</item><item>ابتدا کرنومتر را صفر کنید</item><item>تاریخ و ساعت پایان گذشته است</item><item>تایمر تمام شد</item><item>کرنومتر به حد نهایی رسید</item><item>وقت نیایش</item><item>پایان اذان</item><item>قطع کامل صدا</item><item>وصل صدا</item><item>قطع اذان</item><item>باز کردن یادداشت</item><item>قطع هشدار</item><item>فایل‌ها، تصاویر، برنامه‌ها و سایت‌ها</item><item>یادآوری یادداشت</item><item>زمان یادداشت شما رسیده است</item><item>آلارم‌ها</item><item>اعلان اوقات اذان</item><item>هشدار یادداشت‌ها</item><item>هشدارهای زمان‌دار یادداشت‌ها</item>
+    </string-array>
+    <string-array name="palette_names">
+        <item>نارنجی</item><item>صورتی آبی</item><item>بنفش</item><item>سبز قرمز</item><item>بنفش زرد</item><item>صورتی تیره</item><item>آبی</item>
+    </string-array>
+</resources>
