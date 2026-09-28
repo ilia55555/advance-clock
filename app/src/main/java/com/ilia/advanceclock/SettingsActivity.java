@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public final class SettingsActivity extends Activity {
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +55,8 @@ public final class SettingsActivity extends Activity {
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
         close.setContentDescription("بستن");
-        top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         close.setOnClickListener(v -> finish());
-
+        top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
         root.addView(label("رنگ اپ"));
@@ -70,13 +69,12 @@ public final class SettingsActivity extends Activity {
         language.setSelection(AppSettings.languagePosition(this));
         root.addView(language, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label("تقویم پیش‌فرض"));
-        Spinner calendar = spinner(new String[]{"شمسی", "میلادی", "قمری"});
+        root.addView(label(getString(R.string.calendar_label)));
+        Spinner calendar = spinner(getResources().getStringArray(R.array.calendar_options));
         calendar.setSelection(AppSettings.defaultCalendar(this));
         root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
         root.addView(label("رویدادها و مناسبت‌ها"));
-
         LinearLayout eventsCard = settingsCard();
 
         TextView eventsTitle = new TextView(this);
@@ -117,19 +115,17 @@ public final class SettingsActivity extends Activity {
             bindingExtraSources[0] = false;
         };
         refreshExtraSources.run();
-
         root.addView(eventsCard, settingsCardParams());
 
         root.addView(label("اذان"));
-
         LinearLayout prayerCard = settingsCard();
-
         LinearLayout prayerRow = new LinearLayout(this);
         prayerRow.setOrientation(LinearLayout.HORIZONTAL);
         prayerRow.setGravity(Gravity.CENTER_VERTICAL);
         prayerRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         Switch adhanEnabled = settingSwitch("نمایش بخش اذان", AppSettings.adhanEnabled(this));
         prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, dp(50), 1f));
+
         Button prayerSettings = new Button(this);
         prayerSettings.setText("تنظیمات");
         prayerSettings.setAllCaps(false);
@@ -139,11 +135,6 @@ public final class SettingsActivity extends Activity {
                 startActivity(new Intent(this, PrayerSettingsActivity.class)));
         prayerRow.addView(prayerSettings, new LinearLayout.LayoutParams(dp(100), dp(44)));
         prayerCard.addView(prayerRow);
-        adhanEnabled.setOnCheckedChangeListener((button, checked) -> {
-            AppSettings.setAdhanEnabled(this, checked);
-            setResult(RESULT_OK);
-        });
-
         root.addView(prayerCard, settingsCardParams());
 
         root.addView(label("چیدمان صفحه ساعت"));
@@ -155,11 +146,11 @@ public final class SettingsActivity extends Activity {
         root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
 
         root.addView(label("تب‌های قابل نمایش در صفحه اصلی"));
-        Switch tabClock = tabSwitch("ساعت", "clock");
-        Switch tabNotes = tabSwitch("یادداشت‌ها", "noforget");
-        Switch tabStopwatch = tabSwitch("کرنومتر", "stopwatch");
-        Switch tabTimer = tabSwitch("تایمر", "timer");
-        Switch tabWorld = tabSwitch("ساعت جهانی", "world");
+        Switch tabClock = tabSwitch(getString(R.string.tab_clock), "clock");
+        Switch tabNotes = tabSwitch(getString(R.string.tab_notes), "noforget");
+        Switch tabStopwatch = tabSwitch(getString(R.string.tab_stopwatch), "stopwatch");
+        Switch tabTimer = tabSwitch(getString(R.string.tab_timer), "timer");
+        Switch tabWorld = tabSwitch(getString(R.string.tab_world), "world");
         root.addView(tabClock);
         root.addView(tabNotes);
         root.addView(tabStopwatch);
@@ -179,92 +170,86 @@ public final class SettingsActivity extends Activity {
         AppSettings.applyFullscreenInsets(scroll);
         AppSettings.playFullscreenEnter(this);
 
-        Runnable saveSettings = () -> {
-            if (!tabClock.isChecked() && !tabNotes.isChecked()
-                    && !tabStopwatch.isChecked() && !tabTimer.isChecked()
-                    && !tabWorld.isChecked()) {
-                LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String selectedLanguage =
-                    AppSettings.languageCodes()[language.getSelectedItemPosition()];
-            boolean changed = AppSettings.tabEnabled(this, "clock") != tabClock.isChecked()
-                    || AppSettings.tabEnabled(this, "noforget") != tabNotes.isChecked()
-                    || AppSettings.tabEnabled(this, "stopwatch") != tabStopwatch.isChecked()
-                    || AppSettings.tabEnabled(this, "timer") != tabTimer.isChecked()
-                    || AppSettings.tabEnabled(this, "world") != tabWorld.isChecked()
-                    || AppSettings.palette(this) != palette.getSelectedItemPosition()
-                    || !AppSettings.language(this).equals(selectedLanguage)
-                    || AppSettings.defaultCalendar(this) != calendar.getSelectedItemPosition()
-                    || AppSettings.showCalendarEvents(this) != showCalendarEvents.isChecked()
-                    || AppSettings.clockLayoutMode(this) != layout.getSelectedItemPosition()
-                    || AppSettings.alarmScreenStyle(this)
-                    != alarmStyle.getSelectedItemPosition();
-            if (!changed) return;
-            AppSettings.setTabEnabled(this, "clock", tabClock.isChecked());
-            AppSettings.setTabEnabled(this, "noforget", tabNotes.isChecked());
-            AppSettings.setTabEnabled(this, "stopwatch", tabStopwatch.isChecked());
-            AppSettings.setTabEnabled(this, "timer", tabTimer.isChecked());
-            AppSettings.setTabEnabled(this, "world", tabWorld.isChecked());
-            AppSettings.setPalette(this, palette.getSelectedItemPosition());
-            AppSettings.setLanguage(this, selectedLanguage);
-            AppSettings.setDefaultCalendar(this, calendar.getSelectedItemPosition());
-            AppSettings.setShowCalendarEvents(this, showCalendarEvents.isChecked());
-            AppSettings.setClockLayoutMode(this, layout.getSelectedItemPosition());
-            AppSettings.setAlarmScreenStyle(this, alarmStyle.getSelectedItemPosition());
+        // Every control below writes its setting immediately. There is no deferred Save step.
+        watch(palette, position -> {
+            if (AppSettings.palette(this) == position) return;
+            AppSettings.setPalette(this, position);
+            runtimeChanged();
+            // Palette affects the current settings screen too, so recreate it as well.
+            AdvanceClockApplication.refreshOpenActivities(this, true);
+        });
 
-            try { DateNotificationService.start(this); } catch (Exception ignored) {}
-            ClockWidgetProvider.updateAll(this);
-            NoForgetWidgetProvider.updateAll(this);
-
-            setResult(RESULT_OK);
-        };
-        watch(palette, saveSettings);
-        watch(language, saveSettings);
-        watch(layout, saveSettings);
-        watch(alarmStyle, saveSettings);
+        watch(language, position -> {
+            String selected = AppSettings.languageCodes()[position];
+            if (AppSettings.language(this).equals(selected)) return;
+            AppSettings.setLanguage(this, selected);
+            AppSettings.applyLanguage(getApplicationContext());
+            runtimeChanged();
+            // Locale must refresh every currently open Activity, including Settings itself.
+            AdvanceClockApplication.refreshOpenActivities(this, true);
+        });
 
         calendar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            private boolean first = true;
-
             @Override public void onItemSelected(
                     AdapterView<?> parent, View view, int position, long id) {
-                if (first) {
-                    first = false;
+                if (AppSettings.defaultCalendar(SettingsActivity.this) == position) {
                     refreshExtraSources.run();
                     return;
                 }
                 AppSettings.setDefaultCalendar(SettingsActivity.this, position);
                 refreshExtraSources.run();
-                setResult(RESULT_OK);
-                try { DateNotificationService.start(SettingsActivity.this); }
-                catch (Exception ignored) {}
-                ClockWidgetProvider.updateAll(SettingsActivity.this);
-                NoForgetWidgetProvider.updateAll(SettingsActivity.this);
+                runtimeChanged();
+                AdvanceClockApplication.refreshOpenActivities(SettingsActivity.this, false);
             }
 
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         showCalendarEvents.setOnCheckedChangeListener((button, checked) -> {
+            if (AppSettings.showCalendarEvents(this) == checked) return;
             AppSettings.setShowCalendarEvents(this, checked);
             extraEventsOne.setEnabled(checked);
             extraEventsTwo.setEnabled(checked);
-            setResult(RESULT_OK);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
         });
 
         extraEventsOne.setOnCheckedChangeListener((button, checked) -> {
             if (bindingExtraSources[0]) return;
             int[] types = extraCalendarTypes(calendar.getSelectedItemPosition());
+            if (AppSettings.additionalCalendarEventsEnabled(this, types[0]) == checked) return;
             AppSettings.setAdditionalCalendarEventsEnabled(this, types[0], checked);
-            setResult(RESULT_OK);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
         });
 
         extraEventsTwo.setOnCheckedChangeListener((button, checked) -> {
             if (bindingExtraSources[0]) return;
             int[] types = extraCalendarTypes(calendar.getSelectedItemPosition());
+            if (AppSettings.additionalCalendarEventsEnabled(this, types[1]) == checked) return;
             AppSettings.setAdditionalCalendarEventsEnabled(this, types[1], checked);
-            setResult(RESULT_OK);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
+
+        adhanEnabled.setOnCheckedChangeListener((button, checked) -> {
+            if (AppSettings.adhanEnabled(this) == checked) return;
+            AppSettings.setAdhanEnabled(this, checked);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
+
+        watch(layout, position -> {
+            if (AppSettings.clockLayoutMode(this) == position) return;
+            AppSettings.setClockLayoutMode(this, position);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
+
+        watch(alarmStyle, position -> {
+            if (AppSettings.alarmScreenStyle(this) == position) return;
+            AppSettings.setAlarmScreenStyle(this, position);
+            runtimeChanged();
         });
 
         CompoundButton.OnCheckedChangeListener saveTabs = (button, checked) -> {
@@ -275,13 +260,26 @@ public final class SettingsActivity extends Activity {
                 LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
-            saveSettings.run();
+            AppSettings.setTabEnabled(this, "clock", tabClock.isChecked());
+            AppSettings.setTabEnabled(this, "noforget", tabNotes.isChecked());
+            AppSettings.setTabEnabled(this, "stopwatch", tabStopwatch.isChecked());
+            AppSettings.setTabEnabled(this, "timer", tabTimer.isChecked());
+            AppSettings.setTabEnabled(this, "world", tabWorld.isChecked());
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
         };
         tabClock.setOnCheckedChangeListener(saveTabs);
         tabNotes.setOnCheckedChangeListener(saveTabs);
         tabStopwatch.setOnCheckedChangeListener(saveTabs);
         tabTimer.setOnCheckedChangeListener(saveTabs);
         tabWorld.setOnCheckedChangeListener(saveTabs);
+    }
+
+    private void runtimeChanged() {
+        setResult(RESULT_OK);
+        try { DateNotificationService.start(this); } catch (Exception ignored) {}
+        ClockWidgetProvider.updateAll(this);
+        NoForgetWidgetProvider.updateAll(this);
     }
 
     @Override public void finish() {
@@ -356,20 +354,22 @@ public final class SettingsActivity extends Activity {
 
     private Spinner spinner(String[] values) {
         Spinner spinner = new Spinner(this);
-        ArrayAdapter<String> a = new ArrayAdapter<>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 values);
-        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(a);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         return spinner;
     }
 
-    private void watch(Spinner spinner, Runnable changed) {
+    private interface SpinnerChanged { void onChanged(int position); }
+
+    private void watch(Spinner spinner, SpinnerChanged changed) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(
                     AdapterView<?> parent, View view, int position, long id) {
-                changed.run();
+                changed.onChanged(position);
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
