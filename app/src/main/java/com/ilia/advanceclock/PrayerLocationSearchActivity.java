@@ -9,8 +9,11 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -41,8 +44,10 @@ import java.util.TimeZone;
 
 public final class PrayerLocationSearchActivity extends Activity {
     private static final String SEARCH_PREFS = "prayer_location_search_cache";
-    private static final String CACHE_QUERY = "query";
-    private static final String CACHE_RESPONSE = "response";
+    private static final String LEGACY_CACHE_QUERY = "query";
+    private static final String LEGACY_CACHE_RESPONSE = "response";
+    private static final String CACHE_PREFIX = "response::";
+    private static final String TZ_CACHE_PREFIX = "timezone::";
     private static final String NOMINATIM_SEARCH =
             "https://nominatim.openstreetmap.org/search";
     private static final String TIMEAPI_COORDINATE =
@@ -52,8 +57,9 @@ public final class PrayerLocationSearchActivity extends Activity {
     private static final Object REQUEST_LOCK = new Object();
     private static long lastRequestStarted;
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable pendingSearch;
     private EditText searchInput;
-    private Button searchButton;
     private ProgressBar progress;
     private TextView status;
     private LinearLayout results;
@@ -89,41 +95,27 @@ public final class PrayerLocationSearchActivity extends Activity {
         toolbar.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(toolbar);
 
-        LinearLayout searchBar = new LinearLayout(this);
-        searchBar.setOrientation(LinearLayout.HORIZONTAL);
-        searchBar.setGravity(Gravity.CENTER_VERTICAL);
-        searchBar.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
         searchInput = new EditText(this);
         searchInput.setSingleLine(true);
         searchInput.setHint("نام شهر، روستا، استان یا کشور");
         searchInput.setTextColor(AppSettings.textPrimary(this));
         searchInput.setHintTextColor(AppSettings.textSecondary(this));
         searchInput.setBackgroundResource(R.drawable.bg_field);
-        searchInput.setPadding(dp(12), 0, dp(12), 0);
+        searchInput.setPadding(dp(14), 0, dp(14), 0);
         searchInput.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        searchBar.addView(searchInput, new LinearLayout.LayoutParams(0, dp(54), 1f));
-
-        searchButton = new Button(this);
-        searchButton.setText("جستجو");
-        searchButton.setAllCaps(false);
-        searchButton.setTextColor(0xFFFFFFFF);
-        searchButton.setBackgroundResource(R.drawable.bg_teal_button);
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(dp(88), dp(54));
-        buttonParams.setMarginStart(dp(8));
-        searchBar.addView(searchButton, buttonParams);
-        root.addView(searchBar);
+        root.addView(searchInput, new LinearLayout.LayoutParams(-1, dp(56)));
 
         progress = new ProgressBar(this);
         progress.setVisibility(View.GONE);
-        LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(dp(32), dp(32));
+        LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(dp(30), dp(30));
         progressParams.gravity = Gravity.CENTER_HORIZONTAL;
-        progressParams.topMargin = dp(12);
+        progressParams.topMargin = dp(10);
         root.addView(progress, progressParams);
 
-        status = text("نام مکان را وارد کنید", 13, AppSettings.textSecondary(this));
+        status = text("با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند", 13,
+                AppSettings.textSecondary(this));
         status.setGravity(Gravity.CENTER);
-        status.setPadding(0, dp(10), 0, dp(8));
+        status.setPadding(0, dp(8), 0, dp(8));
         root.addView(status, new LinearLayout.LayoutParams(-1, -2));
 
         ScrollView resultScroll = new ScrollView(this);
@@ -135,20 +127,23 @@ public final class PrayerLocationSearchActivity extends Activity {
         root.addView(resultScroll, new LinearLayout.LayoutParams(-1, 0, 1f));
 
         TextView attribution = text(
-                "داده‌های جستجو © مشارکت‌کنندگان OpenStreetMap",
+                "ایران و منطقه‌زمانی‌ها آفلاین • جستجوی جهانی © OpenStreetMap",
                 11,
                 AppSettings.textSecondary(this));
         attribution.setGravity(Gravity.CENTER);
         attribution.setPadding(0, dp(6), 0, 0);
         root.addView(attribution, new LinearLayout.LayoutParams(-1, -2));
 
-        searchButton.setOnClickListener(v -> search());
+        searchInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                scheduleSearch(false);
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
         searchInput.setOnEditorActionListener((view, actionId, event) -> {
-            boolean keyboardSearch = actionId == EditorInfo.IME_ACTION_SEARCH;
-            boolean enter = event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                    && event.getAction() == KeyEvent.ACTION_DOWN;
-            if (!keyboardSearch && !enter) return false;
-            search();
+            if (actionId != EditorInfo.IME_ACTION_SEARCH) return false;
+            scheduleSearch(true);
             return true;
         });
 
@@ -158,49 +153,60 @@ public final class PrayerLocationSearchActivity extends Activity {
         searchInput.requestFocus();
     }
 
-    private void search() {
-        String query = searchInput.getText().toString().trim();
+    private void scheduleSearch(boolean immediate) {
+        if (pendingSearch != null) handler.removeCallbacks(pendingSearch);
+        final String query = searchInput.getText().toString().trim();
+        final int generation = ++searchGeneration;
+
         if (query.isEmpty()) {
-            status.setText("نام مکان را وارد کنید");
+            progress.setVisibility(View.GONE);
+            results.removeAllViews();
+            status.setText("با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند");
             return;
         }
 
-        List<IranOfflineLocations.Location> offline =
-                IranOfflineLocations.search(query, 20);
+        List<IranOfflineLocations.Location> offline = IranOfflineLocations.search(query, 20);
         if (!offline.isEmpty()) {
-            showOfflineResults(offline);
+            showOfflineResults(generation, offline);
             return;
         }
 
-        if (!hasInternetConnection()) {
-            String message = "این مکان در فهرست آفلاین نیست؛ اینترنت را روشن کنید";
-            status.setText(message);
-            LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
+        if (query.length() < 2) {
+            progress.setVisibility(View.GONE);
+            results.removeAllViews();
+            status.setText("برای جستجوی جهانی یک حرف دیگر وارد کنید");
             return;
         }
 
-        int generation = ++searchGeneration;
-        searchButton.setEnabled(false);
         progress.setVisibility(View.VISIBLE);
-        status.setText("در حال جستجو…");
-        results.removeAllViews();
+        status.setText(hasInternetConnection()
+                ? "در حال جستجوی لحظه‌ای…"
+                : "در حال جستجو در نتایج ذخیره‌شده…");
 
+        pendingSearch = () -> performSearch(query, generation);
+        handler.postDelayed(pendingSearch, immediate ? 0L : 450L);
+    }
+
+    private void performSearch(String query, int generation) {
         new Thread(() -> {
             SearchResponse response = searchEverywhere(query);
             runOnUiThread(() -> showResults(generation, response));
-        }).start();
+        }, "PrayerLocationSearch").start();
     }
 
-    private void showOfflineResults(List<IranOfflineLocations.Location> found) {
+    private void showOfflineResults(int generation, List<IranOfflineLocations.Location> found) {
+        if (generation != searchGeneration) return;
         progress.setVisibility(View.GONE);
         results.removeAllViews();
-        status.setText(found.size() + " نتیجه آفلاین");
+        status.setText(CalendarUtils.fa(Integer.toString(found.size())) + " نتیجه آفلاین");
         for (IranOfflineLocations.Location location : found) {
             addResultButton(new LocationResult(
                     location.label,
                     location.latitude,
                     location.longitude,
-                    "Asia/Tehran"));
+                    "Asia/Tehran",
+                    "IR",
+                    "Iran"));
         }
     }
 
@@ -216,21 +222,27 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private SearchResponse searchEverywhere(String query) {
+        boolean cached = false;
         boolean onlineFailed = false;
         try {
             String json = cachedResponse(query);
-            if (json == null) {
+            if (json != null) {
+                cached = true;
+            } else if (hasInternetConnection()) {
                 json = requestNominatim(query);
                 cacheResponse(query, json);
             }
-            List<LocationResult> online = parseNominatim(json);
-            if (!online.isEmpty()) return new SearchResponse(online, false);
+            if (json != null) {
+                List<LocationResult> parsed = parseNominatim(json);
+                if (!parsed.isEmpty()) return new SearchResponse(parsed, false, cached);
+            }
         } catch (IOException | JSONException | NumberFormatException ignored) {
             onlineFailed = true;
         }
 
         List<LocationResult> platform = searchPlatformGeocoder(query);
-        return new SearchResponse(platform, onlineFailed && platform.isEmpty());
+        return new SearchResponse(platform,
+                (onlineFailed || !hasInternetConnection()) && platform.isEmpty(), false);
     }
 
     private String requestNominatim(String query) throws IOException {
@@ -243,8 +255,8 @@ public final class PrayerLocationSearchActivity extends Activity {
                 .appendQueryParameter("accept-language", "fa,en")
                 .build();
         HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-        connection.setConnectTimeout(12_000);
-        connection.setReadTimeout(12_000);
+        connection.setConnectTimeout(10_000);
+        connection.setReadTimeout(10_000);
         connection.setRequestProperty(
                 "User-Agent", "AdvanceClock/1.0 (Android; com.ilia.advanceclock)");
         connection.setRequestProperty("Accept", "application/json");
@@ -292,14 +304,37 @@ public final class PrayerLocationSearchActivity extends Activity {
             double longitude = Double.parseDouble(item.getString("lon"));
             String label = item.optString("display_name", "").trim();
             if (label.isEmpty()) continue;
+
             JSONObject address = item.optJSONObject("address");
-            String countryCode = address == null
-                    ? "" : address.optString("country_code", "");
-            String timeZoneId = "ir".equalsIgnoreCase(countryCode)
-                    ? "Asia/Tehran" : "";
-            parsed.add(new LocationResult(label, latitude, longitude, timeZoneId));
+            String countryCode = address == null ? "" : address.optString("country_code", "");
+            String region = regionFromAddress(address);
+            String timeZoneId = OfflineTimeZoneResolver.resolve(
+                    countryCode, region, latitude, longitude);
+            if (!isUsableTimeZone(timeZoneId)) {
+                timeZoneId = cachedResolvedZone(latitude, longitude);
+            }
+            parsed.add(new LocationResult(
+                    label, latitude, longitude, timeZoneId, countryCode, region));
         }
         return parsed;
+    }
+
+    private String regionFromAddress(JSONObject address) {
+        if (address == null) return "";
+        StringBuilder out = new StringBuilder();
+        appendRegion(out, address.optString("state", ""));
+        appendRegion(out, address.optString("province", ""));
+        appendRegion(out, address.optString("region", ""));
+        appendRegion(out, address.optString("state_district", ""));
+        appendRegion(out, address.optString("county", ""));
+        appendRegion(out, address.optString("ISO3166-2-lvl4", ""));
+        return out.toString();
+    }
+
+    private void appendRegion(StringBuilder out, String value) {
+        if (value == null || value.trim().isEmpty()) return;
+        if (out.length() > 0) out.append(' ');
+        out.append(value.trim());
     }
 
     @SuppressWarnings("deprecation")
@@ -311,13 +346,21 @@ public final class PrayerLocationSearchActivity extends Activity {
             ArrayList<LocationResult> found = new ArrayList<>();
             for (Address address : addresses) {
                 if (!address.hasLatitude() || !address.hasLongitude()) continue;
-                String timeZoneId = "IR".equalsIgnoreCase(address.getCountryCode())
-                        ? "Asia/Tehran" : "";
+                String countryCode = address.getCountryCode() == null ? "" : address.getCountryCode();
+                String region = ((address.getAdminArea() == null ? "" : address.getAdminArea())
+                        + " " + (address.getSubAdminArea() == null ? "" : address.getSubAdminArea())).trim();
+                String zone = OfflineTimeZoneResolver.resolve(
+                        countryCode, region, address.getLatitude(), address.getLongitude());
+                if (!isUsableTimeZone(zone)) {
+                    zone = cachedResolvedZone(address.getLatitude(), address.getLongitude());
+                }
                 found.add(new LocationResult(
                         addressLabel(address),
                         address.getLatitude(),
                         address.getLongitude(),
-                        timeZoneId));
+                        zone,
+                        countryCode,
+                        region));
             }
             return found;
         } catch (IOException | IllegalArgumentException error) {
@@ -325,39 +368,61 @@ public final class PrayerLocationSearchActivity extends Activity {
         }
     }
 
+    private String normalizedQuery(String query) {
+        return query.trim().toLowerCase(Locale.ROOT);
+    }
+
     private String cachedResponse(String query) {
         android.content.SharedPreferences cache =
                 getSharedPreferences(SEARCH_PREFS, MODE_PRIVATE);
-        if (!query.equalsIgnoreCase(cache.getString(CACHE_QUERY, ""))) return null;
-        String response = cache.getString(CACHE_RESPONSE, "");
-        return response == null || response.isEmpty() ? null : response;
+        String multi = cache.getString(CACHE_PREFIX + normalizedQuery(query), "");
+        if (multi != null && !multi.isEmpty()) return multi;
+        if (query.equalsIgnoreCase(cache.getString(LEGACY_CACHE_QUERY, ""))) {
+            String legacy = cache.getString(LEGACY_CACHE_RESPONSE, "");
+            return legacy == null || legacy.isEmpty() ? null : legacy;
+        }
+        return null;
     }
 
     private void cacheResponse(String query, String response) {
         getSharedPreferences(SEARCH_PREFS, MODE_PRIVATE).edit()
-                .putString(CACHE_QUERY, query)
-                .putString(CACHE_RESPONSE, response)
+                .putString(CACHE_PREFIX + normalizedQuery(query), response)
+                .putString(LEGACY_CACHE_QUERY, query)
+                .putString(LEGACY_CACHE_RESPONSE, response)
+                .apply();
+    }
+
+    private String coordinateKey(double latitude, double longitude) {
+        return String.format(Locale.US, TZ_CACHE_PREFIX + "%.4f:%.4f", latitude, longitude);
+    }
+
+    private String cachedResolvedZone(double latitude, double longitude) {
+        return getSharedPreferences(SEARCH_PREFS, MODE_PRIVATE)
+                .getString(coordinateKey(latitude, longitude), "");
+    }
+
+    private void cacheResolvedZone(double latitude, double longitude, String zone) {
+        if (!isUsableTimeZone(zone)) return;
+        getSharedPreferences(SEARCH_PREFS, MODE_PRIVATE).edit()
+                .putString(coordinateKey(latitude, longitude), zone)
                 .apply();
     }
 
     private void showResults(int generation, SearchResponse response) {
         if (generation != searchGeneration || isFinishing()) return;
-        searchButton.setEnabled(true);
         progress.setVisibility(View.GONE);
         results.removeAllViews();
 
         if (response.results.isEmpty()) {
             String message = response.connectionFailed
-                    ? "اتصال جستجو برقرار نشد؛ اینترنت را روشن و دوباره تلاش کنید"
-                    : "مکانی پیدا نشد؛ نام کامل‌تر یا نام کشور را هم وارد کنید";
+                    ? "نتیجه آفلاین پیدا نشد؛ برای مکان جدید اینترنت لازم است"
+                    : "مکانی پیدا نشد؛ عبارت را تغییر دهید";
             status.setText(message);
-            if (response.connectionFailed) {
-                LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
-            }
             return;
         }
 
-        status.setText(response.results.size() + " نتیجه");
+        String count = CalendarUtils.fa(Integer.toString(response.results.size()));
+        status.setText(count + (response.fromCache ? " نتیجه ذخیره‌شده" : " نتیجه"));
         for (LocationResult location : response.results) addResultButton(location);
     }
 
@@ -377,15 +442,31 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private void select(LocationResult location) {
+        String offline = OfflineTimeZoneResolver.resolve(
+                location.countryCode,
+                location.region,
+                location.latitude,
+                location.longitude);
+        if (isUsableTimeZone(offline)) {
+            saveLocation(location, offline);
+            return;
+        }
         if (isUsableTimeZone(location.timeZoneId)) {
             saveLocation(location, location.timeZoneId);
             return;
         }
 
+        if (!hasInternetConnection()) {
+            String message = "منطقه زمانی این مکان هنوز آفلاین ذخیره نشده؛ یک بار با اینترنت انتخابش کنید";
+            status.setText(message);
+            LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         progress.setVisibility(View.VISIBLE);
-        status.setText("در حال تشخیص منطقه زمانی شهر…");
+        status.setText("در حال تشخیص منطقه زمانی…");
         new Thread(() -> {
-            String zone = resolveTimeZone(location.latitude, location.longitude);
+            String zone = resolveTimeZoneOnline(location.latitude, location.longitude);
             runOnUiThread(() -> {
                 progress.setVisibility(View.GONE);
                 if (!isUsableTimeZone(zone)) {
@@ -394,12 +475,13 @@ public final class PrayerLocationSearchActivity extends Activity {
                     LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
                     return;
                 }
+                cacheResolvedZone(location.latitude, location.longitude, zone);
                 saveLocation(location, zone);
             });
-        }).start();
+        }, "PrayerTimezoneLookup").start();
     }
 
-    private String resolveTimeZone(double latitude, double longitude) {
+    private String resolveTimeZoneOnline(double latitude, double longitude) {
         String zone = resolveTimeZoneViaTimeApi(latitude, longitude);
         if (isUsableTimeZone(zone)) return zone;
         zone = resolveTimeZoneViaOpenMeteo(latitude, longitude);
@@ -413,12 +495,7 @@ public final class PrayerLocationSearchActivity extends Activity {
                     .appendQueryParameter("latitude", Double.toString(latitude))
                     .appendQueryParameter("longitude", Double.toString(longitude))
                     .build();
-            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            connection.setConnectTimeout(8_000);
-            connection.setReadTimeout(8_000);
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty(
-                    "User-Agent", "AdvanceClock/1.0 (Android; com.ilia.advanceclock)");
+            connection = openJsonConnection(uri.toString());
             int code = connection.getResponseCode();
             if (code < 200 || code >= 300) return "";
             return new JSONObject(readFully(connection.getInputStream()))
@@ -440,12 +517,7 @@ public final class PrayerLocationSearchActivity extends Activity {
                     .appendQueryParameter("timezone", "auto")
                     .appendQueryParameter("forecast_days", "1")
                     .build();
-            connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
-            connection.setConnectTimeout(8_000);
-            connection.setReadTimeout(8_000);
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty(
-                    "User-Agent", "AdvanceClock/1.0 (Android; com.ilia.advanceclock)");
+            connection = openJsonConnection(uri.toString());
             int code = connection.getResponseCode();
             if (code < 200 || code >= 300) return "";
             return new JSONObject(readFully(connection.getInputStream()))
@@ -457,14 +529,25 @@ public final class PrayerLocationSearchActivity extends Activity {
         }
     }
 
+    private HttpURLConnection openJsonConnection(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setConnectTimeout(8_000);
+        connection.setReadTimeout(8_000);
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty(
+                "User-Agent", "AdvanceClock/1.0 (Android; com.ilia.advanceclock)");
+        return connection;
+    }
+
     private boolean isUsableTimeZone(String id) {
         if (id == null || id.trim().isEmpty()) return false;
         String normalized = id.trim();
         TimeZone zone = TimeZone.getTimeZone(normalized);
         if (!"GMT".equals(zone.getID())) return true;
-        return "GMT".equalsIgnoreCase(normalized)
-                || normalized.toUpperCase(Locale.US).startsWith("GMT+")
-                || normalized.toUpperCase(Locale.US).startsWith("GMT-")
+        String upper = normalized.toUpperCase(Locale.US);
+        return "GMT".equals(upper)
+                || upper.startsWith("GMT+")
+                || upper.startsWith("GMT-")
                 || normalized.startsWith("Etc/GMT");
     }
 
@@ -513,26 +596,34 @@ public final class PrayerLocationSearchActivity extends Activity {
         final double latitude;
         final double longitude;
         final String timeZoneId;
+        final String countryCode;
+        final String region;
 
         LocationResult(
                 String label,
                 double latitude,
                 double longitude,
-                String timeZoneId) {
+                String timeZoneId,
+                String countryCode,
+                String region) {
             this.label = label;
             this.latitude = latitude;
             this.longitude = longitude;
             this.timeZoneId = timeZoneId;
+            this.countryCode = countryCode == null ? "" : countryCode;
+            this.region = region == null ? "" : region;
         }
     }
 
     private static final class SearchResponse {
         final List<LocationResult> results;
         final boolean connectionFailed;
+        final boolean fromCache;
 
-        SearchResponse(List<LocationResult> results, boolean connectionFailed) {
+        SearchResponse(List<LocationResult> results, boolean connectionFailed, boolean fromCache) {
             this.results = results;
             this.connectionFailed = connectionFailed;
+            this.fromCache = fromCache;
         }
     }
 
@@ -546,6 +637,11 @@ public final class PrayerLocationSearchActivity extends Activity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    @Override protected void onDestroy() {
+        if (pendingSearch != null) handler.removeCallbacks(pendingSearch);
+        super.onDestroy();
     }
 
     @Override public void finish() {
