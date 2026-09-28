@@ -431,7 +431,7 @@ public final class NoForgetEditorActivity extends Activity {
                 .setNegativeButton("انصراف",null)
                 .setPositiveButton(
                         "ذخیره ترسیم",
-                        (dialog,which)->{
+                        (d,which)->{
                             sketch.load(canvas.serialize());
                             updateActionButtons();
                         })
