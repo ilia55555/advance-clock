@@ -335,7 +335,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
     private void pickFiles() {
         if (items.size() >= MediaWidgetPrefs.MAX_ITEMS) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     "حداکثر "
                             + MediaWidgetPrefs.MAX_ITEMS

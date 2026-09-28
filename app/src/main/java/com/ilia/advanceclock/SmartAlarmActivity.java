@@ -303,19 +303,19 @@ public final class SmartAlarmActivity extends Activity {
         ClipboardManager clipboard =
                 (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard == null || !clipboard.hasPrimaryClip()) {
-            Toast.makeText(this, "متنی در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "متنی در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
             return;
         }
 
         ClipData clip = clipboard.getPrimaryClip();
         if (clip == null || clip.getItemCount() == 0) {
-            Toast.makeText(this, "متنی در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "متنی در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
             return;
         }
 
         CharSequence value = clip.getItemAt(0).coerceToText(this);
         if (value == null || value.toString().trim().isEmpty()) {
-            Toast.makeText(this, "متن قابل استفاده‌ای در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "متن قابل استفاده‌ای در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -346,7 +346,7 @@ public final class SmartAlarmActivity extends Activity {
 
         refreshPreview();
         if (!candidates.isEmpty()) {
-            Toast.makeText(
+            LogoToast.makeText(
                     this,
                     CalendarUtils.fa(candidates.size()) + " هشدار شناسایی شد",
                     Toast.LENGTH_SHORT).show();
@@ -355,7 +355,7 @@ public final class SmartAlarmActivity extends Activity {
 
     private void applyBulkTiming() {
         if (candidates.isEmpty()) {
-            Toast.makeText(this, "ابتدا متن را تحلیل کنید", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, "ابتدا متن را تحلیل کنید", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -678,7 +678,7 @@ public final class SmartAlarmActivity extends Activity {
                 && !PermissionHelper.exactAlarmsGranted(this)
                 && Build.VERSION.SDK_INT >= 31) {
             message.append("\nبرای اجرای دقیق، دسترسی آلارم دقیق را فعال کنید.");
-            Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
+            LogoToast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
             try {
                 startActivity(new Intent(
                         Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
@@ -688,13 +688,13 @@ public final class SmartAlarmActivity extends Activity {
         }
 
         if (saved == 0) {
-            Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
+            LogoToast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
             return;
         }
 
         setResult(RESULT_OK);
 
-        Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
+        LogoToast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
         finish();
     }
 
