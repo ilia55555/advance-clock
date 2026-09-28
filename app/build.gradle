@@ -2,6 +2,28 @@ plugins {
     id 'com.android.application'
 }
 
+def localizationResourceFiles = [
+        'values', 'values-ar', 'values-de', 'values-en', 'values-es', 'values-fa',
+        'values-fr', 'values-hi', 'values-ja', 'values-pt', 'values-ru', 'values-tr',
+        'values-zh-rCN'
+].collect { file("src/main/res/${it}/localization_full.xml") }
+
+// Localization XML files are version-controlled. Keep this compatibility task so old Android
+// Studio run configurations can request it without requiring Python on the developer PC.
+tasks.register('generateLocalizations') {
+    group = 'build setup'
+    description = 'Verifies the localization XML files committed under src/main/res.'
+    inputs.files(localizationResourceFiles)
+    doLast {
+        def missingFiles = localizationResourceFiles.findAll { !it.isFile() }
+        if (!missingFiles.isEmpty()) {
+            throw new GradleException('Missing committed localization resources: '
+                    + missingFiles.join(', '))
+        }
+        logger.lifecycle('All committed localization resources are present.')
+    }
+}
+
 android {
     namespace 'com.ilia.advanceclock'
 
@@ -23,4 +45,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn tasks.named('generateLocalizations')
 }

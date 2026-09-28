@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="runtime_translation">
+        <item>الإعدادات</item>
+        <item>إغلاق</item>
+        <item>إلغاء</item>
+        <item>تأكيد</item>
+        <item>حفظ</item>
+        <item>حذف</item>
+        <item>تعديل</item>
+        <item>إضافة</item>
+        <item>مسح</item>
+        <item>بدء</item>
+        <item>إيقاف</item>
+        <item>متابعة</item>
+        <item>الساعة</item>
+        <item>التاريخ</item>
+        <item>ملاحظة</item>
+        <item>الملاحظات</item>
+        <item>منبّه</item>
+        <item>المنبّهات</item>
+        <item>منبّه</item>
+        <item>تذكير</item>
+        <item>التذكيرات</item>
+        <item>الاهتزاز</item>
+        <item>الأهمية</item>
+        <item>منخفض</item>
+        <item>منخفض نسبيًا</item>
+        <item>متوسط</item>
+        <item>مرتفع</item>
+        <item>مرتفع جدًا</item>
+        <item>بدون تكرار</item>
+        <item>كل يوم</item>
+        <item>كل أسبوع</item>
+        <item>كل شهر</item>
+        <item>كل سنة</item>
+        <item>اليوم</item>
+        <item>بدون تذكير</item>
+        <item>تلقائي (ذكي)</item>
+        <item>دقيقة</item>
+        <item>ثانية</item>
+        <item>الساعة العالمية</item>
+        <item>المؤقّت</item>
+        <item>ساعة الإيقاف</item>
+        <item>المظهر</item>
+        <item>السمة</item>
+        <item>فاتح</item>
+        <item>داكن</item>
+        <item>لوحة الألوان</item>
+        <item>عتامة الخلفية</item>
+        <item>حجم النص</item>
+        <item>صغير</item>
+        <item>عادي</item>
+        <item>كبير</item>
+        <item>إظهار الرأس</item>
+        <item>إظهار الساعة</item>
+        <item>إظهار التاريخ</item>
+        <item>إظهار زر الإعدادات</item>
+        <item>إظهار الأهمية</item>
+        <item>إظهار التفاصيل</item>
+        <item>الفرز</item>
+        <item>ملف</item>
+        <item>الملفات</item>
+        <item>صورة</item>
+        <item>صوت</item>
+        <item>فيديو</item>
+        <item>نص</item>
+        <item>مستند</item>
+        <item>جدول بيانات</item>
+        <item>وسائط</item>
+        <item>تشغيل أو إيقاف مؤقت</item>
+        <item>إعدادات الإشعارات</item>
+        <item>الإشعارات</item>
+        <item>إشعار دائم بالتاريخ</item>
+        <item>إظهار التقاويم الأخرى</item>
+        <item>تذكيرات المنبّه</item>
+        <item>تذكيرات الملاحظات</item>
+        <item>إظهار التفاصيل على شاشة القفل</item>
+        <item>إعدادات الأذان ومواقيت الصلاة</item>
+        <item>الأذان</item>
+        <item>أذان الفجر</item>
+        <item>أذان الظهر</item>
+        <item>أذان المغرب</item>
+        <item>العشاء</item>
+        <item>العصر</item>
+        <item>الشروق</item>
+        <item>الغروب</item>
+        <item>منتصف الليل</item>
+        <item>إظهار مواقيت الصلاة</item>
+        <item>الموقع</item>
+        <item>البحث عن مدينة أو قرية</item>
+        <item>الحصول على الموقع الدقيق الحالي</item>
+        <item>الأذانات المفعلة</item>
+        <item>اختيار المؤذن</item>
+        <item>طريقة تنبيه الأذان</item>
+        <item>إشعار الأذان</item>
+        <item>اهتزاز الأذان</item>
+        <item>صوت الأذان</item>
+        <item>معاينة شاشة الأذان</item>
+        <item>الموقع غير محدد</item>
+        <item>جارٍ الحصول على الموقع…</item>
+        <item>اختيار مدينة أو قرية</item>
+        <item>اسم المدينة أو القرية أو المحافظة أو الدولة</item>
+        <item>تُحدَّث النتائج لحظيًا أثناء الكتابة</item>
+        <item>لم يتم العثور على نتائج</item>
+        <item>إضافة منطقة زمنية</item>
+        <item>إضافة الساعة المحددة</item>
+        <item>العودة إلى الآن</item>
+        <item>الانتقال إلى تاريخ</item>
+        <item>ترتيب علامات التبويب</item>
+        <item>إعادة ترتيب علامات التبويب</item>
+        <item>أذونات المنبّه والإشعارات</item>
+        <item>الأدوات والإعدادات</item>
+        <item>إعدادات الأداة</item>
+        <item>معاينة مباشرة</item>
+        <item>إضافة إلى الشاشة الرئيسية</item>
+        <item>النسخ المثبتة</item>
+        <item>تذكيرات الملفات</item>
+        <item>إضافة ملف</item>
+        <item>إضافة تطبيق أو موقع</item>
+        <item>رسم</item>
+        <item>الرسم والتخطيط</item>
+        <item>حفظ الملاحظة</item>
+        <item>حذف الملاحظة</item>
+        <item>عنوان الملاحظة</item>
+        <item>اكتب ملاحظتك هنا...</item>
+        <item>منبّه لهذه الملاحظة</item>
+        <item>صوت المنبّه</item>
+        <item>ملء الشاشة</item>
+        <item>الشاشة غير المقفلة</item>
+        <item>شاشة القفل</item>
+        <item>الملفات والصور</item>
+        <item>اختيار تطبيق مثبت</item>
+        <item>أدخل رابط الموقع</item>
+        <item>أدخل رابطًا صالحًا</item>
+        <item>لم تتم إضافة ملفات بعد.</item>
+        <item>لم تتم إضافة تطبيق أو موقع بعد.</item>
+        <item>أضف نصًا أو رسمًا أو ملفًا أو تطبيقًا أو موقعًا</item>
+        <item>تم حفظ الملاحظة</item>
+        <item>ضبط المنبّه</item>
+        <item>عنوان المنبّه</item>
+        <item>حفظ المنبّه</item>
+        <item>حذف المنبّه</item>
+        <item>إضافة الصورة 1</item>
+        <item>إضافة الصورة 2</item>
+        <item>صور المنبّه (اختياري، صورتان كحد أقصى)</item>
+        <item>افتراضي النظام</item>
+        <item>تم حفظ المنبّه</item>
+        <item>لا يمكن اختيار تاريخ مضى</item>
+        <item>لا يمكن ضبط منبّه لتاريخ أو وقت مضى</item>
+        <item>لا يمكن ضبط منبّه الملاحظة في وقت مضى</item>
+        <item>فعّل إذن المنبّه الدقيق للتنبيهات الدقيقة</item>
+        <item>اختيار الصوت</item>
+        <item>+ رفع صوت جديد</item>
+        <item>لون التطبيق</item>
+        <item>الأحداث والمناسبات</item>
+        <item>عرض المناسبات أسفل التقويم</item>
+        <item>عرض مربع الأحداث أسفل التقويم</item>
+        <item>تخطيط صفحة الساعة</item>
+        <item>نموذج الإنشاء داخل الصفحة، دون زر +</item>
+        <item>مضغوط: نموذج الإنشاء في نافذة مع زر +</item>
+        <item>علامات التبويب الظاهرة في الرئيسية</item>
+        <item>نمط شاشة المنبّه</item>
+        <item>كلاسيكي فاتح</item>
+        <item>تركيز داكن</item>
+        <item>شروق دافئ</item>
+        <item>يجب تفعيل علامة تبويب واحدة على الأقل</item>
+        <item>اختر تاريخًا ووقتًا في المستقبل</item>
+        <item>أدخل وقتًا أكبر من صفر</item>
+        <item>إعادة ضبط</item>
+        <item>لفة</item>
+        <item>اختيار التاريخ</item>
+        <item>اختيار الوقت</item>
+        <item>إلغاء وإعادة ضبط</item>
+        <item>المدة</item>
+        <item>وقت الانتهاء</item>
+        <item>العودة إلى اليوم</item>
+        <item>الشهر السابق</item>
+        <item>الشهر التالي</item>
+        <item>فارسي</item>
+        <item>ميلادي</item>
+        <item>هجري</item>
+        <item>السبت</item>
+        <item>الأحد</item>
+        <item>الاثنين</item>
+        <item>الثلاثاء</item>
+        <item>الأربعاء</item>
+        <item>الخميس</item>
+        <item>الجمعة</item>
+        <item>فروردين</item>
+        <item>أرديبهشت</item>
+        <item>خرداد</item>
+        <item>تير</item>
+        <item>مرداد</item>
+        <item>شهريور</item>
+        <item>مهر</item>
+        <item>آبان</item>
+        <item>آذر</item>
+        <item>دي</item>
+        <item>بهمن</item>
+        <item>إسفند</item>
+        <item>رسم ✓</item>
+        <item>بلا شبكة</item>
+        <item>شبكة</item>
+        <item>اللون</item>
+        <item>مسح</item>
+        <item>حفظ الرسم</item>
+        <item>إضافة ملف أو صورة</item>
+        <item>اختيار تطبيق</item>
+        <item>إضافة موقع</item>
+        <item>رابط الموقع، مثل https://example.com</item>
+        <item>تذكير قبل الموعد</item>
+        <item>ملء الشاشة عندما يكون الهاتف غير مقفل</item>
+        <item>ملء الشاشة على شاشة القفل</item>
+        <item>مفعّل</item>
+        <item>معطّل</item>
+        <item>كتابة يدوية</item>
+        <item>رسم</item>
+        <item>بلا منبّه</item>
+        <item>منبّه بملء الشاشة عندما يكون الهاتف غير مقفل</item>
+        <item>منبّه بملء الشاشة على شاشة القفل</item>
+        <item>صوت المنبّه الافتراضي</item>
+        <item>مطابقة سمة التطبيق</item>
+        <item>عرض المحتوى</item>
+        <item>عرض المعاينة</item>
+        <item>عرض اسم الملف</item>
+        <item>عرض نوع الملف وتفاصيله</item>
+        <item>الرأس وعناصر التحكم</item>
+        <item>تنسيق الوقت</item>
+        <item>حسب إعدادات النظام</item>
+        <item>24 ساعة</item>
+        <item>12 ساعة</item>
+        <item>عرض الثواني</item>
+        <item>عرض عنوان القسم</item>
+        <item>المحتوى</item>
+        <item>الحد الأقصى للعناصر</item>
+        <item>العدد</item>
+        <item>ذكي: أقرب منبّه أولًا</item>
+        <item>الوقت: من الأسبق إلى الأحدث</item>
+        <item>الأولوية: الأعلى أولًا</item>
+        <item>ذكي: أقرب موعد أولًا</item>
+        <item>أحدث ملاحظة أولًا</item>
+        <item>إعدادات ويدجت الساعة</item>
+        <item>إعدادات ويدجت الملاحظات</item>
+        <item>إعدادات ويدجت الساعة العالمية</item>
+        <item>الخلفية</item>
+        <item>شفاف (افتراضي)</item>
+        <item>أسود 70٪</item>
+        <item>أسود</item>
+        <item>أبيض</item>
+        <item>أزرق</item>
+        <item>فيروزي</item>
+        <item>بنفسجي</item>
+        <item>أحمر</item>
+        <item>أخضر</item>
+        <item>ذهبي</item>
+        <item>برتقالي</item>
+        <item>وردي</item>
+        <item>معاينة</item>
+        <item>نوع الملف</item>
+        <item>عرض بملء الشاشة</item>
+        <item>فتح عناصر التحكم بالتشغيل</item>
+        <item>جارٍ التحضير</item>
+        <item>قيد التشغيل</item>
+        <item>متوقف مؤقتًا</item>
+        <item>منبّه ذكي</item>
+        <item>إدخال ذكي</item>
+        <item>لصق</item>
+        <item>اكتشاف تلقائي</item>
+        <item>تحليل النص وإنشاء معاينة</item>
+        <item>وقت المنبّه للجميع</item>
+        <item>في الموعد</item>
+        <item>قبل الوقت</item>
+        <item>بعد الوقت</item>
+        <item>معاينة المنبّهات</item>
+        <item>حذف الكل</item>
+        <item>حفظ كل المنبّهات</item>
+        <item>العنوان</item>
+        <item>التاريخ والوقت الأصليان</item>
+        <item>وقت المنبّه</item>
+        <item>الأولوية</item>
+        <item>الاهتزاز مع المنبّه</item>
+        <item>تعديل المنبّه</item>
+        <item>لا يمكن أن يكون العنوان فارغًا</item>
+        <item>لا يوجد نص في الحافظة</item>
+        <item>حلّل النص أولًا</item>
+        <item>لم يتم اكتشاف منبّهات بعد.</item>
+        <item>عنصر</item>
+        <item>تم اكتشاف منبّه</item>
+        <item>إعدادات التكرار</item>
+        <item>فاصل التكرار بالأيام</item>
+        <item>فاصل التكرار بالأسابيع</item>
+        <item>إضافة تاريخ ووقت</item>
+        <item>مسح التواريخ المخصصة</item>
+        <item>لم يتم اختيار تاريخ ووقت بعد</item>
+        <item>لا يمكن اختيار تاريخ ووقت مضيا</item>
+        <item>كل عدة أيام</item>
+        <item>تواريخ مخصصة</item>
+        <item>أيام الأسبوع</item>
+        <item>لفة</item>
+        <item>أدخل مدة أكبر من صفر</item>
+        <item>أعد ضبط ساعة الإيقاف أولًا</item>
+        <item>تاريخ ووقت الانتهاء قد مضيا</item>
+        <item>انتهى المؤقت</item>
+        <item>وصلت ساعة الإيقاف إلى الحد</item>
+        <item>وقت الصلاة</item>
+        <item>إنهاء الأذان</item>
+        <item>كتم الصوت تمامًا</item>
+        <item>إعادة الصوت</item>
+        <item>إيقاف الأذان</item>
+        <item>فتح الملاحظة</item>
+        <item>إيقاف المنبّه</item>
+        <item>الملفات والصور والتطبيقات والمواقع</item>
+        <item>تذكير الملاحظة</item>
+        <item>حان وقت ملاحظتك</item>
+        <item>المنبّهات</item>
+        <item>إشعارات أوقات الصلاة</item>
+        <item>منبّهات الملاحظات</item>
+        <item>منبّهات الملاحظات المجدولة</item>
+    </string-array>
+    <string-array name="palette_names">
+        <item>برتقالي</item>
+        <item>وردي أزرق</item>
+        <item>بنفسجي</item>
+        <item>أخضر أحمر</item>
+        <item>بنفسجي أصفر</item>
+        <item>وردي داكن</item>
+        <item>أزرق</item>
+    </string-array>
+</resources>
