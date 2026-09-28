@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -254,6 +255,7 @@ public final class PrayerSettingsActivity extends Activity {
             horizonList.addView(empty);
             return;
         }
+
         for (AppSettings.PrayerHorizon horizon : horizons) {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
@@ -261,14 +263,51 @@ public final class PrayerSettingsActivity extends Activity {
             row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             row.setBackgroundResource(R.drawable.bg_field);
             row.setPadding(dp(12), 0, dp(8), 0);
+
             TextView label = text(horizon.label, 13, AppSettings.textPrimary(this));
+            label.setSingleLine(true);
+            label.setEllipsize(android.text.TextUtils.TruncateAt.END);
             row.addView(label, new LinearLayout.LayoutParams(0, dp(54), 1f));
-            Button remove = fieldButton("−");
+
+            boolean isPrimary = AppSettings.isPrimaryPrayerHorizon(
+                    this, horizon.latitude, horizon.longitude);
+            Button primary = fieldButton(isPrimary ? "پیش‌فرض ✓" : "پیش‌فرض");
+            primary.setGravity(Gravity.CENTER);
+            primary.setEnabled(!isPrimary);
+            primary.setContentDescription(
+                    isPrimary ? "افق پیش‌فرض " + horizon.label
+                            : "انتخاب " + horizon.label + " به عنوان افق پیش‌فرض");
+            primary.setOnClickListener(v -> {
+                AppSettings.setPrimaryPrayerHorizon(
+                        this,
+                        horizon.latitude,
+                        horizon.longitude,
+                        horizon.label,
+                        horizon.timeZoneId);
+                setResult(RESULT_OK);
+                refresh();
+            });
+            LinearLayout.LayoutParams primaryParams =
+                    new LinearLayout.LayoutParams(dp(94), dp(44));
+            primaryParams.setMarginStart(dp(6));
+            row.addView(primary, primaryParams);
+
+            Button remove = new Button(this);
+            remove.setText("−");
+            remove.setAllCaps(false);
+            remove.setTextSize(22);
+            remove.setGravity(Gravity.CENTER);
+            remove.setPadding(0, 0, 0, dp(2));
+            remove.setTextColor(0xFFD32F2F);
+            remove.setBackground(deleteHorizonBackground(false));
+            remove.setContentDescription("حذف " + horizon.label);
+
             final boolean[] armed = {false};
             remove.setOnClickListener(v -> {
                 if (!armed[0]) {
                     armed[0] = true;
-                    remove.setText("تأیید −");
+                    remove.setTextColor(0xFFFFFFFF);
+                    remove.setBackground(deleteHorizonBackground(true));
                     return;
                 }
                 AppSettings.removePrayerHorizon(
@@ -276,11 +315,25 @@ public final class PrayerSettingsActivity extends Activity {
                 setResult(RESULT_OK);
                 refresh();
             });
-            row.addView(remove, new LinearLayout.LayoutParams(dp(82), dp(44)));
+
+            LinearLayout.LayoutParams removeParams =
+                    new LinearLayout.LayoutParams(dp(44), dp(44));
+            removeParams.setMarginStart(dp(6));
+            row.addView(remove, removeParams);
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(58));
             params.bottomMargin = dp(6);
             horizonList.addView(row, params);
         }
+    }
+
+    private GradientDrawable deleteHorizonBackground(boolean armed) {
+        GradientDrawable background = new GradientDrawable();
+        background.setShape(GradientDrawable.RECTANGLE);
+        background.setCornerRadius(dp(6));
+        background.setStroke(dp(1), 0xFFD32F2F);
+        background.setColor(armed ? 0xFFD32F2F : 0x00000000);
+        return background;
     }
 
     private void updateAdhanSetting(Runnable update, boolean enabled) {
