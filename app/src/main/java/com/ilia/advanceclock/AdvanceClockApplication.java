@@ -10,6 +10,7 @@ public final class AdvanceClockApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
         AppSettings.applyLanguage(this);
+        MainNoteTabEnhancer.install(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override public void onActivityCreated(Activity activity, Bundle state) {
                 fixPrayerArrows(activity);
