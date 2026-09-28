@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="runtime_translation">
+        <item>सेटिंग्स</item>
+        <item>बंद करें</item>
+        <item>रद्द करें</item>
+        <item>पुष्टि करें</item>
+        <item>सहेजें</item>
+        <item>हटाएँ</item>
+        <item>संपादित करें</item>
+        <item>जोड़ें</item>
+        <item>साफ़ करें</item>
+        <item>शुरू करें</item>
+        <item>रोकें</item>
+        <item>जारी रखें</item>
+        <item>घड़ी</item>
+        <item>तारीख</item>
+        <item>नोट</item>
+        <item>नोट्स</item>
+        <item>अलार्म</item>
+        <item>अलार्म</item>
+        <item>अलार्म</item>
+        <item>रिमाइंडर</item>
+        <item>रिमाइंडर</item>
+        <item>वाइब्रेशन</item>
+        <item>प्राथमिकता</item>
+        <item>कम</item>
+        <item>थोड़ी कम</item>
+        <item>मध्यम</item>
+        <item>उच्च</item>
+        <item>बहुत उच्च</item>
+        <item>कोई दोहराव नहीं</item>
+        <item>हर दिन</item>
+        <item>हर सप्ताह</item>
+        <item>हर महीने</item>
+        <item>हर साल</item>
+        <item>आज</item>
+        <item>कोई रिमाइंडर नहीं</item>
+        <item>स्वचालित (स्मार्ट)</item>
+        <item>मिनट</item>
+        <item>सेकंड</item>
+        <item>विश्व घड़ी</item>
+        <item>टाइमर</item>
+        <item>स्टॉपवॉच</item>
+        <item>दिखावट</item>
+        <item>थीम</item>
+        <item>हल्का</item>
+        <item>गहरा</item>
+        <item>रंग पैलेट</item>
+        <item>पृष्ठभूमि अपारदर्शिता</item>
+        <item>टेक्स्ट आकार</item>
+        <item>छोटा</item>
+        <item>सामान्य</item>
+        <item>बड़ा</item>
+        <item>हेडर दिखाएँ</item>
+        <item>घड़ी दिखाएँ</item>
+        <item>तारीख दिखाएँ</item>
+        <item>सेटिंग्स बटन दिखाएँ</item>
+        <item>प्राथमिकता दिखाएँ</item>
+        <item>विवरण दिखाएँ</item>
+        <item>क्रमबद्ध करें</item>
+        <item>फ़ाइल</item>
+        <item>फ़ाइलें</item>
+        <item>छवि</item>
+        <item>ऑडियो</item>
+        <item>वीडियो</item>
+        <item>टेक्स्ट</item>
+        <item>दस्तावेज़</item>
+        <item>स्प्रेडशीट</item>
+        <item>मीडिया</item>
+        <item>चलाएँ या रोकें</item>
+        <item>नोटिफ़िकेशन सेटिंग्स</item>
+        <item>नोटिफ़िकेशन</item>
+        <item>स्थायी तारीख नोटिफ़िकेशन</item>
+        <item>अन्य कैलेंडर दिखाएँ</item>
+        <item>अलार्म रिमाइंडर</item>
+        <item>नोट रिमाइंडर</item>
+        <item>लॉक स्क्रीन पर विवरण दिखाएँ</item>
+        <item>अज़ान और नमाज़ समय सेटिंग्स</item>
+        <item>अज़ान</item>
+        <item>फ़ज्र अज़ान</item>
+        <item>ज़ुहर अज़ान</item>
+        <item>मग़रिब अज़ान</item>
+        <item>इशा</item>
+        <item>असर</item>
+        <item>सूर्योदय</item>
+        <item>सूर्यास्त</item>
+        <item>आधी रात</item>
+        <item>नमाज़ के समय दिखाएँ</item>
+        <item>स्थान</item>
+        <item>शहर या गाँव खोजें</item>
+        <item>वर्तमान सटीक स्थान प्राप्त करें</item>
+        <item>सक्रिय अज़ान</item>
+        <item>मुअज़्ज़िन चुनें</item>
+        <item>अज़ान सूचना</item>
+        <item>अज़ान नोटिफ़िकेशन</item>
+        <item>अज़ान वाइब्रेशन</item>
+        <item>अज़ान ध्वनि</item>
+        <item>अज़ान स्क्रीन पूर्वावलोकन</item>
+        <item>स्थान सेट नहीं है</item>
+        <item>स्थान प्राप्त किया जा रहा है…</item>
+        <item>शहर या गाँव चुनें</item>
+        <item>शहर, गाँव, राज्य या देश का नाम</item>
+        <item>टाइप करते ही परिणाम अपडेट होते हैं</item>
+        <item>कोई परिणाम नहीं मिला</item>
+        <item>समय क्षेत्र जोड़ें</item>
+        <item>चुनी हुई घड़ी जोड़ें</item>
+        <item>अभी पर लौटें</item>
+        <item>तारीख पर जाएँ</item>
+        <item>टैब क्रम</item>
+        <item>टैब पुनः क्रमित करें</item>
+        <item>अलार्म और नोटिफ़िकेशन अनुमतियाँ</item>
+        <item>विजेट और सेटिंग्स</item>
+        <item>विजेट सेटिंग्स</item>
+        <item>लाइव पूर्वावलोकन</item>
+        <item>होम स्क्रीन पर जोड़ें</item>
+        <item>इंस्टॉल किए गए इंस्टेंस</item>
+        <item>फ़ाइल रिमाइंडर</item>
+        <item>फ़ाइल जोड़ें</item>
+        <item>ऐप या वेबसाइट जोड़ें</item>
+        <item>चित्रण</item>
+        <item>ड्रॉइंग और स्केच</item>
+        <item>नोट सहेजें</item>
+        <item>नोट हटाएँ</item>
+        <item>नोट का शीर्षक</item>
+        <item>अपना नोट यहाँ लिखें...</item>
+        <item>इस नोट के लिए अलार्म</item>
+        <item>अलार्म ध्वनि</item>
+        <item>पूर्ण स्क्रीन</item>
+        <item>अनलॉक स्क्रीन</item>
+        <item>लॉक स्क्रीन</item>
+        <item>फ़ाइलें और चित्र</item>
+        <item>इंस्टॉल किया ऐप चुनें</item>
+        <item>वेबसाइट लिंक दर्ज करें</item>
+        <item>मान्य लिंक दर्ज करें</item>
+        <item>अभी कोई फ़ाइल नहीं जोड़ी गई।</item>
+        <item>अभी कोई ऐप या वेबसाइट नहीं जोड़ी गई।</item>
+        <item>टेक्स्ट, चित्र, फ़ाइल, ऐप या वेबसाइट जोड़ें</item>
+        <item>नोट सहेजा गया</item>
+        <item>अलार्म सेट करें</item>
+        <item>अलार्म शीर्षक</item>
+        <item>अलार्म सहेजें</item>
+        <item>अलार्म हटाएँ</item>
+        <item>चित्र 1 जोड़ें</item>
+        <item>चित्र 2 जोड़ें</item>
+        <item>अलार्म चित्र (वैकल्पिक, अधिकतम 2)</item>
+        <item>सिस्टम डिफ़ॉल्ट</item>
+        <item>अलार्म सहेजा गया</item>
+        <item>बीती तारीख नहीं चुनी जा सकती</item>
+        <item>बीती तारीख या समय के लिए अलार्म सेट नहीं किया जा सकता</item>
+        <item>नोट अलार्म बीते समय के लिए सेट नहीं हो सकता</item>
+        <item>सटीक अलार्म के लिए सटीक अलार्म अनुमति चालू करें</item>
+        <item>ध्वनि चुनें</item>
+        <item>+ नई ध्वनि अपलोड करें</item>
+        <item>ऐप का रंग</item>
+        <item>ईवेंट और अवसर</item>
+        <item>कैलेंडर के नीचे ईवेंट दिखाएँ</item>
+        <item>कैलेंडर के नीचे ईवेंट बॉक्स दिखाएँ</item>
+        <item>घड़ी पेज लेआउट</item>
+        <item>पेज पर बनाने का फ़ॉर्म, + बटन के बिना</item>
+        <item>कॉम्पैक्ट: + बटन से खुलने वाले मोडल में फ़ॉर्म</item>
+        <item>होम पर दिखने वाले टैब</item>
+        <item>अलार्म स्क्रीन शैली</item>
+        <item>हल्का क्लासिक</item>
+        <item>डार्क फोकस</item>
+        <item>गरम सूर्योदय</item>
+        <item>कम से कम एक टैब चालू होना चाहिए</item>
+        <item>भविष्य की तारीख और समय चुनें</item>
+        <item>शून्य से अधिक समय दर्ज करें</item>
+        <item>रीसेट</item>
+        <item>लैप</item>
+        <item>तारीख चुनें</item>
+        <item>समय चुनें</item>
+        <item>रद्द करें और रीसेट करें</item>
+        <item>अवधि</item>
+        <item>समाप्ति समय</item>
+        <item>आज पर लौटें</item>
+        <item>पिछला महीना</item>
+        <item>अगला महीना</item>
+        <item>फ़ारसी</item>
+        <item>ग्रेगोरियन</item>
+        <item>हिजरी</item>
+        <item>शनिवार</item>
+        <item>रविवार</item>
+        <item>सोमवार</item>
+        <item>मंगलवार</item>
+        <item>बुधवार</item>
+        <item>गुरुवार</item>
+        <item>शुक्रवार</item>
+        <item>फ़रवर्दीन</item>
+        <item>ओर्दीबेहेश्त</item>
+        <item>खोरदाद</item>
+        <item>तीर</item>
+        <item>मोरदाद</item>
+        <item>शहरीवर</item>
+        <item>मेहर</item>
+        <item>आबान</item>
+        <item>आज़र</item>
+        <item>देय</item>
+        <item>बहमन</item>
+        <item>एस्फंद</item>
+        <item>चित्र ✓</item>
+        <item>बिना ग्रिड</item>
+        <item>ग्रिड</item>
+        <item>रंग</item>
+        <item>साफ़ करें</item>
+        <item>चित्र सहेजें</item>
+        <item>फ़ाइल या चित्र जोड़ें</item>
+        <item>ऐप चुनें</item>
+        <item>वेबसाइट जोड़ें</item>
+        <item>वेबसाइट लिंक, जैसे https://example.com</item>
+        <item>समय से पहले रिमाइंडर</item>
+        <item>फ़ोन अनलॉक होने पर पूर्ण स्क्रीन</item>
+        <item>लॉक स्क्रीन पर पूर्ण स्क्रीन</item>
+        <item>चालू</item>
+        <item>बंद</item>
+        <item>हस्तलिखित</item>
+        <item>चित्र</item>
+        <item>कोई अलार्म नहीं</item>
+        <item>फ़ोन अनलॉक होने पर पूर्ण-स्क्रीन अलार्म</item>
+        <item>लॉक स्क्रीन पर पूर्ण-स्क्रीन अलार्म</item>
+        <item>डिफ़ॉल्ट अलार्म ध्वनि</item>
+        <item>ऐप थीम के अनुसार</item>
+        <item>सामग्री प्रदर्शन</item>
+        <item>पूर्वावलोकन दिखाएँ</item>
+        <item>फ़ाइल नाम दिखाएँ</item>
+        <item>फ़ाइल प्रकार और विवरण दिखाएँ</item>
+        <item>हेडर और नियंत्रण</item>
+        <item>समय प्रारूप</item>
+        <item>सिस्टम सेटिंग के अनुसार</item>
+        <item>24-घंटे</item>
+        <item>12-घंटे</item>
+        <item>सेकंड दिखाएँ</item>
+        <item>सेक्शन शीर्षक दिखाएँ</item>
+        <item>सामग्री</item>
+        <item>अधिकतम आइटम</item>
+        <item>संख्या</item>
+        <item>स्मार्ट: सबसे नज़दीकी अलार्म पहले</item>
+        <item>समय: सबसे पहले से सबसे बाद तक</item>
+        <item>प्राथमिकता: सबसे अधिक पहले</item>
+        <item>स्मार्ट: सबसे नज़दीकी समय पहले</item>
+        <item>नवीनतम नोट पहले</item>
+        <item>घड़ी विजेट सेटिंग</item>
+        <item>नोट विजेट सेटिंग</item>
+        <item>विश्व घड़ी विजेट सेटिंग</item>
+        <item>पृष्ठभूमि</item>
+        <item>पारदर्शी (डिफ़ॉल्ट)</item>
+        <item>काला 70%</item>
+        <item>काला</item>
+        <item>सफ़ेद</item>
+        <item>नीला</item>
+        <item>फ़िरोज़ी</item>
+        <item>बैंगनी</item>
+        <item>लाल</item>
+        <item>हरा</item>
+        <item>सुनहरा</item>
+        <item>नारंगी</item>
+        <item>गुलाबी</item>
+        <item>पूर्वावलोकन</item>
+        <item>फ़ाइल प्रकार</item>
+        <item>पूर्ण स्क्रीन में देखें</item>
+        <item>प्लेबैक नियंत्रण खोलें</item>
+        <item>तैयार हो रहा है</item>
+        <item>चल रहा है</item>
+        <item>रुका हुआ</item>
+        <item>स्मार्ट अलार्म</item>
+        <item>स्मार्ट इनपुट</item>
+        <item>पेस्ट</item>
+        <item>ऑटो-डिटेक्ट</item>
+        <item>टेक्स्ट विश्लेषित करें और पूर्वावलोकन बनाएँ</item>
+        <item>सभी के लिए अलार्म समय</item>
+        <item>समय पर</item>
+        <item>समय से पहले</item>
+        <item>समय के बाद</item>
+        <item>अलार्म पूर्वावलोकन</item>
+        <item>सभी हटाएँ</item>
+        <item>सभी अलार्म सहेजें</item>
+        <item>शीर्षक</item>
+        <item>मूल तारीख और समय</item>
+        <item>अलार्म समय</item>
+        <item>प्राथमिकता</item>
+        <item>अलार्म के साथ कंपन</item>
+        <item>अलार्म संपादित करें</item>
+        <item>शीर्षक खाली नहीं हो सकता</item>
+        <item>क्लिपबोर्ड में कोई टेक्स्ट नहीं है</item>
+        <item>पहले टेक्स्ट का विश्लेषण करें</item>
+        <item>अभी कोई अलार्म नहीं मिला।</item>
+        <item>आइटम</item>
+        <item>अलार्म मिला</item>
+        <item>दोहराव सेटिंग</item>
+        <item>दिनों में दोहराव अंतराल</item>
+        <item>हफ्तों में दोहराव अंतराल</item>
+        <item>तारीख और समय जोड़ें</item>
+        <item>कस्टम तारीखें साफ़ करें</item>
+        <item>अभी तारीख और समय नहीं चुना गया</item>
+        <item>बीती तारीख और समय नहीं चुने जा सकते</item>
+        <item>हर कुछ दिन</item>
+        <item>कस्टम तारीखें</item>
+        <item>सप्ताह के दिन</item>
+        <item>लैप</item>
+        <item>शून्य से अधिक अवधि दर्ज करें</item>
+        <item>पहले स्टॉपवॉच रीसेट करें</item>
+        <item>समाप्ति तारीख और समय बीत चुके हैं</item>
+        <item>टाइमर समाप्त</item>
+        <item>स्टॉपवॉच सीमा तक पहुँची</item>
+        <item>नमाज़ का समय</item>
+        <item>अज़ान समाप्त करें</item>
+        <item>पूरी तरह म्यूट करें</item>
+        <item>आवाज़ चालू करें</item>
+        <item>अज़ान रोकें</item>
+        <item>नोट खोलें</item>
+        <item>अलार्म रोकें</item>
+        <item>फ़ाइलें, चित्र, ऐप और वेबसाइटें</item>
+        <item>नोट रिमाइंडर</item>
+        <item>आपके नोट का समय आ गया है</item>
+        <item>अलार्म</item>
+        <item>नमाज़ समय सूचनाएँ</item>
+        <item>नोट अलार्म</item>
+        <item>समयबद्ध नोट अलार्म</item>
+    </string-array>
+    <string-array name="palette_names">
+        <item>नारंगी</item>
+        <item>गुलाबी नीला</item>
+        <item>बैंगनी</item>
+        <item>हरा लाल</item>
+        <item>बैंगनी पीला</item>
+        <item>गहरा गुलाबी</item>
+        <item>नीला</item>
+    </string-array>
+</resources>
