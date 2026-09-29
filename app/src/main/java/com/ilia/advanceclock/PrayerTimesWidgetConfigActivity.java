@@ -154,8 +154,9 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
                 PrayerTimesWidgetPrefs.showScrollHint(this, widgetId));
 
         TextView hint = label(
-                "در اندازه پیش‌فرض دو افق کامل نمایش داده می‌شود. با بلندتر کردن ویجت، "
-                        + "افق‌های بیشتری دیده می‌شوند و فهرست همیشه اسکرول عمودی دارد.",
+                "در اندازه پیش‌فرض ۵×۲، افق اصلی به‌صورت کامل نمایش داده می‌شود. "
+                        + "هر افق بعدی نیز همین اندازه کامل را دارد و با اسکرول عمودی دیده می‌شود؛ "
+                        + "تنها با کوچک‌کردن ویجت، چیدمان فشرده فعال خواهد شد.",
                 12);
         hint.setTextColor(AppSettings.textSecondary(this));
         hint.setPadding(0, dp(12), 0, dp(12));

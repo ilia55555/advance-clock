@@ -415,6 +415,8 @@ public final class MainActivity extends Activity {
 
         if (!AppSettings.prayerLocationSet(this)) {
             if (prayerAdditionalHorizons != null) prayerAdditionalHorizons.removeAllViews();
+            View primaryCity = findViewById(R.id.prayer_primary_city);
+            if (primaryCity != null) primaryCity.setVisibility(View.GONE);
             setPrayerTimeText(R.id.prayer_fajr, "—:—");
             setPrayerTimeText(R.id.prayer_sunrise, "—:—");
             setPrayerTimeText(R.id.prayer_dhuhr, "—:—");
@@ -431,6 +433,16 @@ public final class MainActivity extends Activity {
                 AppSettings.prayerLatitude(this),
                 AppSettings.prayerLongitude(this),
                 AppSettings.prayerTimeZone(this));
+
+        TextView primaryCity = findViewById(R.id.prayer_primary_city);
+        if (primaryCity != null) {
+            boolean multipleHorizons = AppSettings.prayerHorizons(this).size() > 1;
+            primaryCity.setVisibility(multipleHorizons ? View.VISIBLE : View.GONE);
+            if (multipleHorizons) {
+                primaryCity.setText(shortHorizonLabel(
+                        AppSettings.prayerLocationLabel(this)));
+            }
+        }
 
         setPrayerTimeText(R.id.prayer_fajr, times.fajr());
         setPrayerTimeText(R.id.prayer_sunrise, times.sunrise());
@@ -464,9 +476,12 @@ public final class MainActivity extends Activity {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            TextView city = prayerCell(shortHorizonLabel(horizon.label), null);
+            row.setPadding(dp(8), 0, dp(8), 0);
+            TextView city = new TextView(this);
+            city.setText(shortHorizonLabel(horizon.label));
+            city.setGravity(Gravity.CENTER);
             city.setTextColor(AppSettings.textPrimary(this));
-            city.setTextSize(12);
+            city.setTextSize(15);
             city.setTypeface(null, Typeface.BOLD);
             city.setMaxLines(1);
             row.addView(city, new LinearLayout.LayoutParams(dp(72), dp(72)));
@@ -497,6 +512,7 @@ public final class MainActivity extends Activity {
                         Math.max(0, content.getWidth() - scroll.getWidth()), 0);
             });
             scroll.post(updateArrows);
+            positionAdditionalPrayerBar(scroll, times, horizon);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(72));
             params.topMargin = dp(6);
             prayerAdditionalHorizons.addView(bar, params);
@@ -506,6 +522,8 @@ public final class MainActivity extends Activity {
     private TextView prayerArrow(String text) {
         TextView arrow = new TextView(this);
         arrow.setText(text);
+        arrow.setTextDirection(View.TEXT_DIRECTION_LTR);
+        arrow.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         arrow.setTextColor(AppSettings.primaryColor(this));
         arrow.setTextSize(22);
         arrow.setGravity(Gravity.CENTER);
@@ -515,13 +533,49 @@ public final class MainActivity extends Activity {
         return arrow;
     }
 
-    private TextView prayerCell(String label, String value) {
-        TextView cell = new TextView(this);
+    private View prayerCell(String label, String value) {
+        LinearLayout cell = new LinearLayout(this);
+        cell.setOrientation(LinearLayout.VERTICAL);
         cell.setGravity(Gravity.CENTER);
-        cell.setText(value == null ? label : label + "\n" + value);
-        cell.setTextColor(AppSettings.textSecondary(this));
-        cell.setTextSize(11);
+
+        TextView title = new TextView(this);
+        title.setGravity(Gravity.CENTER);
+        title.setMaxLines(1);
+        title.setText(label);
+        title.setTextColor(AppSettings.textSecondary(this));
+        title.setTextSize(10);
+        cell.addView(title, new LinearLayout.LayoutParams(-2, -2));
+
+        TextView time = new TextView(this);
+        time.setGravity(Gravity.CENTER);
+        time.setText(value);
+        time.setTextColor(AppSettings.primaryColor(this));
+        time.setTextSize(15);
+        time.setTypeface(null, Typeface.BOLD);
+        LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(-2, -2);
+        timeParams.topMargin = dp(4);
+        cell.addView(time, timeParams);
         return cell;
+    }
+
+    private void positionAdditionalPrayerBar(
+            HorizontalScrollView scroll,
+            PrayerTimeCalculator.Times times,
+            AppSettings.PrayerHorizon horizon) {
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone(horizon.timeZoneId));
+        int minute = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+        int index = minute >= times.ishaMinutes ? 6
+                : minute >= times.maghribMinutes ? 5
+                : minute >= times.sunsetMinutes ? 4
+                : minute >= times.asrMinutes ? 3
+                : minute >= times.dhuhrMinutes ? 2
+                : minute >= times.sunriseMinutes ? 1 : 0;
+        scroll.post(() -> {
+            View content = scroll.getChildAt(0);
+            if (content == null) return;
+            int maximum = Math.max(0, content.getWidth() - scroll.getWidth());
+            scroll.scrollTo(Math.max(0, maximum - dp(72) * index), 0);
+        });
     }
 
     private String shortHorizonLabel(String label) {

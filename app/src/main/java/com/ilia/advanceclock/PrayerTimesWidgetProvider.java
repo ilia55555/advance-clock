@@ -39,9 +39,11 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
     private static void update(Context context, AppWidgetManager manager, int id) {
         Bundle options = manager.getAppWidgetOptions(id);
+        int minWidth = options == null ? 280
+                : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 280);
         int minHeight = options == null ? 110
                 : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110);
-        boolean compact = minHeight < 220;
+        boolean compact = minWidth < 280 || minHeight < 100;
 
         RemoteViews views = new RemoteViews(
                 context.getPackageName(),
