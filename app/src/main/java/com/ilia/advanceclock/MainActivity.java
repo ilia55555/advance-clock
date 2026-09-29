@@ -352,7 +352,8 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 4, 2, "تنظیمات اعلان");
             menu.getMenu().add(0, 5, 3, "ویجت‌ها و تنظیمات");
             menu.getMenu().add(0, 6, 4, "جابه‌جایی ترتیب تب‌ها");
-            menu.getMenu().add(0, 3, 5, "مجوزهای آلارم و اعلان");
+            menu.getMenu().add(0, 8, 5, "ابزارها");
+            menu.getMenu().add(0, 3, 6, "مجوزهای آلارم و اعلان");
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
@@ -377,6 +378,10 @@ public final class MainActivity extends Activity {
                         applyTabOrder();
                         applyTabVisibility();
                     });
+                    return true;
+                }
+                if (item.getItemId() == 8) {
+                    startActivity(new Intent(this, CompassToolActivity.class));
                     return true;
                 }
                 if (item.getItemId() == 3) {
