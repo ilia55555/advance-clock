@@ -79,6 +79,17 @@ public final class CalendarUtils {
 
     public static String formatDate(long millis, int type) {
         android.icu.util.Calendar c = fromMillis(type, millis);
+        return formatDate(c, type);
+    }
+
+    public static String formatDate(long millis, int type, java.util.TimeZone zone) {
+        android.icu.util.Calendar c = create(type);
+        c.setTimeZone(android.icu.util.TimeZone.getTimeZone(zone.getID()));
+        c.setTimeInMillis(millis);
+        return formatDate(c, type);
+    }
+
+    private static String formatDate(android.icu.util.Calendar c, int type) {
         String day = fa(c.get(android.icu.util.Calendar.DAY_OF_MONTH));
         String year = fa(c.get(android.icu.util.Calendar.YEAR));
         return day + " " + monthName(type, c.get(android.icu.util.Calendar.MONTH)) + " " + year;

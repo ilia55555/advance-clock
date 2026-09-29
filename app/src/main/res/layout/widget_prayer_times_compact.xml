@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/prayer_widget_header"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="24dp"
         android:layoutDirection="rtl"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -26,11 +26,11 @@
             <TextView
                 android:id="@+id/prayer_widget_title"
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
+                android:layout_height="12dp"
                 android:gravity="start"
                 android:text="اوقات شرعی"
                 android:textColor="#F2F8FF"
-                android:textSize="13sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -46,26 +46,26 @@
 
         <TextView
             android:id="@+id/prayer_widget_manage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/widget_prayer_chip"
             android:contentDescription="مدیریت افق‌ها"
             android:gravity="center"
             android:text="⌖"
             android:textColor="#56D8FF"
-            android:textSize="14sp" />
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/prayer_widget_settings"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/widget_prayer_chip"
             android:contentDescription="تنظیمات ویجت"
             android:gravity="center"
             android:text="⚙"
             android:textColor="#A9C9E8"
-            android:textSize="13sp" />
+            android:textSize="11sp" />
     </LinearLayout>
 
     <ListView
