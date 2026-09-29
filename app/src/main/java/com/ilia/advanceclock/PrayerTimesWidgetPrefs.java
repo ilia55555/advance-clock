@@ -153,22 +153,6 @@ public final class PrayerTimesWidgetPrefs {
         prefs(context).edit().putBoolean(key("show_current_badge", widgetId), value).apply();
     }
 
-    public static boolean showManageButton(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_manage", widgetId), true);
-    }
-
-    public static void setShowManageButton(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_manage", widgetId), value).apply();
-    }
-
-    public static boolean showScrollHint(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_scroll_hint", widgetId), true);
-    }
-
-    public static void setShowScrollHint(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_scroll_hint", widgetId), value).apply();
-    }
-
     public static int rootBackgroundResource(Context context, int widgetId) {
         switch (background(context, widgetId)) {
             case BG_NAVY_TRANSPARENT: return R.drawable.widget_prayer_bg_navy_80;

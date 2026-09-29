@@ -44,8 +44,6 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
             "غروب", "مغرب", "عشاء", "نیمه‌شب"
     };
     private Switch showCurrentBadge;
-    private Switch showManage;
-    private Switch showScrollHint;
     private TextView preview;
 
     @Override protected void onCreate(Bundle state) {
@@ -147,7 +145,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(section("محتوا"));
         showHeader = addSwitch(root, "نمایش هدر «اوقات شرعی»",
                 PrayerTimesWidgetPrefs.showHeader(this, widgetId));
-        showDate = addSwitch(root, "نمایش تاریخ شمسی و قمری",
+        showDate = addSwitch(root, "نمایش هر سه تقویم در هدر افق",
                 PrayerTimesWidgetPrefs.showDate(this, widgetId));
         root.addView(label("نمایش زمان", 12));
         timeMode = spinner(new String[]{"ساعت محلی افق", "شمارش معکوس تا اذان بعدی"});
@@ -165,19 +163,6 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         }
         showCurrentBadge = addSwitch(root, "برجسته‌کردن افق اصلی",
                 PrayerTimesWidgetPrefs.showCurrentBadge(this, widgetId));
-        showManage = addSwitch(root, "نمایش دکمه مدیریت افق‌ها",
-                PrayerTimesWidgetPrefs.showManageButton(this, widgetId));
-        showScrollHint = addSwitch(root, "نمایش راهنمای اسکرول",
-                PrayerTimesWidgetPrefs.showScrollHint(this, widgetId));
-
-        TextView hint = label(
-                "در اندازه پیش‌فرض ۵×۲، افق اصلی به‌صورت کامل نمایش داده می‌شود. "
-                        + "هر افق بعدی نیز همین اندازه کامل را دارد و با اسکرول عمودی دیده می‌شود؛ "
-                        + "تنها با کوچک‌کردن ویجت، چیدمان فشرده فعال خواهد شد.",
-                12);
-        hint.setTextColor(AppSettings.textSecondary(this));
-        hint.setPadding(0, dp(12), 0, dp(12));
-        root.addView(hint);
 
         Button manage = new Button(this);
         manage.setText("مدیریت افق‌ها");
@@ -254,10 +239,6 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         }
         PrayerTimesWidgetPrefs.setShowCurrentBadge(
                 this, widgetId, showCurrentBadge.isChecked());
-        PrayerTimesWidgetPrefs.setShowManageButton(
-                this, widgetId, showManage.isChecked());
-        PrayerTimesWidgetPrefs.setShowScrollHint(
-                this, widgetId, showScrollHint.isChecked());
 
         PrayerTimesWidgetProvider.updateAll(this);
 
