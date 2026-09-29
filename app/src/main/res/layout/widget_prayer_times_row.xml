@@ -44,6 +44,7 @@
                     <ImageView android:id="@+id/prayer_icon_image_dhuhr" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@null" android:scaleType="fitCenter" android:visibility="gone" />
                 <TextView android:id="@+id/prayer_icon_dhuhr" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="☼" android:textColor="#A9C9E8" android:textSize="12sp" />
                 </FrameLayout>
+                <TextView android:id="@+id/prayer_icon_dhuhr" android:layout_width="match_parent" android:layout_height="18dp" android:gravity="center" android:text="☼" android:textColor="#A9C9E8" android:textSize="12sp" />
                 <TextView android:id="@+id/prayer_label_dhuhr" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:maxLines="1" android:text="ظهر" android:textColor="#A9C9E8" android:textSize="8sp" />
                 <TextView android:id="@+id/prayer_value_dhuhr" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:textColor="#F2F8FF" android:textSize="11sp" android:textStyle="bold" />
             </LinearLayout>
@@ -60,6 +61,7 @@
                     <ImageView android:id="@+id/prayer_icon_image_sunset" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@null" android:scaleType="fitCenter" android:visibility="gone" />
                 <TextView android:id="@+id/prayer_icon_sunset" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="◓" android:textColor="#A9C9E8" android:textSize="12sp" />
                 </FrameLayout>
+                <TextView android:id="@+id/prayer_icon_sunset" android:layout_width="match_parent" android:layout_height="18dp" android:gravity="center" android:text="◓" android:textColor="#A9C9E8" android:textSize="12sp" />
                 <TextView android:id="@+id/prayer_label_sunset" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:maxLines="1" android:text="غروب" android:textColor="#A9C9E8" android:textSize="8sp" />
                 <TextView android:id="@+id/prayer_value_sunset" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:textColor="#F2F8FF" android:textSize="11sp" android:textStyle="bold" />
             </LinearLayout>
@@ -80,10 +82,7 @@
                 <TextView android:id="@+id/prayer_value_isha" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:textColor="#F2F8FF" android:textSize="11sp" android:textStyle="bold" />
             </LinearLayout>
             <LinearLayout android:id="@+id/prayer_time_midnight" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:padding="1dp">
-                <FrameLayout android:layout_width="match_parent" android:layout_height="18dp">
-                    <ImageView android:id="@+id/prayer_icon_image_midnight" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@null" android:scaleType="fitCenter" android:visibility="gone" />
-                <TextView android:id="@+id/prayer_icon_midnight" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="◷" android:textColor="#A9C9E8" android:textSize="12sp" />
-                </FrameLayout>
+                <TextView android:id="@+id/prayer_icon_midnight" android:layout_width="match_parent" android:layout_height="18dp" android:gravity="center" android:text="◷" android:textColor="#A9C9E8" android:textSize="12sp" />
                 <TextView android:id="@+id/prayer_label_midnight" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:maxLines="1" android:text="نیمه‌شب" android:textColor="#A9C9E8" android:textSize="8sp" />
                 <TextView android:id="@+id/prayer_value_midnight" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:textColor="#F2F8FF" android:textSize="11sp" android:textStyle="bold" />
             </LinearLayout>
