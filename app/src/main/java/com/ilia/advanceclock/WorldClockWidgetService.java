@@ -47,7 +47,8 @@ public final class WorldClockWidgetService extends RemoteViewsService {
             item.setViewVisibility(R.id.world_item_root, android.view.View.VISIBLE);
             item.setTextViewText(
                     R.id.world_item_name,
-                    WorldClockStore.label(context, zone, cityName(zone)));
+                    UiText.trComposite(context,
+                            WorldClockStore.label(context, zone, cityName(zone))));
             int textColor = WorldClockWidgetPrefs.textColor(context, widgetId);
             item.setTextColor(R.id.world_item_name, textColor);
             item.setTextColor(R.id.world_item_date, textColor);

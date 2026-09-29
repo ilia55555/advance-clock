@@ -49,8 +49,8 @@ public final class AlarmReminderReceiver extends BroadcastReceiver {
 
         Notification notification = builder
                 .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(title)
-                .setContentText(content)
+                .setContentTitle(UiText.trComposite(context, title))
+                .setContentText(UiText.trComposite(context, content))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setVisibility(AppSettings.notificationVisibility(context))
                 .setPriority(Notification.PRIORITY_HIGH)

@@ -88,6 +88,8 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             int active = PrayerTimesWidgetPrefs.activePrayerColor(context, widgetId);
 
             if (horizons.isEmpty()) {
+                row.setTextViewText(R.id.prayer_widget_empty, UiText.trComposite(context,
+                        "افقی انتخاب نشده • برای افزودن لمس کنید"));
                 row.setViewVisibility(R.id.prayer_widget_empty, View.VISIBLE);
                 row.setViewVisibility(R.id.prayer_widget_content, View.GONE);
                 row.setTextColor(R.id.prayer_widget_empty, main);
@@ -117,7 +119,8 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                                     && PrayerTimesWidgetPrefs.showCurrentBadge(
                                             context, widgetId)));
 
-            row.setTextViewText(R.id.prayer_widget_city, shortName(horizon.label));
+            row.setTextViewText(R.id.prayer_widget_city,
+                    UiText.trComposite(context, shortName(horizon.label)));
             row.setTextColor(R.id.prayer_widget_city, primary ? accent : main);
             row.setTextColor(R.id.prayer_widget_local_date, secondary);
             row.setTextColor(R.id.prayer_widget_local_time, accent);
@@ -125,8 +128,18 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             String localDate = localDate(now, zone);
             row.setViewVisibility(R.id.prayer_widget_local_date,
                     localDate.isEmpty() ? View.GONE : View.VISIBLE);
-            row.setTextViewText(R.id.prayer_widget_local_date, localDate);
+            row.setTextViewText(R.id.prayer_widget_local_date,
+                    UiText.trComposite(context, localDate));
             row.setTextViewText(R.id.prayer_widget_local_time, localTime(now, zone));
+
+            int[] labelIds = {R.id.prayer_label_fajr, R.id.prayer_label_sunrise,
+                    R.id.prayer_label_dhuhr, R.id.prayer_label_asr, R.id.prayer_label_sunset,
+                    R.id.prayer_label_maghrib, R.id.prayer_label_isha,
+                    R.id.prayer_label_midnight};
+            String[] labels = {"صبح", "طلوع", "ظهر", "عصر", "غروب", "مغرب", "عشاء", "نیمه‌شب"};
+            for (int index = 0; index < labelIds.length; index++) {
+                row.setTextViewText(labelIds[index], UiText.tr(context, labels[index]));
+            }
 
             row.setViewVisibility(R.id.prayer_widget_current_chip, View.GONE);
 

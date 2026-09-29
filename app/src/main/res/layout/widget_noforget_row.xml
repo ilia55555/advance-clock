@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="یادداشت"
+            android:text="@string/ui_note"
             android:textColor="#173F3B"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="بدون آلارم"
+            android:text="@string/ui_no_alarm"
             android:textColor="#758783"
             android:textSize="10sp" />
     </LinearLayout>
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="عادی"
+        android:text="@string/ui_normal"
         android:textColor="#006666"
         android:textSize="10sp"
         android:textStyle="bold" />

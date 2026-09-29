@@ -65,13 +65,17 @@ public final class NoForgetSoundService extends Service {
                 ? new Notification.Builder(this, NotificationHelper.NOTE_ALARM_CHANNEL)
                 : new Notification.Builder(this);
         builder.setSmallIcon(R.drawable.ic_note)
-                .setContentTitle(item.title.trim().isEmpty() ? "یادآوری یادداشت" : CalendarUtils.fa(item.title))
-                .setContentText(item.body.trim().isEmpty() ? "زمان یادداشت شما رسیده است" : CalendarUtils.fa(item.body))
-                .setStyle(new Notification.BigTextStyle().bigText(CalendarUtils.fa(item.body)))
+                .setContentTitle(UiText.trComposite(this, item.title.trim().isEmpty()
+                        ? "یادآوری یادداشت" : CalendarUtils.fa(item.title)))
+                .setContentText(UiText.trComposite(this, item.body.trim().isEmpty()
+                        ? "زمان یادداشت شما رسیده است" : CalendarUtils.fa(item.body)))
+                .setStyle(new Notification.BigTextStyle().bigText(
+                        UiText.trComposite(this, CalendarUtils.fa(item.body))))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setVisibility(AppSettings.notificationVisibility(this)).setPriority(Notification.PRIORITY_MAX)
                 .setOngoing(true).setContentIntent(open)
-                .addAction(new Notification.Action.Builder(null, "قطع", stop).build());
+                .addAction(new Notification.Action.Builder(
+                        null, UiText.tr(this, "قطع"), stop).build());
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
         if (locked ? item.fullscreenLocked : item.fullscreenUnlocked)

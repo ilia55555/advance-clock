@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:contentDescription="پیش‌نمایش بزرگ فایل"
+        android:contentDescription="@string/ui_large_file_preview"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_note" />
 
@@ -20,7 +20,7 @@
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:background="@drawable/bg_soft_button"
-        android:contentDescription="باز کردن کنترل پخش"
+        android:contentDescription="@string/ui_open_playback"
         android:padding="11dp"
         android:src="@drawable/ic_md_play"
         android:visibility="gone" />

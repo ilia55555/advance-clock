@@ -13,7 +13,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="وقت نیایش"
+        android:text="@string/ui_prayer_time"
         android:textColor="#8ED8D0"
         android:textSize="16sp" />
 
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:gravity="center"
-        android:text="اذان"
+        android:text="@string/ui_adhan"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -53,7 +53,7 @@
         android:layout_marginTop="36dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="پاور یا کاهش صدا: قطع صدا\nنگه‌داشتن کاهش صدا: کم‌کردن تدریجی\nافزایش صدا: وصل و افزایش صدا"
+        android:text="@string/ui_adhan_key_help"
         android:textColor="#8FA9B7"
         android:textSize="14sp" />
 
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/bg_soft_button"
-        android:text="قطع کامل صدا"
+        android:text="@string/ui_mute_completely"
         android:textAllCaps="false"
         android:textSize="17sp"
         android:textStyle="bold" />
@@ -73,7 +73,7 @@
         android:layout_height="68dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_teal_button"
-        android:text="پایان اذان"
+        android:text="@string/ui_end_adhan"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="20sp"

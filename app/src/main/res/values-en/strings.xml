@@ -19,7 +19,7 @@
     <string name="continue_label">Continue</string>
     <string-array name="language_options">
         <item>English</item>
-        <item>فارسی</item>
+        <item>Persian</item>
         <item>简体中文</item>
         <item>Français</item>
         <item>Deutsch</item>
@@ -29,11 +29,56 @@
         <item>Português</item>
         <item>हिन्दी</item>
         <item>日本語</item>
-        <item>العربية</item>
+        <item>Arabic</item>
     </string-array>
     <string-array name="calendar_options">
         <item>Persian</item>
         <item>Gregorian</item>
         <item>Hijri</item>
     </string-array>
+    <string name="ui_today">Today</string>
+    <string name="ui_widget_settings">Widget settings</string>
+    <string name="ui_configure_widget">Configure widget</string>
+    <string name="ui_alarm">Alarm</string>
+    <string name="ui_no_alarm_set">No alarms set</string>
+    <string name="ui_image_preview">Image preview</string>
+    <string name="ui_image">Image</string>
+    <string name="ui_open_fullscreen">Open full screen</string>
+    <string name="ui_video_preview">Video preview</string>
+    <string name="ui_media">Media</string>
+    <string name="ui_back_ten_seconds">−10 sec</string>
+    <string name="ui_forward_ten_seconds">+10 sec</string>
+    <string name="ui_play_pause">Play or pause</string>
+    <string name="ui_note">Note</string>
+    <string name="ui_no_note_display">No notes to display</string>
+    <string name="ui_prayer_times">Prayer times</string>
+    <string name="ui_manage_horizons">Manage horizons</string>
+    <string name="ui_no_horizon">No horizon selected • Tap to add one</string>
+    <string name="ui_fajr">Fajr</string>
+    <string name="ui_sunrise">Sunrise</string>
+    <string name="ui_dhuhr">Dhuhr</string>
+    <string name="ui_asr">Asr</string>
+    <string name="ui_sunset">Sunset</string>
+    <string name="ui_maghrib">Maghrib</string>
+    <string name="ui_isha">Isha</string>
+    <string name="ui_midnight">Midnight</string>
+    <string name="ui_file_reminders">File reminders</string>
+    <string name="ui_no_file_tap_add">No file selected\nTap to add</string>
+    <string name="ui_file">File</string>
+    <string name="ui_file_type">File type</string>
+    <string name="ui_preview">Preview</string>
+    <string name="ui_alarm_short">Alarm</string>
+    <string name="ui_normal">Normal</string>
+    <string name="ui_no_alarm">No alarm</string>
+    <string name="ui_large_file_preview">Large file preview</string>
+    <string name="ui_open_playback">Open playback controls</string>
+    <string name="ui_prayer_time">Prayer time</string>
+    <string name="ui_adhan">Adhan</string>
+    <string name="ui_adhan_key_help">Power or volume down: mute\nHold volume down: fade out\nVolume up: unmute and raise volume</string>
+    <string name="ui_mute_completely">Mute completely</string>
+    <string name="ui_end_adhan">End adhan</string>
+    <string name="ui_alarm_time_arrived">It is time for the alarm</string>
+    <string name="ui_snooze_after">Snooze after</string>
+    <string name="ui_snooze">Snooze</string>
+    <string name="ui_stop_alarm">Stop alarm</string>
 </resources>

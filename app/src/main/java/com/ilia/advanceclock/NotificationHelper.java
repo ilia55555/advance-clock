@@ -20,23 +20,27 @@ public final class NotificationHelper {
         if (manager == null) return;
 
         NotificationChannel alarm = new NotificationChannel(
-                ALARM_CHANNEL, "آلارم‌ها", NotificationManager.IMPORTANCE_HIGH);
-        alarm.setDescription("آلارم‌های Advance Clock");
+                ALARM_CHANNEL, UiText.tr(context, "آلارم‌ها"),
+                NotificationManager.IMPORTANCE_HIGH);
+        alarm.setDescription(UiText.trComposite(context, "آلارم‌های Advance Clock"));
         alarm.enableVibration(false);
         alarm.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         alarm.setSound(null, new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
         manager.createNotificationChannel(alarm);
 
         NotificationChannel reminders = new NotificationChannel(
-                REMINDER_CHANNEL, "یادآوری‌ها", NotificationManager.IMPORTANCE_HIGH);
-        reminders.setDescription("یادآوری هشدارها و یادداشت‌ها");
+                REMINDER_CHANNEL, UiText.tr(context, "یادآوری‌ها"),
+                NotificationManager.IMPORTANCE_HIGH);
+        reminders.setDescription(UiText.trComposite(context,
+                "یادآوری هشدارها و یادداشت‌ها"));
         reminders.enableVibration(true);
         reminders.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         manager.createNotificationChannel(reminders);
 
         NotificationChannel noteAlarms = new NotificationChannel(
-                NOTE_ALARM_CHANNEL, "هشدار یادداشت‌ها", NotificationManager.IMPORTANCE_HIGH);
-        noteAlarms.setDescription("هشدارهای زمان‌دار یادداشت‌ها");
+                NOTE_ALARM_CHANNEL, UiText.tr(context, "هشدار یادداشت‌ها"),
+                NotificationManager.IMPORTANCE_HIGH);
+        noteAlarms.setDescription(UiText.tr(context, "هشدارهای زمان‌دار یادداشت‌ها"));
         noteAlarms.enableVibration(false);
         noteAlarms.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         noteAlarms.setSound(null, new AudioAttributes.Builder()
@@ -44,8 +48,8 @@ public final class NotificationHelper {
         manager.createNotificationChannel(noteAlarms);
 
         NotificationChannel adhan = new NotificationChannel(
-                ADHAN_CHANNEL, "اذان", NotificationManager.IMPORTANCE_HIGH);
-        adhan.setDescription("اعلان اوقات اذان");
+                ADHAN_CHANNEL, UiText.tr(context, "اذان"), NotificationManager.IMPORTANCE_HIGH);
+        adhan.setDescription(UiText.tr(context, "اعلان اوقات اذان"));
         adhan.enableVibration(false);
         adhan.setSound(null, new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM).build());

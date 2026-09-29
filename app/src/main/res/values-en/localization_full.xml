@@ -399,6 +399,28 @@
         <item>✕ Exact alarms</item>
         <item>✓ Alarm screen</item>
         <item>✕ Alarm screen</item>
+        <item>Increase the widget height to show alarms</item>
+        <item>Increase the widget height to show notes</item>
+        <item>No alarms set</item>
+        <item>No notes to display</item>
+        <item>Alarm • </item>
+        <item>No file selected
+Tap to add</item>
+        <item>No horizon selected • Tap to add one</item>
+        <item>Stop</item>
+        <item>Adhan is playing</item>
+        <item>Alarm reminder</item>
+        <item> after the alarm</item>
+        <item>Time remaining until note: </item>
+        <item> remaining</item>
+        <item>Advance Clock alarms</item>
+        <item>Alarm and note reminders</item>
+        <item>Today’s date</item>
+        <item>Power or volume down: mute
+Hold volume down: fade out
+Volume up: unmute and raise volume</item>
+        <item>Snooze after</item>
+        <item>Prayer times</item>
 </string-array>
     <string-array name="palette_names">
         <item>Orange</item>
