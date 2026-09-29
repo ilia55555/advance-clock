@@ -152,6 +152,7 @@ public final class AlarmScheduler {
     public static void rescheduleAll(Context context) {
         AlarmStore store = new AlarmStore(context);
         long now = System.currentTimeMillis();
+        store.deleteExpired(now);
 
         for (AlarmItem item : store.all()) {
             if (item.lastFiredAtMillis > 0L) {
