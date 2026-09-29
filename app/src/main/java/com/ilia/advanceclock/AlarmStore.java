@@ -66,6 +66,33 @@ public final class AlarmStore {
         return out;
     }
 
+    public synchronized int deleteExpired(long now) {
+        if (!AppSettings.autoDeleteExpiredAlarms(context)) return 0;
+        List<AlarmItem> items = all();
+        int before = items.size();
+        items.removeIf(item -> isFinished(item, now));
+        if (items.size() != before) write(items);
+        return before - items.size();
+    }
+
+    private boolean isFinished(AlarmItem item, long now) {
+        long next = RecurrenceUtils.next(
+                item.triggerAtMillis,
+                item.recurrenceMode,
+                item.intervalDays,
+                item.customDatesJson,
+                now);
+        if (next > now) return false;
+
+        int lastReminderMinutes = 0;
+        for (int minutes : AlarmReminderUtils.effective(
+                item.reminderMode, item.reminderMinutesJson)) {
+            lastReminderMinutes = Math.max(lastReminderMinutes, minutes);
+        }
+        return item.lastFiredAtMillis <= 0L
+                || item.lastFiredAtMillis + lastReminderMinutes * 60_000L <= now;
+    }
+
     private void write(List<AlarmItem> items) {
         JSONArray array = new JSONArray();
         for (AlarmItem item : items) {

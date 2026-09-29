@@ -39,9 +39,11 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
     private static void update(Context context, AppWidgetManager manager, int id) {
         Bundle options = manager.getAppWidgetOptions(id);
+        int minWidth = options == null ? 280
+                : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 280);
         int minHeight = options == null ? 110
                 : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110);
-        boolean compact = minHeight < 175;
+        boolean compact = minWidth < 280 || minHeight < 100;
 
         RemoteViews views = new RemoteViews(
                 context.getPackageName(),
@@ -68,10 +70,8 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
         views.setViewVisibility(
                 R.id.prayer_widget_header, showHeader ? View.VISIBLE : View.GONE);
 
-        boolean showDate = showHeader && PrayerTimesWidgetPrefs.showDate(context, id);
-        views.setViewVisibility(
-                R.id.prayer_widget_date, showDate ? View.VISIBLE : View.GONE);
-        if (showDate) views.setTextViewText(R.id.prayer_widget_date, dateLine());
+        // Dates belong to each horizon because their local calendar day can differ.
+        views.setViewVisibility(R.id.prayer_widget_date, View.GONE);
 
         boolean showManage = showHeader
                 && PrayerTimesWidgetPrefs.showManageButton(context, id);

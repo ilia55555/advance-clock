@@ -455,6 +455,18 @@
                         android:orientation="horizontal"
                         android:paddingHorizontal="8dp">
 
+                            <TextView
+                                android:id="@+id/prayer_primary_city"
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:maxLines="1"
+                                android:textColor="?attr/appTextPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
                             <LinearLayout
                                 android:layout_width="72dp"
                                 android:layout_height="match_parent"
