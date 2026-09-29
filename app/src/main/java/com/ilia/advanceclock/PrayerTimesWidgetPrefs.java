@@ -99,6 +99,13 @@ public final class PrayerTimesWidgetPrefs {
                 key("show_calendar_" + calendarType, widgetId), value).apply();
     }
 
+    /** Compatibility for widget-service revisions that still query one date flag. */
+    public static boolean showDate(Context context, int widgetId) {
+        return showCalendar(context, widgetId, CalendarUtils.PERSIAN)
+                || showCalendar(context, widgetId, CalendarUtils.HIJRI)
+                || showCalendar(context, widgetId, CalendarUtils.GREGORIAN);
+    }
+
     public static boolean showCountdown(Context context, int widgetId) {
         return timeMode(context, widgetId) == TIME_MODE_COUNTDOWN;
     }
