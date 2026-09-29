@@ -2,6 +2,7 @@ package com.ilia.advanceclock;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -132,61 +134,15 @@ public final class PrayerSettingsActivity extends Activity {
         root.addView(locationCard, cardParams());
 
         LinearLayout azanCard = card();
-        TextView azanTitle = text(
-                "اذان‌های فعال",
-                17,
-                AppSettings.textPrimary(this));
+        TextView azanTitle = text("تنظیم اذان", 17, AppSettings.textPrimary(this));
         azanTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         azanCard.addView(azanTitle);
-
-        Switch fajr = adhanSwitch("اذان صبح", AppSettings.fajrAdhanEnabled(this),
-                value -> AppSettings.setFajrAdhanEnabled(this, value));
-        Switch dhuhr = adhanSwitch("اذان ظهر", AppSettings.dhuhrAdhanEnabled(this),
-                value -> AppSettings.setDhuhrAdhanEnabled(this, value));
-        Switch asr = adhanSwitch("عصر", AppSettings.asrAdhanEnabled(this),
-                value -> AppSettings.setAsrAdhanEnabled(this, value));
-        Switch maghrib = adhanSwitch("اذان مغرب", AppSettings.maghribAdhanEnabled(this),
-                value -> AppSettings.setMaghribAdhanEnabled(this, value));
-        Switch isha = adhanSwitch("عشاء", AppSettings.ishaAdhanEnabled(this),
-                value -> AppSettings.setIshaAdhanEnabled(this, value));
-        azanCard.addView(fajr); azanCard.addView(dhuhr); azanCard.addView(asr);
-        azanCard.addView(maghrib); azanCard.addView(isha);
-
-        LinearLayout muezzinCard = card();
-        TextView muezzinTitle = text("انتخاب موذن", 17, AppSettings.textPrimary(this));
-        muezzinTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        muezzinCard.addView(muezzinTitle);
-        LinearLayout[] soundRows = {soundRow(), soundRow(), soundRow()};
-        addSoundButton(soundRows[0], "موذن برای همه", 899);
-        addSoundButton(soundRows[0], "اذان صبح", AdhanScheduler.FAJR);
-        addSoundButton(soundRows[1], "اذان ظهر", AdhanScheduler.DHUHR);
-        addSoundButton(soundRows[1], "عصر", AdhanScheduler.ASR);
-        addSoundButton(soundRows[2], "اذان مغرب", AdhanScheduler.MAGHRIB);
-        addSoundButton(soundRows[2], "عشاء", AdhanScheduler.ISHA);
-        for (LinearLayout row : soundRows) muezzinCard.addView(row,
-                new LinearLayout.LayoutParams(-1, dp(58)));
-
-        LinearLayout outputCard = card();
-        TextView outputTitle = text("نحوه اعلام اذان", 17, AppSettings.textPrimary(this));
-        outputTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        outputCard.addView(outputTitle);
-        Switch fullscreenUnlocked = toggle(
-                "تمام‌صفحه اذان وقتی گوشی باز است", AppSettings.adhanFullscreenUnlocked(this));
-        fullscreenUnlocked.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanFullscreenUnlocked(this, checked));
-        Switch fullscreenLocked = toggle(
-                "تمام‌صفحه اذان روی صفحه قفل", AppSettings.adhanFullscreenLocked(this));
-        fullscreenLocked.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanFullscreenLocked(this, checked));
-        Switch notification = toggle("اعلان اذان", AppSettings.adhanNotification(this));
-        notification.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanNotification(this, checked));
-        Switch vibrate = toggle("لرزش اذان", AppSettings.adhanVibrate(this));
-        vibrate.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanVibrate(this, checked));
-        Switch sound = toggle("صدای اذان", AppSettings.adhanSound(this));
-        sound.setOnCheckedChangeListener((button, checked) -> AppSettings.setAdhanSound(this, checked));
-        outputCard.addView(fullscreenUnlocked); outputCard.addView(fullscreenLocked);
-        outputCard.addView(notification);
-        outputCard.addView(vibrate); outputCard.addView(sound);
+        addAdhanSettingRow(azanCard, "تنظیم همه موارد", 899);
+        addAdhanSettingRow(azanCard, "اذان صبح", AdhanScheduler.FAJR);
+        addAdhanSettingRow(azanCard, "اذان ظهر", AdhanScheduler.DHUHR);
+        addAdhanSettingRow(azanCard, "عصر", AdhanScheduler.ASR);
+        addAdhanSettingRow(azanCard, "اذان مغرب", AdhanScheduler.MAGHRIB);
+        addAdhanSettingRow(azanCard, "عشاء", AdhanScheduler.ISHA);
 
         adhanScheduleStatus = text(
                 "",
@@ -197,8 +153,6 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(adhanScheduleStatus);
 
         root.addView(azanCard, cardParams());
-        root.addView(muezzinCard, cardParams());
-        root.addView(outputCard, cardParams());
         Button preview = fieldButton("پیش‌نمایش صفحه اذان");
         preview.setOnClickListener(v -> previewAdhan());
         root.addView(preview, new LinearLayout.LayoutParams(-1, dp(54)));
@@ -399,24 +353,211 @@ public final class PrayerSettingsActivity extends Activity {
         }
     }
 
-    private Switch adhanSwitch(
-            String label, boolean checked, java.util.function.Consumer<Boolean> update) {
-        Switch value = toggle(label, checked);
-        value.setOnCheckedChangeListener((button, enabled) ->
-                updateAdhanSetting(() -> update.accept(enabled), enabled));
-        return value;
+    private void addAdhanSettingRow(LinearLayout parent, String title, int type) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        row.setPadding(dp(10), dp(4), dp(10), dp(4));
+        row.setBackgroundResource(R.drawable.bg_field);
+
+        TextView name = text(title, 13, AppSettings.textPrimary(this));
+        name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        name.setSingleLine(true);
+        row.addView(name, new LinearLayout.LayoutParams(dp(88), dp(58)));
+
+        TextView summary = text(adhanSettingSummary(type), 10,
+                AppSettings.textSecondary(this));
+        summary.setSingleLine(true);
+        summary.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        row.addView(summary, new LinearLayout.LayoutParams(0, dp(58), 1f));
+
+        Button configure = fieldButton("تنظیمات");
+        configure.setGravity(Gravity.CENTER);
+        configure.setOnClickListener(v -> showAdhanSettingsDialog(title, type));
+        LinearLayout.LayoutParams configureParams =
+                new LinearLayout.LayoutParams(dp(76), dp(44));
+        configureParams.setMarginStart(dp(6));
+        row.addView(configure, configureParams);
+
+        Switch enabled = new Switch(this);
+        enabled.setChecked(adhanTypeEnabled(type));
+        enabled.setContentDescription("فعال یا غیرفعال کردن " + title);
+        enabled.setOnCheckedChangeListener((button, checked) ->
+                updateAdhanSetting(() -> setAdhanTypeEnabled(type, checked), checked));
+        row.addView(enabled, new LinearLayout.LayoutParams(dp(52), dp(52)));
+
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(66));
+        rowParams.topMargin = dp(7);
+        parent.addView(row, rowParams);
     }
 
-    private void addSoundButton(LinearLayout parent, String label, int type) {
-        String selected = type == 899 ? AppSettings.adhanSoundUri(this, AdhanScheduler.FAJR)
-                : AppSettings.adhanSoundUri(this, type);
-        Button button = fieldButton(label + " • " + SoundLibrary.name(this, selected));
-        button.setOnClickListener(v -> startActivityForResult(
-                new Intent(this, SoundPickerActivity.class), type == 899 ? 899 : 800 + type));
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, dp(52), 1f);
-        params.setMarginStart(dp(4));
-        params.setMarginEnd(dp(4));
-        parent.addView(button, params);
+    private String adhanSettingSummary(int type) {
+        if (type == 899) {
+            String firstSound = AppSettings.adhanSoundUri(this, AdhanScheduler.FAJR);
+            int firstVolume = AppSettings.adhanVolume(this, AdhanScheduler.FAJR);
+            boolean same = true;
+            for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+                if (!firstSound.equals(AppSettings.adhanSoundUri(this, item))
+                        || firstVolume != AppSettings.adhanVolume(this, item)) {
+                    same = false;
+                    break;
+                }
+            }
+            return same
+                    ? SoundLibrary.name(this, firstSound) + " • " + firstVolume + "٪"
+                    : "تنظیمات جداگانه";
+        }
+        return SoundLibrary.name(this, AppSettings.adhanSoundUri(this, type))
+                + " • " + AppSettings.adhanVolume(this, type) + "٪";
+    }
+
+    private boolean adhanTypeEnabled(int type) {
+        if (type == 899) return AppSettings.adhanEnabled(this)
+                && AppSettings.fajrAdhanEnabled(this)
+                && AppSettings.dhuhrAdhanEnabled(this)
+                && AppSettings.asrAdhanEnabled(this)
+                && AppSettings.maghribAdhanEnabled(this)
+                && AppSettings.ishaAdhanEnabled(this);
+        if (type == AdhanScheduler.FAJR) return AppSettings.fajrAdhanEnabled(this);
+        if (type == AdhanScheduler.DHUHR) return AppSettings.dhuhrAdhanEnabled(this);
+        if (type == AdhanScheduler.ASR) return AppSettings.asrAdhanEnabled(this);
+        if (type == AdhanScheduler.MAGHRIB) return AppSettings.maghribAdhanEnabled(this);
+        return AppSettings.ishaAdhanEnabled(this);
+    }
+
+    private void setAdhanTypeEnabled(int type, boolean enabled) {
+        if (type == 899) {
+            AppSettings.setAdhanEnabled(this, enabled);
+            AppSettings.setFajrAdhanEnabled(this, enabled);
+            AppSettings.setDhuhrAdhanEnabled(this, enabled);
+            AppSettings.setAsrAdhanEnabled(this, enabled);
+            AppSettings.setMaghribAdhanEnabled(this, enabled);
+            AppSettings.setIshaAdhanEnabled(this, enabled);
+            return;
+        }
+        if (enabled && !AppSettings.adhanEnabled(this)) {
+            AppSettings.setAdhanEnabled(this, true);
+        }
+        if (type == AdhanScheduler.FAJR) AppSettings.setFajrAdhanEnabled(this, enabled);
+        else if (type == AdhanScheduler.DHUHR) AppSettings.setDhuhrAdhanEnabled(this, enabled);
+        else if (type == AdhanScheduler.ASR) AppSettings.setAsrAdhanEnabled(this, enabled);
+        else if (type == AdhanScheduler.MAGHRIB) AppSettings.setMaghribAdhanEnabled(this, enabled);
+        else AppSettings.setIshaAdhanEnabled(this, enabled);
+    }
+
+    private void showAdhanSettingsDialog(String title, int type) {
+        Dialog dialog = new Dialog(this);
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setPadding(dp(18), dp(16), dp(18), dp(18));
+        root.setBackgroundColor(AppSettings.background(this));
+        scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
+
+        TextView heading = text("تنظیمات " + title, 20, AppSettings.textPrimary(this));
+        heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        heading.setPadding(0, 0, 0, dp(10));
+        root.addView(heading);
+
+        LinearLayout output = card();
+        TextView outputTitle = text("تنظیم صدا و نحوه اعلام", 16,
+                AppSettings.textPrimary(this));
+        outputTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        output.addView(outputTitle);
+
+        int initialVolume = AppSettings.adhanVolume(
+                this, type == 899 ? AdhanScheduler.FAJR : type);
+        TextView volumeLabel = text("میزان صدا: " + initialVolume + "٪", 13,
+                AppSettings.textSecondary(this));
+        volumeLabel.setPadding(0, dp(8), 0, 0);
+        output.addView(volumeLabel);
+        SeekBar volume = new SeekBar(this);
+        volume.setMax(100);
+        volume.setProgress(initialVolume);
+        volume.setContentDescription("میزان صدای " + title);
+        volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(
+                    SeekBar seekBar, int progress, boolean fromUser) {
+                volumeLabel.setText("میزان صدا: " + progress + "٪");
+                if (!fromUser) return;
+                if (type == 899) {
+                    for (int item = AdhanScheduler.FAJR;
+                            item <= AdhanScheduler.ISHA; item++) {
+                        AppSettings.setAdhanVolume(PrayerSettingsActivity.this, item, progress);
+                    }
+                } else {
+                    AppSettings.setAdhanVolume(PrayerSettingsActivity.this, type, progress);
+                }
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        output.addView(volume, new LinearLayout.LayoutParams(-1, dp(48)));
+
+        Switch fullscreenUnlocked = toggle("تمام‌صفحه وقتی گوشی باز است",
+                AppSettings.adhanFullscreenUnlocked(this));
+        fullscreenUnlocked.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanFullscreenUnlocked(this, checked));
+        Switch fullscreenLocked = toggle("تمام‌صفحه روی صفحه قفل",
+                AppSettings.adhanFullscreenLocked(this));
+        fullscreenLocked.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanFullscreenLocked(this, checked));
+        Switch notification = toggle("اعلان اذان", AppSettings.adhanNotification(this));
+        notification.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanNotification(this, checked));
+        Switch vibrate = toggle("لرزش اذان", AppSettings.adhanVibrate(this));
+        vibrate.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanVibrate(this, checked));
+        Switch sound = toggle("صدای اذان", AppSettings.adhanSound(this));
+        sound.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setAdhanSound(this, checked));
+        output.addView(fullscreenUnlocked);
+        output.addView(fullscreenLocked);
+        output.addView(notification);
+        output.addView(vibrate);
+        output.addView(sound);
+        root.addView(output, cardParams());
+
+        LinearLayout muezzin = card();
+        TextView muezzinTitle = text("موذن", 16, AppSettings.textPrimary(this));
+        muezzinTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        muezzin.addView(muezzinTitle);
+        String selected = AppSettings.adhanSoundUri(
+                this, type == 899 ? AdhanScheduler.FAJR : type);
+        Button picker = fieldButton("موذن انتخاب‌شده: " + SoundLibrary.name(this, selected));
+        picker.setPadding(dp(16), 0, dp(16), 0);
+        picker.setOnClickListener(v -> startActivityForResult(
+                new Intent(this, SoundPickerActivity.class),
+                type == 899 ? 899 : 800 + type));
+        LinearLayout.LayoutParams pickerParams = new LinearLayout.LayoutParams(-1, dp(54));
+        pickerParams.topMargin = dp(8);
+        muezzin.addView(picker, pickerParams);
+        Button upload = fieldButton("+ آپلود صدای موذن");
+        upload.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
+        upload.setPadding(dp(16), 0, dp(16), 0);
+        upload.setOnClickListener(v -> startActivityForResult(
+                new Intent(this, SoundPickerActivity.class),
+                type == 899 ? 899 : 800 + type));
+        LinearLayout.LayoutParams uploadParams = new LinearLayout.LayoutParams(-1, dp(50));
+        uploadParams.topMargin = dp(7);
+        muezzin.addView(upload, uploadParams);
+        root.addView(muezzin, cardParams());
+
+        Button close = fieldButton("بستن");
+        close.setGravity(Gravity.CENTER);
+        close.setOnClickListener(v -> dialog.dismiss());
+        root.addView(close, new LinearLayout.LayoutParams(-1, dp(50)));
+
+        dialog.setContentView(scroll);
+        dialog.setOnDismissListener(value -> recreate());
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(-1, -2);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -435,13 +576,6 @@ public final class PrayerSettingsActivity extends Activity {
                 AppSettings.setAdhanSoundUri(this, type, uri);
         } else AppSettings.setAdhanSoundUri(this, requestCode - 800, uri);
         recreate();
-    }
-
-    private LinearLayout soundRow() {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        return row;
     }
 
     private void previewAdhan() {

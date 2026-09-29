@@ -51,7 +51,8 @@ final class SoundLibrary {
                     resourceName, "raw", context.getPackageName());
             if (resource != 0) sounds.add(new Sound(
                     index == 1 ? label : label + " " + index,
-                    "android.resource://" + context.getPackageName() + "/" + resource));
+                    "android.resource://" + context.getPackageName()
+                            + "/raw/" + resourceName));
         }
     }
 
@@ -61,7 +62,8 @@ final class SoundLibrary {
                 resourceName, "raw", context.getPackageName());
         if (resource != 0) sounds.add(new Sound(
                 label,
-                "android.resource://" + context.getPackageName() + "/" + resource));
+                "android.resource://" + context.getPackageName()
+                        + "/raw/" + resourceName));
     }
 
     static void add(Context context, Uri uri) {

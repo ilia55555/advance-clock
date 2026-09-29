@@ -61,7 +61,7 @@ public final class SoundPickerActivity extends Activity {
         if(requestCode!=REQ_AUDIO||resultCode!=RESULT_OK||data==null||data.getData()==null)return;
         Uri uri=data.getData();try{getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION);}catch(Exception ignored){}
         SoundLibrary.add(this,uri);render();}
-    private Button button(String text){Button b=new Button(this);b.setText(text);b.setAllCaps(false);b.setTextColor(AppSettings.textPrimary(this));b.setBackgroundResource(R.drawable.bg_card);return b;}
+    private Button button(String text){Button b=new Button(this);b.setText(text);b.setAllCaps(false);b.setTextColor(AppSettings.textPrimary(this));b.setPadding(dp(16),0,dp(16),0);b.setBackgroundResource(R.drawable.bg_card);return b;}
     private int dp(int v){return Math.round(v*getResources().getDisplayMetrics().density);}
     @Override public void finish(){super.finish();AppSettings.playFullscreenExit(this);}
 }
