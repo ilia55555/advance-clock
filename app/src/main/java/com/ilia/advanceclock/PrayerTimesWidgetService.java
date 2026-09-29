@@ -9,10 +9,13 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public final class PrayerTimesWidgetService extends RemoteViewsService {
@@ -107,36 +110,37 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     R.id.prayer_widget_row_root,
                     "setBackgroundResource",
                     PrayerTimesWidgetPrefs.cardBackgroundResource(
-                            context, widgetId, primary));
+                            context, widgetId, primary
+                                    && PrayerTimesWidgetPrefs.showCurrentBadge(
+                                            context, widgetId)));
 
             row.setTextViewText(R.id.prayer_widget_city, shortName(horizon.label));
             row.setTextColor(R.id.prayer_widget_city, primary ? accent : main);
             row.setTextColor(R.id.prayer_widget_pin, accent);
+            row.setTextColor(R.id.prayer_widget_local_date, secondary);
+            row.setTextColor(R.id.prayer_widget_local_time, accent);
 
-            boolean badge = primary
-                    && PrayerTimesWidgetPrefs.showCurrentBadge(context, widgetId);
-            row.setViewVisibility(
-                    R.id.prayer_widget_current_chip,
-                    badge ? View.VISIBLE : View.GONE);
-            row.setTextColor(R.id.prayer_widget_current_chip, accent);
+            boolean showDate = PrayerTimesWidgetPrefs.showDate(context, widgetId);
+            row.setViewVisibility(R.id.prayer_widget_local_date,
+                    showDate ? View.VISIBLE : View.GONE);
+            if (showDate) {
+                row.setTextViewText(R.id.prayer_widget_local_date,
+                        CalendarUtils.formatDate(now, CalendarUtils.PERSIAN, zone));
+            }
+            row.setTextViewText(R.id.prayer_widget_local_time, localTime(now, zone));
 
-            boolean countdown = !compact
-                    && primary
-                    && PrayerTimesWidgetPrefs.showCountdown(context, widgetId)
+            row.setViewVisibility(R.id.prayer_widget_current_chip, View.GONE);
+
+            boolean countdown = primary
+                    && PrayerTimesWidgetPrefs.timeMode(context, widgetId)
+                    == PrayerTimesWidgetPrefs.TIME_MODE_COUNTDOWN
                     && next != null;
-            row.setViewVisibility(
-                    R.id.prayer_widget_next_box,
+            row.setViewVisibility(R.id.prayer_widget_next_box, View.GONE);
+            row.setViewVisibility(R.id.prayer_widget_local_time,
+                    countdown ? View.GONE : View.VISIBLE);
+            row.setViewVisibility(R.id.prayer_widget_countdown,
                     countdown ? View.VISIBLE : View.GONE);
             if (countdown) {
-                row.setInt(
-                        R.id.prayer_widget_next_box,
-                        "setBackgroundResource",
-                        PrayerTimesWidgetPrefs.nextBoxBackgroundResource(
-                                context, widgetId));
-                row.setTextViewText(
-                        R.id.prayer_widget_next_label,
-                        "اذان بعدی: " + next.label);
-                row.setTextColor(R.id.prayer_widget_next_label, secondary);
                 row.setTextColor(R.id.prayer_widget_countdown, active);
                 long remaining = Math.max(0L, next.targetMillis - now);
                 long base = SystemClock.elapsedRealtime() + remaining;
@@ -167,7 +171,14 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
 
             row.setOnClickFillInIntent(
                     R.id.prayer_widget_row_root, new Intent());
+            row.setOnClickFillInIntent(R.id.prayer_widget_pin, new Intent());
             return row;
+        }
+
+        private String localTime(long millis, TimeZone zone) {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            format.setTimeZone(zone);
+            return CalendarUtils.fa(format.format(new Date(millis)));
         }
 
         private void applyTextColors(RemoteViews row, int main, int secondary) {
@@ -377,7 +388,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             int comma = value.indexOf('،');
             if (comma < 0) comma = value.indexOf(',');
             if (comma > 0) value = value.substring(0, comma);
-            return value.startsWith("افق ") ? value : "افق " + value;
+            return value;
         }
 
         private static final class NextPrayer {
