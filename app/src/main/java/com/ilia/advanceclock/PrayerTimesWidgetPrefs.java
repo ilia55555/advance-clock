@@ -87,12 +87,23 @@ public final class PrayerTimesWidgetPrefs {
         prefs(context).edit().putBoolean(key("show_header", widgetId), value).apply();
     }
 
-    public static boolean showDate(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_date", widgetId), true);
+    public static boolean showCalendar(
+            Context context, int widgetId, int calendarType) {
+        return prefs(context).getBoolean(
+                key("show_calendar_" + calendarType, widgetId), true);
     }
 
-    public static void setShowDate(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_date", widgetId), value).apply();
+    public static void setShowCalendar(
+            Context context, int widgetId, int calendarType, boolean value) {
+        prefs(context).edit().putBoolean(
+                key("show_calendar_" + calendarType, widgetId), value).apply();
+    }
+
+    /** Compatibility for widget-service revisions that still query one date flag. */
+    public static boolean showDate(Context context, int widgetId) {
+        return showCalendar(context, widgetId, CalendarUtils.PERSIAN)
+                || showCalendar(context, widgetId, CalendarUtils.HIJRI)
+                || showCalendar(context, widgetId, CalendarUtils.GREGORIAN);
     }
 
     public static boolean showCountdown(Context context, int widgetId) {
@@ -153,22 +164,6 @@ public final class PrayerTimesWidgetPrefs {
         prefs(context).edit().putBoolean(key("show_current_badge", widgetId), value).apply();
     }
 
-    public static boolean showManageButton(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_manage", widgetId), true);
-    }
-
-    public static void setShowManageButton(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_manage", widgetId), value).apply();
-    }
-
-    public static boolean showScrollHint(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_scroll_hint", widgetId), true);
-    }
-
-    public static void setShowScrollHint(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_scroll_hint", widgetId), value).apply();
-    }
-
     public static int rootBackgroundResource(Context context, int widgetId) {
         switch (background(context, widgetId)) {
             case BG_NAVY_TRANSPARENT: return R.drawable.widget_prayer_bg_navy_80;
@@ -206,6 +201,9 @@ public final class PrayerTimesWidgetPrefs {
                 .remove(key("font_size", widgetId))
                 .remove(key("show_header", widgetId))
                 .remove(key("show_date", widgetId))
+                .remove(key("show_calendar_" + CalendarUtils.PERSIAN, widgetId))
+                .remove(key("show_calendar_" + CalendarUtils.HIJRI, widgetId))
+                .remove(key("show_calendar_" + CalendarUtils.GREGORIAN, widgetId))
                 .remove(key("show_countdown", widgetId))
                 .remove(key("time_mode", widgetId))
                 .remove(key("show_icons", widgetId))

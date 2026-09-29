@@ -31,7 +31,15 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
     private Spinner activeColor;
     private Spinner fontSize;
     private Switch showHeader;
-    private Switch showDate;
+    private final Switch[] shownCalendars = new Switch[3];
+    private static final int[] CALENDAR_TYPES = {
+            CalendarUtils.PERSIAN, CalendarUtils.HIJRI, CalendarUtils.GREGORIAN
+    };
+    private static final String[] CALENDAR_LABELS = {
+            "نمایش تاریخ شمسی",
+            "نمایش تاریخ قمری",
+            "نمایش تاریخ میلادی"
+    };
     private Spinner timeMode;
     private Switch showIcons;
     private final Switch[] shownPrayerTimes = new Switch[8];
@@ -44,8 +52,6 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
             "غروب", "مغرب", "عشاء", "نیمه‌شب"
     };
     private Switch showCurrentBadge;
-    private Switch showManage;
-    private Switch showScrollHint;
     private TextView preview;
 
     @Override protected void onCreate(Bundle state) {
@@ -147,8 +153,14 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(section("محتوا"));
         showHeader = addSwitch(root, "نمایش هدر «اوقات شرعی»",
                 PrayerTimesWidgetPrefs.showHeader(this, widgetId));
-        showDate = addSwitch(root, "نمایش تاریخ شمسی و قمری",
-                PrayerTimesWidgetPrefs.showDate(this, widgetId));
+        root.addView(label("تقویم‌های هدر هر افق", 12));
+        for (int index = 0; index < shownCalendars.length; index++) {
+            shownCalendars[index] = addSwitch(
+                    root,
+                    CALENDAR_LABELS[index],
+                    PrayerTimesWidgetPrefs.showCalendar(
+                            this, widgetId, CALENDAR_TYPES[index]));
+        }
         root.addView(label("نمایش زمان", 12));
         timeMode = spinner(new String[]{"ساعت محلی افق", "شمارش معکوس تا اذان بعدی"});
         timeMode.setSelection(PrayerTimesWidgetPrefs.timeMode(this, widgetId));
@@ -165,19 +177,6 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         }
         showCurrentBadge = addSwitch(root, "برجسته‌کردن افق اصلی",
                 PrayerTimesWidgetPrefs.showCurrentBadge(this, widgetId));
-        showManage = addSwitch(root, "نمایش دکمه مدیریت افق‌ها",
-                PrayerTimesWidgetPrefs.showManageButton(this, widgetId));
-        showScrollHint = addSwitch(root, "نمایش راهنمای اسکرول",
-                PrayerTimesWidgetPrefs.showScrollHint(this, widgetId));
-
-        TextView hint = label(
-                "در اندازه پیش‌فرض ۵×۲، افق اصلی به‌صورت کامل نمایش داده می‌شود. "
-                        + "هر افق بعدی نیز همین اندازه کامل را دارد و با اسکرول عمودی دیده می‌شود؛ "
-                        + "تنها با کوچک‌کردن ویجت، چیدمان فشرده فعال خواهد شد.",
-                12);
-        hint.setTextColor(AppSettings.textSecondary(this));
-        hint.setPadding(0, dp(12), 0, dp(12));
-        root.addView(hint);
 
         Button manage = new Button(this);
         manage.setText("مدیریت افق‌ها");
@@ -241,7 +240,13 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         PrayerTimesWidgetPrefs.setFontSize(
                 this, widgetId, fontSize.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowHeader(this, widgetId, showHeader.isChecked());
-        PrayerTimesWidgetPrefs.setShowDate(this, widgetId, showDate.isChecked());
+        for (int index = 0; index < shownCalendars.length; index++) {
+            PrayerTimesWidgetPrefs.setShowCalendar(
+                    this,
+                    widgetId,
+                    CALENDAR_TYPES[index],
+                    shownCalendars[index].isChecked());
+        }
         PrayerTimesWidgetPrefs.setTimeMode(
                 this, widgetId, timeMode.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowIcons(this, widgetId, showIcons.isChecked());
@@ -254,10 +259,6 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         }
         PrayerTimesWidgetPrefs.setShowCurrentBadge(
                 this, widgetId, showCurrentBadge.isChecked());
-        PrayerTimesWidgetPrefs.setShowManageButton(
-                this, widgetId, showManage.isChecked());
-        PrayerTimesWidgetPrefs.setShowScrollHint(
-                this, widgetId, showScrollHint.isChecked());
 
         PrayerTimesWidgetProvider.updateAll(this);
 

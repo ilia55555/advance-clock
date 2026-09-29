@@ -116,17 +116,13 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
 
             row.setTextViewText(R.id.prayer_widget_city, shortName(horizon.label));
             row.setTextColor(R.id.prayer_widget_city, primary ? accent : main);
-            row.setTextColor(R.id.prayer_widget_pin, accent);
             row.setTextColor(R.id.prayer_widget_local_date, secondary);
             row.setTextColor(R.id.prayer_widget_local_time, accent);
 
-            boolean showDate = PrayerTimesWidgetPrefs.showDate(context, widgetId);
+            String localDate = localDate(now, zone);
             row.setViewVisibility(R.id.prayer_widget_local_date,
-                    showDate ? View.VISIBLE : View.GONE);
-            if (showDate) {
-                row.setTextViewText(R.id.prayer_widget_local_date,
-                        CalendarUtils.formatDate(now, CalendarUtils.PERSIAN, zone));
-            }
+                    localDate.isEmpty() ? View.GONE : View.VISIBLE);
+            row.setTextViewText(R.id.prayer_widget_local_date, localDate);
             row.setTextViewText(R.id.prayer_widget_local_time, localTime(now, zone));
 
             row.setViewVisibility(R.id.prayer_widget_current_chip, View.GONE);
@@ -217,8 +213,24 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
 
             row.setOnClickFillInIntent(
                     R.id.prayer_widget_row_root, new Intent());
-            row.setOnClickFillInIntent(R.id.prayer_widget_pin, new Intent());
             return row;
+        }
+
+        private String localDate(long millis, TimeZone zone) {
+            int[] types = {
+                    CalendarUtils.PERSIAN,
+                    CalendarUtils.HIJRI,
+                    CalendarUtils.GREGORIAN
+            };
+            StringBuilder result = new StringBuilder();
+            for (int type : types) {
+                if (!PrayerTimesWidgetPrefs.showCalendar(context, widgetId, type)) {
+                    continue;
+                }
+                if (result.length() > 0) result.append(" • ");
+                result.append(CalendarUtils.formatNumeric(millis, type, zone));
+            }
+            return result.toString();
         }
 
         private String localTime(long millis, TimeZone zone) {
@@ -359,9 +371,9 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                 value = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
                 icon = 8f;
             } else {
-                city = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
-                label = mode == 0 ? 7f : (mode == 2 ? 9f : 8f);
-                value = mode == 0 ? 9f : (mode == 2 ? 12f : 10f);
+                city = mode == 0 ? 14f : (mode == 2 ? 18f : 16f);
+                label = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
+                value = mode == 0 ? 10f : (mode == 2 ? 13f : 11f);
                 icon = mode == 0 ? 10f : (mode == 2 ? 14f : 12f);
             }
             row.setTextViewTextSize(
