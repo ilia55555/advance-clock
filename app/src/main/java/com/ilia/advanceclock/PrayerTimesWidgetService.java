@@ -70,11 +70,17 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         }
 
         @Override public RemoteViews getViewAt(int position) {
+            AppSettings.PrayerHorizon horizon = horizons.isEmpty()
+                    ? null
+                    : horizons.get(position);
+            boolean primary = horizon != null
+                    && AppSettings.isPrimaryPrayerHorizon(
+                            context, horizon.latitude, horizon.longitude);
             RemoteViews row = new RemoteViews(
                     context.getPackageName(),
                     compact
                             ? R.layout.widget_prayer_times_row_compact
-                            : R.layout.widget_prayer_times_row);
+                            : R.layout.widget_prayer_times_row_primary);
 
             int main = PrayerTimesWidgetPrefs.mainTextColor(context, widgetId);
             int secondary = PrayerTimesWidgetPrefs.secondaryTextColor(context, widgetId);
@@ -95,9 +101,6 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                 return row;
             }
 
-            AppSettings.PrayerHorizon horizon = horizons.get(position);
-            boolean primary = AppSettings.isPrimaryPrayerHorizon(
-                    context, horizon.latitude, horizon.longitude);
             TimeZone zone = TimeZone.getTimeZone(horizon.timeZoneId);
             long now = System.currentTimeMillis();
             PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
