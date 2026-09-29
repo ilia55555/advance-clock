@@ -11,10 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
     @Override public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
         for (int id : ids) update(context, manager, id);
@@ -63,8 +59,7 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
         views.setTextColor(R.id.prayer_widget_title, main);
         views.setTextColor(R.id.prayer_widget_date, secondary);
         views.setTextColor(R.id.prayer_widget_manage, accent);
-        views.setTextColor(R.id.prayer_widget_settings, secondary);
-        views.setTextColor(R.id.prayer_widget_scroll_hint, secondary);
+        views.setInt(R.id.prayer_widget_settings, "setColorFilter", secondary);
 
         boolean showHeader = PrayerTimesWidgetPrefs.showHeader(context, id);
         views.setViewVisibility(
@@ -73,17 +68,7 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
         // Dates belong to each horizon because their local calendar day can differ.
         views.setViewVisibility(R.id.prayer_widget_date, View.GONE);
 
-        boolean showManage = showHeader
-                && PrayerTimesWidgetPrefs.showManageButton(context, id);
-        views.setViewVisibility(
-                R.id.prayer_widget_manage, showManage ? View.VISIBLE : View.GONE);
-
-        int horizonCount = AppSettings.prayerHorizons(context).size();
-        boolean showHint = !compact
-                && PrayerTimesWidgetPrefs.showScrollHint(context, id)
-                && horizonCount > 1;
-        views.setViewVisibility(
-                R.id.prayer_widget_scroll_hint, showHint ? View.VISIBLE : View.GONE);
+        views.setViewVisibility(R.id.prayer_widget_manage, View.VISIBLE);
 
         Intent service = new Intent(context, PrayerTimesWidgetService.class)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
@@ -93,7 +78,9 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                 + System.currentTimeMillis()));
         views.setRemoteAdapter(R.id.prayer_widget_list, service);
 
-        Intent rowOpen = new Intent(context, PrayerSettingsActivity.class);
+        Intent rowOpen = new Intent(context, MainActivity.class)
+                .putExtra("openTab", "clock")
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         views.setPendingIntentTemplate(
                 R.id.prayer_widget_list,
                 PendingIntent.getActivity(
@@ -122,21 +109,16 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                         settings,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
+        views.setOnClickPendingIntent(
+                R.id.prayer_widget_root,
+                PendingIntent.getActivity(
+                        context,
+                        73_000 + id,
+                        rowOpen,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+
         manager.updateAppWidget(id, views);
         manager.notifyAppWidgetViewDataChanged(id, R.id.prayer_widget_list);
     }
 
-    private static String dateLine() {
-        long now = System.currentTimeMillis();
-        String weekDay;
-        try {
-            weekDay = new SimpleDateFormat("EEEE", new Locale("fa", "IR"))
-                    .format(new Date(now));
-        } catch (Exception ignored) {
-            weekDay = "";
-        }
-        String persian = CalendarUtils.formatDate(now, CalendarUtils.PERSIAN);
-        String hijri = CalendarUtils.formatDate(now, CalendarUtils.HIJRI);
-        return (weekDay.isEmpty() ? "" : weekDay + "  ") + persian + "  •  " + hijri;
-    }
 }

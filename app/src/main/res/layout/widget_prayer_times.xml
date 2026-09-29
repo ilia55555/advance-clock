@@ -56,16 +56,15 @@
             android:textColor="#56D8FF"
             android:textSize="11sp" />
 
-        <TextView
+        <ImageView
             android:id="@+id/prayer_widget_settings"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:background="@drawable/widget_prayer_chip"
             android:contentDescription="تنظیمات ویجت"
-            android:gravity="center"
-            android:text="⚙"
-            android:textColor="#A9C9E8"
-            android:textSize="12sp" />
+            android:padding="5dp"
+            android:src="@drawable/ic_prayer_widget_settings"
+            android:tint="#A9C9E8" />
     </LinearLayout>
 
     <ListView
@@ -78,16 +77,6 @@
         android:dividerHeight="6dp"
         android:fadingEdge="vertical"
         android:overScrollMode="ifContentScrolls"
-        android:paddingBottom="2dp"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical" />
-
-    <TextView
-        android:id="@+id/prayer_widget_scroll_hint"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:gravity="center"
-        android:text="↕  اسکرول برای افق‌های بیشتر"
-        android:textColor="#7EAACD"
-        android:textSize="8sp" />
 </LinearLayout>

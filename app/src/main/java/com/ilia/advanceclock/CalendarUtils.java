@@ -97,6 +97,17 @@ public final class CalendarUtils {
 
     public static String formatNumeric(long millis, int type) {
         android.icu.util.Calendar c = fromMillis(type, millis);
+        return formatNumeric(c);
+    }
+
+    public static String formatNumeric(long millis, int type, java.util.TimeZone zone) {
+        android.icu.util.Calendar c = create(type);
+        c.setTimeZone(android.icu.util.TimeZone.getTimeZone(zone.getID()));
+        c.setTimeInMillis(millis);
+        return formatNumeric(c);
+    }
+
+    private static String formatNumeric(android.icu.util.Calendar c) {
         String value = String.format(Locale.US, "%04d/%02d/%02d",
                 c.get(android.icu.util.Calendar.YEAR),
                 c.get(android.icu.util.Calendar.MONTH) + 1,

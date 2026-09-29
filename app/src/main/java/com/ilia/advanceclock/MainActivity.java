@@ -188,7 +188,8 @@ public final class MainActivity extends Activity {
                 launchCreateEditor(this, NoForgetEditorActivity.class));
 
         String requestedTab = getIntent().getStringExtra("openTab");
-        showTab("noforget".equals(requestedTab)
+        showTab("clock".equals(requestedTab)
+                || "noforget".equals(requestedTab)
                 || "stopwatch".equals(requestedTab)
                 || "timer".equals(requestedTab)
                 || "world".equals(requestedTab)
@@ -1206,7 +1207,8 @@ public final class MainActivity extends Activity {
         super.onNewIntent(intent);
         setIntent(intent);
         String requestedTab = intent.getStringExtra("openTab");
-        showTab("noforget".equals(requestedTab)
+        showTab("clock".equals(requestedTab)
+                || "noforget".equals(requestedTab)
                 || "stopwatch".equals(requestedTab)
                 || "timer".equals(requestedTab)
                 || "world".equals(requestedTab)
