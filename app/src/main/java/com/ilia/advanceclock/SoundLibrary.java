@@ -26,6 +26,8 @@ final class SoundLibrary {
     static List<Sound> all(Context context) {
         ArrayList<Sound> sounds = new ArrayList<>();
         sounds.add(new Sound("پیش‌فرض سیستم", ""));
+        addNamedBundledSound(context, sounds, "rawadhan_1", "رحیم مؤذن‌زاده اردبیلی");
+        addNamedBundledSound(context, sounds, "rawadhan_2", "محمد آقاتی");
         addBundledSounds(context, sounds, "adhan", "اذان برنامه", 10);
         addBundledSounds(context, sounds, "alarm", "زنگ برنامه", 10);
         try {
@@ -51,6 +53,15 @@ final class SoundLibrary {
                     index == 1 ? label : label + " " + index,
                     "android.resource://" + context.getPackageName() + "/" + resource));
         }
+    }
+
+    private static void addNamedBundledSound(
+            Context context, List<Sound> sounds, String resourceName, String label) {
+        int resource = context.getResources().getIdentifier(
+                resourceName, "raw", context.getPackageName());
+        if (resource != 0) sounds.add(new Sound(
+                label,
+                "android.resource://" + context.getPackageName() + "/" + resource));
     }
 
     static void add(Context context, Uri uri) {
