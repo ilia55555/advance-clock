@@ -32,7 +32,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
     private Spinner fontSize;
     private Switch showHeader;
     private Switch showDate;
-    private Switch showCountdown;
+    private Spinner timeMode;
     private Switch showIcons;
     private Switch showCurrentBadge;
     private Switch showManage;
@@ -140,11 +140,13 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
                 PrayerTimesWidgetPrefs.showHeader(this, widgetId));
         showDate = addSwitch(root, "نمایش تاریخ شمسی و قمری",
                 PrayerTimesWidgetPrefs.showDate(this, widgetId));
-        showCountdown = addSwitch(root, "نمایش اذان بعدی و شمارش معکوس",
-                PrayerTimesWidgetPrefs.showCountdown(this, widgetId));
+        root.addView(label("نمایش زمان", 12));
+        timeMode = spinner(new String[]{"ساعت محلی افق", "شمارش معکوس تا اذان بعدی"});
+        timeMode.setSelection(PrayerTimesWidgetPrefs.timeMode(this, widgetId));
+        root.addView(timeMode, fieldLp());
         showIcons = addSwitch(root, "نمایش آیکون‌های اوقات",
                 PrayerTimesWidgetPrefs.showIcons(this, widgetId));
-        showCurrentBadge = addSwitch(root, "نمایش برچسب «افق فعلی»",
+        showCurrentBadge = addSwitch(root, "برجسته‌کردن افق اصلی",
                 PrayerTimesWidgetPrefs.showCurrentBadge(this, widgetId));
         showManage = addSwitch(root, "نمایش دکمه مدیریت افق‌ها",
                 PrayerTimesWidgetPrefs.showManageButton(this, widgetId));
@@ -152,7 +154,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
                 PrayerTimesWidgetPrefs.showScrollHint(this, widgetId));
 
         TextView hint = label(
-                "در اندازه پیش‌فرض یک افق کامل نمایش داده می‌شود. با بلندتر کردن ویجت، "
+                "در اندازه پیش‌فرض دو افق کامل نمایش داده می‌شود. با بلندتر کردن ویجت، "
                         + "افق‌های بیشتری دیده می‌شوند و فهرست همیشه اسکرول عمودی دارد.",
                 12);
         hint.setTextColor(AppSettings.textSecondary(this));
@@ -222,8 +224,8 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
                 this, widgetId, fontSize.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowHeader(this, widgetId, showHeader.isChecked());
         PrayerTimesWidgetPrefs.setShowDate(this, widgetId, showDate.isChecked());
-        PrayerTimesWidgetPrefs.setShowCountdown(
-                this, widgetId, showCountdown.isChecked());
+        PrayerTimesWidgetPrefs.setTimeMode(
+                this, widgetId, timeMode.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowIcons(this, widgetId, showIcons.isChecked());
         PrayerTimesWidgetPrefs.setShowCurrentBadge(
                 this, widgetId, showCurrentBadge.isChecked());

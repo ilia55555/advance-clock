@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -413,6 +414,7 @@ public final class MainActivity extends Activity {
         long millis = clockCalendar.getSelectedMillis();
 
         if (!AppSettings.prayerLocationSet(this)) {
+            if (prayerAdditionalHorizons != null) prayerAdditionalHorizons.removeAllViews();
             setPrayerTimeText(R.id.prayer_fajr, "—:—");
             setPrayerTimeText(R.id.prayer_sunrise, "—:—");
             setPrayerTimeText(R.id.prayer_dhuhr, "—:—");
@@ -453,41 +455,81 @@ public final class MainActivity extends Activity {
             PrayerTimeCalculator.Times times = PrayerTimeCalculator.calculate(
                     millis, horizon.latitude, horizon.longitude,
                     TimeZone.getTimeZone(horizon.timeZoneId));
+            FrameLayout bar = new FrameLayout(this);
             HorizontalScrollView scroll = new HorizontalScrollView(this);
             scroll.setHorizontalScrollBarEnabled(false);
+            scroll.setFillViewport(true);
+            scroll.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            scroll.setBackgroundResource(R.drawable.bg_card);
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            TextView city = prayerCell(shortHorizonLabel(horizon.label), "افق");
+            TextView city = prayerCell(shortHorizonLabel(horizon.label), null);
             city.setTextColor(AppSettings.textPrimary(this));
-            row.addView(city, new LinearLayout.LayoutParams(dp(92), dp(72)));
-            String[] labels = {"صبح", "طلوع", "ظهر", "عصر", "غروب", "مغرب", "عشاء", "نیمه‌شب"};
+            city.setTextSize(12);
+            city.setTypeface(null, Typeface.BOLD);
+            city.setMaxLines(1);
+            row.addView(city, new LinearLayout.LayoutParams(dp(72), dp(72)));
+            String[] labels = {"اذان صبح", "طلوع", "اذان ظهر", "عصر", "غروب", "اذان مغرب", "عشاء", "نیمه‌شب"};
             String[] values = {times.fajr(), times.sunrise(), times.dhuhr(), times.asr(),
                     times.sunset(), times.maghrib(), times.isha(), times.midnight()};
             for (int index = 0; index < labels.length; index++)
                 row.addView(prayerCell(labels[index], values[index]),
                         new LinearLayout.LayoutParams(dp(72), dp(72)));
             scroll.addView(row, new HorizontalScrollView.LayoutParams(-2, dp(72)));
+            bar.addView(scroll, new FrameLayout.LayoutParams(-1, dp(72)));
+
+            TextView left = prayerArrow("<");
+            FrameLayout.LayoutParams leftParams = new FrameLayout.LayoutParams(dp(24), -1, Gravity.LEFT);
+            bar.addView(left, leftParams);
+            TextView right = prayerArrow(">");
+            FrameLayout.LayoutParams rightParams = new FrameLayout.LayoutParams(dp(24), -1, Gravity.RIGHT);
+            bar.addView(right, rightParams);
+            Runnable updateArrows = () -> {
+                left.setVisibility(scroll.canScrollHorizontally(-1) ? View.VISIBLE : View.GONE);
+                right.setVisibility(scroll.canScrollHorizontally(1) ? View.VISIBLE : View.GONE);
+            };
+            scroll.setOnScrollChangeListener((view, x, y, oldX, oldY) -> updateArrows.run());
+            left.setOnClickListener(v -> scroll.smoothScrollTo(0, 0));
+            right.setOnClickListener(v -> {
+                View content = scroll.getChildAt(0);
+                if (content != null) scroll.smoothScrollTo(
+                        Math.max(0, content.getWidth() - scroll.getWidth()), 0);
+            });
+            scroll.post(updateArrows);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(72));
             params.topMargin = dp(6);
-            prayerAdditionalHorizons.addView(scroll, params);
+            prayerAdditionalHorizons.addView(bar, params);
         }
+    }
+
+    private TextView prayerArrow(String text) {
+        TextView arrow = new TextView(this);
+        arrow.setText(text);
+        arrow.setTextColor(AppSettings.primaryColor(this));
+        arrow.setTextSize(22);
+        arrow.setGravity(Gravity.CENTER);
+        arrow.setBackgroundColor(0x00000000);
+        arrow.setClickable(true);
+        arrow.setFocusable(true);
+        return arrow;
     }
 
     private TextView prayerCell(String label, String value) {
         TextView cell = new TextView(this);
         cell.setGravity(Gravity.CENTER);
-        cell.setText(label + "\n" + value);
+        cell.setText(value == null ? label : label + "\n" + value);
         cell.setTextColor(AppSettings.textSecondary(this));
         cell.setTextSize(11);
-        cell.setBackgroundResource(R.drawable.bg_card);
         return cell;
     }
 
     private String shortHorizonLabel(String label) {
         if (label == null || label.trim().isEmpty()) return "افق";
-        int comma = label.indexOf('،');
-        return comma > 0 ? label.substring(0, comma) : label;
+        String value = label.trim();
+        int comma = value.indexOf('،');
+        if (comma < 0) comma = value.indexOf(',');
+        return comma > 0 ? value.substring(0, comma).trim() : value;
     }
 
     private void positionPrayerTimes(PrayerTimeCalculator.Times times) {

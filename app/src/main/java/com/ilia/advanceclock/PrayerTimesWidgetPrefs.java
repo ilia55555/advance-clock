@@ -8,6 +8,8 @@ public final class PrayerTimesWidgetPrefs {
     public static final int BG_NAVY_TRANSPARENT = 1;
     public static final int BG_BLACK = 2;
     public static final int BG_LIGHT = 3;
+    public static final int TIME_MODE_CLOCK = 0;
+    public static final int TIME_MODE_COUNTDOWN = 1;
 
     private static final String PREFS = "advance_clock_prayer_widget_prefs";
 
@@ -94,11 +96,34 @@ public final class PrayerTimesWidgetPrefs {
     }
 
     public static boolean showCountdown(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_countdown", widgetId), true);
+        return timeMode(context, widgetId) == TIME_MODE_COUNTDOWN;
     }
 
     public static void setShowCountdown(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_countdown", widgetId), value).apply();
+        setTimeMode(context, widgetId,
+                value ? TIME_MODE_COUNTDOWN : TIME_MODE_CLOCK);
+    }
+
+    public static int timeMode(Context context, int widgetId) {
+        SharedPreferences values = prefs(context);
+        String modeKey = key("time_mode", widgetId);
+        if (values.contains(modeKey)) {
+            return Math.max(TIME_MODE_CLOCK, Math.min(TIME_MODE_COUNTDOWN,
+                    values.getInt(modeKey, TIME_MODE_CLOCK)));
+        }
+        // Older widgets used a countdown switch. Preserve an explicit old choice,
+        // while making the clock the default for new widgets.
+        String oldKey = key("show_countdown", widgetId);
+        return values.contains(oldKey) && values.getBoolean(oldKey, false)
+                ? TIME_MODE_COUNTDOWN : TIME_MODE_CLOCK;
+    }
+
+    public static void setTimeMode(Context context, int widgetId, int value) {
+        prefs(context).edit()
+                .putInt(key("time_mode", widgetId),
+                        Math.max(TIME_MODE_CLOCK, Math.min(TIME_MODE_COUNTDOWN, value)))
+                .remove(key("show_countdown", widgetId))
+                .commit();
     }
 
     public static boolean showIcons(Context context, int widgetId) {
@@ -171,6 +196,7 @@ public final class PrayerTimesWidgetPrefs {
                 .remove(key("show_header", widgetId))
                 .remove(key("show_date", widgetId))
                 .remove(key("show_countdown", widgetId))
+                .remove(key("time_mode", widgetId))
                 .remove(key("show_icons", widgetId))
                 .remove(key("show_current_badge", widgetId))
                 .remove(key("show_manage", widgetId))

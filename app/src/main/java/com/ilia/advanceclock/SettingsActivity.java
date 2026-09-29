@@ -145,6 +145,11 @@ public final class SettingsActivity extends Activity {
         layout.setSelection(AppSettings.clockLayoutMode(this));
         root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        Switch autoDeleteExpiredAlarms = settingSwitch(
+                "حذف خودکار ساعت‌های گذشته و بدون تکرار آینده",
+                AppSettings.autoDeleteExpiredAlarms(this));
+        root.addView(autoDeleteExpiredAlarms);
+
         root.addView(label("تب‌های قابل نمایش در صفحه اصلی"));
         Switch tabClock = tabSwitch(getString(R.string.tab_clock), "clock");
         Switch tabNotes = tabSwitch(getString(R.string.tab_notes), "noforget");
@@ -242,6 +247,14 @@ public final class SettingsActivity extends Activity {
         watch(layout, position -> {
             if (AppSettings.clockLayoutMode(this) == position) return;
             AppSettings.setClockLayoutMode(this, position);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
+
+        autoDeleteExpiredAlarms.setOnCheckedChangeListener((button, checked) -> {
+            if (AppSettings.autoDeleteExpiredAlarms(this) == checked) return;
+            AppSettings.setAutoDeleteExpiredAlarms(this, checked);
+            AlarmScheduler.rescheduleAll(this);
             runtimeChanged();
             AdvanceClockApplication.refreshOpenActivities(this, false);
         });

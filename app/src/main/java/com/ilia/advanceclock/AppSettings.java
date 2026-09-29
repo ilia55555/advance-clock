@@ -536,6 +536,14 @@ public final class AppSettings {
         prefs(context).edit().putInt("clock_layout_mode", value).apply();
     }
 
+    public static boolean autoDeleteExpiredAlarms(Context context) {
+        return prefs(context).getBoolean("auto_delete_expired_alarms", false);
+    }
+
+    public static void setAutoDeleteExpiredAlarms(Context context, boolean value) {
+        prefs(context).edit().putBoolean("auto_delete_expired_alarms", value).apply();
+    }
+
     public static boolean tabEnabled(Context context, String tab) {
         return prefs(context).getBoolean("tab_enabled_" + tab, true);
     }
