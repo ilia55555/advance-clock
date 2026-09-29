@@ -210,7 +210,11 @@ public final class WidgetCenterActivity extends Activity {
     private int previewResource(String kind) {
         if ("note".equals(kind)) return R.drawable.preview_widget_notes;
         if ("world".equals(kind)) return R.drawable.preview_widget_world;
-        if ("prayer".equals(kind)) return R.drawable.widget_prayer_bg_navy;
+        if ("prayer".equals(kind)) {
+            int uploaded = getResources().getIdentifier(
+                    "preview_widget_prayer", "drawable", getPackageName());
+            return uploaded == 0 ? R.drawable.widget_prayer_bg_navy : uploaded;
+        }
         if ("media".equals(kind)) return R.drawable.preview_widget_media;
         return R.drawable.preview_widget_clock;
     }

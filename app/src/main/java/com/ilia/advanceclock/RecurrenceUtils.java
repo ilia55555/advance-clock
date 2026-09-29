@@ -35,7 +35,8 @@ public final class RecurrenceUtils {
             Calendar baseCalendar = Calendar.getInstance();
             baseCalendar.setTimeInMillis(base);
             Calendar candidate = (Calendar) baseCalendar.clone();
-            int weeksInterval = Math.max(1, intervalDays);
+            boolean permanent = isPermanentWeekdays(customDatesJson);
+            int weeksInterval = permanent ? 1 : Math.max(1, intervalDays);
             for (int day = 0; day < 3660; day++) {
                 if (candidate.getTimeInMillis() > now
                         && weekdays.contains(candidate.get(Calendar.DAY_OF_WEEK))) {
@@ -107,11 +108,27 @@ public final class RecurrenceUtils {
     }
 
     public static String weekdaysToJson(List<Integer> weekdays) {
+        return weekdaysToJson(weekdays, false);
+    }
+
+    public static String weekdaysToJson(List<Integer> weekdays, boolean permanent) {
         org.json.JSONObject object = new org.json.JSONObject();
         JSONArray array = new JSONArray();
         if (weekdays != null) for (Integer day : weekdays) if (day != null) array.put(day);
-        try { object.put("weekdays", array); } catch (Exception ignored) {}
+        try {
+            object.put("weekdays", array);
+            object.put("permanent", permanent);
+        } catch (Exception ignored) {}
         return object.toString();
+    }
+
+    public static boolean isPermanentWeekdays(String raw) {
+        try {
+            return new org.json.JSONObject(raw == null ? "{}" : raw)
+                    .optBoolean("permanent", false);
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     private static long startOfDay(Calendar source) {
@@ -124,7 +141,11 @@ public final class RecurrenceUtils {
     public static String summary(int mode, int intervalDays, String customDatesJson) {
         if (mode == INTERVAL_DAYS) return "هر " + Math.max(1, intervalDays) + " روز";
         if (mode == CUSTOM_DATES) return parseDates(customDatesJson).size() + " تاریخ انتخاب شده";
-        if (mode == WEEKDAYS) return "روزهای انتخابی هر " + Math.max(1, intervalDays) + " هفته";
+        if (mode == WEEKDAYS) {
+            return isPermanentWeekdays(customDatesJson)
+                    ? "دائم؛ روزهای انتخابی هر هفته"
+                    : "روزهای انتخابی هر " + Math.max(1, intervalDays) + " هفته";
+        }
         String[] labels = labels();
         return labels[Math.max(0, Math.min(labels.length - 1, mode))];
     }

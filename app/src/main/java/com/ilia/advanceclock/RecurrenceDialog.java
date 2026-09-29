@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,14 @@ public final class RecurrenceDialog {
         weekInterval.setValue(Math.max(1, intervalDays));
         root.addView(weekInterval, new LinearLayout.LayoutParams(-1, dp(context, 90)));
 
+        Switch permanentWeekdays = new Switch(context);
+        permanentWeekdays.setText("دائم؛ هر هفته در روزهای انتخاب‌شده");
+        permanentWeekdays.setTextColor(AppSettings.textPrimary(context));
+        permanentWeekdays.setChecked(
+                mode != RecurrenceUtils.WEEKDAYS
+                        || RecurrenceUtils.isPermanentWeekdays(customDatesJson));
+        root.addView(permanentWeekdays, new LinearLayout.LayoutParams(-1, dp(context, 48)));
+
         LinearLayout weekdayGrid = new LinearLayout(context);
         weekdayGrid.setOrientation(LinearLayout.VERTICAL);
         String[] dayNames = {"شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"};
@@ -103,8 +112,11 @@ public final class RecurrenceDialog {
             customSummary.setVisibility(datesVisible ? View.VISIBLE : View.GONE);
             addDate.setVisibility(datesVisible ? View.VISIBLE : View.GONE);
             clearDates.setVisibility(datesVisible ? View.VISIBLE : View.GONE);
-            weekIntervalLabel.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
-            weekInterval.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
+            weekInterval.setVisibility(weekdaysVisible
+                    && !permanentWeekdays.isChecked() ? View.VISIBLE : View.GONE);
+            weekIntervalLabel.setVisibility(weekdaysVisible
+                    && !permanentWeekdays.isChecked() ? View.VISIBLE : View.GONE);
+            permanentWeekdays.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
             weekdayGrid.setVisibility(weekdaysVisible ? View.VISIBLE : View.GONE);
 
             StringBuilder sb = new StringBuilder();
@@ -126,6 +138,7 @@ public final class RecurrenceDialog {
             }
             @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
         });
+        permanentWeekdays.setOnCheckedChangeListener((button, checked) -> refresh.run());
 
         addDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 context,
@@ -179,7 +192,8 @@ public final class RecurrenceDialog {
                             selectedMode == RecurrenceUtils.WEEKDAYS
                                     ? weekInterval.getValue() : interval.getValue(),
                             selectedMode == RecurrenceUtils.WEEKDAYS
-                                    ? RecurrenceUtils.weekdaysToJson(weekdays)
+                                    ? RecurrenceUtils.weekdaysToJson(
+                                            weekdays, permanentWeekdays.isChecked())
                                     : RecurrenceUtils.toJson(customDates));
                 })
                 .show();
