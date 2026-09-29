@@ -114,7 +114,7 @@ public final class AdhanSoundService extends Service {
 
     private void startPlayback() {
         stopPlayback();
-        volume = 1f;
+        volume = AppSettings.adhanVolume(this, type) / 100f;
         muted = false;
         stopHandler.removeCallbacks(maximumDuration);
         stopHandler.postDelayed(maximumDuration, 10 * 60_000L);

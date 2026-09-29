@@ -449,10 +449,25 @@ public final class AppSettings {
         prefs(context).edit().putBoolean("adhan_sound", value).apply();
     }
     public static String adhanSoundUri(Context context, int type) {
-        return prefs(context).getString("adhan_sound_uri_" + type, "");
+        String key = "adhan_sound_uri_" + type;
+        if (prefs(context).contains(key)) {
+            return prefs(context).getString(key, "");
+        }
+        int resource = context.getResources().getIdentifier(
+                "rawadhan_2", "raw", context.getPackageName());
+        return resource == 0 ? "" : "android.resource://"
+                + context.getPackageName() + "/raw/rawadhan_2";
     }
     public static void setAdhanSoundUri(Context context, int type, String uri) {
         prefs(context).edit().putString("adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
+    }
+    public static int adhanVolume(Context context, int type) {
+        return Math.max(0, Math.min(100,
+                prefs(context).getInt("adhan_volume_" + type, 100)));
+    }
+    public static void setAdhanVolume(Context context, int type, int value) {
+        prefs(context).edit().putInt(
+                "adhan_volume_" + type, Math.max(0, Math.min(100, value))).apply();
     }
     public static String defaultAlarmSoundUri(Context context) {
         return prefs(context).getString("default_alarm_sound_uri", "");

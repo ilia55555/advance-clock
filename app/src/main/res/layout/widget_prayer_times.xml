@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
     android:orientation="vertical"
-    android:padding="5dp"
+    android:paddingHorizontal="5dp"
+    android:paddingVertical="0dp"
     android:background="@drawable/widget_prayer_bg_navy">
 
     <LinearLayout
@@ -14,7 +15,8 @@
         android:layout_height="32dp"
         android:layoutDirection="rtl"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="1dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -74,7 +76,7 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
-        android:dividerHeight="6dp"
+        android:dividerHeight="0dp"
         android:fadingEdge="vertical"
         android:overScrollMode="ifContentScrolls"
         android:scrollbarStyle="insideOverlay"
