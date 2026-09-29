@@ -80,9 +80,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     context.getPackageName(),
                     compact
                             ? R.layout.widget_prayer_times_row_compact
-                            : (primary
-                                    ? R.layout.widget_prayer_times_row_primary
-                                    : R.layout.widget_prayer_times_row));
+                            : R.layout.widget_prayer_times_row_primary);
 
             int main = PrayerTimesWidgetPrefs.mainTextColor(context, widgetId);
             int secondary = PrayerTimesWidgetPrefs.secondaryTextColor(context, widgetId);
