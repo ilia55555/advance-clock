@@ -203,51 +203,6 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             }
         }
 
-        private void applyPrayerIcons(RemoteViews row) {
-            int[] fallbackViews = {
-                    R.id.prayer_icon_fajr,
-                    R.id.prayer_icon_sunrise,
-                    R.id.prayer_icon_dhuhr,
-                    R.id.prayer_icon_asr,
-                    R.id.prayer_icon_sunset,
-                    R.id.prayer_icon_maghrib,
-                    R.id.prayer_icon_isha,
-                    R.id.prayer_icon_midnight
-            };
-            if (compact) {
-                for (int viewId : fallbackViews) {
-                    row.setViewVisibility(viewId, View.GONE);
-                }
-                return;
-            }
-
-            int[] imageViews = {
-                    R.id.prayer_icon_image_fajr,
-                    R.id.prayer_icon_image_sunrise,
-                    R.id.prayer_icon_image_dhuhr,
-                    R.id.prayer_icon_image_asr,
-                    R.id.prayer_icon_image_sunset,
-                    R.id.prayer_icon_image_maghrib,
-                    R.id.prayer_icon_image_isha,
-                    R.id.prayer_icon_image_midnight
-            };
-            String[] drawableNames = {
-                    "prayer_morning", "prayer_sunrise", "prayer_noon", "prayer_afternoon",
-                    "prayer_sunset", "prayer_maghrib", "prayer_isha", "prayer_midnight"
-            };
-            boolean show = PrayerTimesWidgetPrefs.showIcons(context, widgetId);
-            for (int index = 0; index < drawableNames.length; index++) {
-                int drawable = context.getResources().getIdentifier(
-                        drawableNames[index], "drawable", context.getPackageName());
-                boolean hasImage = show && drawable != 0;
-                row.setViewVisibility(
-                        imageViews[index], hasImage ? View.VISIBLE : View.GONE);
-                row.setViewVisibility(
-                        fallbackViews[index], show && !hasImage ? View.VISIBLE : View.GONE);
-                if (hasImage) row.setImageViewResource(imageViews[index], drawable);
-            }
-        }
-
         private void applyTextColors(RemoteViews row, int main, int secondary) {
             int[] labels = {
                     R.id.prayer_label_fajr,
