@@ -217,20 +217,15 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         }
 
         private String localDate(long millis, TimeZone zone) {
-            int[] types = {
-                    CalendarUtils.PERSIAN,
-                    CalendarUtils.HIJRI,
-                    CalendarUtils.GREGORIAN
-            };
-            StringBuilder result = new StringBuilder();
-            for (int type : types) {
-                if (!PrayerTimesWidgetPrefs.showCalendar(context, widgetId, type)) {
-                    continue;
-                }
-                if (result.length() > 0) result.append(" • ");
-                result.append(CalendarUtils.formatNumeric(millis, type, zone));
+            if (!PrayerTimesWidgetPrefs.showDate(context, widgetId)) {
+                return CalendarUtils.formatDate(
+                        millis, AppSettings.defaultCalendar(context), zone);
             }
-            return result.toString();
+            return CalendarUtils.formatNumeric(millis, CalendarUtils.PERSIAN, zone)
+                    + " • "
+                    + CalendarUtils.formatNumeric(millis, CalendarUtils.HIJRI, zone)
+                    + " • "
+                    + CalendarUtils.formatNumeric(millis, CalendarUtils.GREGORIAN, zone);
         }
 
         private String localTime(long millis, TimeZone zone) {
