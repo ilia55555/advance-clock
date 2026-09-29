@@ -163,17 +163,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             resetHighlights(row);
             if (next != null) highlightNext(row, next.kind, active);
 
-            boolean icons = !compact
-                    && PrayerTimesWidgetPrefs.showIcons(context, widgetId);
-            int iconVisibility = icons ? View.VISIBLE : View.GONE;
-            row.setViewVisibility(R.id.prayer_icon_fajr, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_sunrise, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_dhuhr, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_asr, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_sunset, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_maghrib, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_isha, iconVisibility);
-            row.setViewVisibility(R.id.prayer_icon_midnight, iconVisibility);
+            applyPrayerIcons(row);
 
             applyFontSize(row, PrayerTimesWidgetPrefs.fontSize(context, widgetId));
 
