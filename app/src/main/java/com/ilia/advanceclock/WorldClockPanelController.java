@@ -138,6 +138,15 @@ final class WorldClockPanelController {
             allZones.add(new ZoneOption(
                     id, label, searchText, city, Double.NaN, Double.NaN, "", ""));
         }
+        allZones.add(new ZoneOption(
+                "Asia/Shanghai",
+                "پکن • چین • آسیا",
+                normalize("Beijing Peking پکن 北京 China چین Asia/Shanghai"),
+                "پکن",
+                Double.NaN,
+                Double.NaN,
+                "CN",
+                ""));
         Collections.sort(allZones, (a, b) -> a.label.compareToIgnoreCase(b.label));
     }
 
@@ -946,7 +955,7 @@ final class WorldClockPanelController {
             return "Kuwait کویت";
         }
         if ("Asia/Shanghai".equals(id)) {
-            return "Shanghai شانگهای Beijing Peking پکن China چین";
+            return "Shanghai شانگهای China چین";
         }
         return "";
     }
