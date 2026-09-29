@@ -87,12 +87,16 @@ public final class PrayerTimesWidgetPrefs {
         prefs(context).edit().putBoolean(key("show_header", widgetId), value).apply();
     }
 
-    public static boolean showDate(Context context, int widgetId) {
-        return prefs(context).getBoolean(key("show_date", widgetId), true);
+    public static boolean showCalendar(
+            Context context, int widgetId, int calendarType) {
+        return prefs(context).getBoolean(
+                key("show_calendar_" + calendarType, widgetId), true);
     }
 
-    public static void setShowDate(Context context, int widgetId, boolean value) {
-        prefs(context).edit().putBoolean(key("show_date", widgetId), value).apply();
+    public static void setShowCalendar(
+            Context context, int widgetId, int calendarType, boolean value) {
+        prefs(context).edit().putBoolean(
+                key("show_calendar_" + calendarType, widgetId), value).apply();
     }
 
     public static boolean showCountdown(Context context, int widgetId) {
@@ -190,6 +194,9 @@ public final class PrayerTimesWidgetPrefs {
                 .remove(key("font_size", widgetId))
                 .remove(key("show_header", widgetId))
                 .remove(key("show_date", widgetId))
+                .remove(key("show_calendar_" + CalendarUtils.PERSIAN, widgetId))
+                .remove(key("show_calendar_" + CalendarUtils.HIJRI, widgetId))
+                .remove(key("show_calendar_" + CalendarUtils.GREGORIAN, widgetId))
                 .remove(key("show_countdown", widgetId))
                 .remove(key("time_mode", widgetId))
                 .remove(key("show_icons", widgetId))

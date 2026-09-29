@@ -31,7 +31,15 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
     private Spinner activeColor;
     private Spinner fontSize;
     private Switch showHeader;
-    private Switch showDate;
+    private final Switch[] shownCalendars = new Switch[3];
+    private static final int[] CALENDAR_TYPES = {
+            CalendarUtils.PERSIAN, CalendarUtils.HIJRI, CalendarUtils.GREGORIAN
+    };
+    private static final String[] CALENDAR_LABELS = {
+            "نمایش تاریخ شمسی",
+            "نمایش تاریخ قمری",
+            "نمایش تاریخ میلادی"
+    };
     private Spinner timeMode;
     private Switch showIcons;
     private final Switch[] shownPrayerTimes = new Switch[8];
@@ -145,8 +153,14 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(section("محتوا"));
         showHeader = addSwitch(root, "نمایش هدر «اوقات شرعی»",
                 PrayerTimesWidgetPrefs.showHeader(this, widgetId));
-        showDate = addSwitch(root, "نمایش هر سه تقویم در هدر افق",
-                PrayerTimesWidgetPrefs.showDate(this, widgetId));
+        root.addView(label("تقویم‌های هدر هر افق", 12));
+        for (int index = 0; index < shownCalendars.length; index++) {
+            shownCalendars[index] = addSwitch(
+                    root,
+                    CALENDAR_LABELS[index],
+                    PrayerTimesWidgetPrefs.showCalendar(
+                            this, widgetId, CALENDAR_TYPES[index]));
+        }
         root.addView(label("نمایش زمان", 12));
         timeMode = spinner(new String[]{"ساعت محلی افق", "شمارش معکوس تا اذان بعدی"});
         timeMode.setSelection(PrayerTimesWidgetPrefs.timeMode(this, widgetId));
@@ -226,7 +240,13 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         PrayerTimesWidgetPrefs.setFontSize(
                 this, widgetId, fontSize.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowHeader(this, widgetId, showHeader.isChecked());
-        PrayerTimesWidgetPrefs.setShowDate(this, widgetId, showDate.isChecked());
+        for (int index = 0; index < shownCalendars.length; index++) {
+            PrayerTimesWidgetPrefs.setShowCalendar(
+                    this,
+                    widgetId,
+                    CALENDAR_TYPES[index],
+                    shownCalendars[index].isChecked());
+        }
         PrayerTimesWidgetPrefs.setTimeMode(
                 this, widgetId, timeMode.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowIcons(this, widgetId, showIcons.isChecked());

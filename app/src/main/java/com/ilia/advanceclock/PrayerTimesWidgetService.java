@@ -119,8 +119,10 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setTextColor(R.id.prayer_widget_local_date, secondary);
             row.setTextColor(R.id.prayer_widget_local_time, accent);
 
-            row.setViewVisibility(R.id.prayer_widget_local_date, View.VISIBLE);
-            row.setTextViewText(R.id.prayer_widget_local_date, localDate(now, zone));
+            String localDate = localDate(now, zone);
+            row.setViewVisibility(R.id.prayer_widget_local_date,
+                    localDate.isEmpty() ? View.GONE : View.VISIBLE);
+            row.setTextViewText(R.id.prayer_widget_local_date, localDate);
             row.setTextViewText(R.id.prayer_widget_local_time, localTime(now, zone));
 
             row.setViewVisibility(R.id.prayer_widget_current_chip, View.GONE);
