@@ -151,8 +151,13 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setTextViewText(R.id.prayer_value_fajr, times.fajr());
             row.setTextViewText(R.id.prayer_value_sunrise, times.sunrise());
             row.setTextViewText(R.id.prayer_value_dhuhr, times.dhuhr());
+            row.setTextViewText(R.id.prayer_value_asr, times.asr());
+            row.setTextViewText(R.id.prayer_value_sunset, times.sunset());
             row.setTextViewText(R.id.prayer_value_maghrib, times.maghrib());
             row.setTextViewText(R.id.prayer_value_isha, times.isha());
+            row.setTextViewText(R.id.prayer_value_midnight, times.midnight());
+
+            applySelectedTimes(row);
 
             applyTextColors(row, main, secondary);
             resetHighlights(row);
@@ -164,8 +169,11 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setViewVisibility(R.id.prayer_icon_fajr, iconVisibility);
             row.setViewVisibility(R.id.prayer_icon_sunrise, iconVisibility);
             row.setViewVisibility(R.id.prayer_icon_dhuhr, iconVisibility);
+            row.setViewVisibility(R.id.prayer_icon_asr, iconVisibility);
+            row.setViewVisibility(R.id.prayer_icon_sunset, iconVisibility);
             row.setViewVisibility(R.id.prayer_icon_maghrib, iconVisibility);
             row.setViewVisibility(R.id.prayer_icon_isha, iconVisibility);
+            row.setViewVisibility(R.id.prayer_icon_midnight, iconVisibility);
 
             applyFontSize(row, PrayerTimesWidgetPrefs.fontSize(context, widgetId));
 
@@ -181,25 +189,58 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             return CalendarUtils.fa(format.format(new Date(millis)));
         }
 
+        private void applySelectedTimes(RemoteViews row) {
+            String[] names = {
+                    "fajr", "sunrise", "dhuhr", "asr",
+                    "sunset", "maghrib", "isha", "midnight"
+            };
+            int[] cells = {
+                    R.id.prayer_time_fajr,
+                    R.id.prayer_time_sunrise,
+                    R.id.prayer_time_dhuhr,
+                    R.id.prayer_time_asr,
+                    R.id.prayer_time_sunset,
+                    R.id.prayer_time_maghrib,
+                    R.id.prayer_time_isha,
+                    R.id.prayer_time_midnight
+            };
+            for (int index = 0; index < names.length; index++) {
+                row.setViewVisibility(
+                        cells[index],
+                        PrayerTimesWidgetPrefs.showPrayerTime(
+                                context, widgetId, names[index])
+                                ? View.VISIBLE : View.GONE);
+            }
+        }
+
         private void applyTextColors(RemoteViews row, int main, int secondary) {
             int[] labels = {
                     R.id.prayer_label_fajr,
                     R.id.prayer_label_sunrise,
                     R.id.prayer_label_dhuhr,
+                    R.id.prayer_label_asr,
+                    R.id.prayer_label_sunset,
                     R.id.prayer_label_maghrib,
                     R.id.prayer_label_isha,
+                    R.id.prayer_label_midnight,
                     R.id.prayer_icon_fajr,
                     R.id.prayer_icon_sunrise,
                     R.id.prayer_icon_dhuhr,
+                    R.id.prayer_icon_asr,
+                    R.id.prayer_icon_sunset,
                     R.id.prayer_icon_maghrib,
-                    R.id.prayer_icon_isha
+                    R.id.prayer_icon_isha,
+                    R.id.prayer_icon_midnight
             };
             int[] values = {
                     R.id.prayer_value_fajr,
                     R.id.prayer_value_sunrise,
                     R.id.prayer_value_dhuhr,
+                    R.id.prayer_value_asr,
+                    R.id.prayer_value_sunset,
                     R.id.prayer_value_maghrib,
-                    R.id.prayer_value_isha
+                    R.id.prayer_value_isha,
+                    R.id.prayer_value_midnight
             };
             for (int id : labels) row.setTextColor(id, secondary);
             for (int id : values) row.setTextColor(id, main);
@@ -210,8 +251,11 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     R.id.prayer_time_fajr,
                     R.id.prayer_time_sunrise,
                     R.id.prayer_time_dhuhr,
+                    R.id.prayer_time_asr,
+                    R.id.prayer_time_sunset,
                     R.id.prayer_time_maghrib,
-                    R.id.prayer_time_isha
+                    R.id.prayer_time_isha,
+                    R.id.prayer_time_midnight
             };
             for (int id : cells) {
                 row.setInt(id, "setBackgroundResource", android.R.color.transparent);
@@ -249,6 +293,11 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     value = R.id.prayer_value_isha;
                     break;
                 case NEXT_ASR:
+                    cell = R.id.prayer_time_asr;
+                    label = R.id.prayer_label_asr;
+                    icon = R.id.prayer_icon_asr;
+                    value = R.id.prayer_value_asr;
+                    break;
                 default:
                     return;
             }
@@ -284,22 +333,31 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     R.id.prayer_label_fajr,
                     R.id.prayer_label_sunrise,
                     R.id.prayer_label_dhuhr,
+                    R.id.prayer_label_asr,
+                    R.id.prayer_label_sunset,
                     R.id.prayer_label_maghrib,
-                    R.id.prayer_label_isha
+                    R.id.prayer_label_isha,
+                    R.id.prayer_label_midnight
             };
             int[] values = {
                     R.id.prayer_value_fajr,
                     R.id.prayer_value_sunrise,
                     R.id.prayer_value_dhuhr,
+                    R.id.prayer_value_asr,
+                    R.id.prayer_value_sunset,
                     R.id.prayer_value_maghrib,
-                    R.id.prayer_value_isha
+                    R.id.prayer_value_isha,
+                    R.id.prayer_value_midnight
             };
             int[] icons = {
                     R.id.prayer_icon_fajr,
                     R.id.prayer_icon_sunrise,
                     R.id.prayer_icon_dhuhr,
+                    R.id.prayer_icon_asr,
+                    R.id.prayer_icon_sunset,
                     R.id.prayer_icon_maghrib,
-                    R.id.prayer_icon_isha
+                    R.id.prayer_icon_isha,
+                    R.id.prayer_icon_midnight
             };
             for (int id : labels) {
                 row.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, label);
@@ -329,7 +387,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     today.maghribMinutes,
                     today.ishaMinutes
             };
-            String[] labels = {"فجر", "ظهر", "عصر", "مغرب", "عشاء"};
+            String[] labels = {"صبح", "ظهر", "عصر", "مغرب", "عشاء"};
 
             for (int i = 0; i < values.length; i++) {
                 if (values[i] >= 0 && values[i] >= nowMinutes) {
@@ -348,7 +406,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             if (nextDay.fajrMinutes < 0) return null;
             return new NextPrayer(
                     NEXT_FAJR,
-                    "فجر",
+                    "صبح",
                     targetMillis(current, nextDay.fajrMinutes, true));
         }
 

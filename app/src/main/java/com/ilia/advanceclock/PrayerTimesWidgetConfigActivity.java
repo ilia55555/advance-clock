@@ -34,6 +34,15 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
     private Switch showDate;
     private Spinner timeMode;
     private Switch showIcons;
+    private final Switch[] shownPrayerTimes = new Switch[8];
+    private static final String[] PRAYER_TIME_KEYS = {
+            "fajr", "sunrise", "dhuhr", "asr",
+            "sunset", "maghrib", "isha", "midnight"
+    };
+    private static final String[] PRAYER_TIME_LABELS = {
+            "صبح", "طلوع", "ظهر", "عصر",
+            "غروب", "مغرب", "عشاء", "نیمه‌شب"
+    };
     private Switch showCurrentBadge;
     private Switch showManage;
     private Switch showScrollHint;
@@ -87,11 +96,11 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(top);
 
         preview = new TextView(this);
-        preview.setText("اوقات شرعی\nافق تهران   •   افق فعلی\nفجر ۰۴:۵۱   طلوع ۰۶:۱۸   ظهر ۱۲:۰۳   مغرب ۱۹:۴۸   عشاء ۲۱:۱۶");
+        preview.setText("اوقات شرعی\nافق تهران\nصبح ۰۴:۵۱   طلوع ۰۶:۱۸   ظهر ۱۲:۰۳   عصر ۱۵:۲۴\nغروب ۱۸:۰۲   مغرب ۱۸:۲۰   عشاء ۱۹:۴۸   نیمه‌شب ۲۳:۳۱");
         preview.setTextDirection(View.TEXT_DIRECTION_RTL);
         preview.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         preview.setPadding(dp(16), dp(12), dp(16), dp(12));
-        LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(118));
+        LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(148));
         previewLp.bottomMargin = dp(12);
         root.addView(preview, previewLp);
 
@@ -146,6 +155,14 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(timeMode, fieldLp());
         showIcons = addSwitch(root, "نمایش آیکون‌های اوقات",
                 PrayerTimesWidgetPrefs.showIcons(this, widgetId));
+        root.addView(label("اوقات قابل نمایش (هر ۸ مورد به‌صورت پیش‌فرض فعال‌اند)", 12));
+        for (int index = 0; index < shownPrayerTimes.length; index++) {
+            shownPrayerTimes[index] = addSwitch(
+                    root,
+                    PRAYER_TIME_LABELS[index],
+                    PrayerTimesWidgetPrefs.showPrayerTime(
+                            this, widgetId, PRAYER_TIME_KEYS[index]));
+        }
         showCurrentBadge = addSwitch(root, "برجسته‌کردن افق اصلی",
                 PrayerTimesWidgetPrefs.showCurrentBadge(this, widgetId));
         showManage = addSwitch(root, "نمایش دکمه مدیریت افق‌ها",
@@ -228,6 +245,13 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         PrayerTimesWidgetPrefs.setTimeMode(
                 this, widgetId, timeMode.getSelectedItemPosition());
         PrayerTimesWidgetPrefs.setShowIcons(this, widgetId, showIcons.isChecked());
+        for (int index = 0; index < shownPrayerTimes.length; index++) {
+            PrayerTimesWidgetPrefs.setShowPrayerTime(
+                    this,
+                    widgetId,
+                    PRAYER_TIME_KEYS[index],
+                    shownPrayerTimes[index].isChecked());
+        }
         PrayerTimesWidgetPrefs.setShowCurrentBadge(
                 this, widgetId, showCurrentBadge.isChecked());
         PrayerTimesWidgetPrefs.setShowManageButton(

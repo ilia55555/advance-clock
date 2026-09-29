@@ -134,6 +134,17 @@ public final class PrayerTimesWidgetPrefs {
         prefs(context).edit().putBoolean(key("show_icons", widgetId), value).apply();
     }
 
+    public static boolean showPrayerTime(Context context, int widgetId, String name) {
+        return prefs(context).getBoolean(
+                key("show_time_" + name, widgetId), true);
+    }
+
+    public static void setShowPrayerTime(
+            Context context, int widgetId, String name, boolean value) {
+        prefs(context).edit().putBoolean(
+                key("show_time_" + name, widgetId), value).apply();
+    }
+
     public static boolean showCurrentBadge(Context context, int widgetId) {
         return prefs(context).getBoolean(key("show_current_badge", widgetId), true);
     }
@@ -198,6 +209,14 @@ public final class PrayerTimesWidgetPrefs {
                 .remove(key("show_countdown", widgetId))
                 .remove(key("time_mode", widgetId))
                 .remove(key("show_icons", widgetId))
+                .remove(key("show_time_fajr", widgetId))
+                .remove(key("show_time_sunrise", widgetId))
+                .remove(key("show_time_dhuhr", widgetId))
+                .remove(key("show_time_asr", widgetId))
+                .remove(key("show_time_sunset", widgetId))
+                .remove(key("show_time_maghrib", widgetId))
+                .remove(key("show_time_isha", widgetId))
+                .remove(key("show_time_midnight", widgetId))
                 .remove(key("show_current_badge", widgetId))
                 .remove(key("show_manage", widgetId))
                 .remove(key("show_scroll_hint", widgetId))
