@@ -226,7 +226,7 @@ final class MainNoteTabEnhancer {
         AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(root)
                 .setNegativeButton("انصراف", null)
-                .setPositiveButton("ذخیره ترسیم", (dialog, which) -> {
+                .setPositiveButton("ذخیره ترسیم", (buttonDialog, which) -> {
                     stored.load(canvas.serialize());
                     updateActionButtons(activity, state);
                 })

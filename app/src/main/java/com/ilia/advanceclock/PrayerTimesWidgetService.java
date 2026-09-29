@@ -163,7 +163,55 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             resetHighlights(row);
             if (next != null) highlightNext(row, next.kind, active);
 
-            applyPrayerIcons(row);
+            int[] fallbackIconViews = {
+                    R.id.prayer_icon_fajr,
+                    R.id.prayer_icon_sunrise,
+                    R.id.prayer_icon_dhuhr,
+                    R.id.prayer_icon_asr,
+                    R.id.prayer_icon_sunset,
+                    R.id.prayer_icon_maghrib,
+                    R.id.prayer_icon_isha,
+                    R.id.prayer_icon_midnight
+            };
+            if (compact) {
+                for (int viewId : fallbackIconViews) {
+                    row.setViewVisibility(viewId, View.GONE);
+                }
+            } else {
+                int[] prayerIconImageViews = {
+                        R.id.prayer_icon_image_fajr,
+                        R.id.prayer_icon_image_sunrise,
+                        R.id.prayer_icon_image_dhuhr,
+                        R.id.prayer_icon_image_asr,
+                        R.id.prayer_icon_image_sunset,
+                        R.id.prayer_icon_image_maghrib,
+                        R.id.prayer_icon_image_isha,
+                        R.id.prayer_icon_image_midnight
+                };
+                String[] prayerIconDrawableNames = {
+                        "prayer_morning", "prayer_sunrise", "prayer_noon",
+                        "prayer_afternoon", "prayer_sunset", "prayer_maghrib",
+                        "prayer_isha", "prayer_midnight"
+                };
+                boolean showPrayerIcons = PrayerTimesWidgetPrefs.showIcons(
+                        context, widgetId);
+                for (int index = 0; index < prayerIconDrawableNames.length; index++) {
+                    int drawable = context.getResources().getIdentifier(
+                            prayerIconDrawableNames[index],
+                            "drawable",
+                            context.getPackageName());
+                    boolean hasImage = showPrayerIcons && drawable != 0;
+                    row.setViewVisibility(
+                            prayerIconImageViews[index],
+                            hasImage ? View.VISIBLE : View.GONE);
+                    row.setViewVisibility(
+                            fallbackIconViews[index],
+                            showPrayerIcons && !hasImage ? View.VISIBLE : View.GONE);
+                    if (hasImage) {
+                        row.setImageViewResource(prayerIconImageViews[index], drawable);
+                    }
+                }
+            }
 
             applyFontSize(row, PrayerTimesWidgetPrefs.fontSize(context, widgetId));
 
