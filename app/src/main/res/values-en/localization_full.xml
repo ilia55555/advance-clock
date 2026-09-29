@@ -317,7 +317,89 @@
         <item>Prayer-time notifications</item>
         <item>Note alarms</item>
         <item>Timed note alarms</item>
-    </string-array>
+            <item>Tools</item>
+        <item>Compass tools</item>
+        <item>Display mode</item>
+        <item>Classic compass</item>
+        <item>Qibla compass</item>
+        <item>Eight cardinal directions</item>
+        <item>Reading direction sensor…</item>
+        <item>This device does not have an orientation sensor.</item>
+        <item>Set your location in Prayer Time Settings before using the Qibla compass.</item>
+        <item>Qibla %.0f° • Current deviation %.0f°</item>
+        <item>Bearing from north  </item>
+        <item>North</item>
+        <item>Northeast</item>
+        <item>East</item>
+        <item>Southeast</item>
+        <item>South</item>
+        <item>Southwest</item>
+        <item>West</item>
+        <item>Northwest</item>
+        <item>NE</item>
+        <item>SE</item>
+        <item>SW</item>
+        <item>NW</item>
+        <item>Compass</item>
+        <item>Selected</item>
+        <item>Adhan settings</item>
+        <item>Configure all</item>
+        <item>Individual settings</item>
+        <item>Sound and alert behavior</item>
+        <item>Muezzin</item>
+        <item>+ Upload muezzin audio</item>
+        <item>Volume: </item>
+        <item>Volume for </item>
+        <item>Enable or disable </item>
+        <item>Show prayer times below the calendar</item>
+        <item>Horizons</item>
+        <item>+ Add horizon</item>
+        <item>No horizons have been added yet.</item>
+        <item>Adhan is active</item>
+        <item>Default ✓</item>
+        <item> as the default horizon</item>
+        <item>Default horizon </item>
+        <item>Automatically delete past alarms with no future recurrence</item>
+        <item>Show the adhan and prayer-times section</item>
+        <item>Show adhan section</item>
+        <item>⚠ Adhan is not scheduled; tap here to set a location.</item>
+        <item>⚠ Adhan is not scheduled; enable exact-alarm permission.</item>
+        <item>⚠ Adhan is scheduled, but notification permission is missing.</item>
+        <item>⚠ Adhan scheduling failed; tap here to try again.</item>
+        <item>All adhan alerts are disabled.</item>
+        <item>Location service is unavailable.</item>
+        <item>Turn on device location and try again.</item>
+        <item>Could not start location detection; check location and permission settings.</item>
+        <item>Could not get a precise location; try again.</item>
+        <item>Current location</item>
+        <item>Update current precise location</item>
+        <item>Search offline first, then online if needed</item>
+        <item>First search for a city, state, country, or time zone</item>
+        <item>City, state, country, or time zone</item>
+        <item>Searching online…</item>
+        <item>Enter one more character for global search</item>
+        <item>No offline result found; internet is required for a new search</item>
+        <item>This time zone has already been added</item>
+        <item>At least one world clock must remain</item>
+        <item>Add</item>
+        <item>Quick note</item>
+        <item>What must you not forget?</item>
+        <item>Details, alarm, or drawing</item>
+        <item>The note is empty</item>
+        <item>Enter text or a drawing</item>
+        <item>Menu</item>
+        <item>Dark and light mode</item>
+        <item>+ Widget</item>
+        <item>Create alarm</item>
+        <item>Weekly holiday</item>
+        <item>No events recorded.</item>
+        <item>No alarms have been set yet.</item>
+        <item>You do not have any notes yet.</item>
+        <item>✓ Exact alarms</item>
+        <item>✕ Exact alarms</item>
+        <item>✓ Alarm screen</item>
+        <item>✕ Alarm screen</item>
+</string-array>
     <string-array name="palette_names">
         <item>Orange</item>
         <item>Pink Blue</item>

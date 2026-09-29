@@ -346,14 +346,15 @@ public final class MainActivity extends Activity {
 
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
-            menu.getMenu().add(0, 1, 0, "تنظیمات");
+            menu.getMenu().add(0, 1, 0, UiText.tr(this, "تنظیمات"));
             if (AppSettings.adhanEnabled(this))
-                menu.getMenu().add(0, 7, 1, "تنظیمات اذان و اوقات شرعی");
-            menu.getMenu().add(0, 4, 2, "تنظیمات اعلان");
-            menu.getMenu().add(0, 5, 3, "ویجت‌ها و تنظیمات");
-            menu.getMenu().add(0, 6, 4, "جابه‌جایی ترتیب تب‌ها");
-            menu.getMenu().add(0, 8, 5, "ابزارها");
-            menu.getMenu().add(0, 3, 6, "مجوزهای آلارم و اعلان");
+                menu.getMenu().add(0, 7, 1,
+                        UiText.tr(this, "تنظیمات اذان و اوقات شرعی"));
+            menu.getMenu().add(0, 4, 2, UiText.tr(this, "تنظیمات اعلان"));
+            menu.getMenu().add(0, 5, 3, UiText.tr(this, "ویجت‌ها و تنظیمات"));
+            menu.getMenu().add(0, 6, 4, UiText.tr(this, "جابه‌جایی ترتیب تب‌ها"));
+            menu.getMenu().add(0, 8, 5, UiText.tr(this, "ابزارها"));
+            menu.getMenu().add(0, 3, 6, UiText.tr(this, "مجوزهای آلارم و اعلان"));
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);

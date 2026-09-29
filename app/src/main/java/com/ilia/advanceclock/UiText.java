@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -131,6 +132,14 @@ public final class UiText {
             if (listener != null && root != null && root.getViewTreeObserver().isAlive())
                 root.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
         }
+    }
+
+    /** Localize a dialog window, which is not part of its host activity's decor tree. */
+    public static void localize(Dialog dialog) {
+        if (dialog == null || dialog.getWindow() == null) return;
+        View root = dialog.getWindow().getDecorView();
+        Context context = dialog.getContext();
+        root.post(() -> localizeView(context, root));
     }
 
     private static void localizeTree(Activity activity, View root) {

@@ -53,7 +53,7 @@ public final class TabOrderDialog {
             }
         };
         render[0].run();
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("ترتیب تب‌ها")
                 .setMessage("با دکمه‌های بالا و پایین، جای هر تب را تغییر دهید.")
                 .setView(list)
@@ -62,7 +62,9 @@ public final class TabOrderDialog {
                     AppSettings.setTabOrder(context, order);
                     onSaved.run();
                 })
-                .show();
+                .create();
+        dialog.show();
+        UiText.localize(dialog);
     }
 
     private static Button moveButton(Context context, String text) {
