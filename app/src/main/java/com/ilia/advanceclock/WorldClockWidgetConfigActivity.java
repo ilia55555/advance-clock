@@ -31,7 +31,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            LogoToast.makeText(this, "شناسه ویجت معتبر نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0672), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -45,7 +45,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        TextView title = label("تنظیمات ویجت ساعت جهانی", 23);
+        TextView title = label(AppString.get(R.string.runtime_text_0242), 23);
         title.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
         top.addView(title, new LinearLayout.LayoutParams(0, dp(60), 1f));
         ImageButton close = new ImageButton(this);
@@ -53,7 +53,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
@@ -63,18 +63,18 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         previewLp.bottomMargin = dp(12);
         root.addView(preview, previewLp);
 
-        root.addView(label("پس‌زمینه", 13));
-        Spinner background = spinner(new String[]{"شفاف (پیش‌فرض)", "مشکی ۷۰٪", "مشکی", "سفید",
-                "آبی", "فیروزه‌ای", "بنفش", "زرشکی", "سبز"});
+        root.addView(label(AppString.get(R.string.runtime_text_0243), 13));
+        Spinner background = spinner(new String[]{AppString.get(R.string.runtime_text_0244), AppString.get(R.string.runtime_text_0245), AppString.get(R.string.runtime_text_0246), AppString.get(R.string.runtime_text_0247),
+                AppString.get(R.string.runtime_text_0248), AppString.get(R.string.runtime_text_0249), AppString.get(R.string.runtime_text_0250), AppString.get(R.string.runtime_text_0673), AppString.get(R.string.runtime_text_0252)});
         background.setSelection(WorldClockWidgetPrefs.background(this, widgetId));
         root.addView(background, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label("رنگ نام شهر و تاریخ", 13));
+        root.addView(label(AppString.get(R.string.runtime_text_0674), 13));
         Spinner text = colorSpinner();
         text.setSelection(colorPosition(WorldClockWidgetPrefs.textColor(this, widgetId)));
         root.addView(text, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label("رنگ ساعت", 13));
+        root.addView(label(AppString.get(R.string.runtime_text_0675), 13));
         Spinner time = colorSpinner();
         time.setSelection(colorPosition(WorldClockWidgetPrefs.timeColor(this, widgetId)));
         root.addView(time, new LinearLayout.LayoutParams(-1, dp(54)));
@@ -132,8 +132,8 @@ public final class WorldClockWidgetConfigActivity extends Activity {
     }
 
     private Spinner colorSpinner() {
-        return spinner(new String[]{"سفید (پیش‌فرض)", "مشکی", "آبی", "فیروزه‌ای", "طلایی",
-                "قرمز", "سبز", "بنفش", "نارنجی", "صورتی", "نقره‌ای", "قهوه‌ای"});
+        return spinner(new String[]{AppString.get(R.string.runtime_text_0676), AppString.get(R.string.runtime_text_0246), AppString.get(R.string.runtime_text_0248), AppString.get(R.string.runtime_text_0249), AppString.get(R.string.runtime_text_0253),
+                AppString.get(R.string.runtime_text_0251), AppString.get(R.string.runtime_text_0252), AppString.get(R.string.runtime_text_0250), AppString.get(R.string.runtime_text_0254), AppString.get(R.string.runtime_text_0255), AppString.get(R.string.runtime_text_0617), AppString.get(R.string.runtime_text_0677)});
     }
 
     private Spinner spinner(String[] values) {
