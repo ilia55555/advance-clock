@@ -964,4 +964,12 @@
     <string name="iran_location_text_029" formatted="false">بجنورد، خراسان الشمالية، إيران</string>
     <string name="iran_location_text_030" formatted="false">زاهدان، سيستان وبلوشستان، إيران</string>
     <string name="iran_location_text_031" formatted="false">أراك، محافظة مركزي، إيران</string>
+    <!-- Smart-alarm parser messages shown to the user -->
+    <string name="smart_alarm_minutes_joiner" formatted="false"> دقيقة </string>
+    <string name="smart_alarm_before" formatted="false">قبل</string>
+    <string name="smart_alarm_after" formatted="false">بعد</string>
+    <string name="smart_alarm_no_input" formatted="false">لم يتم إدخال نص للتحليل.</string>
+    <string name="smart_alarm_json_no_datetime" formatted="false">ملف JSON صالح، لكن لم يتم العثور على تاريخ ووقت قابلين للاستخدام.</string>
+    <string name="smart_alarm_json_fallback" formatted="false">بدت البنية كأنها JSON لكنها غير صالحة، لذلك تم تحليلها كنص عادي.</string>
+    <string name="smart_alarm_no_datetime" formatted="false">لم يتم العثور على تاريخ ووقت يمكن التعرّف عليهما. مثال: 2026/09/26 الساعة 13:00</string>
 </resources>
