@@ -844,4 +844,89 @@ Unlocked</string>
 Lock screen</string>
     <string formatted="false" name="runtime_text_0705">Note saved; enable exact alarm access.</string>
     <string name="prayer_times_widget_description">Show prayer times for all selected horizons</string>
+    <!-- Calendar event and source labels: resource-ID-only localization -->
+    <string name="calendar_event_text_001" formatted="false">Institute of Geophysics, University of Tehran Calendar Center</string>
+    <string name="calendar_event_text_002" formatted="false">United Nations Observances Calendar</string>
+    <string name="calendar_event_text_003" formatted="false">Saudi Umm al-Qura calendar for shared Arab observances</string>
+    <string name="calendar_event_text_004" formatted="false">Gregorian • International</string>
+    <string name="calendar_event_text_005" formatted="false">Hijri • Arab countries</string>
+    <string name="calendar_event_text_006" formatted="false">Persian • Iran</string>
+    <string name="calendar_event_text_007" formatted="false">Official holiday</string>
+    <string name="calendar_event_text_008" formatted="false">Shared/common holiday</string>
+    <string name="calendar_event_text_009" formatted="false">Common holiday</string>
+    <string name="calendar_event_text_010" formatted="false">Data version: </string>
+    <string name="calendar_event_text_011" formatted="false"> • This year’s observances require review against an official source</string>
+    <string name="calendar_event_text_012" formatted="false"> • Active sources: </string>
+    <string name="calendar_event_text_013" formatted="false">Nowruz</string>
+    <string name="calendar_event_text_014" formatted="false">Nowruz holidays</string>
+    <string name="calendar_event_text_015" formatted="false">Islamic Republic of Iran Day</string>
+    <string name="calendar_event_text_016" formatted="false">Nature Day</string>
+    <string name="calendar_event_text_017" formatted="false">Anniversary of Imam Khomeini’s passing</string>
+    <string name="calendar_event_text_018" formatted="false">15 Khordad Uprising</string>
+    <string name="calendar_event_text_019" formatted="false">Victory of the Islamic Revolution</string>
+    <string name="calendar_event_text_020" formatted="false">Oil Industry Nationalization Day</string>
+    <string name="calendar_event_text_021" formatted="false">Yalda Night</string>
+    <string name="calendar_event_text_022" formatted="false">Day of Hope and Good-Wishes Writing</string>
+    <string name="calendar_event_text_023" formatted="false">Performing Arts Day</string>
+    <string name="calendar_event_text_024" formatted="false">National Nuclear Technology Day</string>
+    <string name="calendar_event_text_025" formatted="false">Attar of Nishapur Commemoration Day</string>
+    <string name="calendar_event_text_026" formatted="false">Saadi Commemoration Day</string>
+    <string name="calendar_event_text_027" formatted="false">National Persian Gulf Day</string>
+    <string name="calendar_event_text_028" formatted="false">Ferdowsi Commemoration Day</string>
+    <string name="calendar_event_text_029" formatted="false">Khayyam Commemoration Day</string>
+    <string name="calendar_event_text_030" formatted="false">Mulla Sadra Commemoration Day</string>
+    <string name="calendar_event_text_031" formatted="false">Liberation of Khorramshahr</string>
+    <string name="calendar_event_text_032" formatted="false">World Handicrafts Day</string>
+    <string name="calendar_event_text_033" formatted="false">Guilds Day</string>
+    <string name="calendar_event_text_034" formatted="false">Judiciary Day</string>
+    <string name="calendar_event_text_035" formatted="false">Industry and Mining Day</string>
+    <string name="calendar_event_text_036" formatted="false">Pen Day</string>
+    <string name="calendar_event_text_037" formatted="false">Suhrawardi Commemoration Day</string>
+    <string name="calendar_event_text_038" formatted="false">Journalist Day</string>
+    <string name="calendar_event_text_039" formatted="false">Anniversary of the 28 Mordad coup</string>
+    <string name="calendar_event_text_040" formatted="false">Avicenna Commemoration Day and Doctor’s Day</string>
+    <string name="calendar_event_text_041" formatted="false">Employee Day</string>
+    <string name="calendar_event_text_042" formatted="false">Al-Biruni Commemoration Day</string>
+    <string name="calendar_event_text_043" formatted="false">Persian Poetry and Literature Day</string>
+    <string name="calendar_event_text_044" formatted="false">Firefighting and Safety Day</string>
+    <string name="calendar_event_text_045" formatted="false">Rumi Commemoration Day</string>
+    <string name="calendar_event_text_046" formatted="false">Hafez Commemoration Day</string>
+    <string name="calendar_event_text_047" formatted="false">Teenager Day</string>
+    <string name="calendar_event_text_048" formatted="false">School Student Day</string>
+    <string name="calendar_event_text_049" formatted="false">Navy Day</string>
+    <string name="calendar_event_text_050" formatted="false">University Student Day</string>
+    <string name="calendar_event_text_051" formatted="false">Research Day</string>
+    <string name="calendar_event_text_052" formatted="false">Earthquake Safety Day</string>
+    <string name="calendar_event_text_053" formatted="false">World Resistance Day</string>
+    <string name="calendar_event_text_054" formatted="false">Anniversary of Amir Kabir’s martyrdom</string>
+    <string name="calendar_event_text_055" formatted="false">Imam Khomeini’s return to Iran</string>
+    <string name="calendar_event_text_056" formatted="false">Nasir al-Din al-Tusi Commemoration Day and Engineer’s Day</string>
+    <string name="calendar_event_text_057" formatted="false">Arbor Day</string>
+    <string name="calendar_event_text_058" formatted="false">Birth of Imam Ali</string>
+    <string name="calendar_event_text_059" formatted="false">Prophet Muhammad’s Mission</string>
+    <string name="calendar_event_text_060" formatted="false">Birth of Imam Mahdi</string>
+    <string name="calendar_event_text_061" formatted="false">Martyrdom of Imam Ali</string>
+    <string name="calendar_event_text_062" formatted="false">Eid al-Fitr</string>
+    <string name="calendar_event_text_063" formatted="false">Eid al-Fitr holiday</string>
+    <string name="calendar_event_text_064" formatted="false">Martyrdom of Imam Ja’far al-Sadiq</string>
+    <string name="calendar_event_text_065" formatted="false">Eid al-Adha</string>
+    <string name="calendar_event_text_066" formatted="false">Eid al-Ghadir Khumm</string>
+    <string name="calendar_event_text_067" formatted="false">Tasu’a of Husayn</string>
+    <string name="calendar_event_text_068" formatted="false">Ashura of Husayn</string>
+    <string name="calendar_event_text_069" formatted="false">Arba’een of Husayn</string>
+    <string name="calendar_event_text_070" formatted="false">Passing of Prophet Muhammad and martyrdom of Imam Hasan al-Mujtaba</string>
+    <string name="calendar_event_text_071" formatted="false">Martyrdom of Imam Reza</string>
+    <string name="calendar_event_text_072" formatted="false">Martyrdom of Imam Hasan al-Askari</string>
+    <string name="calendar_event_text_073" formatted="false">Birth of Prophet Muhammad and Imam Ja’far al-Sadiq</string>
+    <string name="calendar_event_text_074" formatted="false">Martyrdom of Fatimah al-Zahra</string>
+    <string name="calendar_event_text_075" formatted="false">Islamic New Year</string>
+    <string name="calendar_event_text_076" formatted="false">Mawlid al-Nabi</string>
+    <string name="calendar_event_text_077" formatted="false">Isra and Mi’raj</string>
+    <string name="calendar_event_text_078" formatted="false">Start of Ramadan</string>
+    <string name="calendar_event_text_079" formatted="false">Laylat al-Qadr</string>
+    <string name="calendar_event_text_080" formatted="false">Eid al-Fitr</string>
+    <string name="calendar_event_text_081" formatted="false">Eid al-Fitr holiday</string>
+    <string name="calendar_event_text_082" formatted="false">Day of Arafah</string>
+    <string name="calendar_event_text_083" formatted="false">Eid al-Adha</string>
+    <string name="calendar_event_text_084" formatted="false">Eid al-Adha holiday</string>
 </resources>
