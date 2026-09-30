@@ -844,4 +844,12 @@ Kilit ekranı</string>
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">Ezanı çalma</string>
+    <string name="adhan_skip_description">Seçilen günlerde ezan çalınmaz.</string>
+    <string name="adhan_skip_mode_off">Kapalı</string>
+    <string name="adhan_skip_mode_weekdays">Haftanın günleri</string>
+    <string name="adhan_skip_mode_dates">Belirli tarihler</string>
+    <string name="adhan_skip_add_date">Tarih ekle</string>
+    <string name="adhan_skip_no_dates">Henüz tarih seçilmedi.</string>
+    <string name="adhan_skip_remove_date">Kaldır</string>
 </resources>
