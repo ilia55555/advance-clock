@@ -847,4 +847,89 @@
     <string name="ui_snooze_after">غفوة بعد</string>
     <string name="ui_snooze">غفوة</string>
     <string name="ui_stop_alarm">إيقاف المنبّه</string>
+    <!-- Calendar event and source labels: resource-ID-only localization -->
+    <string name="calendar_event_text_001" formatted="false">مركز تقويم معهد الجيوفيزياء بجامعة طهران</string>
+    <string name="calendar_event_text_002" formatted="false">تقويم مناسبات الأمم المتحدة</string>
+    <string name="calendar_event_text_003" formatted="false">تقويم أم القرى السعودي للمناسبات العربية المشتركة</string>
+    <string name="calendar_event_text_004" formatted="false">ميلادي • دولي</string>
+    <string name="calendar_event_text_005" formatted="false">هجري • الدول العربية</string>
+    <string name="calendar_event_text_006" formatted="false">هجري شمسي • إيران</string>
+    <string name="calendar_event_text_007" formatted="false">عطلة رسمية</string>
+    <string name="calendar_event_text_008" formatted="false">عطلة مشتركة/شائعة</string>
+    <string name="calendar_event_text_009" formatted="false">عطلة شائعة</string>
+    <string name="calendar_event_text_010" formatted="false">إصدار البيانات: </string>
+    <string name="calendar_event_text_011" formatted="false"> • مناسبات هذا العام تحتاج إلى مراجعة مصدر رسمي</string>
+    <string name="calendar_event_text_012" formatted="false"> • المصادر النشطة: </string>
+    <string name="calendar_event_text_013" formatted="false">نوروز</string>
+    <string name="calendar_event_text_014" formatted="false">عطلات نوروز</string>
+    <string name="calendar_event_text_015" formatted="false">يوم الجمهورية الإسلامية الإيرانية</string>
+    <string name="calendar_event_text_016" formatted="false">يوم الطبيعة</string>
+    <string name="calendar_event_text_017" formatted="false">ذكرى رحيل الإمام الخميني</string>
+    <string name="calendar_event_text_018" formatted="false">انتفاضة 15 خرداد</string>
+    <string name="calendar_event_text_019" formatted="false">انتصار الثورة الإسلامية</string>
+    <string name="calendar_event_text_020" formatted="false">يوم تأميم صناعة النفط</string>
+    <string name="calendar_event_text_021" formatted="false">ليلة يلدا</string>
+    <string name="calendar_event_text_022" formatted="false">يوم الأمل وكتابة التهاني</string>
+    <string name="calendar_event_text_023" formatted="false">يوم الفنون الأدائية</string>
+    <string name="calendar_event_text_024" formatted="false">اليوم الوطني للتقنية النووية</string>
+    <string name="calendar_event_text_025" formatted="false">يوم إحياء ذكرى عطار النيسابوري</string>
+    <string name="calendar_event_text_026" formatted="false">يوم إحياء ذكرى سعدي</string>
+    <string name="calendar_event_text_027" formatted="false">اليوم الوطني للخليج الفارسي</string>
+    <string name="calendar_event_text_028" formatted="false">يوم إحياء ذكرى الفردوسي</string>
+    <string name="calendar_event_text_029" formatted="false">يوم إحياء ذكرى الخيام</string>
+    <string name="calendar_event_text_030" formatted="false">يوم إحياء ذكرى ملا صدرا</string>
+    <string name="calendar_event_text_031" formatted="false">تحرير خرمشهر</string>
+    <string name="calendar_event_text_032" formatted="false">اليوم العالمي للحرف اليدوية</string>
+    <string name="calendar_event_text_033" formatted="false">يوم النقابات</string>
+    <string name="calendar_event_text_034" formatted="false">يوم السلطة القضائية</string>
+    <string name="calendar_event_text_035" formatted="false">يوم الصناعة والتعدين</string>
+    <string name="calendar_event_text_036" formatted="false">يوم القلم</string>
+    <string name="calendar_event_text_037" formatted="false">يوم إحياء ذكرى شهاب الدين السهروردي</string>
+    <string name="calendar_event_text_038" formatted="false">يوم الصحفي</string>
+    <string name="calendar_event_text_039" formatted="false">ذكرى انقلاب 28 مرداد</string>
+    <string name="calendar_event_text_040" formatted="false">يوم إحياء ذكرى ابن سينا ويوم الطبيب</string>
+    <string name="calendar_event_text_041" formatted="false">يوم الموظف</string>
+    <string name="calendar_event_text_042" formatted="false">يوم إحياء ذكرى أبو الريحان البيروني</string>
+    <string name="calendar_event_text_043" formatted="false">يوم الشعر والأدب الفارسي</string>
+    <string name="calendar_event_text_044" formatted="false">يوم الإطفاء والسلامة</string>
+    <string name="calendar_event_text_045" formatted="false">يوم إحياء ذكرى مولانا</string>
+    <string name="calendar_event_text_046" formatted="false">يوم إحياء ذكرى حافظ</string>
+    <string name="calendar_event_text_047" formatted="false">يوم اليافعين</string>
+    <string name="calendar_event_text_048" formatted="false">يوم الطالب المدرسي</string>
+    <string name="calendar_event_text_049" formatted="false">يوم القوات البحرية</string>
+    <string name="calendar_event_text_050" formatted="false">يوم الطالب الجامعي</string>
+    <string name="calendar_event_text_051" formatted="false">يوم البحث العلمي</string>
+    <string name="calendar_event_text_052" formatted="false">يوم السلامة من الزلازل</string>
+    <string name="calendar_event_text_053" formatted="false">اليوم العالمي للمقاومة</string>
+    <string name="calendar_event_text_054" formatted="false">ذكرى استشهاد أمير كبير</string>
+    <string name="calendar_event_text_055" formatted="false">عودة الإمام الخميني إلى إيران</string>
+    <string name="calendar_event_text_056" formatted="false">يوم إحياء ذكرى نصير الدين الطوسي ويوم المهندس</string>
+    <string name="calendar_event_text_057" formatted="false">يوم التشجير</string>
+    <string name="calendar_event_text_058" formatted="false">مولد الإمام علي</string>
+    <string name="calendar_event_text_059" formatted="false">المبعث النبوي الشريف</string>
+    <string name="calendar_event_text_060" formatted="false">مولد الإمام المهدي</string>
+    <string name="calendar_event_text_061" formatted="false">استشهاد الإمام علي</string>
+    <string name="calendar_event_text_062" formatted="false">عيد الفطر</string>
+    <string name="calendar_event_text_063" formatted="false">عطلة عيد الفطر</string>
+    <string name="calendar_event_text_064" formatted="false">استشهاد الإمام جعفر الصادق</string>
+    <string name="calendar_event_text_065" formatted="false">عيد الأضحى</string>
+    <string name="calendar_event_text_066" formatted="false">عيد الغدير خم</string>
+    <string name="calendar_event_text_067" formatted="false">تاسوعاء الحسين</string>
+    <string name="calendar_event_text_068" formatted="false">عاشوراء الحسين</string>
+    <string name="calendar_event_text_069" formatted="false">أربعينية الحسين</string>
+    <string name="calendar_event_text_070" formatted="false">وفاة النبي محمد واستشهاد الإمام الحسن المجتبى</string>
+    <string name="calendar_event_text_071" formatted="false">استشهاد الإمام الرضا</string>
+    <string name="calendar_event_text_072" formatted="false">استشهاد الإمام الحسن العسكري</string>
+    <string name="calendar_event_text_073" formatted="false">مولد النبي محمد والإمام جعفر الصادق</string>
+    <string name="calendar_event_text_074" formatted="false">استشهاد السيدة فاطمة الزهراء</string>
+    <string name="calendar_event_text_075" formatted="false">رأس السنة الهجرية</string>
+    <string name="calendar_event_text_076" formatted="false">المولد النبوي الشريف</string>
+    <string name="calendar_event_text_077" formatted="false">الإسراء والمعراج</string>
+    <string name="calendar_event_text_078" formatted="false">بداية شهر رمضان</string>
+    <string name="calendar_event_text_079" formatted="false">ليلة القدر</string>
+    <string name="calendar_event_text_080" formatted="false">عيد الفطر</string>
+    <string name="calendar_event_text_081" formatted="false">إجازة عيد الفطر</string>
+    <string name="calendar_event_text_082" formatted="false">يوم عرفة</string>
+    <string name="calendar_event_text_083" formatted="false">عيد الأضحى</string>
+    <string name="calendar_event_text_084" formatted="false">إجازة عيد الأضحى</string>
 </resources>
