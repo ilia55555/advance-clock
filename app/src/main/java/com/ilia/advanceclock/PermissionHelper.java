@@ -35,11 +35,11 @@ public final class PermissionHelper {
 
     public static String statusText(Context context) {
         StringBuilder text = new StringBuilder();
-        text.append(notificationsGranted(context) ? "✓ اعلان‌ها" : "✕ اعلان‌ها");
+        text.append(notificationsGranted(context) ? AppString.get(R.string.runtime_text_0439) : AppString.get(R.string.runtime_text_0440));
         text.append("   ");
-        text.append(exactAlarmsGranted(context) ? "✓ آلارم دقیق" : "✕ آلارم دقیق");
+        text.append(exactAlarmsGranted(context) ? AppString.get(R.string.runtime_text_0395) : AppString.get(R.string.runtime_text_0396));
         text.append("   ");
-        text.append(fullScreenGranted(context) ? "✓ صفحه زنگ" : "✕ صفحه زنگ");
+        text.append(fullScreenGranted(context) ? AppString.get(R.string.runtime_text_0397) : AppString.get(R.string.runtime_text_0398));
         return text.toString();
     }
 }
