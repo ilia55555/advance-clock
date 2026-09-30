@@ -844,4 +844,12 @@
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">アザーンを再生しない</string>
+    <string name="adhan_skip_description">選択した日はアザーンを再生しません。</string>
+    <string name="adhan_skip_mode_off">オフ</string>
+    <string name="adhan_skip_mode_weekdays">曜日</string>
+    <string name="adhan_skip_mode_dates">指定日</string>
+    <string name="adhan_skip_add_date">日付を追加</string>
+    <string name="adhan_skip_no_dates">まだ日付が選択されていません。</string>
+    <string name="adhan_skip_remove_date">削除</string>
 </resources>
