@@ -49,7 +49,7 @@ public final class PenSizeAdapter extends BaseAdapter {
         image.setScaleType(ImageView.ScaleType.CENTER);
         image.setPadding(dp(10), dp(8), dp(10), dp(8));
         image.setBackgroundResource(R.drawable.bg_field);
-        image.setContentDescription("اندازه قلم " + (position + 1));
+        image.setContentDescription(AppString.get(R.string.runtime_text_0471) + (position + 1));
 
         android.widget.AbsListView.LayoutParams lp =
                 new android.widget.AbsListView.LayoutParams(dp(48), dp(heightDp));
