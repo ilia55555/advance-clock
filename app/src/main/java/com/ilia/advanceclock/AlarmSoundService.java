@@ -4,8 +4,10 @@ import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -20,6 +22,7 @@ import android.os.VibratorManager;
 public final class AlarmSoundService extends Service {
     public static final String ACTION_START = "com.ilia.advanceclock.START_ALARM";
     public static final String ACTION_STOP = "com.ilia.advanceclock.STOP_ALARM";
+    public static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_ALARM";
 
     private MediaPlayer player;
     private Vibrator vibrator;
@@ -27,6 +30,13 @@ public final class AlarmSoundService extends Service {
     private long currentAlarmId = -1L;
     private boolean currentVibrate = true;
     private String currentSoundUri = "";
+    private boolean muted;
+
+    private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) muteCurrentAlarm();
+        }
+    };
 
     public static Intent startIntent(Context context, long id, String label) {
         return startIntent(context, id, label, true, "");
@@ -50,9 +60,19 @@ public final class AlarmSoundService extends Service {
         return new Intent(context, AlarmSoundService.class).setAction(ACTION_STOP);
     }
 
+    public static Intent muteIntent(Context context) {
+        return new Intent(context, AlarmSoundService.class).setAction(ACTION_MUTE);
+    }
+
     @Override public void onCreate() {
         super.onCreate();
         NotificationHelper.ensureChannel(this);
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(screenReceiver, filter, RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(screenReceiver, filter);
+        }
     }
 
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
@@ -60,6 +80,10 @@ public final class AlarmSoundService extends Service {
         if (ACTION_STOP.equals(intent.getAction())) {
             stopAlarm();
             stopSelf();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_MUTE.equals(intent.getAction())) {
+            muteCurrentAlarm();
             return START_NOT_STICKY;
         }
 
@@ -141,6 +165,7 @@ public final class AlarmSoundService extends Service {
 
     private void startSound() {
         stopPlayer();
+        muted = false;
         try {
             Uri uri = currentSoundUri == null || currentSoundUri.isEmpty()
                     ? Uri.parse(AppSettings.defaultAlarmSoundUri(this))
@@ -157,9 +182,18 @@ public final class AlarmSoundService extends Service {
             player.setDataSource(this, uri);
             player.setLooping(true);
             player.prepare();
+            player.setVolume(muted ? 0f : 1f, muted ? 0f : 1f);
             player.start();
         } catch (Exception ignored) {
             stopPlayer();
+        }
+    }
+
+    private void muteCurrentAlarm() {
+        muted = true;
+        try {
+            if (player != null) player.setVolume(0f, 0f);
+        } catch (Exception ignored) {
         }
     }
 
@@ -228,6 +262,7 @@ public final class AlarmSoundService extends Service {
 
     @Override public void onDestroy() {
         stopAlarm();
+        try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
         super.onDestroy();
     }
 
