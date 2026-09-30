@@ -107,7 +107,7 @@ final class TimerPanelController {
         long value = remainingMillis > 0 ? remainingMillis
                 : dateTimeMode ? selectedTarget - System.currentTimeMillis() : readDuration();
         if (value <= 0L) {
-            LogoToast.makeText(host, dateTimeMode ? "تاریخ و ساعت آینده را انتخاب کنید" : "یک زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, dateTimeMode ? AppString.get(R.string.runtime_text_0165) : AppString.get(R.string.runtime_text_0166), Toast.LENGTH_SHORT).show();
             return;
         }
         deadline = System.currentTimeMillis() + value;
@@ -115,7 +115,7 @@ final class TimerPanelController {
         String label = labelInput.getText().toString().trim();
         if (label.isEmpty()) label = ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER);
         boolean scheduled = ToolAlarmScheduler.schedule(host, ToolAlarmScheduler.TIMER, deadline, label);
-        if (!scheduled) LogoToast.makeText(host, "برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید", Toast.LENGTH_LONG).show();
+        if (!scheduled) LogoToast.makeText(host, AppString.get(R.string.runtime_text_0149), Toast.LENGTH_LONG).show();
         save(); updateControls(); handler.post(ticker);
     }
 
@@ -149,15 +149,15 @@ final class TimerPanelController {
                 dateTimeMode ? AppSettings.primaryColor(host) : 0xFFFFFFFF);
         dateTimeModeButton.setTextColor(
                 dateTimeMode ? 0xFFFFFFFF : AppSettings.primaryColor(host));
-        startButton.setText(running ? "توقف" : remainingMillis > 0 ? "ادامه" : "شروع");
+        startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : remainingMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
     }
 
     private void renderSelection() {
         dateButton.setText(CalendarUtils.formatDate(selectedTarget, calendarType));
         Calendar c=Calendar.getInstance(); c.setTimeInMillis(selectedTarget);
         timeButton.setText(String.format(Locale.US,"%02d:%02d",c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)));
-        summary.setText(running ? "هشدار در " + CalendarUtils.formatDate(deadline, calendarType) + "، " + String.format(Locale.US,"%tR",deadline)
-                : dateTimeMode ? "شمارش معکوس تا تاریخ و ساعت انتخاب‌شده" : "شمارش معکوس بر اساس مدت‌زمان");
+        summary.setText(running ? AppString.get(R.string.runtime_text_0479) + CalendarUtils.formatDate(deadline, calendarType) + AppString.get(R.string.runtime_text_0456) + String.format(Locale.US,"%tR",deadline)
+                : dateTimeMode ? AppString.get(R.string.runtime_text_0480) : AppString.get(R.string.runtime_text_0481));
     }
 
     private void renderTime(long millis) { long total=(millis+999)/1000; timeView.setText(String.format(Locale.US,"%02d:%02d:%02d",total/3600,(total/60)%60,total%60)); }
