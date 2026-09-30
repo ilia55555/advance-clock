@@ -68,8 +68,10 @@ public final class SmartAlarmParser {
         public String offsetText() {
             if (offsetMode == OFFSET_EXACT || offsetMinutes <= 0) return AppString.get(R.string.runtime_text_0269);
             return CalendarUtils.fa(offsetMinutes)
-                    + " دقیقه "
-                    + (offsetMode == OFFSET_BEFORE ? "قبل" : "بعد");
+                    + AppString.get(R.string.smart_alarm_minutes_joiner)
+                    + (offsetMode == OFFSET_BEFORE
+                    ? AppString.get(R.string.smart_alarm_before)
+                    : AppString.get(R.string.smart_alarm_after));
         }
     }
 
@@ -135,8 +137,7 @@ public final class SmartAlarmParser {
         parseNatural(context, text, result);
         dedupe(result);
         if (result.candidates.isEmpty()) {
-            result.warnings.add(
-                    "تاریخ و ساعت قابل تشخیص پیدا نشد. نمونه: ۱۴۰۵/۰۷/۰۴ ساعت ۱۳:۰۰");
+            result.warnings.add(AppString.get(R.string.smart_alarm_no_datetime));
         }
         return result;
     }
