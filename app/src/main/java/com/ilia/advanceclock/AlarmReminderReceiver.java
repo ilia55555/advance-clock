@@ -38,10 +38,10 @@ public final class AlarmReminderReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         String title = item.label == null || item.label.trim().isEmpty()
-                ? "یادآوری هشدار" : item.label;
+                ? AppString.get(R.string.runtime_text_0408) : item.label;
         String content = minutes > 0
-                ? "یادآوری " + AlarmReminderUtils.labelForMinutes(minutes) + " بعد از هشدار"
-                : "یادآوری هشدار";
+                ? AppString.get(R.string.runtime_text_0564) + AlarmReminderUtils.labelForMinutes(minutes) + AppString.get(R.string.runtime_text_0409)
+                : AppString.get(R.string.runtime_text_0408);
 
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(context, NotificationHelper.REMINDER_CHANNEL)
