@@ -348,15 +348,15 @@ public final class MainActivity extends Activity {
 
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
-            menu.getMenu().add(0, 1, 0, UiText.tr(this, "تنظیمات"));
+            menu.getMenu().add(0, 1, 0, AppString.get(R.string.runtime_text_0001));
             if (AppSettings.adhanEnabled(this))
                 menu.getMenu().add(0, 7, 1,
-                        UiText.tr(this, "تنظیمات اذان و اوقات شرعی"));
-            menu.getMenu().add(0, 4, 2, UiText.tr(this, "تنظیمات اعلان"));
-            menu.getMenu().add(0, 5, 3, UiText.tr(this, "ویجت‌ها و تنظیمات"));
-            menu.getMenu().add(0, 6, 4, UiText.tr(this, "جابه‌جایی ترتیب تب‌ها"));
-            menu.getMenu().add(0, 8, 5, UiText.tr(this, "ابزارها"));
-            menu.getMenu().add(0, 3, 6, UiText.tr(this, "مجوزهای آلارم و اعلان"));
+                        AppString.get(R.string.runtime_text_0076));
+            menu.getMenu().add(0, 4, 2, AppString.get(R.string.runtime_text_0069));
+            menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
+            menu.getMenu().add(0, 6, 4, AppString.get(R.string.runtime_text_0108));
+            menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
+            menu.getMenu().add(0, 3, 6, AppString.get(R.string.runtime_text_0109));
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
@@ -494,7 +494,7 @@ public final class MainActivity extends Activity {
             city.setTypeface(null, Typeface.BOLD);
             city.setMaxLines(1);
             row.addView(city, new LinearLayout.LayoutParams(dp(72), dp(72)));
-            String[] labels = {"اذان صبح", "طلوع", "اذان ظهر", "عصر", "غروب", "اذان مغرب", "عشاء", "نیمه‌شب"};
+            String[] labels = {AppString.get(R.string.runtime_text_0078), AppString.get(R.string.runtime_text_0083), AppString.get(R.string.runtime_text_0079), AppString.get(R.string.runtime_text_0082), AppString.get(R.string.runtime_text_0084), AppString.get(R.string.runtime_text_0080), AppString.get(R.string.runtime_text_0081), AppString.get(R.string.runtime_text_0085)};
             String[] values = {times.fajr(), times.sunrise(), times.dhuhr(), times.asr(),
                     times.sunset(), times.maghrib(), times.isha(), times.midnight()};
             for (int index = 0; index < labels.length; index++)
@@ -588,7 +588,7 @@ public final class MainActivity extends Activity {
     }
 
     private String shortHorizonLabel(String label) {
-        if (label == null || label.trim().isEmpty()) return "افق";
+        if (label == null || label.trim().isEmpty()) return AppString.get(R.string.runtime_text_0418);
         String value = label.trim();
         int comma = value.indexOf('،');
         if (comma < 0) comma = value.indexOf(',');
@@ -662,11 +662,11 @@ public final class MainActivity extends Activity {
 
         if (CalendarEventRepository.isWeekend(millis, primaryType)) {
             if (text.length() > 0) text.append("\n");
-            text.append("تعطیل هفتگی");
+            text.append(AppString.get(R.string.runtime_text_0391));
         }
 
         if (text.length() == 0) {
-            text.append("رویدادی ثبت نشده است");
+            text.append(AppString.get(R.string.runtime_text_0392));
         }
 
         content.setText(text.toString());
@@ -725,7 +725,7 @@ public final class MainActivity extends Activity {
 
         noteCalendar.setOnDateSelectedListener(millis -> {
             if (millis < startOfToday()) {
-                LogoToast.makeText(this, "تاریخ گذشته قابل انتخاب نیست", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, AppString.get(R.string.runtime_text_0146), Toast.LENGTH_SHORT).show();
                 return;
             }
             quickNoteCalendarType = noteCalendar.getCalendarType();
@@ -802,7 +802,7 @@ public final class MainActivity extends Activity {
 
     private void updateAlarmReminderLabel() {
         quickAlarmReminders.setText(
-                "یادآوری\n"
+                AppString.get(R.string.runtime_text_0419)
                         + AlarmReminderUtils.summary(
                         alarmReminderMode, alarmReminderMinutesJson));
     }
@@ -902,7 +902,7 @@ public final class MainActivity extends Activity {
         String[] source = PriorityUtils.labels();
         String[] values = new String[source.length];
         for (int i = 0; i < source.length; i++) {
-            values[i] = "اهمیت " + source[i];
+            values[i] = AppString.get(R.string.runtime_text_0420) + source[i];
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -957,7 +957,7 @@ public final class MainActivity extends Activity {
     private void updateQuickAlarmLabels() {
         int type = quickAlarmCalendarType;
         quickAlarmDate.setText(
-                "تاریخ\n"
+                AppString.get(R.string.runtime_text_0421)
                         + CalendarUtils.formatDate(
                         quickAlarm.getTimeInMillis(), type));
         String time = String.format(
@@ -965,7 +965,7 @@ public final class MainActivity extends Activity {
                 "%02d:%02d",
                 quickAlarm.get(Calendar.HOUR_OF_DAY),
                 quickAlarm.get(Calendar.MINUTE));
-        quickAlarmTime.setText("ساعت\n" + CalendarUtils.fa(time));
+        quickAlarmTime.setText(AppString.get(R.string.runtime_text_0422) + CalendarUtils.fa(time));
     }
 
     private void updateQuickNoteLabels() {
@@ -986,7 +986,7 @@ public final class MainActivity extends Activity {
         if (trigger <= System.currentTimeMillis()) {
             LogoToast.makeText(
                     this,
-                    "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
+                    AppString.get(R.string.runtime_text_0147),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -1023,13 +1023,13 @@ public final class MainActivity extends Activity {
         alarmRecurrenceMode = RecurrenceUtils.NONE;
         alarmIntervalDays = 1;
         alarmCustomDates = "[]";
-        quickAlarmRepeat.setText("بدون تکرار");
+        quickAlarmRepeat.setText(AppString.get(R.string.runtime_text_0029));
         alarmReminderMode = AlarmReminderUtils.MODE_NONE;
         alarmReminderMinutesJson = "[]";
         quickAlarmImageUri1 = "";
         quickAlarmImageUri2 = "";
-        quickAlarmImage1.setText("افزودن عکس ۱");
-        quickAlarmImage2.setText("افزودن عکس ۲");
+        quickAlarmImage1.setText(AppString.get(R.string.runtime_text_0141));
+        quickAlarmImage2.setText(AppString.get(R.string.runtime_text_0142));
         updateAlarmReminderLabel();
 
         quickAlarm.setTimeInMillis(System.currentTimeMillis());
@@ -1048,11 +1048,11 @@ public final class MainActivity extends Activity {
                 && !PermissionHelper.exactAlarmsGranted(this)) {
             LogoToast.makeText(
                     this,
-                    "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
+                    AppString.get(R.string.runtime_text_0423),
                     Toast.LENGTH_LONG).show();
             startPermissionFlow();
         } else {
-            LogoToast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0145), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1064,7 +1064,7 @@ public final class MainActivity extends Activity {
         if (title.isEmpty() && body.isEmpty() && "[]".equals(sketch)) {
             LogoToast.makeText(
                     this,
-                    "یک متن یا نقاشی وارد کنید",
+                    AppString.get(R.string.runtime_text_0386),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -1075,7 +1075,7 @@ public final class MainActivity extends Activity {
         if (alarmEnabled && due <= System.currentTimeMillis()) {
             LogoToast.makeText(
                     this,
-                    "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
+                    AppString.get(R.string.runtime_text_0148),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -1107,9 +1107,9 @@ public final class MainActivity extends Activity {
         noteRecurrenceMode = RecurrenceUtils.NONE;
         noteIntervalDays = 1;
         noteCustomDates = "[]";
-        quickNoteRepeat.setText("بدون تکرار");
+        quickNoteRepeat.setText(AppString.get(R.string.runtime_text_0029));
         renderNoForget();
-        LogoToast.makeText(this, "یادداشت ذخیره شد", Toast.LENGTH_SHORT).show();
+        LogoToast.makeText(this, AppString.get(R.string.runtime_text_0136), Toast.LENGTH_SHORT).show();
     }
 
     @Override protected void onResume() {
@@ -1179,10 +1179,10 @@ public final class MainActivity extends Activity {
 
             if (requestCode == REQ_QUICK_ALARM_IMAGE_1) {
                 quickAlarmImageUri1 = uri.toString();
-                quickAlarmImage1.setText("عکس ۱ ✓");
+                quickAlarmImage1.setText(AppString.get(R.string.runtime_text_0424));
             } else {
                 quickAlarmImageUri2 = uri.toString();
-                quickAlarmImage2.setText("عکس ۲ ✓");
+                quickAlarmImage2.setText(AppString.get(R.string.runtime_text_0425));
             }
         }
     }
@@ -1408,7 +1408,7 @@ public final class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT < 26) {
             LogoToast.makeText(
                     this,
-                    "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
+                    AppString.get(R.string.runtime_text_0426),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -1417,7 +1417,7 @@ public final class MainActivity extends Activity {
         if (manager == null || !manager.isRequestPinAppWidgetSupported()) {
             LogoToast.makeText(
                     this,
-                    "ویجت را از فهرست ویجت‌های لانچر اضافه کنید",
+                    AppString.get(R.string.runtime_text_0426),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -1436,8 +1436,8 @@ public final class MainActivity extends Activity {
         LogoToast.makeText(
                 this,
                 opened
-                        ? "درخواست افزودن ویجت ارسال شد؛ پس از تأیید لانچر، تنظیمات همان ویجت باز می‌شود."
-                        : "لانچر درخواست افزودن ویجت را نپذیرفت.",
+                        ? AppString.get(R.string.runtime_text_0427)
+                        : AppString.get(R.string.runtime_text_0428),
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -1445,7 +1445,7 @@ public final class MainActivity extends Activity {
         alarmList.removeAllViews();
         List<AlarmItem> items = new AlarmStore(this).all();
         if (items.isEmpty()) {
-            alarmList.addView(emptyText("هنوز هشداری تنظیم نشده است."));
+            alarmList.addView(emptyText(AppString.get(R.string.runtime_text_0393)));
             return;
         }
 
@@ -1459,7 +1459,7 @@ public final class MainActivity extends Activity {
         LinearLayout card = baseCard(strokeColor);
 
         TextView title = cardTitle(
-                item.label.trim().isEmpty() ? "هشدار" : item.label);
+                item.label.trim().isEmpty() ? AppString.get(R.string.runtime_text_0017) : item.label);
         card.addView(title);
 
         String reminder = AlarmReminderUtils.summary(
@@ -1473,18 +1473,18 @@ public final class MainActivity extends Activity {
                         item.recurrenceMode,
                         item.intervalDays,
                         item.customDatesJson)
-                        + "  •  اهمیت "
+                        + AppString.get(R.string.runtime_text_0429)
                         + PriorityUtils.label(item.priority)
                         + (item.reminderMode != AlarmReminderUtils.MODE_NONE
-                        ? "  •  یادآوری " + reminder
+                        ? AppString.get(R.string.runtime_text_0430) + reminder
                         : "")
-                        + (item.vibrate ? "  •  لرزش" : ""));
+                        + (item.vibrate ? AppString.get(R.string.runtime_text_0431) : ""));
         time.setPadding(0, dp(6), 0, dp(10));
         card.addView(time);
 
         LinearLayout actions = actionRow();
 
-        Button enabled = actionButton(item.enabled ? "فعال" : "غیرفعال");
+        Button enabled = actionButton(item.enabled ? AppString.get(R.string.runtime_text_0212) : AppString.get(R.string.runtime_text_0213));
         applyAlarmStateStyle(enabled, item.enabled);
         enabled.setOnClickListener(v -> {
             item.enabled = !item.enabled;
@@ -1495,12 +1495,12 @@ public final class MainActivity extends Activity {
             renderAlarms();
         });
 
-        Button edit = actionButton("ویرایش");
+        Button edit = actionButton(AppString.get(R.string.runtime_text_0007));
         edit.setOnClickListener(v ->
                 startActivity(new Intent(this, AlarmEditorActivity.class)
                         .putExtra("alarmId", item.id)));
 
-        Button delete = actionButton("حذف");
+        Button delete = actionButton(AppString.get(R.string.runtime_text_0006));
         delete.setOnClickListener(v -> {
             AlarmScheduler.cancel(this, item.id);
             new AlarmStore(this).delete(item.id);
@@ -1527,7 +1527,7 @@ public final class MainActivity extends Activity {
         noForgetList.removeAllViews();
         List<NoForgetItem> items = new NoForgetStore(this).all();
         if (items.isEmpty()) {
-            noForgetList.addView(emptyText("هنوز یادداشتی ندارید."));
+            noForgetList.addView(emptyText(AppString.get(R.string.runtime_text_0394)));
             return;
         }
 
@@ -1540,7 +1540,7 @@ public final class MainActivity extends Activity {
         LinearLayout card = baseCard(priorityStroke(item.priority));
 
         String titleText = item.title.trim().isEmpty()
-                ? (item.body.trim().isEmpty() ? "دست‌نویس" : item.body)
+                ? (item.body.trim().isEmpty() ? AppString.get(R.string.runtime_text_0214) : item.body)
                 : item.title;
         card.addView(cardTitle(titleText));
 
@@ -1553,11 +1553,11 @@ public final class MainActivity extends Activity {
         }
 
         StringBuilder meta = new StringBuilder();
-        meta.append("اهمیت ").append(PriorityUtils.label(item.priority));
+        meta.append(AppString.get(R.string.runtime_text_0420)).append(PriorityUtils.label(item.priority));
         if (item.hasDue) {
             meta.append("  •  ").append(formatAppDateTime(item.dueAtMillis));
         }
-        if (item.reminderEnabled) meta.append("  •  آلارم");
+        if (item.reminderEnabled) meta.append(AppString.get(R.string.runtime_text_0432));
         if (item.recurrenceMode != RecurrenceUtils.NONE) {
             meta.append("  •  ")
                     .append(RecurrenceUtils.summary(
@@ -1565,7 +1565,7 @@ public final class MainActivity extends Activity {
                             item.intervalDays,
                             item.customDatesJson));
         }
-        if (!"[]".equals(item.sketchJson)) meta.append("  •  نقاشی");
+        if (!"[]".equals(item.sketchJson)) meta.append(AppString.get(R.string.runtime_text_0433));
 
         TextView metaView = smallText(meta.toString());
         metaView.setPadding(0, dp(5), 0, dp(9));
@@ -1573,12 +1573,12 @@ public final class MainActivity extends Activity {
 
         LinearLayout actions = actionRow();
 
-        Button edit = actionButton("ویرایش");
+        Button edit = actionButton(AppString.get(R.string.runtime_text_0007));
         edit.setOnClickListener(v ->
                 startActivity(new Intent(this, NoForgetEditorActivity.class)
                         .putExtra("noteId", item.id)));
 
-        Button delete = actionButton("حذف");
+        Button delete = actionButton(AppString.get(R.string.runtime_text_0006));
         delete.setOnClickListener(v -> {
             NoForgetScheduler.cancel(this, item.id);
             new NoForgetStore(this).delete(item.id);
