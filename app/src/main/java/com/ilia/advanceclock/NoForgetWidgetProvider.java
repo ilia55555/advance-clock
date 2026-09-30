@@ -244,15 +244,14 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         if (rowCount <= 0) {
             root.setTextViewText(
                     R.id.noforget_widget_empty,
-                    UiText.tr(context,
-                            "برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید"));
+                    AppString.get(R.string.runtime_text_0400));
             root.setViewVisibility(
                     R.id.noforget_widget_empty,
                     View.VISIBLE);
         } else {
             root.setTextViewText(
                     R.id.noforget_widget_empty,
-                    UiText.tr(context, "یادداشتی برای نمایش نیست"));
+                    AppString.get(R.string.runtime_text_0402));
             root.setViewVisibility(
                     R.id.noforget_widget_empty,
                     items.isEmpty()
@@ -278,7 +277,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     R.id.noforget_row_title,
                     item.title.trim().isEmpty()
                             ? (item.body.trim().isEmpty()
-                            ? UiText.tr(context, "دست‌نویس")
+                            ? AppString.get(R.string.runtime_text_0214)
                             : item.body)
                             : item.title);
 
@@ -286,9 +285,9 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     ? CalendarUtils.formatDate(
                     item.dueAtMillis,
                     AppSettings.defaultCalendar(context))
-                    : UiText.tr(context, "بدون آلارم");
+                    : AppString.get(R.string.runtime_text_0216);
             if (item.reminderEnabled) {
-                meta = UiText.tr(context, "آلارم") + " • " + meta;
+                meta = AppString.get(R.string.runtime_text_0019) + " • " + meta;
             }
 
             row.setTextViewText(
