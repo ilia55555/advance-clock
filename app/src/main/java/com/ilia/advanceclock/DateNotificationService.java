@@ -188,11 +188,10 @@ public final class DateNotificationService extends Service {
                 ? new Notification.Builder(context, CHANNEL)
                 : new Notification.Builder(context);
 
-        builder.setContentTitle(UiText.tr(context, title))
+        builder.setContentTitle(title)
                 .setContentText(twoOtherDates.length() == 0
                         ? AppString.get(R.string.runtime_text_0414)
-                        : UiText.tr(context,
-                                twoOtherDates.toString().replace("\n", "  •  ")))
+                        : twoOtherDates.toString().replace("\n", "  •  "))
                 .setContentIntent(content)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -203,7 +202,7 @@ public final class DateNotificationService extends Service {
 
         if (twoOtherDates.length() > 0) {
             builder.setStyle(new Notification.BigTextStyle()
-                    .bigText(UiText.tr(context, twoOtherDates.toString())));
+                    .bigText(twoOtherDates.toString()));
         }
 
         if (Build.VERSION.SDK_INT >= 23) {
