@@ -43,7 +43,7 @@ public final class WidgetCenterActivity extends Activity {
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         TextView title = new TextView(this);
-        title.setText("ویجت‌ها و تنظیمات");
+        title.setText(AppString.get(R.string.runtime_text_0110));
         title.setTextSize(25);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -54,14 +54,14 @@ public final class WidgetCenterActivity extends Activity {
         close.setBackgroundColor(0x00000000);
         close.setColorFilter(AppSettings.textPrimary(this));
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
         TextView intro = text(
-                "همهٔ ویجت‌های Advance از اینجا قابل افزودن و مدیریت هستند. "
-                        + "برای هر نمونهٔ نصب‌شده می‌توانید تنظیمات جداگانه داشته باشید.",
+                AppString.get(R.string.runtime_text_0482)
+                        + AppString.get(R.string.runtime_text_0483),
                 12,
                 AppSettings.textSecondary(this));
         intro.setPadding(0, 0, 0, dp(10));
@@ -90,32 +90,32 @@ public final class WidgetCenterActivity extends Activity {
         list.removeAllViews();
 
         addWidgetCard(
-                "ساعت و هشدارها",
-                "نمایش ساعت، تاریخ و هشدارهای پیش رو",
+                AppString.get(R.string.runtime_text_0484),
+                AppString.get(R.string.runtime_text_0485),
                 ClockWidgetProvider.class,
                 "clock");
 
         addWidgetCard(
-                "یادداشت‌ها",
-                "نمایش یادداشت‌ها و یادآوری‌های NoForget",
+                AppString.get(R.string.runtime_text_0016),
+                AppString.get(R.string.runtime_text_0486),
                 NoForgetWidgetProvider.class,
                 "note");
 
         addWidgetCard(
-                "ساعت جهانی",
-                "نمایش هم‌زمان سه منطقه زمانی اول تب ساعت جهانی",
+                AppString.get(R.string.runtime_text_0039),
+                AppString.get(R.string.runtime_text_0487),
                 WorldClockWidgetProvider.class,
                 "world");
 
         addWidgetCard(
-                "اوقات شرعی افق‌ها",
-                "نمایش پنج وقت شرعی برای همه شهرها و افق‌های انتخاب‌شده",
+                AppString.get(R.string.runtime_text_0488),
+                AppString.get(R.string.runtime_text_0489),
                 PrayerTimesWidgetProvider.class,
                 "prayer");
 
         addWidgetCard(
-                "یادآوری فایل‌ها",
-                "دسترسی سریع و یادآوری عکس، صوت، ویدیو، متن، PDF و فایل‌های دیگر",
+                AppString.get(R.string.runtime_text_0115),
+                AppString.get(R.string.runtime_text_0490),
                 MediaWidgetProvider.class,
                 "media");
     }
@@ -143,7 +143,7 @@ public final class WidgetCenterActivity extends Activity {
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         header.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
 
-        TextView count = text(ids.length + " نصب‌شده", 11, AppSettings.primaryColor(this));
+        TextView count = text(ids.length + AppString.get(R.string.runtime_text_0491), 11, AppSettings.primaryColor(this));
         count.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         header.addView(count);
         card.addView(header);
@@ -156,13 +156,13 @@ public final class WidgetCenterActivity extends Activity {
         preview.setImageResource(previewResource(kind));
         preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
         preview.setAdjustViewBounds(true);
-        preview.setContentDescription("پیش‌نمایش " + titleText);
+        preview.setContentDescription(AppString.get(R.string.runtime_text_0492) + titleText);
         LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(170));
         previewLp.bottomMargin = dp(10);
         card.addView(preview, previewLp);
 
         Button add = new Button(this);
-        add.setText("افزودن به صفحه اصلی");
+        add.setText(AppString.get(R.string.runtime_text_0113));
         add.setAllCaps(false);
         add.setTextColor(0xFFFFFFFF);
         add.setBackgroundColor(AppSettings.primaryColor(this));
@@ -171,7 +171,7 @@ public final class WidgetCenterActivity extends Activity {
 
         if (ids.length > 0) {
             TextView installed = text(
-                    "نمونه‌های نصب‌شده",
+                    AppString.get(R.string.runtime_text_0114),
                     12,
                     AppSettings.textSecondary(this));
             installed.setPadding(0, dp(12), 0, dp(4));
@@ -186,7 +186,7 @@ public final class WidgetCenterActivity extends Activity {
             for (int i = 0; i < ids.length; i++) {
                 final int widgetId = ids[i];
                 Button edit = new Button(this);
-                edit.setText("ویرایش " + (i + 1));
+                edit.setText(AppString.get(R.string.runtime_text_0493) + (i + 1));
                 edit.setAllCaps(false);
                 edit.setTextSize(11);
                 edit.setTextColor(AppSettings.primaryColor(this));
@@ -223,7 +223,7 @@ public final class WidgetCenterActivity extends Activity {
         if (Build.VERSION.SDK_INT < 26) {
             LogoToast.makeText(
                     this,
-                    "ویجت را از فهرست ویجت‌های لانچر اضافه کنید.",
+                    AppString.get(R.string.runtime_text_0494),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -232,8 +232,8 @@ public final class WidgetCenterActivity extends Activity {
         if (manager == null || !manager.isRequestPinAppWidgetSupported()) {
             LogoToast.makeText(
                     this,
-                    "لانچر شما افزودن مستقیم ویجت را پشتیبانی نمی‌کند؛ "
-                            + "از فهرست ویجت‌های صفحه اصلی استفاده کنید.",
+                    AppString.get(R.string.runtime_text_0495)
+                            + AppString.get(R.string.runtime_text_0496),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -246,8 +246,8 @@ public final class WidgetCenterActivity extends Activity {
         LogoToast.makeText(
                 this,
                 opened
-                        ? "درخواست افزودن ویجت به لانچر ارسال شد."
-                        : "لانچر درخواست افزودن ویجت را نپذیرفت.",
+                        ? AppString.get(R.string.runtime_text_0497)
+                        : AppString.get(R.string.runtime_text_0428),
                 Toast.LENGTH_SHORT).show();
     }
 
