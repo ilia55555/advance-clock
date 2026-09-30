@@ -188,10 +188,8 @@ public final class SettingsActivity extends Activity {
             String selected = AppSettings.languageCodes()[position];
             if (AppSettings.language(this).equals(selected)) return;
             AppSettings.setLanguage(this, selected);
-            AppSettings.applyLanguage(getApplicationContext());
             runtimeChanged();
-            // Locale must refresh every currently open Activity, including Settings itself.
-            AdvanceClockApplication.refreshOpenActivities(this, true);
+            AdvanceClockApplication.restartForLanguage(this);
         });
 
         calendar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

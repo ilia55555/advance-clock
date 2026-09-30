@@ -491,7 +491,10 @@ public final class AppSettings {
 
     public static void setLanguage(Context context, String value) {
         if (!isSupportedLanguage(value)) value = LANGUAGE_ENGLISH;
-        prefs(context).edit().putString("app_language", value).apply();
+        // Locale recreation reads this value immediately; persist synchronously so a newly
+        // created Activity can never observe the previous language.
+        prefs(context).edit().putString("app_language", value).commit();
+        UiText.invalidate();
     }
 
     public static String[] languageCodes() {
