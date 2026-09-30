@@ -92,7 +92,7 @@ public final class WidgetSettingsActivity extends Activity {
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
         addTopBar(root);
-        root.addView(sectionTitle("پیش‌نمایش زنده"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0112)));
         preview = new WidgetPreviewView(this);
         root.addView(preview, new LinearLayout.LayoutParams(-1, dp(150)));
         addAppearanceSection(root);
@@ -128,8 +128,8 @@ public final class WidgetSettingsActivity extends Activity {
 
         TextView title = new TextView(this);
         title.setText("clock".equals(kind)
-                ? "تنظیمات ویجت ساعت"
-                : "تنظیمات ویجت یادداشت");
+                ? AppString.get(R.string.runtime_text_0240)
+                : AppString.get(R.string.runtime_text_0241));
         title.setTextSize(23);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -140,68 +140,68 @@ public final class WidgetSettingsActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
     }
 
     private void addAppearanceSection(LinearLayout root) {
-        root.addView(sectionTitle("ظاهر"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0042)));
 
-        root.addView(fieldLabel("تم"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0043)));
         theme = spinner(new String[]{
-                "هماهنگ با تم برنامه",
-                "روشن",
-                "تیره"
+                AppString.get(R.string.runtime_text_0220),
+                AppString.get(R.string.runtime_text_0044),
+                AppString.get(R.string.runtime_text_0045)
         });
         theme.setSelection(WidgetPrefs.themeMode(this, widgetId));
         root.addView(theme, fieldLp());
 
-        root.addView(fieldLabel("پالت رنگ"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0046)));
         palette = spinner(AppSettings.paletteNames());
         palette.setSelection(WidgetPrefs.palette(this, widgetId));
         root.addView(palette, fieldLp());
 
-        root.addView(fieldLabel("شفافیت پس‌زمینه"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0047)));
         opacity = spinner(new String[]{
-                "۱۰۰٪",
-                "۸۵٪",
-                "۷۰٪"
+                AppString.get(R.string.runtime_text_0534),
+                AppString.get(R.string.runtime_text_0535),
+                AppString.get(R.string.runtime_text_0536)
         });
         opacity.setSelection(WidgetPrefs.backgroundOpacityMode(this, widgetId));
         root.addView(opacity, fieldLp());
 
-        root.addView(fieldLabel("اندازه متن"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0048)));
         fontSize = spinner(new String[]{
-                "کوچک",
-                "معمولی",
-                "بزرگ"
+                AppString.get(R.string.runtime_text_0049),
+                AppString.get(R.string.runtime_text_0050),
+                AppString.get(R.string.runtime_text_0051)
         });
         fontSize.setSelection(WidgetPrefs.fontSizeMode(this, widgetId));
         root.addView(fontSize, fieldLp());
     }
 
     private void addHeaderSection(LinearLayout root) {
-        root.addView(sectionTitle("هدر و کنترل‌ها"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0225)));
 
         showHeader = addSwitch(
                 root,
-                "نمایش هدر",
-                "ساعت، تاریخ و دکمه‌های بالای ویجت",
+                AppString.get(R.string.runtime_text_0052),
+                AppString.get(R.string.runtime_text_0690),
                 WidgetPrefs.showHeader(this, widgetId));
 
         showTime = addSwitch(
                 root,
-                "نمایش ساعت",
-                "نمایش زمان جاری در هدر ویجت",
+                AppString.get(R.string.runtime_text_0053),
+                AppString.get(R.string.runtime_text_0691),
                 WidgetPrefs.showTime(this, widgetId));
 
-        root.addView(fieldLabel("قالب ساعت"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0226)));
         timeFormat = spinner(new String[]{
-                "مطابق تنظیمات سیستم",
-                "۲۴ ساعته",
-                "۱۲ ساعته"
+                AppString.get(R.string.runtime_text_0227),
+                AppString.get(R.string.runtime_text_0228),
+                AppString.get(R.string.runtime_text_0229)
         });
         timeFormat.setSelection(
                 WidgetPrefs.timeFormatMode(this, widgetId));
@@ -209,32 +209,32 @@ public final class WidgetSettingsActivity extends Activity {
 
         showSeconds = addSwitch(
                 root,
-                "نمایش ثانیه",
-                "ثانیه را هم در زمان ویجت نمایش می‌دهد",
+                AppString.get(R.string.runtime_text_0230),
+                AppString.get(R.string.runtime_text_0692),
                 WidgetPrefs.showSeconds(this, widgetId));
 
         showDate = addSwitch(
                 root,
-                "نمایش تاریخ",
-                "تاریخ تقویم پیش‌فرض در هدر",
+                AppString.get(R.string.runtime_text_0054),
+                AppString.get(R.string.runtime_text_0693),
                 WidgetPrefs.showDate(this, widgetId));
 
         showAdd = addSwitch(
                 root,
-                "نمایش دکمه +",
-                "ساخت سریع هشدار یا یادداشت از خود ویجت",
+                AppString.get(R.string.runtime_text_0694),
+                AppString.get(R.string.runtime_text_0695),
                 WidgetPrefs.showAddButton(this, widgetId));
 
         showSettings = addSwitch(
                 root,
-                "نمایش دکمه تنظیمات",
-                "باز کردن تنظیمات همین نمونهٔ ویجت",
+                AppString.get(R.string.runtime_text_0055),
+                AppString.get(R.string.runtime_text_0696),
                 WidgetPrefs.showSettingsButton(this, widgetId));
 
         showSection = addSwitch(
                 root,
-                "نمایش عنوان بخش",
-                "عنوان «هشدار» یا «یادداشت» بالای فهرست",
+                AppString.get(R.string.runtime_text_0231),
+                AppString.get(R.string.runtime_text_0697),
                 WidgetPrefs.showSectionLabel(this, widgetId));
 
         showHeader.setOnCheckedChangeListener((button, checked) -> {
@@ -249,40 +249,40 @@ public final class WidgetSettingsActivity extends Activity {
     }
 
     private void addContentSection(LinearLayout root) {
-        root.addView(sectionTitle("محتوا"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0232)));
 
         showPriority = addSwitch(
                 root,
-                "نمایش اهمیت",
-                "برچسب سطح اهمیت هر مورد",
+                AppString.get(R.string.runtime_text_0056),
+                AppString.get(R.string.runtime_text_0698),
                 WidgetPrefs.showPriority(this, widgetId));
 
         showMetadata = addSwitch(
                 root,
-                "نمایش جزئیات",
-                "تاریخ/زمان هشدار یا اطلاعات یادداشت",
+                AppString.get(R.string.runtime_text_0057),
+                AppString.get(R.string.runtime_text_0699),
                 WidgetPrefs.showMetadata(this, widgetId));
 
-        root.addView(fieldLabel("حداکثر تعداد آیتم"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0233)));
         LinearLayout countBox = pickerBox(
-                "تعداد",
+                AppString.get(R.string.runtime_text_0234),
                 WidgetPrefs.maxItems(this, widgetId),
                 1,
                 10);
         maxItems = (NumberPicker) countBox.getChildAt(1);
         root.addView(countBox, new LinearLayout.LayoutParams(-1, dp(122)));
 
-        root.addView(fieldLabel("مرتب‌سازی"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0058)));
         sortMode = spinner("clock".equals(kind)
                 ? new String[]{
-                "هوشمند: نزدیک‌ترین هشدار اول",
-                "زمان: زودترین تا دیرترین",
-                "اهمیت: مهم‌ترین اول"
+                AppString.get(R.string.runtime_text_0235),
+                AppString.get(R.string.runtime_text_0236),
+                AppString.get(R.string.runtime_text_0237)
         }
                 : new String[]{
-                "هوشمند: نزدیک‌ترین موعد اول",
-                "جدیدترین یادداشت اول",
-                "اهمیت: مهم‌ترین اول"
+                AppString.get(R.string.runtime_text_0238),
+                AppString.get(R.string.runtime_text_0239),
+                AppString.get(R.string.runtime_text_0237)
         });
         sortMode.setSelection(WidgetPrefs.sortMode(this, widgetId));
         root.addView(sortMode, fieldLp());
@@ -290,11 +290,11 @@ public final class WidgetSettingsActivity extends Activity {
 
     private void addResizeSection(LinearLayout root) {
         root.addView(hint(
-                "برای تغییر اندازه ویجت انگشتتان را روی ویجت نگهدارید و کمی جابه‌جا کنید و رها کنید تا تغییر سایز فعال شود"));
+                AppString.get(R.string.runtime_text_0542)));
     }
 
     private void addActions(LinearLayout root) {
-        Button reset = softButton("بازگردانی تنظیمات این ویجت");
+        Button reset = softButton(AppString.get(R.string.runtime_text_0700));
         LinearLayout.LayoutParams resetLp = buttonLp();
         resetLp.topMargin = dp(8);
         root.addView(reset, resetLp);
