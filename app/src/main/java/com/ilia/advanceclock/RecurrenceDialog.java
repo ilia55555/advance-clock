@@ -178,7 +178,7 @@ public final class RecurrenceDialog {
 
         refresh.run();
 
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("تنظیم تکرار")
                 .setView(root)
                 .setNegativeButton("انصراف", null)
@@ -196,7 +196,9 @@ public final class RecurrenceDialog {
                                             weekdays, permanentWeekdays.isChecked())
                                     : RecurrenceUtils.toJson(customDates));
                 })
-                .show();
+                .create();
+        dialog.show();
+        UiText.localize(dialog);
     }
 
     private static int dp(Context context, int value) {

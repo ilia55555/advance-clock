@@ -291,8 +291,8 @@ public final class MediaWidgetPlaybackService extends Service {
 
         return new Notification.Builder(this, CHANNEL)
                 .setSmallIcon(R.drawable.ic_app)
-                .setContentTitle("یادآوری فایل‌ها")
-                .setContentText(state + ": " + currentName)
+                .setContentTitle(UiText.trComposite(this, "یادآوری فایل‌ها"))
+                .setContentText(UiText.trComposite(this, state + ": " + currentName))
                 .setContentIntent(contentIntent)
                 .setOnlyAlertOnce(true)
                 .setOngoing(playing || preparing)
@@ -308,10 +308,11 @@ public final class MediaWidgetPlaybackService extends Service {
         NotificationChannel channel =
                 new NotificationChannel(
                         CHANNEL,
-                        "پخش رسانه ویجت فایل‌ها",
+                        UiText.trComposite(this, "پخش رسانه ویجت فایل‌ها"),
                         NotificationManager.IMPORTANCE_LOW);
         channel.setDescription(
-                "کنترل پخش صوت و ویدیو از ویجت یادآوری فایل‌ها");
+                UiText.trComposite(this,
+                        "کنترل پخش صوت و ویدیو از ویجت یادآوری فایل‌ها"));
         manager.createNotificationChannel(channel);
     }
 

@@ -1,649 +1,2147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Complete Persian source catalog. Array order must match runtime_translation. -->
-    <string-array name="runtime_source_fa" translatable="false">
-        <item>تنظیمات</item>
-        <item>بستن</item>
-        <item>انصراف</item>
-        <item>تأیید</item>
-        <item>ذخیره</item>
-        <item>حذف</item>
-        <item>ویرایش</item>
-        <item>افزودن</item>
-        <item>پاک کردن</item>
-        <item>شروع</item>
-        <item>توقف</item>
-        <item>ادامه</item>
-        <item>ساعت</item>
-        <item>تاریخ</item>
-        <item>یادداشت</item>
-        <item>یادداشت‌ها</item>
-        <item>هشدار</item>
-        <item>هشدارها</item>
-        <item>آلارم</item>
-        <item>یادآوری</item>
-        <item>یادآوری‌ها</item>
-        <item>لرزش</item>
-        <item>اهمیت</item>
-        <item>کم</item>
-        <item>نسبتاً کم</item>
-        <item>متوسط</item>
-        <item>زیاد</item>
-        <item>خیلی زیاد</item>
-        <item>بدون تکرار</item>
-        <item>هر روز</item>
-        <item>هر هفته</item>
-        <item>هر ماه</item>
-        <item>هر سال</item>
-        <item>امروز</item>
-        <item>بدون یادآوری</item>
-        <item>خودکار (هوشمند)</item>
-        <item>دقیقه</item>
-        <item>ثانیه</item>
-        <item>ساعت جهانی</item>
-        <item>تایمر</item>
-        <item>کرنومتر</item>
-        <item>ظاهر</item>
-        <item>تم</item>
-        <item>روشن</item>
-        <item>تیره</item>
-        <item>پالت رنگ</item>
-        <item>شفافیت پس‌زمینه</item>
-        <item>اندازه متن</item>
-        <item>کوچک</item>
-        <item>معمولی</item>
-        <item>بزرگ</item>
-        <item>نمایش هدر</item>
-        <item>نمایش ساعت</item>
-        <item>نمایش تاریخ</item>
-        <item>نمایش دکمه تنظیمات</item>
-        <item>نمایش اهمیت</item>
-        <item>نمایش جزئیات</item>
-        <item>مرتب‌سازی</item>
-        <item>فایل</item>
-        <item>فایل‌ها</item>
-        <item>تصویر</item>
-        <item>صوت</item>
-        <item>ویدیو</item>
-        <item>متن</item>
-        <item>سند</item>
-        <item>صفحه گسترده</item>
-        <item>رسانه</item>
-        <item>پخش یا مکث</item>
-        <item>تنظیمات اعلان</item>
-        <item>اعلان‌ها</item>
-        <item>اعلان دائمی تاریخ</item>
-        <item>نمایش تقویم‌های دیگر</item>
-        <item>یادآوری هشدارها</item>
-        <item>یادآوری یادداشت‌ها</item>
-        <item>نمایش جزئیات روی صفحه قفل</item>
-        <item>تنظیمات اذان و اوقات شرعی</item>
-        <item>اذان</item>
-        <item>اذان صبح</item>
-        <item>اذان ظهر</item>
-        <item>اذان مغرب</item>
-        <item>عشاء</item>
-        <item>عصر</item>
-        <item>طلوع</item>
-        <item>غروب</item>
-        <item>نیمه‌شب</item>
-        <item>نمایش اوقات شرعی</item>
-        <item>موقعیت جغرافیایی</item>
-        <item>جستجوی شهر یا روستا</item>
-        <item>دریافت موقعیت دقیق فعلی</item>
-        <item>اذان‌های فعال</item>
-        <item>انتخاب موذن</item>
-        <item>نحوه اعلام اذان</item>
-        <item>اعلان اذان</item>
-        <item>لرزش اذان</item>
-        <item>صدای اذان</item>
-        <item>پیش‌نمایش صفحه اذان</item>
-        <item>موقعیت تنظیم نشده</item>
-        <item>در حال دریافت موقعیت…</item>
-        <item>انتخاب شهر یا روستا</item>
-        <item>نام شهر، روستا، استان یا کشور</item>
-        <item>با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند</item>
-        <item>نتیجه‌ای پیدا نشد</item>
-        <item>افزودن منطقه زمانی</item>
-        <item>افزودن ساعت انتخاب‌شده</item>
-        <item>بازگشت به اکنون</item>
-        <item>رفتن به تاریخ</item>
-        <item>ترتیب تب‌ها</item>
-        <item>جابه‌جایی ترتیب تب‌ها</item>
-        <item>مجوزهای آلارم و اعلان</item>
-        <item>ویجت‌ها و تنظیمات</item>
-        <item>تنظیمات ویجت</item>
-        <item>پیش‌نمایش زنده</item>
-        <item>افزودن به صفحه اصلی</item>
-        <item>نمونه‌های نصب‌شده</item>
-        <item>یادآوری فایل‌ها</item>
-        <item>افزودن فایل</item>
-        <item>افزودن اپ یا سایت</item>
-        <item>ترسیم</item>
-        <item>نقاشی و ترسیم</item>
-        <item>ذخیره یادداشت</item>
-        <item>حذف یادداشت</item>
-        <item>عنوان یادداشت</item>
-        <item>متن یادداشت خود را اینجا بنویسید...</item>
-        <item>آلارم برای این یادداشت</item>
-        <item>صدای هشدار</item>
-        <item>فول‌اسکرین</item>
-        <item>صفحه باز</item>
-        <item>صفحه قفل</item>
-        <item>فایل‌ها و تصاویر</item>
-        <item>انتخاب برنامه نصب‌شده</item>
-        <item>لینک سایت را وارد کنید</item>
-        <item>لینک معتبر وارد کنید</item>
-        <item>هنوز فایلی اضافه نشده است.</item>
-        <item>هنوز برنامه یا سایتی اضافه نشده است.</item>
-        <item>یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید</item>
-        <item>یادداشت ذخیره شد</item>
-        <item>تنظیم هشدار</item>
-        <item>عنوان هشدار</item>
-        <item>ذخیره هشدار</item>
-        <item>حذف هشدار</item>
-        <item>افزودن عکس ۱</item>
-        <item>افزودن عکس ۲</item>
-        <item>عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)</item>
-        <item>پیش‌فرض سیستم</item>
-        <item>هشدار ذخیره شد</item>
-        <item>تاریخ گذشته قابل انتخاب نیست</item>
-        <item>هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد</item>
-        <item>آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد</item>
-        <item>برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید</item>
-        <item>انتخاب صدا</item>
-        <item>+ آپلود صدای جدید</item>
-        <item>رنگ اپ</item>
-        <item>رویدادها و مناسبت‌ها</item>
-        <item>نمایش مناسبت‌ها زیر تقویم</item>
-        <item>نمایش باکس رویداد زیر تقویم</item>
-        <item>چیدمان صفحه ساعت</item>
-        <item>فرم ایجاد داخل صفحه، بدون دکمه +</item>
-        <item>پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +</item>
-        <item>تب‌های قابل نمایش در صفحه اصلی</item>
-        <item>استایل صفحه زنگ</item>
-        <item>کلاسیک روشن</item>
-        <item>تمرکز تیره</item>
-        <item>طلوع گرم</item>
-        <item>حداقل یک تب باید فعال باشد</item>
-        <item>تاریخ و ساعت آینده را انتخاب کنید</item>
-        <item>یک زمان بیشتر از صفر وارد کنید</item>
-        <item>صفر کردن</item>
-        <item>ثبت دور</item>
-        <item>انتخاب تاریخ</item>
-        <item>انتخاب ساعت</item>
-        <item>لغو و بازنشانی</item>
-        <item>مدت‌زمان</item>
-        <item>زمان پایان</item>
-        <item>بازگشت به امروز</item>
-        <item>ماه قبل</item>
-        <item>ماه بعد</item>
-        <item>شمسی</item>
-        <item>میلادی</item>
-        <item>قمری</item>
-        <item>شنبه</item>
-        <item>یکشنبه</item>
-        <item>دوشنبه</item>
-        <item>سه‌شنبه</item>
-        <item>چهارشنبه</item>
-        <item>پنجشنبه</item>
-        <item>جمعه</item>
-        <item>فروردین</item>
-        <item>اردیبهشت</item>
-        <item>خرداد</item>
-        <item>تیر</item>
-        <item>مرداد</item>
-        <item>شهریور</item>
-        <item>مهر</item>
-        <item>آبان</item>
-        <item>آذر</item>
-        <item>دی</item>
-        <item>بهمن</item>
-        <item>اسفند</item>
-        <item>ترسیم ✓</item>
-        <item>بدون گرید</item>
-        <item>گرید</item>
-        <item>رنگ</item>
-        <item>پاک</item>
-        <item>ذخیره ترسیم</item>
-        <item>افزودن فایل یا تصویر</item>
-        <item>انتخاب برنامه</item>
-        <item>افزودن سایت</item>
-        <item>لینک سایت، مثلاً https://example.com</item>
-        <item>یادآوری قبل از موعد</item>
-        <item>تمام‌صفحه وقتی گوشی باز است</item>
-        <item>تمام‌صفحه روی صفحه قفل</item>
-        <item>فعال</item>
-        <item>غیرفعال</item>
-        <item>دست‌نویس</item>
-        <item>نقاشی</item>
-        <item>بدون آلارم</item>
-        <item>تمام‌صفحه هشدار وقتی گوشی باز است</item>
-        <item>تمام‌صفحه هشدار روی صفحه قفل</item>
-        <item>صدای پیش‌فرض هشدار</item>
-        <item>هماهنگ با تم برنامه</item>
-        <item>نمایش محتوا</item>
-        <item>نمایش پیش‌نمایش</item>
-        <item>نمایش نام فایل</item>
-        <item>نمایش نوع و جزئیات فایل</item>
-        <item>هدر و کنترل‌ها</item>
-        <item>قالب ساعت</item>
-        <item>مطابق تنظیمات سیستم</item>
-        <item>۲۴ ساعته</item>
-        <item>۱۲ ساعته</item>
-        <item>نمایش ثانیه</item>
-        <item>نمایش عنوان بخش</item>
-        <item>محتوا</item>
-        <item>حداکثر تعداد آیتم</item>
-        <item>تعداد</item>
-        <item>هوشمند: نزدیک‌ترین هشدار اول</item>
-        <item>زمان: زودترین تا دیرترین</item>
-        <item>اهمیت: مهم‌ترین اول</item>
-        <item>هوشمند: نزدیک‌ترین موعد اول</item>
-        <item>جدیدترین یادداشت اول</item>
-        <item>تنظیمات ویجت ساعت</item>
-        <item>تنظیمات ویجت یادداشت</item>
-        <item>تنظیمات ویجت ساعت جهانی</item>
-        <item>پس‌زمینه</item>
-        <item>شفاف (پیش‌فرض)</item>
-        <item>مشکی ۷۰٪</item>
-        <item>مشکی</item>
-        <item>سفید</item>
-        <item>آبی</item>
-        <item>فیروزه‌ای</item>
-        <item>بنفش</item>
-        <item>قرمز</item>
-        <item>سبز</item>
-        <item>طلایی</item>
-        <item>نارنجی</item>
-        <item>صورتی</item>
-        <item>پیش‌نمایش</item>
-        <item>نوع فایل</item>
-        <item>نمایش تمام صفحه</item>
-        <item>باز کردن کنترل پخش</item>
-        <item>در حال آماده‌سازی</item>
-        <item>در حال پخش</item>
-        <item>مکث</item>
-        <item>هشدار هوشمند</item>
-        <item>ورودی هوشمند</item>
-        <item>پیست</item>
-        <item>تشخیص خودکار</item>
-        <item>تحلیل متن و ساخت پیش‌نمایش</item>
-        <item>زمان زنگ برای همه</item>
-        <item>سرِ وقت</item>
-        <item>قبل از زمان</item>
-        <item>بعد از زمان</item>
-        <item>پیش‌نمایش هشدارها</item>
-        <item>حذف همه</item>
-        <item>ذخیره همه هشدارها</item>
-        <item>عنوان</item>
-        <item>تاریخ و ساعت اصلی</item>
-        <item>زمان زنگ</item>
-        <item>اولویت</item>
-        <item>لرزش همراه هشدار</item>
-        <item>ویرایش هشدار</item>
-        <item>عنوان نمی‌تواند خالی باشد</item>
-        <item>متنی در کلیپ‌بورد نیست</item>
-        <item>ابتدا متن را تحلیل کنید</item>
-        <item>هنوز هشداری شناسایی نشده است.</item>
-        <item>مورد</item>
-        <item>هشدار شناسایی شد</item>
-        <item>تنظیم تکرار</item>
-        <item>فاصله تکرار بر حسب روز</item>
-        <item>فاصله تکرار بر حسب هفته</item>
-        <item>افزودن تاریخ و ساعت</item>
-        <item>پاک کردن تاریخ‌های دلخواه</item>
-        <item>هنوز تاریخ و ساعتی انتخاب نشده</item>
-        <item>تاریخ و ساعت گذشته قابل انتخاب نیست</item>
-        <item>هر چند روز</item>
-        <item>تاریخ‌های دلخواه</item>
-        <item>روزهای هفته</item>
-        <item>دور</item>
-        <item>مدت‌زمان بیشتر از صفر وارد کنید</item>
-        <item>ابتدا کرنومتر را صفر کنید</item>
-        <item>تاریخ و ساعت پایان گذشته است</item>
-        <item>تایمر تمام شد</item>
-        <item>کرنومتر به حد نهایی رسید</item>
-        <item>وقت نیایش</item>
-        <item>پایان اذان</item>
-        <item>قطع کامل صدا</item>
-        <item>وصل صدا</item>
-        <item>قطع اذان</item>
-        <item>باز کردن یادداشت</item>
-        <item>قطع هشدار</item>
-        <item>فایل‌ها، تصاویر، برنامه‌ها و سایت‌ها</item>
-        <item>یادآوری یادداشت</item>
-        <item>زمان یادداشت شما رسیده است</item>
-        <item>آلارم‌ها</item>
-        <item>اعلان اوقات اذان</item>
-        <item>هشدار یادداشت‌ها</item>
-        <item>هشدارهای زمان‌دار یادداشت‌ها</item>
-    </string-array>
+        <string formatted="false" name="runtime_source_0001" translatable="false">تنظیمات</string>
+    <string formatted="false" name="runtime_source_0002" translatable="false">بستن</string>
+    <string formatted="false" name="runtime_source_0003" translatable="false">انصراف</string>
+    <string formatted="false" name="runtime_source_0004" translatable="false">تأیید</string>
+    <string formatted="false" name="runtime_source_0005" translatable="false">ذخیره</string>
+    <string formatted="false" name="runtime_source_0006" translatable="false">حذف</string>
+    <string formatted="false" name="runtime_source_0007" translatable="false">ویرایش</string>
+    <string formatted="false" name="runtime_source_0008" translatable="false">افزودن</string>
+    <string formatted="false" name="runtime_source_0009" translatable="false">پاک کردن</string>
+    <string formatted="false" name="runtime_source_0010" translatable="false">شروع</string>
+    <string formatted="false" name="runtime_source_0011" translatable="false">توقف</string>
+    <string formatted="false" name="runtime_source_0012" translatable="false">ادامه</string>
+    <string formatted="false" name="runtime_source_0013" translatable="false">ساعت</string>
+    <string formatted="false" name="runtime_source_0014" translatable="false">تاریخ</string>
+    <string formatted="false" name="runtime_source_0015" translatable="false">یادداشت</string>
+    <string formatted="false" name="runtime_source_0016" translatable="false">یادداشت‌ها</string>
+    <string formatted="false" name="runtime_source_0017" translatable="false">هشدار</string>
+    <string formatted="false" name="runtime_source_0018" translatable="false">هشدارها</string>
+    <string formatted="false" name="runtime_source_0019" translatable="false">آلارم</string>
+    <string formatted="false" name="runtime_source_0020" translatable="false">یادآوری</string>
+    <string formatted="false" name="runtime_source_0021" translatable="false">یادآوری‌ها</string>
+    <string formatted="false" name="runtime_source_0022" translatable="false">لرزش</string>
+    <string formatted="false" name="runtime_source_0023" translatable="false">اهمیت</string>
+    <string formatted="false" name="runtime_source_0024" translatable="false">کم</string>
+    <string formatted="false" name="runtime_source_0025" translatable="false">نسبتاً کم</string>
+    <string formatted="false" name="runtime_source_0026" translatable="false">متوسط</string>
+    <string formatted="false" name="runtime_source_0027" translatable="false">زیاد</string>
+    <string formatted="false" name="runtime_source_0028" translatable="false">خیلی زیاد</string>
+    <string formatted="false" name="runtime_source_0029" translatable="false">بدون تکرار</string>
+    <string formatted="false" name="runtime_source_0030" translatable="false">هر روز</string>
+    <string formatted="false" name="runtime_source_0031" translatable="false">هر هفته</string>
+    <string formatted="false" name="runtime_source_0032" translatable="false">هر ماه</string>
+    <string formatted="false" name="runtime_source_0033" translatable="false">هر سال</string>
+    <string formatted="false" name="runtime_source_0034" translatable="false">امروز</string>
+    <string formatted="false" name="runtime_source_0035" translatable="false">بدون یادآوری</string>
+    <string formatted="false" name="runtime_source_0036" translatable="false">خودکار (هوشمند)</string>
+    <string formatted="false" name="runtime_source_0037" translatable="false">دقیقه</string>
+    <string formatted="false" name="runtime_source_0038" translatable="false">ثانیه</string>
+    <string formatted="false" name="runtime_source_0039" translatable="false">ساعت جهانی</string>
+    <string formatted="false" name="runtime_source_0040" translatable="false">تایمر</string>
+    <string formatted="false" name="runtime_source_0041" translatable="false">کرنومتر</string>
+    <string formatted="false" name="runtime_source_0042" translatable="false">ظاهر</string>
+    <string formatted="false" name="runtime_source_0043" translatable="false">تم</string>
+    <string formatted="false" name="runtime_source_0044" translatable="false">روشن</string>
+    <string formatted="false" name="runtime_source_0045" translatable="false">تیره</string>
+    <string formatted="false" name="runtime_source_0046" translatable="false">پالت رنگ</string>
+    <string formatted="false" name="runtime_source_0047" translatable="false">شفافیت پس‌زمینه</string>
+    <string formatted="false" name="runtime_source_0048" translatable="false">اندازه متن</string>
+    <string formatted="false" name="runtime_source_0049" translatable="false">کوچک</string>
+    <string formatted="false" name="runtime_source_0050" translatable="false">معمولی</string>
+    <string formatted="false" name="runtime_source_0051" translatable="false">بزرگ</string>
+    <string formatted="false" name="runtime_source_0052" translatable="false">نمایش هدر</string>
+    <string formatted="false" name="runtime_source_0053" translatable="false">نمایش ساعت</string>
+    <string formatted="false" name="runtime_source_0054" translatable="false">نمایش تاریخ</string>
+    <string formatted="false" name="runtime_source_0055" translatable="false">نمایش دکمه تنظیمات</string>
+    <string formatted="false" name="runtime_source_0056" translatable="false">نمایش اهمیت</string>
+    <string formatted="false" name="runtime_source_0057" translatable="false">نمایش جزئیات</string>
+    <string formatted="false" name="runtime_source_0058" translatable="false">مرتب‌سازی</string>
+    <string formatted="false" name="runtime_source_0059" translatable="false">فایل</string>
+    <string formatted="false" name="runtime_source_0060" translatable="false">فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0061" translatable="false">تصویر</string>
+    <string formatted="false" name="runtime_source_0062" translatable="false">صوت</string>
+    <string formatted="false" name="runtime_source_0063" translatable="false">ویدیو</string>
+    <string formatted="false" name="runtime_source_0064" translatable="false">متن</string>
+    <string formatted="false" name="runtime_source_0065" translatable="false">سند</string>
+    <string formatted="false" name="runtime_source_0066" translatable="false">صفحه گسترده</string>
+    <string formatted="false" name="runtime_source_0067" translatable="false">رسانه</string>
+    <string formatted="false" name="runtime_source_0068" translatable="false">پخش یا مکث</string>
+    <string formatted="false" name="runtime_source_0069" translatable="false">تنظیمات اعلان</string>
+    <string formatted="false" name="runtime_source_0070" translatable="false">اعلان‌ها</string>
+    <string formatted="false" name="runtime_source_0071" translatable="false">اعلان دائمی تاریخ</string>
+    <string formatted="false" name="runtime_source_0072" translatable="false">نمایش تقویم‌های دیگر</string>
+    <string formatted="false" name="runtime_source_0073" translatable="false">یادآوری هشدارها</string>
+    <string formatted="false" name="runtime_source_0074" translatable="false">یادآوری یادداشت‌ها</string>
+    <string formatted="false" name="runtime_source_0075" translatable="false">نمایش جزئیات روی صفحه قفل</string>
+    <string formatted="false" name="runtime_source_0076" translatable="false">تنظیمات اذان و اوقات شرعی</string>
+    <string formatted="false" name="runtime_source_0077" translatable="false">اذان</string>
+    <string formatted="false" name="runtime_source_0078" translatable="false">اذان صبح</string>
+    <string formatted="false" name="runtime_source_0079" translatable="false">اذان ظهر</string>
+    <string formatted="false" name="runtime_source_0080" translatable="false">اذان مغرب</string>
+    <string formatted="false" name="runtime_source_0081" translatable="false">عشاء</string>
+    <string formatted="false" name="runtime_source_0082" translatable="false">عصر</string>
+    <string formatted="false" name="runtime_source_0083" translatable="false">طلوع</string>
+    <string formatted="false" name="runtime_source_0084" translatable="false">غروب</string>
+    <string formatted="false" name="runtime_source_0085" translatable="false">نیمه‌شب</string>
+    <string formatted="false" name="runtime_source_0086" translatable="false">نمایش اوقات شرعی</string>
+    <string formatted="false" name="runtime_source_0087" translatable="false">موقعیت جغرافیایی</string>
+    <string formatted="false" name="runtime_source_0088" translatable="false">جستجوی شهر یا روستا</string>
+    <string formatted="false" name="runtime_source_0089" translatable="false">دریافت موقعیت دقیق فعلی</string>
+    <string formatted="false" name="runtime_source_0090" translatable="false">اذان‌های فعال</string>
+    <string formatted="false" name="runtime_source_0091" translatable="false">انتخاب موذن</string>
+    <string formatted="false" name="runtime_source_0092" translatable="false">نحوه اعلام اذان</string>
+    <string formatted="false" name="runtime_source_0093" translatable="false">اعلان اذان</string>
+    <string formatted="false" name="runtime_source_0094" translatable="false">لرزش اذان</string>
+    <string formatted="false" name="runtime_source_0095" translatable="false">صدای اذان</string>
+    <string formatted="false" name="runtime_source_0096" translatable="false">پیش‌نمایش صفحه اذان</string>
+    <string formatted="false" name="runtime_source_0097" translatable="false">موقعیت تنظیم نشده</string>
+    <string formatted="false" name="runtime_source_0098" translatable="false">در حال دریافت موقعیت…</string>
+    <string formatted="false" name="runtime_source_0099" translatable="false">انتخاب شهر یا روستا</string>
+    <string formatted="false" name="runtime_source_0100" translatable="false">نام شهر، روستا، استان یا کشور</string>
+    <string formatted="false" name="runtime_source_0101" translatable="false">با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند</string>
+    <string formatted="false" name="runtime_source_0102" translatable="false">نتیجه‌ای پیدا نشد</string>
+    <string formatted="false" name="runtime_source_0103" translatable="false">افزودن منطقه زمانی</string>
+    <string formatted="false" name="runtime_source_0104" translatable="false">افزودن ساعت انتخاب‌شده</string>
+    <string formatted="false" name="runtime_source_0105" translatable="false">بازگشت به اکنون</string>
+    <string formatted="false" name="runtime_source_0106" translatable="false">رفتن به تاریخ</string>
+    <string formatted="false" name="runtime_source_0107" translatable="false">ترتیب تب‌ها</string>
+    <string formatted="false" name="runtime_source_0108" translatable="false">جابه‌جایی ترتیب تب‌ها</string>
+    <string formatted="false" name="runtime_source_0109" translatable="false">مجوزهای آلارم و اعلان</string>
+    <string formatted="false" name="runtime_source_0110" translatable="false">ویجت‌ها و تنظیمات</string>
+    <string formatted="false" name="runtime_source_0111" translatable="false">تنظیمات ویجت</string>
+    <string formatted="false" name="runtime_source_0112" translatable="false">پیش‌نمایش زنده</string>
+    <string formatted="false" name="runtime_source_0113" translatable="false">افزودن به صفحه اصلی</string>
+    <string formatted="false" name="runtime_source_0114" translatable="false">نمونه‌های نصب‌شده</string>
+    <string formatted="false" name="runtime_source_0115" translatable="false">یادآوری فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0116" translatable="false">افزودن فایل</string>
+    <string formatted="false" name="runtime_source_0117" translatable="false">افزودن اپ یا سایت</string>
+    <string formatted="false" name="runtime_source_0118" translatable="false">ترسیم</string>
+    <string formatted="false" name="runtime_source_0119" translatable="false">نقاشی و ترسیم</string>
+    <string formatted="false" name="runtime_source_0120" translatable="false">ذخیره یادداشت</string>
+    <string formatted="false" name="runtime_source_0121" translatable="false">حذف یادداشت</string>
+    <string formatted="false" name="runtime_source_0122" translatable="false">عنوان یادداشت</string>
+    <string formatted="false" name="runtime_source_0123" translatable="false">متن یادداشت خود را اینجا بنویسید...</string>
+    <string formatted="false" name="runtime_source_0124" translatable="false">آلارم برای این یادداشت</string>
+    <string formatted="false" name="runtime_source_0125" translatable="false">صدای هشدار</string>
+    <string formatted="false" name="runtime_source_0126" translatable="false">فول‌اسکرین</string>
+    <string formatted="false" name="runtime_source_0127" translatable="false">صفحه باز</string>
+    <string formatted="false" name="runtime_source_0128" translatable="false">صفحه قفل</string>
+    <string formatted="false" name="runtime_source_0129" translatable="false">فایل‌ها و تصاویر</string>
+    <string formatted="false" name="runtime_source_0130" translatable="false">انتخاب برنامه نصب‌شده</string>
+    <string formatted="false" name="runtime_source_0131" translatable="false">لینک سایت را وارد کنید</string>
+    <string formatted="false" name="runtime_source_0132" translatable="false">لینک معتبر وارد کنید</string>
+    <string formatted="false" name="runtime_source_0133" translatable="false">هنوز فایلی اضافه نشده است.</string>
+    <string formatted="false" name="runtime_source_0134" translatable="false">هنوز برنامه یا سایتی اضافه نشده است.</string>
+    <string formatted="false" name="runtime_source_0135" translatable="false">یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید</string>
+    <string formatted="false" name="runtime_source_0136" translatable="false">یادداشت ذخیره شد</string>
+    <string formatted="false" name="runtime_source_0137" translatable="false">تنظیم هشدار</string>
+    <string formatted="false" name="runtime_source_0138" translatable="false">عنوان هشدار</string>
+    <string formatted="false" name="runtime_source_0139" translatable="false">ذخیره هشدار</string>
+    <string formatted="false" name="runtime_source_0140" translatable="false">حذف هشدار</string>
+    <string formatted="false" name="runtime_source_0141" translatable="false">افزودن عکس ۱</string>
+    <string formatted="false" name="runtime_source_0142" translatable="false">افزودن عکس ۲</string>
+    <string formatted="false" name="runtime_source_0143" translatable="false">عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)</string>
+    <string formatted="false" name="runtime_source_0144" translatable="false">پیش‌فرض سیستم</string>
+    <string formatted="false" name="runtime_source_0145" translatable="false">هشدار ذخیره شد</string>
+    <string formatted="false" name="runtime_source_0146" translatable="false">تاریخ گذشته قابل انتخاب نیست</string>
+    <string formatted="false" name="runtime_source_0147" translatable="false">هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد</string>
+    <string formatted="false" name="runtime_source_0148" translatable="false">آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد</string>
+    <string formatted="false" name="runtime_source_0149" translatable="false">برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید</string>
+    <string formatted="false" name="runtime_source_0150" translatable="false">انتخاب صدا</string>
+    <string formatted="false" name="runtime_source_0151" translatable="false">+ آپلود صدای جدید</string>
+    <string formatted="false" name="runtime_source_0152" translatable="false">رنگ اپ</string>
+    <string formatted="false" name="runtime_source_0153" translatable="false">رویدادها و مناسبت‌ها</string>
+    <string formatted="false" name="runtime_source_0154" translatable="false">نمایش مناسبت‌ها زیر تقویم</string>
+    <string formatted="false" name="runtime_source_0155" translatable="false">نمایش باکس رویداد زیر تقویم</string>
+    <string formatted="false" name="runtime_source_0156" translatable="false">چیدمان صفحه ساعت</string>
+    <string formatted="false" name="runtime_source_0157" translatable="false">فرم ایجاد داخل صفحه، بدون دکمه +</string>
+    <string formatted="false" name="runtime_source_0158" translatable="false">پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +</string>
+    <string formatted="false" name="runtime_source_0159" translatable="false">تب‌های قابل نمایش در صفحه اصلی</string>
+    <string formatted="false" name="runtime_source_0160" translatable="false">استایل صفحه زنگ</string>
+    <string formatted="false" name="runtime_source_0161" translatable="false">کلاسیک روشن</string>
+    <string formatted="false" name="runtime_source_0162" translatable="false">تمرکز تیره</string>
+    <string formatted="false" name="runtime_source_0163" translatable="false">طلوع گرم</string>
+    <string formatted="false" name="runtime_source_0164" translatable="false">حداقل یک تب باید فعال باشد</string>
+    <string formatted="false" name="runtime_source_0165" translatable="false">تاریخ و ساعت آینده را انتخاب کنید</string>
+    <string formatted="false" name="runtime_source_0166" translatable="false">یک زمان بیشتر از صفر وارد کنید</string>
+    <string formatted="false" name="runtime_source_0167" translatable="false">صفر کردن</string>
+    <string formatted="false" name="runtime_source_0168" translatable="false">ثبت دور</string>
+    <string formatted="false" name="runtime_source_0169" translatable="false">انتخاب تاریخ</string>
+    <string formatted="false" name="runtime_source_0170" translatable="false">انتخاب ساعت</string>
+    <string formatted="false" name="runtime_source_0171" translatable="false">لغو و بازنشانی</string>
+    <string formatted="false" name="runtime_source_0172" translatable="false">مدت‌زمان</string>
+    <string formatted="false" name="runtime_source_0173" translatable="false">زمان پایان</string>
+    <string formatted="false" name="runtime_source_0174" translatable="false">بازگشت به امروز</string>
+    <string formatted="false" name="runtime_source_0175" translatable="false">ماه قبل</string>
+    <string formatted="false" name="runtime_source_0176" translatable="false">ماه بعد</string>
+    <string formatted="false" name="runtime_source_0177" translatable="false">شمسی</string>
+    <string formatted="false" name="runtime_source_0178" translatable="false">میلادی</string>
+    <string formatted="false" name="runtime_source_0179" translatable="false">قمری</string>
+    <string formatted="false" name="runtime_source_0180" translatable="false">شنبه</string>
+    <string formatted="false" name="runtime_source_0181" translatable="false">یکشنبه</string>
+    <string formatted="false" name="runtime_source_0182" translatable="false">دوشنبه</string>
+    <string formatted="false" name="runtime_source_0183" translatable="false">سه‌شنبه</string>
+    <string formatted="false" name="runtime_source_0184" translatable="false">چهارشنبه</string>
+    <string formatted="false" name="runtime_source_0185" translatable="false">پنجشنبه</string>
+    <string formatted="false" name="runtime_source_0186" translatable="false">جمعه</string>
+    <string formatted="false" name="runtime_source_0187" translatable="false">فروردین</string>
+    <string formatted="false" name="runtime_source_0188" translatable="false">اردیبهشت</string>
+    <string formatted="false" name="runtime_source_0189" translatable="false">خرداد</string>
+    <string formatted="false" name="runtime_source_0190" translatable="false">تیر</string>
+    <string formatted="false" name="runtime_source_0191" translatable="false">مرداد</string>
+    <string formatted="false" name="runtime_source_0192" translatable="false">شهریور</string>
+    <string formatted="false" name="runtime_source_0193" translatable="false">مهر</string>
+    <string formatted="false" name="runtime_source_0194" translatable="false">آبان</string>
+    <string formatted="false" name="runtime_source_0195" translatable="false">آذر</string>
+    <string formatted="false" name="runtime_source_0196" translatable="false">دی</string>
+    <string formatted="false" name="runtime_source_0197" translatable="false">بهمن</string>
+    <string formatted="false" name="runtime_source_0198" translatable="false">اسفند</string>
+    <string formatted="false" name="runtime_source_0199" translatable="false">ترسیم ✓</string>
+    <string formatted="false" name="runtime_source_0200" translatable="false">بدون گرید</string>
+    <string formatted="false" name="runtime_source_0201" translatable="false">گرید</string>
+    <string formatted="false" name="runtime_source_0202" translatable="false">رنگ</string>
+    <string formatted="false" name="runtime_source_0203" translatable="false">پاک</string>
+    <string formatted="false" name="runtime_source_0204" translatable="false">ذخیره ترسیم</string>
+    <string formatted="false" name="runtime_source_0205" translatable="false">افزودن فایل یا تصویر</string>
+    <string formatted="false" name="runtime_source_0206" translatable="false">انتخاب برنامه</string>
+    <string formatted="false" name="runtime_source_0207" translatable="false">افزودن سایت</string>
+    <string formatted="false" name="runtime_source_0208" translatable="false">لینک سایت، مثلاً https://example.com</string>
+    <string formatted="false" name="runtime_source_0209" translatable="false">یادآوری قبل از موعد</string>
+    <string formatted="false" name="runtime_source_0210" translatable="false">تمام‌صفحه وقتی گوشی باز است</string>
+    <string formatted="false" name="runtime_source_0211" translatable="false">تمام‌صفحه روی صفحه قفل</string>
+    <string formatted="false" name="runtime_source_0212" translatable="false">فعال</string>
+    <string formatted="false" name="runtime_source_0213" translatable="false">غیرفعال</string>
+    <string formatted="false" name="runtime_source_0214" translatable="false">دست‌نویس</string>
+    <string formatted="false" name="runtime_source_0215" translatable="false">نقاشی</string>
+    <string formatted="false" name="runtime_source_0216" translatable="false">بدون آلارم</string>
+    <string formatted="false" name="runtime_source_0217" translatable="false">تمام‌صفحه هشدار وقتی گوشی باز است</string>
+    <string formatted="false" name="runtime_source_0218" translatable="false">تمام‌صفحه هشدار روی صفحه قفل</string>
+    <string formatted="false" name="runtime_source_0219" translatable="false">صدای پیش‌فرض هشدار</string>
+    <string formatted="false" name="runtime_source_0220" translatable="false">هماهنگ با تم برنامه</string>
+    <string formatted="false" name="runtime_source_0221" translatable="false">نمایش محتوا</string>
+    <string formatted="false" name="runtime_source_0222" translatable="false">نمایش پیش‌نمایش</string>
+    <string formatted="false" name="runtime_source_0223" translatable="false">نمایش نام فایل</string>
+    <string formatted="false" name="runtime_source_0224" translatable="false">نمایش نوع و جزئیات فایل</string>
+    <string formatted="false" name="runtime_source_0225" translatable="false">هدر و کنترل‌ها</string>
+    <string formatted="false" name="runtime_source_0226" translatable="false">قالب ساعت</string>
+    <string formatted="false" name="runtime_source_0227" translatable="false">مطابق تنظیمات سیستم</string>
+    <string formatted="false" name="runtime_source_0228" translatable="false">۲۴ ساعته</string>
+    <string formatted="false" name="runtime_source_0229" translatable="false">۱۲ ساعته</string>
+    <string formatted="false" name="runtime_source_0230" translatable="false">نمایش ثانیه</string>
+    <string formatted="false" name="runtime_source_0231" translatable="false">نمایش عنوان بخش</string>
+    <string formatted="false" name="runtime_source_0232" translatable="false">محتوا</string>
+    <string formatted="false" name="runtime_source_0233" translatable="false">حداکثر تعداد آیتم</string>
+    <string formatted="false" name="runtime_source_0234" translatable="false">تعداد</string>
+    <string formatted="false" name="runtime_source_0235" translatable="false">هوشمند: نزدیک‌ترین هشدار اول</string>
+    <string formatted="false" name="runtime_source_0236" translatable="false">زمان: زودترین تا دیرترین</string>
+    <string formatted="false" name="runtime_source_0237" translatable="false">اهمیت: مهم‌ترین اول</string>
+    <string formatted="false" name="runtime_source_0238" translatable="false">هوشمند: نزدیک‌ترین موعد اول</string>
+    <string formatted="false" name="runtime_source_0239" translatable="false">جدیدترین یادداشت اول</string>
+    <string formatted="false" name="runtime_source_0240" translatable="false">تنظیمات ویجت ساعت</string>
+    <string formatted="false" name="runtime_source_0241" translatable="false">تنظیمات ویجت یادداشت</string>
+    <string formatted="false" name="runtime_source_0242" translatable="false">تنظیمات ویجت ساعت جهانی</string>
+    <string formatted="false" name="runtime_source_0243" translatable="false">پس‌زمینه</string>
+    <string formatted="false" name="runtime_source_0244" translatable="false">شفاف (پیش‌فرض)</string>
+    <string formatted="false" name="runtime_source_0245" translatable="false">مشکی ۷۰٪</string>
+    <string formatted="false" name="runtime_source_0246" translatable="false">مشکی</string>
+    <string formatted="false" name="runtime_source_0247" translatable="false">سفید</string>
+    <string formatted="false" name="runtime_source_0248" translatable="false">آبی</string>
+    <string formatted="false" name="runtime_source_0249" translatable="false">فیروزه‌ای</string>
+    <string formatted="false" name="runtime_source_0250" translatable="false">بنفش</string>
+    <string formatted="false" name="runtime_source_0251" translatable="false">قرمز</string>
+    <string formatted="false" name="runtime_source_0252" translatable="false">سبز</string>
+    <string formatted="false" name="runtime_source_0253" translatable="false">طلایی</string>
+    <string formatted="false" name="runtime_source_0254" translatable="false">نارنجی</string>
+    <string formatted="false" name="runtime_source_0255" translatable="false">صورتی</string>
+    <string formatted="false" name="runtime_source_0256" translatable="false">پیش‌نمایش</string>
+    <string formatted="false" name="runtime_source_0257" translatable="false">نوع فایل</string>
+    <string formatted="false" name="runtime_source_0258" translatable="false">نمایش تمام صفحه</string>
+    <string formatted="false" name="runtime_source_0259" translatable="false">باز کردن کنترل پخش</string>
+    <string formatted="false" name="runtime_source_0260" translatable="false">در حال آماده‌سازی</string>
+    <string formatted="false" name="runtime_source_0261" translatable="false">در حال پخش</string>
+    <string formatted="false" name="runtime_source_0262" translatable="false">مکث</string>
+    <string formatted="false" name="runtime_source_0263" translatable="false">هشدار هوشمند</string>
+    <string formatted="false" name="runtime_source_0264" translatable="false">ورودی هوشمند</string>
+    <string formatted="false" name="runtime_source_0265" translatable="false">پیست</string>
+    <string formatted="false" name="runtime_source_0266" translatable="false">تشخیص خودکار</string>
+    <string formatted="false" name="runtime_source_0267" translatable="false">تحلیل متن و ساخت پیش‌نمایش</string>
+    <string formatted="false" name="runtime_source_0268" translatable="false">زمان زنگ برای همه</string>
+    <string formatted="false" name="runtime_source_0269" translatable="false">سرِ وقت</string>
+    <string formatted="false" name="runtime_source_0270" translatable="false">قبل از زمان</string>
+    <string formatted="false" name="runtime_source_0271" translatable="false">بعد از زمان</string>
+    <string formatted="false" name="runtime_source_0272" translatable="false">پیش‌نمایش هشدارها</string>
+    <string formatted="false" name="runtime_source_0273" translatable="false">حذف همه</string>
+    <string formatted="false" name="runtime_source_0274" translatable="false">ذخیره همه هشدارها</string>
+    <string formatted="false" name="runtime_source_0275" translatable="false">عنوان</string>
+    <string formatted="false" name="runtime_source_0276" translatable="false">تاریخ و ساعت اصلی</string>
+    <string formatted="false" name="runtime_source_0277" translatable="false">زمان زنگ</string>
+    <string formatted="false" name="runtime_source_0278" translatable="false">اولویت</string>
+    <string formatted="false" name="runtime_source_0279" translatable="false">لرزش همراه هشدار</string>
+    <string formatted="false" name="runtime_source_0280" translatable="false">ویرایش هشدار</string>
+    <string formatted="false" name="runtime_source_0281" translatable="false">عنوان نمی‌تواند خالی باشد</string>
+    <string formatted="false" name="runtime_source_0282" translatable="false">متنی در کلیپ‌بورد نیست</string>
+    <string formatted="false" name="runtime_source_0283" translatable="false">ابتدا متن را تحلیل کنید</string>
+    <string formatted="false" name="runtime_source_0284" translatable="false">هنوز هشداری شناسایی نشده است.</string>
+    <string formatted="false" name="runtime_source_0285" translatable="false">مورد</string>
+    <string formatted="false" name="runtime_source_0286" translatable="false">هشدار شناسایی شد</string>
+    <string formatted="false" name="runtime_source_0287" translatable="false">تنظیم تکرار</string>
+    <string formatted="false" name="runtime_source_0288" translatable="false">فاصله تکرار بر حسب روز</string>
+    <string formatted="false" name="runtime_source_0289" translatable="false">فاصله تکرار بر حسب هفته</string>
+    <string formatted="false" name="runtime_source_0290" translatable="false">افزودن تاریخ و ساعت</string>
+    <string formatted="false" name="runtime_source_0291" translatable="false">پاک کردن تاریخ‌های دلخواه</string>
+    <string formatted="false" name="runtime_source_0292" translatable="false">هنوز تاریخ و ساعتی انتخاب نشده</string>
+    <string formatted="false" name="runtime_source_0293" translatable="false">تاریخ و ساعت گذشته قابل انتخاب نیست</string>
+    <string formatted="false" name="runtime_source_0294" translatable="false">هر چند روز</string>
+    <string formatted="false" name="runtime_source_0295" translatable="false">تاریخ‌های دلخواه</string>
+    <string formatted="false" name="runtime_source_0296" translatable="false">روزهای هفته</string>
+    <string formatted="false" name="runtime_source_0297" translatable="false">دور</string>
+    <string formatted="false" name="runtime_source_0298" translatable="false">مدت‌زمان بیشتر از صفر وارد کنید</string>
+    <string formatted="false" name="runtime_source_0299" translatable="false">ابتدا کرنومتر را صفر کنید</string>
+    <string formatted="false" name="runtime_source_0300" translatable="false">تاریخ و ساعت پایان گذشته است</string>
+    <string formatted="false" name="runtime_source_0301" translatable="false">تایمر تمام شد</string>
+    <string formatted="false" name="runtime_source_0302" translatable="false">کرنومتر به حد نهایی رسید</string>
+    <string formatted="false" name="runtime_source_0303" translatable="false">وقت نیایش</string>
+    <string formatted="false" name="runtime_source_0304" translatable="false">پایان اذان</string>
+    <string formatted="false" name="runtime_source_0305" translatable="false">قطع کامل صدا</string>
+    <string formatted="false" name="runtime_source_0306" translatable="false">وصل صدا</string>
+    <string formatted="false" name="runtime_source_0307" translatable="false">قطع اذان</string>
+    <string formatted="false" name="runtime_source_0308" translatable="false">باز کردن یادداشت</string>
+    <string formatted="false" name="runtime_source_0309" translatable="false">قطع هشدار</string>
+    <string formatted="false" name="runtime_source_0310" translatable="false">فایل‌ها، تصاویر، برنامه‌ها و سایت‌ها</string>
+    <string formatted="false" name="runtime_source_0311" translatable="false">یادآوری یادداشت</string>
+    <string formatted="false" name="runtime_source_0312" translatable="false">زمان یادداشت شما رسیده است</string>
+    <string formatted="false" name="runtime_source_0313" translatable="false">آلارم‌ها</string>
+    <string formatted="false" name="runtime_source_0314" translatable="false">اعلان اوقات اذان</string>
+    <string formatted="false" name="runtime_source_0315" translatable="false">هشدار یادداشت‌ها</string>
+    <string formatted="false" name="runtime_source_0316" translatable="false">هشدارهای زمان‌دار یادداشت‌ها</string>
+    <string formatted="false" name="runtime_source_0317" translatable="false">ابزارها</string>
+    <string formatted="false" name="runtime_source_0318" translatable="false">ابزار قطب‌نما</string>
+    <string formatted="false" name="runtime_source_0319" translatable="false">نمایش روی صفحه</string>
+    <string formatted="false" name="runtime_source_0320" translatable="false">قطب‌نمای کلاسیک</string>
+    <string formatted="false" name="runtime_source_0321" translatable="false">قبله‌نما</string>
+    <string formatted="false" name="runtime_source_0322" translatable="false">هشت جهت اصلی</string>
+    <string formatted="false" name="runtime_source_0323" translatable="false">در حال دریافت جهت از حسگر…</string>
+    <string formatted="false" name="runtime_source_0324" translatable="false">حسگر جهت‌یابی در این دستگاه در دسترس نیست.</string>
+    <string formatted="false" name="runtime_source_0325" translatable="false">برای قبله‌نما ابتدا موقعیت را در تنظیمات اوقات شرعی ثبت کنید.</string>
+    <string formatted="false" name="runtime_source_0326" translatable="false">جهت قبله %.0f°  •  انحراف فعلی %.0f°</string>
+    <string formatted="false" name="runtime_source_0327" translatable="false">زاویه نسبت به شمال  </string>
+    <string formatted="false" name="runtime_source_0328" translatable="false">شمال</string>
+    <string formatted="false" name="runtime_source_0329" translatable="false">شمال‌شرق</string>
+    <string formatted="false" name="runtime_source_0330" translatable="false">شرق</string>
+    <string formatted="false" name="runtime_source_0331" translatable="false">جنوب‌شرق</string>
+    <string formatted="false" name="runtime_source_0332" translatable="false">جنوب</string>
+    <string formatted="false" name="runtime_source_0333" translatable="false">جنوب‌غرب</string>
+    <string formatted="false" name="runtime_source_0334" translatable="false">غرب</string>
+    <string formatted="false" name="runtime_source_0335" translatable="false">شمال‌غرب</string>
+    <string formatted="false" name="runtime_source_0336" translatable="false">ش‌خ</string>
+    <string formatted="false" name="runtime_source_0337" translatable="false">ج‌خ</string>
+    <string formatted="false" name="runtime_source_0338" translatable="false">ج‌غ</string>
+    <string formatted="false" name="runtime_source_0339" translatable="false">ش‌غ</string>
+    <string formatted="false" name="runtime_source_0340" translatable="false">قطب‌نما</string>
+    <string formatted="false" name="runtime_source_0341" translatable="false">انتخاب‌شده</string>
+    <string formatted="false" name="runtime_source_0342" translatable="false">تنظیم اذان</string>
+    <string formatted="false" name="runtime_source_0343" translatable="false">تنظیم همه موارد</string>
+    <string formatted="false" name="runtime_source_0344" translatable="false">تنظیمات جداگانه</string>
+    <string formatted="false" name="runtime_source_0345" translatable="false">تنظیم صدا و نحوه اعلام</string>
+    <string formatted="false" name="runtime_source_0346" translatable="false">موذن</string>
+    <string formatted="false" name="runtime_source_0347" translatable="false">+ آپلود صدای موذن</string>
+    <string formatted="false" name="runtime_source_0348" translatable="false">میزان صدا: </string>
+    <string formatted="false" name="runtime_source_0349" translatable="false">میزان صدای </string>
+    <string formatted="false" name="runtime_source_0350" translatable="false">فعال یا غیرفعال کردن </string>
+    <string formatted="false" name="runtime_source_0351" translatable="false">نمایش نوار اوقات شرعی زیر تقویم</string>
+    <string formatted="false" name="runtime_source_0352" translatable="false">افق‌ها</string>
+    <string formatted="false" name="runtime_source_0353" translatable="false">افزودن افق +</string>
+    <string formatted="false" name="runtime_source_0354" translatable="false">هنوز افقی اضافه نشده است.</string>
+    <string formatted="false" name="runtime_source_0355" translatable="false">اذان فعال است</string>
+    <string formatted="false" name="runtime_source_0356" translatable="false">پیش‌فرض ✓</string>
+    <string formatted="false" name="runtime_source_0357" translatable="false">به عنوان افق پیش‌فرض</string>
+    <string formatted="false" name="runtime_source_0358" translatable="false">افق پیش‌فرض </string>
+    <string formatted="false" name="runtime_source_0359" translatable="false">حذف خودکار ساعت‌های گذشته و بدون تکرار آینده</string>
+    <string formatted="false" name="runtime_source_0360" translatable="false">نمایش بخش اذان و اوقات شرعی</string>
+    <string formatted="false" name="runtime_source_0361" translatable="false">نمایش بخش اذان</string>
+    <string formatted="false" name="runtime_source_0362" translatable="false">⚠ اذان زمان‌بندی نشده است؛ برای ثبت موقعیت اینجا بزنید.</string>
+    <string formatted="false" name="runtime_source_0363" translatable="false">⚠ اذان زمان‌بندی نشده است؛ مجوز آلارم دقیق را فعال کنید.</string>
+    <string formatted="false" name="runtime_source_0364" translatable="false">⚠ زمان اذان ثبت شده، اما مجوز نمایش اعلان داده نشده است.</string>
+    <string formatted="false" name="runtime_source_0365" translatable="false">⚠ زمان‌بندی اذان ناموفق بود؛ برای تلاش دوباره اینجا بزنید.</string>
+    <string formatted="false" name="runtime_source_0366" translatable="false">همه اعلان‌های اذان خاموش‌اند.</string>
+    <string formatted="false" name="runtime_source_0367" translatable="false">سرویس موقعیت در دسترس نیست.</string>
+    <string formatted="false" name="runtime_source_0368" translatable="false">مکان دستگاه را روشن کنید و دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_source_0369" translatable="false">شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.</string>
+    <string formatted="false" name="runtime_source_0370" translatable="false">موقعیت دقیق دریافت نشد؛ دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_source_0371" translatable="false">موقعیت فعلی</string>
+    <string formatted="false" name="runtime_source_0372" translatable="false">به‌روزرسانی موقعیت دقیق فعلی</string>
+    <string formatted="false" name="runtime_source_0373" translatable="false">ابتدا آفلاین، سپس در صورت نیاز جست‌وجوی آنلاین</string>
+    <string formatted="false" name="runtime_source_0374" translatable="false">ابتدا یک شهر، استان، کشور یا منطقه زمانی را جست‌وجو کنید</string>
+    <string formatted="false" name="runtime_source_0375" translatable="false">نام شهر، استان، کشور یا منطقه زمانی</string>
+    <string formatted="false" name="runtime_source_0376" translatable="false">در حال جست‌وجوی آنلاین…</string>
+    <string formatted="false" name="runtime_source_0377" translatable="false">برای جست‌وجوی جهانی یک حرف دیگر وارد کنید</string>
+    <string formatted="false" name="runtime_source_0378" translatable="false">نتیجه آفلاین پیدا نشد؛ برای جست‌وجوی جدید اینترنت لازم است</string>
+    <string formatted="false" name="runtime_source_0379" translatable="false">این منطقه زمانی قبلاً اضافه شده است</string>
+    <string formatted="false" name="runtime_source_0380" translatable="false">حداقل یک ساعت جهانی باید باقی بماند</string>
+    <string formatted="false" name="runtime_source_0381" translatable="false">اضافه کن</string>
+    <string formatted="false" name="runtime_source_0382" translatable="false">ثبت سریع یادداشت</string>
+    <string formatted="false" name="runtime_source_0383" translatable="false">چی رو نباید فراموش کنی؟</string>
+    <string formatted="false" name="runtime_source_0384" translatable="false">جزئیات، آلارم یا نقاشی</string>
+    <string formatted="false" name="runtime_source_0385" translatable="false">یادداشت خالی است</string>
+    <string formatted="false" name="runtime_source_0386" translatable="false">یک متن یا نقاشی وارد کنید</string>
+    <string formatted="false" name="runtime_source_0387" translatable="false">منو</string>
+    <string formatted="false" name="runtime_source_0388" translatable="false">دارک مود و لایت مود</string>
+    <string formatted="false" name="runtime_source_0389" translatable="false">+ ویجت</string>
+    <string formatted="false" name="runtime_source_0390" translatable="false">ایجاد هشدار</string>
+    <string formatted="false" name="runtime_source_0391" translatable="false">تعطیل هفتگی</string>
+    <string formatted="false" name="runtime_source_0392" translatable="false">رویدادی ثبت نشده است</string>
+    <string formatted="false" name="runtime_source_0393" translatable="false">هنوز هشداری تنظیم نشده است.</string>
+    <string formatted="false" name="runtime_source_0394" translatable="false">هنوز یادداشتی ندارید.</string>
+    <string formatted="false" name="runtime_source_0395" translatable="false">✓ آلارم دقیق</string>
+    <string formatted="false" name="runtime_source_0396" translatable="false">✕ آلارم دقیق</string>
+    <string formatted="false" name="runtime_source_0397" translatable="false">✓ صفحه زنگ</string>
+    <string formatted="false" name="runtime_source_0398" translatable="false">✕ صفحه زنگ</string>
+    <string formatted="false" name="runtime_source_0399" translatable="false">برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید</string>
+    <string formatted="false" name="runtime_source_0400" translatable="false">برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید</string>
+    <string formatted="false" name="runtime_source_0401" translatable="false">هشداری تنظیم نشده</string>
+    <string formatted="false" name="runtime_source_0402" translatable="false">یادداشتی برای نمایش نیست</string>
+    <string formatted="false" name="runtime_source_0403" translatable="false">آلارم • </string>
+    <string formatted="false" name="runtime_source_0404" translatable="false">فایلی انتخاب نشده است
+برای افزودن لمس کنید</string>
+    <string formatted="false" name="runtime_source_0405" translatable="false">افقی انتخاب نشده • برای افزودن لمس کنید</string>
+    <string formatted="false" name="runtime_source_0406" translatable="false">قطع</string>
+    <string formatted="false" name="runtime_source_0407" translatable="false">اذان در حال اجرا</string>
+    <string formatted="false" name="runtime_source_0408" translatable="false">یادآوری هشدار</string>
+    <string formatted="false" name="runtime_source_0409" translatable="false"> بعد از هشدار</string>
+    <string formatted="false" name="runtime_source_0410" translatable="false">تا زمان یادداشت </string>
+    <string formatted="false" name="runtime_source_0411" translatable="false"> مانده است</string>
+    <string formatted="false" name="runtime_source_0412" translatable="false">آلارم‌های Advance Clock</string>
+    <string formatted="false" name="runtime_source_0413" translatable="false">یادآوری هشدارها و یادداشت‌ها</string>
+    <string formatted="false" name="runtime_source_0414" translatable="false">تاریخ امروز</string>
+    <string formatted="false" name="runtime_source_0415" translatable="false">پاور یا کاهش صدا: قطع صدا
+نگه‌داشتن کاهش صدا: کم‌کردن تدریجی
+افزایش صدا: وصل و افزایش صدا</string>
+    <string formatted="false" name="runtime_source_0416" translatable="false">یادآوری مجدد بعد از</string>
+    <string formatted="false" name="runtime_source_0417" translatable="false">اوقات شرعی</string>
+        <string formatted="false" name="runtime_source_0418" translatable="false">افق</string>
+    <string formatted="false" name="runtime_source_0419" translatable="false">یادآوری
+</string>
+    <string formatted="false" name="runtime_source_0420" translatable="false">اهمیت </string>
+    <string formatted="false" name="runtime_source_0421" translatable="false">تاریخ
+</string>
+    <string formatted="false" name="runtime_source_0422" translatable="false">ساعت
+</string>
+    <string formatted="false" name="runtime_source_0423" translatable="false">هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.</string>
+    <string formatted="false" name="runtime_source_0424" translatable="false">عکس ۱ ✓</string>
+    <string formatted="false" name="runtime_source_0425" translatable="false">عکس ۲ ✓</string>
+    <string formatted="false" name="runtime_source_0426" translatable="false">ویجت را از فهرست ویجت‌های لانچر اضافه کنید</string>
+    <string formatted="false" name="runtime_source_0427" translatable="false">درخواست افزودن ویجت ارسال شد؛ پس از تأیید لانچر، تنظیمات همان ویجت باز می‌شود.</string>
+    <string formatted="false" name="runtime_source_0428" translatable="false">لانچر درخواست افزودن ویجت را نپذیرفت.</string>
+    <string formatted="false" name="runtime_source_0429" translatable="false">  •  اهمیت </string>
+    <string formatted="false" name="runtime_source_0430" translatable="false">  •  یادآوری </string>
+    <string formatted="false" name="runtime_source_0431" translatable="false">  •  لرزش</string>
+    <string formatted="false" name="runtime_source_0432" translatable="false">  •  آلارم</string>
+    <string formatted="false" name="runtime_source_0433" translatable="false">  •  نقاشی</string>
+    <string formatted="false" name="runtime_source_0434" translatable="false">صبح</string>
+    <string formatted="false" name="runtime_source_0435" translatable="false">ظهر</string>
+    <string formatted="false" name="runtime_source_0436" translatable="false">مغرب</string>
+    <string formatted="false" name="runtime_source_0437" translatable="false">دور %d     %s</string>
+    <string formatted="false" name="runtime_source_0438" translatable="false">حد نهایی بیشتر از صفر وارد کنید</string>
+    <string formatted="false" name="runtime_source_0439" translatable="false">✓ اعلان‌ها</string>
+    <string formatted="false" name="runtime_source_0440" translatable="false">✕ اعلان‌ها</string>
+    <string formatted="false" name="runtime_source_0441" translatable="false">افزودن افق</string>
+    <string formatted="false" name="runtime_source_0442" translatable="false">گرفتن افق از GPS</string>
+    <string formatted="false" name="runtime_source_0443" translatable="false">ایران و منطقه‌زمانی‌ها آفلاین • جستجوی جهانی © OpenStreetMap</string>
+    <string formatted="false" name="runtime_source_0444" translatable="false">برای جستجوی جهانی یک حرف دیگر وارد کنید</string>
+    <string formatted="false" name="runtime_source_0445" translatable="false">در حال جستجوی لحظه‌ای…</string>
+    <string formatted="false" name="runtime_source_0446" translatable="false">در حال جستجو در نتایج ذخیره‌شده…</string>
+    <string formatted="false" name="runtime_source_0447" translatable="false"> نتیجه آفلاین</string>
+    <string formatted="false" name="runtime_source_0448" translatable="false">نتیجه آفلاین پیدا نشد؛ برای مکان جدید اینترنت لازم است</string>
+    <string formatted="false" name="runtime_source_0449" translatable="false">مکانی پیدا نشد؛ عبارت را تغییر دهید</string>
+    <string formatted="false" name="runtime_source_0450" translatable="false"> نتیجه ذخیره‌شده</string>
+    <string formatted="false" name="runtime_source_0451" translatable="false"> نتیجه</string>
+    <string formatted="false" name="runtime_source_0452" translatable="false">منطقه زمانی این مکان هنوز آفلاین ذخیره نشده؛ یک بار با اینترنت انتخابش کنید</string>
+    <string formatted="false" name="runtime_source_0453" translatable="false">در حال تشخیص منطقه زمانی…</string>
+    <string formatted="false" name="runtime_source_0454" translatable="false">منطقه زمانی این مکان تشخیص داده نشد؛ دوباره تلاش کنید</string>
+    <string formatted="false" name="runtime_source_0455" translatable="false">افق اضافه شد</string>
+    <string formatted="false" name="runtime_source_0456" translatable="false">، </string>
+    <string formatted="false" name="runtime_source_0457" translatable="false">ش</string>
+    <string formatted="false" name="runtime_source_0458" translatable="false">خ</string>
+    <string formatted="false" name="runtime_source_0459" translatable="false">ج</string>
+    <string formatted="false" name="runtime_source_0460" translatable="false">غ</string>
+    <string formatted="false" name="runtime_source_0461" translatable="false">صدای هشدار • </string>
+    <string formatted="false" name="runtime_source_0462" translatable="false">با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «ذخیره ترسیم» ثبت می‌شود.</string>
+    <string formatted="false" name="runtime_source_0463" translatable="false">هر تعداد فایل یا تصویر اضافه کنید؛ برای باز کردن هر مورد روی آن بزنید.</string>
+    <string formatted="false" name="runtime_source_0464" translatable="false">+ افزودن فایل یا تصویر</string>
+    <string formatted="false" name="runtime_source_0465" translatable="false">یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.</string>
+    <string formatted="false" name="runtime_source_0466" translatable="false">+ افزودن سایت</string>
+    <string formatted="false" name="runtime_source_0467" translatable="false">افزودن فایل (</string>
+    <string formatted="false" name="runtime_source_0468" translatable="false">اپ یا سایت (</string>
+    <string formatted="false" name="runtime_source_0469" translatable="false">یادآوری قبل از موعد
+</string>
+    <string formatted="false" name="runtime_source_0470" translatable="false">یادداشت ذخیره شد؛ برای آلارم، دسترسی آلارم دقیق لازم است.</string>
+    <string formatted="false" name="runtime_source_0471" translatable="false">اندازه قلم </string>
+    <string formatted="false" name="runtime_source_0472" translatable="false">نمایش رویدادهای شمسی ایران</string>
+    <string formatted="false" name="runtime_source_0473" translatable="false">نمایش رویدادهای قمری کشورهای عربی</string>
+    <string formatted="false" name="runtime_source_0474" translatable="false">نمایش رویدادهای میلادی بین‌المللی</string>
+    <string formatted="false" name="runtime_source_0475" translatable="false">اندازه‌های دقیق گزارش‌شده توسط لانچر:</string>
+    <string formatted="false" name="runtime_source_0476" translatable="false"> خانه</string>
+    <string formatted="false" name="runtime_source_0477" translatable="false">اندازه برآوردشده از لانچر: </string>
+    <string formatted="false" name="runtime_source_0478" translatable="false">
+تقریب شبکه: </string>
+    <string formatted="false" name="runtime_source_0479" translatable="false">هشدار در </string>
+    <string formatted="false" name="runtime_source_0480" translatable="false">شمارش معکوس تا تاریخ و ساعت انتخاب‌شده</string>
+    <string formatted="false" name="runtime_source_0481" translatable="false">شمارش معکوس بر اساس مدت‌زمان</string>
+    <string formatted="false" name="runtime_source_0482" translatable="false">همهٔ ویجت‌های Advance از اینجا قابل افزودن و مدیریت هستند. </string>
+    <string formatted="false" name="runtime_source_0483" translatable="false">برای هر نمونهٔ نصب‌شده می‌توانید تنظیمات جداگانه داشته باشید.</string>
+    <string formatted="false" name="runtime_source_0484" translatable="false">ساعت و هشدارها</string>
+    <string formatted="false" name="runtime_source_0485" translatable="false">نمایش ساعت، تاریخ و هشدارهای پیش رو</string>
+    <string formatted="false" name="runtime_source_0486" translatable="false">نمایش یادداشت‌ها و یادآوری‌های NoForget</string>
+    <string formatted="false" name="runtime_source_0487" translatable="false">نمایش هم‌زمان سه منطقه زمانی اول تب ساعت جهانی</string>
+    <string formatted="false" name="runtime_source_0488" translatable="false">اوقات شرعی افق‌ها</string>
+    <string formatted="false" name="runtime_source_0489" translatable="false">نمایش پنج وقت شرعی برای همه شهرها و افق‌های انتخاب‌شده</string>
+    <string formatted="false" name="runtime_source_0490" translatable="false">دسترسی سریع و یادآوری عکس، صوت، ویدیو، متن، PDF و فایل‌های دیگر</string>
+    <string formatted="false" name="runtime_source_0491" translatable="false"> نصب‌شده</string>
+    <string formatted="false" name="runtime_source_0492" translatable="false">پیش‌نمایش </string>
+    <string formatted="false" name="runtime_source_0493" translatable="false">ویرایش </string>
+    <string formatted="false" name="runtime_source_0494" translatable="false">ویجت را از فهرست ویجت‌های لانچر اضافه کنید.</string>
+    <string formatted="false" name="runtime_source_0495" translatable="false">لانچر شما افزودن مستقیم ویجت را پشتیبانی نمی‌کند؛ </string>
+    <string formatted="false" name="runtime_source_0496" translatable="false">از فهرست ویجت‌های صفحه اصلی استفاده کنید.</string>
+    <string formatted="false" name="runtime_source_0497" translatable="false">درخواست افزودن ویجت به لانچر ارسال شد.</string>
+    <string formatted="false" name="runtime_source_0498" translatable="false">پکن • چین • آسیا</string>
+    <string formatted="false" name="runtime_source_0499" translatable="false">Beijing Peking پکن 北京 China چین Asia/Shanghai</string>
+    <string formatted="false" name="runtime_source_0500" translatable="false">پکن</string>
+    <string formatted="false" name="runtime_source_0501" translatable="false">مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند</string>
+    <string formatted="false" name="runtime_source_0502" translatable="false">جست‌وجوی آنلاین انجام نشد؛ دوباره تلاش کنید</string>
+    <string formatted="false" name="runtime_source_0503" translatable="false"> نتیجه آنلاین</string>
+    <string formatted="false" name="runtime_source_0504" translatable="false">منطقه زمانی این شهر آفلاین مشخص نشد؛ یک بار با اینترنت انتخابش کنید</string>
+    <string formatted="false" name="runtime_source_0505" translatable="false">مختصات این نتیجه در دسترس نیست</string>
+    <string formatted="false" name="runtime_source_0506" translatable="false">تبدیل زمان محلی شما: </string>
+    <string formatted="false" name="runtime_source_0507" translatable="false">زمان فعلی در مناطق انتخاب‌شده</string>
+    <string formatted="false" name="runtime_source_0508" translatable="false">EEE، d MMM yyyy</string>
+    <string formatted="false" name="runtime_source_0509" translatable="false">حذف </string>
+    <string formatted="false" name="runtime_source_0510" translatable="false">تأیید حذف </string>
+    <string formatted="false" name="runtime_source_0511" translatable="false">برای تأیید حذف دوباره بزنید</string>
+    <string formatted="false" name="runtime_source_0512" translatable="false">آسیا</string>
+    <string formatted="false" name="runtime_source_0513" translatable="false">اروپا</string>
+    <string formatted="false" name="runtime_source_0514" translatable="false">آفریقا</string>
+    <string formatted="false" name="runtime_source_0515" translatable="false">آمریکا</string>
+    <string formatted="false" name="runtime_source_0516" translatable="false">استرالیا</string>
+    <string formatted="false" name="runtime_source_0517" translatable="false">اقیانوسیه</string>
+    <string formatted="false" name="runtime_source_0518" translatable="false">اقیانوس اطلس</string>
+    <string formatted="false" name="runtime_source_0519" translatable="false">اقیانوس هند</string>
+    <string formatted="false" name="runtime_source_0520" translatable="false">جنوبگان</string>
+    <string formatted="false" name="runtime_source_0521" translatable="false">Regina رجاینا Saskatchewan ساسکاچوان</string>
+    <string formatted="false" name="runtime_source_0522" translatable="false">Tehran تهران Iran ایران</string>
+    <string formatted="false" name="runtime_source_0523" translatable="false">Kuwait کویت</string>
+    <string formatted="false" name="runtime_source_0524" translatable="false">Shanghai شانگهای China چین</string>
+    <string formatted="false" name="runtime_source_0525" translatable="false">فایل فشرده</string>
+    <string formatted="false" name="runtime_source_0526" translatable="false">تنظیمات یادآوری فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0527" translatable="false">ساخت یادآوری فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0528" translatable="false">تا </string>
+    <string formatted="false" name="runtime_source_0529" translatable="false"> فایل ترکیبی قابل انتخاب است. عکس، صوت، ویدیو، متن، PDF و </string>
+    <string formatted="false" name="runtime_source_0530" translatable="false">سایر فایل‌ها به‌صورت خودکار تشخیص داده می‌شوند. ترتیب همین فهرست، </string>
+    <string formatted="false" name="runtime_source_0531" translatable="false">ترتیب نمایش در ویجت است.</string>
+    <string formatted="false" name="runtime_source_0532" translatable="false">＋ افزودن عکس، صوت یا فایل</string>
+    <string formatted="false" name="runtime_source_0533" translatable="false">پاک کردن همه فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0534" translatable="false">۱۰۰٪</string>
+    <string formatted="false" name="runtime_source_0535" translatable="false">۸۵٪</string>
+    <string formatted="false" name="runtime_source_0536" translatable="false">۷۰٪</string>
+    <string formatted="false" name="runtime_source_0537" translatable="false">نام ویجت و دکمه تنظیمات</string>
+    <string formatted="false" name="runtime_source_0538" translatable="false">دسترسی مستقیم به تنظیمات همین ویجت</string>
+    <string formatted="false" name="runtime_source_0539" translatable="false">thumbnail تصویر، فریم ویدیو یا کاور فایل صوتی</string>
+    <string formatted="false" name="runtime_source_0540" translatable="false">اگر خاموش باشد، پیش‌نمایش فایل بزرگ و واضح نمایش داده می‌شود.</string>
+    <string formatted="false" name="runtime_source_0541" translatable="false">نوع فایل و برای فایل متنی، خلاصه‌ای از محتوا</string>
+    <string formatted="false" name="runtime_source_0542" translatable="false">برای تغییر اندازه ویجت انگشتتان را روی ویجت نگهدارید و کمی جابه‌جا کنید و رها کنید تا تغییر سایز فعال شود</string>
+    <string formatted="false" name="runtime_source_0543" translatable="false">بازگردانی تنظیمات ظاهری این ویجت</string>
+    <string formatted="false" name="runtime_source_0544" translatable="false">حداکثر </string>
+    <string formatted="false" name="runtime_source_0545" translatable="false"> فایل قابل انتخاب است.</string>
+    <string formatted="false" name="runtime_source_0546" translatable="false">هنوز فایلی انتخاب نشده است.</string>
+    <string formatted="false" name="runtime_source_0547" translatable="false">↑ بالا</string>
+    <string formatted="false" name="runtime_source_0548" translatable="false">↓ پایین</string>
+    <string formatted="false" name="runtime_source_0549" translatable="false"> از </string>
+    <string formatted="false" name="runtime_source_0550" translatable="false"> مورد انتخاب شده</string>
+    <string formatted="false" name="runtime_source_0551" translatable="false">فشرده</string>
+    <string formatted="false" name="runtime_source_0552" translatable="false">سه شنبه</string>
+    <string formatted="false" name="runtime_source_0553" translatable="false">هر </string>
+    <string formatted="false" name="runtime_source_0554" translatable="false"> روز</string>
+    <string formatted="false" name="runtime_source_0555" translatable="false"> تاریخ انتخاب شده</string>
+    <string formatted="false" name="runtime_source_0556" translatable="false">دائم؛ روزهای انتخابی هر هفته</string>
+    <string formatted="false" name="runtime_source_0557" translatable="false">روزهای انتخابی هر </string>
+    <string formatted="false" name="runtime_source_0558" translatable="false"> هفته</string>
+    <string formatted="false" name="runtime_source_0559" translatable="false">رنگ‌های آماده</string>
+    <string formatted="false" name="runtime_source_0560" translatable="false">پالت کشیدنی</string>
+    <string formatted="false" name="runtime_source_0561" translatable="false">نمونه رنگ قلم</string>
+    <string formatted="false" name="runtime_source_0562" translatable="false">پالت رنگ قلم</string>
+    <string formatted="false" name="runtime_source_0563" translatable="false">انتخاب رنگ</string>
+    <string formatted="false" name="runtime_source_0564" translatable="false">یادآوری </string>
+    <string formatted="false" name="runtime_source_0565" translatable="false">پیش‌فرض</string>
+    <string formatted="false" name="runtime_source_0566" translatable="false">انتخاب </string>
+    <string formatted="false" name="runtime_source_0567" translatable="false"> به عنوان افق پیش‌فرض</string>
+    <string formatted="false" name="runtime_source_0568" translatable="false">٪</string>
+    <string formatted="false" name="runtime_source_0569" translatable="false">تنظیمات </string>
+    <string formatted="false" name="runtime_source_0570" translatable="false">مجوز موقعیت داده نشد؛ شهر یا روستا را جستجو کنید.</string>
+    <string formatted="false" name="runtime_source_0571" translatable="false">دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_source_0572" translatable="false">عرض %.5f°  •  طول %.5f°</string>
+    <string formatted="false" name="runtime_source_0573" translatable="false">زمان تایمر به پایان رسید</string>
+    <string formatted="false" name="runtime_source_0574" translatable="false">زمان آلارم رسیده است</string>
+    <string formatted="false" name="runtime_source_0575" translatable="false">۵ دقیقه</string>
+    <string formatted="false" name="runtime_source_0576" translatable="false">۱۵ دقیقه</string>
+    <string formatted="false" name="runtime_source_0577" translatable="false">۳۰ دقیقه</string>
+    <string formatted="false" name="runtime_source_0578" translatable="false">۱ ساعت</string>
+    <string formatted="false" name="runtime_source_0579" translatable="false">۲ ساعت</string>
+    <string formatted="false" name="runtime_source_0580" translatable="false">۳ ساعت</string>
+    <string formatted="false" name="runtime_source_0581" translatable="false">۶ ساعت</string>
+    <string formatted="false" name="runtime_source_0582" translatable="false">۱۲ ساعت</string>
+    <string formatted="false" name="runtime_source_0583" translatable="false">۲۴ ساعت</string>
+    <string formatted="false" name="runtime_source_0584" translatable="false">زمان تایمر به پایان رسیده است</string>
+    <string formatted="false" name="runtime_source_0585" translatable="false">کرنومتر به حد نهایی رسیده است</string>
+    <string formatted="false" name="runtime_source_0586" translatable="false">زمان زنگ هشدار رسیده است</string>
+    <string formatted="false" name="runtime_source_0587" translatable="false">برای یادآوری مجدد، دسترسی آلارم دقیق لازم است.</string>
+    <string formatted="false" name="runtime_source_0588" translatable="false">تغییر عکس ۱ ✓</string>
+    <string formatted="false" name="runtime_source_0589" translatable="false">تغییر عکس ۲ ✓</string>
+    <string formatted="false" name="runtime_source_0590" translatable="false">نمایش تاریخ شمسی</string>
+    <string formatted="false" name="runtime_source_0591" translatable="false">نمایش تاریخ قمری</string>
+    <string formatted="false" name="runtime_source_0592" translatable="false">نمایش تاریخ میلادی</string>
+    <string formatted="false" name="runtime_source_0593" translatable="false">تنظیمات ویجت اوقات شرعی</string>
+    <string formatted="false" name="runtime_source_0594" translatable="false">اوقات شرعی
+افق تهران
+صبح ۰۴:۵۱   طلوع ۰۶:۱۸   ظهر ۱۲:۰۳   عصر ۱۵:۲۴
+غروب ۱۸:۰۲   مغرب ۱۸:۲۰   عشاء ۱۹:۴۸   نیمه‌شب ۲۳:۳۱</string>
+    <string formatted="false" name="runtime_source_0595" translatable="false">ظاهر و رنگ</string>
+    <string formatted="false" name="runtime_source_0596" translatable="false">سرمه‌ای شیشه‌ای</string>
+    <string formatted="false" name="runtime_source_0597" translatable="false">سرمه‌ای شفاف</string>
+    <string formatted="false" name="runtime_source_0598" translatable="false">مشکی شیشه‌ای</string>
+    <string formatted="false" name="runtime_source_0599" translatable="false">رنگ متن اصلی</string>
+    <string formatted="false" name="runtime_source_0600" translatable="false">رنگ متن فرعی</string>
+    <string formatted="false" name="runtime_source_0601" translatable="false">رنگ تأکیدی و افق فعلی</string>
+    <string formatted="false" name="runtime_source_0602" translatable="false">رنگ وقت فعال / اذان بعدی</string>
+    <string formatted="false" name="runtime_source_0603" translatable="false">اندازه نوشته‌ها</string>
+    <string formatted="false" name="runtime_source_0604" translatable="false">نمایش هدر «اوقات شرعی»</string>
+    <string formatted="false" name="runtime_source_0605" translatable="false">تقویم‌های هدر هر افق</string>
+    <string formatted="false" name="runtime_source_0606" translatable="false">نمایش زمان</string>
+    <string formatted="false" name="runtime_source_0607" translatable="false">ساعت محلی افق</string>
+    <string formatted="false" name="runtime_source_0608" translatable="false">شمارش معکوس تا اذان بعدی</string>
+    <string formatted="false" name="runtime_source_0609" translatable="false">نمایش آیکون‌های اوقات</string>
+    <string formatted="false" name="runtime_source_0610" translatable="false">اوقات قابل نمایش (هر ۸ مورد به‌صورت پیش‌فرض فعال‌اند)</string>
+    <string formatted="false" name="runtime_source_0611" translatable="false">برجسته‌کردن افق اصلی</string>
+    <string formatted="false" name="runtime_source_0612" translatable="false">مدیریت افق‌ها</string>
+    <string formatted="false" name="runtime_source_0613" translatable="false">بازگردانی تنظیمات پیش‌فرض ویجت</string>
+    <string formatted="false" name="runtime_source_0614" translatable="false">ذخیره و اعمال</string>
+    <string formatted="false" name="runtime_source_0615" translatable="false">سفید یخی</string>
+    <string formatted="false" name="runtime_source_0616" translatable="false">آبی روشن</string>
+    <string formatted="false" name="runtime_source_0617" translatable="false">نقره‌ای</string>
+    <string formatted="false" name="runtime_source_0618" translatable="false">سرمه‌ای</string>
+    <string formatted="false" name="runtime_source_0619" translatable="false">سرمه‌ای تیره</string>
+    <string formatted="false" name="runtime_source_0620" translatable="false">محرم</string>
+    <string formatted="false" name="runtime_source_0621" translatable="false">صفر</string>
+    <string formatted="false" name="runtime_source_0622" translatable="false">ربیع الاول</string>
+    <string formatted="false" name="runtime_source_0623" translatable="false">ربیع الثانی</string>
+    <string formatted="false" name="runtime_source_0624" translatable="false">جمادی الاول</string>
+    <string formatted="false" name="runtime_source_0625" translatable="false">جمادی الثانی</string>
+    <string formatted="false" name="runtime_source_0626" translatable="false">رجب</string>
+    <string formatted="false" name="runtime_source_0627" translatable="false">شعبان</string>
+    <string formatted="false" name="runtime_source_0628" translatable="false">رمضان</string>
+    <string formatted="false" name="runtime_source_0629" translatable="false">شوال</string>
+    <string formatted="false" name="runtime_source_0630" translatable="false">ذی القعده</string>
+    <string formatted="false" name="runtime_source_0631" translatable="false">ذی الحجه</string>
+    <string formatted="false" name="runtime_source_0632" translatable="false">متن معمولی، برنامه کپی‌شده یا JSON را وارد کنید. </string>
+    <string formatted="false" name="runtime_source_0633" translatable="false">تاریخ‌ها و ساعت‌ها خودکار استخراج می‌شوند و قبل از ذخیره </string>
+    <string formatted="false" name="runtime_source_0634" translatable="false">می‌توانید هر هشدار را جداگانه ویرایش، حذف یا زمان زنگ آن را جابه‌جا کنید.</string>
+    <string formatted="false" name="runtime_source_0635" translatable="false">هر متنی را اینجا پیست کنید…
+
+</string>
+    <string formatted="false" name="runtime_source_0636" translatable="false">مثال:
+</string>
+    <string formatted="false" name="runtime_source_0637" translatable="false">۱۴۰۵/۰۷/۰۴ ساعت ۱۳:۰۰ تا ۱۵:۰۰ خاموشی احتمالی
+</string>
+    <string formatted="false" name="runtime_source_0638" translatable="false">۱۴۰۵/۰۷/۰۵ ساعت ۱۵:۰۰ جلسه
+
+</string>
+    <string formatted="false" name="runtime_source_0639" translatable="false">یا JSON شامل date / time / start / title</string>
+    <string formatted="false" name="runtime_source_0640" translatable="false">ساده‌سازی: فقط تاریخ و ساعت</string>
+    <string formatted="false" name="runtime_source_0641" translatable="false">هر خط یک تاریخ و نزدیک‌ترین ساعت‌های آن است؛ متن را انتخاب، جابه‌جا یا </string>
+    <string formatted="false" name="runtime_source_0642" translatable="false">ویرایش کنید و سپس تحلیل را بزنید.</string>
+    <string formatted="false" name="runtime_source_0643" translatable="false">تاریخ و ساعت قابل ساده‌سازی پیدا نشد</string>
+    <string formatted="false" name="runtime_source_0644" translatable="false">متن ساده‌شده؛ برای ساخت هشدار تحلیل را بزنید</string>
+    <string formatted="false" name="runtime_source_0645" translatable="false">این تنظیم را می‌توانید روی همه موارد اعمال کنید؛ </string>
+    <string formatted="false" name="runtime_source_0646" translatable="false">بعداً هر هشدار را جداگانه هم می‌توان تغییر داد.</string>
+    <string formatted="false" name="runtime_source_0647" translatable="false"> دقیقه</string>
+    <string formatted="false" name="runtime_source_0648" translatable="false">اعمال این زمان‌بندی روی همه هشدارهای شناسایی‌شده</string>
+    <string formatted="false" name="runtime_source_0649" translatable="false">زمان اصلی استخراج‌شده و زمان واقعی زنگ هر مورد را قبل از ذخیره بررسی کنید.</string>
+    <string formatted="false" name="runtime_source_0650" translatable="false">متن قابل استفاده‌ای در کلیپ‌بورد نیست</string>
+    <string formatted="false" name="runtime_source_0651" translatable="false">تشخیص خودکار: JSON</string>
+    <string formatted="false" name="runtime_source_0652" translatable="false">تشخیص خودکار: متن عادی</string>
+    <string formatted="false" name="runtime_source_0653" translatable="false"> هشدار شناسایی شد</string>
+    <string formatted="false" name="runtime_source_0654" translatable="false">پیش‌نمایش هشدارها • </string>
+    <string formatted="false" name="runtime_source_0655" translatable="false"> مورد</string>
+    <string formatted="false" name="runtime_source_0656" translatable="false">  •  زمان متن: </string>
+    <string formatted="false" name="runtime_source_0657" translatable="false"> تا </string>
+    <string formatted="false" name="runtime_source_0658" translatable="false">
+زنگ: </string>
+    <string formatted="false" name="runtime_source_0659" translatable="false">
+⚠ زمان زنگ در گذشته است و ذخیره نمی‌شود.</string>
+    <string formatted="false" name="runtime_source_0660" translatable="false">کپی</string>
+    <string formatted="false" name="runtime_source_0661" translatable="false"> هشدار ذخیره شد</string>
+    <string formatted="false" name="runtime_source_0662" translatable="false"> مورد گذشته رد شد</string>
+    <string formatted="false" name="runtime_source_0663" translatable="false"> مورد تکراری ذخیره نشد</string>
+    <string formatted="false" name="runtime_source_0664" translatable="false"> مورد زمان‌بندی نشد و ذخیره نشد</string>
+    <string formatted="false" name="runtime_source_0665" translatable="false">
+برای اجرای دقیق، دسترسی آلارم دقیق را فعال کنید.</string>
+    <string formatted="false" name="runtime_source_0666" translatable="false">تاریخ روز</string>
+    <string formatted="false" name="runtime_source_0667" translatable="false">نمایش دائمی تاریخ روز در نوار وضعیت</string>
+    <string formatted="false" name="runtime_source_0668" translatable="false">انتخاب ماه و سال</string>
+    <string formatted="false" name="runtime_source_0669" translatable="false">پخش رسانه ویجت فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0670" translatable="false">کنترل پخش صوت و ویدیو از ویجت یادآوری فایل‌ها</string>
+    <string formatted="false" name="runtime_source_0671" translatable="false"> یادآوری</string>
+    <string formatted="false" name="runtime_source_0672" translatable="false">شناسه ویجت معتبر نیست</string>
+    <string formatted="false" name="runtime_source_0673" translatable="false">زرشکی</string>
+    <string formatted="false" name="runtime_source_0674" translatable="false">رنگ نام شهر و تاریخ</string>
+    <string formatted="false" name="runtime_source_0675" translatable="false">رنگ ساعت</string>
+    <string formatted="false" name="runtime_source_0676" translatable="false">سفید (پیش‌فرض)</string>
+    <string formatted="false" name="runtime_source_0677" translatable="false">قهوه‌ای</string>
+    <string formatted="false" name="runtime_source_0678" translatable="false">دائم؛ هر هفته در روزهای انتخاب‌شده</string>
+    <string formatted="false" name="runtime_source_0679" translatable="false">با دکمه‌های بالا و پایین، جای هر تب را تغییر دهید.</string>
+    <string formatted="false" name="runtime_source_0680" translatable="false">رحیم مؤذن‌زاده اردبیلی</string>
+    <string formatted="false" name="runtime_source_0681" translatable="false">محمد آقاتی</string>
+    <string formatted="false" name="runtime_source_0682" translatable="false">اذان برنامه</string>
+    <string formatted="false" name="runtime_source_0683" translatable="false">زنگ برنامه</string>
+    <string formatted="false" name="runtime_source_0684" translatable="false">صدا</string>
+    <string formatted="false" name="runtime_source_0685" translatable="false">صدای انتخابی</string>
+    <string formatted="false" name="runtime_source_0686" translatable="false">صدای کاربر</string>
+    <string formatted="false" name="runtime_source_0687" translatable="false">صدای پیش‌فرض هشدار • </string>
+    <string formatted="false" name="runtime_source_0688" translatable="false">−10 ث</string>
+    <string formatted="false" name="runtime_source_0689" translatable="false">+10 ث</string>
+    <string formatted="false" name="runtime_source_0690" translatable="false">ساعت، تاریخ و دکمه‌های بالای ویجت</string>
+    <string formatted="false" name="runtime_source_0691" translatable="false">نمایش زمان جاری در هدر ویجت</string>
+    <string formatted="false" name="runtime_source_0692" translatable="false">ثانیه را هم در زمان ویجت نمایش می‌دهد</string>
+    <string formatted="false" name="runtime_source_0693" translatable="false">تاریخ تقویم پیش‌فرض در هدر</string>
+    <string formatted="false" name="runtime_source_0694" translatable="false">نمایش دکمه +</string>
+    <string formatted="false" name="runtime_source_0695" translatable="false">ساخت سریع هشدار یا یادداشت از خود ویجت</string>
+    <string formatted="false" name="runtime_source_0696" translatable="false">باز کردن تنظیمات همین نمونهٔ ویجت</string>
+    <string formatted="false" name="runtime_source_0697" translatable="false">عنوان «هشدار» یا «یادداشت» بالای فهرست</string>
+    <string formatted="false" name="runtime_source_0698" translatable="false">برچسب سطح اهمیت هر مورد</string>
+    <string formatted="false" name="runtime_source_0699" translatable="false">تاریخ/زمان هشدار یا اطلاعات یادداشت</string>
+    <string formatted="false" name="runtime_source_0700" translatable="false">بازگردانی تنظیمات این ویجت</string>
+    <string formatted="false" name="runtime_source_0701" translatable="false">یادآوری قبل از موعد
+بدون یادآوری</string>
+    <string formatted="false" name="runtime_source_0702" translatable="false">صدای هشدار • پیش‌فرض سیستم</string>
+    <string formatted="false" name="runtime_source_0703" translatable="false">فول‌اسکرین
+صفحه باز</string>
+    <string formatted="false" name="runtime_source_0704" translatable="false">فول‌اسکرین
+صفحه قفل</string>
+    <string formatted="false" name="runtime_source_0705" translatable="false">یادداشت ذخیره شد؛ برای آلارم دقیق، مجوز آلارم را فعال کنید.</string>
+<string-array name="runtime_source_fa" translatable="false">
+        <item>@string/runtime_source_0001</item>
+        <item>@string/runtime_source_0002</item>
+        <item>@string/runtime_source_0003</item>
+        <item>@string/runtime_source_0004</item>
+        <item>@string/runtime_source_0005</item>
+        <item>@string/runtime_source_0006</item>
+        <item>@string/runtime_source_0007</item>
+        <item>@string/runtime_source_0008</item>
+        <item>@string/runtime_source_0009</item>
+        <item>@string/runtime_source_0010</item>
+        <item>@string/runtime_source_0011</item>
+        <item>@string/runtime_source_0012</item>
+        <item>@string/runtime_source_0013</item>
+        <item>@string/runtime_source_0014</item>
+        <item>@string/runtime_source_0015</item>
+        <item>@string/runtime_source_0016</item>
+        <item>@string/runtime_source_0017</item>
+        <item>@string/runtime_source_0018</item>
+        <item>@string/runtime_source_0019</item>
+        <item>@string/runtime_source_0020</item>
+        <item>@string/runtime_source_0021</item>
+        <item>@string/runtime_source_0022</item>
+        <item>@string/runtime_source_0023</item>
+        <item>@string/runtime_source_0024</item>
+        <item>@string/runtime_source_0025</item>
+        <item>@string/runtime_source_0026</item>
+        <item>@string/runtime_source_0027</item>
+        <item>@string/runtime_source_0028</item>
+        <item>@string/runtime_source_0029</item>
+        <item>@string/runtime_source_0030</item>
+        <item>@string/runtime_source_0031</item>
+        <item>@string/runtime_source_0032</item>
+        <item>@string/runtime_source_0033</item>
+        <item>@string/runtime_source_0034</item>
+        <item>@string/runtime_source_0035</item>
+        <item>@string/runtime_source_0036</item>
+        <item>@string/runtime_source_0037</item>
+        <item>@string/runtime_source_0038</item>
+        <item>@string/runtime_source_0039</item>
+        <item>@string/runtime_source_0040</item>
+        <item>@string/runtime_source_0041</item>
+        <item>@string/runtime_source_0042</item>
+        <item>@string/runtime_source_0043</item>
+        <item>@string/runtime_source_0044</item>
+        <item>@string/runtime_source_0045</item>
+        <item>@string/runtime_source_0046</item>
+        <item>@string/runtime_source_0047</item>
+        <item>@string/runtime_source_0048</item>
+        <item>@string/runtime_source_0049</item>
+        <item>@string/runtime_source_0050</item>
+        <item>@string/runtime_source_0051</item>
+        <item>@string/runtime_source_0052</item>
+        <item>@string/runtime_source_0053</item>
+        <item>@string/runtime_source_0054</item>
+        <item>@string/runtime_source_0055</item>
+        <item>@string/runtime_source_0056</item>
+        <item>@string/runtime_source_0057</item>
+        <item>@string/runtime_source_0058</item>
+        <item>@string/runtime_source_0059</item>
+        <item>@string/runtime_source_0060</item>
+        <item>@string/runtime_source_0061</item>
+        <item>@string/runtime_source_0062</item>
+        <item>@string/runtime_source_0063</item>
+        <item>@string/runtime_source_0064</item>
+        <item>@string/runtime_source_0065</item>
+        <item>@string/runtime_source_0066</item>
+        <item>@string/runtime_source_0067</item>
+        <item>@string/runtime_source_0068</item>
+        <item>@string/runtime_source_0069</item>
+        <item>@string/runtime_source_0070</item>
+        <item>@string/runtime_source_0071</item>
+        <item>@string/runtime_source_0072</item>
+        <item>@string/runtime_source_0073</item>
+        <item>@string/runtime_source_0074</item>
+        <item>@string/runtime_source_0075</item>
+        <item>@string/runtime_source_0076</item>
+        <item>@string/runtime_source_0077</item>
+        <item>@string/runtime_source_0078</item>
+        <item>@string/runtime_source_0079</item>
+        <item>@string/runtime_source_0080</item>
+        <item>@string/runtime_source_0081</item>
+        <item>@string/runtime_source_0082</item>
+        <item>@string/runtime_source_0083</item>
+        <item>@string/runtime_source_0084</item>
+        <item>@string/runtime_source_0085</item>
+        <item>@string/runtime_source_0086</item>
+        <item>@string/runtime_source_0087</item>
+        <item>@string/runtime_source_0088</item>
+        <item>@string/runtime_source_0089</item>
+        <item>@string/runtime_source_0090</item>
+        <item>@string/runtime_source_0091</item>
+        <item>@string/runtime_source_0092</item>
+        <item>@string/runtime_source_0093</item>
+        <item>@string/runtime_source_0094</item>
+        <item>@string/runtime_source_0095</item>
+        <item>@string/runtime_source_0096</item>
+        <item>@string/runtime_source_0097</item>
+        <item>@string/runtime_source_0098</item>
+        <item>@string/runtime_source_0099</item>
+        <item>@string/runtime_source_0100</item>
+        <item>@string/runtime_source_0101</item>
+        <item>@string/runtime_source_0102</item>
+        <item>@string/runtime_source_0103</item>
+        <item>@string/runtime_source_0104</item>
+        <item>@string/runtime_source_0105</item>
+        <item>@string/runtime_source_0106</item>
+        <item>@string/runtime_source_0107</item>
+        <item>@string/runtime_source_0108</item>
+        <item>@string/runtime_source_0109</item>
+        <item>@string/runtime_source_0110</item>
+        <item>@string/runtime_source_0111</item>
+        <item>@string/runtime_source_0112</item>
+        <item>@string/runtime_source_0113</item>
+        <item>@string/runtime_source_0114</item>
+        <item>@string/runtime_source_0115</item>
+        <item>@string/runtime_source_0116</item>
+        <item>@string/runtime_source_0117</item>
+        <item>@string/runtime_source_0118</item>
+        <item>@string/runtime_source_0119</item>
+        <item>@string/runtime_source_0120</item>
+        <item>@string/runtime_source_0121</item>
+        <item>@string/runtime_source_0122</item>
+        <item>@string/runtime_source_0123</item>
+        <item>@string/runtime_source_0124</item>
+        <item>@string/runtime_source_0125</item>
+        <item>@string/runtime_source_0126</item>
+        <item>@string/runtime_source_0127</item>
+        <item>@string/runtime_source_0128</item>
+        <item>@string/runtime_source_0129</item>
+        <item>@string/runtime_source_0130</item>
+        <item>@string/runtime_source_0131</item>
+        <item>@string/runtime_source_0132</item>
+        <item>@string/runtime_source_0133</item>
+        <item>@string/runtime_source_0134</item>
+        <item>@string/runtime_source_0135</item>
+        <item>@string/runtime_source_0136</item>
+        <item>@string/runtime_source_0137</item>
+        <item>@string/runtime_source_0138</item>
+        <item>@string/runtime_source_0139</item>
+        <item>@string/runtime_source_0140</item>
+        <item>@string/runtime_source_0141</item>
+        <item>@string/runtime_source_0142</item>
+        <item>@string/runtime_source_0143</item>
+        <item>@string/runtime_source_0144</item>
+        <item>@string/runtime_source_0145</item>
+        <item>@string/runtime_source_0146</item>
+        <item>@string/runtime_source_0147</item>
+        <item>@string/runtime_source_0148</item>
+        <item>@string/runtime_source_0149</item>
+        <item>@string/runtime_source_0150</item>
+        <item>@string/runtime_source_0151</item>
+        <item>@string/runtime_source_0152</item>
+        <item>@string/runtime_source_0153</item>
+        <item>@string/runtime_source_0154</item>
+        <item>@string/runtime_source_0155</item>
+        <item>@string/runtime_source_0156</item>
+        <item>@string/runtime_source_0157</item>
+        <item>@string/runtime_source_0158</item>
+        <item>@string/runtime_source_0159</item>
+        <item>@string/runtime_source_0160</item>
+        <item>@string/runtime_source_0161</item>
+        <item>@string/runtime_source_0162</item>
+        <item>@string/runtime_source_0163</item>
+        <item>@string/runtime_source_0164</item>
+        <item>@string/runtime_source_0165</item>
+        <item>@string/runtime_source_0166</item>
+        <item>@string/runtime_source_0167</item>
+        <item>@string/runtime_source_0168</item>
+        <item>@string/runtime_source_0169</item>
+        <item>@string/runtime_source_0170</item>
+        <item>@string/runtime_source_0171</item>
+        <item>@string/runtime_source_0172</item>
+        <item>@string/runtime_source_0173</item>
+        <item>@string/runtime_source_0174</item>
+        <item>@string/runtime_source_0175</item>
+        <item>@string/runtime_source_0176</item>
+        <item>@string/runtime_source_0177</item>
+        <item>@string/runtime_source_0178</item>
+        <item>@string/runtime_source_0179</item>
+        <item>@string/runtime_source_0180</item>
+        <item>@string/runtime_source_0181</item>
+        <item>@string/runtime_source_0182</item>
+        <item>@string/runtime_source_0183</item>
+        <item>@string/runtime_source_0184</item>
+        <item>@string/runtime_source_0185</item>
+        <item>@string/runtime_source_0186</item>
+        <item>@string/runtime_source_0187</item>
+        <item>@string/runtime_source_0188</item>
+        <item>@string/runtime_source_0189</item>
+        <item>@string/runtime_source_0190</item>
+        <item>@string/runtime_source_0191</item>
+        <item>@string/runtime_source_0192</item>
+        <item>@string/runtime_source_0193</item>
+        <item>@string/runtime_source_0194</item>
+        <item>@string/runtime_source_0195</item>
+        <item>@string/runtime_source_0196</item>
+        <item>@string/runtime_source_0197</item>
+        <item>@string/runtime_source_0198</item>
+        <item>@string/runtime_source_0199</item>
+        <item>@string/runtime_source_0200</item>
+        <item>@string/runtime_source_0201</item>
+        <item>@string/runtime_source_0202</item>
+        <item>@string/runtime_source_0203</item>
+        <item>@string/runtime_source_0204</item>
+        <item>@string/runtime_source_0205</item>
+        <item>@string/runtime_source_0206</item>
+        <item>@string/runtime_source_0207</item>
+        <item>@string/runtime_source_0208</item>
+        <item>@string/runtime_source_0209</item>
+        <item>@string/runtime_source_0210</item>
+        <item>@string/runtime_source_0211</item>
+        <item>@string/runtime_source_0212</item>
+        <item>@string/runtime_source_0213</item>
+        <item>@string/runtime_source_0214</item>
+        <item>@string/runtime_source_0215</item>
+        <item>@string/runtime_source_0216</item>
+        <item>@string/runtime_source_0217</item>
+        <item>@string/runtime_source_0218</item>
+        <item>@string/runtime_source_0219</item>
+        <item>@string/runtime_source_0220</item>
+        <item>@string/runtime_source_0221</item>
+        <item>@string/runtime_source_0222</item>
+        <item>@string/runtime_source_0223</item>
+        <item>@string/runtime_source_0224</item>
+        <item>@string/runtime_source_0225</item>
+        <item>@string/runtime_source_0226</item>
+        <item>@string/runtime_source_0227</item>
+        <item>@string/runtime_source_0228</item>
+        <item>@string/runtime_source_0229</item>
+        <item>@string/runtime_source_0230</item>
+        <item>@string/runtime_source_0231</item>
+        <item>@string/runtime_source_0232</item>
+        <item>@string/runtime_source_0233</item>
+        <item>@string/runtime_source_0234</item>
+        <item>@string/runtime_source_0235</item>
+        <item>@string/runtime_source_0236</item>
+        <item>@string/runtime_source_0237</item>
+        <item>@string/runtime_source_0238</item>
+        <item>@string/runtime_source_0239</item>
+        <item>@string/runtime_source_0240</item>
+        <item>@string/runtime_source_0241</item>
+        <item>@string/runtime_source_0242</item>
+        <item>@string/runtime_source_0243</item>
+        <item>@string/runtime_source_0244</item>
+        <item>@string/runtime_source_0245</item>
+        <item>@string/runtime_source_0246</item>
+        <item>@string/runtime_source_0247</item>
+        <item>@string/runtime_source_0248</item>
+        <item>@string/runtime_source_0249</item>
+        <item>@string/runtime_source_0250</item>
+        <item>@string/runtime_source_0251</item>
+        <item>@string/runtime_source_0252</item>
+        <item>@string/runtime_source_0253</item>
+        <item>@string/runtime_source_0254</item>
+        <item>@string/runtime_source_0255</item>
+        <item>@string/runtime_source_0256</item>
+        <item>@string/runtime_source_0257</item>
+        <item>@string/runtime_source_0258</item>
+        <item>@string/runtime_source_0259</item>
+        <item>@string/runtime_source_0260</item>
+        <item>@string/runtime_source_0261</item>
+        <item>@string/runtime_source_0262</item>
+        <item>@string/runtime_source_0263</item>
+        <item>@string/runtime_source_0264</item>
+        <item>@string/runtime_source_0265</item>
+        <item>@string/runtime_source_0266</item>
+        <item>@string/runtime_source_0267</item>
+        <item>@string/runtime_source_0268</item>
+        <item>@string/runtime_source_0269</item>
+        <item>@string/runtime_source_0270</item>
+        <item>@string/runtime_source_0271</item>
+        <item>@string/runtime_source_0272</item>
+        <item>@string/runtime_source_0273</item>
+        <item>@string/runtime_source_0274</item>
+        <item>@string/runtime_source_0275</item>
+        <item>@string/runtime_source_0276</item>
+        <item>@string/runtime_source_0277</item>
+        <item>@string/runtime_source_0278</item>
+        <item>@string/runtime_source_0279</item>
+        <item>@string/runtime_source_0280</item>
+        <item>@string/runtime_source_0281</item>
+        <item>@string/runtime_source_0282</item>
+        <item>@string/runtime_source_0283</item>
+        <item>@string/runtime_source_0284</item>
+        <item>@string/runtime_source_0285</item>
+        <item>@string/runtime_source_0286</item>
+        <item>@string/runtime_source_0287</item>
+        <item>@string/runtime_source_0288</item>
+        <item>@string/runtime_source_0289</item>
+        <item>@string/runtime_source_0290</item>
+        <item>@string/runtime_source_0291</item>
+        <item>@string/runtime_source_0292</item>
+        <item>@string/runtime_source_0293</item>
+        <item>@string/runtime_source_0294</item>
+        <item>@string/runtime_source_0295</item>
+        <item>@string/runtime_source_0296</item>
+        <item>@string/runtime_source_0297</item>
+        <item>@string/runtime_source_0298</item>
+        <item>@string/runtime_source_0299</item>
+        <item>@string/runtime_source_0300</item>
+        <item>@string/runtime_source_0301</item>
+        <item>@string/runtime_source_0302</item>
+        <item>@string/runtime_source_0303</item>
+        <item>@string/runtime_source_0304</item>
+        <item>@string/runtime_source_0305</item>
+        <item>@string/runtime_source_0306</item>
+        <item>@string/runtime_source_0307</item>
+        <item>@string/runtime_source_0308</item>
+        <item>@string/runtime_source_0309</item>
+        <item>@string/runtime_source_0310</item>
+        <item>@string/runtime_source_0311</item>
+        <item>@string/runtime_source_0312</item>
+        <item>@string/runtime_source_0313</item>
+        <item>@string/runtime_source_0314</item>
+        <item>@string/runtime_source_0315</item>
+        <item>@string/runtime_source_0316</item>
+        <item>@string/runtime_source_0317</item>
+        <item>@string/runtime_source_0318</item>
+        <item>@string/runtime_source_0319</item>
+        <item>@string/runtime_source_0320</item>
+        <item>@string/runtime_source_0321</item>
+        <item>@string/runtime_source_0322</item>
+        <item>@string/runtime_source_0323</item>
+        <item>@string/runtime_source_0324</item>
+        <item>@string/runtime_source_0325</item>
+        <item>@string/runtime_source_0326</item>
+        <item>@string/runtime_source_0327</item>
+        <item>@string/runtime_source_0328</item>
+        <item>@string/runtime_source_0329</item>
+        <item>@string/runtime_source_0330</item>
+        <item>@string/runtime_source_0331</item>
+        <item>@string/runtime_source_0332</item>
+        <item>@string/runtime_source_0333</item>
+        <item>@string/runtime_source_0334</item>
+        <item>@string/runtime_source_0335</item>
+        <item>@string/runtime_source_0336</item>
+        <item>@string/runtime_source_0337</item>
+        <item>@string/runtime_source_0338</item>
+        <item>@string/runtime_source_0339</item>
+        <item>@string/runtime_source_0340</item>
+        <item>@string/runtime_source_0341</item>
+        <item>@string/runtime_source_0342</item>
+        <item>@string/runtime_source_0343</item>
+        <item>@string/runtime_source_0344</item>
+        <item>@string/runtime_source_0345</item>
+        <item>@string/runtime_source_0346</item>
+        <item>@string/runtime_source_0347</item>
+        <item>@string/runtime_source_0348</item>
+        <item>@string/runtime_source_0349</item>
+        <item>@string/runtime_source_0350</item>
+        <item>@string/runtime_source_0351</item>
+        <item>@string/runtime_source_0352</item>
+        <item>@string/runtime_source_0353</item>
+        <item>@string/runtime_source_0354</item>
+        <item>@string/runtime_source_0355</item>
+        <item>@string/runtime_source_0356</item>
+        <item>@string/runtime_source_0357</item>
+        <item>@string/runtime_source_0358</item>
+        <item>@string/runtime_source_0359</item>
+        <item>@string/runtime_source_0360</item>
+        <item>@string/runtime_source_0361</item>
+        <item>@string/runtime_source_0362</item>
+        <item>@string/runtime_source_0363</item>
+        <item>@string/runtime_source_0364</item>
+        <item>@string/runtime_source_0365</item>
+        <item>@string/runtime_source_0366</item>
+        <item>@string/runtime_source_0367</item>
+        <item>@string/runtime_source_0368</item>
+        <item>@string/runtime_source_0369</item>
+        <item>@string/runtime_source_0370</item>
+        <item>@string/runtime_source_0371</item>
+        <item>@string/runtime_source_0372</item>
+        <item>@string/runtime_source_0373</item>
+        <item>@string/runtime_source_0374</item>
+        <item>@string/runtime_source_0375</item>
+        <item>@string/runtime_source_0376</item>
+        <item>@string/runtime_source_0377</item>
+        <item>@string/runtime_source_0378</item>
+        <item>@string/runtime_source_0379</item>
+        <item>@string/runtime_source_0380</item>
+        <item>@string/runtime_source_0381</item>
+        <item>@string/runtime_source_0382</item>
+        <item>@string/runtime_source_0383</item>
+        <item>@string/runtime_source_0384</item>
+        <item>@string/runtime_source_0385</item>
+        <item>@string/runtime_source_0386</item>
+        <item>@string/runtime_source_0387</item>
+        <item>@string/runtime_source_0388</item>
+        <item>@string/runtime_source_0389</item>
+        <item>@string/runtime_source_0390</item>
+        <item>@string/runtime_source_0391</item>
+        <item>@string/runtime_source_0392</item>
+        <item>@string/runtime_source_0393</item>
+        <item>@string/runtime_source_0394</item>
+        <item>@string/runtime_source_0395</item>
+        <item>@string/runtime_source_0396</item>
+        <item>@string/runtime_source_0397</item>
+        <item>@string/runtime_source_0398</item>
+        <item>@string/runtime_source_0399</item>
+        <item>@string/runtime_source_0400</item>
+        <item>@string/runtime_source_0401</item>
+        <item>@string/runtime_source_0402</item>
+        <item>@string/runtime_source_0403</item>
+        <item>@string/runtime_source_0404</item>
+        <item>@string/runtime_source_0405</item>
+        <item>@string/runtime_source_0406</item>
+        <item>@string/runtime_source_0407</item>
+        <item>@string/runtime_source_0408</item>
+        <item>@string/runtime_source_0409</item>
+        <item>@string/runtime_source_0410</item>
+        <item>@string/runtime_source_0411</item>
+        <item>@string/runtime_source_0412</item>
+        <item>@string/runtime_source_0413</item>
+        <item>@string/runtime_source_0414</item>
+        <item>@string/runtime_source_0415</item>
+        <item>@string/runtime_source_0416</item>
+        <item>@string/runtime_source_0417</item>
+            <item>@string/runtime_source_0418</item>
+        <item>@string/runtime_source_0419</item>
+        <item>@string/runtime_source_0420</item>
+        <item>@string/runtime_source_0421</item>
+        <item>@string/runtime_source_0422</item>
+        <item>@string/runtime_source_0423</item>
+        <item>@string/runtime_source_0424</item>
+        <item>@string/runtime_source_0425</item>
+        <item>@string/runtime_source_0426</item>
+        <item>@string/runtime_source_0427</item>
+        <item>@string/runtime_source_0428</item>
+        <item>@string/runtime_source_0429</item>
+        <item>@string/runtime_source_0430</item>
+        <item>@string/runtime_source_0431</item>
+        <item>@string/runtime_source_0432</item>
+        <item>@string/runtime_source_0433</item>
+        <item>@string/runtime_source_0434</item>
+        <item>@string/runtime_source_0435</item>
+        <item>@string/runtime_source_0436</item>
+        <item>@string/runtime_source_0437</item>
+        <item>@string/runtime_source_0438</item>
+        <item>@string/runtime_source_0439</item>
+        <item>@string/runtime_source_0440</item>
+        <item>@string/runtime_source_0441</item>
+        <item>@string/runtime_source_0442</item>
+        <item>@string/runtime_source_0443</item>
+        <item>@string/runtime_source_0444</item>
+        <item>@string/runtime_source_0445</item>
+        <item>@string/runtime_source_0446</item>
+        <item>@string/runtime_source_0447</item>
+        <item>@string/runtime_source_0448</item>
+        <item>@string/runtime_source_0449</item>
+        <item>@string/runtime_source_0450</item>
+        <item>@string/runtime_source_0451</item>
+        <item>@string/runtime_source_0452</item>
+        <item>@string/runtime_source_0453</item>
+        <item>@string/runtime_source_0454</item>
+        <item>@string/runtime_source_0455</item>
+        <item>@string/runtime_source_0456</item>
+        <item>@string/runtime_source_0457</item>
+        <item>@string/runtime_source_0458</item>
+        <item>@string/runtime_source_0459</item>
+        <item>@string/runtime_source_0460</item>
+        <item>@string/runtime_source_0461</item>
+        <item>@string/runtime_source_0462</item>
+        <item>@string/runtime_source_0463</item>
+        <item>@string/runtime_source_0464</item>
+        <item>@string/runtime_source_0465</item>
+        <item>@string/runtime_source_0466</item>
+        <item>@string/runtime_source_0467</item>
+        <item>@string/runtime_source_0468</item>
+        <item>@string/runtime_source_0469</item>
+        <item>@string/runtime_source_0470</item>
+        <item>@string/runtime_source_0471</item>
+        <item>@string/runtime_source_0472</item>
+        <item>@string/runtime_source_0473</item>
+        <item>@string/runtime_source_0474</item>
+        <item>@string/runtime_source_0475</item>
+        <item>@string/runtime_source_0476</item>
+        <item>@string/runtime_source_0477</item>
+        <item>@string/runtime_source_0478</item>
+        <item>@string/runtime_source_0479</item>
+        <item>@string/runtime_source_0480</item>
+        <item>@string/runtime_source_0481</item>
+        <item>@string/runtime_source_0482</item>
+        <item>@string/runtime_source_0483</item>
+        <item>@string/runtime_source_0484</item>
+        <item>@string/runtime_source_0485</item>
+        <item>@string/runtime_source_0486</item>
+        <item>@string/runtime_source_0487</item>
+        <item>@string/runtime_source_0488</item>
+        <item>@string/runtime_source_0489</item>
+        <item>@string/runtime_source_0490</item>
+        <item>@string/runtime_source_0491</item>
+        <item>@string/runtime_source_0492</item>
+        <item>@string/runtime_source_0493</item>
+        <item>@string/runtime_source_0494</item>
+        <item>@string/runtime_source_0495</item>
+        <item>@string/runtime_source_0496</item>
+        <item>@string/runtime_source_0497</item>
+        <item>@string/runtime_source_0498</item>
+        <item>@string/runtime_source_0499</item>
+        <item>@string/runtime_source_0500</item>
+        <item>@string/runtime_source_0501</item>
+        <item>@string/runtime_source_0502</item>
+        <item>@string/runtime_source_0503</item>
+        <item>@string/runtime_source_0504</item>
+        <item>@string/runtime_source_0505</item>
+        <item>@string/runtime_source_0506</item>
+        <item>@string/runtime_source_0507</item>
+        <item>@string/runtime_source_0508</item>
+        <item>@string/runtime_source_0509</item>
+        <item>@string/runtime_source_0510</item>
+        <item>@string/runtime_source_0511</item>
+        <item>@string/runtime_source_0512</item>
+        <item>@string/runtime_source_0513</item>
+        <item>@string/runtime_source_0514</item>
+        <item>@string/runtime_source_0515</item>
+        <item>@string/runtime_source_0516</item>
+        <item>@string/runtime_source_0517</item>
+        <item>@string/runtime_source_0518</item>
+        <item>@string/runtime_source_0519</item>
+        <item>@string/runtime_source_0520</item>
+        <item>@string/runtime_source_0521</item>
+        <item>@string/runtime_source_0522</item>
+        <item>@string/runtime_source_0523</item>
+        <item>@string/runtime_source_0524</item>
+        <item>@string/runtime_source_0525</item>
+        <item>@string/runtime_source_0526</item>
+        <item>@string/runtime_source_0527</item>
+        <item>@string/runtime_source_0528</item>
+        <item>@string/runtime_source_0529</item>
+        <item>@string/runtime_source_0530</item>
+        <item>@string/runtime_source_0531</item>
+        <item>@string/runtime_source_0532</item>
+        <item>@string/runtime_source_0533</item>
+        <item>@string/runtime_source_0534</item>
+        <item>@string/runtime_source_0535</item>
+        <item>@string/runtime_source_0536</item>
+        <item>@string/runtime_source_0537</item>
+        <item>@string/runtime_source_0538</item>
+        <item>@string/runtime_source_0539</item>
+        <item>@string/runtime_source_0540</item>
+        <item>@string/runtime_source_0541</item>
+        <item>@string/runtime_source_0542</item>
+        <item>@string/runtime_source_0543</item>
+        <item>@string/runtime_source_0544</item>
+        <item>@string/runtime_source_0545</item>
+        <item>@string/runtime_source_0546</item>
+        <item>@string/runtime_source_0547</item>
+        <item>@string/runtime_source_0548</item>
+        <item>@string/runtime_source_0549</item>
+        <item>@string/runtime_source_0550</item>
+        <item>@string/runtime_source_0551</item>
+        <item>@string/runtime_source_0552</item>
+        <item>@string/runtime_source_0553</item>
+        <item>@string/runtime_source_0554</item>
+        <item>@string/runtime_source_0555</item>
+        <item>@string/runtime_source_0556</item>
+        <item>@string/runtime_source_0557</item>
+        <item>@string/runtime_source_0558</item>
+        <item>@string/runtime_source_0559</item>
+        <item>@string/runtime_source_0560</item>
+        <item>@string/runtime_source_0561</item>
+        <item>@string/runtime_source_0562</item>
+        <item>@string/runtime_source_0563</item>
+        <item>@string/runtime_source_0564</item>
+        <item>@string/runtime_source_0565</item>
+        <item>@string/runtime_source_0566</item>
+        <item>@string/runtime_source_0567</item>
+        <item>@string/runtime_source_0568</item>
+        <item>@string/runtime_source_0569</item>
+        <item>@string/runtime_source_0570</item>
+        <item>@string/runtime_source_0571</item>
+        <item>@string/runtime_source_0572</item>
+        <item>@string/runtime_source_0573</item>
+        <item>@string/runtime_source_0574</item>
+        <item>@string/runtime_source_0575</item>
+        <item>@string/runtime_source_0576</item>
+        <item>@string/runtime_source_0577</item>
+        <item>@string/runtime_source_0578</item>
+        <item>@string/runtime_source_0579</item>
+        <item>@string/runtime_source_0580</item>
+        <item>@string/runtime_source_0581</item>
+        <item>@string/runtime_source_0582</item>
+        <item>@string/runtime_source_0583</item>
+        <item>@string/runtime_source_0584</item>
+        <item>@string/runtime_source_0585</item>
+        <item>@string/runtime_source_0586</item>
+        <item>@string/runtime_source_0587</item>
+        <item>@string/runtime_source_0588</item>
+        <item>@string/runtime_source_0589</item>
+        <item>@string/runtime_source_0590</item>
+        <item>@string/runtime_source_0591</item>
+        <item>@string/runtime_source_0592</item>
+        <item>@string/runtime_source_0593</item>
+        <item>@string/runtime_source_0594</item>
+        <item>@string/runtime_source_0595</item>
+        <item>@string/runtime_source_0596</item>
+        <item>@string/runtime_source_0597</item>
+        <item>@string/runtime_source_0598</item>
+        <item>@string/runtime_source_0599</item>
+        <item>@string/runtime_source_0600</item>
+        <item>@string/runtime_source_0601</item>
+        <item>@string/runtime_source_0602</item>
+        <item>@string/runtime_source_0603</item>
+        <item>@string/runtime_source_0604</item>
+        <item>@string/runtime_source_0605</item>
+        <item>@string/runtime_source_0606</item>
+        <item>@string/runtime_source_0607</item>
+        <item>@string/runtime_source_0608</item>
+        <item>@string/runtime_source_0609</item>
+        <item>@string/runtime_source_0610</item>
+        <item>@string/runtime_source_0611</item>
+        <item>@string/runtime_source_0612</item>
+        <item>@string/runtime_source_0613</item>
+        <item>@string/runtime_source_0614</item>
+        <item>@string/runtime_source_0615</item>
+        <item>@string/runtime_source_0616</item>
+        <item>@string/runtime_source_0617</item>
+        <item>@string/runtime_source_0618</item>
+        <item>@string/runtime_source_0619</item>
+        <item>@string/runtime_source_0620</item>
+        <item>@string/runtime_source_0621</item>
+        <item>@string/runtime_source_0622</item>
+        <item>@string/runtime_source_0623</item>
+        <item>@string/runtime_source_0624</item>
+        <item>@string/runtime_source_0625</item>
+        <item>@string/runtime_source_0626</item>
+        <item>@string/runtime_source_0627</item>
+        <item>@string/runtime_source_0628</item>
+        <item>@string/runtime_source_0629</item>
+        <item>@string/runtime_source_0630</item>
+        <item>@string/runtime_source_0631</item>
+        <item>@string/runtime_source_0632</item>
+        <item>@string/runtime_source_0633</item>
+        <item>@string/runtime_source_0634</item>
+        <item>@string/runtime_source_0635</item>
+        <item>@string/runtime_source_0636</item>
+        <item>@string/runtime_source_0637</item>
+        <item>@string/runtime_source_0638</item>
+        <item>@string/runtime_source_0639</item>
+        <item>@string/runtime_source_0640</item>
+        <item>@string/runtime_source_0641</item>
+        <item>@string/runtime_source_0642</item>
+        <item>@string/runtime_source_0643</item>
+        <item>@string/runtime_source_0644</item>
+        <item>@string/runtime_source_0645</item>
+        <item>@string/runtime_source_0646</item>
+        <item>@string/runtime_source_0647</item>
+        <item>@string/runtime_source_0648</item>
+        <item>@string/runtime_source_0649</item>
+        <item>@string/runtime_source_0650</item>
+        <item>@string/runtime_source_0651</item>
+        <item>@string/runtime_source_0652</item>
+        <item>@string/runtime_source_0653</item>
+        <item>@string/runtime_source_0654</item>
+        <item>@string/runtime_source_0655</item>
+        <item>@string/runtime_source_0656</item>
+        <item>@string/runtime_source_0657</item>
+        <item>@string/runtime_source_0658</item>
+        <item>@string/runtime_source_0659</item>
+        <item>@string/runtime_source_0660</item>
+        <item>@string/runtime_source_0661</item>
+        <item>@string/runtime_source_0662</item>
+        <item>@string/runtime_source_0663</item>
+        <item>@string/runtime_source_0664</item>
+        <item>@string/runtime_source_0665</item>
+        <item>@string/runtime_source_0666</item>
+        <item>@string/runtime_source_0667</item>
+        <item>@string/runtime_source_0668</item>
+        <item>@string/runtime_source_0669</item>
+        <item>@string/runtime_source_0670</item>
+        <item>@string/runtime_source_0671</item>
+        <item>@string/runtime_source_0672</item>
+        <item>@string/runtime_source_0673</item>
+        <item>@string/runtime_source_0674</item>
+        <item>@string/runtime_source_0675</item>
+        <item>@string/runtime_source_0676</item>
+        <item>@string/runtime_source_0677</item>
+        <item>@string/runtime_source_0678</item>
+        <item>@string/runtime_source_0679</item>
+        <item>@string/runtime_source_0680</item>
+        <item>@string/runtime_source_0681</item>
+        <item>@string/runtime_source_0682</item>
+        <item>@string/runtime_source_0683</item>
+        <item>@string/runtime_source_0684</item>
+        <item>@string/runtime_source_0685</item>
+        <item>@string/runtime_source_0686</item>
+        <item>@string/runtime_source_0687</item>
+        <item>@string/runtime_source_0688</item>
+        <item>@string/runtime_source_0689</item>
+        <item>@string/runtime_source_0690</item>
+        <item>@string/runtime_source_0691</item>
+        <item>@string/runtime_source_0692</item>
+        <item>@string/runtime_source_0693</item>
+        <item>@string/runtime_source_0694</item>
+        <item>@string/runtime_source_0695</item>
+        <item>@string/runtime_source_0696</item>
+        <item>@string/runtime_source_0697</item>
+        <item>@string/runtime_source_0698</item>
+        <item>@string/runtime_source_0699</item>
+        <item>@string/runtime_source_0700</item>
+        <item>@string/runtime_source_0701</item>
+        <item>@string/runtime_source_0702</item>
+        <item>@string/runtime_source_0703</item>
+        <item>@string/runtime_source_0704</item>
+        <item>@string/runtime_source_0705</item>
+</string-array>
     <string-array name="runtime_translation">
-        <item>تنظیمات</item>
-        <item>بستن</item>
-        <item>انصراف</item>
-        <item>تأیید</item>
-        <item>ذخیره</item>
-        <item>حذف</item>
-        <item>ویرایش</item>
-        <item>افزودن</item>
-        <item>پاک کردن</item>
-        <item>شروع</item>
-        <item>توقف</item>
-        <item>ادامه</item>
-        <item>ساعت</item>
-        <item>تاریخ</item>
-        <item>یادداشت</item>
-        <item>یادداشت‌ها</item>
-        <item>هشدار</item>
-        <item>هشدارها</item>
-        <item>آلارم</item>
-        <item>یادآوری</item>
-        <item>یادآوری‌ها</item>
-        <item>لرزش</item>
-        <item>اهمیت</item>
-        <item>کم</item>
-        <item>نسبتاً کم</item>
-        <item>متوسط</item>
-        <item>زیاد</item>
-        <item>خیلی زیاد</item>
-        <item>بدون تکرار</item>
-        <item>هر روز</item>
-        <item>هر هفته</item>
-        <item>هر ماه</item>
-        <item>هر سال</item>
-        <item>امروز</item>
-        <item>بدون یادآوری</item>
-        <item>خودکار (هوشمند)</item>
-        <item>دقیقه</item>
-        <item>ثانیه</item>
-        <item>ساعت جهانی</item>
-        <item>تایمر</item>
-        <item>کرنومتر</item>
-        <item>ظاهر</item>
-        <item>تم</item>
-        <item>روشن</item>
-        <item>تیره</item>
-        <item>پالت رنگ</item>
-        <item>شفافیت پس‌زمینه</item>
-        <item>اندازه متن</item>
-        <item>کوچک</item>
-        <item>معمولی</item>
-        <item>بزرگ</item>
-        <item>نمایش هدر</item>
-        <item>نمایش ساعت</item>
-        <item>نمایش تاریخ</item>
-        <item>نمایش دکمه تنظیمات</item>
-        <item>نمایش اهمیت</item>
-        <item>نمایش جزئیات</item>
-        <item>مرتب‌سازی</item>
-        <item>فایل</item>
-        <item>فایل‌ها</item>
-        <item>تصویر</item>
-        <item>صوت</item>
-        <item>ویدیو</item>
-        <item>متن</item>
-        <item>سند</item>
-        <item>صفحه گسترده</item>
-        <item>رسانه</item>
-        <item>پخش یا مکث</item>
-        <item>تنظیمات اعلان</item>
-        <item>اعلان‌ها</item>
-        <item>اعلان دائمی تاریخ</item>
-        <item>نمایش تقویم‌های دیگر</item>
-        <item>یادآوری هشدارها</item>
-        <item>یادآوری یادداشت‌ها</item>
-        <item>نمایش جزئیات روی صفحه قفل</item>
-        <item>تنظیمات اذان و اوقات شرعی</item>
-        <item>اذان</item>
-        <item>اذان صبح</item>
-        <item>اذان ظهر</item>
-        <item>اذان مغرب</item>
-        <item>عشاء</item>
-        <item>عصر</item>
-        <item>طلوع</item>
-        <item>غروب</item>
-        <item>نیمه‌شب</item>
-        <item>نمایش اوقات شرعی</item>
-        <item>موقعیت جغرافیایی</item>
-        <item>جستجوی شهر یا روستا</item>
-        <item>دریافت موقعیت دقیق فعلی</item>
-        <item>اذان‌های فعال</item>
-        <item>انتخاب موذن</item>
-        <item>نحوه اعلام اذان</item>
-        <item>اعلان اذان</item>
-        <item>لرزش اذان</item>
-        <item>صدای اذان</item>
-        <item>پیش‌نمایش صفحه اذان</item>
-        <item>موقعیت تنظیم نشده</item>
-        <item>در حال دریافت موقعیت…</item>
-        <item>انتخاب شهر یا روستا</item>
-        <item>نام شهر، روستا، استان یا کشور</item>
-        <item>با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند</item>
-        <item>نتیجه‌ای پیدا نشد</item>
-        <item>افزودن منطقه زمانی</item>
-        <item>افزودن ساعت انتخاب‌شده</item>
-        <item>بازگشت به اکنون</item>
-        <item>رفتن به تاریخ</item>
-        <item>ترتیب تب‌ها</item>
-        <item>جابه‌جایی ترتیب تب‌ها</item>
-        <item>مجوزهای آلارم و اعلان</item>
-        <item>ویجت‌ها و تنظیمات</item>
-        <item>تنظیمات ویجت</item>
-        <item>پیش‌نمایش زنده</item>
-        <item>افزودن به صفحه اصلی</item>
-        <item>نمونه‌های نصب‌شده</item>
-        <item>یادآوری فایل‌ها</item>
-        <item>افزودن فایل</item>
-        <item>افزودن اپ یا سایت</item>
-        <item>ترسیم</item>
-        <item>نقاشی و ترسیم</item>
-        <item>ذخیره یادداشت</item>
-        <item>حذف یادداشت</item>
-        <item>عنوان یادداشت</item>
-        <item>متن یادداشت خود را اینجا بنویسید...</item>
-        <item>آلارم برای این یادداشت</item>
-        <item>صدای هشدار</item>
-        <item>فول‌اسکرین</item>
-        <item>صفحه باز</item>
-        <item>صفحه قفل</item>
-        <item>فایل‌ها و تصاویر</item>
-        <item>انتخاب برنامه نصب‌شده</item>
-        <item>لینک سایت را وارد کنید</item>
-        <item>لینک معتبر وارد کنید</item>
-        <item>هنوز فایلی اضافه نشده است.</item>
-        <item>هنوز برنامه یا سایتی اضافه نشده است.</item>
-        <item>یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید</item>
-        <item>یادداشت ذخیره شد</item>
-        <item>تنظیم هشدار</item>
-        <item>عنوان هشدار</item>
-        <item>ذخیره هشدار</item>
-        <item>حذف هشدار</item>
-        <item>افزودن عکس ۱</item>
-        <item>افزودن عکس ۲</item>
-        <item>عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)</item>
-        <item>پیش‌فرض سیستم</item>
-        <item>هشدار ذخیره شد</item>
-        <item>تاریخ گذشته قابل انتخاب نیست</item>
-        <item>هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد</item>
-        <item>آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد</item>
-        <item>برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید</item>
-        <item>انتخاب صدا</item>
-        <item>+ آپلود صدای جدید</item>
-        <item>رنگ اپ</item>
-        <item>رویدادها و مناسبت‌ها</item>
-        <item>نمایش مناسبت‌ها زیر تقویم</item>
-        <item>نمایش باکس رویداد زیر تقویم</item>
-        <item>چیدمان صفحه ساعت</item>
-        <item>فرم ایجاد داخل صفحه، بدون دکمه +</item>
-        <item>پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +</item>
-        <item>تب‌های قابل نمایش در صفحه اصلی</item>
-        <item>استایل صفحه زنگ</item>
-        <item>کلاسیک روشن</item>
-        <item>تمرکز تیره</item>
-        <item>طلوع گرم</item>
-        <item>حداقل یک تب باید فعال باشد</item>
-        <item>تاریخ و ساعت آینده را انتخاب کنید</item>
-        <item>یک زمان بیشتر از صفر وارد کنید</item>
-        <item>صفر کردن</item>
-        <item>ثبت دور</item>
-        <item>انتخاب تاریخ</item>
-        <item>انتخاب ساعت</item>
-        <item>لغو و بازنشانی</item>
-        <item>مدت‌زمان</item>
-        <item>زمان پایان</item>
-        <item>بازگشت به امروز</item>
-        <item>ماه قبل</item>
-        <item>ماه بعد</item>
-        <item>شمسی</item>
-        <item>میلادی</item>
-        <item>قمری</item>
-        <item>شنبه</item>
-        <item>یکشنبه</item>
-        <item>دوشنبه</item>
-        <item>سه‌شنبه</item>
-        <item>چهارشنبه</item>
-        <item>پنجشنبه</item>
-        <item>جمعه</item>
-        <item>فروردین</item>
-        <item>اردیبهشت</item>
-        <item>خرداد</item>
-        <item>تیر</item>
-        <item>مرداد</item>
-        <item>شهریور</item>
-        <item>مهر</item>
-        <item>آبان</item>
-        <item>آذر</item>
-        <item>دی</item>
-        <item>بهمن</item>
-        <item>اسفند</item>
-        <item>ترسیم ✓</item>
-        <item>بدون گرید</item>
-        <item>گرید</item>
-        <item>رنگ</item>
-        <item>پاک</item>
-        <item>ذخیره ترسیم</item>
-        <item>افزودن فایل یا تصویر</item>
-        <item>انتخاب برنامه</item>
-        <item>افزودن سایت</item>
-        <item>لینک سایت، مثلاً https://example.com</item>
-        <item>یادآوری قبل از موعد</item>
-        <item>تمام‌صفحه وقتی گوشی باز است</item>
-        <item>تمام‌صفحه روی صفحه قفل</item>
-        <item>فعال</item>
-        <item>غیرفعال</item>
-        <item>دست‌نویس</item>
-        <item>نقاشی</item>
-        <item>بدون آلارم</item>
-        <item>تمام‌صفحه هشدار وقتی گوشی باز است</item>
-        <item>تمام‌صفحه هشدار روی صفحه قفل</item>
-        <item>صدای پیش‌فرض هشدار</item>
-        <item>هماهنگ با تم برنامه</item>
-        <item>نمایش محتوا</item>
-        <item>نمایش پیش‌نمایش</item>
-        <item>نمایش نام فایل</item>
-        <item>نمایش نوع و جزئیات فایل</item>
-        <item>هدر و کنترل‌ها</item>
-        <item>قالب ساعت</item>
-        <item>مطابق تنظیمات سیستم</item>
-        <item>۲۴ ساعته</item>
-        <item>۱۲ ساعته</item>
-        <item>نمایش ثانیه</item>
-        <item>نمایش عنوان بخش</item>
-        <item>محتوا</item>
-        <item>حداکثر تعداد آیتم</item>
-        <item>تعداد</item>
-        <item>هوشمند: نزدیک‌ترین هشدار اول</item>
-        <item>زمان: زودترین تا دیرترین</item>
-        <item>اهمیت: مهم‌ترین اول</item>
-        <item>هوشمند: نزدیک‌ترین موعد اول</item>
-        <item>جدیدترین یادداشت اول</item>
-        <item>تنظیمات ویجت ساعت</item>
-        <item>تنظیمات ویجت یادداشت</item>
-        <item>تنظیمات ویجت ساعت جهانی</item>
-        <item>پس‌زمینه</item>
-        <item>شفاف (پیش‌فرض)</item>
-        <item>مشکی ۷۰٪</item>
-        <item>مشکی</item>
-        <item>سفید</item>
-        <item>آبی</item>
-        <item>فیروزه‌ای</item>
-        <item>بنفش</item>
-        <item>قرمز</item>
-        <item>سبز</item>
-        <item>طلایی</item>
-        <item>نارنجی</item>
-        <item>صورتی</item>
-        <item>پیش‌نمایش</item>
-        <item>نوع فایل</item>
-        <item>نمایش تمام صفحه</item>
-        <item>باز کردن کنترل پخش</item>
-        <item>در حال آماده‌سازی</item>
-        <item>در حال پخش</item>
-        <item>مکث</item>
-        <item>هشدار هوشمند</item>
-        <item>ورودی هوشمند</item>
-        <item>پیست</item>
-        <item>تشخیص خودکار</item>
-        <item>تحلیل متن و ساخت پیش‌نمایش</item>
-        <item>زمان زنگ برای همه</item>
-        <item>سرِ وقت</item>
-        <item>قبل از زمان</item>
-        <item>بعد از زمان</item>
-        <item>پیش‌نمایش هشدارها</item>
-        <item>حذف همه</item>
-        <item>ذخیره همه هشدارها</item>
-        <item>عنوان</item>
-        <item>تاریخ و ساعت اصلی</item>
-        <item>زمان زنگ</item>
-        <item>اولویت</item>
-        <item>لرزش همراه هشدار</item>
-        <item>ویرایش هشدار</item>
-        <item>عنوان نمی‌تواند خالی باشد</item>
-        <item>متنی در کلیپ‌بورد نیست</item>
-        <item>ابتدا متن را تحلیل کنید</item>
-        <item>هنوز هشداری شناسایی نشده است.</item>
-        <item>مورد</item>
-        <item>هشدار شناسایی شد</item>
-        <item>تنظیم تکرار</item>
-        <item>فاصله تکرار بر حسب روز</item>
-        <item>فاصله تکرار بر حسب هفته</item>
-        <item>افزودن تاریخ و ساعت</item>
-        <item>پاک کردن تاریخ‌های دلخواه</item>
-        <item>هنوز تاریخ و ساعتی انتخاب نشده</item>
-        <item>تاریخ و ساعت گذشته قابل انتخاب نیست</item>
-        <item>هر چند روز</item>
-        <item>تاریخ‌های دلخواه</item>
-        <item>روزهای هفته</item>
-        <item>دور</item>
-        <item>مدت‌زمان بیشتر از صفر وارد کنید</item>
-        <item>ابتدا کرنومتر را صفر کنید</item>
-        <item>تاریخ و ساعت پایان گذشته است</item>
-        <item>تایمر تمام شد</item>
-        <item>کرنومتر به حد نهایی رسید</item>
-        <item>وقت نیایش</item>
-        <item>پایان اذان</item>
-        <item>قطع کامل صدا</item>
-        <item>وصل صدا</item>
-        <item>قطع اذان</item>
-        <item>باز کردن یادداشت</item>
-        <item>قطع هشدار</item>
-        <item>فایل‌ها، تصاویر، برنامه‌ها و سایت‌ها</item>
-        <item>یادآوری یادداشت</item>
-        <item>زمان یادداشت شما رسیده است</item>
-        <item>آلارم‌ها</item>
-        <item>اعلان اوقات اذان</item>
-        <item>هشدار یادداشت‌ها</item>
-        <item>هشدارهای زمان‌دار یادداشت‌ها</item>
-    </string-array>
-    <string-array name="palette_names">
-        <item>نارنجی</item>
-        <item>صورتی آبی</item>
-        <item>بنفش</item>
-        <item>سبز قرمز</item>
-        <item>بنفش زرد</item>
-        <item>صورتی تیره</item>
-        <item>آبی</item>
-    </string-array>
+        <item>@string/runtime_text_0001</item>
+        <item>@string/runtime_text_0002</item>
+        <item>@string/runtime_text_0003</item>
+        <item>@string/runtime_text_0004</item>
+        <item>@string/runtime_text_0005</item>
+        <item>@string/runtime_text_0006</item>
+        <item>@string/runtime_text_0007</item>
+        <item>@string/runtime_text_0008</item>
+        <item>@string/runtime_text_0009</item>
+        <item>@string/runtime_text_0010</item>
+        <item>@string/runtime_text_0011</item>
+        <item>@string/runtime_text_0012</item>
+        <item>@string/runtime_text_0013</item>
+        <item>@string/runtime_text_0014</item>
+        <item>@string/runtime_text_0015</item>
+        <item>@string/runtime_text_0016</item>
+        <item>@string/runtime_text_0017</item>
+        <item>@string/runtime_text_0018</item>
+        <item>@string/runtime_text_0019</item>
+        <item>@string/runtime_text_0020</item>
+        <item>@string/runtime_text_0021</item>
+        <item>@string/runtime_text_0022</item>
+        <item>@string/runtime_text_0023</item>
+        <item>@string/runtime_text_0024</item>
+        <item>@string/runtime_text_0025</item>
+        <item>@string/runtime_text_0026</item>
+        <item>@string/runtime_text_0027</item>
+        <item>@string/runtime_text_0028</item>
+        <item>@string/runtime_text_0029</item>
+        <item>@string/runtime_text_0030</item>
+        <item>@string/runtime_text_0031</item>
+        <item>@string/runtime_text_0032</item>
+        <item>@string/runtime_text_0033</item>
+        <item>@string/runtime_text_0034</item>
+        <item>@string/runtime_text_0035</item>
+        <item>@string/runtime_text_0036</item>
+        <item>@string/runtime_text_0037</item>
+        <item>@string/runtime_text_0038</item>
+        <item>@string/runtime_text_0039</item>
+        <item>@string/runtime_text_0040</item>
+        <item>@string/runtime_text_0041</item>
+        <item>@string/runtime_text_0042</item>
+        <item>@string/runtime_text_0043</item>
+        <item>@string/runtime_text_0044</item>
+        <item>@string/runtime_text_0045</item>
+        <item>@string/runtime_text_0046</item>
+        <item>@string/runtime_text_0047</item>
+        <item>@string/runtime_text_0048</item>
+        <item>@string/runtime_text_0049</item>
+        <item>@string/runtime_text_0050</item>
+        <item>@string/runtime_text_0051</item>
+        <item>@string/runtime_text_0052</item>
+        <item>@string/runtime_text_0053</item>
+        <item>@string/runtime_text_0054</item>
+        <item>@string/runtime_text_0055</item>
+        <item>@string/runtime_text_0056</item>
+        <item>@string/runtime_text_0057</item>
+        <item>@string/runtime_text_0058</item>
+        <item>@string/runtime_text_0059</item>
+        <item>@string/runtime_text_0060</item>
+        <item>@string/runtime_text_0061</item>
+        <item>@string/runtime_text_0062</item>
+        <item>@string/runtime_text_0063</item>
+        <item>@string/runtime_text_0064</item>
+        <item>@string/runtime_text_0065</item>
+        <item>@string/runtime_text_0066</item>
+        <item>@string/runtime_text_0067</item>
+        <item>@string/runtime_text_0068</item>
+        <item>@string/runtime_text_0069</item>
+        <item>@string/runtime_text_0070</item>
+        <item>@string/runtime_text_0071</item>
+        <item>@string/runtime_text_0072</item>
+        <item>@string/runtime_text_0073</item>
+        <item>@string/runtime_text_0074</item>
+        <item>@string/runtime_text_0075</item>
+        <item>@string/runtime_text_0076</item>
+        <item>@string/runtime_text_0077</item>
+        <item>@string/runtime_text_0078</item>
+        <item>@string/runtime_text_0079</item>
+        <item>@string/runtime_text_0080</item>
+        <item>@string/runtime_text_0081</item>
+        <item>@string/runtime_text_0082</item>
+        <item>@string/runtime_text_0083</item>
+        <item>@string/runtime_text_0084</item>
+        <item>@string/runtime_text_0085</item>
+        <item>@string/runtime_text_0086</item>
+        <item>@string/runtime_text_0087</item>
+        <item>@string/runtime_text_0088</item>
+        <item>@string/runtime_text_0089</item>
+        <item>@string/runtime_text_0090</item>
+        <item>@string/runtime_text_0091</item>
+        <item>@string/runtime_text_0092</item>
+        <item>@string/runtime_text_0093</item>
+        <item>@string/runtime_text_0094</item>
+        <item>@string/runtime_text_0095</item>
+        <item>@string/runtime_text_0096</item>
+        <item>@string/runtime_text_0097</item>
+        <item>@string/runtime_text_0098</item>
+        <item>@string/runtime_text_0099</item>
+        <item>@string/runtime_text_0100</item>
+        <item>@string/runtime_text_0101</item>
+        <item>@string/runtime_text_0102</item>
+        <item>@string/runtime_text_0103</item>
+        <item>@string/runtime_text_0104</item>
+        <item>@string/runtime_text_0105</item>
+        <item>@string/runtime_text_0106</item>
+        <item>@string/runtime_text_0107</item>
+        <item>@string/runtime_text_0108</item>
+        <item>@string/runtime_text_0109</item>
+        <item>@string/runtime_text_0110</item>
+        <item>@string/runtime_text_0111</item>
+        <item>@string/runtime_text_0112</item>
+        <item>@string/runtime_text_0113</item>
+        <item>@string/runtime_text_0114</item>
+        <item>@string/runtime_text_0115</item>
+        <item>@string/runtime_text_0116</item>
+        <item>@string/runtime_text_0117</item>
+        <item>@string/runtime_text_0118</item>
+        <item>@string/runtime_text_0119</item>
+        <item>@string/runtime_text_0120</item>
+        <item>@string/runtime_text_0121</item>
+        <item>@string/runtime_text_0122</item>
+        <item>@string/runtime_text_0123</item>
+        <item>@string/runtime_text_0124</item>
+        <item>@string/runtime_text_0125</item>
+        <item>@string/runtime_text_0126</item>
+        <item>@string/runtime_text_0127</item>
+        <item>@string/runtime_text_0128</item>
+        <item>@string/runtime_text_0129</item>
+        <item>@string/runtime_text_0130</item>
+        <item>@string/runtime_text_0131</item>
+        <item>@string/runtime_text_0132</item>
+        <item>@string/runtime_text_0133</item>
+        <item>@string/runtime_text_0134</item>
+        <item>@string/runtime_text_0135</item>
+        <item>@string/runtime_text_0136</item>
+        <item>@string/runtime_text_0137</item>
+        <item>@string/runtime_text_0138</item>
+        <item>@string/runtime_text_0139</item>
+        <item>@string/runtime_text_0140</item>
+        <item>@string/runtime_text_0141</item>
+        <item>@string/runtime_text_0142</item>
+        <item>@string/runtime_text_0143</item>
+        <item>@string/runtime_text_0144</item>
+        <item>@string/runtime_text_0145</item>
+        <item>@string/runtime_text_0146</item>
+        <item>@string/runtime_text_0147</item>
+        <item>@string/runtime_text_0148</item>
+        <item>@string/runtime_text_0149</item>
+        <item>@string/runtime_text_0150</item>
+        <item>@string/runtime_text_0151</item>
+        <item>@string/runtime_text_0152</item>
+        <item>@string/runtime_text_0153</item>
+        <item>@string/runtime_text_0154</item>
+        <item>@string/runtime_text_0155</item>
+        <item>@string/runtime_text_0156</item>
+        <item>@string/runtime_text_0157</item>
+        <item>@string/runtime_text_0158</item>
+        <item>@string/runtime_text_0159</item>
+        <item>@string/runtime_text_0160</item>
+        <item>@string/runtime_text_0161</item>
+        <item>@string/runtime_text_0162</item>
+        <item>@string/runtime_text_0163</item>
+        <item>@string/runtime_text_0164</item>
+        <item>@string/runtime_text_0165</item>
+        <item>@string/runtime_text_0166</item>
+        <item>@string/runtime_text_0167</item>
+        <item>@string/runtime_text_0168</item>
+        <item>@string/runtime_text_0169</item>
+        <item>@string/runtime_text_0170</item>
+        <item>@string/runtime_text_0171</item>
+        <item>@string/runtime_text_0172</item>
+        <item>@string/runtime_text_0173</item>
+        <item>@string/runtime_text_0174</item>
+        <item>@string/runtime_text_0175</item>
+        <item>@string/runtime_text_0176</item>
+        <item>@string/runtime_text_0177</item>
+        <item>@string/runtime_text_0178</item>
+        <item>@string/runtime_text_0179</item>
+        <item>@string/runtime_text_0180</item>
+        <item>@string/runtime_text_0181</item>
+        <item>@string/runtime_text_0182</item>
+        <item>@string/runtime_text_0183</item>
+        <item>@string/runtime_text_0184</item>
+        <item>@string/runtime_text_0185</item>
+        <item>@string/runtime_text_0186</item>
+        <item>@string/runtime_text_0187</item>
+        <item>@string/runtime_text_0188</item>
+        <item>@string/runtime_text_0189</item>
+        <item>@string/runtime_text_0190</item>
+        <item>@string/runtime_text_0191</item>
+        <item>@string/runtime_text_0192</item>
+        <item>@string/runtime_text_0193</item>
+        <item>@string/runtime_text_0194</item>
+        <item>@string/runtime_text_0195</item>
+        <item>@string/runtime_text_0196</item>
+        <item>@string/runtime_text_0197</item>
+        <item>@string/runtime_text_0198</item>
+        <item>@string/runtime_text_0199</item>
+        <item>@string/runtime_text_0200</item>
+        <item>@string/runtime_text_0201</item>
+        <item>@string/runtime_text_0202</item>
+        <item>@string/runtime_text_0203</item>
+        <item>@string/runtime_text_0204</item>
+        <item>@string/runtime_text_0205</item>
+        <item>@string/runtime_text_0206</item>
+        <item>@string/runtime_text_0207</item>
+        <item>@string/runtime_text_0208</item>
+        <item>@string/runtime_text_0209</item>
+        <item>@string/runtime_text_0210</item>
+        <item>@string/runtime_text_0211</item>
+        <item>@string/runtime_text_0212</item>
+        <item>@string/runtime_text_0213</item>
+        <item>@string/runtime_text_0214</item>
+        <item>@string/runtime_text_0215</item>
+        <item>@string/runtime_text_0216</item>
+        <item>@string/runtime_text_0217</item>
+        <item>@string/runtime_text_0218</item>
+        <item>@string/runtime_text_0219</item>
+        <item>@string/runtime_text_0220</item>
+        <item>@string/runtime_text_0221</item>
+        <item>@string/runtime_text_0222</item>
+        <item>@string/runtime_text_0223</item>
+        <item>@string/runtime_text_0224</item>
+        <item>@string/runtime_text_0225</item>
+        <item>@string/runtime_text_0226</item>
+        <item>@string/runtime_text_0227</item>
+        <item>@string/runtime_text_0228</item>
+        <item>@string/runtime_text_0229</item>
+        <item>@string/runtime_text_0230</item>
+        <item>@string/runtime_text_0231</item>
+        <item>@string/runtime_text_0232</item>
+        <item>@string/runtime_text_0233</item>
+        <item>@string/runtime_text_0234</item>
+        <item>@string/runtime_text_0235</item>
+        <item>@string/runtime_text_0236</item>
+        <item>@string/runtime_text_0237</item>
+        <item>@string/runtime_text_0238</item>
+        <item>@string/runtime_text_0239</item>
+        <item>@string/runtime_text_0240</item>
+        <item>@string/runtime_text_0241</item>
+        <item>@string/runtime_text_0242</item>
+        <item>@string/runtime_text_0243</item>
+        <item>@string/runtime_text_0244</item>
+        <item>@string/runtime_text_0245</item>
+        <item>@string/runtime_text_0246</item>
+        <item>@string/runtime_text_0247</item>
+        <item>@string/runtime_text_0248</item>
+        <item>@string/runtime_text_0249</item>
+        <item>@string/runtime_text_0250</item>
+        <item>@string/runtime_text_0251</item>
+        <item>@string/runtime_text_0252</item>
+        <item>@string/runtime_text_0253</item>
+        <item>@string/runtime_text_0254</item>
+        <item>@string/runtime_text_0255</item>
+        <item>@string/runtime_text_0256</item>
+        <item>@string/runtime_text_0257</item>
+        <item>@string/runtime_text_0258</item>
+        <item>@string/runtime_text_0259</item>
+        <item>@string/runtime_text_0260</item>
+        <item>@string/runtime_text_0261</item>
+        <item>@string/runtime_text_0262</item>
+        <item>@string/runtime_text_0263</item>
+        <item>@string/runtime_text_0264</item>
+        <item>@string/runtime_text_0265</item>
+        <item>@string/runtime_text_0266</item>
+        <item>@string/runtime_text_0267</item>
+        <item>@string/runtime_text_0268</item>
+        <item>@string/runtime_text_0269</item>
+        <item>@string/runtime_text_0270</item>
+        <item>@string/runtime_text_0271</item>
+        <item>@string/runtime_text_0272</item>
+        <item>@string/runtime_text_0273</item>
+        <item>@string/runtime_text_0274</item>
+        <item>@string/runtime_text_0275</item>
+        <item>@string/runtime_text_0276</item>
+        <item>@string/runtime_text_0277</item>
+        <item>@string/runtime_text_0278</item>
+        <item>@string/runtime_text_0279</item>
+        <item>@string/runtime_text_0280</item>
+        <item>@string/runtime_text_0281</item>
+        <item>@string/runtime_text_0282</item>
+        <item>@string/runtime_text_0283</item>
+        <item>@string/runtime_text_0284</item>
+        <item>@string/runtime_text_0285</item>
+        <item>@string/runtime_text_0286</item>
+        <item>@string/runtime_text_0287</item>
+        <item>@string/runtime_text_0288</item>
+        <item>@string/runtime_text_0289</item>
+        <item>@string/runtime_text_0290</item>
+        <item>@string/runtime_text_0291</item>
+        <item>@string/runtime_text_0292</item>
+        <item>@string/runtime_text_0293</item>
+        <item>@string/runtime_text_0294</item>
+        <item>@string/runtime_text_0295</item>
+        <item>@string/runtime_text_0296</item>
+        <item>@string/runtime_text_0297</item>
+        <item>@string/runtime_text_0298</item>
+        <item>@string/runtime_text_0299</item>
+        <item>@string/runtime_text_0300</item>
+        <item>@string/runtime_text_0301</item>
+        <item>@string/runtime_text_0302</item>
+        <item>@string/runtime_text_0303</item>
+        <item>@string/runtime_text_0304</item>
+        <item>@string/runtime_text_0305</item>
+        <item>@string/runtime_text_0306</item>
+        <item>@string/runtime_text_0307</item>
+        <item>@string/runtime_text_0308</item>
+        <item>@string/runtime_text_0309</item>
+        <item>@string/runtime_text_0310</item>
+        <item>@string/runtime_text_0311</item>
+        <item>@string/runtime_text_0312</item>
+        <item>@string/runtime_text_0313</item>
+        <item>@string/runtime_text_0314</item>
+        <item>@string/runtime_text_0315</item>
+        <item>@string/runtime_text_0316</item>
+        <item>@string/runtime_text_0317</item>
+        <item>@string/runtime_text_0318</item>
+        <item>@string/runtime_text_0319</item>
+        <item>@string/runtime_text_0320</item>
+        <item>@string/runtime_text_0321</item>
+        <item>@string/runtime_text_0322</item>
+        <item>@string/runtime_text_0323</item>
+        <item>@string/runtime_text_0324</item>
+        <item>@string/runtime_text_0325</item>
+        <item>@string/runtime_text_0326</item>
+        <item>@string/runtime_text_0327</item>
+        <item>@string/runtime_text_0328</item>
+        <item>@string/runtime_text_0329</item>
+        <item>@string/runtime_text_0330</item>
+        <item>@string/runtime_text_0331</item>
+        <item>@string/runtime_text_0332</item>
+        <item>@string/runtime_text_0333</item>
+        <item>@string/runtime_text_0334</item>
+        <item>@string/runtime_text_0335</item>
+        <item>@string/runtime_text_0336</item>
+        <item>@string/runtime_text_0337</item>
+        <item>@string/runtime_text_0338</item>
+        <item>@string/runtime_text_0339</item>
+        <item>@string/runtime_text_0340</item>
+        <item>@string/runtime_text_0341</item>
+        <item>@string/runtime_text_0342</item>
+        <item>@string/runtime_text_0343</item>
+        <item>@string/runtime_text_0344</item>
+        <item>@string/runtime_text_0345</item>
+        <item>@string/runtime_text_0346</item>
+        <item>@string/runtime_text_0347</item>
+        <item>@string/runtime_text_0348</item>
+        <item>@string/runtime_text_0349</item>
+        <item>@string/runtime_text_0350</item>
+        <item>@string/runtime_text_0351</item>
+        <item>@string/runtime_text_0352</item>
+        <item>@string/runtime_text_0353</item>
+        <item>@string/runtime_text_0354</item>
+        <item>@string/runtime_text_0355</item>
+        <item>@string/runtime_text_0356</item>
+        <item>@string/runtime_text_0357</item>
+        <item>@string/runtime_text_0358</item>
+        <item>@string/runtime_text_0359</item>
+        <item>@string/runtime_text_0360</item>
+        <item>@string/runtime_text_0361</item>
+        <item>@string/runtime_text_0362</item>
+        <item>@string/runtime_text_0363</item>
+        <item>@string/runtime_text_0364</item>
+        <item>@string/runtime_text_0365</item>
+        <item>@string/runtime_text_0366</item>
+        <item>@string/runtime_text_0367</item>
+        <item>@string/runtime_text_0368</item>
+        <item>@string/runtime_text_0369</item>
+        <item>@string/runtime_text_0370</item>
+        <item>@string/runtime_text_0371</item>
+        <item>@string/runtime_text_0372</item>
+        <item>@string/runtime_text_0373</item>
+        <item>@string/runtime_text_0374</item>
+        <item>@string/runtime_text_0375</item>
+        <item>@string/runtime_text_0376</item>
+        <item>@string/runtime_text_0377</item>
+        <item>@string/runtime_text_0378</item>
+        <item>@string/runtime_text_0379</item>
+        <item>@string/runtime_text_0380</item>
+        <item>@string/runtime_text_0381</item>
+        <item>@string/runtime_text_0382</item>
+        <item>@string/runtime_text_0383</item>
+        <item>@string/runtime_text_0384</item>
+        <item>@string/runtime_text_0385</item>
+        <item>@string/runtime_text_0386</item>
+        <item>@string/runtime_text_0387</item>
+        <item>@string/runtime_text_0388</item>
+        <item>@string/runtime_text_0389</item>
+        <item>@string/runtime_text_0390</item>
+        <item>@string/runtime_text_0391</item>
+        <item>@string/runtime_text_0392</item>
+        <item>@string/runtime_text_0393</item>
+        <item>@string/runtime_text_0394</item>
+        <item>@string/runtime_text_0395</item>
+        <item>@string/runtime_text_0396</item>
+        <item>@string/runtime_text_0397</item>
+        <item>@string/runtime_text_0398</item>
+        <item>@string/runtime_text_0399</item>
+        <item>@string/runtime_text_0400</item>
+        <item>@string/runtime_text_0401</item>
+        <item>@string/runtime_text_0402</item>
+        <item>@string/runtime_text_0403</item>
+        <item>@string/runtime_text_0404</item>
+        <item>@string/runtime_text_0405</item>
+        <item>@string/runtime_text_0406</item>
+        <item>@string/runtime_text_0407</item>
+        <item>@string/runtime_text_0408</item>
+        <item>@string/runtime_text_0409</item>
+        <item>@string/runtime_text_0410</item>
+        <item>@string/runtime_text_0411</item>
+        <item>@string/runtime_text_0412</item>
+        <item>@string/runtime_text_0413</item>
+        <item>@string/runtime_text_0414</item>
+        <item>@string/runtime_text_0415</item>
+        <item>@string/runtime_text_0416</item>
+        <item>@string/runtime_text_0417</item>
+            <item>@string/runtime_text_0418</item>
+        <item>@string/runtime_text_0419</item>
+        <item>@string/runtime_text_0420</item>
+        <item>@string/runtime_text_0421</item>
+        <item>@string/runtime_text_0422</item>
+        <item>@string/runtime_text_0423</item>
+        <item>@string/runtime_text_0424</item>
+        <item>@string/runtime_text_0425</item>
+        <item>@string/runtime_text_0426</item>
+        <item>@string/runtime_text_0427</item>
+        <item>@string/runtime_text_0428</item>
+        <item>@string/runtime_text_0429</item>
+        <item>@string/runtime_text_0430</item>
+        <item>@string/runtime_text_0431</item>
+        <item>@string/runtime_text_0432</item>
+        <item>@string/runtime_text_0433</item>
+        <item>@string/runtime_text_0434</item>
+        <item>@string/runtime_text_0435</item>
+        <item>@string/runtime_text_0436</item>
+        <item>@string/runtime_text_0437</item>
+        <item>@string/runtime_text_0438</item>
+        <item>@string/runtime_text_0439</item>
+        <item>@string/runtime_text_0440</item>
+        <item>@string/runtime_text_0441</item>
+        <item>@string/runtime_text_0442</item>
+        <item>@string/runtime_text_0443</item>
+        <item>@string/runtime_text_0444</item>
+        <item>@string/runtime_text_0445</item>
+        <item>@string/runtime_text_0446</item>
+        <item>@string/runtime_text_0447</item>
+        <item>@string/runtime_text_0448</item>
+        <item>@string/runtime_text_0449</item>
+        <item>@string/runtime_text_0450</item>
+        <item>@string/runtime_text_0451</item>
+        <item>@string/runtime_text_0452</item>
+        <item>@string/runtime_text_0453</item>
+        <item>@string/runtime_text_0454</item>
+        <item>@string/runtime_text_0455</item>
+        <item>@string/runtime_text_0456</item>
+        <item>@string/runtime_text_0457</item>
+        <item>@string/runtime_text_0458</item>
+        <item>@string/runtime_text_0459</item>
+        <item>@string/runtime_text_0460</item>
+        <item>@string/runtime_text_0461</item>
+        <item>@string/runtime_text_0462</item>
+        <item>@string/runtime_text_0463</item>
+        <item>@string/runtime_text_0464</item>
+        <item>@string/runtime_text_0465</item>
+        <item>@string/runtime_text_0466</item>
+        <item>@string/runtime_text_0467</item>
+        <item>@string/runtime_text_0468</item>
+        <item>@string/runtime_text_0469</item>
+        <item>@string/runtime_text_0470</item>
+        <item>@string/runtime_text_0471</item>
+        <item>@string/runtime_text_0472</item>
+        <item>@string/runtime_text_0473</item>
+        <item>@string/runtime_text_0474</item>
+        <item>@string/runtime_text_0475</item>
+        <item>@string/runtime_text_0476</item>
+        <item>@string/runtime_text_0477</item>
+        <item>@string/runtime_text_0478</item>
+        <item>@string/runtime_text_0479</item>
+        <item>@string/runtime_text_0480</item>
+        <item>@string/runtime_text_0481</item>
+        <item>@string/runtime_text_0482</item>
+        <item>@string/runtime_text_0483</item>
+        <item>@string/runtime_text_0484</item>
+        <item>@string/runtime_text_0485</item>
+        <item>@string/runtime_text_0486</item>
+        <item>@string/runtime_text_0487</item>
+        <item>@string/runtime_text_0488</item>
+        <item>@string/runtime_text_0489</item>
+        <item>@string/runtime_text_0490</item>
+        <item>@string/runtime_text_0491</item>
+        <item>@string/runtime_text_0492</item>
+        <item>@string/runtime_text_0493</item>
+        <item>@string/runtime_text_0494</item>
+        <item>@string/runtime_text_0495</item>
+        <item>@string/runtime_text_0496</item>
+        <item>@string/runtime_text_0497</item>
+        <item>@string/runtime_text_0498</item>
+        <item>@string/runtime_text_0499</item>
+        <item>@string/runtime_text_0500</item>
+        <item>@string/runtime_text_0501</item>
+        <item>@string/runtime_text_0502</item>
+        <item>@string/runtime_text_0503</item>
+        <item>@string/runtime_text_0504</item>
+        <item>@string/runtime_text_0505</item>
+        <item>@string/runtime_text_0506</item>
+        <item>@string/runtime_text_0507</item>
+        <item>@string/runtime_text_0508</item>
+        <item>@string/runtime_text_0509</item>
+        <item>@string/runtime_text_0510</item>
+        <item>@string/runtime_text_0511</item>
+        <item>@string/runtime_text_0512</item>
+        <item>@string/runtime_text_0513</item>
+        <item>@string/runtime_text_0514</item>
+        <item>@string/runtime_text_0515</item>
+        <item>@string/runtime_text_0516</item>
+        <item>@string/runtime_text_0517</item>
+        <item>@string/runtime_text_0518</item>
+        <item>@string/runtime_text_0519</item>
+        <item>@string/runtime_text_0520</item>
+        <item>@string/runtime_text_0521</item>
+        <item>@string/runtime_text_0522</item>
+        <item>@string/runtime_text_0523</item>
+        <item>@string/runtime_text_0524</item>
+        <item>@string/runtime_text_0525</item>
+        <item>@string/runtime_text_0526</item>
+        <item>@string/runtime_text_0527</item>
+        <item>@string/runtime_text_0528</item>
+        <item>@string/runtime_text_0529</item>
+        <item>@string/runtime_text_0530</item>
+        <item>@string/runtime_text_0531</item>
+        <item>@string/runtime_text_0532</item>
+        <item>@string/runtime_text_0533</item>
+        <item>@string/runtime_text_0534</item>
+        <item>@string/runtime_text_0535</item>
+        <item>@string/runtime_text_0536</item>
+        <item>@string/runtime_text_0537</item>
+        <item>@string/runtime_text_0538</item>
+        <item>@string/runtime_text_0539</item>
+        <item>@string/runtime_text_0540</item>
+        <item>@string/runtime_text_0541</item>
+        <item>@string/runtime_text_0542</item>
+        <item>@string/runtime_text_0543</item>
+        <item>@string/runtime_text_0544</item>
+        <item>@string/runtime_text_0545</item>
+        <item>@string/runtime_text_0546</item>
+        <item>@string/runtime_text_0547</item>
+        <item>@string/runtime_text_0548</item>
+        <item>@string/runtime_text_0549</item>
+        <item>@string/runtime_text_0550</item>
+        <item>@string/runtime_text_0551</item>
+        <item>@string/runtime_text_0552</item>
+        <item>@string/runtime_text_0553</item>
+        <item>@string/runtime_text_0554</item>
+        <item>@string/runtime_text_0555</item>
+        <item>@string/runtime_text_0556</item>
+        <item>@string/runtime_text_0557</item>
+        <item>@string/runtime_text_0558</item>
+        <item>@string/runtime_text_0559</item>
+        <item>@string/runtime_text_0560</item>
+        <item>@string/runtime_text_0561</item>
+        <item>@string/runtime_text_0562</item>
+        <item>@string/runtime_text_0563</item>
+        <item>@string/runtime_text_0564</item>
+        <item>@string/runtime_text_0565</item>
+        <item>@string/runtime_text_0566</item>
+        <item>@string/runtime_text_0567</item>
+        <item>@string/runtime_text_0568</item>
+        <item>@string/runtime_text_0569</item>
+        <item>@string/runtime_text_0570</item>
+        <item>@string/runtime_text_0571</item>
+        <item>@string/runtime_text_0572</item>
+        <item>@string/runtime_text_0573</item>
+        <item>@string/runtime_text_0574</item>
+        <item>@string/runtime_text_0575</item>
+        <item>@string/runtime_text_0576</item>
+        <item>@string/runtime_text_0577</item>
+        <item>@string/runtime_text_0578</item>
+        <item>@string/runtime_text_0579</item>
+        <item>@string/runtime_text_0580</item>
+        <item>@string/runtime_text_0581</item>
+        <item>@string/runtime_text_0582</item>
+        <item>@string/runtime_text_0583</item>
+        <item>@string/runtime_text_0584</item>
+        <item>@string/runtime_text_0585</item>
+        <item>@string/runtime_text_0586</item>
+        <item>@string/runtime_text_0587</item>
+        <item>@string/runtime_text_0588</item>
+        <item>@string/runtime_text_0589</item>
+        <item>@string/runtime_text_0590</item>
+        <item>@string/runtime_text_0591</item>
+        <item>@string/runtime_text_0592</item>
+        <item>@string/runtime_text_0593</item>
+        <item>@string/runtime_text_0594</item>
+        <item>@string/runtime_text_0595</item>
+        <item>@string/runtime_text_0596</item>
+        <item>@string/runtime_text_0597</item>
+        <item>@string/runtime_text_0598</item>
+        <item>@string/runtime_text_0599</item>
+        <item>@string/runtime_text_0600</item>
+        <item>@string/runtime_text_0601</item>
+        <item>@string/runtime_text_0602</item>
+        <item>@string/runtime_text_0603</item>
+        <item>@string/runtime_text_0604</item>
+        <item>@string/runtime_text_0605</item>
+        <item>@string/runtime_text_0606</item>
+        <item>@string/runtime_text_0607</item>
+        <item>@string/runtime_text_0608</item>
+        <item>@string/runtime_text_0609</item>
+        <item>@string/runtime_text_0610</item>
+        <item>@string/runtime_text_0611</item>
+        <item>@string/runtime_text_0612</item>
+        <item>@string/runtime_text_0613</item>
+        <item>@string/runtime_text_0614</item>
+        <item>@string/runtime_text_0615</item>
+        <item>@string/runtime_text_0616</item>
+        <item>@string/runtime_text_0617</item>
+        <item>@string/runtime_text_0618</item>
+        <item>@string/runtime_text_0619</item>
+        <item>@string/runtime_text_0620</item>
+        <item>@string/runtime_text_0621</item>
+        <item>@string/runtime_text_0622</item>
+        <item>@string/runtime_text_0623</item>
+        <item>@string/runtime_text_0624</item>
+        <item>@string/runtime_text_0625</item>
+        <item>@string/runtime_text_0626</item>
+        <item>@string/runtime_text_0627</item>
+        <item>@string/runtime_text_0628</item>
+        <item>@string/runtime_text_0629</item>
+        <item>@string/runtime_text_0630</item>
+        <item>@string/runtime_text_0631</item>
+        <item>@string/runtime_text_0632</item>
+        <item>@string/runtime_text_0633</item>
+        <item>@string/runtime_text_0634</item>
+        <item>@string/runtime_text_0635</item>
+        <item>@string/runtime_text_0636</item>
+        <item>@string/runtime_text_0637</item>
+        <item>@string/runtime_text_0638</item>
+        <item>@string/runtime_text_0639</item>
+        <item>@string/runtime_text_0640</item>
+        <item>@string/runtime_text_0641</item>
+        <item>@string/runtime_text_0642</item>
+        <item>@string/runtime_text_0643</item>
+        <item>@string/runtime_text_0644</item>
+        <item>@string/runtime_text_0645</item>
+        <item>@string/runtime_text_0646</item>
+        <item>@string/runtime_text_0647</item>
+        <item>@string/runtime_text_0648</item>
+        <item>@string/runtime_text_0649</item>
+        <item>@string/runtime_text_0650</item>
+        <item>@string/runtime_text_0651</item>
+        <item>@string/runtime_text_0652</item>
+        <item>@string/runtime_text_0653</item>
+        <item>@string/runtime_text_0654</item>
+        <item>@string/runtime_text_0655</item>
+        <item>@string/runtime_text_0656</item>
+        <item>@string/runtime_text_0657</item>
+        <item>@string/runtime_text_0658</item>
+        <item>@string/runtime_text_0659</item>
+        <item>@string/runtime_text_0660</item>
+        <item>@string/runtime_text_0661</item>
+        <item>@string/runtime_text_0662</item>
+        <item>@string/runtime_text_0663</item>
+        <item>@string/runtime_text_0664</item>
+        <item>@string/runtime_text_0665</item>
+        <item>@string/runtime_text_0666</item>
+        <item>@string/runtime_text_0667</item>
+        <item>@string/runtime_text_0668</item>
+        <item>@string/runtime_text_0669</item>
+        <item>@string/runtime_text_0670</item>
+        <item>@string/runtime_text_0671</item>
+        <item>@string/runtime_text_0672</item>
+        <item>@string/runtime_text_0673</item>
+        <item>@string/runtime_text_0674</item>
+        <item>@string/runtime_text_0675</item>
+        <item>@string/runtime_text_0676</item>
+        <item>@string/runtime_text_0677</item>
+        <item>@string/runtime_text_0678</item>
+        <item>@string/runtime_text_0679</item>
+        <item>@string/runtime_text_0680</item>
+        <item>@string/runtime_text_0681</item>
+        <item>@string/runtime_text_0682</item>
+        <item>@string/runtime_text_0683</item>
+        <item>@string/runtime_text_0684</item>
+        <item>@string/runtime_text_0685</item>
+        <item>@string/runtime_text_0686</item>
+        <item>@string/runtime_text_0687</item>
+        <item>@string/runtime_text_0688</item>
+        <item>@string/runtime_text_0689</item>
+        <item>@string/runtime_text_0690</item>
+        <item>@string/runtime_text_0691</item>
+        <item>@string/runtime_text_0692</item>
+        <item>@string/runtime_text_0693</item>
+        <item>@string/runtime_text_0694</item>
+        <item>@string/runtime_text_0695</item>
+        <item>@string/runtime_text_0696</item>
+        <item>@string/runtime_text_0697</item>
+        <item>@string/runtime_text_0698</item>
+        <item>@string/runtime_text_0699</item>
+        <item>@string/runtime_text_0700</item>
+        <item>@string/runtime_text_0701</item>
+        <item>@string/runtime_text_0702</item>
+        <item>@string/runtime_text_0703</item>
+        <item>@string/runtime_text_0704</item>
+        <item>@string/runtime_text_0705</item>
+</string-array>
+
 </resources>

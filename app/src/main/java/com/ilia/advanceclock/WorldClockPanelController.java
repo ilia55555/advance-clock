@@ -259,6 +259,7 @@ final class WorldClockPanelController {
             window.setBackgroundDrawable(new ColorDrawable(AppSettings.background(host)));
         }
         dialog.show();
+        UiText.localize(dialog);
         if (window != null) {
             window.setLayout(
                     ViewGroup.LayoutParams.MATCH_PARENT,

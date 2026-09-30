@@ -67,11 +67,11 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
                 ?"یادآوری یادداشت"
                 :CalendarUtils.fa(item.title);
         builder.setSmallIcon(R.drawable.ic_note)
-                .setContentTitle(title)
+                .setContentTitle(UiText.trComposite(context, title))
                 .setContentText(
-                        "تا زمان یادداشت "
+                        UiText.trComposite(context, "تا زمان یادداشت "
                                 +AlarmReminderUtils.labelForMinutes(minutes)
-                                +" مانده است")
+                                +" مانده است"))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setVisibility(AppSettings.notificationVisibility(context))

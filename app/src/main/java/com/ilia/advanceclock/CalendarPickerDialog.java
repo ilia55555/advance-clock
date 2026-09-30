@@ -194,6 +194,7 @@ public final class CalendarPickerDialog {
             }
         });
         dialog.show();
+        UiText.localize(dialog);
     }
 
     private static long startOfToday() {

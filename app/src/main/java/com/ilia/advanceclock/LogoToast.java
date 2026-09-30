@@ -40,7 +40,8 @@ public final class LogoToast {
         content.addView(logo, logoParams);
 
         TextView text = new TextView(appContext);
-        text.setText(message);
+        text.setText(UiText.trComposite(appContext,
+                message == null ? "" : message.toString()));
         text.setTextColor(AppSettings.textPrimary(appContext));
         text.setTextSize(14);
         text.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);

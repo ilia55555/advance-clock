@@ -36,4 +36,812 @@
         <item>Gregoryen</item>
         <item>Hicri</item>
     </string-array>
+
+    <!-- Central catalog: every runtime UI phrase has a stable Android resource ID. -->
+    <string formatted="false" name="runtime_text_0001">Ayarlar</string>
+    <string formatted="false" name="runtime_text_0002">Kapat</string>
+    <string formatted="false" name="runtime_text_0003">İptal</string>
+    <string formatted="false" name="runtime_text_0004">Onayla</string>
+    <string formatted="false" name="runtime_text_0005">Kaydet</string>
+    <string formatted="false" name="runtime_text_0006">Sil</string>
+    <string formatted="false" name="runtime_text_0007">Düzenle</string>
+    <string formatted="false" name="runtime_text_0008">Ekle</string>
+    <string formatted="false" name="runtime_text_0009">Temizle</string>
+    <string formatted="false" name="runtime_text_0010">Başlat</string>
+    <string formatted="false" name="runtime_text_0011">Durdur</string>
+    <string formatted="false" name="runtime_text_0012">Devam et</string>
+    <string formatted="false" name="runtime_text_0013">Saat</string>
+    <string formatted="false" name="runtime_text_0014">Tarih</string>
+    <string formatted="false" name="runtime_text_0015">Not</string>
+    <string formatted="false" name="runtime_text_0016">Notlar</string>
+    <string formatted="false" name="runtime_text_0017">Alarm</string>
+    <string formatted="false" name="runtime_text_0018">Alarmlar</string>
+    <string formatted="false" name="runtime_text_0019">Alarm</string>
+    <string formatted="false" name="runtime_text_0020">Hatırlatıcı</string>
+    <string formatted="false" name="runtime_text_0021">Hatırlatıcılar</string>
+    <string formatted="false" name="runtime_text_0022">Titreşim</string>
+    <string formatted="false" name="runtime_text_0023">Öncelik</string>
+    <string formatted="false" name="runtime_text_0024">Düşük</string>
+    <string formatted="false" name="runtime_text_0025">Biraz düşük</string>
+    <string formatted="false" name="runtime_text_0026">Orta</string>
+    <string formatted="false" name="runtime_text_0027">Yüksek</string>
+    <string formatted="false" name="runtime_text_0028">Çok yüksek</string>
+    <string formatted="false" name="runtime_text_0029">Tekrar yok</string>
+    <string formatted="false" name="runtime_text_0030">Her gün</string>
+    <string formatted="false" name="runtime_text_0031">Her hafta</string>
+    <string formatted="false" name="runtime_text_0032">Her ay</string>
+    <string formatted="false" name="runtime_text_0033">Her yıl</string>
+    <string formatted="false" name="runtime_text_0034">Bugün</string>
+    <string formatted="false" name="runtime_text_0035">Hatırlatıcı yok</string>
+    <string formatted="false" name="runtime_text_0036">Otomatik (akıllı)</string>
+    <string formatted="false" name="runtime_text_0037">dakika</string>
+    <string formatted="false" name="runtime_text_0038">saniye</string>
+    <string formatted="false" name="runtime_text_0039">Dünya saati</string>
+    <string formatted="false" name="runtime_text_0040">Zamanlayıcı</string>
+    <string formatted="false" name="runtime_text_0041">Kronometre</string>
+    <string formatted="false" name="runtime_text_0042">Görünüm</string>
+    <string formatted="false" name="runtime_text_0043">Tema</string>
+    <string formatted="false" name="runtime_text_0044">Açık</string>
+    <string formatted="false" name="runtime_text_0045">Koyu</string>
+    <string formatted="false" name="runtime_text_0046">Renk paleti</string>
+    <string formatted="false" name="runtime_text_0047">Arka plan saydamlığı</string>
+    <string formatted="false" name="runtime_text_0048">Metin boyutu</string>
+    <string formatted="false" name="runtime_text_0049">Küçük</string>
+    <string formatted="false" name="runtime_text_0050">Normal</string>
+    <string formatted="false" name="runtime_text_0051">Büyük</string>
+    <string formatted="false" name="runtime_text_0052">Başlığı göster</string>
+    <string formatted="false" name="runtime_text_0053">Saati göster</string>
+    <string formatted="false" name="runtime_text_0054">Tarihi göster</string>
+    <string formatted="false" name="runtime_text_0055">Ayarlar düğmesini göster</string>
+    <string formatted="false" name="runtime_text_0056">Önceliği göster</string>
+    <string formatted="false" name="runtime_text_0057">Ayrıntıları göster</string>
+    <string formatted="false" name="runtime_text_0058">Sıralama</string>
+    <string formatted="false" name="runtime_text_0059">Dosya</string>
+    <string formatted="false" name="runtime_text_0060">Dosyalar</string>
+    <string formatted="false" name="runtime_text_0061">Görsel</string>
+    <string formatted="false" name="runtime_text_0062">Ses</string>
+    <string formatted="false" name="runtime_text_0063">Video</string>
+    <string formatted="false" name="runtime_text_0064">Metin</string>
+    <string formatted="false" name="runtime_text_0065">Belge</string>
+    <string formatted="false" name="runtime_text_0066">E-tablo</string>
+    <string formatted="false" name="runtime_text_0067">Medya</string>
+    <string formatted="false" name="runtime_text_0068">Oynat veya duraklat</string>
+    <string formatted="false" name="runtime_text_0069">Bildirim ayarları</string>
+    <string formatted="false" name="runtime_text_0070">Bildirimler</string>
+    <string formatted="false" name="runtime_text_0071">Kalıcı tarih bildirimi</string>
+    <string formatted="false" name="runtime_text_0072">Diğer takvimleri göster</string>
+    <string formatted="false" name="runtime_text_0073">Alarm hatırlatıcıları</string>
+    <string formatted="false" name="runtime_text_0074">Not hatırlatıcıları</string>
+    <string formatted="false" name="runtime_text_0075">Kilit ekranında ayrıntıları göster</string>
+    <string formatted="false" name="runtime_text_0076">Ezan ve namaz vakti ayarları</string>
+    <string formatted="false" name="runtime_text_0077">Ezan</string>
+    <string formatted="false" name="runtime_text_0078">Sabah ezanı</string>
+    <string formatted="false" name="runtime_text_0079">Öğle ezanı</string>
+    <string formatted="false" name="runtime_text_0080">Akşam ezanı</string>
+    <string formatted="false" name="runtime_text_0081">Yatsı</string>
+    <string formatted="false" name="runtime_text_0082">İkindi</string>
+    <string formatted="false" name="runtime_text_0083">Gün doğumu</string>
+    <string formatted="false" name="runtime_text_0084">Gün batımı</string>
+    <string formatted="false" name="runtime_text_0085">Gece yarısı</string>
+    <string formatted="false" name="runtime_text_0086">Namaz vakitlerini göster</string>
+    <string formatted="false" name="runtime_text_0087">Konum</string>
+    <string formatted="false" name="runtime_text_0088">Şehir veya köy ara</string>
+    <string formatted="false" name="runtime_text_0089">Mevcut kesin konumu al</string>
+    <string formatted="false" name="runtime_text_0090">Etkin ezanlar</string>
+    <string formatted="false" name="runtime_text_0091">Müezzin seç</string>
+    <string formatted="false" name="runtime_text_0092">Ezan bildirimi</string>
+    <string formatted="false" name="runtime_text_0093">Ezan bildirimi</string>
+    <string formatted="false" name="runtime_text_0094">Ezan titreşimi</string>
+    <string formatted="false" name="runtime_text_0095">Ezan sesi</string>
+    <string formatted="false" name="runtime_text_0096">Ezan ekranı önizlemesi</string>
+    <string formatted="false" name="runtime_text_0097">Konum ayarlanmadı</string>
+    <string formatted="false" name="runtime_text_0098">Konum alınıyor…</string>
+    <string formatted="false" name="runtime_text_0099">Şehir veya köy seç</string>
+    <string formatted="false" name="runtime_text_0100">Şehir, köy, il veya ülke adı</string>
+    <string formatted="false" name="runtime_text_0101">Yazdıkça sonuçlar anında güncellenir</string>
+    <string formatted="false" name="runtime_text_0102">Sonuç bulunamadı</string>
+    <string formatted="false" name="runtime_text_0103">Saat dilimi ekle</string>
+    <string formatted="false" name="runtime_text_0104">Seçili saati ekle</string>
+    <string formatted="false" name="runtime_text_0105">Şimdiye dön</string>
+    <string formatted="false" name="runtime_text_0106">Tarihe git</string>
+    <string formatted="false" name="runtime_text_0107">Sekme sırası</string>
+    <string formatted="false" name="runtime_text_0108">Sekmeleri yeniden sırala</string>
+    <string formatted="false" name="runtime_text_0109">Alarm ve bildirim izinleri</string>
+    <string formatted="false" name="runtime_text_0110">Widget\\\'lar ve ayarlar</string>
+    <string formatted="false" name="runtime_text_0111">Widget ayarları</string>
+    <string formatted="false" name="runtime_text_0112">Canlı önizleme</string>
+    <string formatted="false" name="runtime_text_0113">Ana ekrana ekle</string>
+    <string formatted="false" name="runtime_text_0114">Yüklü örnekler</string>
+    <string formatted="false" name="runtime_text_0115">Dosya hatırlatıcıları</string>
+    <string formatted="false" name="runtime_text_0116">Dosya ekle</string>
+    <string formatted="false" name="runtime_text_0117">Uygulama veya site ekle</string>
+    <string formatted="false" name="runtime_text_0118">Çizim</string>
+    <string formatted="false" name="runtime_text_0119">Çizim ve eskiz</string>
+    <string formatted="false" name="runtime_text_0120">Notu kaydet</string>
+    <string formatted="false" name="runtime_text_0121">Notu sil</string>
+    <string formatted="false" name="runtime_text_0122">Not başlığı</string>
+    <string formatted="false" name="runtime_text_0123">Notunuzu buraya yazın...</string>
+    <string formatted="false" name="runtime_text_0124">Bu not için alarm</string>
+    <string formatted="false" name="runtime_text_0125">Alarm sesi</string>
+    <string formatted="false" name="runtime_text_0126">Tam ekran</string>
+    <string formatted="false" name="runtime_text_0127">Kilit açık ekran</string>
+    <string formatted="false" name="runtime_text_0128">Kilit ekranı</string>
+    <string formatted="false" name="runtime_text_0129">Dosyalar ve resimler</string>
+    <string formatted="false" name="runtime_text_0130">Yüklü uygulama seç</string>
+    <string formatted="false" name="runtime_text_0131">Site bağlantısını girin</string>
+    <string formatted="false" name="runtime_text_0132">Geçerli bir bağlantı girin</string>
+    <string formatted="false" name="runtime_text_0133">Henüz dosya eklenmedi.</string>
+    <string formatted="false" name="runtime_text_0134">Henüz uygulama veya site eklenmedi.</string>
+    <string formatted="false" name="runtime_text_0135">Metin, çizim, dosya, uygulama veya site ekleyin</string>
+    <string formatted="false" name="runtime_text_0136">Not kaydedildi</string>
+    <string formatted="false" name="runtime_text_0137">Alarm ayarla</string>
+    <string formatted="false" name="runtime_text_0138">Alarm başlığı</string>
+    <string formatted="false" name="runtime_text_0139">Alarmı kaydet</string>
+    <string formatted="false" name="runtime_text_0140">Alarmı sil</string>
+    <string formatted="false" name="runtime_text_0141">Görsel 1 ekle</string>
+    <string formatted="false" name="runtime_text_0142">Görsel 2 ekle</string>
+    <string formatted="false" name="runtime_text_0143">Alarm görselleri (isteğe bağlı, en fazla 2)</string>
+    <string formatted="false" name="runtime_text_0144">Sistem varsayılanı</string>
+    <string formatted="false" name="runtime_text_0145">Alarm kaydedildi</string>
+    <string formatted="false" name="runtime_text_0146">Geçmiş bir tarih seçilemez</string>
+    <string formatted="false" name="runtime_text_0147">Geçmiş tarih veya saate alarm kurulamaz</string>
+    <string formatted="false" name="runtime_text_0148">Not alarmı geçmişe ayarlanamaz</string>
+    <string formatted="false" name="runtime_text_0149">Kesin uyarı için kesin alarm iznini etkinleştirin</string>
+    <string formatted="false" name="runtime_text_0150">Ses seç</string>
+    <string formatted="false" name="runtime_text_0151">+ Yeni ses yükle</string>
+    <string formatted="false" name="runtime_text_0152">Uygulama rengi</string>
+    <string formatted="false" name="runtime_text_0153">Etkinlikler ve özel günler</string>
+    <string formatted="false" name="runtime_text_0154">Etkinlikleri takvimin altında göster</string>
+    <string formatted="false" name="runtime_text_0155">Etkinlik kutusunu takvimin altında göster</string>
+    <string formatted="false" name="runtime_text_0156">Saat sayfası düzeni</string>
+    <string formatted="false" name="runtime_text_0157">Oluşturma formu sayfada, + düğmesi yok</string>
+    <string formatted="false" name="runtime_text_0158">Kompakt: + düğmesiyle açılan pencerede form</string>
+    <string formatted="false" name="runtime_text_0159">Ana sayfada gösterilen sekmeler</string>
+    <string formatted="false" name="runtime_text_0160">Alarm ekranı stili</string>
+    <string formatted="false" name="runtime_text_0161">Açık klasik</string>
+    <string formatted="false" name="runtime_text_0162">Koyu odak</string>
+    <string formatted="false" name="runtime_text_0163">Sıcak gün doğumu</string>
+    <string formatted="false" name="runtime_text_0164">En az bir sekme etkin olmalı</string>
+    <string formatted="false" name="runtime_text_0165">Gelecekte bir tarih ve saat seçin</string>
+    <string formatted="false" name="runtime_text_0166">Sıfırdan büyük bir süre girin</string>
+    <string formatted="false" name="runtime_text_0167">Sıfırla</string>
+    <string formatted="false" name="runtime_text_0168">Tur</string>
+    <string formatted="false" name="runtime_text_0169">Tarih seç</string>
+    <string formatted="false" name="runtime_text_0170">Saat seç</string>
+    <string formatted="false" name="runtime_text_0171">İptal et ve sıfırla</string>
+    <string formatted="false" name="runtime_text_0172">Süre</string>
+    <string formatted="false" name="runtime_text_0173">Bitiş zamanı</string>
+    <string formatted="false" name="runtime_text_0174">Bugüne dön</string>
+    <string formatted="false" name="runtime_text_0175">Önceki ay</string>
+    <string formatted="false" name="runtime_text_0176">Sonraki ay</string>
+    <string formatted="false" name="runtime_text_0177">Farsça</string>
+    <string formatted="false" name="runtime_text_0178">Miladi</string>
+    <string formatted="false" name="runtime_text_0179">Hicri</string>
+    <string formatted="false" name="runtime_text_0180">Cumartesi</string>
+    <string formatted="false" name="runtime_text_0181">Pazar</string>
+    <string formatted="false" name="runtime_text_0182">Pazartesi</string>
+    <string formatted="false" name="runtime_text_0183">Salı</string>
+    <string formatted="false" name="runtime_text_0184">Çarşamba</string>
+    <string formatted="false" name="runtime_text_0185">Perşembe</string>
+    <string formatted="false" name="runtime_text_0186">Cuma</string>
+    <string formatted="false" name="runtime_text_0187">Farvardin</string>
+    <string formatted="false" name="runtime_text_0188">Ordibehesht</string>
+    <string formatted="false" name="runtime_text_0189">Khordad</string>
+    <string formatted="false" name="runtime_text_0190">Tir</string>
+    <string formatted="false" name="runtime_text_0191">Mordad</string>
+    <string formatted="false" name="runtime_text_0192">Shahrivar</string>
+    <string formatted="false" name="runtime_text_0193">Mehr</string>
+    <string formatted="false" name="runtime_text_0194">Aban</string>
+    <string formatted="false" name="runtime_text_0195">Azar</string>
+    <string formatted="false" name="runtime_text_0196">Dey</string>
+    <string formatted="false" name="runtime_text_0197">Bahman</string>
+    <string formatted="false" name="runtime_text_0198">Esfand</string>
+    <string formatted="false" name="runtime_text_0199">Çizim ✓</string>
+    <string formatted="false" name="runtime_text_0200">Izgarasız</string>
+    <string formatted="false" name="runtime_text_0201">Izgara</string>
+    <string formatted="false" name="runtime_text_0202">Renk</string>
+    <string formatted="false" name="runtime_text_0203">Temizle</string>
+    <string formatted="false" name="runtime_text_0204">Çizimi kaydet</string>
+    <string formatted="false" name="runtime_text_0205">Dosya veya görsel ekle</string>
+    <string formatted="false" name="runtime_text_0206">Uygulama seç</string>
+    <string formatted="false" name="runtime_text_0207">Site ekle</string>
+    <string formatted="false" name="runtime_text_0208">Site bağlantısı, ör. https://example.com</string>
+    <string formatted="false" name="runtime_text_0209">Süreden önce hatırlatma</string>
+    <string formatted="false" name="runtime_text_0210">Telefon açıkken tam ekran</string>
+    <string formatted="false" name="runtime_text_0211">Kilit ekranında tam ekran</string>
+    <string formatted="false" name="runtime_text_0212">Etkin</string>
+    <string formatted="false" name="runtime_text_0213">Devre dışı</string>
+    <string formatted="false" name="runtime_text_0214">El yazısı</string>
+    <string formatted="false" name="runtime_text_0215">Çizim</string>
+    <string formatted="false" name="runtime_text_0216">Alarmsız</string>
+    <string formatted="false" name="runtime_text_0217">Telefon açıkken tam ekran alarm</string>
+    <string formatted="false" name="runtime_text_0218">Kilit ekranında tam ekran alarm</string>
+    <string formatted="false" name="runtime_text_0219">Varsayılan alarm sesi</string>
+    <string formatted="false" name="runtime_text_0220">Uygulama temasını kullan</string>
+    <string formatted="false" name="runtime_text_0221">İçerik görünümü</string>
+    <string formatted="false" name="runtime_text_0222">Önizlemeyi göster</string>
+    <string formatted="false" name="runtime_text_0223">Dosya adını göster</string>
+    <string formatted="false" name="runtime_text_0224">Dosya türünü ve ayrıntılarını göster</string>
+    <string formatted="false" name="runtime_text_0225">Başlık ve kontroller</string>
+    <string formatted="false" name="runtime_text_0226">Saat biçimi</string>
+    <string formatted="false" name="runtime_text_0227">Sistem ayarlarını kullan</string>
+    <string formatted="false" name="runtime_text_0228">24 saat</string>
+    <string formatted="false" name="runtime_text_0229">12 saat</string>
+    <string formatted="false" name="runtime_text_0230">Saniyeyi göster</string>
+    <string formatted="false" name="runtime_text_0231">Bölüm başlığını göster</string>
+    <string formatted="false" name="runtime_text_0232">İçerik</string>
+    <string formatted="false" name="runtime_text_0233">Maksimum öğe</string>
+    <string formatted="false" name="runtime_text_0234">Sayı</string>
+    <string formatted="false" name="runtime_text_0235">Akıllı: en yakın alarm önce</string>
+    <string formatted="false" name="runtime_text_0236">Zaman: erkenden geçe</string>
+    <string formatted="false" name="runtime_text_0237">Öncelik: en yüksek önce</string>
+    <string formatted="false" name="runtime_text_0238">Akıllı: en yakın süre önce</string>
+    <string formatted="false" name="runtime_text_0239">En yeni not önce</string>
+    <string formatted="false" name="runtime_text_0240">Saat widget ayarları</string>
+    <string formatted="false" name="runtime_text_0241">Not widget ayarları</string>
+    <string formatted="false" name="runtime_text_0242">Dünya saati widget ayarları</string>
+    <string formatted="false" name="runtime_text_0243">Arka plan</string>
+    <string formatted="false" name="runtime_text_0244">Şeffaf (varsayılan)</string>
+    <string formatted="false" name="runtime_text_0245">Siyah %70</string>
+    <string formatted="false" name="runtime_text_0246">Siyah</string>
+    <string formatted="false" name="runtime_text_0247">Beyaz</string>
+    <string formatted="false" name="runtime_text_0248">Mavi</string>
+    <string formatted="false" name="runtime_text_0249">Turkuaz</string>
+    <string formatted="false" name="runtime_text_0250">Mor</string>
+    <string formatted="false" name="runtime_text_0251">Kırmızı</string>
+    <string formatted="false" name="runtime_text_0252">Yeşil</string>
+    <string formatted="false" name="runtime_text_0253">Altın</string>
+    <string formatted="false" name="runtime_text_0254">Turuncu</string>
+    <string formatted="false" name="runtime_text_0255">Pembe</string>
+    <string formatted="false" name="runtime_text_0256">Önizleme</string>
+    <string formatted="false" name="runtime_text_0257">Dosya türü</string>
+    <string formatted="false" name="runtime_text_0258">Tam ekran göster</string>
+    <string formatted="false" name="runtime_text_0259">Oynatma kontrollerini aç</string>
+    <string formatted="false" name="runtime_text_0260">Hazırlanıyor</string>
+    <string formatted="false" name="runtime_text_0261">Oynatılıyor</string>
+    <string formatted="false" name="runtime_text_0262">Duraklatıldı</string>
+    <string formatted="false" name="runtime_text_0263">Akıllı Alarm</string>
+    <string formatted="false" name="runtime_text_0264">Akıllı giriş</string>
+    <string formatted="false" name="runtime_text_0265">Yapıştır</string>
+    <string formatted="false" name="runtime_text_0266">Otomatik algıla</string>
+    <string formatted="false" name="runtime_text_0267">Metni analiz et ve önizleme oluştur</string>
+    <string formatted="false" name="runtime_text_0268">Tümü için alarm saati</string>
+    <string formatted="false" name="runtime_text_0269">Tam zamanında</string>
+    <string formatted="false" name="runtime_text_0270">Zamandan önce</string>
+    <string formatted="false" name="runtime_text_0271">Zamandan sonra</string>
+    <string formatted="false" name="runtime_text_0272">Alarm önizlemesi</string>
+    <string formatted="false" name="runtime_text_0273">Tümünü sil</string>
+    <string formatted="false" name="runtime_text_0274">Tüm alarmları kaydet</string>
+    <string formatted="false" name="runtime_text_0275">Başlık</string>
+    <string formatted="false" name="runtime_text_0276">Orijinal tarih ve saat</string>
+    <string formatted="false" name="runtime_text_0277">Alarm saati</string>
+    <string formatted="false" name="runtime_text_0278">Öncelik</string>
+    <string formatted="false" name="runtime_text_0279">Alarmda titreşim</string>
+    <string formatted="false" name="runtime_text_0280">Alarmı düzenle</string>
+    <string formatted="false" name="runtime_text_0281">Başlık boş olamaz</string>
+    <string formatted="false" name="runtime_text_0282">Panoda metin yok</string>
+    <string formatted="false" name="runtime_text_0283">Önce metni analiz edin</string>
+    <string formatted="false" name="runtime_text_0284">Henüz alarm algılanmadı.</string>
+    <string formatted="false" name="runtime_text_0285">öğe</string>
+    <string formatted="false" name="runtime_text_0286">alarm algılandı</string>
+    <string formatted="false" name="runtime_text_0287">Tekrar ayarları</string>
+    <string formatted="false" name="runtime_text_0288">Gün olarak tekrar aralığı</string>
+    <string formatted="false" name="runtime_text_0289">Hafta olarak tekrar aralığı</string>
+    <string formatted="false" name="runtime_text_0290">Tarih ve saat ekle</string>
+    <string formatted="false" name="runtime_text_0291">Özel tarihleri temizle</string>
+    <string formatted="false" name="runtime_text_0292">Henüz tarih ve saat seçilmedi</string>
+    <string formatted="false" name="runtime_text_0293">Geçmiş tarih ve saat seçilemez</string>
+    <string formatted="false" name="runtime_text_0294">Birkaç günde bir</string>
+    <string formatted="false" name="runtime_text_0295">Özel tarihler</string>
+    <string formatted="false" name="runtime_text_0296">Haftanın günleri</string>
+    <string formatted="false" name="runtime_text_0297">Tur</string>
+    <string formatted="false" name="runtime_text_0298">Sıfırdan büyük bir süre girin</string>
+    <string formatted="false" name="runtime_text_0299">Önce kronometreyi sıfırlayın</string>
+    <string formatted="false" name="runtime_text_0300">Bitiş tarihi ve saati geçmişte</string>
+    <string formatted="false" name="runtime_text_0301">Zamanlayıcı bitti</string>
+    <string formatted="false" name="runtime_text_0302">Kronometre sınıra ulaştı</string>
+    <string formatted="false" name="runtime_text_0303">Namaz vakti</string>
+    <string formatted="false" name="runtime_text_0304">Ezanı bitir</string>
+    <string formatted="false" name="runtime_text_0305">Sesi tamamen kapat</string>
+    <string formatted="false" name="runtime_text_0306">Sesi aç</string>
+    <string formatted="false" name="runtime_text_0307">Ezanı durdur</string>
+    <string formatted="false" name="runtime_text_0308">Notu aç</string>
+    <string formatted="false" name="runtime_text_0309">Alarmı durdur</string>
+    <string formatted="false" name="runtime_text_0310">Dosyalar, görseller, uygulamalar ve siteler</string>
+    <string formatted="false" name="runtime_text_0311">Not hatırlatıcısı</string>
+    <string formatted="false" name="runtime_text_0312">Notunuzun zamanı geldi</string>
+    <string formatted="false" name="runtime_text_0313">Alarmlar</string>
+    <string formatted="false" name="runtime_text_0314">Namaz vakti bildirimleri</string>
+    <string formatted="false" name="runtime_text_0315">Not alarmları</string>
+    <string formatted="false" name="runtime_text_0316">Zamanlanmış not alarmları</string>
+    <string formatted="false" name="runtime_text_0317">ابزارها</string>
+    <string formatted="false" name="runtime_text_0318">ابزار قطب‌نما</string>
+    <string formatted="false" name="runtime_text_0319">نمایش روی صفحه</string>
+    <string formatted="false" name="runtime_text_0320">قطب‌نمای کلاسیک</string>
+    <string formatted="false" name="runtime_text_0321">قبله‌نما</string>
+    <string formatted="false" name="runtime_text_0322">هشت جهت اصلی</string>
+    <string formatted="false" name="runtime_text_0323">در حال دریافت جهت از حسگر…</string>
+    <string formatted="false" name="runtime_text_0324">حسگر جهت‌یابی در این دستگاه در دسترس نیست.</string>
+    <string formatted="false" name="runtime_text_0325">برای قبله‌نما ابتدا موقعیت را در تنظیمات اوقات شرعی ثبت کنید.</string>
+    <string formatted="false" name="runtime_text_0326">جهت قبله %.0f°  •  انحراف فعلی %.0f°</string>
+    <string formatted="false" name="runtime_text_0327">زاویه نسبت به شمال  </string>
+    <string formatted="false" name="runtime_text_0328">شمال</string>
+    <string formatted="false" name="runtime_text_0329">شمال‌شرق</string>
+    <string formatted="false" name="runtime_text_0330">شرق</string>
+    <string formatted="false" name="runtime_text_0331">جنوب‌شرق</string>
+    <string formatted="false" name="runtime_text_0332">جنوب</string>
+    <string formatted="false" name="runtime_text_0333">جنوب‌غرب</string>
+    <string formatted="false" name="runtime_text_0334">غرب</string>
+    <string formatted="false" name="runtime_text_0335">شمال‌غرب</string>
+    <string formatted="false" name="runtime_text_0336">ش‌خ</string>
+    <string formatted="false" name="runtime_text_0337">ج‌خ</string>
+    <string formatted="false" name="runtime_text_0338">ج‌غ</string>
+    <string formatted="false" name="runtime_text_0339">ش‌غ</string>
+    <string formatted="false" name="runtime_text_0340">قطب‌نما</string>
+    <string formatted="false" name="runtime_text_0341">انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0342">تنظیم اذان</string>
+    <string formatted="false" name="runtime_text_0343">تنظیم همه موارد</string>
+    <string formatted="false" name="runtime_text_0344">تنظیمات جداگانه</string>
+    <string formatted="false" name="runtime_text_0345">تنظیم صدا و نحوه اعلام</string>
+    <string formatted="false" name="runtime_text_0346">موذن</string>
+    <string formatted="false" name="runtime_text_0347">+ آپلود صدای موذن</string>
+    <string formatted="false" name="runtime_text_0348">میزان صدا: </string>
+    <string formatted="false" name="runtime_text_0349">میزان صدای </string>
+    <string formatted="false" name="runtime_text_0350">فعال یا غیرفعال کردن </string>
+    <string formatted="false" name="runtime_text_0351">نمایش نوار اوقات شرعی زیر تقویم</string>
+    <string formatted="false" name="runtime_text_0352">افق‌ها</string>
+    <string formatted="false" name="runtime_text_0353">افزودن افق +</string>
+    <string formatted="false" name="runtime_text_0354">هنوز افقی اضافه نشده است.</string>
+    <string formatted="false" name="runtime_text_0355">اذان فعال است</string>
+    <string formatted="false" name="runtime_text_0356">پیش‌فرض ✓</string>
+    <string formatted="false" name="runtime_text_0357">به عنوان افق پیش‌فرض</string>
+    <string formatted="false" name="runtime_text_0358">افق پیش‌فرض </string>
+    <string formatted="false" name="runtime_text_0359">حذف خودکار ساعت‌های گذشته و بدون تکرار آینده</string>
+    <string formatted="false" name="runtime_text_0360">نمایش بخش اذان و اوقات شرعی</string>
+    <string formatted="false" name="runtime_text_0361">نمایش بخش اذان</string>
+    <string formatted="false" name="runtime_text_0362">⚠ اذان زمان‌بندی نشده است؛ برای ثبت موقعیت اینجا بزنید.</string>
+    <string formatted="false" name="runtime_text_0363">⚠ اذان زمان‌بندی نشده است؛ مجوز آلارم دقیق را فعال کنید.</string>
+    <string formatted="false" name="runtime_text_0364">⚠ زمان اذان ثبت شده، اما مجوز نمایش اعلان داده نشده است.</string>
+    <string formatted="false" name="runtime_text_0365">⚠ زمان‌بندی اذان ناموفق بود؛ برای تلاش دوباره اینجا بزنید.</string>
+    <string formatted="false" name="runtime_text_0366">همه اعلان‌های اذان خاموش‌اند.</string>
+    <string formatted="false" name="runtime_text_0367">سرویس موقعیت در دسترس نیست.</string>
+    <string formatted="false" name="runtime_text_0368">مکان دستگاه را روشن کنید و دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_text_0369">شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.</string>
+    <string formatted="false" name="runtime_text_0370">موقعیت دقیق دریافت نشد؛ دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_text_0371">موقعیت فعلی</string>
+    <string formatted="false" name="runtime_text_0372">به‌روزرسانی موقعیت دقیق فعلی</string>
+    <string formatted="false" name="runtime_text_0373">ابتدا آفلاین، سپس در صورت نیاز جست‌وجوی آنلاین</string>
+    <string formatted="false" name="runtime_text_0374">ابتدا یک شهر، استان، کشور یا منطقه زمانی را جست‌وجو کنید</string>
+    <string formatted="false" name="runtime_text_0375">نام شهر، استان، کشور یا منطقه زمانی</string>
+    <string formatted="false" name="runtime_text_0376">در حال جست‌وجوی آنلاین…</string>
+    <string formatted="false" name="runtime_text_0377">برای جست‌وجوی جهانی یک حرف دیگر وارد کنید</string>
+    <string formatted="false" name="runtime_text_0378">نتیجه آفلاین پیدا نشد؛ برای جست‌وجوی جدید اینترنت لازم است</string>
+    <string formatted="false" name="runtime_text_0379">این منطقه زمانی قبلاً اضافه شده است</string>
+    <string formatted="false" name="runtime_text_0380">حداقل یک ساعت جهانی باید باقی بماند</string>
+    <string formatted="false" name="runtime_text_0381">اضافه کن</string>
+    <string formatted="false" name="runtime_text_0382">ثبت سریع یادداشت</string>
+    <string formatted="false" name="runtime_text_0383">چی رو نباید فراموش کنی؟</string>
+    <string formatted="false" name="runtime_text_0384">جزئیات، آلارم یا نقاشی</string>
+    <string formatted="false" name="runtime_text_0385">یادداشت خالی است</string>
+    <string formatted="false" name="runtime_text_0386">یک متن یا نقاشی وارد کنید</string>
+    <string formatted="false" name="runtime_text_0387">منو</string>
+    <string formatted="false" name="runtime_text_0388">دارک مود و لایت مود</string>
+    <string formatted="false" name="runtime_text_0389">+ ویجت</string>
+    <string formatted="false" name="runtime_text_0390">ایجاد هشدار</string>
+    <string formatted="false" name="runtime_text_0391">تعطیل هفتگی</string>
+    <string formatted="false" name="runtime_text_0392">رویدادی ثبت نشده است</string>
+    <string formatted="false" name="runtime_text_0393">هنوز هشداری تنظیم نشده است.</string>
+    <string formatted="false" name="runtime_text_0394">هنوز یادداشتی ندارید.</string>
+    <string formatted="false" name="runtime_text_0395">✓ آلارم دقیق</string>
+    <string formatted="false" name="runtime_text_0396">✕ آلارم دقیق</string>
+    <string formatted="false" name="runtime_text_0397">✓ صفحه زنگ</string>
+    <string formatted="false" name="runtime_text_0398">✕ صفحه زنگ</string>
+    <string formatted="false" name="runtime_text_0399">برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید</string>
+    <string formatted="false" name="runtime_text_0400">برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید</string>
+    <string formatted="false" name="runtime_text_0401">هشداری تنظیم نشده</string>
+    <string formatted="false" name="runtime_text_0402">یادداشتی برای نمایش نیست</string>
+    <string formatted="false" name="runtime_text_0403">آلارم • </string>
+    <string formatted="false" name="runtime_text_0404">فایلی انتخاب نشده است
+برای افزودن لمس کنید</string>
+    <string formatted="false" name="runtime_text_0405">افقی انتخاب نشده • برای افزودن لمس کنید</string>
+    <string formatted="false" name="runtime_text_0406">قطع</string>
+    <string formatted="false" name="runtime_text_0407">اذان در حال اجرا</string>
+    <string formatted="false" name="runtime_text_0408">یادآوری هشدار</string>
+    <string formatted="false" name="runtime_text_0409"> بعد از هشدار</string>
+    <string formatted="false" name="runtime_text_0410">تا زمان یادداشت </string>
+    <string formatted="false" name="runtime_text_0411"> مانده است</string>
+    <string formatted="false" name="runtime_text_0412">آلارم‌های Advance Clock</string>
+    <string formatted="false" name="runtime_text_0413">یادآوری هشدارها و یادداشت‌ها</string>
+    <string formatted="false" name="runtime_text_0414">تاریخ امروز</string>
+    <string formatted="false" name="runtime_text_0415">پاور یا کاهش صدا: قطع صدا
+نگه‌داشتن کاهش صدا: کم‌کردن تدریجی
+افزایش صدا: وصل و افزایش صدا</string>
+    <string formatted="false" name="runtime_text_0416">یادآوری مجدد بعد از</string>
+    <string formatted="false" name="runtime_text_0417">اوقات شرعی</string>
+    <string-array name="palette_names">
+        <item>Turuncu</item>
+        <item>Pembe Mavi</item>
+        <item>Mor</item>
+        <item>Yeşil Kırmızı</item>
+        <item>Mor Sarı</item>
+        <item>Koyu Pembe</item>
+        <item>Mavi</item>
+    </string-array>
+    <string formatted="false" name="layout_text_0001">تاریخ، زمان، تکرار، اهمیت و یادآوری</string>
+    <string formatted="false" name="layout_text_0002">یادآوری
+بدون یادآوری</string>
+    <string formatted="false" name="layout_text_0003">عکس اول هشدار</string>
+    <string formatted="false" name="layout_text_0004">عکس دوم هشدار</string>
+    <string formatted="false" name="layout_text_0005">صدای زنگ</string>
+    <string formatted="false" name="layout_text_0006">تاریخ، زمان، اهمیت، تکرار و یادآوری را تنظیم کنید</string>
+    <string formatted="false" name="layout_text_0007">برچسب؛ مثلاً صبح بخیر!</string>
+    <string formatted="false" name="layout_text_0008">قبلی</string>
+    <string formatted="false" name="layout_text_0009">بعدی</string>
+    <string formatted="false" name="layout_text_0010">پالت</string>
+    <string formatted="false" name="layout_text_0011">نمایش یا مخفی کردن گرید</string>
+    <string formatted="false" name="layout_text_0012">نامحدود</string>
+    <string formatted="false" name="layout_text_0013">عنوان هشدار حد نهایی (اختیاری)</string>
+    <string formatted="false" name="layout_text_0014">مدت‌زمان ۵ دقیقه</string>
+    <string formatted="false" name="layout_text_0015">تاریخ و ساعت پایان</string>
+    <string formatted="false" name="layout_text_0016">عنوان هشدار تایمر (اختیاری)</string>
+    <string formatted="false" name="layout_text_0017">متن، نقاشی، اهمیت و آلارم</string>
+    <string formatted="false" name="layout_text_0018">فایل‌ها، تصاویر و برنامه‌ها</string>
+    <string formatted="false" name="layout_text_0019">+ فایل یا تصویر</string>
+    <string formatted="false" name="layout_text_0020">+ برنامه</string>
+    <string formatted="false" name="layout_text_0021">ویجت</string>
+    <string formatted="false" name="layout_text_0022">افزودن ساعت جهانی</string>
+    <string formatted="false" name="runtime_text_0418">افق</string>
+    <string formatted="false" name="runtime_text_0419">Hatırlatıcı
+</string>
+    <string formatted="false" name="runtime_text_0420">Öncelik </string>
+    <string formatted="false" name="runtime_text_0421">Tarih
+</string>
+    <string formatted="false" name="runtime_text_0422">Saat
+</string>
+    <string formatted="false" name="runtime_text_0423">Alarm kaydedildi؛ دسترسی Alarm دقیق را Etkin کنید.</string>
+    <string formatted="false" name="runtime_text_0424">عکس ۱ ✓</string>
+    <string formatted="false" name="runtime_text_0425">عکس ۲ ✓</string>
+    <string formatted="false" name="runtime_text_0426">ویجت را از فهرست ویجت‌های لانچر اضافه کنید</string>
+    <string formatted="false" name="runtime_text_0427">درخواست Ekle ویجت ارسال شد؛ پس از Onayla لانچر، Ayarlar همان ویجت باز می‌شود.</string>
+    <string formatted="false" name="runtime_text_0428">لانچر درخواست Ekle ویجت را نپذیرفت.</string>
+    <string formatted="false" name="runtime_text_0429">  •  Öncelik </string>
+    <string formatted="false" name="runtime_text_0430">  •  Hatırlatıcı </string>
+    <string formatted="false" name="runtime_text_0431">  •  Titreşim</string>
+    <string formatted="false" name="runtime_text_0432">  •  Alarm</string>
+    <string formatted="false" name="runtime_text_0433">  •  Çizim</string>
+    <string formatted="false" name="runtime_text_0434">صبح</string>
+    <string formatted="false" name="runtime_text_0435">ظهر</string>
+    <string formatted="false" name="runtime_text_0436">مغرب</string>
+    <string formatted="false" name="runtime_text_0437">Tur %d     %s</string>
+    <string formatted="false" name="runtime_text_0438">حد نهایی بیشتر از صفر وارد کنید</string>
+    <string formatted="false" name="runtime_text_0439">✓ Bildirimler</string>
+    <string formatted="false" name="runtime_text_0440">✕ Bildirimler</string>
+    <string formatted="false" name="runtime_text_0441">Ekle افق</string>
+    <string formatted="false" name="runtime_text_0442">گرفتن افق از GPS</string>
+    <string formatted="false" name="runtime_text_0443">ایران و منطقه‌زمانی‌ها آفلاین • جستجوی جهانی © OpenStreetMap</string>
+    <string formatted="false" name="runtime_text_0444">برای جستجوی جهانی یک حرف Deyگر وارد کنید</string>
+    <string formatted="false" name="runtime_text_0445">در حال جستجوی لحظه‌ای…</string>
+    <string formatted="false" name="runtime_text_0446">در حال جستجو در نتایج Kaydet‌شده…</string>
+    <string formatted="false" name="runtime_text_0447"> نتیجه آفلاین</string>
+    <string formatted="false" name="runtime_text_0448">نتیجه آفلاین پیدا نشد؛ برای مکان جDeyد اینترنت لازم است</string>
+    <string formatted="false" name="runtime_text_0449">مکانی پیدا نشد؛ عبارت را تغییر دهید</string>
+    <string formatted="false" name="runtime_text_0450"> نتیجه Kaydet‌شده</string>
+    <string formatted="false" name="runtime_text_0451"> نتیجه</string>
+    <string formatted="false" name="runtime_text_0452">منطقه زمانی این مکان هنوز آفلاین Kaydet نشده؛ یک بار با اینترنت انتخابش کنید</string>
+    <string formatted="false" name="runtime_text_0453">در حال تشخیص منطقه زمانی…</string>
+    <string formatted="false" name="runtime_text_0454">منطقه زمانی این مکان تشخیص داده نشد؛ دوباره تلاش کنید</string>
+    <string formatted="false" name="runtime_text_0455">افق اضافه شد</string>
+    <string formatted="false" name="runtime_text_0456">، </string>
+    <string formatted="false" name="runtime_text_0457">ش</string>
+    <string formatted="false" name="runtime_text_0458">خ</string>
+    <string formatted="false" name="runtime_text_0459">ج</string>
+    <string formatted="false" name="runtime_text_0460">غ</string>
+    <string formatted="false" name="runtime_text_0461">Alarm sesi • </string>
+    <string formatted="false" name="runtime_text_0462">با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «Çizimi kaydet» ثبت می‌شود.</string>
+    <string formatted="false" name="runtime_text_0463">هر Sayı Dosya یا Görsel اضافه کنید؛ برای باز کردن هر öğe روی آن بزنید.</string>
+    <string formatted="false" name="runtime_text_0464">+ Dosya veya görsel ekle</string>
+    <string formatted="false" name="runtime_text_0465">یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.</string>
+    <string formatted="false" name="runtime_text_0466">+ Site ekle</string>
+    <string formatted="false" name="runtime_text_0467">Dosya ekle (</string>
+    <string formatted="false" name="runtime_text_0468">اپ یا سایت (</string>
+    <string formatted="false" name="runtime_text_0469">Süreden önce hatırlatma
+</string>
+    <string formatted="false" name="runtime_text_0470">Not kaydedildi؛ برای Alarm، دسترسی Alarm دقیق لازم است.</string>
+    <string formatted="false" name="runtime_text_0471">اندازه قلم </string>
+    <string formatted="false" name="runtime_text_0472">نمایش رویدادهای Farsça ایران</string>
+    <string formatted="false" name="runtime_text_0473">نمایش رویدادهای Hicri کشورهای عربی</string>
+    <string formatted="false" name="runtime_text_0474">نمایش رویدادهای Miladi بین‌المللی</string>
+    <string formatted="false" name="runtime_text_0475">اندازه‌های دقیق گزارش‌شده توسط لانچر:</string>
+    <string formatted="false" name="runtime_text_0476"> خانه</string>
+    <string formatted="false" name="runtime_text_0477">اندازه برآوردشده از لانچر: </string>
+    <string formatted="false" name="runtime_text_0478">
+تقریب شبکه: </string>
+    <string formatted="false" name="runtime_text_0479">Alarm در </string>
+    <string formatted="false" name="runtime_text_0480">شمارش معکوس تا Tarih و Saat انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0481">شمارش معکوس بر اساس Süre</string>
+    <string formatted="false" name="runtime_text_0482">همهٔ ویجت‌های Advance از اینجا قابل Ekle و مDeyریت هستند. </string>
+    <string formatted="false" name="runtime_text_0483">برای هر نمونهٔ نصب‌شده می‌توانید Ayarlar جداگانه داشته باشید.</string>
+    <string formatted="false" name="runtime_text_0484">Saat و Alarmlar</string>
+    <string formatted="false" name="runtime_text_0485">Saati göster، Tarih و Alarmlarی پیش رو</string>
+    <string formatted="false" name="runtime_text_0486">نمایش Notlar و Hatırlatıcılarی NoForget</string>
+    <string formatted="false" name="runtime_text_0487">نمایش هم‌زمان سه منطقه زمانی اول تب Dünya saati</string>
+    <string formatted="false" name="runtime_text_0488">اوقات شرعی افق‌ها</string>
+    <string formatted="false" name="runtime_text_0489">نمایش پنج وقت شرعی برای همه شهرها و افق‌های انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0490">دسترسی سریع و Hatırlatıcı عکس، Ses، Video، Metin، PDF و Dosyalarی Deyگر</string>
+    <string formatted="false" name="runtime_text_0491"> نصب‌شده</string>
+    <string formatted="false" name="runtime_text_0492">Önizleme </string>
+    <string formatted="false" name="runtime_text_0493">Düzenle </string>
+    <string formatted="false" name="runtime_text_0494">ویجت را از فهرست ویجت‌های لانچر اضافه کنید.</string>
+    <string formatted="false" name="runtime_text_0495">لانچر شما Ekle مستقیم ویجت را پشتیبانی نمی‌کند؛ </string>
+    <string formatted="false" name="runtime_text_0496">از فهرست ویجت‌های صفحه اصلی استفاده کنید.</string>
+    <string formatted="false" name="runtime_text_0497">درخواست Ekle ویجت به لانچر ارسال شد.</string>
+    <string formatted="false" name="runtime_text_0498">پکن • چین • آسیا</string>
+    <string formatted="false" name="runtime_text_0499">Beijing Peking پکن 北京 China چین Asia/Shanghai</string>
+    <string formatted="false" name="runtime_text_0500">پکن</string>
+    <string formatted="false" name="runtime_text_0501">مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند</string>
+    <string formatted="false" name="runtime_text_0502">جست‌وجوی آنلاین انجام نشد؛ دوباره تلاش کنید</string>
+    <string formatted="false" name="runtime_text_0503"> نتیجه آنلاین</string>
+    <string formatted="false" name="runtime_text_0504">منطقه زمانی این شهر آفلاین مشخص نشد؛ یک بار با اینترنت انتخابش کنید</string>
+    <string formatted="false" name="runtime_text_0505">مختصات این نتیجه در دسترس نیست</string>
+    <string formatted="false" name="runtime_text_0506">تبDeyل زمان محلی شما: </string>
+    <string formatted="false" name="runtime_text_0507">زمان فعلی در مناطق انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0508">EEE، d MMM yyyy</string>
+    <string formatted="false" name="runtime_text_0509">Sil </string>
+    <string formatted="false" name="runtime_text_0510">Onayla Sil </string>
+    <string formatted="false" name="runtime_text_0511">برای Onayla Sil دوباره بزنید</string>
+    <string formatted="false" name="runtime_text_0512">آسیا</string>
+    <string formatted="false" name="runtime_text_0513">اروپا</string>
+    <string formatted="false" name="runtime_text_0514">آفریقا</string>
+    <string formatted="false" name="runtime_text_0515">آمریکا</string>
+    <string formatted="false" name="runtime_text_0516">استرالیا</string>
+    <string formatted="false" name="runtime_text_0517">اقیانوسیه</string>
+    <string formatted="false" name="runtime_text_0518">اقیانوس اطلس</string>
+    <string formatted="false" name="runtime_text_0519">اقیانوس هند</string>
+    <string formatted="false" name="runtime_text_0520">جنوبگان</string>
+    <string formatted="false" name="runtime_text_0521">Regina رجاینا Saskatchewan ساسکاچوان</string>
+    <string formatted="false" name="runtime_text_0522">Tehran تهران Iran ایران</string>
+    <string formatted="false" name="runtime_text_0523">Kuwait کویت</string>
+    <string formatted="false" name="runtime_text_0524">Shanghai شانگهای China چین</string>
+    <string formatted="false" name="runtime_text_0525">Dosya فشرده</string>
+    <string formatted="false" name="runtime_text_0526">Ayarlar Dosya hatırlatıcıları</string>
+    <string formatted="false" name="runtime_text_0527">ساخت Dosya hatırlatıcıları</string>
+    <string formatted="false" name="runtime_text_0528">تا </string>
+    <string formatted="false" name="runtime_text_0529"> Dosya ترکیبی قابل انتخاب است. عکس، Ses، Video، Metin، PDF و </string>
+    <string formatted="false" name="runtime_text_0530">سایر Dosyalar به‌صورت خودکار تشخیص داده می‌شوند. ترتیب همین فهرست، </string>
+    <string formatted="false" name="runtime_text_0531">ترتیب نمایش در ویجت است.</string>
+    <string formatted="false" name="runtime_text_0532">＋ Ekle عکس، Ses یا Dosya</string>
+    <string formatted="false" name="runtime_text_0533">Temizle همه Dosyalar</string>
+    <string formatted="false" name="runtime_text_0534">۱۰۰٪</string>
+    <string formatted="false" name="runtime_text_0535">۸۵٪</string>
+    <string formatted="false" name="runtime_text_0536">۷۰٪</string>
+    <string formatted="false" name="runtime_text_0537">نام ویجت و دDüşükه Ayarlar</string>
+    <string formatted="false" name="runtime_text_0538">دسترسی مستقیم به Ayarlar همین ویجت</string>
+    <string formatted="false" name="runtime_text_0539">thumbnail Görsel، فریم Video یا کاور Dosya Sesی</string>
+    <string formatted="false" name="runtime_text_0540">اگر خاموش باشد، Önizleme Dosya Büyük و واضح نمایش داده می‌شود.</string>
+    <string formatted="false" name="runtime_text_0541">Dosya türü و برای Dosya Metinی، خلاصه‌ای از İçerik</string>
+    <string formatted="false" name="runtime_text_0542">برای تغییر اندازه ویجت انگشتتان را روی ویجت نگهدارید و Düşükی جابه‌جا کنید و رها کنید تا تغییر سایز Etkin شود</string>
+    <string formatted="false" name="runtime_text_0543">بازگردانی Ayarlar Görünümی این ویجت</string>
+    <string formatted="false" name="runtime_text_0544">حداکثر </string>
+    <string formatted="false" name="runtime_text_0545"> Dosya قابل انتخاب است.</string>
+    <string formatted="false" name="runtime_text_0546">هنوز Dosyaی انتخاب نشده است.</string>
+    <string formatted="false" name="runtime_text_0547">↑ بالا</string>
+    <string formatted="false" name="runtime_text_0548">↓ پایین</string>
+    <string formatted="false" name="runtime_text_0549"> از </string>
+    <string formatted="false" name="runtime_text_0550"> öğe انتخاب شده</string>
+    <string formatted="false" name="runtime_text_0551">فشرده</string>
+    <string formatted="false" name="runtime_text_0552">سه Cumartesi</string>
+    <string formatted="false" name="runtime_text_0553">هر </string>
+    <string formatted="false" name="runtime_text_0554"> روز</string>
+    <string formatted="false" name="runtime_text_0555"> Tarih انتخاب شده</string>
+    <string formatted="false" name="runtime_text_0556">دائم؛ روزهای انتخابی Her hafta</string>
+    <string formatted="false" name="runtime_text_0557">روزهای انتخابی هر </string>
+    <string formatted="false" name="runtime_text_0558"> هفته</string>
+    <string formatted="false" name="runtime_text_0559">Renk‌های آماده</string>
+    <string formatted="false" name="runtime_text_0560">پالت کشیدنی</string>
+    <string formatted="false" name="runtime_text_0561">نمونه Renk قلم</string>
+    <string formatted="false" name="runtime_text_0562">Renk paleti قلم</string>
+    <string formatted="false" name="runtime_text_0563">انتخاب Renk</string>
+    <string formatted="false" name="runtime_text_0564">Hatırlatıcı </string>
+    <string formatted="false" name="runtime_text_0565">پیش‌فرض</string>
+    <string formatted="false" name="runtime_text_0566">انتخاب </string>
+    <string formatted="false" name="runtime_text_0567"> به Başlık افق پیش‌فرض</string>
+    <string formatted="false" name="runtime_text_0568">٪</string>
+    <string formatted="false" name="runtime_text_0569">Ayarlar </string>
+    <string formatted="false" name="runtime_text_0570">مجوز موقعیت داده نشد؛ شهر یا روستا را جستجو کنید.</string>
+    <string formatted="false" name="runtime_text_0571">دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_text_0572">عرض %.5f°  •  طول %.5f°</string>
+    <string formatted="false" name="runtime_text_0573">زمان Zamanlayıcı به پایان رسید</string>
+    <string formatted="false" name="runtime_text_0574">زمان Alarm رسیده است</string>
+    <string formatted="false" name="runtime_text_0575">۵ dakika</string>
+    <string formatted="false" name="runtime_text_0576">۱۵ dakika</string>
+    <string formatted="false" name="runtime_text_0577">۳۰ dakika</string>
+    <string formatted="false" name="runtime_text_0578">۱ Saat</string>
+    <string formatted="false" name="runtime_text_0579">۲ Saat</string>
+    <string formatted="false" name="runtime_text_0580">۳ Saat</string>
+    <string formatted="false" name="runtime_text_0581">۶ Saat</string>
+    <string formatted="false" name="runtime_text_0582">۱۲ Saat</string>
+    <string formatted="false" name="runtime_text_0583">۲۴ Saat</string>
+    <string formatted="false" name="runtime_text_0584">زمان Zamanlayıcı به پایان رسیده است</string>
+    <string formatted="false" name="runtime_text_0585">Kronometre sınıra ulaştıه است</string>
+    <string formatted="false" name="runtime_text_0586">Alarm saati Alarm رسیده است</string>
+    <string formatted="false" name="runtime_text_0587">برای Hatırlatıcı مجدد، دسترسی Alarm دقیق لازم است.</string>
+    <string formatted="false" name="runtime_text_0588">تغییر عکس ۱ ✓</string>
+    <string formatted="false" name="runtime_text_0589">تغییر عکس ۲ ✓</string>
+    <string formatted="false" name="runtime_text_0590">Tarihi göster Farsça</string>
+    <string formatted="false" name="runtime_text_0591">Tarihi göster Hicri</string>
+    <string formatted="false" name="runtime_text_0592">Tarihi göster Miladi</string>
+    <string formatted="false" name="runtime_text_0593">Widget ayarları اوقات شرعی</string>
+    <string formatted="false" name="runtime_text_0594">اوقات شرعی
+افق تهران
+صبح ۰۴:۵۱   Gün doğumu ۰۶:۱۸   ظهر ۱۲:۰۳   İkindi ۱۵:۲۴
+Gün batımı ۱۸:۰۲   مغرب ۱۸:۲۰   Yatsı ۱۹:۴۸   Gece yarısı ۲۳:۳۱</string>
+    <string formatted="false" name="runtime_text_0595">Görünüm و Renk</string>
+    <string formatted="false" name="runtime_text_0596">سرمه‌ای شیشه‌ای</string>
+    <string formatted="false" name="runtime_text_0597">سرمه‌ای شفاف</string>
+    <string formatted="false" name="runtime_text_0598">Siyah شیشه‌ای</string>
+    <string formatted="false" name="runtime_text_0599">Renk Metin اصلی</string>
+    <string formatted="false" name="runtime_text_0600">Renk Metin فرعی</string>
+    <string formatted="false" name="runtime_text_0601">Renk تأکیDey و افق فعلی</string>
+    <string formatted="false" name="runtime_text_0602">Renk وقت Etkin / Ezan بعDey</string>
+    <string formatted="false" name="runtime_text_0603">اندازه نوشته‌ها</string>
+    <string formatted="false" name="runtime_text_0604">Başlığı göster «اوقات شرعی»</string>
+    <string formatted="false" name="runtime_text_0605">تقویم‌های هدر هر افق</string>
+    <string formatted="false" name="runtime_text_0606">نمایش زمان</string>
+    <string formatted="false" name="runtime_text_0607">Saat محلی افق</string>
+    <string formatted="false" name="runtime_text_0608">شمارش معکوس تا Ezan بعDey</string>
+    <string formatted="false" name="runtime_text_0609">نمایش آیکون‌های اوقات</string>
+    <string formatted="false" name="runtime_text_0610">اوقات قابل نمایش (هر ۸ öğe به‌صورت پیش‌فرض Etkin‌اند)</string>
+    <string formatted="false" name="runtime_text_0611">برجسته‌کردن افق اصلی</string>
+    <string formatted="false" name="runtime_text_0612">مDeyریت افق‌ها</string>
+    <string formatted="false" name="runtime_text_0613">بازگردانی Ayarlar پیش‌فرض ویجت</string>
+    <string formatted="false" name="runtime_text_0614">Kaydet و اعمال</string>
+    <string formatted="false" name="runtime_text_0615">Beyaz یخی</string>
+    <string formatted="false" name="runtime_text_0616">Mavi Açık</string>
+    <string formatted="false" name="runtime_text_0617">نقره‌ای</string>
+    <string formatted="false" name="runtime_text_0618">سرمه‌ای</string>
+    <string formatted="false" name="runtime_text_0619">سرمه‌ای Koyu</string>
+    <string formatted="false" name="runtime_text_0620">محرم</string>
+    <string formatted="false" name="runtime_text_0621">صفر</string>
+    <string formatted="false" name="runtime_text_0622">ربیع الاول</string>
+    <string formatted="false" name="runtime_text_0623">ربیع الثانی</string>
+    <string formatted="false" name="runtime_text_0624">جماDey الاول</string>
+    <string formatted="false" name="runtime_text_0625">جماDey الثانی</string>
+    <string formatted="false" name="runtime_text_0626">رجب</string>
+    <string formatted="false" name="runtime_text_0627">شعبان</string>
+    <string formatted="false" name="runtime_text_0628">رمضان</string>
+    <string formatted="false" name="runtime_text_0629">شوال</string>
+    <string formatted="false" name="runtime_text_0630">ذی القعده</string>
+    <string formatted="false" name="runtime_text_0631">ذی الحجه</string>
+    <string formatted="false" name="runtime_text_0632">Metin Normal، برنامه کپی‌شده یا JSON را وارد کنید. </string>
+    <string formatted="false" name="runtime_text_0633">Tarih‌ها و Saat‌ها خودکار استخراج می‌شوند و قبل از Kaydet </string>
+    <string formatted="false" name="runtime_text_0634">می‌توانید هر Alarm را جداگانه Düzenle، Sil یا Alarm saati آن را جابه‌جا کنید.</string>
+    <string formatted="false" name="runtime_text_0635">هر Metinی را اینجا Yapıştır کنید…
+
+</string>
+    <string formatted="false" name="runtime_text_0636">مثال:
+</string>
+    <string formatted="false" name="runtime_text_0637">۱۴۰۵/۰۷/۰۴ Saat ۱۳:۰۰ تا ۱۵:۰۰ خاموشی احTemaالی
+</string>
+    <string formatted="false" name="runtime_text_0638">۱۴۰۵/۰۷/۰۵ Saat ۱۵:۰۰ جلسه
+
+</string>
+    <string formatted="false" name="runtime_text_0639">یا JSON شامل date / time / start / title</string>
+    <string formatted="false" name="runtime_text_0640">ساده‌سازی: فقط Tarih و Saat</string>
+    <string formatted="false" name="runtime_text_0641">هر خط یک Tarih و نزDeyک‌ترین Saat‌های آن است؛ Metin را انتخاب، جابه‌جا یا </string>
+    <string formatted="false" name="runtime_text_0642">Düzenle کنید و سپس تحلیل را بزنید.</string>
+    <string formatted="false" name="runtime_text_0643">Tarih و Saat قابل ساده‌سازی پیدا نشد</string>
+    <string formatted="false" name="runtime_text_0644">Metin ساده‌شده؛ برای ساخت Alarm تحلیل را بزنید</string>
+    <string formatted="false" name="runtime_text_0645">این تنظیم را می‌توانید روی همه موارد اعمال کنید؛ </string>
+    <string formatted="false" name="runtime_text_0646">بعداً هر Alarm را جداگانه هم می‌توان تغییر داد.</string>
+    <string formatted="false" name="runtime_text_0647"> dakika</string>
+    <string formatted="false" name="runtime_text_0648">اعمال این زمان‌بنDey روی همه Alarmlarی شناسایی‌شده</string>
+    <string formatted="false" name="runtime_text_0649">زمان اصلی استخراج‌شده و زمان واقعی زنگ هر öğe را قبل از Kaydet بررسی کنید.</string>
+    <string formatted="false" name="runtime_text_0650">Metin قابل استفاده‌ای در کلیپ‌بورد نیست</string>
+    <string formatted="false" name="runtime_text_0651">Otomatik algıla: JSON</string>
+    <string formatted="false" name="runtime_text_0652">Otomatik algıla: Metin عاDey</string>
+    <string formatted="false" name="runtime_text_0653"> alarm algılandı</string>
+    <string formatted="false" name="runtime_text_0654">Alarm önizlemesi • </string>
+    <string formatted="false" name="runtime_text_0655"> öğe</string>
+    <string formatted="false" name="runtime_text_0656">  •  زمان Metin: </string>
+    <string formatted="false" name="runtime_text_0657"> تا </string>
+    <string formatted="false" name="runtime_text_0658">
+زنگ: </string>
+    <string formatted="false" name="runtime_text_0659">
+⚠ Alarm saati در گذشته است و Kaydet نمی‌شود.</string>
+    <string formatted="false" name="runtime_text_0660">کپی</string>
+    <string formatted="false" name="runtime_text_0661"> Alarm kaydedildi</string>
+    <string formatted="false" name="runtime_text_0662"> öğe گذشته رد شد</string>
+    <string formatted="false" name="runtime_text_0663"> öğe تکراری Kaydet نشد</string>
+    <string formatted="false" name="runtime_text_0664"> öğe زمان‌بنDey نشد و Kaydet نشد</string>
+    <string formatted="false" name="runtime_text_0665">
+برای اجرای دقیق، دسترسی Alarm دقیق را Etkin کنید.</string>
+    <string formatted="false" name="runtime_text_0666">Tarih روز</string>
+    <string formatted="false" name="runtime_text_0667">نمایش دائمی Tarih روز در نوار وضعیت</string>
+    <string formatted="false" name="runtime_text_0668">انتخاب ماه و سال</string>
+    <string formatted="false" name="runtime_text_0669">پخش Medya ویجت Dosyalar</string>
+    <string formatted="false" name="runtime_text_0670">کنترل پخش Ses و Video از ویجت Dosya hatırlatıcıları</string>
+    <string formatted="false" name="runtime_text_0671"> Hatırlatıcı</string>
+    <string formatted="false" name="runtime_text_0672">شناسه ویجت معتبر نیست</string>
+    <string formatted="false" name="runtime_text_0673">زرشکی</string>
+    <string formatted="false" name="runtime_text_0674">Renk نام شهر و Tarih</string>
+    <string formatted="false" name="runtime_text_0675">Renk Saat</string>
+    <string formatted="false" name="runtime_text_0676">Beyaz (پیش‌فرض)</string>
+    <string formatted="false" name="runtime_text_0677">قهوه‌ای</string>
+    <string formatted="false" name="runtime_text_0678">دائم؛ Her hafta در روزهای انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0679">با دDüşükه‌های بالا و پایین، جای هر تب را تغییر دهید.</string>
+    <string formatted="false" name="runtime_text_0680">رحیم مؤذن‌زاده اردبیلی</string>
+    <string formatted="false" name="runtime_text_0681">محمد آقاتی</string>
+    <string formatted="false" name="runtime_text_0682">Ezan برنامه</string>
+    <string formatted="false" name="runtime_text_0683">زنگ برنامه</string>
+    <string formatted="false" name="runtime_text_0684">صدا</string>
+    <string formatted="false" name="runtime_text_0685">صدای انتخابی</string>
+    <string formatted="false" name="runtime_text_0686">صدای کاربر</string>
+    <string formatted="false" name="runtime_text_0687">Varsayılan alarm sesi • </string>
+    <string formatted="false" name="runtime_text_0688">−10 ث</string>
+    <string formatted="false" name="runtime_text_0689">+10 ث</string>
+    <string formatted="false" name="runtime_text_0690">Saat، Tarih و دDüşükه‌های بالای ویجت</string>
+    <string formatted="false" name="runtime_text_0691">نمایش زمان جاری در هدر ویجت</string>
+    <string formatted="false" name="runtime_text_0692">saniye را هم در زمان ویجت نمایش می‌دهد</string>
+    <string formatted="false" name="runtime_text_0693">Tarih تقویم پیش‌فرض در هدر</string>
+    <string formatted="false" name="runtime_text_0694">نمایش دDüşükه +</string>
+    <string formatted="false" name="runtime_text_0695">ساخت سریع Alarm یا Not از خود ویجت</string>
+    <string formatted="false" name="runtime_text_0696">باز کردن Ayarlar همین نمونهٔ ویجت</string>
+    <string formatted="false" name="runtime_text_0697">Başlık «Alarm» یا «Not» بالای فهرست</string>
+    <string formatted="false" name="runtime_text_0698">برچسب سطح Öncelik هر öğe</string>
+    <string formatted="false" name="runtime_text_0699">Tarih/زمان Alarm یا اطلاعات Not</string>
+    <string formatted="false" name="runtime_text_0700">بازگردانی Ayarlar این ویجت</string>
+    <string formatted="false" name="runtime_text_0701">Süreden önce hatırlatma
+Hatırlatıcı yok</string>
+    <string formatted="false" name="runtime_text_0702">Alarm sesi • Sistem varsayılanı</string>
+    <string formatted="false" name="runtime_text_0703">Tam ekran
+Kilit açık ekran</string>
+    <string formatted="false" name="runtime_text_0704">Tam ekran
+Kilit ekranı</string>
+    <string formatted="false" name="runtime_text_0705">Not kaydedildi؛ برای Alarm دقیق، مجوز Alarm را Etkin کنید.</string>
+    <string name="prayer_times_widget_description">نمایش اوقات شرعی همه افق‌های انتخاب‌شده</string>
+    <string name="ui_today">امروز</string>
+    <string name="ui_widget_settings">تنظیمات ویجت</string>
+    <string name="ui_configure_widget">تنظیم ویجت</string>
+    <string name="ui_alarm">هشدار</string>
+    <string name="ui_no_alarm_set">هشداری تنظیم نشده</string>
+    <string name="ui_image_preview">پیش‌نمایش تصویر</string>
+    <string name="ui_image">تصویر</string>
+    <string name="ui_open_fullscreen">نمایش تمام صفحه</string>
+    <string name="ui_video_preview">پیش‌نمایش ویدیو</string>
+    <string name="ui_media">رسانه</string>
+    <string name="ui_back_ten_seconds">−10 ث</string>
+    <string name="ui_forward_ten_seconds">+10 ث</string>
+    <string name="ui_play_pause">پخش یا مکث</string>
+    <string name="ui_note">یادداشت</string>
+    <string name="ui_no_note_display">یادداشتی برای نمایش نیست</string>
+    <string name="ui_prayer_times">اوقات شرعی</string>
+    <string name="ui_manage_horizons">مدیریت افق‌ها</string>
+    <string name="ui_no_horizon">افقی انتخاب نشده • برای افزودن لمس کنید</string>
+    <string name="ui_fajr">صبح</string>
+    <string name="ui_sunrise">طلوع</string>
+    <string name="ui_dhuhr">ظهر</string>
+    <string name="ui_asr">عصر</string>
+    <string name="ui_sunset">غروب</string>
+    <string name="ui_maghrib">مغرب</string>
+    <string name="ui_isha">عشاء</string>
+    <string name="ui_midnight">نیمه‌شب</string>
+    <string name="ui_file_reminders">یادآوری فایل‌ها</string>
+    <string name="ui_no_file_tap_add">فایلی انتخاب نشده است\nبرای افزودن لمس کنید</string>
+    <string name="ui_file">فایل</string>
+    <string name="ui_file_type">نوع فایل</string>
+    <string name="ui_preview">پیش‌نمایش</string>
+    <string name="ui_alarm_short">آلارم</string>
+    <string name="ui_normal">عادی</string>
+    <string name="ui_no_alarm">بدون آلارم</string>
+    <string name="ui_large_file_preview">پیش‌نمایش بزرگ فایل</string>
+    <string name="ui_open_playback">باز کردن کنترل پخش</string>
+    <string name="ui_prayer_time">وقت نیایش</string>
+    <string name="ui_adhan">اذان</string>
+    <string name="ui_adhan_key_help">پاور یا کاهش صدا: قطع صدا\nنگه‌داشتن کاهش صدا: کم‌کردن تدریجی\nافزایش صدا: وصل و افزایش صدا</string>
+    <string name="ui_mute_completely">قطع کامل صدا</string>
+    <string name="ui_end_adhan">پایان اذان</string>
+    <string name="ui_alarm_time_arrived">زمان زنگ هشدار رسیده است</string>
+    <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
+    <string name="ui_snooze">یادآوری مجدد</string>
+    <string name="ui_stop_alarm">قطع آلارم</string>
 </resources>

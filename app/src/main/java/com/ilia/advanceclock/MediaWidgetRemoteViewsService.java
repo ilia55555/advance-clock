@@ -146,7 +146,7 @@ public final class MediaWidgetRemoteViewsService
                     showName ? View.VISIBLE : View.INVISIBLE);
             row.setTextViewText(
                     R.id.media_item_name,
-                    item.name);
+                    UiText.trComposite(context, item.name));
             row.setTextColor(
                     R.id.media_item_name,
                     text);
@@ -206,7 +206,7 @@ public final class MediaWidgetRemoteViewsService
                             : View.GONE);
             row.setTextViewText(
                     R.id.media_item_name,
-                    item.name);
+                    UiText.trComposite(context, item.name));
             row.setTextColor(
                     R.id.media_item_name,
                     text);
@@ -333,7 +333,7 @@ public final class MediaWidgetRemoteViewsService
 
             row.setTextViewText(
                     R.id.media_item_name,
-                    item.name);
+                    UiText.trComposite(context, item.name));
             row.setTextColor(
                     R.id.media_item_name,
                     text);
@@ -355,7 +355,7 @@ public final class MediaWidgetRemoteViewsService
             }
             row.setTextViewText(
                     R.id.media_item_meta,
-                    meta);
+                    UiText.trComposite(context, meta));
 
             if (showPreview) {
                 setPreview(

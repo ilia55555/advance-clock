@@ -624,6 +624,7 @@ public final class SmartAlarmActivity extends Activity {
                     refreshPreview();
                 }));
         dialog.show();
+        UiText.localize(dialog);
     }
 
     private void saveAllAlarms() {

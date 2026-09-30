@@ -118,15 +118,16 @@ public final class AlarmSoundService extends Service {
                 : new Notification.Builder(this);
 
         builder.setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(CalendarUtils.fa(title))
-                .setContentText(CalendarUtils.fa(message))
+                .setContentTitle(UiText.trComposite(this, CalendarUtils.fa(title)))
+                .setContentText(UiText.trComposite(this, CalendarUtils.fa(message)))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentIntent(fullScreen)
-                .addAction(new Notification.Action.Builder(null, "قطع", stopAction).build());
+                .addAction(new Notification.Action.Builder(
+                        null, UiText.tr(this, "قطع"), stopAction).build());
         if (shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
         return builder.build();
     }

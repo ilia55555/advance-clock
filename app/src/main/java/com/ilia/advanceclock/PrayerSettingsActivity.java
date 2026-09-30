@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -39,6 +40,7 @@ public final class PrayerSettingsActivity extends Activity {
     private static final int REQ_LOCATION = 740;
     private static final int REQ_NOTIFICATIONS = 741;
     private static final int REQ_HORIZON = 742;
+    private static final int REQ_ADHAN_AUDIO = 743;
 
     private Button locationButton;
     private TextView locationStatus;
@@ -50,6 +52,8 @@ public final class PrayerSettingsActivity extends Activity {
     private LocationManager activeLocationManager;
     private LocationListener activeLocationListener;
     private int locationRequestGeneration;
+    private int activeAdhanType = -1;
+    private LinearLayout activeMuezzinList;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -448,19 +452,30 @@ public final class PrayerSettingsActivity extends Activity {
 
     private void showAdhanSettingsDialog(String title, int type) {
         Dialog dialog = new Dialog(this);
-        ScrollView scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        root.setPadding(dp(18), dp(16), dp(18), dp(18));
+        root.setPadding(dp(18), dp(10), dp(18), dp(18));
         root.setBackgroundColor(AppSettings.background(this));
-        scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
+        LinearLayout header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         TextView heading = text("تنظیمات " + title, 20, AppSettings.textPrimary(this));
         heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        heading.setPadding(0, 0, 0, dp(10));
-        root.addView(heading);
+        heading.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
+        header.addView(heading, new LinearLayout.LayoutParams(0, dp(56), 1f));
+
+        ImageButton close = new ImageButton(this);
+        close.setImageResource(R.drawable.ic_md_close);
+        close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
+        close.setBackgroundColor(0x00000000);
+        close.setPadding(dp(12), dp(12), dp(12), dp(12));
+        close.setContentDescription("بستن");
+        close.setOnClickListener(v -> dialog.dismiss());
+        header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        root.addView(header);
 
         LinearLayout output = card();
         TextView outputTitle = text("تنظیم صدا و نحوه اعلام", 16,
@@ -525,43 +540,133 @@ public final class PrayerSettingsActivity extends Activity {
         TextView muezzinTitle = text("موذن", 16, AppSettings.textPrimary(this));
         muezzinTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         muezzin.addView(muezzinTitle);
-        String selected = AppSettings.adhanSoundUri(
-                this, type == 899 ? AdhanScheduler.FAJR : type);
-        Button picker = fieldButton("موذن انتخاب‌شده: " + SoundLibrary.name(this, selected));
-        picker.setPadding(dp(16), 0, dp(16), 0);
-        picker.setOnClickListener(v -> startActivityForResult(
-                new Intent(this, SoundPickerActivity.class),
-                type == 899 ? 899 : 800 + type));
-        LinearLayout.LayoutParams pickerParams = new LinearLayout.LayoutParams(-1, dp(54));
-        pickerParams.topMargin = dp(8);
-        muezzin.addView(picker, pickerParams);
         Button upload = fieldButton("+ آپلود صدای موذن");
         upload.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         upload.setPadding(dp(16), 0, dp(16), 0);
-        upload.setOnClickListener(v -> startActivityForResult(
-                new Intent(this, SoundPickerActivity.class),
-                type == 899 ? 899 : 800 + type));
+        upload.setOnClickListener(v -> uploadAdhanAudio(type));
         LinearLayout.LayoutParams uploadParams = new LinearLayout.LayoutParams(-1, dp(50));
         uploadParams.topMargin = dp(7);
         muezzin.addView(upload, uploadParams);
-        root.addView(muezzin, cardParams());
 
-        Button close = fieldButton("بستن");
-        close.setGravity(Gravity.CENTER);
-        close.setOnClickListener(v -> dialog.dismiss());
-        root.addView(close, new LinearLayout.LayoutParams(-1, dp(50)));
+        ScrollView soundScroll = new ScrollView(this);
+        soundScroll.setFillViewport(true);
+        soundScroll.setClipToOutline(true);
+        soundScroll.setBackground(soundListBackground());
+        soundScroll.setPadding(dp(8), dp(8), dp(8), dp(8));
+        activeMuezzinList = new LinearLayout(this);
+        activeMuezzinList.setOrientation(LinearLayout.VERTICAL);
+        activeMuezzinList.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        soundScroll.addView(activeMuezzinList, new ScrollView.LayoutParams(-1, -2));
+        LinearLayout.LayoutParams soundScrollParams = new LinearLayout.LayoutParams(-1, 0, 1f);
+        soundScrollParams.topMargin = dp(10);
+        muezzin.addView(soundScroll, soundScrollParams);
+        root.addView(muezzin, new LinearLayout.LayoutParams(-1, 0, 1f));
+        activeAdhanType = type;
+        renderMuezzinList(type);
 
-        dialog.setContentView(scroll);
-        dialog.setOnDismissListener(value -> recreate());
+        dialog.setContentView(root);
+        dialog.setOnDismissListener(value -> {
+            activeAdhanType = -1;
+            activeMuezzinList = null;
+            recreate();
+        });
         dialog.show();
+        UiText.localize(dialog);
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setLayout(-1, -2);
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(-1, -1);
+            dialog.getWindow().setStatusBarColor(AppSettings.primaryColor(this));
+            dialog.getWindow().setNavigationBarColor(AppSettings.background(this));
         }
+        AppSettings.applyFullscreenInsets(root);
+    }
+
+    private void renderMuezzinList(int type) {
+        if (activeMuezzinList == null) return;
+        activeMuezzinList.removeAllViews();
+        String selected = AppSettings.adhanSoundUri(
+                this, type == 899 ? AdhanScheduler.FAJR : type);
+        for (SoundLibrary.Sound item : SoundLibrary.all(this)) {
+            boolean checked = item.uri.equals(selected);
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setPadding(dp(14), 0, dp(12), 0);
+            row.setBackground(soundRowBackground(checked));
+            TextView name = text(item.name, 14, checked
+                    ? AppSettings.primaryColor(this) : AppSettings.textPrimary(this));
+            if (checked) name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            row.addView(name, new LinearLayout.LayoutParams(0, -1, 1f));
+            ImageView check = new ImageView(this);
+            check.setImageResource(R.drawable.ic_md_check);
+            check.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
+            check.setVisibility(checked ? View.VISIBLE : View.INVISIBLE);
+            check.setContentDescription(checked ? "انتخاب‌شده" : null);
+            row.addView(check, new LinearLayout.LayoutParams(dp(24), dp(24)));
+            row.setOnClickListener(v -> {
+                setAdhanSound(type, item.uri);
+                renderMuezzinList(type);
+                setResult(RESULT_OK);
+            });
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(54));
+            params.bottomMargin = dp(6);
+            activeMuezzinList.addView(row, params);
+        }
+    }
+
+    private void setAdhanSound(int type, String uri) {
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                AppSettings.setAdhanSoundUri(this, item, uri);
+            }
+        } else {
+            AppSettings.setAdhanSoundUri(this, type, uri);
+        }
+    }
+
+    private void uploadAdhanAudio(int type) {
+        activeAdhanType = type;
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("audio/*")
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        startActivityForResult(intent, REQ_ADHAN_AUDIO);
+    }
+
+    private GradientDrawable soundListBackground() {
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(AppSettings.surface(this));
+        background.setCornerRadius(dp(12));
+        background.setStroke(dp(1), AppSettings.field(this));
+        return background;
+    }
+
+    private GradientDrawable soundRowBackground(boolean checked) {
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(checked ? (AppSettings.primaryColor(this) & 0x00FFFFFF) | 0x18000000
+                : AppSettings.field(this));
+        background.setCornerRadius(dp(9));
+        if (checked) background.setStroke(dp(1), AppSettings.primaryColor(this));
+        return background;
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_ADHAN_AUDIO) {
+            if (resultCode != RESULT_OK || data == null || data.getData() == null
+                    || activeAdhanType == -1) return;
+            Uri uri = data.getData();
+            try {
+                getContentResolver().takePersistableUriPermission(
+                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } catch (Exception ignored) {}
+            SoundLibrary.add(this, uri);
+            setAdhanSound(activeAdhanType, uri.toString());
+            renderMuezzinList(activeAdhanType);
+            setResult(RESULT_OK);
+            return;
+        }
         if (requestCode == REQ_HORIZON) {
             if (resultCode == RESULT_OK && data != null
                     && data.getBooleanExtra("requestGps", false)) requestPreciseLocation();

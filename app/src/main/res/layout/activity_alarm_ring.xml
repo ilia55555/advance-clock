@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="امروز"
+        android:text="@string/ui_today"
         android:textSize="15sp" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="آلارم"
+        android:text="@string/ui_alarm_short"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="زمان زنگ هشدار رسیده است"
+        android:text="@string/ui_alarm_time_arrived"
         android:textSize="15sp" />
 
     <LinearLayout
@@ -67,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:text="یادآوری مجدد بعد از"
+        android:text="@string/ui_snooze_after"
         android:textSize="13sp" />
 
     <Spinner
@@ -84,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
-        android:text="یادآوری مجدد"
+        android:text="@string/ui_snooze"
         android:textAllCaps="false"
         android:textSize="17sp"
         android:textStyle="bold" />
@@ -94,7 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:layout_marginTop="10dp"
-        android:text="قطع آلارم"
+        android:text="@string/ui_stop_alarm"
         android:textAllCaps="false"
         android:textSize="20sp"
         android:textStyle="bold" />

@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
                 android:gravity="start"
-                android:text="اوقات شرعی"
+                android:text="@string/ui_prayer_times"
                 android:textColor="#F2F8FF"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -51,7 +51,7 @@
             android:layout_height="22dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/widget_prayer_chip"
-            android:contentDescription="مدیریت افق‌ها"
+            android:contentDescription="@string/ui_manage_horizons"
             android:gravity="center"
             android:text="⌖"
             android:textColor="#56D8FF"
@@ -62,7 +62,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:background="@drawable/widget_prayer_chip"
-            android:contentDescription="تنظیمات ویجت"
+            android:contentDescription="@string/ui_widget_settings"
             android:padding="4dp"
             android:src="@drawable/ic_prayer_widget_settings"
             android:tint="#A9C9E8" />
