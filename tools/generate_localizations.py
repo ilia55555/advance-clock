@@ -23,8 +23,8 @@ res = ROOT / "app" / "src" / "main" / "res"
 base = ET.parse(res / "values" / "strings.xml").getroot()
 expected_ids = {
     item.attrib["name"]
-    for item in base.findall("string")
-    if item.attrib.get("name", "").startswith("runtime_text_")
+    for item in base
+    if item.tag in {"string", "string-array"}
 }
 assert expected_ids, "The central runtime string catalog is empty"
 
@@ -34,9 +34,9 @@ for folder in FOLDERS.values():
     content = ET.parse(target).getroot()
     actual_ids = {
         item.attrib["name"]
-        for item in content.findall("string")
-        if item.attrib.get("name", "").startswith("runtime_text_")
+        for item in content
+        if item.tag in {"string", "string-array"}
     }
-    assert actual_ids == expected_ids, f"Runtime string IDs are incomplete in {target}"
+    assert actual_ids == expected_ids, f"String IDs are incomplete in {target}"
 
-print(f"Verified {len(FOLDERS)} central locale files with {len(expected_ids)} runtime string IDs each.")
+print(f"Verified {len(FOLDERS)} central locale files with {len(expected_ids)} string IDs each.")

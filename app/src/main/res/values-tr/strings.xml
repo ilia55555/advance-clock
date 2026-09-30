@@ -798,4 +798,50 @@ Kilit açık ekran</string>
     <string formatted="false" name="runtime_text_0704">Tam ekran
 Kilit ekranı</string>
     <string formatted="false" name="runtime_text_0705">Not kaydedildi؛ برای Alarm دقیق، مجوز Alarm را Etkin کنید.</string>
+    <string name="prayer_times_widget_description">نمایش اوقات شرعی همه افق‌های انتخاب‌شده</string>
+    <string name="ui_today">امروز</string>
+    <string name="ui_widget_settings">تنظیمات ویجت</string>
+    <string name="ui_configure_widget">تنظیم ویجت</string>
+    <string name="ui_alarm">هشدار</string>
+    <string name="ui_no_alarm_set">هشداری تنظیم نشده</string>
+    <string name="ui_image_preview">پیش‌نمایش تصویر</string>
+    <string name="ui_image">تصویر</string>
+    <string name="ui_open_fullscreen">نمایش تمام صفحه</string>
+    <string name="ui_video_preview">پیش‌نمایش ویدیو</string>
+    <string name="ui_media">رسانه</string>
+    <string name="ui_back_ten_seconds">−10 ث</string>
+    <string name="ui_forward_ten_seconds">+10 ث</string>
+    <string name="ui_play_pause">پخش یا مکث</string>
+    <string name="ui_note">یادداشت</string>
+    <string name="ui_no_note_display">یادداشتی برای نمایش نیست</string>
+    <string name="ui_prayer_times">اوقات شرعی</string>
+    <string name="ui_manage_horizons">مدیریت افق‌ها</string>
+    <string name="ui_no_horizon">افقی انتخاب نشده • برای افزودن لمس کنید</string>
+    <string name="ui_fajr">صبح</string>
+    <string name="ui_sunrise">طلوع</string>
+    <string name="ui_dhuhr">ظهر</string>
+    <string name="ui_asr">عصر</string>
+    <string name="ui_sunset">غروب</string>
+    <string name="ui_maghrib">مغرب</string>
+    <string name="ui_isha">عشاء</string>
+    <string name="ui_midnight">نیمه‌شب</string>
+    <string name="ui_file_reminders">یادآوری فایل‌ها</string>
+    <string name="ui_no_file_tap_add">فایلی انتخاب نشده است\nبرای افزودن لمس کنید</string>
+    <string name="ui_file">فایل</string>
+    <string name="ui_file_type">نوع فایل</string>
+    <string name="ui_preview">پیش‌نمایش</string>
+    <string name="ui_alarm_short">آلارم</string>
+    <string name="ui_normal">عادی</string>
+    <string name="ui_no_alarm">بدون آلارم</string>
+    <string name="ui_large_file_preview">پیش‌نمایش بزرگ فایل</string>
+    <string name="ui_open_playback">باز کردن کنترل پخش</string>
+    <string name="ui_prayer_time">وقت نیایش</string>
+    <string name="ui_adhan">اذان</string>
+    <string name="ui_adhan_key_help">پاور یا کاهش صدا: قطع صدا\nنگه‌داشتن کاهش صدا: کم‌کردن تدریجی\nافزایش صدا: وصل و افزایش صدا</string>
+    <string name="ui_mute_completely">قطع کامل صدا</string>
+    <string name="ui_end_adhan">پایان اذان</string>
+    <string name="ui_alarm_time_arrived">زمان زنگ هشدار رسیده است</string>
+    <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
+    <string name="ui_snooze">یادآوری مجدد</string>
+    <string name="ui_stop_alarm">قطع آلارم</string>
 </resources>

@@ -535,312 +535,313 @@ No reminder</string>
     <string formatted="false" name="layout_text_0020">+ App</string>
     <string formatted="false" name="layout_text_0021">Widget</string>
     <string formatted="false" name="layout_text_0022">Add world clock</string>
-    <string formatted="false" name="runtime_text_0418">afq</string>
+    <string formatted="false" name="runtime_text_0418">Horizon</string>
     <string formatted="false" name="runtime_text_0419">Reminder
 </string>
     <string formatted="false" name="runtime_text_0420">Priority </string>
     <string formatted="false" name="runtime_text_0421">Date
 </string>
-    <string formatted="false" name="runtime_text_0422">Clock
+    <string formatted="false" name="runtime_text_0422">Time
 </string>
-    <string formatted="false" name="runtime_text_0423">Alarm saved; dstrsy Alarm dqyq ra Enabled knyd.</string>
-    <string formatted="false" name="runtime_text_0424">\'ks 1 ✓</string>
-    <string formatted="false" name="runtime_text_0425">\'ks 2 ✓</string>
-    <string formatted="false" name="runtime_text_0426">vyjt ra az fhrst vyjt hay lanchr Addyd</string>
-    <string formatted="false" name="runtime_text_0427">drkhvast Add vyjt arsal shd; ps az Confirm lanchr, Settings hman vyjt baz my shvd.</string>
-    <string formatted="false" name="runtime_text_0428">lanchr drkhvast Add vyjt ra npdhyrft.</string>
+    <string formatted="false" name="runtime_text_0423">Alarm saved; enable exact alarm access.</string>
+    <string formatted="false" name="runtime_text_0424">Image 1 ✓</string>
+    <string formatted="false" name="runtime_text_0425">Image 2 ✓</string>
+    <string formatted="false" name="runtime_text_0426">Add the widget from the launcher’s widget list.</string>
+    <string formatted="false" name="runtime_text_0427">Widget pin request sent; its settings will open after launcher confirmation.</string>
+    <string formatted="false" name="runtime_text_0428">The launcher rejected the widget pin request.</string>
     <string formatted="false" name="runtime_text_0429">  •  Priority </string>
     <string formatted="false" name="runtime_text_0430">  •  Reminder </string>
     <string formatted="false" name="runtime_text_0431">  •  Vibration</string>
     <string formatted="false" name="runtime_text_0432">  •  Alarm</string>
     <string formatted="false" name="runtime_text_0433">  •  Drawing</string>
-    <string formatted="false" name="runtime_text_0434">sbh</string>
-    <string formatted="false" name="runtime_text_0435">zhr</string>
-    <string formatted="false" name="runtime_text_0436">mWest</string>
+    <string formatted="false" name="runtime_text_0434">Fajr</string>
+    <string formatted="false" name="runtime_text_0435">Dhuhr</string>
+    <string formatted="false" name="runtime_text_0436">Maghrib</string>
     <string formatted="false" name="runtime_text_0437">Lap %d     %s</string>
-    <string formatted="false" name="runtime_text_0438">hd nhayy byshtr az sfr vard knyd</string>
+    <string formatted="false" name="runtime_text_0438">Enter a limit greater than zero.</string>
     <string formatted="false" name="runtime_text_0439">✓ Notifications</string>
     <string formatted="false" name="runtime_text_0440">✕ Notifications</string>
-    <string formatted="false" name="runtime_text_0441">Add afq</string>
-    <string formatted="false" name="runtime_text_0442">grftn afq az GPS</string>
-    <string formatted="false" name="runtime_text_0443">ayran v mntqh zmany ha aflayn • jstjvy jhany © OpenStreetMap</string>
-    <string formatted="false" name="runtime_text_0444">bray jstjvy jhany yk hrf Deygr vard knyd</string>
-    <string formatted="false" name="runtime_text_0445">dr hal jstjvy lhzh ay…</string>
-    <string formatted="false" name="runtime_text_0446">dr hal jstjv dr ntayj Save shdh…</string>
-    <string formatted="false" name="runtime_text_0447"> ntyjh aflayn</string>
-    <string formatted="false" name="runtime_text_0448">ntyjh aflayn pyda nshd; bray mkan jDeyd ayntrnt lazm ast</string>
-    <string formatted="false" name="runtime_text_0449">mkany pyda nshd; \'bart ra tghyyr dhyd</string>
-    <string formatted="false" name="runtime_text_0450"> ntyjh Save shdh</string>
-    <string formatted="false" name="runtime_text_0451"> ntyjh</string>
-    <string formatted="false" name="runtime_text_0452">mntqh zmany ayn mkan hnvz aflayn Save nshdh; yk bar ba ayntrnt antkhabsh knyd</string>
-    <string formatted="false" name="runtime_text_0453">dr hal tshkhys mntqh zmany…</string>
-    <string formatted="false" name="runtime_text_0454">mntqh zmany ayn mkan tshkhys dadh nshd; dvbarh tlash knyd</string>
-    <string formatted="false" name="runtime_text_0455">afq azafh shd</string>
+    <string formatted="false" name="runtime_text_0441">Add horizon</string>
+    <string formatted="false" name="runtime_text_0442">Get horizon via GPS</string>
+    <string formatted="false" name="runtime_text_0443">Iran and time zones offline • Global search © OpenStreetMap</string>
+    <string formatted="false" name="runtime_text_0444">Enter one more character for global search.</string>
+    <string formatted="false" name="runtime_text_0445">Searching instantly…</string>
+    <string formatted="false" name="runtime_text_0446">Searching saved results…</string>
+    <string formatted="false" name="runtime_text_0447"> offline result</string>
+    <string formatted="false" name="runtime_text_0448">No offline result found; internet is required for a new location.</string>
+    <string formatted="false" name="runtime_text_0449">No location found; change your query.</string>
+    <string formatted="false" name="runtime_text_0450"> saved result</string>
+    <string formatted="false" name="runtime_text_0451"> result</string>
+    <string formatted="false" name="runtime_text_0452">This location’s time zone is not saved offline yet; select it once while online.</string>
+    <string formatted="false" name="runtime_text_0453">Detecting time zone…</string>
+    <string formatted="false" name="runtime_text_0454">Could not detect this location’s time zone; try again.</string>
+    <string formatted="false" name="runtime_text_0455">Horizon added.</string>
     <string formatted="false" name="runtime_text_0456">, </string>
-    <string formatted="false" name="runtime_text_0457">sh</string>
-    <string formatted="false" name="runtime_text_0458">kh</string>
-    <string formatted="false" name="runtime_text_0459">j</string>
-    <string formatted="false" name="runtime_text_0460">gh</string>
-    <string formatted="false" name="runtime_text_0461">Alarm sound • </string>
-    <string formatted="false" name="runtime_text_0462">ba Toolsy zyr trahy knyd; ntyjh fqt ba zdn «Save drawing» thbt my shvd.</string>
-    <string formatted="false" name="runtime_text_0463">hr Count File ya Image Addyd; bray baz krdn hr item rvy an bznyd.</string>
+    <string formatted="false" name="runtime_text_0457">N</string>
+    <string formatted="false" name="runtime_text_0458">E</string>
+    <string formatted="false" name="runtime_text_0459">S</string>
+    <string formatted="false" name="runtime_text_0460">W</string>
+    <string formatted="false" name="runtime_text_0461">Alert sound • </string>
+    <string formatted="false" name="runtime_text_0462">Use the tools below to draw; changes are saved only when you tap “Save drawing”.</string>
+    <string formatted="false" name="runtime_text_0463">Add any number of files or images; tap an item to open it.</string>
     <string formatted="false" name="runtime_text_0464">+ Add file or image</string>
-    <string formatted="false" name="runtime_text_0465">yk brnamh nsb shdh antkhab knyd ya nshany kaml sayt ra vard knyd.</string>
+    <string formatted="false" name="runtime_text_0465">Select an installed app or enter a complete website address.</string>
     <string formatted="false" name="runtime_text_0466">+ Add website</string>
     <string formatted="false" name="runtime_text_0467">Add file (</string>
-    <string formatted="false" name="runtime_text_0468">ap ya sayt (</string>
+    <string formatted="false" name="runtime_text_0468">App or website (</string>
     <string formatted="false" name="runtime_text_0469">Reminder before due time
 </string>
-    <string formatted="false" name="runtime_text_0470">Note saved; bray Alarm, dstrsy Alarm dqyq lazm ast.</string>
-    <string formatted="false" name="runtime_text_0471">andazh qlm </string>
-    <string formatted="false" name="runtime_text_0472">nmaysh rvydadhay Persian ayran</string>
-    <string formatted="false" name="runtime_text_0473">nmaysh rvydadhay Hijri kshvrhay \'rby</string>
-    <string formatted="false" name="runtime_text_0474">nmaysh rvydadhay Gregorian byn almlly</string>
-    <string formatted="false" name="runtime_text_0475">andazh hay dqyq gzarsh shdh tvst lanchr:</string>
-    <string formatted="false" name="runtime_text_0476"> khanh</string>
-    <string formatted="false" name="runtime_text_0477">andazh bravrdshdh az lanchr: </string>
+    <string formatted="false" name="runtime_text_0470">Note saved; exact alarm access is required for its alarm.</string>
+    <string formatted="false" name="runtime_text_0471">Pen size </string>
+    <string formatted="false" name="runtime_text_0472">Show Iranian Solar Hijri events</string>
+    <string formatted="false" name="runtime_text_0473">Show Hijri events for Arab countries</string>
+    <string formatted="false" name="runtime_text_0474">Show international Gregorian events</string>
+    <string formatted="false" name="runtime_text_0475">Exact sizes reported by launcher:</string>
+    <string formatted="false" name="runtime_text_0476"> cell</string>
+    <string formatted="false" name="runtime_text_0477">Estimated launcher size: </string>
     <string formatted="false" name="runtime_text_0478">
-tqryb shbkh: </string>
-    <string formatted="false" name="runtime_text_0479">Alarm dr </string>
-    <string formatted="false" name="runtime_text_0480">shmarsh m\'kvs ta Date v Clock Selected</string>
-    <string formatted="false" name="runtime_text_0481">shmarsh m\'kvs br asas Duration</string>
-    <string formatted="false" name="runtime_text_0482">hmh vyjt hay Advance az aynja qabl Add v mDeyryt hstnd. </string>
-    <string formatted="false" name="runtime_text_0483">bray hr nmvnh nsb shdh my tvanyd Individual settings dashth bashyd.</string>
-    <string formatted="false" name="runtime_text_0484">Clock v Alarms</string>
-    <string formatted="false" name="runtime_text_0485">Show clock, Date v Alarmsy pysh rv</string>
-    <string formatted="false" name="runtime_text_0486">nmaysh Notes v Remindersy NoForget</string>
-    <string formatted="false" name="runtime_text_0487">nmaysh hm zman sh mntqh zmany avl tb World Clock</string>
-    <string formatted="false" name="runtime_text_0488">Prayer times Horizons</string>
-    <string formatted="false" name="runtime_text_0489">nmaysh pnj vqt shr\'y bray hmh shhrha v Horizonsy Selected</string>
-    <string formatted="false" name="runtime_text_0490">dstrsy sry\' v Reminder \'ks, Audio, Video, Text, PDF v Filesy Deygr</string>
-    <string formatted="false" name="runtime_text_0491"> nsb shdh</string>
+Grid approximation: </string>
+    <string formatted="false" name="runtime_text_0479">Alarm at </string>
+    <string formatted="false" name="runtime_text_0480">Countdown to selected date and time</string>
+    <string formatted="false" name="runtime_text_0481">Countdown by duration</string>
+    <string formatted="false" name="runtime_text_0482">All Advance widgets can be added and managed here. </string>
+    <string formatted="false" name="runtime_text_0483">Each installed instance can have separate settings.</string>
+    <string formatted="false" name="runtime_text_0484">Clock and alarms</string>
+    <string formatted="false" name="runtime_text_0485">Show clock, date, and upcoming alarms</string>
+    <string formatted="false" name="runtime_text_0486">Show NoForget notes and reminders</string>
+    <string formatted="false" name="runtime_text_0487">Show the first three world-clock zones simultaneously</string>
+    <string formatted="false" name="runtime_text_0488">Prayer-time horizons</string>
+    <string formatted="false" name="runtime_text_0489">Show five prayer times for every selected city and horizon</string>
+    <string formatted="false" name="runtime_text_0490">Quick access and reminders for photos, audio, video, text, PDFs, and other files</string>
+    <string formatted="false" name="runtime_text_0491"> installed</string>
     <string formatted="false" name="runtime_text_0492">Preview </string>
     <string formatted="false" name="runtime_text_0493">Edit </string>
-    <string formatted="false" name="runtime_text_0494">vyjt ra az fhrst vyjt hay lanchr Addyd.</string>
-    <string formatted="false" name="runtime_text_0495">lanchr shma Add mstqym vyjt ra pshtybany nmy knd; </string>
-    <string formatted="false" name="runtime_text_0496">az fhrst vyjt hay sfhh asly astfadh knyd.</string>
-    <string formatted="false" name="runtime_text_0497">drkhvast Add vyjt bh lanchr arsal shd.</string>
-    <string formatted="false" name="runtime_text_0498">pkn • chyn • asya</string>
-    <string formatted="false" name="runtime_text_0499">Beijing Peking pkn 北京 China chyn Asia/Shanghai</string>
-    <string formatted="false" name="runtime_text_0500">pkn</string>
-    <string formatted="false" name="runtime_text_0501">mnatq zmany dstgah bh svrt aflayn amadh and</string>
-    <string formatted="false" name="runtime_text_0502">jst vjvy anlayn anjam nshd; dvbarh tlash knyd</string>
-    <string formatted="false" name="runtime_text_0503"> ntyjh anlayn</string>
-    <string formatted="false" name="runtime_text_0504">mntqh zmany ayn shhr aflayn mshkhs nshd; yk bar ba ayntrnt antkhabsh knyd</string>
-    <string formatted="false" name="runtime_text_0505">mkhtsat ayn ntyjh dr dstrs nyst</string>
-    <string formatted="false" name="runtime_text_0506">tbDeyl zman mhly shma: </string>
-    <string formatted="false" name="runtime_text_0507">zman f\'ly dr mnatq Selected</string>
+    <string formatted="false" name="runtime_text_0494">Add the widget from the launcher’s widget list.</string>
+    <string formatted="false" name="runtime_text_0495">Your launcher does not support direct widget pinning; </string>
+    <string formatted="false" name="runtime_text_0496">use the Home screen widget list.</string>
+    <string formatted="false" name="runtime_text_0497">Widget pin request sent.</string>
+    <string formatted="false" name="runtime_text_0498">Beijing • China • Asia</string>
+    <string formatted="false" name="runtime_text_0499">Beijing Peking China Asia/Shanghai</string>
+    <string formatted="false" name="runtime_text_0500">Beijing</string>
+    <string formatted="false" name="runtime_text_0501">Device time zones are available offline.</string>
+    <string formatted="false" name="runtime_text_0502">Online search failed; try again.</string>
+    <string formatted="false" name="runtime_text_0503"> online result</string>
+    <string formatted="false" name="runtime_text_0504">This city’s time zone could not be resolved offline; select it once while online.</string>
+    <string formatted="false" name="runtime_text_0505">Coordinates are unavailable for this result.</string>
+    <string formatted="false" name="runtime_text_0506">Your local-time conversion: </string>
+    <string formatted="false" name="runtime_text_0507">Current time in selected zones</string>
     <string formatted="false" name="runtime_text_0508">EEE, d MMM yyyy</string>
     <string formatted="false" name="runtime_text_0509">Delete </string>
-    <string formatted="false" name="runtime_text_0510">Confirm Delete </string>
-    <string formatted="false" name="runtime_text_0511">bray Confirm Delete dvbarh bznyd</string>
-    <string formatted="false" name="runtime_text_0512">asya</string>
-    <string formatted="false" name="runtime_text_0513">arvpa</string>
-    <string formatted="false" name="runtime_text_0514">afryqa</string>
-    <string formatted="false" name="runtime_text_0515">amryka</string>
-    <string formatted="false" name="runtime_text_0516">astralya</string>
-    <string formatted="false" name="runtime_text_0517">aqyanvsyh</string>
-    <string formatted="false" name="runtime_text_0518">aqyanvs atls</string>
-    <string formatted="false" name="runtime_text_0519">aqyanvs hnd</string>
-    <string formatted="false" name="runtime_text_0520">Southgan</string>
-    <string formatted="false" name="runtime_text_0521">Regina rjayna Saskatchewan saskachvan</string>
-    <string formatted="false" name="runtime_text_0522">Tehran thran Iran ayran</string>
-    <string formatted="false" name="runtime_text_0523">Kuwait kvyt</string>
-    <string formatted="false" name="runtime_text_0524">Shanghai shanghay China chyn</string>
-    <string formatted="false" name="runtime_text_0525">File fshrdh</string>
-    <string formatted="false" name="runtime_text_0526">Settings File reminders</string>
-    <string formatted="false" name="runtime_text_0527">sakht File reminders</string>
-    <string formatted="false" name="runtime_text_0528">ta </string>
-    <string formatted="false" name="runtime_text_0529"> File trkyby qabl antkhab ast. \'ks, Audio, Video, Text, PDF v </string>
-    <string formatted="false" name="runtime_text_0530">sayr Files bh svrt khvdkar tshkhys dadh my shvnd. trtyb hmyn fhrst, </string>
-    <string formatted="false" name="runtime_text_0531">trtyb nmaysh dr vyjt ast.</string>
-    <string formatted="false" name="runtime_text_0532">＋ Add \'ks, Audio ya File</string>
-    <string formatted="false" name="runtime_text_0533">Clear hmh Files</string>
-    <string formatted="false" name="runtime_text_0534">100</string>
-    <string formatted="false" name="runtime_text_0535">85</string>
-    <string formatted="false" name="runtime_text_0536">70</string>
-    <string formatted="false" name="runtime_text_0537">nam vyjt v dLowh Settings</string>
-    <string formatted="false" name="runtime_text_0538">dstrsy mstqym bh Settings hmyn vyjt</string>
-    <string formatted="false" name="runtime_text_0539">thumbnail Image, frym Video ya kavr File Audioy</string>
-    <string formatted="false" name="runtime_text_0540">agr khamvsh bashd, Preview File Large v vazh nmaysh dadh my shvd.</string>
-    <string formatted="false" name="runtime_text_0541">File type v bray File Texty, khlash ay az Content</string>
-    <string formatted="false" name="runtime_text_0542">bray tghyyr andazh vyjt angshttan ra rvy vyjt nghdaryd v Lowy jabh ja knyd v rha knyd ta tghyyr sayz Enabled shvd</string>
-    <string formatted="false" name="runtime_text_0543">bazgrdany Settings Appearancey ayn vyjt</string>
-    <string formatted="false" name="runtime_text_0544">hdakthr </string>
-    <string formatted="false" name="runtime_text_0545"> File qabl antkhab ast.</string>
-    <string formatted="false" name="runtime_text_0546">hnvz Filey antkhab nshdh ast.</string>
-    <string formatted="false" name="runtime_text_0547">↑ bala</string>
-    <string formatted="false" name="runtime_text_0548">↓ payyn</string>
-    <string formatted="false" name="runtime_text_0549"> az </string>
-    <string formatted="false" name="runtime_text_0550"> item antkhab shdh</string>
-    <string formatted="false" name="runtime_text_0551">fshrdh</string>
-    <string formatted="false" name="runtime_text_0552">sh Saturday</string>
-    <string formatted="false" name="runtime_text_0553">hr </string>
-    <string formatted="false" name="runtime_text_0554"> rvz</string>
-    <string formatted="false" name="runtime_text_0555"> Date antkhab shdh</string>
-    <string formatted="false" name="runtime_text_0556">da\'m; rvzhay antkhaby Every week</string>
-    <string formatted="false" name="runtime_text_0557">rvzhay antkhaby hr </string>
-    <string formatted="false" name="runtime_text_0558"> hfth</string>
-    <string formatted="false" name="runtime_text_0559">Color hay amadh</string>
-    <string formatted="false" name="runtime_text_0560">palt kshydny</string>
-    <string formatted="false" name="runtime_text_0561">nmvnh Color qlm</string>
-    <string formatted="false" name="runtime_text_0562">Color palette qlm</string>
-    <string formatted="false" name="runtime_text_0563">antkhab Color</string>
+    <string formatted="false" name="runtime_text_0510">Confirm deletion of </string>
+    <string formatted="false" name="runtime_text_0511">Tap again to confirm deletion.</string>
+    <string formatted="false" name="runtime_text_0512">Asia</string>
+    <string formatted="false" name="runtime_text_0513">Europe</string>
+    <string formatted="false" name="runtime_text_0514">Africa</string>
+    <string formatted="false" name="runtime_text_0515">Americas</string>
+    <string formatted="false" name="runtime_text_0516">Australia</string>
+    <string formatted="false" name="runtime_text_0517">Oceania</string>
+    <string formatted="false" name="runtime_text_0518">Atlantic Ocean</string>
+    <string formatted="false" name="runtime_text_0519">Indian Ocean</string>
+    <string formatted="false" name="runtime_text_0520">Antarctica</string>
+    <string formatted="false" name="runtime_text_0521">Regina, Saskatchewan</string>
+    <string formatted="false" name="runtime_text_0522">Tehran, Iran</string>
+    <string formatted="false" name="runtime_text_0523">Kuwait</string>
+    <string formatted="false" name="runtime_text_0524">Shanghai, China</string>
+    <string formatted="false" name="runtime_text_0525">Archive</string>
+    <string formatted="false" name="runtime_text_0526">File reminder settings</string>
+    <string formatted="false" name="runtime_text_0527">Create file reminder</string>
+    <string formatted="false" name="runtime_text_0528">up to </string>
+    <string formatted="false" name="runtime_text_0529"> mixed files can be selected: photos, audio, video, text, PDFs, and </string>
+    <string formatted="false" name="runtime_text_0530">Other files are detected automatically. The order of this list </string>
+    <string formatted="false" name="runtime_text_0531">is the widget display order.</string>
+    <string formatted="false" name="runtime_text_0532">＋ Add photo, audio, or file</string>
+    <string formatted="false" name="runtime_text_0533">Clear all files</string>
+    <string formatted="false" name="runtime_text_0534">100%</string>
+    <string formatted="false" name="runtime_text_0535">85%</string>
+    <string formatted="false" name="runtime_text_0536">70%</string>
+    <string formatted="false" name="runtime_text_0537">Widget name and settings button</string>
+    <string formatted="false" name="runtime_text_0538">Direct access to this widget’s settings</string>
+    <string formatted="false" name="runtime_text_0539">Image thumbnail, video frame, or audio cover</string>
+    <string formatted="false" name="runtime_text_0540">When disabled, a large clear file preview is shown.</string>
+    <string formatted="false" name="runtime_text_0541">File type and, for text files, a content summary</string>
+    <string formatted="false" name="runtime_text_0542">To resize the widget, touch and hold it, move it slightly, then release it.</string>
+    <string formatted="false" name="runtime_text_0543">Reset this widget’s appearance settings</string>
+    <string formatted="false" name="runtime_text_0544">Maximum </string>
+    <string formatted="false" name="runtime_text_0545"> files can be selected.</string>
+    <string formatted="false" name="runtime_text_0546">No file selected yet.</string>
+    <string formatted="false" name="runtime_text_0547">↑ Up</string>
+    <string formatted="false" name="runtime_text_0548">↓ Down</string>
+    <string formatted="false" name="runtime_text_0549"> of </string>
+    <string formatted="false" name="runtime_text_0550"> selected</string>
+    <string formatted="false" name="runtime_text_0551">Compact</string>
+    <string formatted="false" name="runtime_text_0552">Tuesday</string>
+    <string formatted="false" name="runtime_text_0553">Every </string>
+    <string formatted="false" name="runtime_text_0554"> days</string>
+    <string formatted="false" name="runtime_text_0555"> selected date</string>
+    <string formatted="false" name="runtime_text_0556">Permanent; selected weekdays every week</string>
+    <string formatted="false" name="runtime_text_0557">Selected days every </string>
+    <string formatted="false" name="runtime_text_0558"> weeks</string>
+    <string formatted="false" name="runtime_text_0559">Preset colors</string>
+    <string formatted="false" name="runtime_text_0560">Draggable palette</string>
+    <string formatted="false" name="runtime_text_0561">Pen color preview</string>
+    <string formatted="false" name="runtime_text_0562">Pen color palette</string>
+    <string formatted="false" name="runtime_text_0563">Choose color</string>
     <string formatted="false" name="runtime_text_0564">Reminder </string>
-    <string formatted="false" name="runtime_text_0565">pysh frz</string>
-    <string formatted="false" name="runtime_text_0566">antkhab </string>
-    <string formatted="false" name="runtime_text_0567">  as the default horizon</string>
-    <string formatted="false" name="runtime_text_0568"></string>
+    <string formatted="false" name="runtime_text_0565">Default</string>
+    <string formatted="false" name="runtime_text_0566">Select </string>
+    <string formatted="false" name="runtime_text_0567"> as default horizon</string>
+    <string formatted="false" name="runtime_text_0568">%</string>
     <string formatted="false" name="runtime_text_0569">Settings </string>
-    <string formatted="false" name="runtime_text_0570">mjvz mvq\'yt dadh nshd; shhr ya rvsta ra jstjv knyd.</string>
-    <string formatted="false" name="runtime_text_0571">dryaft mvq\'yt bysh az hd tvl kshyd; dvbarh tlash knyd.</string>
-    <string formatted="false" name="runtime_text_0572">\'rz %.5f°  •  tvl %.5f°</string>
-    <string formatted="false" name="runtime_text_0573">zman Timer bh payan rsyd</string>
-    <string formatted="false" name="runtime_text_0574">zman Alarm rsydh ast</string>
-    <string formatted="false" name="runtime_text_0575">5 minute</string>
-    <string formatted="false" name="runtime_text_0576">15 minute</string>
-    <string formatted="false" name="runtime_text_0577">30 minute</string>
-    <string formatted="false" name="runtime_text_0578">1 Clock</string>
-    <string formatted="false" name="runtime_text_0579">2 Clock</string>
-    <string formatted="false" name="runtime_text_0580">3 Clock</string>
-    <string formatted="false" name="runtime_text_0581">6 Clock</string>
-    <string formatted="false" name="runtime_text_0582">12 Clock</string>
-    <string formatted="false" name="runtime_text_0583">24 Clock</string>
-    <string formatted="false" name="runtime_text_0584">zman Timer bh payan rsydh ast</string>
-    <string formatted="false" name="runtime_text_0585">Stopwatch reached its limith ast</string>
-    <string formatted="false" name="runtime_text_0586">Alarm time Alarm rsydh ast</string>
-    <string formatted="false" name="runtime_text_0587">bray Reminder mjdd, dstrsy Alarm dqyq lazm ast.</string>
-    <string formatted="false" name="runtime_text_0588">tghyyr \'ks 1 ✓</string>
-    <string formatted="false" name="runtime_text_0589">tghyyr \'ks 2 ✓</string>
-    <string formatted="false" name="runtime_text_0590">Show date Persian</string>
-    <string formatted="false" name="runtime_text_0591">Show date Hijri</string>
-    <string formatted="false" name="runtime_text_0592">Show date Gregorian</string>
-    <string formatted="false" name="runtime_text_0593">Widget settings Prayer times</string>
+    <string formatted="false" name="runtime_text_0570">Location permission denied; search for a city or village.</string>
+    <string formatted="false" name="runtime_text_0571">Getting location took too long; try again.</string>
+    <string formatted="false" name="runtime_text_0572">Latitude %.5f° • Longitude %.5f°</string>
+    <string formatted="false" name="runtime_text_0573">Timer finished</string>
+    <string formatted="false" name="runtime_text_0574">Alarm time has arrived</string>
+    <string formatted="false" name="runtime_text_0575">5 minutes</string>
+    <string formatted="false" name="runtime_text_0576">15 minutes</string>
+    <string formatted="false" name="runtime_text_0577">30 minutes</string>
+    <string formatted="false" name="runtime_text_0578">1 hour</string>
+    <string formatted="false" name="runtime_text_0579">2 hours</string>
+    <string formatted="false" name="runtime_text_0580">3 hours</string>
+    <string formatted="false" name="runtime_text_0581">6 hours</string>
+    <string formatted="false" name="runtime_text_0582">12 hours</string>
+    <string formatted="false" name="runtime_text_0583">24 hours</string>
+    <string formatted="false" name="runtime_text_0584">The timer has finished.</string>
+    <string formatted="false" name="runtime_text_0585">The stopwatch reached its limit.</string>
+    <string formatted="false" name="runtime_text_0586">It is time for the alarm.</string>
+    <string formatted="false" name="runtime_text_0587">Exact alarm access is required to snooze.</string>
+    <string formatted="false" name="runtime_text_0588">Change image 1 ✓</string>
+    <string formatted="false" name="runtime_text_0589">Change image 2 ✓</string>
+    <string formatted="false" name="runtime_text_0590">Show Persian date</string>
+    <string formatted="false" name="runtime_text_0591">Show Hijri date</string>
+    <string formatted="false" name="runtime_text_0592">Show Gregorian date</string>
+    <string formatted="false" name="runtime_text_0593">Prayer-times widget settings</string>
     <string formatted="false" name="runtime_text_0594">Prayer times
-afq thran
-sbh 04:51   Sunrise 06:18   zhr 12:03   Asr 15:24
-Sunset 18:02   mWest 18:20   Isha 19:48   Midnight 23:31</string>
-    <string formatted="false" name="runtime_text_0595">Appearance v Color</string>
-    <string formatted="false" name="runtime_text_0596">srmh ay shyshh ay</string>
-    <string formatted="false" name="runtime_text_0597">srmh ay shfaf</string>
-    <string formatted="false" name="runtime_text_0598">Black shyshh ay</string>
-    <string formatted="false" name="runtime_text_0599">Color Text asly</string>
-    <string formatted="false" name="runtime_text_0600">Color Text fr\'y</string>
-    <string formatted="false" name="runtime_text_0601">Color takyDey v afq f\'ly</string>
-    <string formatted="false" name="runtime_text_0602">Color vqt Enabled / Adhan b\'Dey</string>
-    <string formatted="false" name="runtime_text_0603">andazh nvshth ha</string>
-    <string formatted="false" name="runtime_text_0604">Show header «Prayer times»</string>
-    <string formatted="false" name="runtime_text_0605">tqvym hay hdr hr afq</string>
-    <string formatted="false" name="runtime_text_0606">nmaysh zman</string>
-    <string formatted="false" name="runtime_text_0607">Clock mhly afq</string>
-    <string formatted="false" name="runtime_text_0608">shmarsh m\'kvs ta Adhan b\'Dey</string>
-    <string formatted="false" name="runtime_text_0609">nmaysh aykvn hay avqat</string>
-    <string formatted="false" name="runtime_text_0610">avqat qabl nmaysh (hr 8 item bh svrt pysh frz Enabled and)</string>
-    <string formatted="false" name="runtime_text_0611">brjsth krdn afq asly</string>
-    <string formatted="false" name="runtime_text_0612">mDeyryt Horizons</string>
-    <string formatted="false" name="runtime_text_0613">bazgrdany Settings pysh frz vyjt</string>
-    <string formatted="false" name="runtime_text_0614">Save v a\'mal</string>
-    <string formatted="false" name="runtime_text_0615">White ykhy</string>
-    <string formatted="false" name="runtime_text_0616">Blue Light</string>
-    <string formatted="false" name="runtime_text_0617">nqrh ay</string>
-    <string formatted="false" name="runtime_text_0618">srmh ay</string>
-    <string formatted="false" name="runtime_text_0619">srmh ay Dark</string>
-    <string formatted="false" name="runtime_text_0620">mhrm</string>
-    <string formatted="false" name="runtime_text_0621">sfr</string>
-    <string formatted="false" name="runtime_text_0622">rby\' alavl</string>
-    <string formatted="false" name="runtime_text_0623">rby\' althany</string>
-    <string formatted="false" name="runtime_text_0624">jmaDey alavl</string>
-    <string formatted="false" name="runtime_text_0625">jmaDey althany</string>
-    <string formatted="false" name="runtime_text_0626">rjb</string>
-    <string formatted="false" name="runtime_text_0627">sh\'ban</string>
-    <string formatted="false" name="runtime_text_0628">rmzan</string>
-    <string formatted="false" name="runtime_text_0629">shval</string>
-    <string formatted="false" name="runtime_text_0630">dhy alq\'dh</string>
-    <string formatted="false" name="runtime_text_0631">dhy alhjh</string>
-    <string formatted="false" name="runtime_text_0632">Text Normal, brnamh kpy shdh ya JSON ra vard knyd. </string>
-    <string formatted="false" name="runtime_text_0633">Date ha v Clock ha khvdkar astkhraj my shvnd v qbl az Save </string>
-    <string formatted="false" name="runtime_text_0634">my tvanyd hr Alarm ra jdaganh Edit, Delete ya Alarm time an ra jabh ja knyd.</string>
-    <string formatted="false" name="runtime_text_0635">hr Texty ra aynja Paste knyd…
+Tehran horizon
+Fajr 04:51   Sunrise 06:18   Dhuhr 12:03   Asr 15:24
+Sunset 18:02   Maghrib 18:20   Isha 19:48   Midnight 23:31</string>
+    <string formatted="false" name="runtime_text_0595">Appearance and colors</string>
+    <string formatted="false" name="runtime_text_0596">Glass navy</string>
+    <string formatted="false" name="runtime_text_0597">Transparent navy</string>
+    <string formatted="false" name="runtime_text_0598">Glass black</string>
+    <string formatted="false" name="runtime_text_0599">Primary text color</string>
+    <string formatted="false" name="runtime_text_0600">Secondary text color</string>
+    <string formatted="false" name="runtime_text_0601">Accent color and current horizon</string>
+    <string formatted="false" name="runtime_text_0602">Active prayer / next adhan color</string>
+    <string formatted="false" name="runtime_text_0603">Text size</string>
+    <string formatted="false" name="runtime_text_0604">Show “Prayer times” header</string>
+    <string formatted="false" name="runtime_text_0605">Calendars in each horizon header</string>
+    <string formatted="false" name="runtime_text_0606">Show time</string>
+    <string formatted="false" name="runtime_text_0607">Horizon local time</string>
+    <string formatted="false" name="runtime_text_0608">Countdown to next prayer</string>
+    <string formatted="false" name="runtime_text_0609">Show prayer-time icons</string>
+    <string formatted="false" name="runtime_text_0610">Visible times (all 8 enabled by default)</string>
+    <string formatted="false" name="runtime_text_0611">Highlight primary horizon</string>
+    <string formatted="false" name="runtime_text_0612">Manage horizons</string>
+    <string formatted="false" name="runtime_text_0613">Reset widget defaults</string>
+    <string formatted="false" name="runtime_text_0614">Save and apply</string>
+    <string formatted="false" name="runtime_text_0615">Ice white</string>
+    <string formatted="false" name="runtime_text_0616">Light blue</string>
+    <string formatted="false" name="runtime_text_0617">Silver</string>
+    <string formatted="false" name="runtime_text_0618">Navy</string>
+    <string formatted="false" name="runtime_text_0619">Dark navy</string>
+    <string formatted="false" name="runtime_text_0620">Muharram</string>
+    <string formatted="false" name="runtime_text_0621">Safar</string>
+    <string formatted="false" name="runtime_text_0622">Rabi al-Awwal</string>
+    <string formatted="false" name="runtime_text_0623">Rabi al-Thani</string>
+    <string formatted="false" name="runtime_text_0624">Jumada al-Awwal</string>
+    <string formatted="false" name="runtime_text_0625">Jumada al-Thani</string>
+    <string formatted="false" name="runtime_text_0626">Rajab</string>
+    <string formatted="false" name="runtime_text_0627">Sha’ban</string>
+    <string formatted="false" name="runtime_text_0628">Ramadan</string>
+    <string formatted="false" name="runtime_text_0629">Shawwal</string>
+    <string formatted="false" name="runtime_text_0630">Dhu al-Qadah</string>
+    <string formatted="false" name="runtime_text_0631">Dhu al-Hijjah</string>
+    <string formatted="false" name="runtime_text_0632">Enter normal text, a copied schedule, or JSON. </string>
+    <string formatted="false" name="runtime_text_0633">Dates and times are extracted automatically; before saving, </string>
+    <string formatted="false" name="runtime_text_0634">you can edit, delete, or move each alarm time separately.</string>
+    <string formatted="false" name="runtime_text_0635">Paste any text here…
 
 </string>
-    <string formatted="false" name="runtime_text_0636">mthal:
+    <string formatted="false" name="runtime_text_0636">Example:
 </string>
-    <string formatted="false" name="runtime_text_0637">1405/07/04 Clock 13:00 ta 15:00 khamvshy ahThemealy
+    <string formatted="false" name="runtime_text_0637">1405/07/04 13:00 to 15:00 Possible outage
 </string>
-    <string formatted="false" name="runtime_text_0638">1405/07/05 Clock 15:00 jlsh
+    <string formatted="false" name="runtime_text_0638">1405/07/05 15:00 Meeting
 
 </string>
-    <string formatted="false" name="runtime_text_0639">ya JSON shaml date / time / start / title</string>
-    <string formatted="false" name="runtime_text_0640">sadh sazy: fqt Date v Clock</string>
-    <string formatted="false" name="runtime_text_0641">hr kht yk Date v nzDeyk tryn Clock hay an ast; Text ra antkhab, jabh ja ya </string>
-    <string formatted="false" name="runtime_text_0642">Edit knyd v sps thlyl ra bznyd.</string>
-    <string formatted="false" name="runtime_text_0643">Date v Clock qabl sadh sazy pyda nshd</string>
-    <string formatted="false" name="runtime_text_0644">Text sadh shdh; bray sakht Alarm thlyl ra bznyd</string>
-    <string formatted="false" name="runtime_text_0645">ayn tnzym ra my tvanyd rvy hmh mvard a\'mal knyd; </string>
-    <string formatted="false" name="runtime_text_0646">b\'da hr Alarm ra jdaganh hm my tvan tghyyr dad.</string>
-    <string formatted="false" name="runtime_text_0647"> minute</string>
-    <string formatted="false" name="runtime_text_0648">a\'mal ayn zman bnDey rvy hmh Alarmsy shnasayy shdh</string>
-    <string formatted="false" name="runtime_text_0649">zman asly astkhraj shdh v zman vaq\'y zng hr item ra qbl az Save brrsy knyd.</string>
-    <string formatted="false" name="runtime_text_0650">Text qabl astfadh ay dr klyp bvrd nyst</string>
-    <string formatted="false" name="runtime_text_0651">Auto-detect: JSON</string>
-    <string formatted="false" name="runtime_text_0652">Auto-detect: Text \'aDey</string>
-    <string formatted="false" name="runtime_text_0653"> alarm detected</string>
+    <string formatted="false" name="runtime_text_0639">or JSON containing date / time / start / title</string>
+    <string formatted="false" name="runtime_text_0640">Simplify: date and time only</string>
+    <string formatted="false" name="runtime_text_0641">Each line is one date with its nearest times; select or move the text, then </string>
+    <string formatted="false" name="runtime_text_0642">edit it and tap Analyze.</string>
+    <string formatted="false" name="runtime_text_0643">No date and time could be simplified.</string>
+    <string formatted="false" name="runtime_text_0644">Simplified text; tap Analyze to create alarms.</string>
+    <string formatted="false" name="runtime_text_0645">You can apply this timing to all items; </string>
+    <string formatted="false" name="runtime_text_0646">each alarm can still be changed separately later.</string>
+    <string formatted="false" name="runtime_text_0647"> minutes</string>
+    <string formatted="false" name="runtime_text_0648">Apply this schedule to all detected alarms</string>
+    <string formatted="false" name="runtime_text_0649">Review the extracted time and actual alarm time before saving.</string>
+    <string formatted="false" name="runtime_text_0650">No usable text in the clipboard.</string>
+    <string formatted="false" name="runtime_text_0651">Auto-detected: JSON</string>
+    <string formatted="false" name="runtime_text_0652">Auto-detected: plain text</string>
+    <string formatted="false" name="runtime_text_0653"> alarms detected</string>
     <string formatted="false" name="runtime_text_0654">Alarm preview • </string>
-    <string formatted="false" name="runtime_text_0655"> item</string>
-    <string formatted="false" name="runtime_text_0656">  •  zman Text: </string>
-    <string formatted="false" name="runtime_text_0657"> ta </string>
+    <string formatted="false" name="runtime_text_0655"> items</string>
+    <string formatted="false" name="runtime_text_0656">  •  Text time: </string>
+    <string formatted="false" name="runtime_text_0657"> to </string>
     <string formatted="false" name="runtime_text_0658">
-zng: </string>
+Alarm: </string>
     <string formatted="false" name="runtime_text_0659">
-⚠ Alarm time dr gdhshth ast v Save nmy shvd.</string>
-    <string formatted="false" name="runtime_text_0660">kpy</string>
-    <string formatted="false" name="runtime_text_0661"> Alarm saved</string>
-    <string formatted="false" name="runtime_text_0662"> item gdhshth rd shd</string>
-    <string formatted="false" name="runtime_text_0663"> item tkrary Save nshd</string>
-    <string formatted="false" name="runtime_text_0664"> item zman bnDey nshd v Save nshd</string>
+⚠ Alarm time is in the past and will not be saved.</string>
+    <string formatted="false" name="runtime_text_0660">Copy</string>
+    <string formatted="false" name="runtime_text_0661"> alarms saved</string>
+    <string formatted="false" name="runtime_text_0662"> past items skipped</string>
+    <string formatted="false" name="runtime_text_0663"> duplicate items not saved</string>
+    <string formatted="false" name="runtime_text_0664"> unscheduled items not saved</string>
     <string formatted="false" name="runtime_text_0665">
-bray ajray dqyq, dstrsy Alarm dqyq ra Enabled knyd.</string>
-    <string formatted="false" name="runtime_text_0666">Date rvz</string>
-    <string formatted="false" name="runtime_text_0667">nmaysh da\'my Date rvz dr nvar vz\'yt</string>
-    <string formatted="false" name="runtime_text_0668">antkhab mah v sal</string>
-    <string formatted="false" name="runtime_text_0669">pkhsh Media vyjt Files</string>
-    <string formatted="false" name="runtime_text_0670">kntrl pkhsh Audio v Video az vyjt File reminders</string>
-    <string formatted="false" name="runtime_text_0671"> Reminder</string>
-    <string formatted="false" name="runtime_text_0672">shnash vyjt m\'tbr nyst</string>
-    <string formatted="false" name="runtime_text_0673">zrshky</string>
-    <string formatted="false" name="runtime_text_0674">Color nam shhr v Date</string>
-    <string formatted="false" name="runtime_text_0675">Color Clock</string>
-    <string formatted="false" name="runtime_text_0676">White (pysh frz)</string>
-    <string formatted="false" name="runtime_text_0677">qhvh ay</string>
-    <string formatted="false" name="runtime_text_0678">da\'m; Every week dr rvzhay Selected</string>
-    <string formatted="false" name="runtime_text_0679">ba dLowh hay bala v payyn, jay hr tb ra tghyyr dhyd.</string>
-    <string formatted="false" name="runtime_text_0680">rhym m\'dhn zadh ardbyly</string>
-    <string formatted="false" name="runtime_text_0681">mhmd aqaty</string>
-    <string formatted="false" name="runtime_text_0682">Adhan brnamh</string>
-    <string formatted="false" name="runtime_text_0683">zng brnamh</string>
-    <string formatted="false" name="runtime_text_0684">sda</string>
-    <string formatted="false" name="runtime_text_0685">sday antkhaby</string>
-    <string formatted="false" name="runtime_text_0686">sday karbr</string>
+Enable exact alarm access for precise execution.</string>
+    <string formatted="false" name="runtime_text_0666">Today’s date</string>
+    <string formatted="false" name="runtime_text_0667">Always show today’s date in the status bar</string>
+    <string formatted="false" name="runtime_text_0668">Choose month and year</string>
+    <string formatted="false" name="runtime_text_0669">File-widget media playback</string>
+    <string formatted="false" name="runtime_text_0670">Control audio and video from the file-reminder widget</string>
+    <string formatted="false" name="runtime_text_0671"> reminder</string>
+    <string formatted="false" name="runtime_text_0672">Invalid widget ID</string>
+    <string formatted="false" name="runtime_text_0673">Burgundy</string>
+    <string formatted="false" name="runtime_text_0674">City name and date color</string>
+    <string formatted="false" name="runtime_text_0675">Clock color</string>
+    <string formatted="false" name="runtime_text_0676">White (default)</string>
+    <string formatted="false" name="runtime_text_0677">Brown</string>
+    <string formatted="false" name="runtime_text_0678">Permanent; every week on selected days</string>
+    <string formatted="false" name="runtime_text_0679">Use the up and down buttons to reorder tabs.</string>
+    <string formatted="false" name="runtime_text_0680">Rahim Moazzenzadeh Ardabili</string>
+    <string formatted="false" name="runtime_text_0681">Mohammad Aghati</string>
+    <string formatted="false" name="runtime_text_0682">App adhan</string>
+    <string formatted="false" name="runtime_text_0683">App alarm</string>
+    <string formatted="false" name="runtime_text_0684">Sound</string>
+    <string formatted="false" name="runtime_text_0685">Selected sound</string>
+    <string formatted="false" name="runtime_text_0686">User sound</string>
     <string formatted="false" name="runtime_text_0687">Default alarm sound • </string>
-    <string formatted="false" name="runtime_text_0688">−10 th</string>
-    <string formatted="false" name="runtime_text_0689">+10 th</string>
-    <string formatted="false" name="runtime_text_0690">Clock, Date v dLowh hay balay vyjt</string>
-    <string formatted="false" name="runtime_text_0691">nmaysh zman jary dr hdr vyjt</string>
-    <string formatted="false" name="runtime_text_0692">second ra hm dr zman vyjt nmaysh my dhd</string>
-    <string formatted="false" name="runtime_text_0693">Date tqvym pysh frz dr hdr</string>
-    <string formatted="false" name="runtime_text_0694">nmaysh dLowh +</string>
-    <string formatted="false" name="runtime_text_0695">sakht sry\' Alarm ya Note az khvd vyjt</string>
-    <string formatted="false" name="runtime_text_0696">baz krdn Settings hmyn nmvnh vyjt</string>
-    <string formatted="false" name="runtime_text_0697">Title «Alarm» ya «Note» balay fhrst</string>
-    <string formatted="false" name="runtime_text_0698">brchsb sth Priority hr item</string>
-    <string formatted="false" name="runtime_text_0699">Date/zman Alarm ya atla\'at Note</string>
-    <string formatted="false" name="runtime_text_0700">bazgrdany Settings ayn vyjt</string>
+    <string formatted="false" name="runtime_text_0688">−10 sec</string>
+    <string formatted="false" name="runtime_text_0689">+10 sec</string>
+    <string formatted="false" name="runtime_text_0690">Clock, date, and top widget controls</string>
+    <string formatted="false" name="runtime_text_0691">Show current time in widget header</string>
+    <string formatted="false" name="runtime_text_0692">Show seconds in widget time</string>
+    <string formatted="false" name="runtime_text_0693">Default-calendar date in header</string>
+    <string formatted="false" name="runtime_text_0694">Show + button</string>
+    <string formatted="false" name="runtime_text_0695">Create a quick alarm or note from the widget</string>
+    <string formatted="false" name="runtime_text_0696">Open settings for this widget instance</string>
+    <string formatted="false" name="runtime_text_0697">“Alarm” or “Note” heading above the list</string>
+    <string formatted="false" name="runtime_text_0698">Priority label for each item</string>
+    <string formatted="false" name="runtime_text_0699">Alarm date/time or note information</string>
+    <string formatted="false" name="runtime_text_0700">Reset this widget’s settings</string>
     <string formatted="false" name="runtime_text_0701">Reminder before due time
 No reminder</string>
-    <string formatted="false" name="runtime_text_0702">Alarm sound • System default</string>
+    <string formatted="false" name="runtime_text_0702">Alert sound • System default</string>
     <string formatted="false" name="runtime_text_0703">Full screen
-Unlocked screen</string>
+Unlocked</string>
     <string formatted="false" name="runtime_text_0704">Full screen
 Lock screen</string>
-    <string formatted="false" name="runtime_text_0705">Note saved; bray Alarm dqyq, mjvz Alarm ra Enabled knyd.</string>
+    <string formatted="false" name="runtime_text_0705">Note saved; enable exact alarm access.</string>
+    <string name="prayer_times_widget_description">Show prayer times for all selected horizons</string>
 </resources>
