@@ -156,7 +156,7 @@ public final class TripleCalendarView extends View {
 
         // Swapped to match the direction of finger swipes requested by the user.
         centered(c, "‹", 65, 65, 26, WHITE, medium);
-        centered(c, "ماه قبل", 108, 65, 16, WHITE, medium);
+        centered(c, UiText.tr(getContext(), "ماه قبل"), 108, 65, 16, WHITE, medium);
         chevron(c, 228, 63);
 
         centered(c,
@@ -165,7 +165,7 @@ public final class TripleCalendarView extends View {
                 338, 65, 23, WHITE, bold);
 
         chevron(c, 447, 63);
-        centered(c, "ماه بعد", 579, 65, 16, WHITE, medium);
+        centered(c, UiText.tr(getContext(), "ماه بعد"), 579, 65, 16, WHITE, medium);
         centered(c, "›", 614, 65, 26, WHITE, medium);
     }
 
@@ -180,7 +180,7 @@ public final class TripleCalendarView extends View {
         String[] weekdays = calendarType == CalendarUtils.GREGORIAN
                 ? WEEKDAYS_GREGORIAN : WEEKDAYS_IRAN_HIJRI;
         for (int col = 0; col < 7; col++) {
-            centered(c, weekdays[col], COL_CENTER[col], 129, 15,
+            centered(c, UiText.tr(getContext(), weekdays[col]), COL_CENTER[col], 129, 15,
                     col == 6 ? holidayRed() : primary(), bold);
         }
     }

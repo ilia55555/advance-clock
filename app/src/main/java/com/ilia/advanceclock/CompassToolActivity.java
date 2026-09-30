@@ -55,7 +55,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        TextView title = text("ابزار قطب‌نما", 23, AppSettings.textPrimary(this));
+        TextView title = text(UiText.tr(this, "ابزار قطب‌نما"), 23, AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         header.addView(title, new LinearLayout.LayoutParams(0, dp(58), 1f));
         ImageButton close = new ImageButton(this);
@@ -63,7 +63,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         close.setColorFilter(AppSettings.textPrimary(this));
         close.setBackgroundColor(Color.TRANSPARENT);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(UiText.tr(this, "بستن"));
         close.setOnClickListener(v -> finish());
         header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(header);
@@ -72,10 +72,12 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         selectorCard.setOrientation(LinearLayout.VERTICAL);
         selectorCard.setPadding(dp(14), dp(12), dp(14), dp(14));
         selectorCard.setBackgroundResource(R.drawable.bg_card);
-        TextView selectorLabel = text("نمایش روی صفحه", 13, AppSettings.textSecondary(this));
+        TextView selectorLabel = text(
+                UiText.tr(this, "نمایش روی صفحه"), 13, AppSettings.textSecondary(this));
         selectorCard.addView(selectorLabel);
         Spinner selector = new Spinner(this);
-        String[] modes = {"قطب‌نمای کلاسیک", "قبله‌نما", "هشت جهت اصلی"};
+        String[] modes = UiText.translateArray(
+                "قطب‌نمای کلاسیک", "قبله‌نما", "هشت جهت اصلی");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_dropdown_item, modes);
         selector.setAdapter(adapter);
@@ -98,7 +100,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         compassCard.setBackground(antiqueCardBackground());
         compassView = new CompassView();
         compassCard.addView(compassView, new LinearLayout.LayoutParams(-1, 0, 1f));
-        status = text("در حال دریافت جهت از حسگر…", 13, 0xFF5D4028);
+        status = text(UiText.tr(this, "در حال دریافت جهت از حسگر…"), 13, 0xFF5D4028);
         status.setGravity(Gravity.CENTER);
         status.setPadding(dp(8), dp(6), dp(8), 0);
         compassCard.addView(status, new LinearLayout.LayoutParams(-1, dp(46)));
@@ -129,7 +131,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         if (sensorManager != null && rotationSensor != null) {
             sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_UI);
         } else if (status != null) {
-            status.setText("حسگر جهت‌یابی در این دستگاه در دسترس نیست.");
+            status.setText(UiText.tr(this,
+                    "حسگر جهت‌یابی در این دستگاه در دسترس نیست."));
         }
     }
 
@@ -171,16 +174,18 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         float heading = compassView.azimuth;
         if (selectedMode == MODE_QIBLA) {
             if (!AppSettings.prayerLocationSet(this)) {
-                status.setText("برای قبله‌نما ابتدا موقعیت را در تنظیمات اوقات شرعی ثبت کنید.");
+                status.setText(UiText.tr(this,
+                        "برای قبله‌نما ابتدا موقعیت را در تنظیمات اوقات شرعی ثبت کنید."));
             } else {
                 status.setText(String.format(Locale.getDefault(),
-                        "جهت قبله %.0f°  •  انحراف فعلی %.0f°",
+                        UiText.tr(this, "جهت قبله %.0f°  •  انحراف فعلی %.0f°"),
                         qiblaBearing(), signedAngle((float) qiblaBearing() - heading)));
             }
         } else if (selectedMode == MODE_DIRECTIONS) {
             status.setText(directionName(heading) + "  •  " + Math.round(heading) + "°");
         } else {
-            status.setText("زاویه نسبت به شمال  " + Math.round(heading) + "°");
+            status.setText(UiText.tr(this, "زاویه نسبت به شمال  ")
+                    + Math.round(heading) + "°");
         }
     }
 
@@ -203,7 +208,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     private String directionName(float angle) {
         String[] names = {"شمال", "شمال‌شرق", "شرق", "جنوب‌شرق",
                 "جنوب", "جنوب‌غرب", "غرب", "شمال‌غرب"};
-        return names[Math.round(angle / 45f) % 8];
+        return UiText.tr(this, names[Math.round(angle / 45f) % 8]);
     }
 
     private GradientDrawable antiqueCardBackground() {
@@ -241,7 +246,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         CompassView() {
             super(CompassToolActivity.this);
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            setContentDescription("قطب‌نما");
+            setContentDescription(UiText.tr(CompassToolActivity.this, "قطب‌نما"));
         }
 
         void setAzimuth(float value) {
@@ -282,7 +287,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                         cx + (float) Math.cos(radians) * (radius - dp(7)),
                         cy + (float) Math.sin(radians) * (radius - dp(7)), paint);
             }
-            String[] labels = {"ش", "ش‌خ", "خ", "ج‌خ", "ج", "ج‌غ", "غ", "ش‌غ"};
+            String[] labels = UiText.translateArray(
+                    "ش", "ش‌خ", "خ", "ج‌خ", "ج", "ج‌غ", "غ", "ش‌غ");
             paint.setStyle(Paint.Style.FILL);
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTypeface(Typeface.create(Typeface.SERIF, Typeface.BOLD));

@@ -13,6 +13,7 @@ import java.util.WeakHashMap;
 
 public final class AdvanceClockApplication extends Application {
     private static final WeakHashMap<Activity, Boolean> OPEN_ACTIVITIES = new WeakHashMap<>();
+    private static boolean refreshScheduled;
 
     @Override public void onCreate() {
         super.onCreate();
@@ -51,6 +52,10 @@ public final class AdvanceClockApplication extends Application {
      * visible immediately instead of waiting for the app to be reopened.
      */
     static void refreshOpenActivities(Activity source, boolean includeSource) {
+        synchronized (OPEN_ACTIVITIES) {
+            if (refreshScheduled) return;
+            refreshScheduled = true;
+        }
         new Handler(Looper.getMainLooper()).post(() -> {
             ArrayList<Activity> snapshot;
             synchronized (OPEN_ACTIVITIES) {
@@ -60,12 +65,15 @@ public final class AdvanceClockApplication extends Application {
             for (Activity activity : snapshot) {
                 if (activity == null || activity == source || activity.isFinishing()
                         || activity.isDestroyed()) continue;
+                AppSettings.applyLanguage(activity);
                 activity.recreate();
             }
             if (includeSource && source != null
                     && !source.isFinishing() && !source.isDestroyed()) {
+                AppSettings.applyLanguage(source);
                 source.recreate();
             }
+            synchronized (OPEN_ACTIVITIES) { refreshScheduled = false; }
         });
     }
 
