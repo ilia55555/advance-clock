@@ -43,7 +43,7 @@ public final class CalendarPickerDialog {
         root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         TextView title = new TextView(context);
-        title.setText(monthYearOnly ? "انتخاب ماه و سال" : "انتخاب تاریخ");
+        title.setText(monthYearOnly ? AppString.get(R.string.runtime_text_0668) : AppString.get(R.string.runtime_text_0169));
         title.setTextSize(20);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setTextColor(AppSettings.textPrimary(context));
@@ -53,7 +53,7 @@ public final class CalendarPickerDialog {
         Spinner type = new Spinner(context);
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item,
-                new String[]{"شمسی", "میلادی", "قمری"});
+                new String[]{AppString.get(R.string.runtime_text_0177), AppString.get(R.string.runtime_text_0178), AppString.get(R.string.runtime_text_0179)});
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         type.setAdapter(typeAdapter);
         type.setSelection(Math.max(0, Math.min(2, initialType)));
@@ -151,10 +151,10 @@ public final class CalendarPickerDialog {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setView(root)
-                .setNegativeButton("انصراف", null)
-                .setPositiveButton("تأیید", null);
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0004), null);
         if (monthYearOnly) {
-            builder.setNeutralButton("بازگشت به امروز", null);
+            builder.setNeutralButton(AppString.get(R.string.runtime_text_0174), null);
         }
         AlertDialog dialog = builder.create();
 
@@ -176,7 +176,7 @@ public final class CalendarPickerDialog {
                 if (rejectPast && millis < startOfToday()) {
                     LogoToast.makeText(
                             context,
-                            "تاریخ گذشته قابل انتخاب نیست",
+                            AppString.get(R.string.runtime_text_0146),
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
