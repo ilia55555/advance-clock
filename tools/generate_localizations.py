@@ -28,37 +28,12 @@ expected_ids = {
 }
 assert expected_ids, "The central runtime string catalog is empty"
 
-# The legacy runtime bridge has one stable resource ID for every Persian source
-# phrase and one matching localized resource reference. Keep this relationship
-# explicit so a locale remains fully editable from its single strings.xml file.
-full_catalog = ET.parse(res / "values" / "localization_full.xml").getroot()
-source_strings = {
-    item.attrib["name"]: "".join(item.itertext())
-    for item in full_catalog
-    if item.tag == "string" and item.attrib["name"].startswith("runtime_source_")
-}
-source_array = full_catalog.find("string-array[@name='runtime_source_fa']")
-translation_array = full_catalog.find("string-array[@name='runtime_translation']")
-assert source_array is not None and translation_array is not None, (
-    "Runtime localization arrays are missing"
-)
-source_refs = [item.text for item in source_array]
-translation_refs = [item.text for item in translation_array]
-assert len(source_refs) == len(translation_refs) == len(source_strings), (
-    "Runtime source and translation catalogs must have the same size"
-)
-assert len(set(source_strings.values())) == len(source_strings), (
-    "Every runtime source phrase must have one independent resource ID"
-)
-for source_ref, translation_ref in zip(source_refs, translation_refs):
-    source_name = source_ref.removeprefix("@string/")
-    translation_name = translation_ref.removeprefix("@string/")
-    assert source_name in source_strings, f"Unknown runtime source: {source_ref}"
-    assert translation_name in expected_ids, (
-        f"Unknown runtime translation: {translation_ref}"
-    )
+# Runtime strings are ordinary, named Android resources. There is deliberately no
+# source-phrase lookup table, translation cache, or text-matching bridge. Android
+# resolves each R.string ID from the active locale configuration.
 
-for folder in FOLDERS.values():
+for language in ("fa", "en", "ar"):
+    folder = FOLDERS[language]
     target = res / folder / "strings.xml"
     assert target.is_file(), f"Missing central locale file: {target}"
     for other in (res / folder).glob("*.xml"):
@@ -94,6 +69,5 @@ for target in res.rglob("*.xml"):
             )
 
 print(
-    f"Verified {len(FOLDERS)} single-file locale catalogs with "
-    f"{len(expected_ids)} string IDs and {len(source_strings)} runtime phrases each."
+    f"Verified 3 single-file locale catalogs with {len(expected_ids)} resource IDs each."
 )

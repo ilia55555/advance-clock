@@ -250,7 +250,7 @@ public final class SmartAlarmActivity extends Activity {
         row.addView(bulkMode, new LinearLayout.LayoutParams(0, dp(52), 1f));
 
         bulkMinutes = new EditText(this);
-        bulkMinutes.setText("5");
+        bulkMinutes.setText(R.string.ui_default_timer_minutes);
         bulkMinutes.setHint(AppString.get(R.string.runtime_text_0037));
         bulkMinutes.setSelectAllOnFocus(true);
         bulkMinutes.setSingleLine(true);

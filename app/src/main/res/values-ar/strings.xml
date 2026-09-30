@@ -993,4 +993,29 @@
     <string name="ui_symbol_down" formatted="false">↓</string>
     <string name="ui_sample_alarm_datetime" formatted="false">٢٠٢٦/٠٣/٢١ ٠٨:٠٠</string>
     <string name="ui_default_timer_minutes" formatted="false">٥</string>
+    <!-- Localized calendar events and widget preview samples -->
+    <string name="calendar_event_new_years_day">يوم رأس السنة</string>
+    <string name="calendar_event_international_education_day">اليوم الدولي للتعليم</string>
+    <string name="calendar_event_international_mother_language_day">اليوم الدولي للغة الأم</string>
+    <string name="calendar_event_international_womens_day">اليوم العالمي للمرأة</string>
+    <string name="calendar_event_international_nowruz_day">اليوم الدولي للنوروز</string>
+    <string name="calendar_event_earth_day">يوم الأرض</string>
+    <string name="calendar_event_international_workers_day">اليوم العالمي للعمال</string>
+    <string name="calendar_event_world_environment_day">يوم البيئة العالمي</string>
+    <string name="calendar_event_world_refugee_day">اليوم العالمي للاجئين</string>
+    <string name="calendar_event_international_youth_day">اليوم الدولي للشباب</string>
+    <string name="calendar_event_international_peace_day">اليوم الدولي للسلام</string>
+    <string name="calendar_event_united_nations_day">يوم الأمم المتحدة</string>
+    <string name="calendar_event_world_childrens_day">اليوم العالمي للطفل</string>
+    <string name="calendar_event_international_disabilities_day">اليوم الدولي للأشخاص ذوي الإعاقة</string>
+    <string name="calendar_event_human_rights_day">يوم حقوق الإنسان</string>
+    <string name="calendar_event_christmas_day">عيد الميلاد</string>
+    <string name="calendar_event_new_years_eve">ليلة رأس السنة</string>
+    <string name="preview_city_tehran">طهران</string>
+    <string name="preview_city_london">لندن</string>
+    <string name="preview_city_tokyo">طوكيو</string>
+    <string name="preview_sample_date">25 سبتمبر</string>
+    <string name="preview_file_number">الملف %1$d</string>
+    <string name="preview_note_number">الملاحظة %1$d</string>
+    <string name="ui_symbol_minus" formatted="false">−</string>
 </resources>

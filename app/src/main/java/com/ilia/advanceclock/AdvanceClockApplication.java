@@ -95,12 +95,12 @@ public final class AdvanceClockApplication extends Application {
         TextView left = activity.findViewById(R.id.prayer_scroll_left);
         TextView right = activity.findViewById(R.id.prayer_scroll_right);
         if (left != null) {
-            left.setText("<");
+            left.setText(R.string.ui_symbol_previous);
             left.setTextDirection(View.TEXT_DIRECTION_LTR);
             left.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
         if (right != null) {
-            right.setText(">");
+            right.setText(R.string.ui_symbol_next);
             right.setTextDirection(View.TEXT_DIRECTION_LTR);
             right.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }

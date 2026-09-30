@@ -990,4 +990,29 @@ Lock screen</string>
     <string name="ui_symbol_down" formatted="false">↓</string>
     <string name="ui_sample_alarm_datetime" formatted="false">2026/03/21 08:00</string>
     <string name="ui_default_timer_minutes" formatted="false">5</string>
+    <!-- Localized calendar events and widget preview samples -->
+    <string name="calendar_event_new_years_day">New Year\'s Day</string>
+    <string name="calendar_event_international_education_day">International Day of Education</string>
+    <string name="calendar_event_international_mother_language_day">International Mother Language Day</string>
+    <string name="calendar_event_international_womens_day">International Women\'s Day</string>
+    <string name="calendar_event_international_nowruz_day">International Day of Nowruz</string>
+    <string name="calendar_event_earth_day">Earth Day</string>
+    <string name="calendar_event_international_workers_day">International Workers\' Day</string>
+    <string name="calendar_event_world_environment_day">World Environment Day</string>
+    <string name="calendar_event_world_refugee_day">World Refugee Day</string>
+    <string name="calendar_event_international_youth_day">International Youth Day</string>
+    <string name="calendar_event_international_peace_day">International Day of Peace</string>
+    <string name="calendar_event_united_nations_day">United Nations Day</string>
+    <string name="calendar_event_world_childrens_day">World Children\'s Day</string>
+    <string name="calendar_event_international_disabilities_day">International Day of Persons with Disabilities</string>
+    <string name="calendar_event_human_rights_day">Human Rights Day</string>
+    <string name="calendar_event_christmas_day">Christmas Day</string>
+    <string name="calendar_event_new_years_eve">New Year\'s Eve</string>
+    <string name="preview_city_tehran">Tehran</string>
+    <string name="preview_city_london">London</string>
+    <string name="preview_city_tokyo">Tokyo</string>
+    <string name="preview_sample_date">Sep 25</string>
+    <string name="preview_file_number">File %1$d</string>
+    <string name="preview_note_number">Note %1$d</string>
+    <string name="ui_symbol_minus" formatted="false">−</string>
 </resources>
