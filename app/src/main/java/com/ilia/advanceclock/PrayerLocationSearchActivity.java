@@ -215,7 +215,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         status.setText(CalendarUtils.fa(Integer.toString(found.size())) + AppString.get(R.string.runtime_text_0447));
         for (IranOfflineLocations.Location location : found) {
             addResultButton(new LocationResult(
-                    location.label,
+                    location.label(),
                     location.latitude,
                     location.longitude,
                     "Asia/Tehran",
