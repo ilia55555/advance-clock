@@ -185,7 +185,7 @@
             android:name=".WorldClockWidgetProvider"
             android:enabled="true"
             android:exported="true"
-            android:label="ساعت جهانی">
+            android:label="@string/world_clock_title">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -198,7 +198,7 @@
             android:name=".PrayerTimesWidgetProvider"
             android:enabled="true"
             android:exported="true"
-            android:label="اوقات شرعی افق‌ها">
+            android:label="@string/prayer_times_widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

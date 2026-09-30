@@ -931,15 +931,15 @@ final class WorldClockPanelController {
     private String continentName(String id) {
         String prefix = id.contains("/") ? id.substring(0, id.indexOf('/')) : id;
         switch (prefix) {
-            case "Asia": return "آسیا";
-            case "Europe": return "اروپا";
-            case "Africa": return "آفریقا";
-            case "America": return "آمریکا";
-            case "Australia": return "استرالیا";
-            case "Pacific": return "اقیانوسیه";
-            case "Atlantic": return "اقیانوس اطلس";
-            case "Indian": return "اقیانوس هند";
-            case "Antarctica": return "جنوبگان";
+            case "Asia": return AppString.get(R.string.runtime_text_0512);
+            case "Europe": return AppString.get(R.string.runtime_text_0513);
+            case "Africa": return AppString.get(R.string.runtime_text_0514);
+            case "America": return AppString.get(R.string.runtime_text_0515);
+            case "Australia": return AppString.get(R.string.runtime_text_0516);
+            case "Pacific": return AppString.get(R.string.runtime_text_0517);
+            case "Atlantic": return AppString.get(R.string.runtime_text_0518);
+            case "Indian": return AppString.get(R.string.runtime_text_0519);
+            case "Antarctica": return AppString.get(R.string.runtime_text_0520);
             default: return prefix;
         }
     }

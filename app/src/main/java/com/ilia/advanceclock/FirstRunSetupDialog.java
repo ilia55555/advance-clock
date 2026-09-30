@@ -35,7 +35,7 @@ final class FirstRunSetupDialog {
         content.setBackground(card);
 
         TextView icon = new TextView(activity);
-        icon.setText("◷");
+        icon.setText(R.string.ui_prayer_icon_midnight);
         icon.setGravity(Gravity.CENTER);
         icon.setTextSize(38);
         icon.setTextColor(AppSettings.primaryColor(activity));

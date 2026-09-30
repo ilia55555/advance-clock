@@ -262,23 +262,23 @@ public final class CalendarEventRepository {
         int m = g.get(android.icu.util.Calendar.MONTH) + 1;
         int d = g.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
-        add(out, m, d, 1, 1, "New Year's Day", false);
-        add(out, m, d, 1, 24, "International Day of Education", false);
-        add(out, m, d, 2, 21, "International Mother Language Day", false);
-        add(out, m, d, 3, 8, "International Women's Day", false);
-        add(out, m, d, 3, 21, "International Day of Nowruz", false);
-        add(out, m, d, 4, 22, "Earth Day", false);
-        add(out, m, d, 5, 1, "International Workers' Day", false);
-        add(out, m, d, 6, 5, "World Environment Day", false);
-        add(out, m, d, 6, 20, "World Refugee Day", false);
-        add(out, m, d, 8, 12, "International Youth Day", false);
-        add(out, m, d, 9, 21, "International Day of Peace", false);
-        add(out, m, d, 10, 24, "United Nations Day", false);
-        add(out, m, d, 11, 20, "World Children's Day", false);
-        add(out, m, d, 12, 3, "International Day of Persons with Disabilities", false);
-        add(out, m, d, 12, 10, "Human Rights Day", false);
-        add(out, m, d, 12, 25, "Christmas Day", false);
-        add(out, m, d, 12, 31, "New Year's Eve", false);
+        add(out, m, d, 1, 1, AppString.get(R.string.calendar_event_new_years_day), false);
+        add(out, m, d, 1, 24, AppString.get(R.string.calendar_event_international_education_day), false);
+        add(out, m, d, 2, 21, AppString.get(R.string.calendar_event_international_mother_language_day), false);
+        add(out, m, d, 3, 8, AppString.get(R.string.calendar_event_international_womens_day), false);
+        add(out, m, d, 3, 21, AppString.get(R.string.calendar_event_international_nowruz_day), false);
+        add(out, m, d, 4, 22, AppString.get(R.string.calendar_event_earth_day), false);
+        add(out, m, d, 5, 1, AppString.get(R.string.calendar_event_international_workers_day), false);
+        add(out, m, d, 6, 5, AppString.get(R.string.calendar_event_world_environment_day), false);
+        add(out, m, d, 6, 20, AppString.get(R.string.calendar_event_world_refugee_day), false);
+        add(out, m, d, 8, 12, AppString.get(R.string.calendar_event_international_youth_day), false);
+        add(out, m, d, 9, 21, AppString.get(R.string.calendar_event_international_peace_day), false);
+        add(out, m, d, 10, 24, AppString.get(R.string.calendar_event_united_nations_day), false);
+        add(out, m, d, 11, 20, AppString.get(R.string.calendar_event_world_childrens_day), false);
+        add(out, m, d, 12, 3, AppString.get(R.string.calendar_event_international_disabilities_day), false);
+        add(out, m, d, 12, 10, AppString.get(R.string.calendar_event_human_rights_day), false);
+        add(out, m, d, 12, 25, AppString.get(R.string.calendar_event_christmas_day), false);
+        add(out, m, d, 12, 31, AppString.get(R.string.calendar_event_new_years_eve), false);
     }
 
     private static void add(

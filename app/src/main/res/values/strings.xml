@@ -990,4 +990,29 @@
     <string name="ui_symbol_down" formatted="false">↓</string>
     <string name="ui_sample_alarm_datetime" formatted="false">۱۴۰۵/۰۱/۰۱ ۰۸:۰۰</string>
     <string name="ui_default_timer_minutes" formatted="false">۵</string>
+    <!-- Localized calendar events and widget preview samples -->
+    <string name="calendar_event_new_years_day">روز سال نو</string>
+    <string name="calendar_event_international_education_day">روز جهانی آموزش</string>
+    <string name="calendar_event_international_mother_language_day">روز جهانی زبان مادری</string>
+    <string name="calendar_event_international_womens_day">روز جهانی زن</string>
+    <string name="calendar_event_international_nowruz_day">روز جهانی نوروز</string>
+    <string name="calendar_event_earth_day">روز زمین</string>
+    <string name="calendar_event_international_workers_day">روز جهانی کارگر</string>
+    <string name="calendar_event_world_environment_day">روز جهانی محیط زیست</string>
+    <string name="calendar_event_world_refugee_day">روز جهانی پناهندگان</string>
+    <string name="calendar_event_international_youth_day">روز جهانی جوانان</string>
+    <string name="calendar_event_international_peace_day">روز جهانی صلح</string>
+    <string name="calendar_event_united_nations_day">روز سازمان ملل متحد</string>
+    <string name="calendar_event_world_childrens_day">روز جهانی کودک</string>
+    <string name="calendar_event_international_disabilities_day">روز جهانی افراد دارای معلولیت</string>
+    <string name="calendar_event_human_rights_day">روز حقوق بشر</string>
+    <string name="calendar_event_christmas_day">روز کریسمس</string>
+    <string name="calendar_event_new_years_eve">شب سال نو</string>
+    <string name="preview_city_tehran">تهران</string>
+    <string name="preview_city_london">لندن</string>
+    <string name="preview_city_tokyo">توکیو</string>
+    <string name="preview_sample_date">۲۵ سپتامبر</string>
+    <string name="preview_file_number">فایل %1$d</string>
+    <string name="preview_note_number">یادداشت %1$d</string>
+    <string name="ui_symbol_minus" formatted="false">−</string>
 </resources>

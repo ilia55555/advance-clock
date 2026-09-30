@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Clock Pro</string>
-    <string name="widget_description">ساعت پیشرفته و هشدارهای پیش رو</string>
+    <string name="widget_description">ساعت پیشرفته و آلارم‌های پیش رو</string>
     <string name="noforget_widget_description">یادداشت‌ها و یادآوری‌های NoForget</string>
     <string name="media_widget_name">یادآوری فایل‌ها</string>
-    <string name="media_widget_description">یادآوری و دسترسی سریع به عکس، صدا، ویدئو و فایل‌ها</string>
+    <string name="media_widget_description">یادآوری و دسترسی سریع به عکس، صوت، ویدیو و فایل‌ها</string>
     <string name="world_clock_widget_description">شبکه واکنش‌گرای ساعت‌های جهانی با پیمایش پله‌ای</string>
     <string name="tab_clock">ساعت</string>
     <string name="tab_notes">یادداشت‌ها</string>
@@ -17,6 +17,7 @@
     <string name="language_label">زبان برنامه</string>
     <string name="calendar_label">تقویم پیش‌فرض</string>
     <string name="continue_label">ادامه</string>
+    <string name="prayer_times_widget_description">نمایش اوقات شرعی همه افق‌های انتخاب‌شده</string>
     <string-array name="language_options">
         <item>English</item>
         <item>فارسی</item>
@@ -36,6 +37,51 @@
         <item>میلادی</item>
         <item>قمری</item>
     </string-array>
+    <string name="ui_today">امروز</string>
+    <string name="ui_widget_settings">تنظیمات ویجت</string>
+    <string name="ui_configure_widget">تنظیم ویجت</string>
+    <string name="ui_alarm">هشدار</string>
+    <string name="ui_no_alarm_set">هشداری تنظیم نشده</string>
+    <string name="ui_image_preview">پیش‌نمایش تصویر</string>
+    <string name="ui_image">تصویر</string>
+    <string name="ui_open_fullscreen">نمایش تمام صفحه</string>
+    <string name="ui_video_preview">پیش‌نمایش ویدیو</string>
+    <string name="ui_media">رسانه</string>
+    <string name="ui_back_ten_seconds">−10 ث</string>
+    <string name="ui_forward_ten_seconds">+10 ث</string>
+    <string name="ui_play_pause">پخش یا مکث</string>
+    <string name="ui_note">یادداشت</string>
+    <string name="ui_no_note_display">یادداشتی برای نمایش نیست</string>
+    <string name="ui_prayer_times">اوقات شرعی</string>
+    <string name="ui_manage_horizons">مدیریت افق‌ها</string>
+    <string name="ui_no_horizon">افقی انتخاب نشده • برای افزودن لمس کنید</string>
+    <string name="ui_fajr">صبح</string>
+    <string name="ui_sunrise">طلوع</string>
+    <string name="ui_dhuhr">ظهر</string>
+    <string name="ui_asr">عصر</string>
+    <string name="ui_sunset">غروب</string>
+    <string name="ui_maghrib">مغرب</string>
+    <string name="ui_isha">عشاء</string>
+    <string name="ui_midnight">نیمه‌شب</string>
+    <string name="ui_file_reminders">یادآوری فایل‌ها</string>
+    <string name="ui_no_file_tap_add">فایلی انتخاب نشده است\nبرای افزودن لمس کنید</string>
+    <string name="ui_file">فایل</string>
+    <string name="ui_file_type">نوع فایل</string>
+    <string name="ui_preview">پیش‌نمایش</string>
+    <string name="ui_alarm_short">آلارم</string>
+    <string name="ui_normal">عادی</string>
+    <string name="ui_no_alarm">بدون آلارم</string>
+    <string name="ui_large_file_preview">پیش‌نمایش بزرگ فایل</string>
+    <string name="ui_open_playback">باز کردن کنترل پخش</string>
+    <string name="ui_prayer_time">وقت نیایش</string>
+    <string name="ui_adhan">اذان</string>
+    <string name="ui_adhan_key_help">پاور یا کاهش صدا: قطع صدا\nنگه‌داشتن کاهش صدا: کم‌کردن تدریجی\nافزایش صدا: وصل و افزایش صدا</string>
+    <string name="ui_mute_completely">قطع کامل صدا</string>
+    <string name="ui_end_adhan">پایان اذان</string>
+    <string name="ui_alarm_time_arrived">زمان زنگ هشدار رسیده است</string>
+    <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
+    <string name="ui_snooze">یادآوری مجدد</string>
+    <string name="ui_stop_alarm">قطع آلارم</string>
 
     <!-- Central catalog: every runtime UI phrase has a stable Android resource ID. -->
     <string formatted="false" name="runtime_text_0001">تنظیمات</string>
@@ -798,50 +844,175 @@
     <string formatted="false" name="runtime_text_0704">تمام‌صفحه
 صفحه قفل</string>
     <string formatted="false" name="runtime_text_0705">یادداشت ذخیره شد؛ برای آلارم دقیق، مجوز آلارم را فعال کنید.</string>
-    <string name="prayer_times_widget_description">نمایش اوقات شرعی همه افق‌های انتخاب‌شده</string>
-    <string name="ui_today">امروز</string>
-    <string name="ui_widget_settings">تنظیمات ویجت</string>
-    <string name="ui_configure_widget">تنظیم ویجت</string>
-    <string name="ui_alarm">هشدار</string>
-    <string name="ui_no_alarm_set">هشداری تنظیم نشده</string>
-    <string name="ui_image_preview">پیش‌نمایش تصویر</string>
-    <string name="ui_image">تصویر</string>
-    <string name="ui_open_fullscreen">نمایش تمام صفحه</string>
-    <string name="ui_video_preview">پیش‌نمایش ویدیو</string>
-    <string name="ui_media">رسانه</string>
-    <string name="ui_back_ten_seconds">−10 ث</string>
-    <string name="ui_forward_ten_seconds">+10 ث</string>
-    <string name="ui_play_pause">پخش یا مکث</string>
-    <string name="ui_note">یادداشت</string>
-    <string name="ui_no_note_display">یادداشتی برای نمایش نیست</string>
-    <string name="ui_prayer_times">اوقات شرعی</string>
-    <string name="ui_manage_horizons">مدیریت افق‌ها</string>
-    <string name="ui_no_horizon">افقی انتخاب نشده • برای افزودن لمس کنید</string>
-    <string name="ui_fajr">صبح</string>
-    <string name="ui_sunrise">طلوع</string>
-    <string name="ui_dhuhr">ظهر</string>
-    <string name="ui_asr">عصر</string>
-    <string name="ui_sunset">غروب</string>
-    <string name="ui_maghrib">مغرب</string>
-    <string name="ui_isha">عشاء</string>
-    <string name="ui_midnight">نیمه‌شب</string>
-    <string name="ui_file_reminders">یادآوری فایل‌ها</string>
-    <string name="ui_no_file_tap_add">فایلی انتخاب نشده است\nبرای افزودن لمس کنید</string>
-    <string name="ui_file">فایل</string>
-    <string name="ui_file_type">نوع فایل</string>
-    <string name="ui_preview">پیش‌نمایش</string>
-    <string name="ui_alarm_short">آلارم</string>
-    <string name="ui_normal">عادی</string>
-    <string name="ui_no_alarm">بدون آلارم</string>
-    <string name="ui_large_file_preview">پیش‌نمایش بزرگ فایل</string>
-    <string name="ui_open_playback">باز کردن کنترل پخش</string>
-    <string name="ui_prayer_time">وقت نیایش</string>
-    <string name="ui_adhan">اذان</string>
-    <string name="ui_adhan_key_help">پاور یا کاهش صدا: قطع صدا\nنگه‌داشتن کاهش صدا: کم‌کردن تدریجی\nافزایش صدا: وصل و افزایش صدا</string>
-    <string name="ui_mute_completely">قطع کامل صدا</string>
-    <string name="ui_end_adhan">پایان اذان</string>
-    <string name="ui_alarm_time_arrived">زمان زنگ هشدار رسیده است</string>
-    <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
-    <string name="ui_snooze">یادآوری مجدد</string>
-    <string name="ui_stop_alarm">قطع آلارم</string>
+    <!-- Calendar event and source labels: resource-ID-only localization -->
+    <string name="calendar_event_text_001" formatted="false">مرکز تقویم مؤسسه ژئوفیزیک دانشگاه تهران</string>
+    <string name="calendar_event_text_002" formatted="false">تقویم مناسبت‌های سازمان ملل متحد</string>
+    <string name="calendar_event_text_003" formatted="false">تقویم ام‌القری عربستان برای مناسبت‌های مشترک عربی</string>
+    <string name="calendar_event_text_004" formatted="false">میلادی • بین‌المللی</string>
+    <string name="calendar_event_text_005" formatted="false">قمری • کشورهای عربی</string>
+    <string name="calendar_event_text_006" formatted="false">شمسی • ایران</string>
+    <string name="calendar_event_text_007" formatted="false">تعطیل رسمی</string>
+    <string name="calendar_event_text_008" formatted="false">تعطیل مشترک/رایج</string>
+    <string name="calendar_event_text_009" formatted="false">تعطیل رایج</string>
+    <string name="calendar_event_text_010" formatted="false">نسخه داده: </string>
+    <string name="calendar_event_text_011" formatted="false"> • مناسبت‌های این سال نیازمند بازبینی منبع رسمی‌اند</string>
+    <string name="calendar_event_text_012" formatted="false"> • منابع فعال: </string>
+    <string name="calendar_event_text_013" formatted="false">نوروز</string>
+    <string name="calendar_event_text_014" formatted="false">تعطیلات نوروز</string>
+    <string name="calendar_event_text_015" formatted="false">روز جمهوری اسلامی ایران</string>
+    <string name="calendar_event_text_016" formatted="false">روز طبیعت</string>
+    <string name="calendar_event_text_017" formatted="false">رحلت امام خمینی</string>
+    <string name="calendar_event_text_018" formatted="false">قیام ۱۵ خرداد</string>
+    <string name="calendar_event_text_019" formatted="false">پیروزی انقلاب اسلامی</string>
+    <string name="calendar_event_text_020" formatted="false">روز ملی شدن صنعت نفت</string>
+    <string name="calendar_event_text_021" formatted="false">شب یلدا</string>
+    <string name="calendar_event_text_022" formatted="false">روز امید و شادباش‌نویسی</string>
+    <string name="calendar_event_text_023" formatted="false">روز هنرهای نمایشی</string>
+    <string name="calendar_event_text_024" formatted="false">روز ملی فناوری هسته‌ای</string>
+    <string name="calendar_event_text_025" formatted="false">روز بزرگداشت عطار نیشابوری</string>
+    <string name="calendar_event_text_026" formatted="false">روز بزرگداشت سعدی</string>
+    <string name="calendar_event_text_027" formatted="false">روز ملی خلیج فارس</string>
+    <string name="calendar_event_text_028" formatted="false">روز بزرگداشت فردوسی</string>
+    <string name="calendar_event_text_029" formatted="false">روز بزرگداشت خیام</string>
+    <string name="calendar_event_text_030" formatted="false">روز بزرگداشت ملاصدرا</string>
+    <string name="calendar_event_text_031" formatted="false">فتح خرمشهر</string>
+    <string name="calendar_event_text_032" formatted="false">روز جهانی صنایع دستی</string>
+    <string name="calendar_event_text_033" formatted="false">روز اصناف</string>
+    <string name="calendar_event_text_034" formatted="false">روز قوه قضائیه</string>
+    <string name="calendar_event_text_035" formatted="false">روز صنعت و معدن</string>
+    <string name="calendar_event_text_036" formatted="false">روز قلم</string>
+    <string name="calendar_event_text_037" formatted="false">روز بزرگداشت شیخ شهاب‌الدین سهروردی</string>
+    <string name="calendar_event_text_038" formatted="false">روز خبرنگار</string>
+    <string name="calendar_event_text_039" formatted="false">سالروز کودتای ۲۸ مرداد</string>
+    <string name="calendar_event_text_040" formatted="false">روز بزرگداشت ابوعلی سینا و روز پزشک</string>
+    <string name="calendar_event_text_041" formatted="false">روز کارمند</string>
+    <string name="calendar_event_text_042" formatted="false">روز بزرگداشت ابوریحان بیرونی</string>
+    <string name="calendar_event_text_043" formatted="false">روز شعر و ادب فارسی</string>
+    <string name="calendar_event_text_044" formatted="false">روز آتش‌نشانی و ایمنی</string>
+    <string name="calendar_event_text_045" formatted="false">روز بزرگداشت مولوی</string>
+    <string name="calendar_event_text_046" formatted="false">روز بزرگداشت حافظ</string>
+    <string name="calendar_event_text_047" formatted="false">روز نوجوان</string>
+    <string name="calendar_event_text_048" formatted="false">روز دانش‌آموز</string>
+    <string name="calendar_event_text_049" formatted="false">روز نیروی دریایی</string>
+    <string name="calendar_event_text_050" formatted="false">روز دانشجو</string>
+    <string name="calendar_event_text_051" formatted="false">روز پژوهش</string>
+    <string name="calendar_event_text_052" formatted="false">روز ایمنی در برابر زلزله</string>
+    <string name="calendar_event_text_053" formatted="false">روز جهانی مقاومت</string>
+    <string name="calendar_event_text_054" formatted="false">سالروز شهادت امیرکبیر</string>
+    <string name="calendar_event_text_055" formatted="false">بازگشت امام خمینی به ایران</string>
+    <string name="calendar_event_text_056" formatted="false">روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس</string>
+    <string name="calendar_event_text_057" formatted="false">روز درختکاری</string>
+    <string name="calendar_event_text_058" formatted="false">میلاد امام علی</string>
+    <string name="calendar_event_text_059" formatted="false">مبعث پیامبر اکرم</string>
+    <string name="calendar_event_text_060" formatted="false">میلاد امام مهدی</string>
+    <string name="calendar_event_text_061" formatted="false">شهادت امام علی</string>
+    <string name="calendar_event_text_062" formatted="false">عید سعید فطر</string>
+    <string name="calendar_event_text_063" formatted="false">تعطیل عید سعید فطر</string>
+    <string name="calendar_event_text_064" formatted="false">شهادت امام جعفر صادق</string>
+    <string name="calendar_event_text_065" formatted="false">عید قربان</string>
+    <string name="calendar_event_text_066" formatted="false">عید غدیر خم</string>
+    <string name="calendar_event_text_067" formatted="false">تاسوعای حسینی</string>
+    <string name="calendar_event_text_068" formatted="false">عاشورای حسینی</string>
+    <string name="calendar_event_text_069" formatted="false">اربعین حسینی</string>
+    <string name="calendar_event_text_070" formatted="false">رحلت پیامبر اکرم و شهادت امام حسن مجتبی</string>
+    <string name="calendar_event_text_071" formatted="false">شهادت امام رضا</string>
+    <string name="calendar_event_text_072" formatted="false">شهادت امام حسن عسکری</string>
+    <string name="calendar_event_text_073" formatted="false">میلاد پیامبر اکرم و امام جعفر صادق</string>
+    <string name="calendar_event_text_074" formatted="false">شهادت حضرت فاطمه زهرا</string>
+    <string name="calendar_event_text_075" formatted="false">رأس السنة الهجرية</string>
+    <string name="calendar_event_text_076" formatted="false">المولد النبوي الشريف</string>
+    <string name="calendar_event_text_077" formatted="false">الإسراء والمعراج</string>
+    <string name="calendar_event_text_078" formatted="false">بداية شهر رمضان</string>
+    <string name="calendar_event_text_079" formatted="false">ليلة القدر</string>
+    <string name="calendar_event_text_080" formatted="false">عيد الفطر</string>
+    <string name="calendar_event_text_081" formatted="false">إجازة عيد الفطر</string>
+    <string name="calendar_event_text_082" formatted="false">يوم عرفة</string>
+    <string name="calendar_event_text_083" formatted="false">عيد الأضحى</string>
+    <string name="calendar_event_text_084" formatted="false">إجازة عيد الأضحى</string>
+    <!-- Offline Iran location labels -->
+    <string name="iran_location_text_001" formatted="false">تهران، استان تهران، ایران</string>
+    <string name="iran_location_text_002" formatted="false">کرج، استان البرز، ایران</string>
+    <string name="iran_location_text_003" formatted="false">قم، استان قم، ایران</string>
+    <string name="iran_location_text_004" formatted="false">اصفهان، استان اصفهان، ایران</string>
+    <string name="iran_location_text_005" formatted="false">شیراز، استان فارس، ایران</string>
+    <string name="iran_location_text_006" formatted="false">مشهد، خراسان رضوی، ایران</string>
+    <string name="iran_location_text_007" formatted="false">تبریز، آذربایجان شرقی، ایران</string>
+    <string name="iran_location_text_008" formatted="false">ارومیه، آذربایجان غربی، ایران</string>
+    <string name="iran_location_text_009" formatted="false">اردبیل، استان اردبیل، ایران</string>
+    <string name="iran_location_text_010" formatted="false">رشت، استان گیلان، ایران</string>
+    <string name="iran_location_text_011" formatted="false">ساری، استان مازندران، ایران</string>
+    <string name="iran_location_text_012" formatted="false">گرگان، استان گلستان، ایران</string>
+    <string name="iran_location_text_013" formatted="false">سمنان، استان سمنان، ایران</string>
+    <string name="iran_location_text_014" formatted="false">قزوین، استان قزوین، ایران</string>
+    <string name="iran_location_text_015" formatted="false">زنجان، استان زنجان، ایران</string>
+    <string name="iran_location_text_016" formatted="false">همدان، استان همدان، ایران</string>
+    <string name="iran_location_text_017" formatted="false">کرمانشاه، استان کرمانشاه، ایران</string>
+    <string name="iran_location_text_018" formatted="false">سنندج، استان کردستان، ایران</string>
+    <string name="iran_location_text_019" formatted="false">ایلام، استان ایلام، ایران</string>
+    <string name="iran_location_text_020" formatted="false">خرم‌آباد، استان لرستان، ایران</string>
+    <string name="iran_location_text_021" formatted="false">اهواز، استان خوزستان، ایران</string>
+    <string name="iran_location_text_022" formatted="false">شهرکرد، چهارمحال و بختیاری، ایران</string>
+    <string name="iran_location_text_023" formatted="false">یاسوج، کهگیلویه و بویراحمد، ایران</string>
+    <string name="iran_location_text_024" formatted="false">بوشهر، استان بوشهر، ایران</string>
+    <string name="iran_location_text_025" formatted="false">بندرعباس، استان هرمزگان، ایران</string>
+    <string name="iran_location_text_026" formatted="false">کرمان، استان کرمان، ایران</string>
+    <string name="iran_location_text_027" formatted="false">یزد، استان یزد، ایران</string>
+    <string name="iran_location_text_028" formatted="false">بیرجند، خراسان جنوبی، ایران</string>
+    <string name="iran_location_text_029" formatted="false">بجنورد، خراسان شمالی، ایران</string>
+    <string name="iran_location_text_030" formatted="false">زاهدان، سیستان و بلوچستان، ایران</string>
+    <string name="iran_location_text_031" formatted="false">اراک، استان مرکزی، ایران</string>
+    <!-- Smart-alarm parser messages shown to the user -->
+    <string name="smart_alarm_minutes_joiner" formatted="false"> دقیقه </string>
+    <string name="smart_alarm_before" formatted="false">قبل</string>
+    <string name="smart_alarm_after" formatted="false">بعد</string>
+    <string name="smart_alarm_no_input" formatted="false">متنی برای تحلیل وارد نشده است.</string>
+    <string name="smart_alarm_json_no_datetime" formatted="false">JSON معتبر بود، اما تاریخ و ساعت قابل استفاده پیدا نشد.</string>
+    <string name="smart_alarm_json_fallback" formatted="false">ساختار شبیه JSON بود ولی JSON معتبر نبود؛ به‌صورت متن عادی تحلیل شد.</string>
+    <string name="smart_alarm_no_datetime" formatted="false">تاریخ و ساعت قابل تشخیص پیدا نشد. نمونه: ۱۴۰۵/۰۷/۰۴ ساعت ۱۳:۰۰</string>
+    <!-- Non-linguistic UI text still referenced by resource ID -->
+    <string name="ui_placeholder_time_hm" formatted="false">00:00</string>
+    <string name="ui_placeholder_time_hms" formatted="false">00:00:00.00</string>
+    <string name="ui_placeholder_timer" formatted="false">00:05:00</string>
+    <string name="ui_placeholder_prayer" formatted="false">—:—</string>
+    <string name="ui_symbol_previous" formatted="false">&lt;</string>
+    <string name="ui_symbol_next" formatted="false">&gt;</string>
+    <string name="ui_symbol_plus" formatted="false">+</string>
+    <string name="ui_symbol_back_arrow" formatted="false">→</string>
+    <string name="ui_symbol_location" formatted="false">⌖</string>
+    <string name="ui_prayer_icon_fajr" formatted="false">◒</string>
+    <string name="ui_prayer_icon_sunrise" formatted="false">☀</string>
+    <string name="ui_prayer_icon_dhuhr" formatted="false">☼</string>
+    <string name="ui_prayer_icon_asr" formatted="false">◉</string>
+    <string name="ui_prayer_icon_sunset" formatted="false">◓</string>
+    <string name="ui_prayer_icon_isha" formatted="false">☾</string>
+    <string name="ui_prayer_icon_midnight" formatted="false">◷</string>
+    <string name="ui_symbol_up" formatted="false">↑</string>
+    <string name="ui_symbol_down" formatted="false">↓</string>
+    <string name="ui_sample_alarm_datetime" formatted="false">۱۴۰۵/۰۱/۰۱ ۰۸:۰۰</string>
+    <string name="ui_default_timer_minutes" formatted="false">۵</string>
+    <!-- Localized calendar events and widget preview samples -->
+    <string name="calendar_event_new_years_day">روز سال نو</string>
+    <string name="calendar_event_international_education_day">روز جهانی آموزش</string>
+    <string name="calendar_event_international_mother_language_day">روز جهانی زبان مادری</string>
+    <string name="calendar_event_international_womens_day">روز جهانی زن</string>
+    <string name="calendar_event_international_nowruz_day">روز جهانی نوروز</string>
+    <string name="calendar_event_earth_day">روز زمین</string>
+    <string name="calendar_event_international_workers_day">روز جهانی کارگر</string>
+    <string name="calendar_event_world_environment_day">روز جهانی محیط زیست</string>
+    <string name="calendar_event_world_refugee_day">روز جهانی پناهندگان</string>
+    <string name="calendar_event_international_youth_day">روز جهانی جوانان</string>
+    <string name="calendar_event_international_peace_day">روز جهانی صلح</string>
+    <string name="calendar_event_united_nations_day">روز سازمان ملل متحد</string>
+    <string name="calendar_event_world_childrens_day">روز جهانی کودک</string>
+    <string name="calendar_event_international_disabilities_day">روز جهانی افراد دارای معلولیت</string>
+    <string name="calendar_event_human_rights_day">روز حقوق بشر</string>
+    <string name="calendar_event_christmas_day">روز کریسمس</string>
+    <string name="calendar_event_new_years_eve">شب سال نو</string>
+    <string name="preview_city_tehran">تهران</string>
+    <string name="preview_city_london">لندن</string>
+    <string name="preview_city_tokyo">توکیو</string>
+    <string name="preview_sample_date">۲۵ سپتامبر</string>
+    <string name="preview_file_number">فایل %1$d</string>
+    <string name="preview_note_number">یادداشت %1$d</string>
+    <string name="ui_symbol_minus" formatted="false">−</string>
 </resources>

@@ -48,7 +48,10 @@ final class WidgetPreviewView extends View {
     }
 
     private void drawWorld(Canvas canvas, float d) {
-        String[] cities = {"Tehran", "London", "Tokyo"};
+        String[] cities = {
+                AppString.get(R.string.preview_city_tehran),
+                AppString.get(R.string.preview_city_london),
+                AppString.get(R.string.preview_city_tokyo)};
         String[] times = {"14:24", "11:54", "20:54"};
         int columns = Math.min(3, itemCount);
         float columnWidth = (getWidth() - 20 * d) / columns;
@@ -56,7 +59,8 @@ final class WidgetPreviewView extends View {
             float center = 10 * d + columnWidth * i + columnWidth / 2f;
             text(canvas, cities[i], center, 37 * d, 14 * d, textColor, Paint.Align.CENTER, false);
             text(canvas, times[i], center, 78 * d, 28 * d, timeColor, Paint.Align.CENTER, true);
-            text(canvas, "Sep 25", center, 103 * d, 12 * d, textColor, Paint.Align.CENTER, false);
+            text(canvas, AppString.get(R.string.preview_sample_date), center, 103 * d, 12 * d,
+                    textColor, Paint.Align.CENTER, false);
         }
     }
 
@@ -68,16 +72,20 @@ final class WidgetPreviewView extends View {
                     timeColor, Paint.Align.RIGHT, true);
             y += 25 * d;
         }
-        String title = "media".equals(kind) ? "Files"
-                : ("note".equals(kind) ? "Notes" : "Alarms");
+        String title = "media".equals(kind) ? AppString.get(R.string.runtime_text_0060)
+                : ("note".equals(kind) ? AppString.get(R.string.runtime_text_0016)
+                : AppString.get(R.string.runtime_text_0018));
         text(canvas, title, 16 * d, y, 13 * d, textColor, Paint.Align.LEFT, true);
         y += 17 * d;
         for (int i = 0; i < itemCount && y < getHeight() - 8 * d; i++) {
             paint.setColor((textColor & 0x00FFFFFF) | 0x26000000);
             canvas.drawRoundRect(new RectF(12 * d, y, getWidth() - 12 * d,
                     y + 24 * d), 7 * d, 7 * d, paint);
-            text(canvas, "media".equals(kind) ? "File " + (i + 1)
-                            : ("note".equals(kind) ? "Note " + (i + 1) : "07:" + (i + 1) + "0"),
+            text(canvas, "media".equals(kind)
+                            ? AppString.get(R.string.preview_file_number, i + 1)
+                            : ("note".equals(kind)
+                            ? AppString.get(R.string.preview_note_number, i + 1)
+                            : "07:" + (i + 1) + "0"),
                     20 * d, y + 17 * d, 12 * d, textColor, Paint.Align.LEFT, false);
             if (showDetails) text(canvas, "•••", getWidth() - 20 * d, y + 17 * d,
                     11 * d, textColor, Paint.Align.RIGHT, false);

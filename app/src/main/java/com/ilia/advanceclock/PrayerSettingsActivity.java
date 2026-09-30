@@ -251,7 +251,7 @@ public final class PrayerSettingsActivity extends Activity {
             row.addView(primary, primaryParams);
 
             Button remove = new Button(this);
-            remove.setText("−");
+            remove.setText(R.string.ui_symbol_minus);
             remove.setAllCaps(false);
             remove.setTextSize(22);
             remove.setGravity(Gravity.CENTER);
