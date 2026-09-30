@@ -86,7 +86,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
         addTopBar(root);
-        root.addView(sectionTitle("پیش‌نمایش زنده"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0112)));
         preview = new WidgetPreviewView(this);
         root.addView(preview, new LinearLayout.LayoutParams(-1, dp(150)));
         addFilesSection(root);
@@ -123,8 +123,8 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         TextView title = new TextView(this);
         title.setText(editExisting
-                ? "تنظیمات یادآوری فایل‌ها"
-                : "ساخت یادآوری فایل‌ها");
+                ? AppString.get(R.string.runtime_text_0526)
+                : AppString.get(R.string.runtime_text_0527));
         title.setTextSize(23);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -144,7 +144,7 @@ public final class MediaWidgetConfigActivity extends Activity {
                 dp(12),
                 dp(12),
                 dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(
                 dp(48),
@@ -154,22 +154,22 @@ public final class MediaWidgetConfigActivity extends Activity {
     }
 
     private void addFilesSection(LinearLayout root) {
-        root.addView(sectionTitle("فایل‌ها"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0060)));
 
         root.addView(hint(
-                "تا " + MediaWidgetPrefs.MAX_ITEMS
-                        + " فایل ترکیبی قابل انتخاب است. عکس، صوت، ویدیو، متن، PDF و "
-                        + "سایر فایل‌ها به‌صورت خودکار تشخیص داده می‌شوند. ترتیب همین فهرست، "
-                        + "ترتیب نمایش در ویجت است."));
+                AppString.get(R.string.runtime_text_0528) + MediaWidgetPrefs.MAX_ITEMS
+                        + AppString.get(R.string.runtime_text_0529)
+                        + AppString.get(R.string.runtime_text_0530)
+                        + AppString.get(R.string.runtime_text_0531)));
 
         Button addFiles = primaryButton(
-                "＋ افزودن عکس، صوت یا فایل");
+                AppString.get(R.string.runtime_text_0532));
         addFiles.setOnClickListener(v -> pickFiles());
         root.addView(addFiles, new LinearLayout.LayoutParams(
                 -1,
                 dp(56)));
 
-        Button clear = softButton("پاک کردن همه فایل‌ها");
+        Button clear = softButton(AppString.get(R.string.runtime_text_0533));
         clear.setOnClickListener(v -> {
             items.clear();
             renderItems();
@@ -185,39 +185,39 @@ public final class MediaWidgetConfigActivity extends Activity {
     }
 
     private void addAppearanceSection(LinearLayout root) {
-        root.addView(sectionTitle("ظاهر"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0042)));
 
-        root.addView(fieldLabel("تم"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0043)));
         themeSpinner = spinner(new String[]{
-                "هماهنگ با تم برنامه",
-                "روشن",
-                "تیره"
+                AppString.get(R.string.runtime_text_0220),
+                AppString.get(R.string.runtime_text_0044),
+                AppString.get(R.string.runtime_text_0045)
         });
         themeSpinner.setSelection(
                 WidgetPrefs.themeMode(this, widgetId));
         root.addView(themeSpinner, fieldLp());
 
-        root.addView(fieldLabel("پالت رنگ"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0046)));
         paletteSpinner = spinner(AppSettings.paletteNames());
         paletteSpinner.setSelection(
                 WidgetPrefs.palette(this, widgetId));
         root.addView(paletteSpinner, fieldLp());
 
-        root.addView(fieldLabel("شفافیت پس‌زمینه"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0047)));
         opacitySpinner = spinner(new String[]{
-                "۱۰۰٪",
-                "۸۵٪",
-                "۷۰٪"
+                AppString.get(R.string.runtime_text_0534),
+                AppString.get(R.string.runtime_text_0535),
+                AppString.get(R.string.runtime_text_0536)
         });
         opacitySpinner.setSelection(
                 WidgetPrefs.backgroundOpacityMode(this, widgetId));
         root.addView(opacitySpinner, fieldLp());
 
-        root.addView(fieldLabel("اندازه متن"));
+        root.addView(fieldLabel(AppString.get(R.string.runtime_text_0048)));
         fontSpinner = spinner(new String[]{
-                "کوچک",
-                "معمولی",
-                "بزرگ"
+                AppString.get(R.string.runtime_text_0049),
+                AppString.get(R.string.runtime_text_0050),
+                AppString.get(R.string.runtime_text_0051)
         });
         fontSpinner.setSelection(
                 WidgetPrefs.fontSizeMode(this, widgetId));
@@ -225,36 +225,36 @@ public final class MediaWidgetConfigActivity extends Activity {
     }
 
     private void addDisplaySection(LinearLayout root) {
-        root.addView(sectionTitle("نمایش محتوا"));
+        root.addView(sectionTitle(AppString.get(R.string.runtime_text_0221)));
 
         showHeader = addSwitch(
                 root,
-                "نمایش هدر",
-                "نام ویجت و دکمه تنظیمات",
+                AppString.get(R.string.runtime_text_0052),
+                AppString.get(R.string.runtime_text_0537),
                 WidgetPrefs.showHeader(this, widgetId));
 
         showSettings = addSwitch(
                 root,
-                "نمایش دکمه تنظیمات",
-                "دسترسی مستقیم به تنظیمات همین ویجت",
+                AppString.get(R.string.runtime_text_0055),
+                AppString.get(R.string.runtime_text_0538),
                 WidgetPrefs.showSettingsButton(this, widgetId));
 
         showPreview = addSwitch(
                 root,
-                "نمایش پیش‌نمایش",
-                "thumbnail تصویر، فریم ویدیو یا کاور فایل صوتی",
+                AppString.get(R.string.runtime_text_0222),
+                AppString.get(R.string.runtime_text_0539),
                 WidgetPrefs.mediaShowPreview(this, widgetId));
 
         showName = addSwitch(
                 root,
-                "نمایش نام فایل",
-                "اگر خاموش باشد، پیش‌نمایش فایل بزرگ و واضح نمایش داده می‌شود.",
+                AppString.get(R.string.runtime_text_0223),
+                AppString.get(R.string.runtime_text_0540),
                 WidgetPrefs.mediaShowFileName(this, widgetId));
 
         showMetadata = addSwitch(
                 root,
-                "نمایش نوع و جزئیات فایل",
-                "نوع فایل و برای فایل متنی، خلاصه‌ای از محتوا",
+                AppString.get(R.string.runtime_text_0224),
+                AppString.get(R.string.runtime_text_0541),
                 WidgetPrefs.showMetadata(this, widgetId));
 
         showName.setOnCheckedChangeListener((button, checked) -> {
@@ -282,12 +282,12 @@ public final class MediaWidgetConfigActivity extends Activity {
 
     private void addResizeSection(LinearLayout root) {
         root.addView(hint(
-                "برای تغییر اندازه ویجت انگشتتان را روی ویجت نگهدارید و کمی جابه‌جا کنید و رها کنید تا تغییر سایز فعال شود"));
+                AppString.get(R.string.runtime_text_0542)));
     }
 
     private void addActions(LinearLayout root) {
         Button reset = softButton(
-                "بازگردانی تنظیمات ظاهری این ویجت");
+                AppString.get(R.string.runtime_text_0543));
         LinearLayout.LayoutParams resetLp = buttonLp();
         resetLp.topMargin = dp(8);
         root.addView(reset, resetLp);
@@ -337,9 +337,9 @@ public final class MediaWidgetConfigActivity extends Activity {
         if (items.size() >= MediaWidgetPrefs.MAX_ITEMS) {
             LogoToast.makeText(
                     this,
-                    "حداکثر "
+                    AppString.get(R.string.runtime_text_0544)
                             + MediaWidgetPrefs.MAX_ITEMS
-                            + " فایل قابل انتخاب است.",
+                            + AppString.get(R.string.runtime_text_0545),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -449,7 +449,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         String last = uri.getLastPathSegment();
         return last == null || last.trim().isEmpty()
-                ? "فایل"
+                ? AppString.get(R.string.runtime_text_0059)
                 : last;
     }
 
@@ -461,7 +461,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         if (items.isEmpty()) {
             TextView empty = hint(
-                    "هنوز فایلی انتخاب نشده است.");
+                    AppString.get(R.string.runtime_text_0546));
             empty.setGravity(Gravity.CENTER);
             empty.setPadding(
                     dp(12),
@@ -520,7 +520,7 @@ public final class MediaWidgetConfigActivity extends Activity {
                     View.LAYOUT_DIRECTION_RTL);
             actions.setGravity(Gravity.START);
 
-            Button up = miniButton("↑ بالا");
+            Button up = miniButton(AppString.get(R.string.runtime_text_0547));
             up.setEnabled(index > 0);
             up.setAlpha(index > 0 ? 1f : 0.4f);
             up.setOnClickListener(v -> {
@@ -532,7 +532,7 @@ public final class MediaWidgetConfigActivity extends Activity {
                 }
             });
 
-            Button down = miniButton("↓ پایین");
+            Button down = miniButton(AppString.get(R.string.runtime_text_0548));
             down.setEnabled(index < items.size() - 1);
             down.setAlpha(
                     index < items.size() - 1
@@ -547,7 +547,7 @@ public final class MediaWidgetConfigActivity extends Activity {
                 }
             });
 
-            Button remove = miniButton("حذف");
+            Button remove = miniButton(AppString.get(R.string.runtime_text_0006));
             remove.setTextColor(0xFFD24A43);
             remove.setOnClickListener(v -> {
                 if (index >= 0
@@ -578,9 +578,9 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         TextView count = hint(
                 items.size()
-                        + " از "
+                        + AppString.get(R.string.runtime_text_0549)
                         + MediaWidgetPrefs.MAX_ITEMS
-                        + " مورد انتخاب شده");
+                        + AppString.get(R.string.runtime_text_0550));
         count.setGravity(Gravity.CENTER);
         fileList.addView(count);
     }
@@ -839,26 +839,26 @@ public final class MediaWidgetConfigActivity extends Activity {
                 ? ""
                 : mime.toLowerCase(Locale.ROOT);
 
-        if (value.startsWith("image/")) return "تصویر";
-        if (value.startsWith("audio/")) return "صوت";
-        if (value.startsWith("video/")) return "ویدیو";
-        if (value.startsWith("text/")) return "متن";
+        if (value.startsWith("image/")) return AppString.get(R.string.runtime_text_0061);
+        if (value.startsWith("audio/")) return AppString.get(R.string.runtime_text_0062);
+        if (value.startsWith("video/")) return AppString.get(R.string.runtime_text_0063);
+        if (value.startsWith("text/")) return AppString.get(R.string.runtime_text_0064);
         if (value.contains("pdf")) return "PDF";
         if (value.contains("zip")
                 || value.contains("rar")
                 || value.contains("7z")) {
-            return "فشرده";
+            return AppString.get(R.string.runtime_text_0551);
         }
         if (value.contains("word")
                 || value.contains("document")) {
-            return "سند";
+            return AppString.get(R.string.runtime_text_0065);
         }
         if (value.contains("sheet")
                 || value.contains("excel")) {
-            return "صفحه گسترده";
+            return AppString.get(R.string.runtime_text_0066);
         }
 
-        return "فایل";
+        return AppString.get(R.string.runtime_text_0059);
     }
 
     private int dp(int value) {
