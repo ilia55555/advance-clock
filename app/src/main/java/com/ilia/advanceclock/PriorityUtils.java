@@ -8,7 +8,7 @@ public final class PriorityUtils {
     public static final int VERY_HIGH = 4;
 
     private static final String[] LABELS = {
-            "کم", "نسبتاً کم", "متوسط", "زیاد", "خیلی زیاد"
+            AppString.get(R.string.runtime_text_0024), AppString.get(R.string.runtime_text_0025), AppString.get(R.string.runtime_text_0026), AppString.get(R.string.runtime_text_0027), AppString.get(R.string.runtime_text_0028)
     };
 
     private PriorityUtils() {}
