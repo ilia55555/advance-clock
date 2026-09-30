@@ -844,4 +844,12 @@
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">不播放宣礼</string>
+    <string name="adhan_skip_description">在所选日期不播放宣礼。</string>
+    <string name="adhan_skip_mode_off">关闭</string>
+    <string name="adhan_skip_mode_weekdays">星期</string>
+    <string name="adhan_skip_mode_dates">指定日期</string>
+    <string name="adhan_skip_add_date">添加日期</string>
+    <string name="adhan_skip_no_dates">尚未选择日期。</string>
+    <string name="adhan_skip_remove_date">删除日期</string>
 </resources>
