@@ -70,7 +70,6 @@ public final class PaletteDialog {
                 .setPositiveButton("انتخاب رنگ", (d, which) -> callback.onColor(selected[0]))
                 .create();
         dialog.show();
-        UiText.localize(dialog);
     }
 
     private static TextView label(Context context, String text) {

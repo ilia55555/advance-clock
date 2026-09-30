@@ -222,7 +222,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.widget_date,
-                UiText.trComposite(context, CalendarUtils.formatDate(
+                UiText.tr(context, CalendarUtils.formatDate(
                         System.currentTimeMillis(),
                         AppSettings.defaultCalendar(context))));
 
@@ -238,7 +238,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         if (rowCount <= 0) {
             root.setTextViewText(
                     R.id.widget_empty,
-                    UiText.trComposite(context,
+                    UiText.tr(context,
                             "برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید"));
             root.setViewVisibility(
                     R.id.widget_empty,
@@ -246,7 +246,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         } else {
             root.setTextViewText(
                     R.id.widget_empty,
-                    UiText.trComposite(context, "هشداری تنظیم نشده"));
+                    UiText.tr(context, "هشداری تنظیم نشده"));
             root.setViewVisibility(
                     R.id.widget_empty,
                     items.isEmpty()
@@ -273,7 +273,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     item.label == null
                             || item.label.trim().isEmpty()
                             ? UiText.tr(context, "هشدار")
-                            : UiText.trComposite(context, item.label));
+                            : item.label);
 
             String clock =
                     new java.text.SimpleDateFormat(
@@ -284,7 +284,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
             row.setTextViewText(
                     R.id.widget_row_time,
-                    UiText.trComposite(context, CalendarUtils.formatDate(
+                    UiText.tr(context, CalendarUtils.formatDate(
                             item.triggerAtMillis,
                             AppSettings.defaultCalendar(
                                     context))

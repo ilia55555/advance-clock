@@ -22,7 +22,7 @@ public final class NotificationHelper {
         NotificationChannel alarm = new NotificationChannel(
                 ALARM_CHANNEL, UiText.tr(context, "آلارم‌ها"),
                 NotificationManager.IMPORTANCE_HIGH);
-        alarm.setDescription(UiText.trComposite(context, "آلارم‌های Advance Clock"));
+        alarm.setDescription(UiText.tr(context, "آلارم‌های Advance Clock"));
         alarm.enableVibration(false);
         alarm.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         alarm.setSound(null, new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
@@ -31,7 +31,7 @@ public final class NotificationHelper {
         NotificationChannel reminders = new NotificationChannel(
                 REMINDER_CHANNEL, UiText.tr(context, "یادآوری‌ها"),
                 NotificationManager.IMPORTANCE_HIGH);
-        reminders.setDescription(UiText.trComposite(context,
+        reminders.setDescription(UiText.tr(context,
                 "یادآوری هشدارها و یادداشت‌ها"));
         reminders.enableVibration(true);
         reminders.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);

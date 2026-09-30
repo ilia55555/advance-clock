@@ -227,7 +227,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.noforget_widget_date,
-                UiText.trComposite(context, CalendarUtils.formatDate(
+                UiText.tr(context, CalendarUtils.formatDate(
                         System.currentTimeMillis(),
                         AppSettings.defaultCalendar(context))));
 
@@ -244,7 +244,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         if (rowCount <= 0) {
             root.setTextViewText(
                     R.id.noforget_widget_empty,
-                    UiText.trComposite(context,
+                    UiText.tr(context,
                             "برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید"));
             root.setViewVisibility(
                     R.id.noforget_widget_empty,
@@ -252,7 +252,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         } else {
             root.setTextViewText(
                     R.id.noforget_widget_empty,
-                    UiText.trComposite(context, "یادداشتی برای نمایش نیست"));
+                    UiText.tr(context, "یادداشتی برای نمایش نیست"));
             root.setViewVisibility(
                     R.id.noforget_widget_empty,
                     items.isEmpty()
@@ -279,8 +279,8 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     item.title.trim().isEmpty()
                             ? (item.body.trim().isEmpty()
                             ? UiText.tr(context, "دست‌نویس")
-                            : UiText.trComposite(context, item.body))
-                            : UiText.trComposite(context, item.title));
+                            : item.body)
+                            : item.title);
 
             String meta = item.hasDue
                     ? CalendarUtils.formatDate(

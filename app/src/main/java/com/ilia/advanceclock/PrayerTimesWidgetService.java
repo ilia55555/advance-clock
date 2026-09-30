@@ -88,7 +88,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             int active = PrayerTimesWidgetPrefs.activePrayerColor(context, widgetId);
 
             if (horizons.isEmpty()) {
-                row.setTextViewText(R.id.prayer_widget_empty, UiText.trComposite(context,
+                row.setTextViewText(R.id.prayer_widget_empty, UiText.tr(context,
                         "افقی انتخاب نشده • برای افزودن لمس کنید"));
                 row.setViewVisibility(R.id.prayer_widget_empty, View.VISIBLE);
                 row.setViewVisibility(R.id.prayer_widget_content, View.GONE);
@@ -120,7 +120,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                                             context, widgetId)));
 
             row.setTextViewText(R.id.prayer_widget_city,
-                    UiText.trComposite(context, shortName(horizon.label)));
+                    shortName(horizon.label));
             row.setTextColor(R.id.prayer_widget_city, primary ? accent : main);
             row.setTextColor(R.id.prayer_widget_local_date, secondary);
             row.setTextColor(R.id.prayer_widget_local_time, accent);
@@ -129,7 +129,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setViewVisibility(R.id.prayer_widget_local_date,
                     localDate.isEmpty() ? View.GONE : View.VISIBLE);
             row.setTextViewText(R.id.prayer_widget_local_date,
-                    UiText.trComposite(context, localDate));
+                    UiText.tr(context, localDate));
             row.setTextViewText(R.id.prayer_widget_local_time, localTime(now, zone));
 
             int[] labelIds = {R.id.prayer_label_fajr, R.id.prayer_label_sunrise,

@@ -129,7 +129,6 @@ final class FirstRunSetupDialog {
             });
         });
         dialog.show();
-        UiText.localize(dialog);
     }
 
     private static Context localizedContext(Context context, String languageCode) {
