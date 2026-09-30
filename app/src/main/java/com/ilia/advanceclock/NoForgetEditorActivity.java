@@ -141,7 +141,7 @@ public final class NoForgetEditorActivity extends Activity {
             fullscreenUnlocked.setChecked(true);
             fullscreenLocked.setChecked(true);
             soundButton.setText(
-                    "صدای هشدار • "+SoundLibrary.name(this,soundUri));
+                    AppString.get(R.string.runtime_text_0461)+SoundLibrary.name(this,soundUri));
         }
 
         renderAttachments();
@@ -152,7 +152,7 @@ public final class NoForgetEditorActivity extends Activity {
         String[] labels=PriorityUtils.labels();
         String[] priorityValues=new String[labels.length];
         for(int i=0;i<labels.length;i++){
-            priorityValues[i]="اهمیت "+labels[i];
+            priorityValues[i]=AppString.get(R.string.runtime_text_0420)+labels[i];
         }
         ArrayAdapter<String> adapter=new ArrayAdapter<>(
                 this,
@@ -251,9 +251,9 @@ public final class NoForgetEditorActivity extends Activity {
         row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         row.setGravity(Gravity.CENTER_VERTICAL);
 
-        sketchAction=makeActionButton("ترسیم");
-        filesAction=makeActionButton("افزودن فایل");
-        appSiteAction=makeActionButton("افزودن اپ یا سایت");
+        sketchAction=makeActionButton(AppString.get(R.string.runtime_text_0118));
+        filesAction=makeActionButton(AppString.get(R.string.runtime_text_0116));
+        appSiteAction=makeActionButton(AppString.get(R.string.runtime_text_0117));
 
         LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(
                 0,
@@ -353,8 +353,8 @@ public final class NoForgetEditorActivity extends Activity {
     private void showSketchModal(){
         LinearLayout root=NoteModalStyler.content(
                 this,
-                "ترسیم",
-                "با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «ذخیره ترسیم» ثبت می‌شود.");
+                AppString.get(R.string.runtime_text_0118),
+                AppString.get(R.string.runtime_text_0462));
 
         LinearLayout toolbar=new LinearLayout(this);
         toolbar.setOrientation(LinearLayout.HORIZONTAL);
@@ -362,9 +362,9 @@ public final class NoForgetEditorActivity extends Activity {
 
         Button undo=smallToolButton("↶");
         Button redo=smallToolButton("↷");
-        Button clear=smallToolButton("پاک");
-        Button palette=smallToolButton("رنگ");
-        Button grid=smallToolButton("گرید");
+        Button clear=smallToolButton(AppString.get(R.string.runtime_text_0203));
+        Button palette=smallToolButton(AppString.get(R.string.runtime_text_0202));
+        Button grid=smallToolButton(AppString.get(R.string.runtime_text_0201));
 
         Spinner size=new Spinner(this);
         size.setAdapter(new PenSizeAdapter(this));
@@ -412,7 +412,7 @@ public final class NoForgetEditorActivity extends Activity {
         grid.setOnClickListener(v->{
             boolean next=!canvas.isGridVisible();
             canvas.setGridVisible(next);
-            grid.setText(next?"گرید":"بدون گرید");
+            grid.setText(next?AppString.get(R.string.runtime_text_0201):AppString.get(R.string.runtime_text_0200));
         });
 
         root.addView(
@@ -428,9 +428,9 @@ public final class NoForgetEditorActivity extends Activity {
 
         AlertDialog dialog=new AlertDialog.Builder(this)
                 .setView(root)
-                .setNegativeButton("انصراف",null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003),null)
                 .setPositiveButton(
-                        "ذخیره ترسیم",
+                        AppString.get(R.string.runtime_text_0204),
                         (d,which)->{
                             sketch.load(canvas.serialize());
                             updateActionButtons();
@@ -465,10 +465,10 @@ public final class NoForgetEditorActivity extends Activity {
 
         LinearLayout root=NoteModalStyler.content(
                 this,
-                "فایل‌ها و تصاویر",
-                "هر تعداد فایل یا تصویر اضافه کنید؛ برای باز کردن هر مورد روی آن بزنید.");
+                AppString.get(R.string.runtime_text_0129),
+                AppString.get(R.string.runtime_text_0463));
 
-        Button add=makeModalPrimaryButton("+ افزودن فایل یا تصویر");
+        Button add=makeModalPrimaryButton(AppString.get(R.string.runtime_text_0464));
         LinearLayout.LayoutParams ap=new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 dp(50));
@@ -487,7 +487,7 @@ public final class NoForgetEditorActivity extends Activity {
 
         filesDialog=new AlertDialog.Builder(this)
                 .setView(root)
-                .setNegativeButton("بستن",null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0002),null)
                 .create();
 
         add.setOnClickListener(v->{
@@ -513,7 +513,7 @@ public final class NoForgetEditorActivity extends Activity {
 
         if(count==0){
             TextView empty=new TextView(this);
-            empty.setText("هنوز فایلی اضافه نشده است.");
+            empty.setText(AppString.get(R.string.runtime_text_0133));
             empty.setGravity(Gravity.CENTER);
             empty.setTextColor(AppSettings.textPrimary(this));
             empty.setPadding(0,dp(24),0,dp(24));
@@ -528,10 +528,10 @@ public final class NoForgetEditorActivity extends Activity {
 
         LinearLayout root=NoteModalStyler.content(
                 this,
-                "افزودن اپ یا سایت",
-                "یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.");
+                AppString.get(R.string.runtime_text_0117),
+                AppString.get(R.string.runtime_text_0465));
 
-        Button chooseApp=makeModalPrimaryButton("انتخاب برنامه نصب‌شده");
+        Button chooseApp=makeModalPrimaryButton(AppString.get(R.string.runtime_text_0130));
         root.addView(
                 chooseApp,
                 new LinearLayout.LayoutParams(
@@ -539,7 +539,7 @@ public final class NoForgetEditorActivity extends Activity {
                         dp(50)));
 
         EditText url=new EditText(this);
-        url.setHint("لینک سایت، مثلاً https://example.com");
+        url.setHint(AppString.get(R.string.runtime_text_0208));
         url.setSingleLine(true);
         url.setInputType(
                 InputType.TYPE_CLASS_TEXT
@@ -554,7 +554,7 @@ public final class NoForgetEditorActivity extends Activity {
         up.topMargin=dp(8);
         root.addView(url,up);
 
-        Button addSite=makeModalPrimaryButton("+ افزودن سایت");
+        Button addSite=makeModalPrimaryButton(AppString.get(R.string.runtime_text_0466));
         LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 dp(48));
@@ -573,7 +573,7 @@ public final class NoForgetEditorActivity extends Activity {
 
         appSiteDialog=new AlertDialog.Builder(this)
                 .setView(root)
-                .setNegativeButton("بستن",null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0002),null)
                 .create();
 
         chooseApp.setOnClickListener(v->{
@@ -587,7 +587,7 @@ public final class NoForgetEditorActivity extends Activity {
             if(value.isEmpty()){
                 LogoToast.makeText(
                         this,
-                        "لینک سایت را وارد کنید",
+                        AppString.get(R.string.runtime_text_0131),
                         Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -595,7 +595,7 @@ public final class NoForgetEditorActivity extends Activity {
             if(attachment.value.length()<9){
                 LogoToast.makeText(
                         this,
-                        "لینک معتبر وارد کنید",
+                        AppString.get(R.string.runtime_text_0132),
                         Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -624,7 +624,7 @@ public final class NoForgetEditorActivity extends Activity {
 
         if(count==0){
             TextView empty=new TextView(this);
-            empty.setText("هنوز برنامه یا سایتی اضافه نشده است.");
+            empty.setText(AppString.get(R.string.runtime_text_0134));
             empty.setGravity(Gravity.CENTER);
             empty.setTextColor(AppSettings.textPrimary(this));
             empty.setPadding(0,dp(24),0,dp(24));
@@ -669,7 +669,7 @@ public final class NoForgetEditorActivity extends Activity {
         open.setOnClickListener(v->item.open(this));
 
         Button remove=new Button(this);
-        remove.setText("حذف");
+        remove.setText(AppString.get(R.string.runtime_text_0006));
         remove.setAllCaps(false);
         remove.setTextColor(0xFFC44C4C);
         remove.setBackgroundResource(R.drawable.bg_soft_button);
@@ -712,16 +712,16 @@ public final class NoForgetEditorActivity extends Activity {
                     ||NoteAttachment.KIND_URL.equals(item.kind))targets++;
         }
 
-        sketchAction.setText(hasSketch?"ترسیم ✓":"ترسیم");
+        sketchAction.setText(hasSketch?AppString.get(R.string.runtime_text_0199):AppString.get(R.string.runtime_text_0118));
         filesAction.setText(
                 files==0
-                        ?"افزودن فایل"
-                        :"افزودن فایل ("+CalendarUtils.fa(
+                        ?AppString.get(R.string.runtime_text_0116)
+                        :AppString.get(R.string.runtime_text_0467)+CalendarUtils.fa(
                                 Integer.toString(files))+")");
         appSiteAction.setText(
                 targets==0
-                        ?"افزودن اپ یا سایت"
-                        :"اپ یا سایت ("+CalendarUtils.fa(
+                        ?AppString.get(R.string.runtime_text_0117)
+                        :AppString.get(R.string.runtime_text_0468)+CalendarUtils.fa(
                                 Integer.toString(targets))+")");
     }
 
@@ -788,7 +788,7 @@ public final class NoForgetEditorActivity extends Activity {
         fullscreenLocked.setChecked(item.fullscreenLocked);
         soundUri=item.soundUri;
         soundButton.setText(
-                "صدای هشدار • "+SoundLibrary.name(this,soundUri));
+                AppString.get(R.string.runtime_text_0461)+SoundLibrary.name(this,soundUri));
     }
 
     private void updateDueButtons(){
@@ -808,7 +808,7 @@ public final class NoForgetEditorActivity extends Activity {
     private void updateReminderButton(){
         if(remindersButton==null)return;
         remindersButton.setText(
-                "یادآوری قبل از موعد\n"
+                AppString.get(R.string.runtime_text_0469)
                         +AlarmReminderUtils.summary(
                                 reminderMode,
                                 reminderMinutesJson));
@@ -825,7 +825,7 @@ public final class NoForgetEditorActivity extends Activity {
                 &&attachments.isEmpty()){
             LogoToast.makeText(
                     this,
-                    "یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید",
+                    AppString.get(R.string.runtime_text_0135),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -836,7 +836,7 @@ public final class NoForgetEditorActivity extends Activity {
         if(enabled&&dueAt<=System.currentTimeMillis()){
             LogoToast.makeText(
                     this,
-                    "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
+                    AppString.get(R.string.runtime_text_0148),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -878,7 +878,7 @@ public final class NoForgetEditorActivity extends Activity {
         if(!scheduled){
             LogoToast.makeText(
                     this,
-                    "یادداشت ذخیره شد؛ برای آلارم، دسترسی آلارم دقیق لازم است.",
+                    AppString.get(R.string.runtime_text_0470),
                     Toast.LENGTH_LONG).show();
         }
         finish();
@@ -901,7 +901,7 @@ public final class NoForgetEditorActivity extends Activity {
         startActivityForResult(
                 new Intent(Intent.ACTION_PICK_ACTIVITY)
                         .putExtra(Intent.EXTRA_INTENT,base)
-                        .putExtra(Intent.EXTRA_TITLE,"انتخاب برنامه"),
+                        .putExtra(Intent.EXTRA_TITLE,AppString.get(R.string.runtime_text_0206)),
                 REQ_APP);
     }
 
@@ -920,7 +920,7 @@ public final class NoForgetEditorActivity extends Activity {
         if(requestCode==REQ_SOUND){
             soundUri=data.getStringExtra(SoundPickerActivity.EXTRA_URI);
             soundButton.setText(
-                    "صدای هشدار • "
+                    AppString.get(R.string.runtime_text_0461)
                             +data.getStringExtra(
                                     SoundPickerActivity.EXTRA_NAME));
             return;
@@ -983,7 +983,7 @@ public final class NoForgetEditorActivity extends Activity {
                 null)){
             if(c!=null&&c.moveToFirst())return c.getString(0);
         }catch(Exception ignored){}
-        return "فایل";
+        return AppString.get(R.string.runtime_text_0059);
     }
 
     private void renderAttachments(){
