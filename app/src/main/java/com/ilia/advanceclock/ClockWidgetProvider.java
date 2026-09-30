@@ -238,15 +238,14 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         if (rowCount <= 0) {
             root.setTextViewText(
                     R.id.widget_empty,
-                    UiText.tr(context,
-                            "برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید"));
+                    AppString.get(R.string.runtime_text_0399));
             root.setViewVisibility(
                     R.id.widget_empty,
                     View.VISIBLE);
         } else {
             root.setTextViewText(
                     R.id.widget_empty,
-                    UiText.tr(context, "هشداری تنظیم نشده"));
+                    AppString.get(R.string.runtime_text_0401));
             root.setViewVisibility(
                     R.id.widget_empty,
                     items.isEmpty()
@@ -272,7 +271,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     R.id.widget_row_title,
                     item.label == null
                             || item.label.trim().isEmpty()
-                            ? UiText.tr(context, "هشدار")
+                            ? AppString.get(R.string.runtime_text_0017)
                             : item.label);
 
             String clock =
