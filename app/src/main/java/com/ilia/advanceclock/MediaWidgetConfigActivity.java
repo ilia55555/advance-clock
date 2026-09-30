@@ -80,7 +80,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -478,7 +478,7 @@ public final class MediaWidgetConfigActivity extends Activity {
 
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.VERTICAL);
-            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            row.setLayoutDirection(AppSettings.layoutDirection(this));
             row.setPadding(
                     dp(10),
                     dp(8),
@@ -517,7 +517,7 @@ public final class MediaWidgetConfigActivity extends Activity {
             actions.setOrientation(
                     LinearLayout.HORIZONTAL);
             actions.setLayoutDirection(
-                    View.LAYOUT_DIRECTION_RTL);
+                    AppSettings.layoutDirection(this));
             actions.setGravity(Gravity.START);
 
             Button up = miniButton(AppString.get(R.string.runtime_text_0547));
@@ -677,7 +677,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setLayoutDirection(
-                View.LAYOUT_DIRECTION_RTL);
+                AppSettings.layoutDirection(this));
         card.setPadding(
                 dp(12),
                 dp(6),
