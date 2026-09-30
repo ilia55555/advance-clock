@@ -32,7 +32,7 @@ public final class MediaWidgetPrefs {
                 String textPreview) {
             this.uri = uri == null ? "" : uri;
             this.name = name == null || name.trim().isEmpty()
-                    ? "فایل"
+                    ? AppString.get(R.string.runtime_text_0059)
                     : name;
             this.mime = mime == null || mime.trim().isEmpty()
                     ? "application/octet-stream"
@@ -76,7 +76,7 @@ public final class MediaWidgetPrefs {
 
                 out.add(new Item(
                         uri,
-                        object.optString("name", "فایل"),
+                        object.optString("name", AppString.get(R.string.runtime_text_0059)),
                         object.optString(
                                 "mime",
                                 "application/octet-stream"),
