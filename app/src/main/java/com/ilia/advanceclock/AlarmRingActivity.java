@@ -230,11 +230,16 @@ public final class AlarmRingActivity extends Activity {
             startService(AlarmSoundService.muteIntent(this));
             return true;
         }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            startService(AlarmSoundService.unmuteIntent(this));
+            return true;
+        }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) return true;
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+                || keyCode == KeyEvent.KEYCODE_VOLUME_UP) return true;
         return super.onKeyUp(keyCode, event);
     }
 
