@@ -1016,4 +1016,12 @@
     <string name="preview_file_number">فایل %1$d</string>
     <string name="preview_note_number">یادداشت %1$d</string>
     <string name="ui_symbol_minus" formatted="false">−</string>
+    <string name="adhan_skip_title">روزهای بدون پخش اذان</string>
+    <string name="adhan_skip_description">در روزهای انتخاب‌شده اذان پخش نمی‌شود.</string>
+    <string name="adhan_skip_mode_off">غیرفعال</string>
+    <string name="adhan_skip_mode_weekdays">روزهای هفته</string>
+    <string name="adhan_skip_mode_dates">تاریخ‌های مشخص</string>
+    <string name="adhan_skip_add_date">افزودن تاریخ</string>
+    <string name="adhan_skip_no_dates">هنوز تاریخی انتخاب نشده است.</string>
+    <string name="adhan_skip_remove_date">حذف تاریخ</string>
 </resources>
