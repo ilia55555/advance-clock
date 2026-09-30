@@ -54,10 +54,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         LinearLayout header = new LinearLayout(this);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        TextView title = text(AppString.get(R.string.runtime_text_0318), 23, AppSettings.textPrimary(this));
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        header.addView(title, new LinearLayout.LayoutParams(0, dp(58), 1f));
+        header.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
         ImageButton close = new ImageButton(this);
         close.setImageResource(R.drawable.ic_md_close);
         close.setColorFilter(AppSettings.textPrimary(this));
@@ -66,6 +64,13 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
+        TextView title = text(AppString.get(R.string.runtime_text_0318), 23, AppSettings.textPrimary(this));
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        header.addView(title, new LinearLayout.LayoutParams(0, dp(58), 1f));
+
         root.addView(header);
 
         LinearLayout selectorCard = new LinearLayout(this);
