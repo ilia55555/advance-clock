@@ -74,7 +74,7 @@ final class FirstRunSetupDialog {
         content.addView(calendar, fieldParams(activity));
 
         Switch adhan = new Switch(activity);
-        adhan.setText("نمایش بخش اذان و اوقات شرعی");
+        adhan.setText(AppString.get(R.string.runtime_text_0360));
         adhan.setTextColor(AppSettings.textPrimary(activity));
         adhan.setChecked(false);
         adhan.setPadding(0, dp(activity, 12), 0, 0);
