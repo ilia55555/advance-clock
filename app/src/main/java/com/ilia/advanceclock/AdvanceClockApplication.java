@@ -19,7 +19,7 @@ public final class AdvanceClockApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
         AppSettings.applyLanguage(this);
-        UiText.init(this);
+        AppString.init(this);
         PrayerTimeZoneRepair.repairIfNeeded(this);
         MainNoteTabEnhancer.install(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -84,7 +84,6 @@ public final class AdvanceClockApplication extends Application {
         if (source == null || source.isFinishing() || source.isDestroyed()) return;
         AppSettings.applyLanguage(source.getApplicationContext());
         AppSettings.applyLanguage(source);
-        UiText.invalidate();
         Intent restart = new Intent(source, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         source.startActivity(restart);
