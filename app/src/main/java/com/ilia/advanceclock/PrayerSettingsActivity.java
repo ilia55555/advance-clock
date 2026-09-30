@@ -22,12 +22,14 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +56,8 @@ public final class PrayerSettingsActivity extends Activity {
     private int locationRequestGeneration;
     private int activeAdhanType = -1;
     private LinearLayout activeMuezzinList;
+    private Spinner adhanSkipMode;
+    private LinearLayout adhanSkipOptions;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -160,6 +164,8 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(adhanScheduleStatus);
 
         root.addView(azanCard, cardParams());
+        addAdhanSkipSection(root);
+
         Button preview = fieldButton(AppString.get(R.string.runtime_text_0096));
         preview.setOnClickListener(v -> previewAdhan());
         root.addView(preview, new LinearLayout.LayoutParams(-1, dp(54)));
@@ -357,6 +363,191 @@ public final class PrayerSettingsActivity extends Activity {
         } else if (status == AdhanScheduler.Status.SCHEDULE_FAILED) {
             AdhanScheduler.rescheduleAll(this);
             refreshAdhanScheduleStatus();
+        }
+    }
+
+    private void addAdhanSkipSection(LinearLayout root) {
+        LinearLayout skipCard = card();
+
+        TextView title = text(
+                AppString.get(R.string.adhan_skip_title),
+                17,
+                AppSettings.textPrimary(this));
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        skipCard.addView(title);
+
+        TextView description = text(
+                AppString.get(R.string.adhan_skip_description),
+                12,
+                AppSettings.textSecondary(this));
+        description.setPadding(0, dp(4), 0, dp(8));
+        skipCard.addView(description);
+
+        adhanSkipMode = new Spinner(this);
+        ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{
+                        AppString.get(R.string.adhan_skip_mode_off),
+                        AppString.get(R.string.adhan_skip_mode_weekdays),
+                        AppString.get(R.string.adhan_skip_mode_dates)
+                });
+        modeAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        adhanSkipMode.setAdapter(modeAdapter);
+        adhanSkipMode.setLayoutDirection(AppSettings.layoutDirection(this));
+        adhanSkipMode.setSelection(AppSettings.adhanSkipMode(this));
+        skipCard.addView(
+                adhanSkipMode,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
+        adhanSkipOptions = new LinearLayout(this);
+        adhanSkipOptions.setOrientation(LinearLayout.VERTICAL);
+        adhanSkipOptions.setLayoutDirection(AppSettings.layoutDirection(this));
+        LinearLayout.LayoutParams optionsParams =
+                new LinearLayout.LayoutParams(-1, -2);
+        optionsParams.topMargin = dp(8);
+        skipCard.addView(adhanSkipOptions, optionsParams);
+
+        adhanSkipMode.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override public void onItemSelected(
+                            android.widget.AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+                        if (AppSettings.adhanSkipMode(
+                                PrayerSettingsActivity.this) != position) {
+                            AppSettings.setAdhanSkipMode(
+                                    PrayerSettingsActivity.this, position);
+                            setResult(RESULT_OK);
+                        }
+                        renderAdhanSkipOptions();
+                    }
+
+                    @Override public void onNothingSelected(
+                            android.widget.AdapterView<?> parent) {}
+                });
+
+        renderAdhanSkipOptions();
+        root.addView(skipCard, cardParams());
+    }
+
+    private void renderAdhanSkipOptions() {
+        if (adhanSkipOptions == null) return;
+        adhanSkipOptions.removeAllViews();
+
+        int mode = adhanSkipMode == null
+                ? AppSettings.adhanSkipMode(this)
+                : adhanSkipMode.getSelectedItemPosition();
+
+        if (mode == AppSettings.ADHAN_SKIP_WEEKDAYS) {
+            int[] days = {
+                    java.util.Calendar.SATURDAY,
+                    java.util.Calendar.SUNDAY,
+                    java.util.Calendar.MONDAY,
+                    java.util.Calendar.TUESDAY,
+                    java.util.Calendar.WEDNESDAY,
+                    java.util.Calendar.THURSDAY,
+                    java.util.Calendar.FRIDAY
+            };
+            int[] labels = {
+                    R.string.runtime_text_0180,
+                    R.string.runtime_text_0181,
+                    R.string.runtime_text_0182,
+                    R.string.runtime_text_0552,
+                    R.string.runtime_text_0184,
+                    R.string.runtime_text_0185,
+                    R.string.runtime_text_0186
+            };
+
+            for (int i = 0; i < days.length; i++) {
+                final int day = days[i];
+                Switch skip = toggle(
+                        AppString.get(labels[i]),
+                        AppSettings.adhanSkipWeekday(this, day));
+                skip.setOnCheckedChangeListener((button, checked) -> {
+                    AppSettings.setAdhanSkipWeekday(
+                            PrayerSettingsActivity.this, day, checked);
+                    setResult(RESULT_OK);
+                });
+                adhanSkipOptions.addView(
+                        skip,
+                        new LinearLayout.LayoutParams(-1, dp(48)));
+            }
+            return;
+        }
+
+        if (mode != AppSettings.ADHAN_SKIP_DATES) return;
+
+        Button addDate = fieldButton(
+                AppString.get(R.string.adhan_skip_add_date));
+        addDate.setOnClickListener(v -> CalendarPickerDialog.showDateAny(
+                this,
+                System.currentTimeMillis(),
+                AppSettings.defaultCalendar(this),
+                (picked, calendarType) -> {
+                    AppSettings.addAdhanSkipDate(this, picked);
+                    setResult(RESULT_OK);
+                    renderAdhanSkipOptions();
+                }));
+        adhanSkipOptions.addView(
+                addDate,
+                new LinearLayout.LayoutParams(-1, dp(52)));
+
+        java.util.ArrayList<String> dates = new java.util.ArrayList<>(
+                AppSettings.adhanSkipDates(this));
+        java.util.Collections.sort(dates);
+
+        if (dates.isEmpty()) {
+            TextView empty = text(
+                    AppString.get(R.string.adhan_skip_no_dates),
+                    12,
+                    AppSettings.textSecondary(this));
+            empty.setPadding(dp(8), dp(12), dp(8), dp(6));
+            adhanSkipOptions.addView(empty);
+            return;
+        }
+
+        for (String key : dates) {
+            long millis = AppSettings.adhanSkipDateMillis(this, key);
+            if (millis <= 0L) continue;
+
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setLayoutDirection(AppSettings.layoutDirection(this));
+            row.setBackgroundResource(R.drawable.bg_field);
+            row.setPadding(dp(12), 0, dp(8), 0);
+
+            TextView date = text(
+                    CalendarUtils.formatDate(
+                            millis,
+                            AppSettings.defaultCalendar(this),
+                            AppSettings.prayerTimeZone(this)),
+                    13,
+                    AppSettings.textPrimary(this));
+            row.addView(date, new LinearLayout.LayoutParams(0, dp(52), 1f));
+
+            Button remove = fieldButton(
+                    AppString.get(R.string.adhan_skip_remove_date));
+            remove.setGravity(Gravity.CENTER);
+            remove.setTextColor(0xFFD32F2F);
+            remove.setOnClickListener(v -> {
+                AppSettings.removeAdhanSkipDate(
+                        PrayerSettingsActivity.this, key);
+                setResult(RESULT_OK);
+                renderAdhanSkipOptions();
+            });
+            LinearLayout.LayoutParams removeParams =
+                    new LinearLayout.LayoutParams(dp(106), dp(42));
+            removeParams.setMarginStart(dp(6));
+            row.addView(remove, removeParams);
+
+            LinearLayout.LayoutParams rowParams =
+                    new LinearLayout.LayoutParams(-1, dp(56));
+            rowParams.topMargin = dp(6);
+            adhanSkipOptions.addView(row, rowParams);
         }
     }
 
