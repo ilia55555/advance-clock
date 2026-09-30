@@ -75,7 +75,7 @@ public final class NoteReminderActivity extends Activity {
         content.setPadding(dp(20),dp(42),dp(20),dp(24));
 
         TextView heading=text(
-                item.title.trim().isEmpty()?"یادآوری یادداشت":item.title,
+                item.title.trim().isEmpty()?AppString.get(R.string.runtime_text_0311):item.title,
                 28);
         heading.setGravity(Gravity.CENTER);
         content.addView(heading,matchWrap());
@@ -91,7 +91,7 @@ public final class NoteReminderActivity extends Activity {
         addAttachments(content,NoteAttachment.parse(item.attachmentsJson));
 
         Button openNote=new Button(this);
-        openNote.setText("باز کردن یادداشت");
+        openNote.setText(AppString.get(R.string.runtime_text_0308));
         openNote.setAllCaps(false);
         openNote.setOnClickListener(v->{
             startActivity(
@@ -104,7 +104,7 @@ public final class NoteReminderActivity extends Activity {
         content.addView(openNote,op);
 
         Button dismiss=new Button(this);
-        dismiss.setText("قطع هشدار");
+        dismiss.setText(AppString.get(R.string.runtime_text_0309));
         dismiss.setAllCaps(false);
         dismiss.setOnClickListener(v->stopAndClose());
         LinearLayout.LayoutParams dismissParams=matchWrap();
@@ -122,7 +122,7 @@ public final class NoteReminderActivity extends Activity {
             List<NoteAttachment> values){
         if(values.isEmpty())return;
 
-        TextView label=text("فایل‌ها، تصاویر، برنامه‌ها و سایت‌ها",13);
+        TextView label=text(AppString.get(R.string.runtime_text_0310),13);
         label.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams lp=matchWrap();
         lp.topMargin=dp(20);
