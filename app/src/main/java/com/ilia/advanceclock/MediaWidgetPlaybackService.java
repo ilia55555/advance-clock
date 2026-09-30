@@ -177,7 +177,7 @@ public final class MediaWidgetPlaybackService extends Service {
 
         currentUri = uriValue;
         currentName = name == null || name.trim().isEmpty()
-                ? "رسانه"
+                ? AppString.get(R.string.runtime_text_0067)
                 : name;
         currentMime = mime == null ? "" : mime;
         currentWidgetId = widgetId;
@@ -286,12 +286,12 @@ public final class MediaWidgetPlaybackService extends Service {
                                 | PendingIntent.FLAG_IMMUTABLE);
 
         String state = preparing
-                ? "در حال آماده‌سازی"
-                : (playing ? "در حال پخش" : "مکث");
+                ? AppString.get(R.string.runtime_text_0260)
+                : (playing ? AppString.get(R.string.runtime_text_0261) : AppString.get(R.string.runtime_text_0262));
 
         return new Notification.Builder(this, CHANNEL)
                 .setSmallIcon(R.drawable.ic_app)
-                .setContentTitle(UiText.tr(this, "یادآوری فایل‌ها"))
+                .setContentTitle(AppString.get(R.string.runtime_text_0115))
                 .setContentText(state + ": " + currentName)
                 .setContentIntent(contentIntent)
                 .setOnlyAlertOnce(true)
@@ -308,11 +308,10 @@ public final class MediaWidgetPlaybackService extends Service {
         NotificationChannel channel =
                 new NotificationChannel(
                         CHANNEL,
-                        UiText.tr(this, "پخش رسانه ویجت فایل‌ها"),
+                        AppString.get(R.string.runtime_text_0669),
                         NotificationManager.IMPORTANCE_LOW);
         channel.setDescription(
-                UiText.tr(this,
-                        "کنترل پخش صوت و ویدیو از ویجت یادآوری فایل‌ها"));
+                AppString.get(R.string.runtime_text_0670));
         manager.createNotificationChannel(channel);
     }
 
