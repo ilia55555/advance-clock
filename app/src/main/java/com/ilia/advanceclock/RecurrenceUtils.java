@@ -21,8 +21,8 @@ public final class RecurrenceUtils {
 
     public static String[] labels() {
         return new String[]{
-                "بدون تکرار", "هر روز", "هر هفته", "هر ماه", "هر سال",
-                "هر چند روز", "تاریخ‌های دلخواه", "روزهای هفته"
+                AppString.get(R.string.runtime_text_0029), AppString.get(R.string.runtime_text_0030), AppString.get(R.string.runtime_text_0031), AppString.get(R.string.runtime_text_0032), AppString.get(R.string.runtime_text_0033),
+                AppString.get(R.string.runtime_text_0294), AppString.get(R.string.runtime_text_0295), AppString.get(R.string.runtime_text_0296)
         };
     }
 
@@ -139,12 +139,12 @@ public final class RecurrenceUtils {
     }
 
     public static String summary(int mode, int intervalDays, String customDatesJson) {
-        if (mode == INTERVAL_DAYS) return "هر " + Math.max(1, intervalDays) + " روز";
-        if (mode == CUSTOM_DATES) return parseDates(customDatesJson).size() + " تاریخ انتخاب شده";
+        if (mode == INTERVAL_DAYS) return AppString.get(R.string.runtime_text_0553) + Math.max(1, intervalDays) + AppString.get(R.string.runtime_text_0554);
+        if (mode == CUSTOM_DATES) return parseDates(customDatesJson).size() + AppString.get(R.string.runtime_text_0555);
         if (mode == WEEKDAYS) {
             return isPermanentWeekdays(customDatesJson)
-                    ? "دائم؛ روزهای انتخابی هر هفته"
-                    : "روزهای انتخابی هر " + Math.max(1, intervalDays) + " هفته";
+                    ? AppString.get(R.string.runtime_text_0556)
+                    : AppString.get(R.string.runtime_text_0557) + Math.max(1, intervalDays) + AppString.get(R.string.runtime_text_0558);
         }
         String[] labels = labels();
         return labels[Math.max(0, Math.min(labels.length - 1, mode))];
