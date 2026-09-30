@@ -65,9 +65,9 @@ public final class NoForgetSoundService extends Service {
                 ? new Notification.Builder(this, NotificationHelper.NOTE_ALARM_CHANNEL)
                 : new Notification.Builder(this);
         String notificationTitle = item.title.trim().isEmpty()
-                ? UiText.tr(this, "یادآوری یادداشت") : item.title;
+                ? AppString.get(R.string.runtime_text_0311) : item.title;
         String notificationBody = item.body.trim().isEmpty()
-                ? UiText.tr(this, "زمان یادداشت شما رسیده است") : item.body;
+                ? AppString.get(R.string.runtime_text_0312) : item.body;
         builder.setSmallIcon(R.drawable.ic_note)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody)
@@ -76,7 +76,7 @@ public final class NoForgetSoundService extends Service {
                 .setVisibility(AppSettings.notificationVisibility(this)).setPriority(Notification.PRIORITY_MAX)
                 .setOngoing(true).setContentIntent(open)
                 .addAction(new Notification.Action.Builder(
-                        null, UiText.tr(this, "قطع"), stop).build());
+                        null, AppString.get(R.string.runtime_text_0406), stop).build());
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
         if (locked ? item.fullscreenLocked : item.fullscreenUnlocked)
