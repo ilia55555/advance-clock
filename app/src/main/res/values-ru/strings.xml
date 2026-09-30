@@ -844,4 +844,12 @@
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">Не воспроизводить азан</string>
+    <string name="adhan_skip_description">В выбранные дни азан воспроизводиться не будет.</string>
+    <string name="adhan_skip_mode_off">Выключено</string>
+    <string name="adhan_skip_mode_weekdays">Дни недели</string>
+    <string name="adhan_skip_mode_dates">Определённые даты</string>
+    <string name="adhan_skip_add_date">Добавить дату</string>
+    <string name="adhan_skip_no_dates">Даты ещё не выбраны.</string>
+    <string name="adhan_skip_remove_date">Удалить</string>
 </resources>
