@@ -140,9 +140,9 @@ final class WorldClockPanelController {
         }
         allZones.add(new ZoneOption(
                 "Asia/Shanghai",
-                "پکن • چین • آسیا",
-                normalize("Beijing Peking پکن 北京 China چین Asia/Shanghai"),
-                "پکن",
+                AppString.get(R.string.runtime_text_0498),
+                normalize(AppString.get(R.string.runtime_text_0499)),
+                AppString.get(R.string.runtime_text_0500),
                 Double.NaN,
                 Double.NaN,
                 "CN",
@@ -162,13 +162,13 @@ final class WorldClockPanelController {
         header.setPadding(dp(16), dp(12), dp(16), dp(12));
         header.setBackgroundResource(R.drawable.bg_header);
 
-        TextView title = text("افزودن منطقه زمانی", 19, AppSettings.textPrimary(host));
+        TextView title = text(AppString.get(R.string.runtime_text_0103), 19, AppSettings.textPrimary(host));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setTextColor(0xFFFFFFFF);
         title.setGravity(Gravity.CENTER);
         header.addView(title, new LinearLayout.LayoutParams(-1, -2));
 
-        TextView hint = text("ابتدا آفلاین، سپس در صورت نیاز جست‌وجوی آنلاین", 12,
+        TextView hint = text(AppString.get(R.string.runtime_text_0373), 12,
                 0xFFD9EFED);
         hint.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams hintParams = new LinearLayout.LayoutParams(-1, -2);
@@ -178,7 +178,7 @@ final class WorldClockPanelController {
 
         EditText dialogSearch = new EditText(host);
         dialogSearch.setSingleLine(true);
-        dialogSearch.setHint("نام شهر، استان، کشور یا منطقه زمانی");
+        dialogSearch.setHint(AppString.get(R.string.runtime_text_0375));
         dialogSearch.setTextColor(AppSettings.textPrimary(host));
         dialogSearch.setHintTextColor(AppSettings.textSecondary(host));
         dialogSearch.setBackgroundResource(R.drawable.bg_field);
@@ -195,7 +195,7 @@ final class WorldClockPanelController {
         progressParams.topMargin = dp(6);
         content.addView(progress, progressParams);
 
-        TextView status = text("مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند", 12,
+        TextView status = text(AppString.get(R.string.runtime_text_0501), 12,
                 AppSettings.textSecondary(host));
         status.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams statusParams = new LinearLayout.LayoutParams(-1, -2);
@@ -210,7 +210,7 @@ final class WorldClockPanelController {
         content.addView(dialogSpinner, spinnerParams);
 
         Button addButton = new Button(host);
-        addButton.setText("افزودن ساعت انتخاب‌شده");
+        addButton.setText(AppString.get(R.string.runtime_text_0104));
         addButton.setTextColor(0xFFFFFFFF);
         addButton.setTextSize(15);
         addButton.setAllCaps(false);
@@ -220,7 +220,7 @@ final class WorldClockPanelController {
         content.addView(addButton, buttonParams);
 
         Button cancelButton = new Button(host);
-        cancelButton.setText("انصراف");
+        cancelButton.setText(AppString.get(R.string.runtime_text_0003));
         cancelButton.setTextColor(AppSettings.primaryColor(host));
         cancelButton.setTextSize(14);
         cancelButton.setAllCaps(false);
@@ -291,19 +291,19 @@ final class WorldClockPanelController {
         List<ZoneOption> offline = offlineMatches(trimmed);
         if (trimmed.isEmpty() || !offline.isEmpty()) {
             showOptions(spinner, offline, trimmed.isEmpty()
-                    ? "مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند"
-                    : CalendarUtils.fa(Integer.toString(offline.size())) + " نتیجه آفلاین");
+                    ? AppString.get(R.string.runtime_text_0501)
+                    : CalendarUtils.fa(Integer.toString(offline.size())) + AppString.get(R.string.runtime_text_0447));
             progress.setVisibility(View.GONE);
             status.setText(trimmed.isEmpty()
-                    ? "مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند"
-                    : CalendarUtils.fa(Integer.toString(offline.size())) + " نتیجه آفلاین");
+                    ? AppString.get(R.string.runtime_text_0501)
+                    : CalendarUtils.fa(Integer.toString(offline.size())) + AppString.get(R.string.runtime_text_0447));
             return;
         }
 
         if (trimmed.length() < 2) {
             showOptions(spinner, Collections.emptyList(), "");
             progress.setVisibility(View.GONE);
-            status.setText("برای جست‌وجوی جهانی یک حرف دیگر وارد کنید");
+            status.setText(AppString.get(R.string.runtime_text_0377));
             return;
         }
 
@@ -315,7 +315,7 @@ final class WorldClockPanelController {
                     showOptions(spinner, cachedResults, "");
                     progress.setVisibility(View.GONE);
                     status.setText(CalendarUtils.fa(Integer.toString(cachedResults.size()))
-                            + " نتیجه ذخیره‌شده");
+                            + AppString.get(R.string.runtime_text_0450));
                     return;
                 }
             } catch (JSONException | NumberFormatException ignored) {
@@ -325,13 +325,13 @@ final class WorldClockPanelController {
         if (!hasInternetConnection()) {
             showOptions(spinner, Collections.emptyList(), "");
             progress.setVisibility(View.GONE);
-            status.setText("نتیجه آفلاین پیدا نشد؛ برای جست‌وجوی جدید اینترنت لازم است");
+            status.setText(AppString.get(R.string.runtime_text_0378));
             return;
         }
 
         showOptions(spinner, Collections.emptyList(), "");
         progress.setVisibility(View.VISIBLE);
-        status.setText("در حال جست‌وجوی آنلاین…");
+        status.setText(AppString.get(R.string.runtime_text_0376));
         pendingZoneSearch = () -> performOnlineSearch(
                 spinner, status, progress, trimmed, generation);
         handler.postDelayed(pendingZoneSearch, 400L);
@@ -345,7 +345,7 @@ final class WorldClockPanelController {
         List<ZoneOption> offline = offlineMatches(query);
         showOptions(spinner, offline, "");
         progress.setVisibility(View.GONE);
-        status.setText("مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند");
+        status.setText(AppString.get(R.string.runtime_text_0501));
     }
 
     private List<ZoneOption> offlineMatches(String query) {
@@ -388,11 +388,11 @@ final class WorldClockPanelController {
                 showOptions(spinner, found, "");
                 if (found.isEmpty()) {
                     status.setText(requestFailed
-                            ? "جست‌وجوی آنلاین انجام نشد؛ دوباره تلاش کنید"
-                            : "مکانی پیدا نشد؛ عبارت را تغییر دهید");
+                            ? AppString.get(R.string.runtime_text_0502)
+                            : AppString.get(R.string.runtime_text_0449));
                 } else {
                     status.setText(CalendarUtils.fa(Integer.toString(found.size()))
-                            + " نتیجه آنلاین");
+                            + AppString.get(R.string.runtime_text_0503));
                 }
             });
         }, "WorldClockSearch").start();
@@ -403,7 +403,7 @@ final class WorldClockPanelController {
         filteredZones.addAll(options);
         ArrayList<String> labels = new ArrayList<>();
         for (ZoneOption option : filteredZones) labels.add(option.label);
-        if (labels.isEmpty()) labels.add("نتیجه‌ای پیدا نشد");
+        if (labels.isEmpty()) labels.add(AppString.get(R.string.runtime_text_0102));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 host, android.R.layout.simple_spinner_item, labels);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -420,7 +420,7 @@ final class WorldClockPanelController {
         if (position < 0 || position >= filteredZones.size()) {
             LogoToast.makeText(
                     host,
-                    "ابتدا یک شهر، استان، کشور یا منطقه زمانی را جست‌وجو کنید",
+                    AppString.get(R.string.runtime_text_0374),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -445,27 +445,27 @@ final class WorldClockPanelController {
 
         if (!hasInternetConnection()) {
             String message =
-                    "منطقه زمانی این شهر آفلاین مشخص نشد؛ یک بار با اینترنت انتخابش کنید";
+                    AppString.get(R.string.runtime_text_0504);
             status.setText(message);
             LogoToast.makeText(host, message, Toast.LENGTH_LONG).show();
             return;
         }
 
         if (Double.isNaN(option.latitude) || Double.isNaN(option.longitude)) {
-            LogoToast.makeText(host, "مختصات این نتیجه در دسترس نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, AppString.get(R.string.runtime_text_0505), Toast.LENGTH_SHORT).show();
             return;
         }
 
         addButton.setEnabled(false);
         progress.setVisibility(View.VISIBLE);
-        status.setText("در حال تشخیص منطقه زمانی…");
+        status.setText(AppString.get(R.string.runtime_text_0453));
         new Thread(() -> {
             String resolved = resolveTimeZoneOnline(option.latitude, option.longitude);
             host.runOnUiThread(() -> {
                 addButton.setEnabled(true);
                 progress.setVisibility(View.GONE);
                 if (!isUsableTimeZone(resolved)) {
-                    String message = "منطقه زمانی این مکان تشخیص داده نشد؛ دوباره تلاش کنید";
+                    String message = AppString.get(R.string.runtime_text_0454);
                     status.setText(message);
                     LogoToast.makeText(host, message, Toast.LENGTH_LONG).show();
                     return;
@@ -480,7 +480,7 @@ final class WorldClockPanelController {
     private void saveSelectedZone(String zone, ZoneOption option) {
         List<String> zones = WorldClockStore.zones(host);
         if (zones.contains(zone)) {
-            LogoToast.makeText(host, "این منطقه زمانی قبلاً اضافه شده است", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, AppString.get(R.string.runtime_text_0379), Toast.LENGTH_SHORT).show();
             return;
         }
         zones.add(zone);
@@ -822,8 +822,8 @@ final class WorldClockPanelController {
         List<String> zones = WorldClockStore.zones(host);
         long shownMillis = referenceMode ? referenceMillis : System.currentTimeMillis();
         referenceSummary.setText(referenceMode
-                ? "تبدیل زمان محلی شما: " + localDateTime(shownMillis)
-                : "زمان فعلی در مناطق انتخاب‌شده");
+                ? AppString.get(R.string.runtime_text_0506) + localDateTime(shownMillis)
+                : AppString.get(R.string.runtime_text_0507));
         nowButton.setVisibility(referenceMode ? View.VISIBLE : View.GONE);
 
         for (String zoneId : zones) {
@@ -848,7 +848,7 @@ final class WorldClockPanelController {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
             timeFormat.setTimeZone(zone);
             SimpleDateFormat dateFormat =
-                    new SimpleDateFormat("EEE، d MMM yyyy", Locale.getDefault());
+                    new SimpleDateFormat(AppString.get(R.string.runtime_text_0508), Locale.getDefault());
             dateFormat.setTimeZone(zone);
             LinearLayout converted = new LinearLayout(host);
             converted.setOrientation(LinearLayout.VERTICAL);
@@ -870,7 +870,7 @@ final class WorldClockPanelController {
             ImageButton remove = new ImageButton(host);
             remove.setImageResource(R.drawable.ic_delete_red);
             remove.setBackgroundResource(R.drawable.bg_delete_outline);
-            remove.setContentDescription("حذف " + displayCity);
+            remove.setContentDescription(AppString.get(R.string.runtime_text_0509) + displayCity);
             remove.setPadding(dp(5), dp(5), dp(5), dp(5));
             boolean[] deleteArmed = {false};
             remove.setOnClickListener(v -> {
@@ -878,10 +878,10 @@ final class WorldClockPanelController {
                     deleteArmed[0] = true;
                     remove.setImageResource(R.drawable.ic_md_delete);
                     remove.setBackgroundResource(R.drawable.bg_delete_confirm);
-                    remove.setContentDescription("تأیید حذف " + displayCity);
+                    remove.setContentDescription(AppString.get(R.string.runtime_text_0510) + displayCity);
                     LogoToast.makeText(
                             host,
-                            "برای تأیید حذف دوباره بزنید",
+                            AppString.get(R.string.runtime_text_0511),
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -899,7 +899,7 @@ final class WorldClockPanelController {
         if (updated.size() == 1) {
             LogoToast.makeText(
                     host,
-                    "حداقل یک ساعت جهانی باید باقی بماند",
+                    AppString.get(R.string.runtime_text_0380),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -946,16 +946,16 @@ final class WorldClockPanelController {
 
     private String explicitSearchAliases(String id) {
         if ("America/Regina".equals(id)) {
-            return "Regina رجاینا Saskatchewan ساسکاچوان";
+            return AppString.get(R.string.runtime_text_0521);
         }
         if ("Asia/Tehran".equals(id)) {
-            return "Tehran تهران Iran ایران";
+            return AppString.get(R.string.runtime_text_0522);
         }
         if ("Asia/Kuwait".equals(id)) {
-            return "Kuwait کویت";
+            return AppString.get(R.string.runtime_text_0523);
         }
         if ("Asia/Shanghai".equals(id)) {
-            return "Shanghai شانگهای China چین";
+            return AppString.get(R.string.runtime_text_0524);
         }
         return "";
     }
