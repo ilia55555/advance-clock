@@ -59,11 +59,16 @@ public final class AdhanSoundService extends Service {
             int stream = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1);
             int current = intent.getIntExtra(EXTRA_VOLUME_STREAM_VALUE, -1);
             int previous = intent.getIntExtra(EXTRA_PREV_VOLUME_STREAM_VALUE, -1);
-            if (current >= 0 && previous >= 0 && current < previous
-                    && (stream == AudioManager.STREAM_ALARM
-                    || stream == AudioManager.STREAM_MUSIC
-                    || stream == AudioManager.STREAM_RING)) {
+            if (current < 0 || previous < 0
+                    || (stream != AudioManager.STREAM_ALARM
+                    && stream != AudioManager.STREAM_MUSIC
+                    && stream != AudioManager.STREAM_RING)) {
+                return;
+            }
+            if (current < previous) {
                 setMuted(true);
+            } else if (current > previous) {
+                setMuted(false);
             }
         }
     };
