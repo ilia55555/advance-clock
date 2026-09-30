@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="تنظیم هشدار"
+                android:text="@string/runtime_text_0137"
                 android:textColor="#FFFFFF"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="تاریخ، زمان، تکرار، اهمیت و یادآوری"
+                android:text="@string/layout_text_0001"
                 android:textColor="#E0F2F1"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:background="@drawable/bg_field"
-                android:hint="عنوان هشدار"
+                android:hint="@string/runtime_text_0138"
                 android:inputType="textCapSentences"
                 android:paddingHorizontal="14dp"
                 android:textColor="?attr/appTextPrimary"
@@ -70,7 +70,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_field"
-                    android:text="ساعت"
+                    android:text="@string/runtime_text_0013"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
                     android:textSize="20sp" />
@@ -83,7 +83,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_field"
-                    android:text="تاریخ"
+                    android:text="@string/runtime_text_0014"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
                     android:textSize="15sp" />
@@ -113,7 +113,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_field"
-                    android:text="بدون تکرار"
+                    android:text="@string/runtime_text_0029"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
                     android:textSize="13sp" />
@@ -132,7 +132,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_field"
-                    android:text="یادآوری&#10;بدون یادآوری"
+                    android:text="@string/layout_text_0002"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
                     android:textSize="12sp" />
@@ -151,7 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="لرزش"
+                        android:text="@string/runtime_text_0022"
                         android:textColor="?attr/appTextSecondary"
                         android:textSize="12sp" />
 
@@ -167,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)"
+                android:text="@string/runtime_text_0143"
                 android:textColor="?attr/appTextSecondary"
                 android:textSize="12sp" />
 
@@ -184,7 +184,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_field"
-                    android:text="افزودن عکس ۱"
+                    android:text="@string/runtime_text_0141"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
                     android:textSize="12sp" />
@@ -197,7 +197,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/bg_field"
-                    android:text="افزودن عکس ۲"
+                    android:text="@string/runtime_text_0142"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary"
                     android:textSize="12sp" />
@@ -218,7 +218,7 @@
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:background="@drawable/bg_field"
-                    android:contentDescription="عکس اول هشدار"
+                    android:contentDescription="@string/layout_text_0003"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
 
@@ -235,7 +235,7 @@
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:background="@drawable/bg_field"
-                    android:contentDescription="عکس دوم هشدار"
+                    android:contentDescription="@string/layout_text_0004"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
             </LinearLayout>
@@ -257,7 +257,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="صدای زنگ"
+                    android:text="@string/layout_text_0005"
                     android:textColor="?attr/appTextPrimary"
                     android:textSize="15sp" />
 
@@ -265,7 +265,7 @@
                     android:id="@+id/alarm_sound_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="پیش‌فرض سیستم"
+                    android:text="@string/runtime_text_0144"
                     android:textColor="?attr/appPrimary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -277,7 +277,7 @@
             android:layout_height="58dp"
             android:layout_marginTop="14dp"
             android:background="@drawable/bg_orange_button"
-            android:text="ذخیره هشدار"
+            android:text="@string/runtime_text_0139"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
@@ -289,7 +289,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_soft_button"
-            android:text="حذف هشدار"
+            android:text="@string/runtime_text_0140"
             android:textAllCaps="false"
             android:textColor="#C44C4C" />
 
@@ -299,7 +299,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_soft_button"
-            android:text="انصراف"
+            android:text="@string/runtime_text_0003"
             android:textAllCaps="false"
             android:textColor="?attr/appPrimary" />
     </LinearLayout>

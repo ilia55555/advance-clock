@@ -36,4 +36,766 @@
         <item>グレゴリオ暦</item>
         <item>ヒジュラ暦</item>
     </string-array>
+
+    <!-- Central catalog: every runtime UI phrase has a stable Android resource ID. -->
+    <string formatted="false" name="runtime_text_0001">設定</string>
+    <string formatted="false" name="runtime_text_0002">閉じる</string>
+    <string formatted="false" name="runtime_text_0003">キャンセル</string>
+    <string formatted="false" name="runtime_text_0004">確認</string>
+    <string formatted="false" name="runtime_text_0005">保存</string>
+    <string formatted="false" name="runtime_text_0006">削除</string>
+    <string formatted="false" name="runtime_text_0007">編集</string>
+    <string formatted="false" name="runtime_text_0008">追加</string>
+    <string formatted="false" name="runtime_text_0009">クリア</string>
+    <string formatted="false" name="runtime_text_0010">開始</string>
+    <string formatted="false" name="runtime_text_0011">停止</string>
+    <string formatted="false" name="runtime_text_0012">再開</string>
+    <string formatted="false" name="runtime_text_0013">時計</string>
+    <string formatted="false" name="runtime_text_0014">日付</string>
+    <string formatted="false" name="runtime_text_0015">メモ</string>
+    <string formatted="false" name="runtime_text_0016">メモ</string>
+    <string formatted="false" name="runtime_text_0017">アラーム</string>
+    <string formatted="false" name="runtime_text_0018">アラーム</string>
+    <string formatted="false" name="runtime_text_0019">アラーム</string>
+    <string formatted="false" name="runtime_text_0020">リマインダー</string>
+    <string formatted="false" name="runtime_text_0021">リマインダー</string>
+    <string formatted="false" name="runtime_text_0022">バイブレーション</string>
+    <string formatted="false" name="runtime_text_0023">優先度</string>
+    <string formatted="false" name="runtime_text_0024">低</string>
+    <string formatted="false" name="runtime_text_0025">やや低い</string>
+    <string formatted="false" name="runtime_text_0026">中</string>
+    <string formatted="false" name="runtime_text_0027">高</string>
+    <string formatted="false" name="runtime_text_0028">非常に高い</string>
+    <string formatted="false" name="runtime_text_0029">繰り返しなし</string>
+    <string formatted="false" name="runtime_text_0030">毎日</string>
+    <string formatted="false" name="runtime_text_0031">毎週</string>
+    <string formatted="false" name="runtime_text_0032">毎月</string>
+    <string formatted="false" name="runtime_text_0033">毎年</string>
+    <string formatted="false" name="runtime_text_0034">今日</string>
+    <string formatted="false" name="runtime_text_0035">リマインダーなし</string>
+    <string formatted="false" name="runtime_text_0036">自動（スマート）</string>
+    <string formatted="false" name="runtime_text_0037">分</string>
+    <string formatted="false" name="runtime_text_0038">秒</string>
+    <string formatted="false" name="runtime_text_0039">世界時計</string>
+    <string formatted="false" name="runtime_text_0040">タイマー</string>
+    <string formatted="false" name="runtime_text_0041">ストップウォッチ</string>
+    <string formatted="false" name="runtime_text_0042">外観</string>
+    <string formatted="false" name="runtime_text_0043">テーマ</string>
+    <string formatted="false" name="runtime_text_0044">ライト</string>
+    <string formatted="false" name="runtime_text_0045">ダーク</string>
+    <string formatted="false" name="runtime_text_0046">カラーパレット</string>
+    <string formatted="false" name="runtime_text_0047">背景の不透明度</string>
+    <string formatted="false" name="runtime_text_0048">文字サイズ</string>
+    <string formatted="false" name="runtime_text_0049">小</string>
+    <string formatted="false" name="runtime_text_0050">標準</string>
+    <string formatted="false" name="runtime_text_0051">大</string>
+    <string formatted="false" name="runtime_text_0052">ヘッダーを表示</string>
+    <string formatted="false" name="runtime_text_0053">時刻を表示</string>
+    <string formatted="false" name="runtime_text_0054">日付を表示</string>
+    <string formatted="false" name="runtime_text_0055">設定ボタンを表示</string>
+    <string formatted="false" name="runtime_text_0056">優先度を表示</string>
+    <string formatted="false" name="runtime_text_0057">詳細を表示</string>
+    <string formatted="false" name="runtime_text_0058">並べ替え</string>
+    <string formatted="false" name="runtime_text_0059">ファイル</string>
+    <string formatted="false" name="runtime_text_0060">ファイル</string>
+    <string formatted="false" name="runtime_text_0061">画像</string>
+    <string formatted="false" name="runtime_text_0062">音声</string>
+    <string formatted="false" name="runtime_text_0063">動画</string>
+    <string formatted="false" name="runtime_text_0064">テキスト</string>
+    <string formatted="false" name="runtime_text_0065">文書</string>
+    <string formatted="false" name="runtime_text_0066">スプレッドシート</string>
+    <string formatted="false" name="runtime_text_0067">メディア</string>
+    <string formatted="false" name="runtime_text_0068">再生/一時停止</string>
+    <string formatted="false" name="runtime_text_0069">通知設定</string>
+    <string formatted="false" name="runtime_text_0070">通知</string>
+    <string formatted="false" name="runtime_text_0071">日付の常駐通知</string>
+    <string formatted="false" name="runtime_text_0072">他のカレンダーを表示</string>
+    <string formatted="false" name="runtime_text_0073">アラームのリマインダー</string>
+    <string formatted="false" name="runtime_text_0074">メモのリマインダー</string>
+    <string formatted="false" name="runtime_text_0075">ロック画面に詳細を表示</string>
+    <string formatted="false" name="runtime_text_0076">アザーンと礼拝時刻の設定</string>
+    <string formatted="false" name="runtime_text_0077">アザーン</string>
+    <string formatted="false" name="runtime_text_0078">ファジュルのアザーン</string>
+    <string formatted="false" name="runtime_text_0079">ズフルのアザーン</string>
+    <string formatted="false" name="runtime_text_0080">マグリブのアザーン</string>
+    <string formatted="false" name="runtime_text_0081">イシャー</string>
+    <string formatted="false" name="runtime_text_0082">アスル</string>
+    <string formatted="false" name="runtime_text_0083">日の出</string>
+    <string formatted="false" name="runtime_text_0084">日没</string>
+    <string formatted="false" name="runtime_text_0085">真夜中</string>
+    <string formatted="false" name="runtime_text_0086">礼拝時刻を表示</string>
+    <string formatted="false" name="runtime_text_0087">位置</string>
+    <string formatted="false" name="runtime_text_0088">都市または村を検索</string>
+    <string formatted="false" name="runtime_text_0089">現在の正確な位置を取得</string>
+    <string formatted="false" name="runtime_text_0090">有効なアザーン</string>
+    <string formatted="false" name="runtime_text_0091">ムアッジンを選択</string>
+    <string formatted="false" name="runtime_text_0092">アザーン通知</string>
+    <string formatted="false" name="runtime_text_0093">アザーン通知</string>
+    <string formatted="false" name="runtime_text_0094">アザーンのバイブレーション</string>
+    <string formatted="false" name="runtime_text_0095">アザーン音</string>
+    <string formatted="false" name="runtime_text_0096">アザーン画面のプレビュー</string>
+    <string formatted="false" name="runtime_text_0097">位置が未設定です</string>
+    <string formatted="false" name="runtime_text_0098">位置情報を取得中…</string>
+    <string formatted="false" name="runtime_text_0099">都市または村を選択</string>
+    <string formatted="false" name="runtime_text_0100">都市・村・州・国名</string>
+    <string formatted="false" name="runtime_text_0101">入力中に結果がリアルタイム更新されます</string>
+    <string formatted="false" name="runtime_text_0102">結果が見つかりません</string>
+    <string formatted="false" name="runtime_text_0103">タイムゾーンを追加</string>
+    <string formatted="false" name="runtime_text_0104">選択した時計を追加</string>
+    <string formatted="false" name="runtime_text_0105">現在に戻る</string>
+    <string formatted="false" name="runtime_text_0106">日付へ移動</string>
+    <string formatted="false" name="runtime_text_0107">タブの順序</string>
+    <string formatted="false" name="runtime_text_0108">タブを並べ替え</string>
+    <string formatted="false" name="runtime_text_0109">アラームと通知の権限</string>
+    <string formatted="false" name="runtime_text_0110">ウィジェットと設定</string>
+    <string formatted="false" name="runtime_text_0111">ウィジェット設定</string>
+    <string formatted="false" name="runtime_text_0112">ライブプレビュー</string>
+    <string formatted="false" name="runtime_text_0113">ホーム画面に追加</string>
+    <string formatted="false" name="runtime_text_0114">インストール済み</string>
+    <string formatted="false" name="runtime_text_0115">ファイルリマインダー</string>
+    <string formatted="false" name="runtime_text_0116">ファイルを追加</string>
+    <string formatted="false" name="runtime_text_0117">アプリまたはサイトを追加</string>
+    <string formatted="false" name="runtime_text_0118">描画</string>
+    <string formatted="false" name="runtime_text_0119">描画とスケッチ</string>
+    <string formatted="false" name="runtime_text_0120">メモを保存</string>
+    <string formatted="false" name="runtime_text_0121">メモを削除</string>
+    <string formatted="false" name="runtime_text_0122">メモのタイトル</string>
+    <string formatted="false" name="runtime_text_0123">ここにメモを入力...</string>
+    <string formatted="false" name="runtime_text_0124">このメモのアラーム</string>
+    <string formatted="false" name="runtime_text_0125">アラーム音</string>
+    <string formatted="false" name="runtime_text_0126">全画面</string>
+    <string formatted="false" name="runtime_text_0127">ロック解除画面</string>
+    <string formatted="false" name="runtime_text_0128">ロック画面</string>
+    <string formatted="false" name="runtime_text_0129">ファイルと画像</string>
+    <string formatted="false" name="runtime_text_0130">インストール済みアプリを選択</string>
+    <string formatted="false" name="runtime_text_0131">サイトのリンクを入力</string>
+    <string formatted="false" name="runtime_text_0132">有効なリンクを入力</string>
+    <string formatted="false" name="runtime_text_0133">まだファイルが追加されていません。</string>
+    <string formatted="false" name="runtime_text_0134">まだアプリやサイトが追加されていません。</string>
+    <string formatted="false" name="runtime_text_0135">テキスト、描画、ファイル、アプリ、サイトを追加してください</string>
+    <string formatted="false" name="runtime_text_0136">メモを保存しました</string>
+    <string formatted="false" name="runtime_text_0137">アラームを設定</string>
+    <string formatted="false" name="runtime_text_0138">アラームのタイトル</string>
+    <string formatted="false" name="runtime_text_0139">アラームを保存</string>
+    <string formatted="false" name="runtime_text_0140">アラームを削除</string>
+    <string formatted="false" name="runtime_text_0141">画像1を追加</string>
+    <string formatted="false" name="runtime_text_0142">画像2を追加</string>
+    <string formatted="false" name="runtime_text_0143">アラーム画像（任意、最大2枚）</string>
+    <string formatted="false" name="runtime_text_0144">システム既定</string>
+    <string formatted="false" name="runtime_text_0145">アラームを保存しました</string>
+    <string formatted="false" name="runtime_text_0146">過去の日付は選択できません</string>
+    <string formatted="false" name="runtime_text_0147">過去の日時にはアラームを設定できません</string>
+    <string formatted="false" name="runtime_text_0148">メモのアラームは過去に設定できません</string>
+    <string formatted="false" name="runtime_text_0149">正確な通知のため正確なアラーム権限を有効にしてください</string>
+    <string formatted="false" name="runtime_text_0150">サウンドを選択</string>
+    <string formatted="false" name="runtime_text_0151">+ 新しいサウンドをアップロード</string>
+    <string formatted="false" name="runtime_text_0152">アプリの色</string>
+    <string formatted="false" name="runtime_text_0153">イベントと記念日</string>
+    <string formatted="false" name="runtime_text_0154">カレンダー下にイベントを表示</string>
+    <string formatted="false" name="runtime_text_0155">カレンダー下にイベント欄を表示</string>
+    <string formatted="false" name="runtime_text_0156">時計ページのレイアウト</string>
+    <string formatted="false" name="runtime_text_0157">ページ内に作成フォーム、+ ボタンなし</string>
+    <string formatted="false" name="runtime_text_0158">コンパクト：+ ボタンでモーダルに作成フォーム</string>
+    <string formatted="false" name="runtime_text_0159">ホームに表示するタブ</string>
+    <string formatted="false" name="runtime_text_0160">アラーム画面のスタイル</string>
+    <string formatted="false" name="runtime_text_0161">ライトクラシック</string>
+    <string formatted="false" name="runtime_text_0162">ダークフォーカス</string>
+    <string formatted="false" name="runtime_text_0163">ウォームサンライズ</string>
+    <string formatted="false" name="runtime_text_0164">少なくとも1つのタブを有効にしてください</string>
+    <string formatted="false" name="runtime_text_0165">未来の日時を選択してください</string>
+    <string formatted="false" name="runtime_text_0166">0より大きい時間を入力してください</string>
+    <string formatted="false" name="runtime_text_0167">リセット</string>
+    <string formatted="false" name="runtime_text_0168">ラップ</string>
+    <string formatted="false" name="runtime_text_0169">日付を選択</string>
+    <string formatted="false" name="runtime_text_0170">時刻を選択</string>
+    <string formatted="false" name="runtime_text_0171">キャンセルしてリセット</string>
+    <string formatted="false" name="runtime_text_0172">時間</string>
+    <string formatted="false" name="runtime_text_0173">終了時刻</string>
+    <string formatted="false" name="runtime_text_0174">今日に戻る</string>
+    <string formatted="false" name="runtime_text_0175">前の月</string>
+    <string formatted="false" name="runtime_text_0176">次の月</string>
+    <string formatted="false" name="runtime_text_0177">ペルシャ暦</string>
+    <string formatted="false" name="runtime_text_0178">グレゴリオ暦</string>
+    <string formatted="false" name="runtime_text_0179">ヒジュラ暦</string>
+    <string formatted="false" name="runtime_text_0180">土曜日</string>
+    <string formatted="false" name="runtime_text_0181">日曜日</string>
+    <string formatted="false" name="runtime_text_0182">月曜日</string>
+    <string formatted="false" name="runtime_text_0183">火曜日</string>
+    <string formatted="false" name="runtime_text_0184">水曜日</string>
+    <string formatted="false" name="runtime_text_0185">木曜日</string>
+    <string formatted="false" name="runtime_text_0186">金曜日</string>
+    <string formatted="false" name="runtime_text_0187">ファルヴァルディーン</string>
+    <string formatted="false" name="runtime_text_0188">オルディーベヘシュト</string>
+    <string formatted="false" name="runtime_text_0189">ホルダード</string>
+    <string formatted="false" name="runtime_text_0190">ティール</string>
+    <string formatted="false" name="runtime_text_0191">モルダード</string>
+    <string formatted="false" name="runtime_text_0192">シャフリーヴァル</string>
+    <string formatted="false" name="runtime_text_0193">メフル</string>
+    <string formatted="false" name="runtime_text_0194">アーバーン</string>
+    <string formatted="false" name="runtime_text_0195">アーザル</string>
+    <string formatted="false" name="runtime_text_0196">デイ</string>
+    <string formatted="false" name="runtime_text_0197">バフマン</string>
+    <string formatted="false" name="runtime_text_0198">エスファンド</string>
+    <string formatted="false" name="runtime_text_0199">描画 ✓</string>
+    <string formatted="false" name="runtime_text_0200">グリッドなし</string>
+    <string formatted="false" name="runtime_text_0201">グリッド</string>
+    <string formatted="false" name="runtime_text_0202">色</string>
+    <string formatted="false" name="runtime_text_0203">消去</string>
+    <string formatted="false" name="runtime_text_0204">描画を保存</string>
+    <string formatted="false" name="runtime_text_0205">ファイルまたは画像を追加</string>
+    <string formatted="false" name="runtime_text_0206">アプリを選択</string>
+    <string formatted="false" name="runtime_text_0207">サイトを追加</string>
+    <string formatted="false" name="runtime_text_0208">サイトのリンク（例: https://example.com）</string>
+    <string formatted="false" name="runtime_text_0209">期限前のリマインダー</string>
+    <string formatted="false" name="runtime_text_0210">端末のロック解除時に全画面</string>
+    <string formatted="false" name="runtime_text_0211">ロック画面で全画面</string>
+    <string formatted="false" name="runtime_text_0212">有効</string>
+    <string formatted="false" name="runtime_text_0213">無効</string>
+    <string formatted="false" name="runtime_text_0214">手書き</string>
+    <string formatted="false" name="runtime_text_0215">お絵描き</string>
+    <string formatted="false" name="runtime_text_0216">アラームなし</string>
+    <string formatted="false" name="runtime_text_0217">ロック解除時にアラームを全画面表示</string>
+    <string formatted="false" name="runtime_text_0218">ロック画面にアラームを全画面表示</string>
+    <string formatted="false" name="runtime_text_0219">既定のアラーム音</string>
+    <string formatted="false" name="runtime_text_0220">アプリのテーマに合わせる</string>
+    <string formatted="false" name="runtime_text_0221">コンテンツ表示</string>
+    <string formatted="false" name="runtime_text_0222">プレビューを表示</string>
+    <string formatted="false" name="runtime_text_0223">ファイル名を表示</string>
+    <string formatted="false" name="runtime_text_0224">ファイルの種類と詳細を表示</string>
+    <string formatted="false" name="runtime_text_0225">ヘッダーとコントロール</string>
+    <string formatted="false" name="runtime_text_0226">時刻形式</string>
+    <string formatted="false" name="runtime_text_0227">システム設定に従う</string>
+    <string formatted="false" name="runtime_text_0228">24時間</string>
+    <string formatted="false" name="runtime_text_0229">12時間</string>
+    <string formatted="false" name="runtime_text_0230">秒を表示</string>
+    <string formatted="false" name="runtime_text_0231">セクションタイトルを表示</string>
+    <string formatted="false" name="runtime_text_0232">コンテンツ</string>
+    <string formatted="false" name="runtime_text_0233">最大項目数</string>
+    <string formatted="false" name="runtime_text_0234">件数</string>
+    <string formatted="false" name="runtime_text_0235">スマート：近いアラームを先に</string>
+    <string formatted="false" name="runtime_text_0236">時刻：早い順</string>
+    <string formatted="false" name="runtime_text_0237">優先度：高い順</string>
+    <string formatted="false" name="runtime_text_0238">スマート：期限が近い順</string>
+    <string formatted="false" name="runtime_text_0239">新しいメモを先に</string>
+    <string formatted="false" name="runtime_text_0240">時計ウィジェット設定</string>
+    <string formatted="false" name="runtime_text_0241">メモウィジェット設定</string>
+    <string formatted="false" name="runtime_text_0242">世界時計ウィジェット設定</string>
+    <string formatted="false" name="runtime_text_0243">背景</string>
+    <string formatted="false" name="runtime_text_0244">透明（既定）</string>
+    <string formatted="false" name="runtime_text_0245">黒 70%</string>
+    <string formatted="false" name="runtime_text_0246">黒</string>
+    <string formatted="false" name="runtime_text_0247">白</string>
+    <string formatted="false" name="runtime_text_0248">青</string>
+    <string formatted="false" name="runtime_text_0249">ターコイズ</string>
+    <string formatted="false" name="runtime_text_0250">紫</string>
+    <string formatted="false" name="runtime_text_0251">赤</string>
+    <string formatted="false" name="runtime_text_0252">緑</string>
+    <string formatted="false" name="runtime_text_0253">金色</string>
+    <string formatted="false" name="runtime_text_0254">オレンジ</string>
+    <string formatted="false" name="runtime_text_0255">ピンク</string>
+    <string formatted="false" name="runtime_text_0256">プレビュー</string>
+    <string formatted="false" name="runtime_text_0257">ファイルの種類</string>
+    <string formatted="false" name="runtime_text_0258">全画面で表示</string>
+    <string formatted="false" name="runtime_text_0259">再生コントロールを開く</string>
+    <string formatted="false" name="runtime_text_0260">準備中</string>
+    <string formatted="false" name="runtime_text_0261">再生中</string>
+    <string formatted="false" name="runtime_text_0262">一時停止</string>
+    <string formatted="false" name="runtime_text_0263">スマートアラーム</string>
+    <string formatted="false" name="runtime_text_0264">スマート入力</string>
+    <string formatted="false" name="runtime_text_0265">貼り付け</string>
+    <string formatted="false" name="runtime_text_0266">自動検出</string>
+    <string formatted="false" name="runtime_text_0267">テキストを解析してプレビューを作成</string>
+    <string formatted="false" name="runtime_text_0268">すべてのアラーム時刻</string>
+    <string formatted="false" name="runtime_text_0269">時刻どおり</string>
+    <string formatted="false" name="runtime_text_0270">時刻より前</string>
+    <string formatted="false" name="runtime_text_0271">時刻より後</string>
+    <string formatted="false" name="runtime_text_0272">アラームのプレビュー</string>
+    <string formatted="false" name="runtime_text_0273">すべて削除</string>
+    <string formatted="false" name="runtime_text_0274">すべてのアラームを保存</string>
+    <string formatted="false" name="runtime_text_0275">タイトル</string>
+    <string formatted="false" name="runtime_text_0276">元の日時</string>
+    <string formatted="false" name="runtime_text_0277">アラーム時刻</string>
+    <string formatted="false" name="runtime_text_0278">優先度</string>
+    <string formatted="false" name="runtime_text_0279">アラーム時に振動</string>
+    <string formatted="false" name="runtime_text_0280">アラームを編集</string>
+    <string formatted="false" name="runtime_text_0281">タイトルを空にできません</string>
+    <string formatted="false" name="runtime_text_0282">クリップボードにテキストがありません</string>
+    <string formatted="false" name="runtime_text_0283">先にテキストを解析してください</string>
+    <string formatted="false" name="runtime_text_0284">まだアラームが検出されていません。</string>
+    <string formatted="false" name="runtime_text_0285">件</string>
+    <string formatted="false" name="runtime_text_0286">アラームを検出</string>
+    <string formatted="false" name="runtime_text_0287">繰り返し設定</string>
+    <string formatted="false" name="runtime_text_0288">繰り返し間隔（日）</string>
+    <string formatted="false" name="runtime_text_0289">繰り返し間隔（週）</string>
+    <string formatted="false" name="runtime_text_0290">日時を追加</string>
+    <string formatted="false" name="runtime_text_0291">カスタム日付を消去</string>
+    <string formatted="false" name="runtime_text_0292">まだ日時が選択されていません</string>
+    <string formatted="false" name="runtime_text_0293">過去の日時は選択できません</string>
+    <string formatted="false" name="runtime_text_0294">数日ごと</string>
+    <string formatted="false" name="runtime_text_0295">カスタム日付</string>
+    <string formatted="false" name="runtime_text_0296">曜日</string>
+    <string formatted="false" name="runtime_text_0297">ラップ</string>
+    <string formatted="false" name="runtime_text_0298">0より大きい時間を入力してください</string>
+    <string formatted="false" name="runtime_text_0299">先にストップウォッチをリセットしてください</string>
+    <string formatted="false" name="runtime_text_0300">終了日時が過去です</string>
+    <string formatted="false" name="runtime_text_0301">タイマー終了</string>
+    <string formatted="false" name="runtime_text_0302">ストップウォッチが上限に達しました</string>
+    <string formatted="false" name="runtime_text_0303">礼拝の時間</string>
+    <string formatted="false" name="runtime_text_0304">アザーンを終了</string>
+    <string formatted="false" name="runtime_text_0305">完全にミュート</string>
+    <string formatted="false" name="runtime_text_0306">ミュート解除</string>
+    <string formatted="false" name="runtime_text_0307">アザーンを停止</string>
+    <string formatted="false" name="runtime_text_0308">メモを開く</string>
+    <string formatted="false" name="runtime_text_0309">アラームを停止</string>
+    <string formatted="false" name="runtime_text_0310">ファイル、画像、アプリ、サイト</string>
+    <string formatted="false" name="runtime_text_0311">メモのリマインダー</string>
+    <string formatted="false" name="runtime_text_0312">メモの時刻になりました</string>
+    <string formatted="false" name="runtime_text_0313">アラーム</string>
+    <string formatted="false" name="runtime_text_0314">礼拝時刻の通知</string>
+    <string formatted="false" name="runtime_text_0315">メモのアラーム</string>
+    <string formatted="false" name="runtime_text_0316">時刻指定のメモアラーム</string>
+    <string formatted="false" name="runtime_text_0317">ابزارها</string>
+    <string formatted="false" name="runtime_text_0318">ابزار قطب‌نما</string>
+    <string formatted="false" name="runtime_text_0319">نمایش روی صفحه</string>
+    <string formatted="false" name="runtime_text_0320">قطب‌نمای کلاسیک</string>
+    <string formatted="false" name="runtime_text_0321">قبله‌نما</string>
+    <string formatted="false" name="runtime_text_0322">هشت جهت اصلی</string>
+    <string formatted="false" name="runtime_text_0323">در حال دریافت جهت از حسگر…</string>
+    <string formatted="false" name="runtime_text_0324">حسگر جهت‌یابی در این دستگاه در دسترس نیست.</string>
+    <string formatted="false" name="runtime_text_0325">برای قبله‌نما ابتدا موقعیت را در تنظیمات اوقات شرعی ثبت کنید.</string>
+    <string formatted="false" name="runtime_text_0326">جهت قبله %.0f°  •  انحراف فعلی %.0f°</string>
+    <string formatted="false" name="runtime_text_0327">زاویه نسبت به شمال  </string>
+    <string formatted="false" name="runtime_text_0328">شمال</string>
+    <string formatted="false" name="runtime_text_0329">شمال‌شرق</string>
+    <string formatted="false" name="runtime_text_0330">شرق</string>
+    <string formatted="false" name="runtime_text_0331">جنوب‌شرق</string>
+    <string formatted="false" name="runtime_text_0332">جنوب</string>
+    <string formatted="false" name="runtime_text_0333">جنوب‌غرب</string>
+    <string formatted="false" name="runtime_text_0334">غرب</string>
+    <string formatted="false" name="runtime_text_0335">شمال‌غرب</string>
+    <string formatted="false" name="runtime_text_0336">ش‌خ</string>
+    <string formatted="false" name="runtime_text_0337">ج‌خ</string>
+    <string formatted="false" name="runtime_text_0338">ج‌غ</string>
+    <string formatted="false" name="runtime_text_0339">ش‌غ</string>
+    <string formatted="false" name="runtime_text_0340">قطب‌نما</string>
+    <string formatted="false" name="runtime_text_0341">انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0342">تنظیم اذان</string>
+    <string formatted="false" name="runtime_text_0343">تنظیم همه موارد</string>
+    <string formatted="false" name="runtime_text_0344">تنظیمات جداگانه</string>
+    <string formatted="false" name="runtime_text_0345">تنظیم صدا و نحوه اعلام</string>
+    <string formatted="false" name="runtime_text_0346">موذن</string>
+    <string formatted="false" name="runtime_text_0347">+ آپلود صدای موذن</string>
+    <string formatted="false" name="runtime_text_0348">میزان صدا: </string>
+    <string formatted="false" name="runtime_text_0349">میزان صدای </string>
+    <string formatted="false" name="runtime_text_0350">فعال یا غیرفعال کردن </string>
+    <string formatted="false" name="runtime_text_0351">نمایش نوار اوقات شرعی زیر تقویم</string>
+    <string formatted="false" name="runtime_text_0352">افق‌ها</string>
+    <string formatted="false" name="runtime_text_0353">افزودن افق +</string>
+    <string formatted="false" name="runtime_text_0354">هنوز افقی اضافه نشده است.</string>
+    <string formatted="false" name="runtime_text_0355">اذان فعال است</string>
+    <string formatted="false" name="runtime_text_0356">پیش‌فرض ✓</string>
+    <string formatted="false" name="runtime_text_0357">به عنوان افق پیش‌فرض</string>
+    <string formatted="false" name="runtime_text_0358">افق پیش‌فرض </string>
+    <string formatted="false" name="runtime_text_0359">حذف خودکار ساعت‌های گذشته و بدون تکرار آینده</string>
+    <string formatted="false" name="runtime_text_0360">نمایش بخش اذان و اوقات شرعی</string>
+    <string formatted="false" name="runtime_text_0361">نمایش بخش اذان</string>
+    <string formatted="false" name="runtime_text_0362">⚠ اذان زمان‌بندی نشده است؛ برای ثبت موقعیت اینجا بزنید.</string>
+    <string formatted="false" name="runtime_text_0363">⚠ اذان زمان‌بندی نشده است؛ مجوز آلارم دقیق را فعال کنید.</string>
+    <string formatted="false" name="runtime_text_0364">⚠ زمان اذان ثبت شده، اما مجوز نمایش اعلان داده نشده است.</string>
+    <string formatted="false" name="runtime_text_0365">⚠ زمان‌بندی اذان ناموفق بود؛ برای تلاش دوباره اینجا بزنید.</string>
+    <string formatted="false" name="runtime_text_0366">همه اعلان‌های اذان خاموش‌اند.</string>
+    <string formatted="false" name="runtime_text_0367">سرویس موقعیت در دسترس نیست.</string>
+    <string formatted="false" name="runtime_text_0368">مکان دستگاه را روشن کنید و دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_text_0369">شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.</string>
+    <string formatted="false" name="runtime_text_0370">موقعیت دقیق دریافت نشد؛ دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_text_0371">موقعیت فعلی</string>
+    <string formatted="false" name="runtime_text_0372">به‌روزرسانی موقعیت دقیق فعلی</string>
+    <string formatted="false" name="runtime_text_0373">ابتدا آفلاین، سپس در صورت نیاز جست‌وجوی آنلاین</string>
+    <string formatted="false" name="runtime_text_0374">ابتدا یک شهر، استان، کشور یا منطقه زمانی را جست‌وجو کنید</string>
+    <string formatted="false" name="runtime_text_0375">نام شهر، استان، کشور یا منطقه زمانی</string>
+    <string formatted="false" name="runtime_text_0376">در حال جست‌وجوی آنلاین…</string>
+    <string formatted="false" name="runtime_text_0377">برای جست‌وجوی جهانی یک حرف دیگر وارد کنید</string>
+    <string formatted="false" name="runtime_text_0378">نتیجه آفلاین پیدا نشد؛ برای جست‌وجوی جدید اینترنت لازم است</string>
+    <string formatted="false" name="runtime_text_0379">این منطقه زمانی قبلاً اضافه شده است</string>
+    <string formatted="false" name="runtime_text_0380">حداقل یک ساعت جهانی باید باقی بماند</string>
+    <string formatted="false" name="runtime_text_0381">اضافه کن</string>
+    <string formatted="false" name="runtime_text_0382">ثبت سریع یادداشت</string>
+    <string formatted="false" name="runtime_text_0383">چی رو نباید فراموش کنی؟</string>
+    <string formatted="false" name="runtime_text_0384">جزئیات، آلارم یا نقاشی</string>
+    <string formatted="false" name="runtime_text_0385">یادداشت خالی است</string>
+    <string formatted="false" name="runtime_text_0386">یک متن یا نقاشی وارد کنید</string>
+    <string formatted="false" name="runtime_text_0387">منو</string>
+    <string formatted="false" name="runtime_text_0388">دارک مود و لایت مود</string>
+    <string formatted="false" name="runtime_text_0389">+ ویجت</string>
+    <string formatted="false" name="runtime_text_0390">ایجاد هشدار</string>
+    <string formatted="false" name="runtime_text_0391">تعطیل هفتگی</string>
+    <string formatted="false" name="runtime_text_0392">رویدادی ثبت نشده است</string>
+    <string formatted="false" name="runtime_text_0393">هنوز هشداری تنظیم نشده است.</string>
+    <string formatted="false" name="runtime_text_0394">هنوز یادداشتی ندارید.</string>
+    <string formatted="false" name="runtime_text_0395">✓ آلارم دقیق</string>
+    <string formatted="false" name="runtime_text_0396">✕ آلارم دقیق</string>
+    <string formatted="false" name="runtime_text_0397">✓ صفحه زنگ</string>
+    <string formatted="false" name="runtime_text_0398">✕ صفحه زنگ</string>
+    <string formatted="false" name="runtime_text_0399">برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید</string>
+    <string formatted="false" name="runtime_text_0400">برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید</string>
+    <string formatted="false" name="runtime_text_0401">هشداری تنظیم نشده</string>
+    <string formatted="false" name="runtime_text_0402">یادداشتی برای نمایش نیست</string>
+    <string formatted="false" name="runtime_text_0403">آلارم • </string>
+    <string formatted="false" name="runtime_text_0404">فایلی انتخاب نشده است
+برای افزودن لمس کنید</string>
+    <string formatted="false" name="runtime_text_0405">افقی انتخاب نشده • برای افزودن لمس کنید</string>
+    <string formatted="false" name="runtime_text_0406">قطع</string>
+    <string formatted="false" name="runtime_text_0407">اذان در حال اجرا</string>
+    <string formatted="false" name="runtime_text_0408">یادآوری هشدار</string>
+    <string formatted="false" name="runtime_text_0409"> بعد از هشدار</string>
+    <string formatted="false" name="runtime_text_0410">تا زمان یادداشت </string>
+    <string formatted="false" name="runtime_text_0411"> مانده است</string>
+    <string formatted="false" name="runtime_text_0412">آلارم‌های Advance Clock</string>
+    <string formatted="false" name="runtime_text_0413">یادآوری هشدارها و یادداشت‌ها</string>
+    <string formatted="false" name="runtime_text_0414">تاریخ امروز</string>
+    <string formatted="false" name="runtime_text_0415">پاور یا کاهش صدا: قطع صدا
+نگه‌داشتن کاهش صدا: کم‌کردن تدریجی
+افزایش صدا: وصل و افزایش صدا</string>
+    <string formatted="false" name="runtime_text_0416">یادآوری مجدد بعد از</string>
+    <string formatted="false" name="runtime_text_0417">اوقات شرعی</string>
+    <string-array name="palette_names">
+        <item>オレンジ</item>
+        <item>ピンク・青</item>
+        <item>紫</item>
+        <item>緑・赤</item>
+        <item>紫・黄</item>
+        <item>濃いピンク</item>
+        <item>青</item>
+    </string-array>
+    <string formatted="false" name="layout_text_0001">تاریخ، زمان، تکرار، اهمیت و یادآوری</string>
+    <string formatted="false" name="layout_text_0002">یادآوری
+بدون یادآوری</string>
+    <string formatted="false" name="layout_text_0003">عکس اول هشدار</string>
+    <string formatted="false" name="layout_text_0004">عکس دوم هشدار</string>
+    <string formatted="false" name="layout_text_0005">صدای زنگ</string>
+    <string formatted="false" name="layout_text_0006">تاریخ، زمان، اهمیت، تکرار و یادآوری را تنظیم کنید</string>
+    <string formatted="false" name="layout_text_0007">برچسب؛ مثلاً صبح بخیر!</string>
+    <string formatted="false" name="layout_text_0008">قبلی</string>
+    <string formatted="false" name="layout_text_0009">بعدی</string>
+    <string formatted="false" name="layout_text_0010">پالت</string>
+    <string formatted="false" name="layout_text_0011">نمایش یا مخفی کردن گرید</string>
+    <string formatted="false" name="layout_text_0012">نامحدود</string>
+    <string formatted="false" name="layout_text_0013">عنوان هشدار حد نهایی (اختیاری)</string>
+    <string formatted="false" name="layout_text_0014">مدت‌زمان ۵ دقیقه</string>
+    <string formatted="false" name="layout_text_0015">تاریخ و ساعت پایان</string>
+    <string formatted="false" name="layout_text_0016">عنوان هشدار تایمر (اختیاری)</string>
+    <string formatted="false" name="layout_text_0017">متن، نقاشی، اهمیت و آلارم</string>
+    <string formatted="false" name="layout_text_0018">فایل‌ها، تصاویر و برنامه‌ها</string>
+    <string formatted="false" name="layout_text_0019">+ فایل یا تصویر</string>
+    <string formatted="false" name="layout_text_0020">+ برنامه</string>
+    <string formatted="false" name="layout_text_0021">ویجت</string>
+    <string formatted="false" name="layout_text_0022">افزودن ساعت جهانی</string>
+    <string formatted="false" name="runtime_text_0418">افق</string>
+    <string formatted="false" name="runtime_text_0419">リマインダー
+</string>
+    <string formatted="false" name="runtime_text_0420">優先度 </string>
+    <string formatted="false" name="runtime_text_0421">日付
+</string>
+    <string formatted="false" name="runtime_text_0422">時計
+</string>
+    <string formatted="false" name="runtime_text_0423">アラームを保存しました؛ دسترسی アラーム دقیق را 有効 کنید.</string>
+    <string formatted="false" name="runtime_text_0424">عکس ۱ ✓</string>
+    <string formatted="false" name="runtime_text_0425">عکس ۲ ✓</string>
+    <string formatted="false" name="runtime_text_0426">ویجت را از فهرست ویجت‌های لانچر اضافه کنید</string>
+    <string formatted="false" name="runtime_text_0427">درخواست 追加 ویجت ارسال شد؛ پس از 確認 لانچر، 設定 همان ویجت باز می‌شود.</string>
+    <string formatted="false" name="runtime_text_0428">لانچر درخواست 追加 ویجت را نپذیرفت.</string>
+    <string formatted="false" name="runtime_text_0429">  •  優先度 </string>
+    <string formatted="false" name="runtime_text_0430">  •  リマインダー </string>
+    <string formatted="false" name="runtime_text_0431">  •  バイブレーション</string>
+    <string formatted="false" name="runtime_text_0432">  •  アラーム</string>
+    <string formatted="false" name="runtime_text_0433">  •  お絵描き</string>
+    <string formatted="false" name="runtime_text_0434">صبح</string>
+    <string formatted="false" name="runtime_text_0435">ظهر</string>
+    <string formatted="false" name="runtime_text_0436">مغرب</string>
+    <string formatted="false" name="runtime_text_0437">ラップ %d     %s</string>
+    <string formatted="false" name="runtime_text_0438">حد نهایی بیشتر از صفر وارد کنید</string>
+    <string formatted="false" name="runtime_text_0439">✓ 通知</string>
+    <string formatted="false" name="runtime_text_0440">✕ 通知</string>
+    <string formatted="false" name="runtime_text_0441">追加 افق</string>
+    <string formatted="false" name="runtime_text_0442">گرفتن افق از GPS</string>
+    <string formatted="false" name="runtime_text_0443">ایران و منطقه‌زمانی‌ها آفلاین • جستجوی جهانی © OpenStreetMap</string>
+    <string formatted="false" name="runtime_text_0444">برای جستجوی جهانی یک حرف デイگر وارد کنید</string>
+    <string formatted="false" name="runtime_text_0445">در حال جستجوی لحظه‌ای…</string>
+    <string formatted="false" name="runtime_text_0446">در حال جستجو در نتایج 保存‌شده…</string>
+    <string formatted="false" name="runtime_text_0447"> نتیجه آفلاین</string>
+    <string formatted="false" name="runtime_text_0448">نتیجه آفلاین پیدا نشد؛ برای مکان جデイد اینترنت لازم است</string>
+    <string formatted="false" name="runtime_text_0449">مکانی پیدا نشد؛ عبارت را تغییر دهید</string>
+    <string formatted="false" name="runtime_text_0450"> نتیجه 保存‌شده</string>
+    <string formatted="false" name="runtime_text_0451"> نتیجه</string>
+    <string formatted="false" name="runtime_text_0452">منطقه زمانی این مکان هنوز آفلاین 保存 نشده؛ یک بار با اینترنت انتخابش کنید</string>
+    <string formatted="false" name="runtime_text_0453">در حال تشخیص منطقه زمانی…</string>
+    <string formatted="false" name="runtime_text_0454">منطقه زمانی این مکان تشخیص داده نشد؛ دوباره تلاش کنید</string>
+    <string formatted="false" name="runtime_text_0455">افق اضافه شد</string>
+    <string formatted="false" name="runtime_text_0456">، </string>
+    <string formatted="false" name="runtime_text_0457">ش</string>
+    <string formatted="false" name="runtime_text_0458">خ</string>
+    <string formatted="false" name="runtime_text_0459">ج</string>
+    <string formatted="false" name="runtime_text_0460">غ</string>
+    <string formatted="false" name="runtime_text_0461">アラーム音 • </string>
+    <string formatted="false" name="runtime_text_0462">با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «描画を保存» ثبت می‌شود.</string>
+    <string formatted="false" name="runtime_text_0463">هر 件数 ファイル یا 画像 اضافه کنید؛ برای باز کردن هر 件 روی آن بزنید.</string>
+    <string formatted="false" name="runtime_text_0464">+ ファイルまたは画像を追加</string>
+    <string formatted="false" name="runtime_text_0465">یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.</string>
+    <string formatted="false" name="runtime_text_0466">+ サイトを追加</string>
+    <string formatted="false" name="runtime_text_0467">ファイルを追加 (</string>
+    <string formatted="false" name="runtime_text_0468">اپ یا سایت (</string>
+    <string formatted="false" name="runtime_text_0469">期限前のリマインダー
+</string>
+    <string formatted="false" name="runtime_text_0470">メモを保存しました؛ برای アラーム، دسترسی アラーム دقیق لازم است.</string>
+    <string formatted="false" name="runtime_text_0471">اندازه قلم </string>
+    <string formatted="false" name="runtime_text_0472">نمایش رویدادهای ペルシャ暦 ایران</string>
+    <string formatted="false" name="runtime_text_0473">نمایش رویدادهای ヒジュラ暦 کشورهای عربی</string>
+    <string formatted="false" name="runtime_text_0474">نمایش رویدادهای グレゴリオ暦 بین‌المللی</string>
+    <string formatted="false" name="runtime_text_0475">اندازه‌های دقیق گزارش‌شده توسط لانچر:</string>
+    <string formatted="false" name="runtime_text_0476"> خانه</string>
+    <string formatted="false" name="runtime_text_0477">اندازه برآوردشده از لانچر: </string>
+    <string formatted="false" name="runtime_text_0478">
+تقریب شبکه: </string>
+    <string formatted="false" name="runtime_text_0479">アラーム در </string>
+    <string formatted="false" name="runtime_text_0480">شمارش معکوس تا 日付 و 時計 انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0481">شمارش معکوس بر اساس 時間</string>
+    <string formatted="false" name="runtime_text_0482">همهٔ ویجت‌های Advance از اینجا قابل 追加 و مデイریت هستند. </string>
+    <string formatted="false" name="runtime_text_0483">برای هر نمونهٔ نصب‌شده می‌توانید 設定 جداگانه داشته باشید.</string>
+    <string formatted="false" name="runtime_text_0484">時計 و アラーム</string>
+    <string formatted="false" name="runtime_text_0485">時刻を表示، 日付 و アラームی پیش رو</string>
+    <string formatted="false" name="runtime_text_0486">نمایش メモ و リマインダーی NoForget</string>
+    <string formatted="false" name="runtime_text_0487">نمایش هم‌زمان سه منطقه زمانی اول تب 世界時計</string>
+    <string formatted="false" name="runtime_text_0488">اوقات شرعی افق‌ها</string>
+    <string formatted="false" name="runtime_text_0489">نمایش پنج وقت شرعی برای همه شهرها و افق‌های انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0490">دسترسی سریع و リマインダー عکس، 音声، 動画، テキスト، PDF و ファイルی デイگر</string>
+    <string formatted="false" name="runtime_text_0491"> نصب‌شده</string>
+    <string formatted="false" name="runtime_text_0492">プレビュー </string>
+    <string formatted="false" name="runtime_text_0493">編集 </string>
+    <string formatted="false" name="runtime_text_0494">ویجت را از فهرست ویجت‌های لانچر اضافه کنید.</string>
+    <string formatted="false" name="runtime_text_0495">لانچر شما 追加 مستقیم ویجت را پشتیبانی نمی‌کند؛ </string>
+    <string formatted="false" name="runtime_text_0496">از فهرست ویجت‌های صفحه اصلی استفاده کنید.</string>
+    <string formatted="false" name="runtime_text_0497">درخواست 追加 ویجت به لانچر ارسال شد.</string>
+    <string formatted="false" name="runtime_text_0498">پکن • چین • آسیا</string>
+    <string formatted="false" name="runtime_text_0499">Beijing Peking پکن 北京 China چین Asia/Shanghai</string>
+    <string formatted="false" name="runtime_text_0500">پکن</string>
+    <string formatted="false" name="runtime_text_0501">مناطق زمانی دستگاه به‌صورت آفلاین آماده‌اند</string>
+    <string formatted="false" name="runtime_text_0502">جست‌وجوی آنلاین انجام نشد؛ دوباره تلاش کنید</string>
+    <string formatted="false" name="runtime_text_0503"> نتیجه آنلاین</string>
+    <string formatted="false" name="runtime_text_0504">منطقه زمانی این شهر آفلاین مشخص نشد؛ یک بار با اینترنت انتخابش کنید</string>
+    <string formatted="false" name="runtime_text_0505">مختصات این نتیجه در دسترس نیست</string>
+    <string formatted="false" name="runtime_text_0506">تبデイل زمان محلی شما: </string>
+    <string formatted="false" name="runtime_text_0507">زمان فعلی در مناطق انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0508">EEE، d MMM yyyy</string>
+    <string formatted="false" name="runtime_text_0509">削除 </string>
+    <string formatted="false" name="runtime_text_0510">確認 削除 </string>
+    <string formatted="false" name="runtime_text_0511">برای 確認 削除 دوباره بزنید</string>
+    <string formatted="false" name="runtime_text_0512">آسیا</string>
+    <string formatted="false" name="runtime_text_0513">اروپا</string>
+    <string formatted="false" name="runtime_text_0514">آفریقا</string>
+    <string formatted="false" name="runtime_text_0515">آمریکا</string>
+    <string formatted="false" name="runtime_text_0516">استرالیا</string>
+    <string formatted="false" name="runtime_text_0517">اقیانوسیه</string>
+    <string formatted="false" name="runtime_text_0518">اقیانوس اطلس</string>
+    <string formatted="false" name="runtime_text_0519">اقیانوس هند</string>
+    <string formatted="false" name="runtime_text_0520">جنوبگان</string>
+    <string formatted="false" name="runtime_text_0521">Regina رجاینا Saskatchewan ساسکاچوان</string>
+    <string formatted="false" name="runtime_text_0522">Tehran تهران Iran ایران</string>
+    <string formatted="false" name="runtime_text_0523">Kuwait کویت</string>
+    <string formatted="false" name="runtime_text_0524">Shanghai شانگهای China چین</string>
+    <string formatted="false" name="runtime_text_0525">ファイル فشرده</string>
+    <string formatted="false" name="runtime_text_0526">設定 ファイルリマインダー</string>
+    <string formatted="false" name="runtime_text_0527">ساخت ファイルリマインダー</string>
+    <string formatted="false" name="runtime_text_0528">تا </string>
+    <string formatted="false" name="runtime_text_0529"> ファイル ترکیبی قابل انتخاب است. عکس، 音声، 動画، テキスト، PDF و </string>
+    <string formatted="false" name="runtime_text_0530">سایر ファイル به‌صورت خودکار تشخیص داده می‌شوند. ترتیب همین فهرست، </string>
+    <string formatted="false" name="runtime_text_0531">ترتیب نمایش در ویجت است.</string>
+    <string formatted="false" name="runtime_text_0532">＋ 追加 عکس، 音声 یا ファイル</string>
+    <string formatted="false" name="runtime_text_0533">クリア همه ファイル</string>
+    <string formatted="false" name="runtime_text_0534">۱۰۰٪</string>
+    <string formatted="false" name="runtime_text_0535">۸۵٪</string>
+    <string formatted="false" name="runtime_text_0536">۷۰٪</string>
+    <string formatted="false" name="runtime_text_0537">نام ویجت و د低ه 設定</string>
+    <string formatted="false" name="runtime_text_0538">دسترسی مستقیم به 設定 همین ویجت</string>
+    <string formatted="false" name="runtime_text_0539">thumbnail 画像، فریم 動画 یا کاور ファイル 音声ی</string>
+    <string formatted="false" name="runtime_text_0540">اگر خاموش باشد، プレビュー ファイル 大 و واضح نمایش داده می‌شود.</string>
+    <string formatted="false" name="runtime_text_0541">ファイルの種類 و برای ファイル テキストی، خلاصه‌ای از コンテンツ</string>
+    <string formatted="false" name="runtime_text_0542">برای تغییر اندازه ویجت انگشتتان را روی ویجت نگهدارید و 低ی جابه‌جا کنید و رها کنید تا تغییر سایز 有効 شود</string>
+    <string formatted="false" name="runtime_text_0543">بازگردانی 設定 外観ی این ویجت</string>
+    <string formatted="false" name="runtime_text_0544">حداکثر </string>
+    <string formatted="false" name="runtime_text_0545"> ファイル قابل انتخاب است.</string>
+    <string formatted="false" name="runtime_text_0546">هنوز ファイルی انتخاب نشده است.</string>
+    <string formatted="false" name="runtime_text_0547">↑ بالا</string>
+    <string formatted="false" name="runtime_text_0548">↓ پایین</string>
+    <string formatted="false" name="runtime_text_0549"> از </string>
+    <string formatted="false" name="runtime_text_0550"> 件 انتخاب شده</string>
+    <string formatted="false" name="runtime_text_0551">فشرده</string>
+    <string formatted="false" name="runtime_text_0552">سه 土曜日</string>
+    <string formatted="false" name="runtime_text_0553">هر </string>
+    <string formatted="false" name="runtime_text_0554"> روز</string>
+    <string formatted="false" name="runtime_text_0555"> 日付 انتخاب شده</string>
+    <string formatted="false" name="runtime_text_0556">دائم؛ روزهای انتخابی 毎週</string>
+    <string formatted="false" name="runtime_text_0557">روزهای انتخابی هر </string>
+    <string formatted="false" name="runtime_text_0558"> هفته</string>
+    <string formatted="false" name="runtime_text_0559">色‌های آماده</string>
+    <string formatted="false" name="runtime_text_0560">پالت کشیدنی</string>
+    <string formatted="false" name="runtime_text_0561">نمونه 色 قلم</string>
+    <string formatted="false" name="runtime_text_0562">カラーパレット قلم</string>
+    <string formatted="false" name="runtime_text_0563">انتخاب 色</string>
+    <string formatted="false" name="runtime_text_0564">リマインダー </string>
+    <string formatted="false" name="runtime_text_0565">پیش‌فرض</string>
+    <string formatted="false" name="runtime_text_0566">انتخاب </string>
+    <string formatted="false" name="runtime_text_0567"> به タイトル افق پیش‌فرض</string>
+    <string formatted="false" name="runtime_text_0568">٪</string>
+    <string formatted="false" name="runtime_text_0569">設定 </string>
+    <string formatted="false" name="runtime_text_0570">مجوز موقعیت داده نشد؛ شهر یا روستا را جستجو کنید.</string>
+    <string formatted="false" name="runtime_text_0571">دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.</string>
+    <string formatted="false" name="runtime_text_0572">عرض %.5f°  •  طول %.5f°</string>
+    <string formatted="false" name="runtime_text_0573">زمان タイマー به پایان رسید</string>
+    <string formatted="false" name="runtime_text_0574">زمان アラーム رسیده است</string>
+    <string formatted="false" name="runtime_text_0575">۵ 分</string>
+    <string formatted="false" name="runtime_text_0576">۱۵ 分</string>
+    <string formatted="false" name="runtime_text_0577">۳۰ 分</string>
+    <string formatted="false" name="runtime_text_0578">۱ 時計</string>
+    <string formatted="false" name="runtime_text_0579">۲ 時計</string>
+    <string formatted="false" name="runtime_text_0580">۳ 時計</string>
+    <string formatted="false" name="runtime_text_0581">۶ 時計</string>
+    <string formatted="false" name="runtime_text_0582">۱۲ 時計</string>
+    <string formatted="false" name="runtime_text_0583">۲۴ 時計</string>
+    <string formatted="false" name="runtime_text_0584">زمان タイマー به پایان رسیده است</string>
+    <string formatted="false" name="runtime_text_0585">ストップウォッチが上限に達しましたه است</string>
+    <string formatted="false" name="runtime_text_0586">アラーム時刻 アラーム رسیده است</string>
+    <string formatted="false" name="runtime_text_0587">برای リマインダー مجدد، دسترسی アラーム دقیق لازم است.</string>
+    <string formatted="false" name="runtime_text_0588">تغییر عکس ۱ ✓</string>
+    <string formatted="false" name="runtime_text_0589">تغییر عکس ۲ ✓</string>
+    <string formatted="false" name="runtime_text_0590">日付を表示 ペルシャ暦</string>
+    <string formatted="false" name="runtime_text_0591">日付を表示 ヒジュラ暦</string>
+    <string formatted="false" name="runtime_text_0592">日付を表示 グレゴリオ暦</string>
+    <string formatted="false" name="runtime_text_0593">ウィジェット設定 اوقات شرعی</string>
+    <string formatted="false" name="runtime_text_0594">اوقات شرعی
+افق تهران
+صبح ۰۴:۵۱   日の出 ۰۶:۱۸   ظهر ۱۲:۰۳   アスル ۱۵:۲۴
+日没 ۱۸:۰۲   مغرب ۱۸:۲۰   イシャー ۱۹:۴۸   真夜中 ۲۳:۳۱</string>
+    <string formatted="false" name="runtime_text_0595">外観 و 色</string>
+    <string formatted="false" name="runtime_text_0596">سرمه‌ای شیشه‌ای</string>
+    <string formatted="false" name="runtime_text_0597">سرمه‌ای شفاف</string>
+    <string formatted="false" name="runtime_text_0598">黒 شیشه‌ای</string>
+    <string formatted="false" name="runtime_text_0599">色 テキスト اصلی</string>
+    <string formatted="false" name="runtime_text_0600">色 テキスト فرعی</string>
+    <string formatted="false" name="runtime_text_0601">色 تأکیデイ و افق فعلی</string>
+    <string formatted="false" name="runtime_text_0602">色 وقت 有効 / アザーン بعデイ</string>
+    <string formatted="false" name="runtime_text_0603">اندازه نوشته‌ها</string>
+    <string formatted="false" name="runtime_text_0604">ヘッダーを表示 «اوقات شرعی»</string>
+    <string formatted="false" name="runtime_text_0605">تقویم‌های هدر هر افق</string>
+    <string formatted="false" name="runtime_text_0606">نمایش زمان</string>
+    <string formatted="false" name="runtime_text_0607">時計 محلی افق</string>
+    <string formatted="false" name="runtime_text_0608">شمارش معکوس تا アザーン بعデイ</string>
+    <string formatted="false" name="runtime_text_0609">نمایش آیکون‌های اوقات</string>
+    <string formatted="false" name="runtime_text_0610">اوقات قابل نمایش (هر ۸ 件 به‌صورت پیش‌فرض 有効‌اند)</string>
+    <string formatted="false" name="runtime_text_0611">برجسته‌کردن افق اصلی</string>
+    <string formatted="false" name="runtime_text_0612">مデイریت افق‌ها</string>
+    <string formatted="false" name="runtime_text_0613">بازگردانی 設定 پیش‌فرض ویجت</string>
+    <string formatted="false" name="runtime_text_0614">保存 و اعمال</string>
+    <string formatted="false" name="runtime_text_0615">白 یخی</string>
+    <string formatted="false" name="runtime_text_0616">青 ライト</string>
+    <string formatted="false" name="runtime_text_0617">نقره‌ای</string>
+    <string formatted="false" name="runtime_text_0618">سرمه‌ای</string>
+    <string formatted="false" name="runtime_text_0619">سرمه‌ای ダーク</string>
+    <string formatted="false" name="runtime_text_0620">محرم</string>
+    <string formatted="false" name="runtime_text_0621">صفر</string>
+    <string formatted="false" name="runtime_text_0622">ربیع الاول</string>
+    <string formatted="false" name="runtime_text_0623">ربیع الثانی</string>
+    <string formatted="false" name="runtime_text_0624">جماデイ الاول</string>
+    <string formatted="false" name="runtime_text_0625">جماデイ الثانی</string>
+    <string formatted="false" name="runtime_text_0626">رجب</string>
+    <string formatted="false" name="runtime_text_0627">شعبان</string>
+    <string formatted="false" name="runtime_text_0628">رمضان</string>
+    <string formatted="false" name="runtime_text_0629">شوال</string>
+    <string formatted="false" name="runtime_text_0630">ذی القعده</string>
+    <string formatted="false" name="runtime_text_0631">ذی الحجه</string>
+    <string formatted="false" name="runtime_text_0632">テキスト 標準، برنامه کپی‌شده یا JSON را وارد کنید. </string>
+    <string formatted="false" name="runtime_text_0633">日付‌ها و 時計‌ها خودکار استخراج می‌شوند و قبل از 保存 </string>
+    <string formatted="false" name="runtime_text_0634">می‌توانید هر アラーム را جداگانه 編集، 削除 یا アラーム時刻 آن را جابه‌جا کنید.</string>
+    <string formatted="false" name="runtime_text_0635">هر テキストی را اینجا 貼り付け کنید…
+
+</string>
+    <string formatted="false" name="runtime_text_0636">مثال:
+</string>
+    <string formatted="false" name="runtime_text_0637">۱۴۰۵/۰۷/۰۴ 時計 ۱۳:۰۰ تا ۱۵:۰۰ خاموشی احテーマالی
+</string>
+    <string formatted="false" name="runtime_text_0638">۱۴۰۵/۰۷/۰۵ 時計 ۱۵:۰۰ جلسه
+
+</string>
+    <string formatted="false" name="runtime_text_0639">یا JSON شامل date / time / start / title</string>
+    <string formatted="false" name="runtime_text_0640">ساده‌سازی: فقط 日付 و 時計</string>
+    <string formatted="false" name="runtime_text_0641">هر خط یک 日付 و نزデイک‌ترین 時計‌های آن است؛ テキスト را انتخاب، جابه‌جا یا </string>
+    <string formatted="false" name="runtime_text_0642">編集 کنید و سپس تحلیل را بزنید.</string>
+    <string formatted="false" name="runtime_text_0643">日付 و 時計 قابل ساده‌سازی پیدا نشد</string>
+    <string formatted="false" name="runtime_text_0644">テキスト ساده‌شده؛ برای ساخت アラーム تحلیل را بزنید</string>
+    <string formatted="false" name="runtime_text_0645">این تنظیم را می‌توانید روی همه موارد اعمال کنید؛ </string>
+    <string formatted="false" name="runtime_text_0646">بعداً هر アラーム را جداگانه هم می‌توان تغییر داد.</string>
+    <string formatted="false" name="runtime_text_0647"> 分</string>
+    <string formatted="false" name="runtime_text_0648">اعمال این زمان‌بنデイ روی همه アラームی شناسایی‌شده</string>
+    <string formatted="false" name="runtime_text_0649">زمان اصلی استخراج‌شده و زمان واقعی زنگ هر 件 را قبل از 保存 بررسی کنید.</string>
+    <string formatted="false" name="runtime_text_0650">テキスト قابل استفاده‌ای در کلیپ‌بورد نیست</string>
+    <string formatted="false" name="runtime_text_0651">自動検出: JSON</string>
+    <string formatted="false" name="runtime_text_0652">自動検出: テキスト عاデイ</string>
+    <string formatted="false" name="runtime_text_0653"> アラームを検出</string>
+    <string formatted="false" name="runtime_text_0654">アラームのプレビュー • </string>
+    <string formatted="false" name="runtime_text_0655"> 件</string>
+    <string formatted="false" name="runtime_text_0656">  •  زمان テキスト: </string>
+    <string formatted="false" name="runtime_text_0657"> تا </string>
+    <string formatted="false" name="runtime_text_0658">
+زنگ: </string>
+    <string formatted="false" name="runtime_text_0659">
+⚠ アラーム時刻 در گذشته است و 保存 نمی‌شود.</string>
+    <string formatted="false" name="runtime_text_0660">کپی</string>
+    <string formatted="false" name="runtime_text_0661"> アラームを保存しました</string>
+    <string formatted="false" name="runtime_text_0662"> 件 گذشته رد شد</string>
+    <string formatted="false" name="runtime_text_0663"> 件 تکراری 保存 نشد</string>
+    <string formatted="false" name="runtime_text_0664"> 件 زمان‌بنデイ نشد و 保存 نشد</string>
+    <string formatted="false" name="runtime_text_0665">
+برای اجرای دقیق، دسترسی アラーム دقیق را 有効 کنید.</string>
+    <string formatted="false" name="runtime_text_0666">日付 روز</string>
+    <string formatted="false" name="runtime_text_0667">نمایش دائمی 日付 روز در نوار وضعیت</string>
+    <string formatted="false" name="runtime_text_0668">انتخاب ماه و سال</string>
+    <string formatted="false" name="runtime_text_0669">پخش メディア ویجت ファイル</string>
+    <string formatted="false" name="runtime_text_0670">کنترل پخش 音声 و 動画 از ویجت ファイルリマインダー</string>
+    <string formatted="false" name="runtime_text_0671"> リマインダー</string>
+    <string formatted="false" name="runtime_text_0672">شناسه ویجت معتبر نیست</string>
+    <string formatted="false" name="runtime_text_0673">زرشکی</string>
+    <string formatted="false" name="runtime_text_0674">色 نام شهر و 日付</string>
+    <string formatted="false" name="runtime_text_0675">色 時計</string>
+    <string formatted="false" name="runtime_text_0676">白 (پیش‌فرض)</string>
+    <string formatted="false" name="runtime_text_0677">قهوه‌ای</string>
+    <string formatted="false" name="runtime_text_0678">دائم؛ 毎週 در روزهای انتخاب‌شده</string>
+    <string formatted="false" name="runtime_text_0679">با د低ه‌های بالا و پایین، جای هر تب را تغییر دهید.</string>
+    <string formatted="false" name="runtime_text_0680">رحیم مؤذن‌زاده اردبیلی</string>
+    <string formatted="false" name="runtime_text_0681">محمد آقاتی</string>
+    <string formatted="false" name="runtime_text_0682">アザーン برنامه</string>
+    <string formatted="false" name="runtime_text_0683">زنگ برنامه</string>
+    <string formatted="false" name="runtime_text_0684">صدا</string>
+    <string formatted="false" name="runtime_text_0685">صدای انتخابی</string>
+    <string formatted="false" name="runtime_text_0686">صدای کاربر</string>
+    <string formatted="false" name="runtime_text_0687">既定のアラーム音 • </string>
+    <string formatted="false" name="runtime_text_0688">−10 ث</string>
+    <string formatted="false" name="runtime_text_0689">+10 ث</string>
+    <string formatted="false" name="runtime_text_0690">時計، 日付 و د低ه‌های بالای ویجت</string>
+    <string formatted="false" name="runtime_text_0691">نمایش زمان جاری در هدر ویجت</string>
+    <string formatted="false" name="runtime_text_0692">秒 را هم در زمان ویجت نمایش می‌دهد</string>
+    <string formatted="false" name="runtime_text_0693">日付 تقویم پیش‌فرض در هدر</string>
+    <string formatted="false" name="runtime_text_0694">نمایش د低ه +</string>
+    <string formatted="false" name="runtime_text_0695">ساخت سریع アラーム یا メモ از خود ویجت</string>
+    <string formatted="false" name="runtime_text_0696">باز کردن 設定 همین نمونهٔ ویجت</string>
+    <string formatted="false" name="runtime_text_0697">タイトル «アラーム» یا «メモ» بالای فهرست</string>
+    <string formatted="false" name="runtime_text_0698">برچسب سطح 優先度 هر 件</string>
+    <string formatted="false" name="runtime_text_0699">日付/زمان アラーム یا اطلاعات メモ</string>
+    <string formatted="false" name="runtime_text_0700">بازگردانی 設定 این ویجت</string>
+    <string formatted="false" name="runtime_text_0701">期限前のリマインダー
+リマインダーなし</string>
+    <string formatted="false" name="runtime_text_0702">アラーム音 • システム既定</string>
+    <string formatted="false" name="runtime_text_0703">全画面
+ロック解除画面</string>
+    <string formatted="false" name="runtime_text_0704">全画面
+ロック画面</string>
+    <string formatted="false" name="runtime_text_0705">メモを保存しました؛ برای アラーム دقیق، مجوز アラーム را 有効 کنید.</string>
 </resources>

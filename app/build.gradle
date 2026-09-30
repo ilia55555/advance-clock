@@ -6,10 +6,10 @@ def localizationResourceFiles = [
         'values', 'values-ar', 'values-de', 'values-en', 'values-es', 'values-fa',
         'values-fr', 'values-hi', 'values-ja', 'values-pt', 'values-ru', 'values-tr',
         'values-zh-rCN'
-].collect { file("src/main/res/${it}/localization_full.xml") }
+].collect { file("src/main/res/${it}/strings.xml") }
 
-// Localization XML files are version-controlled. Keep this compatibility task so old Android
-// Studio run configurations can request it without requiring Python on the developer PC.
+// Every locale is maintained in one strings.xml file. Keep this compatibility task so old
+// Android Studio run configurations can verify the central locale files.
 tasks.register('generateLocalizations') {
     group = 'build setup'
     description = 'Verifies the localization XML files committed under src/main/res.'
@@ -21,15 +21,6 @@ tasks.register('generateLocalizations') {
                     + missingFiles.join(', '))
         }
         logger.lifecycle('All committed localization resources are present.')
-    }
-}
-
-def removeLegacyLocalizationResources = tasks.register(
-        'removeLegacyLocalizationResources', Delete) {
-    group = 'build setup'
-    description = 'Removes obsolete generated resources that duplicate localization_full.xml.'
-    delete fileTree('src/main/res') {
-        include 'values*/ui_text_values.xml'
     }
 }
 
@@ -58,5 +49,4 @@ android {
 
 tasks.named('preBuild').configure {
     dependsOn tasks.named('generateLocalizations')
-    dependsOn removeLegacyLocalizationResources
 }
