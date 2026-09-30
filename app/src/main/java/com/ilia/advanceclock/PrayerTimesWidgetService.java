@@ -128,7 +128,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setViewVisibility(R.id.prayer_widget_local_date,
                     localDate.isEmpty() ? View.GONE : View.VISIBLE);
             row.setTextViewText(R.id.prayer_widget_local_date,
-                    UiText.tr(context, localDate));
+                    localDate);
             row.setTextViewText(R.id.prayer_widget_local_time, localTime(now, zone));
 
             int[] labelIds = {R.id.prayer_label_fajr, R.id.prayer_label_sunrise,
@@ -137,7 +137,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     R.id.prayer_label_midnight};
             String[] labels = {AppString.get(R.string.runtime_text_0434), AppString.get(R.string.runtime_text_0083), AppString.get(R.string.runtime_text_0435), AppString.get(R.string.runtime_text_0082), AppString.get(R.string.runtime_text_0084), AppString.get(R.string.runtime_text_0436), AppString.get(R.string.runtime_text_0081), AppString.get(R.string.runtime_text_0085)};
             for (int index = 0; index < labelIds.length; index++) {
-                row.setTextViewText(labelIds[index], UiText.tr(context, labels[index]));
+                row.setTextViewText(labelIds[index], labels[index]);
             }
 
             row.setViewVisibility(R.id.prayer_widget_current_chip, View.GONE);
