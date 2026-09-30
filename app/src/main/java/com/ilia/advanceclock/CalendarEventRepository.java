@@ -7,9 +7,9 @@ import java.util.List;
 
 public final class CalendarEventRepository {
     public static final String DATASET_VERSION = "2026-09-27";
-    public static final String IRAN_SOURCE = "مرکز تقویم مؤسسه ژئوفیزیک دانشگاه تهران";
-    public static final String INTERNATIONAL_SOURCE = "تقویم مناسبت‌های سازمان ملل متحد";
-    public static final String ARAB_SOURCE = "تقویم ام‌القری عربستان برای مناسبت‌های مشترک عربی";
+    public static final String IRAN_SOURCE = AppString.get(R.string.calendar_event_text_001);
+    public static final String INTERNATIONAL_SOURCE = AppString.get(R.string.calendar_event_text_002);
+    public static final String ARAB_SOURCE = AppString.get(R.string.calendar_event_text_003);
     public static final int REVIEWED_FROM_GREGORIAN_YEAR = 2026;
     public static final int REVIEWED_THROUGH_GREGORIAN_YEAR = 2026;
     public static final class Event {
@@ -52,19 +52,19 @@ public final class CalendarEventRepository {
     public static String sourceTitle(int calendarType) {
         switch (calendarType) {
             case CalendarUtils.GREGORIAN:
-                return "میلادی • بین‌المللی";
+                return AppString.get(R.string.calendar_event_text_004);
             case CalendarUtils.HIJRI:
-                return "قمری • کشورهای عربی";
+                return AppString.get(R.string.calendar_event_text_005);
             case CalendarUtils.PERSIAN:
             default:
-                return "شمسی • ایران";
+                return AppString.get(R.string.calendar_event_text_006);
         }
     }
 
     public static String holidayLabel(int calendarType) {
-        if (calendarType == CalendarUtils.PERSIAN) return "تعطیل رسمی";
-        if (calendarType == CalendarUtils.HIJRI) return "تعطیل مشترک/رایج";
-        return "تعطیل رایج";
+        if (calendarType == CalendarUtils.PERSIAN) return AppString.get(R.string.calendar_event_text_007);
+        if (calendarType == CalendarUtils.HIJRI) return AppString.get(R.string.calendar_event_text_008);
+        return AppString.get(R.string.calendar_event_text_009);
     }
 
     public static List<Event> eventsFor(Context context, long millis, int calendarType) {
@@ -117,16 +117,16 @@ public final class CalendarEventRepository {
             boolean gregorianEnabled) {
         int year = CalendarUtils.fromMillis(CalendarUtils.GREGORIAN, millis)
                 .get(android.icu.util.Calendar.YEAR);
-        String base = "نسخه داده: " + DATASET_VERSION;
+        String base = AppString.get(R.string.calendar_event_text_010) + DATASET_VERSION;
         if (year < REVIEWED_FROM_GREGORIAN_YEAR
                 || year > REVIEWED_THROUGH_GREGORIAN_YEAR) {
-            return base + " • مناسبت‌های این سال نیازمند بازبینی منبع رسمی‌اند";
+            return base + AppString.get(R.string.calendar_event_text_011);
         }
         ArrayList<String> sources = new ArrayList<>();
         if (persianEnabled) sources.add(IRAN_SOURCE);
         if (hijriEnabled) sources.add(ARAB_SOURCE);
         if (gregorianEnabled) sources.add(INTERNATIONAL_SOURCE);
-        return base + " • منابع فعال: " + android.text.TextUtils.join(" / ", sources);
+        return base + AppString.get(R.string.calendar_event_text_012) + android.text.TextUtils.join(" / ", sources);
     }
 
     private static List<Event> attachMetadata(List<Event> events, int calendarType) {
@@ -151,53 +151,53 @@ public final class CalendarEventRepository {
         int pm = p.get(android.icu.util.Calendar.MONTH) + 1;
         int pd = p.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
-        add(out, pm, pd, 1, 1, "نوروز", true);
-        add(out, pm, pd, 1, 2, "تعطیلات نوروز", true);
-        add(out, pm, pd, 1, 3, "تعطیلات نوروز", true);
-        add(out, pm, pd, 1, 4, "تعطیلات نوروز", true);
-        add(out, pm, pd, 1, 12, "روز جمهوری اسلامی ایران", true);
-        add(out, pm, pd, 1, 13, "روز طبیعت", true);
-        add(out, pm, pd, 3, 14, "رحلت امام خمینی", true);
-        add(out, pm, pd, 3, 15, "قیام ۱۵ خرداد", true);
-        add(out, pm, pd, 11, 22, "پیروزی انقلاب اسلامی", true);
-        add(out, pm, pd, 12, 29, "روز ملی شدن صنعت نفت", true);
-        add(out, pm, pd, 9, 30, "شب یلدا", false);
-        add(out, pm, pd, 1, 6, "روز امید و شادباش‌نویسی", false);
-        add(out, pm, pd, 1, 7, "روز هنرهای نمایشی", false);
-        add(out, pm, pd, 1, 20, "روز ملی فناوری هسته‌ای", false);
-        add(out, pm, pd, 1, 25, "روز بزرگداشت عطار نیشابوری", false);
-        add(out, pm, pd, 2, 1, "روز بزرگداشت سعدی", false);
-        add(out, pm, pd, 2, 10, "روز ملی خلیج فارس", false);
-        add(out, pm, pd, 2, 25, "روز بزرگداشت فردوسی", false);
-        add(out, pm, pd, 2, 28, "روز بزرگداشت خیام", false);
-        add(out, pm, pd, 3, 1, "روز بزرگداشت ملاصدرا", false);
-        add(out, pm, pd, 3, 3, "فتح خرمشهر", false);
-        add(out, pm, pd, 3, 20, "روز جهانی صنایع دستی", false);
-        add(out, pm, pd, 4, 1, "روز اصناف", false);
-        add(out, pm, pd, 4, 7, "روز قوه قضائیه", false);
-        add(out, pm, pd, 4, 10, "روز صنعت و معدن", false);
-        add(out, pm, pd, 4, 14, "روز قلم", false);
-        add(out, pm, pd, 5, 8, "روز بزرگداشت شیخ شهاب‌الدین سهروردی", false);
-        add(out, pm, pd, 5, 17, "روز خبرنگار", false);
-        add(out, pm, pd, 5, 28, "سالروز کودتای ۲۸ مرداد", false);
-        add(out, pm, pd, 6, 1, "روز بزرگداشت ابوعلی سینا و روز پزشک", false);
-        add(out, pm, pd, 6, 4, "روز کارمند", false);
-        add(out, pm, pd, 6, 13, "روز بزرگداشت ابوریحان بیرونی", false);
-        add(out, pm, pd, 6, 27, "روز شعر و ادب فارسی", false);
-        add(out, pm, pd, 7, 7, "روز آتش‌نشانی و ایمنی", false);
-        add(out, pm, pd, 7, 8, "روز بزرگداشت مولوی", false);
-        add(out, pm, pd, 7, 20, "روز بزرگداشت حافظ", false);
-        add(out, pm, pd, 8, 8, "روز نوجوان", false);
-        add(out, pm, pd, 8, 13, "روز دانش‌آموز", false);
-        add(out, pm, pd, 9, 7, "روز نیروی دریایی", false);
-        add(out, pm, pd, 9, 16, "روز دانشجو", false);
-        add(out, pm, pd, 9, 25, "روز پژوهش", false);
-        add(out, pm, pd, 10, 5, "روز ایمنی در برابر زلزله", false);
-        add(out, pm, pd, 10, 13, "روز جهانی مقاومت", false);
-        add(out, pm, pd, 10, 20, "سالروز شهادت امیرکبیر", false);
-        add(out, pm, pd, 11, 12, "بازگشت امام خمینی به ایران", false);
-        add(out, pm, pd, 12, 5, "روز بزرگداشت خواجه نصیرالدین طوسی و روز مهندس", false);
-        add(out, pm, pd, 12, 15, "روز درختکاری", false);
+        add(out, pm, pd, 1, 1, AppString.get(R.string.calendar_event_text_013), true);
+        add(out, pm, pd, 1, 2, AppString.get(R.string.calendar_event_text_014), true);
+        add(out, pm, pd, 1, 3, AppString.get(R.string.calendar_event_text_014), true);
+        add(out, pm, pd, 1, 4, AppString.get(R.string.calendar_event_text_014), true);
+        add(out, pm, pd, 1, 12, AppString.get(R.string.calendar_event_text_015), true);
+        add(out, pm, pd, 1, 13, AppString.get(R.string.calendar_event_text_016), true);
+        add(out, pm, pd, 3, 14, AppString.get(R.string.calendar_event_text_017), true);
+        add(out, pm, pd, 3, 15, AppString.get(R.string.calendar_event_text_018), true);
+        add(out, pm, pd, 11, 22, AppString.get(R.string.calendar_event_text_019), true);
+        add(out, pm, pd, 12, 29, AppString.get(R.string.calendar_event_text_020), true);
+        add(out, pm, pd, 9, 30, AppString.get(R.string.calendar_event_text_021), false);
+        add(out, pm, pd, 1, 6, AppString.get(R.string.calendar_event_text_022), false);
+        add(out, pm, pd, 1, 7, AppString.get(R.string.calendar_event_text_023), false);
+        add(out, pm, pd, 1, 20, AppString.get(R.string.calendar_event_text_024), false);
+        add(out, pm, pd, 1, 25, AppString.get(R.string.calendar_event_text_025), false);
+        add(out, pm, pd, 2, 1, AppString.get(R.string.calendar_event_text_026), false);
+        add(out, pm, pd, 2, 10, AppString.get(R.string.calendar_event_text_027), false);
+        add(out, pm, pd, 2, 25, AppString.get(R.string.calendar_event_text_028), false);
+        add(out, pm, pd, 2, 28, AppString.get(R.string.calendar_event_text_029), false);
+        add(out, pm, pd, 3, 1, AppString.get(R.string.calendar_event_text_030), false);
+        add(out, pm, pd, 3, 3, AppString.get(R.string.calendar_event_text_031), false);
+        add(out, pm, pd, 3, 20, AppString.get(R.string.calendar_event_text_032), false);
+        add(out, pm, pd, 4, 1, AppString.get(R.string.calendar_event_text_033), false);
+        add(out, pm, pd, 4, 7, AppString.get(R.string.calendar_event_text_034), false);
+        add(out, pm, pd, 4, 10, AppString.get(R.string.calendar_event_text_035), false);
+        add(out, pm, pd, 4, 14, AppString.get(R.string.calendar_event_text_036), false);
+        add(out, pm, pd, 5, 8, AppString.get(R.string.calendar_event_text_037), false);
+        add(out, pm, pd, 5, 17, AppString.get(R.string.calendar_event_text_038), false);
+        add(out, pm, pd, 5, 28, AppString.get(R.string.calendar_event_text_039), false);
+        add(out, pm, pd, 6, 1, AppString.get(R.string.calendar_event_text_040), false);
+        add(out, pm, pd, 6, 4, AppString.get(R.string.calendar_event_text_041), false);
+        add(out, pm, pd, 6, 13, AppString.get(R.string.calendar_event_text_042), false);
+        add(out, pm, pd, 6, 27, AppString.get(R.string.calendar_event_text_043), false);
+        add(out, pm, pd, 7, 7, AppString.get(R.string.calendar_event_text_044), false);
+        add(out, pm, pd, 7, 8, AppString.get(R.string.calendar_event_text_045), false);
+        add(out, pm, pd, 7, 20, AppString.get(R.string.calendar_event_text_046), false);
+        add(out, pm, pd, 8, 8, AppString.get(R.string.calendar_event_text_047), false);
+        add(out, pm, pd, 8, 13, AppString.get(R.string.calendar_event_text_048), false);
+        add(out, pm, pd, 9, 7, AppString.get(R.string.calendar_event_text_049), false);
+        add(out, pm, pd, 9, 16, AppString.get(R.string.calendar_event_text_050), false);
+        add(out, pm, pd, 9, 25, AppString.get(R.string.calendar_event_text_051), false);
+        add(out, pm, pd, 10, 5, AppString.get(R.string.calendar_event_text_052), false);
+        add(out, pm, pd, 10, 13, AppString.get(R.string.calendar_event_text_053), false);
+        add(out, pm, pd, 10, 20, AppString.get(R.string.calendar_event_text_054), false);
+        add(out, pm, pd, 11, 12, AppString.get(R.string.calendar_event_text_055), false);
+        add(out, pm, pd, 12, 5, AppString.get(R.string.calendar_event_text_056), false);
+        add(out, pm, pd, 12, 15, AppString.get(R.string.calendar_event_text_057), false);
 
         addOfficialIranianReligiousEvents(out, millis);
     }
@@ -215,26 +215,26 @@ public final class CalendarEventRepository {
         int day = g.get(android.icu.util.Calendar.DAY_OF_MONTH);
         if (year != 2026) return;
 
-        add(out, month, day, 1, 3, "میلاد امام علی", true);
-        add(out, month, day, 1, 17, "مبعث پیامبر اکرم", true);
-        add(out, month, day, 2, 4, "میلاد امام مهدی", true);
-        add(out, month, day, 3, 11, "شهادت امام علی", true);
-        add(out, month, day, 3, 21, "عید سعید فطر", true);
-        add(out, month, day, 3, 22, "تعطیل عید سعید فطر", true);
-        add(out, month, day, 4, 15, "شهادت امام جعفر صادق", true);
-        add(out, month, day, 5, 27, "عید قربان", true);
-        add(out, month, day, 6, 5, "عید غدیر خم", true);
-        add(out, month, day, 6, 25, "تاسوعای حسینی", true);
-        add(out, month, day, 6, 26, "عاشورای حسینی", true);
-        add(out, month, day, 8, 5, "اربعین حسینی", true);
+        add(out, month, day, 1, 3, AppString.get(R.string.calendar_event_text_058), true);
+        add(out, month, day, 1, 17, AppString.get(R.string.calendar_event_text_059), true);
+        add(out, month, day, 2, 4, AppString.get(R.string.calendar_event_text_060), true);
+        add(out, month, day, 3, 11, AppString.get(R.string.calendar_event_text_061), true);
+        add(out, month, day, 3, 21, AppString.get(R.string.calendar_event_text_062), true);
+        add(out, month, day, 3, 22, AppString.get(R.string.calendar_event_text_063), true);
+        add(out, month, day, 4, 15, AppString.get(R.string.calendar_event_text_064), true);
+        add(out, month, day, 5, 27, AppString.get(R.string.calendar_event_text_065), true);
+        add(out, month, day, 6, 5, AppString.get(R.string.calendar_event_text_066), true);
+        add(out, month, day, 6, 25, AppString.get(R.string.calendar_event_text_067), true);
+        add(out, month, day, 6, 26, AppString.get(R.string.calendar_event_text_068), true);
+        add(out, month, day, 8, 5, AppString.get(R.string.calendar_event_text_069), true);
         add(out, month, day, 8, 13,
-                "رحلت پیامبر اکرم و شهادت امام حسن مجتبی", true);
-        add(out, month, day, 8, 15, "شهادت امام رضا", true);
-        add(out, month, day, 8, 22, "شهادت امام حسن عسکری", true);
+                AppString.get(R.string.calendar_event_text_070), true);
+        add(out, month, day, 8, 15, AppString.get(R.string.calendar_event_text_071), true);
+        add(out, month, day, 8, 22, AppString.get(R.string.calendar_event_text_072), true);
         add(out, month, day, 8, 31,
-                "میلاد پیامبر اکرم و امام جعفر صادق", true);
-        add(out, month, day, 11, 14, "شهادت حضرت فاطمه زهرا", true);
-        add(out, month, day, 12, 23, "میلاد امام علی", true);
+                AppString.get(R.string.calendar_event_text_073), true);
+        add(out, month, day, 11, 14, AppString.get(R.string.calendar_event_text_074), true);
+        add(out, month, day, 12, 23, AppString.get(R.string.calendar_event_text_058), true);
     }
 
     private static void addArabHijriEvents(List<Event> out, long millis) {
@@ -242,19 +242,19 @@ public final class CalendarEventRepository {
         int m = h.get(android.icu.util.Calendar.MONTH) + 1;
         int d = h.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
-        add(out, m, d, 1, 1, "رأس السنة الهجرية", true);
-        add(out, m, d, 3, 12, "المولد النبوي الشريف", true);
-        add(out, m, d, 7, 27, "الإسراء والمعراج", false);
-        add(out, m, d, 9, 1, "بداية شهر رمضان", false);
-        add(out, m, d, 9, 27, "ليلة القدر", false);
-        add(out, m, d, 10, 1, "عيد الفطر", true);
-        add(out, m, d, 10, 2, "إجازة عيد الفطر", true);
-        add(out, m, d, 10, 3, "إجازة عيد الفطر", true);
-        add(out, m, d, 12, 9, "يوم عرفة", true);
-        add(out, m, d, 12, 10, "عيد الأضحى", true);
-        add(out, m, d, 12, 11, "إجازة عيد الأضحى", true);
-        add(out, m, d, 12, 12, "إجازة عيد الأضحى", true);
-        add(out, m, d, 12, 13, "إجازة عيد الأضحى", true);
+        add(out, m, d, 1, 1, AppString.get(R.string.calendar_event_text_075), true);
+        add(out, m, d, 3, 12, AppString.get(R.string.calendar_event_text_076), true);
+        add(out, m, d, 7, 27, AppString.get(R.string.calendar_event_text_077), false);
+        add(out, m, d, 9, 1, AppString.get(R.string.calendar_event_text_078), false);
+        add(out, m, d, 9, 27, AppString.get(R.string.calendar_event_text_079), false);
+        add(out, m, d, 10, 1, AppString.get(R.string.calendar_event_text_080), true);
+        add(out, m, d, 10, 2, AppString.get(R.string.calendar_event_text_081), true);
+        add(out, m, d, 10, 3, AppString.get(R.string.calendar_event_text_081), true);
+        add(out, m, d, 12, 9, AppString.get(R.string.calendar_event_text_082), true);
+        add(out, m, d, 12, 10, AppString.get(R.string.calendar_event_text_083), true);
+        add(out, m, d, 12, 11, AppString.get(R.string.calendar_event_text_084), true);
+        add(out, m, d, 12, 12, AppString.get(R.string.calendar_event_text_084), true);
+        add(out, m, d, 12, 13, AppString.get(R.string.calendar_event_text_084), true);
     }
 
     private static void addInternationalGregorianEvents(List<Event> out, long millis) {
