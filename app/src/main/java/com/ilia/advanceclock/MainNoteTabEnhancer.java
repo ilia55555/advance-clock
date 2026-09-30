@@ -87,9 +87,9 @@ final class MainNoteTabEnhancer {
         row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         row.setGravity(Gravity.CENTER_VERTICAL);
 
-        state.sketchButton = actionButton(activity, "ترسیم");
-        state.filesButton = actionButton(activity, "افزودن فایل");
-        state.targetButton = actionButton(activity, "افزودن اپ یا سایت");
+        state.sketchButton = actionButton(activity, AppString.get(R.string.runtime_text_0118));
+        state.filesButton = actionButton(activity, AppString.get(R.string.runtime_text_0116));
+        state.targetButton = actionButton(activity, AppString.get(R.string.runtime_text_0117));
 
         addWeighted(row, state.sketchButton, activity);
         addGap(row, activity);
@@ -117,7 +117,7 @@ final class MainNoteTabEnhancer {
         holder.setTag(ALARM_EXTRAS_TAG);
         holder.setOrientation(LinearLayout.VERTICAL);
 
-        state.remindersButton = fieldButton(activity, "یادآوری قبل از موعد\nبدون یادآوری");
+        state.remindersButton = fieldButton(activity, AppString.get(R.string.runtime_text_0701));
         state.remindersButton.setOnClickListener(v -> AlarmReminderDialog.show(
                 activity,
                 state.reminderMode,
@@ -129,12 +129,12 @@ final class MainNoteTabEnhancer {
                 }));
         addBlock(holder, state.remindersButton, activity, 52);
 
-        LinearLayout vibrateRow = switchRow(activity, "لرزش");
+        LinearLayout vibrateRow = switchRow(activity, AppString.get(R.string.runtime_text_0022));
         state.vibrate = (Switch) vibrateRow.getChildAt(1);
         state.vibrate.setChecked(true);
         addBlock(holder, vibrateRow, activity, 56);
 
-        state.soundButton = fieldButton(activity, "صدای هشدار • پیش‌فرض سیستم");
+        state.soundButton = fieldButton(activity, AppString.get(R.string.runtime_text_0702));
         state.soundButton.setOnClickListener(v -> {
             state.pendingDialog = "sound";
             launchBridge(activity, "sound");
@@ -145,8 +145,8 @@ final class MainNoteTabEnhancer {
         fullscreenRow.setOrientation(LinearLayout.HORIZONTAL);
         fullscreenRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        LinearLayout unlocked = labeledSwitch(activity, "فول‌اسکرین\nصفحه باز");
-        LinearLayout locked = labeledSwitch(activity, "فول‌اسکرین\nصفحه قفل");
+        LinearLayout unlocked = labeledSwitch(activity, AppString.get(R.string.runtime_text_0703));
+        LinearLayout locked = labeledSwitch(activity, AppString.get(R.string.runtime_text_0704));
         state.fullscreenUnlocked = (Switch) unlocked.getChildAt(1);
         state.fullscreenLocked = (Switch) locked.getChildAt(1);
         state.fullscreenUnlocked.setChecked(true);
@@ -169,8 +169,8 @@ final class MainNoteTabEnhancer {
 
         LinearLayout root = NoteModalStyler.content(
                 activity,
-                "ترسیم",
-                "با ابزارهای زیر طراحی کنید؛ نتیجه فقط با زدن «ذخیره ترسیم» ثبت می‌شود.");
+                AppString.get(R.string.runtime_text_0118),
+                AppString.get(R.string.runtime_text_0462));
 
         HorizontalScrollView scroll = new HorizontalScrollView(activity);
         scroll.setHorizontalScrollBarEnabled(false);
@@ -181,9 +181,9 @@ final class MainNoteTabEnhancer {
 
         Button undo = toolButton(activity, "↶");
         Button redo = toolButton(activity, "↷");
-        Button clear = toolButton(activity, "پاک");
-        Button palette = toolButton(activity, "رنگ");
-        Button grid = toolButton(activity, "گرید");
+        Button clear = toolButton(activity, AppString.get(R.string.runtime_text_0203));
+        Button palette = toolButton(activity, AppString.get(R.string.runtime_text_0202));
+        Button grid = toolButton(activity, AppString.get(R.string.runtime_text_0201));
         Spinner size = new Spinner(activity);
         size.setAdapter(new PenSizeAdapter(activity));
         size.setSelection(1);
@@ -213,7 +213,7 @@ final class MainNoteTabEnhancer {
         grid.setOnClickListener(v -> {
             boolean next = !canvas.isGridVisible();
             canvas.setGridVisible(next);
-            grid.setText(next ? "گرید" : "بدون گرید");
+            grid.setText(next ? AppString.get(R.string.runtime_text_0201) : AppString.get(R.string.runtime_text_0200));
         });
 
         root.addView(scroll, new LinearLayout.LayoutParams(
@@ -225,8 +225,8 @@ final class MainNoteTabEnhancer {
 
         AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(root)
-                .setNegativeButton("انصراف", null)
-                .setPositiveButton("ذخیره ترسیم", (buttonDialog, which) -> {
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0204), (buttonDialog, which) -> {
                     stored.load(canvas.serialize());
                     updateActionButtons(activity, state);
                 })
@@ -239,10 +239,10 @@ final class MainNoteTabEnhancer {
 
         LinearLayout root = NoteModalStyler.content(
                 activity,
-                "فایل‌ها و تصاویر",
-                "هر تعداد فایل یا تصویر اضافه کنید؛ برای باز کردن هر مورد روی آن بزنید.");
+                AppString.get(R.string.runtime_text_0129),
+                AppString.get(R.string.runtime_text_0463));
 
-        Button add = modalButton(activity, "+ افزودن فایل یا تصویر");
+        Button add = modalButton(activity, AppString.get(R.string.runtime_text_0464));
         addBlock(root, add, activity, 50);
 
         ScrollView scroll = new ScrollView(activity);
@@ -257,7 +257,7 @@ final class MainNoteTabEnhancer {
 
         state.dialog = new AlertDialog.Builder(activity)
                 .setView(root)
-                .setNegativeButton("بستن", null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0002), null)
                 .create();
         add.setOnClickListener(v -> {
             state.pendingDialog = "files";
@@ -272,14 +272,14 @@ final class MainNoteTabEnhancer {
 
         LinearLayout root = NoteModalStyler.content(
                 activity,
-                "افزودن اپ یا سایت",
-                "یک برنامه نصب‌شده انتخاب کنید یا نشانی کامل سایت را وارد کنید.");
-        Button chooseApp = modalButton(activity, "انتخاب برنامه نصب‌شده");
+                AppString.get(R.string.runtime_text_0117),
+                AppString.get(R.string.runtime_text_0465));
+        Button chooseApp = modalButton(activity, AppString.get(R.string.runtime_text_0130));
         root.addView(chooseApp, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, dp(activity, 50)));
 
         EditText url = new EditText(activity);
-        url.setHint("لینک سایت، مثلاً https://example.com");
+        url.setHint(AppString.get(R.string.runtime_text_0208));
         url.setSingleLine(true);
         url.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         url.setBackgroundResource(R.drawable.bg_field);
@@ -291,7 +291,7 @@ final class MainNoteTabEnhancer {
         urlParams.topMargin = dp(activity, 8);
         root.addView(url, urlParams);
 
-        Button addSite = modalButton(activity, "+ افزودن سایت");
+        Button addSite = modalButton(activity, AppString.get(R.string.runtime_text_0466));
         addBlock(root, addSite, activity, 48);
 
         ScrollView scroll = new ScrollView(activity);
@@ -306,7 +306,7 @@ final class MainNoteTabEnhancer {
 
         state.dialog = new AlertDialog.Builder(activity)
                 .setView(root)
-                .setNegativeButton("بستن", null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0002), null)
                 .create();
 
         chooseApp.setOnClickListener(v -> {
@@ -317,12 +317,12 @@ final class MainNoteTabEnhancer {
         addSite.setOnClickListener(v -> {
             String raw = url.getText().toString().trim();
             if (raw.isEmpty()) {
-                LogoToast.makeText(activity, "لینک سایت را وارد کنید", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(activity, AppString.get(R.string.runtime_text_0131), Toast.LENGTH_SHORT).show();
                 return;
             }
             NoteAttachment item = NoteAttachment.url(raw);
             if (item.value.length() < 9) {
-                LogoToast.makeText(activity, "لینک معتبر وارد کنید", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(activity, AppString.get(R.string.runtime_text_0132), Toast.LENGTH_SHORT).show();
                 return;
             }
             state.attachments.add(item);
@@ -362,7 +362,7 @@ final class MainNoteTabEnhancer {
             open.setOnClickListener(v -> item.open(activity));
 
             Button remove = new Button(activity);
-            remove.setText("حذف");
+            remove.setText(AppString.get(R.string.runtime_text_0006));
             remove.setAllCaps(false);
             remove.setTextColor(0xFFC44C4C);
             remove.setBackgroundResource(R.drawable.bg_soft_button);
@@ -387,8 +387,8 @@ final class MainNoteTabEnhancer {
             empty.setTextColor(AppSettings.textPrimary(activity));
             empty.setPadding(0, dp(activity, 22), 0, dp(activity, 22));
             empty.setText(NoteAttachment.KIND_FILE.equals(filter)
-                    ? "هنوز فایلی اضافه نشده است."
-                    : "هنوز برنامه یا سایتی اضافه نشده است.");
+                    ? AppString.get(R.string.runtime_text_0133)
+                    : AppString.get(R.string.runtime_text_0134));
             list.addView(empty);
         }
     }
@@ -446,7 +446,7 @@ final class MainNoteTabEnhancer {
         String sketchJson = sketch.serialize();
         if (titleText.isEmpty() && bodyText.isEmpty() && "[]".equals(sketchJson) && state.attachments.isEmpty()) {
             LogoToast.makeText(activity,
-                    "یک متن، ترسیم، فایل، برنامه یا سایت اضافه کنید",
+                    AppString.get(R.string.runtime_text_0135),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -456,7 +456,7 @@ final class MainNoteTabEnhancer {
         long dueAt = enabled ? due.getTimeInMillis() : 0L;
         if (enabled && dueAt <= System.currentTimeMillis()) {
             LogoToast.makeText(activity,
-                    "آلارم یادداشت را نمی‌توان برای گذشته تنظیم کرد",
+                    AppString.get(R.string.runtime_text_0148),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -509,7 +509,7 @@ final class MainNoteTabEnhancer {
         writeField(activity, "noteIntervalDays", 1);
         writeField(activity, "noteCustomDates", "[]");
         Button repeat = activity.findViewById(R.id.quick_note_repeat);
-        if (repeat != null) repeat.setText("بدون تکرار");
+        if (repeat != null) repeat.setText(AppString.get(R.string.runtime_text_0029));
         due.setTimeInMillis(System.currentTimeMillis());
         due.add(Calendar.HOUR_OF_DAY, 1);
         due.set(Calendar.SECOND, 0);
@@ -522,7 +522,7 @@ final class MainNoteTabEnhancer {
 
         if (!scheduled && Build.VERSION.SDK_INT >= 31 && !PermissionHelper.exactAlarmsGranted(activity)) {
             LogoToast.makeText(activity,
-                    "یادداشت ذخیره شد؛ برای آلارم دقیق، مجوز آلارم را فعال کنید.",
+                    AppString.get(R.string.runtime_text_0705),
                     Toast.LENGTH_LONG).show();
             try {
                 activity.startActivity(new Intent(
@@ -530,7 +530,7 @@ final class MainNoteTabEnhancer {
                         Uri.parse("package:" + activity.getPackageName())));
             } catch (Exception ignored) {}
         } else {
-            LogoToast.makeText(activity, "یادداشت ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(activity, AppString.get(R.string.runtime_text_0136), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -544,16 +544,16 @@ final class MainNoteTabEnhancer {
             if (NoteAttachment.KIND_FILE.equals(item.kind)) files++;
             else targets++;
         }
-        state.sketchButton.setText(hasSketch ? "ترسیم ✓" : "ترسیم");
-        state.filesButton.setText(files == 0 ? "افزودن فایل"
-                : "افزودن فایل (" + CalendarUtils.fa(Integer.toString(files)) + ")");
-        state.targetButton.setText(targets == 0 ? "افزودن اپ یا سایت"
-                : "اپ یا سایت (" + CalendarUtils.fa(Integer.toString(targets)) + ")");
+        state.sketchButton.setText(hasSketch ? AppString.get(R.string.runtime_text_0199) : AppString.get(R.string.runtime_text_0118));
+        state.filesButton.setText(files == 0 ? AppString.get(R.string.runtime_text_0116)
+                : AppString.get(R.string.runtime_text_0467) + CalendarUtils.fa(Integer.toString(files)) + ")");
+        state.targetButton.setText(targets == 0 ? AppString.get(R.string.runtime_text_0117)
+                : AppString.get(R.string.runtime_text_0468) + CalendarUtils.fa(Integer.toString(targets)) + ")");
     }
 
     private static void updateReminderButton(State state) {
         if (state.remindersButton == null) return;
-        state.remindersButton.setText("یادآوری قبل از موعد\n"
+        state.remindersButton.setText(AppString.get(R.string.runtime_text_0469)
                 + AlarmReminderUtils.summary(state.reminderMode, state.reminderMinutesJson));
     }
 
@@ -561,7 +561,7 @@ final class MainNoteTabEnhancer {
         if (state.soundButton == null) return;
         String name = state.soundName;
         if (name == null || name.isEmpty()) name = SoundLibrary.name(activity, state.soundUri);
-        state.soundButton.setText("صدای هشدار • " + name);
+        state.soundButton.setText(AppString.get(R.string.runtime_text_0461) + name);
     }
 
     private static void launchBridge(Activity activity, String mode) {
