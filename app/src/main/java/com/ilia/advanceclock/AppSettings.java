@@ -494,7 +494,6 @@ public final class AppSettings {
         // Locale recreation reads this value immediately; persist synchronously so a newly
         // created Activity can never observe the previous language.
         prefs(context).edit().putString("app_language", value).commit();
-        UiText.invalidate();
     }
 
     public static String[] languageCodes() {
