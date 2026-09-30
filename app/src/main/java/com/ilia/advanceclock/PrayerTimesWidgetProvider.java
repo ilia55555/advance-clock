@@ -58,7 +58,7 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
         views.setTextColor(R.id.prayer_widget_title, main);
         views.setTextViewText(R.id.prayer_widget_title,
-                UiText.tr(context, "اوقات شرعی"));
+                AppString.get(R.string.runtime_text_0417));
         views.setTextColor(R.id.prayer_widget_date, secondary);
         views.setTextColor(R.id.prayer_widget_manage, accent);
         views.setInt(R.id.prayer_widget_settings, "setColorFilter", secondary);
