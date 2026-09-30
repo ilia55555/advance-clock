@@ -43,9 +43,9 @@ public final class AdhanRingActivity extends Activity {
                 AppSettings.prayerLocationLabel(this));
         Button sound = findViewById(R.id.adhan_sound_toggle);
         sound.setOnClickListener(view -> {
-            boolean muted = "وصل صدا".contentEquals(sound.getText());
+            boolean muted = AppString.get(R.string.runtime_text_0306).contentEquals(sound.getText());
             send(muted ? AdhanSoundService.ACTION_UNMUTE : AdhanSoundService.ACTION_MUTE);
-            sound.setText(muted ? "قطع کامل صدا" : "وصل صدا");
+            sound.setText(muted ? AppString.get(R.string.runtime_text_0305) : AppString.get(R.string.runtime_text_0306));
         });
         findViewById(R.id.adhan_stop).setOnClickListener(view -> stopAndClose());
     }
@@ -54,7 +54,7 @@ public final class AdhanRingActivity extends Activity {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             keyHandler.removeCallbacks(pendingMute);
             send(AdhanSoundService.ACTION_RAISE);
-            ((Button) findViewById(R.id.adhan_sound_toggle)).setText("قطع کامل صدا");
+            ((Button) findViewById(R.id.adhan_sound_toggle)).setText(AppString.get(R.string.runtime_text_0305));
             return true;
         }
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
@@ -65,7 +65,7 @@ public final class AdhanRingActivity extends Activity {
                 volumeDownRepeating = true;
                 keyHandler.removeCallbacks(pendingMute);
                 send(AdhanSoundService.ACTION_LOWER);
-                ((Button) findViewById(R.id.adhan_sound_toggle)).setText("قطع کامل صدا");
+                ((Button) findViewById(R.id.adhan_sound_toggle)).setText(AppString.get(R.string.runtime_text_0305));
             }
             return true;
         }
@@ -77,7 +77,7 @@ public final class AdhanRingActivity extends Activity {
             keyHandler.removeCallbacks(pendingMute);
             if (!volumeDownRepeating) {
                 send(AdhanSoundService.ACTION_MUTE);
-                ((Button) findViewById(R.id.adhan_sound_toggle)).setText("وصل صدا");
+                ((Button) findViewById(R.id.adhan_sound_toggle)).setText(AppString.get(R.string.runtime_text_0306));
             }
             volumeDownRepeating = false;
             return true;
