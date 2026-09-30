@@ -81,7 +81,7 @@ public final class SmartAlarmActivity extends Activity {
         top.setGravity(Gravity.CENTER_VERTICAL);
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView title = text("هشدار هوشمند", 25, AppSettings.textPrimary(this));
+        TextView title = text(AppString.get(R.string.runtime_text_0263), 25, AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
 
@@ -90,7 +90,7 @@ public final class SmartAlarmActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         return top;
@@ -98,9 +98,9 @@ public final class SmartAlarmActivity extends Activity {
 
     private View buildIntro() {
         TextView intro = text(
-                "متن معمولی، برنامه کپی‌شده یا JSON را وارد کنید. "
-                        + "تاریخ‌ها و ساعت‌ها خودکار استخراج می‌شوند و قبل از ذخیره "
-                        + "می‌توانید هر هشدار را جداگانه ویرایش، حذف یا زمان زنگ آن را جابه‌جا کنید.",
+                AppString.get(R.string.runtime_text_0632)
+                        + AppString.get(R.string.runtime_text_0633)
+                        + AppString.get(R.string.runtime_text_0634),
                 12,
                 AppSettings.textSecondary(this));
         intro.setPadding(0, 0, 0, dp(10));
@@ -115,28 +115,28 @@ public final class SmartAlarmActivity extends Activity {
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView title = text("ورودی هوشمند", 18, AppSettings.textPrimary(this));
+        TextView title = text(AppString.get(R.string.runtime_text_0264), 18, AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         header.addView(title, new LinearLayout.LayoutParams(0, dp(44), 1f));
 
-        Button paste = softButton("پیست");
+        Button paste = softButton(AppString.get(R.string.runtime_text_0265));
         paste.setOnClickListener(v -> pasteClipboard());
         header.addView(paste, new LinearLayout.LayoutParams(dp(76), dp(40)));
 
-        Button clear = softButton("پاک کردن");
+        Button clear = softButton(AppString.get(R.string.runtime_text_0009));
         LinearLayout.LayoutParams clearParams = new LinearLayout.LayoutParams(dp(88), dp(40));
         clearParams.setMarginStart(dp(6));
         clear.setOnClickListener(v -> {
             input.setText("");
             candidates.clear();
-            detection.setText("تشخیص خودکار");
+            detection.setText(AppString.get(R.string.runtime_text_0266));
             warning.setText("");
             refreshPreview();
         });
         header.addView(clear, clearParams);
         card.addView(header);
 
-        detection = chip("تشخیص خودکار");
+        detection = chip(AppString.get(R.string.runtime_text_0266));
         LinearLayout.LayoutParams detectionParams = chipParams();
         detectionParams.topMargin = dp(4);
         card.addView(detection, detectionParams);
@@ -154,30 +154,30 @@ public final class SmartAlarmActivity extends Activity {
                         | InputType.TYPE_TEXT_FLAG_MULTI_LINE
                         | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         input.setHint(
-                "هر متنی را اینجا پیست کنید…\n\n"
-                        + "مثال:\n"
-                        + "۱۴۰۵/۰۷/۰۴ ساعت ۱۳:۰۰ تا ۱۵:۰۰ خاموشی احتمالی\n"
-                        + "۱۴۰۵/۰۷/۰۵ ساعت ۱۵:۰۰ جلسه\n\n"
-                        + "یا JSON شامل date / time / start / title");
+                AppString.get(R.string.runtime_text_0635)
+                        + AppString.get(R.string.runtime_text_0636)
+                        + AppString.get(R.string.runtime_text_0637)
+                        + AppString.get(R.string.runtime_text_0638)
+                        + AppString.get(R.string.runtime_text_0639));
         LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(-1, dp(240));
         inputParams.topMargin = dp(8);
         card.addView(input, inputParams);
 
-        Button simplify = softButton("ساده‌سازی: فقط تاریخ و ساعت");
+        Button simplify = softButton(AppString.get(R.string.runtime_text_0640));
         simplify.setOnClickListener(v -> simplifyInput());
         LinearLayout.LayoutParams simplifyParams = new LinearLayout.LayoutParams(-1, dp(46));
         simplifyParams.topMargin = dp(8);
         card.addView(simplify, simplifyParams);
 
         TextView simplifyHint = text(
-                "هر خط یک تاریخ و نزدیک‌ترین ساعت‌های آن است؛ متن را انتخاب، جابه‌جا یا "
-                        + "ویرایش کنید و سپس تحلیل را بزنید.",
+                AppString.get(R.string.runtime_text_0641)
+                        + AppString.get(R.string.runtime_text_0642),
                 11,
                 AppSettings.textSecondary(this));
         simplifyHint.setPadding(0, dp(4), 0, 0);
         card.addView(simplifyHint);
 
-        analyze = primaryButton("تحلیل متن و ساخت پیش‌نمایش");
+        analyze = primaryButton(AppString.get(R.string.runtime_text_0267));
         analyze.setEnabled(false);
         analyze.setAlpha(0.55f);
         LinearLayout.LayoutParams analyzeParams = new LinearLayout.LayoutParams(-1, dp(54));
@@ -211,7 +211,7 @@ public final class SmartAlarmActivity extends Activity {
         if (simplified.isEmpty()) {
             LogoToast.makeText(
                     this,
-                    "تاریخ و ساعت قابل ساده‌سازی پیدا نشد",
+                    AppString.get(R.string.runtime_text_0643),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -219,7 +219,7 @@ public final class SmartAlarmActivity extends Activity {
         input.setSelection(input.length());
         candidates.clear();
         warning.setText("");
-        detection.setText("متن ساده‌شده؛ برای ساخت هشدار تحلیل را بزنید");
+        detection.setText(AppString.get(R.string.runtime_text_0644));
         refreshPreview();
     }
 
@@ -227,15 +227,15 @@ public final class SmartAlarmActivity extends Activity {
         LinearLayout card = card();
 
         TextView title = text(
-                "زمان زنگ برای همه",
+                AppString.get(R.string.runtime_text_0268),
                 17,
                 AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         card.addView(title);
 
         TextView hint = text(
-                "این تنظیم را می‌توانید روی همه موارد اعمال کنید؛ "
-                        + "بعداً هر هشدار را جداگانه هم می‌توان تغییر داد.",
+                AppString.get(R.string.runtime_text_0645)
+                        + AppString.get(R.string.runtime_text_0646),
                 11,
                 AppSettings.textSecondary(this));
         hint.setPadding(0, dp(3), 0, dp(8));
@@ -246,12 +246,12 @@ public final class SmartAlarmActivity extends Activity {
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        bulkMode = spinner(new String[]{"سرِ وقت", "قبل از زمان", "بعد از زمان"});
+        bulkMode = spinner(new String[]{AppString.get(R.string.runtime_text_0269), AppString.get(R.string.runtime_text_0270), AppString.get(R.string.runtime_text_0271)});
         row.addView(bulkMode, new LinearLayout.LayoutParams(0, dp(52), 1f));
 
         bulkMinutes = new EditText(this);
         bulkMinutes.setText("5");
-        bulkMinutes.setHint("دقیقه");
+        bulkMinutes.setHint(AppString.get(R.string.runtime_text_0037));
         bulkMinutes.setSelectAllOnFocus(true);
         bulkMinutes.setSingleLine(true);
         bulkMinutes.setGravity(Gravity.CENTER);
@@ -270,13 +270,13 @@ public final class SmartAlarmActivity extends Activity {
         presets.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         presets.setPadding(0, dp(8), 0, 0);
         for (int value : new int[]{5, 10, 15, 30}) {
-            Button b = softButton(CalendarUtils.fa(value) + " دقیقه");
+            Button b = softButton(CalendarUtils.fa(value) + AppString.get(R.string.runtime_text_0647));
             b.setOnClickListener(v -> bulkMinutes.setText(String.valueOf(value)));
             presets.addView(b, weightedButtonParams());
         }
         card.addView(presets);
 
-        Button apply = softButton("اعمال این زمان‌بندی روی همه هشدارهای شناسایی‌شده");
+        Button apply = softButton(AppString.get(R.string.runtime_text_0648));
         LinearLayout.LayoutParams applyParams = new LinearLayout.LayoutParams(-1, dp(48));
         applyParams.topMargin = dp(8);
         apply.setOnClickListener(v -> applyBulkTiming());
@@ -293,13 +293,13 @@ public final class SmartAlarmActivity extends Activity {
         header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         previewTitle = text(
-                "پیش‌نمایش هشدارها",
+                AppString.get(R.string.runtime_text_0272),
                 17,
                 AppSettings.textPrimary(this));
         previewTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         header.addView(previewTitle, new LinearLayout.LayoutParams(0, dp(44), 1f));
 
-        Button removeAll = softButton("حذف همه");
+        Button removeAll = softButton(AppString.get(R.string.runtime_text_0273));
         removeAll.setOnClickListener(v -> {
             candidates.clear();
             refreshPreview();
@@ -308,7 +308,7 @@ public final class SmartAlarmActivity extends Activity {
         card.addView(header);
 
         TextView hint = text(
-                "زمان اصلی استخراج‌شده و زمان واقعی زنگ هر مورد را قبل از ذخیره بررسی کنید.",
+                AppString.get(R.string.runtime_text_0649),
                 11,
                 AppSettings.textSecondary(this));
         hint.setPadding(0, 0, 0, dp(8));
@@ -319,7 +319,7 @@ public final class SmartAlarmActivity extends Activity {
         previewList.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         card.addView(previewList, new LinearLayout.LayoutParams(-1, -2));
 
-        saveAll = primaryButton("ذخیره همه هشدارها");
+        saveAll = primaryButton(AppString.get(R.string.runtime_text_0274));
         saveAll.setEnabled(false);
         saveAll.setAlpha(0.55f);
         LinearLayout.LayoutParams saveParams = new LinearLayout.LayoutParams(-1, dp(56));
@@ -334,19 +334,19 @@ public final class SmartAlarmActivity extends Activity {
         ClipboardManager clipboard =
                 (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard == null || !clipboard.hasPrimaryClip()) {
-            LogoToast.makeText(this, "متنی در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0282), Toast.LENGTH_SHORT).show();
             return;
         }
 
         ClipData clip = clipboard.getPrimaryClip();
         if (clip == null || clip.getItemCount() == 0) {
-            LogoToast.makeText(this, "متنی در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0282), Toast.LENGTH_SHORT).show();
             return;
         }
 
         CharSequence value = clip.getItemAt(0).coerceToText(this);
         if (value == null || value.toString().trim().isEmpty()) {
-            LogoToast.makeText(this, "متن قابل استفاده‌ای در کلیپ‌بورد نیست", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0650), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -361,8 +361,8 @@ public final class SmartAlarmActivity extends Activity {
         candidates.clear();
         candidates.addAll(result.candidates);
         detection.setText(result.jsonDetected
-                ? "تشخیص خودکار: JSON"
-                : "تشخیص خودکار: متن عادی");
+                ? AppString.get(R.string.runtime_text_0651)
+                : AppString.get(R.string.runtime_text_0652));
 
         if (result.warnings.isEmpty()) {
             warning.setText("");
@@ -379,14 +379,14 @@ public final class SmartAlarmActivity extends Activity {
         if (!candidates.isEmpty()) {
             LogoToast.makeText(
                     this,
-                    CalendarUtils.fa(candidates.size()) + " هشدار شناسایی شد",
+                    CalendarUtils.fa(candidates.size()) + AppString.get(R.string.runtime_text_0653),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     private void applyBulkTiming() {
         if (candidates.isEmpty()) {
-            LogoToast.makeText(this, "ابتدا متن را تحلیل کنید", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0283), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -406,13 +406,13 @@ public final class SmartAlarmActivity extends Activity {
         previewList.removeAllViews();
 
         previewTitle.setText(
-                "پیش‌نمایش هشدارها • "
+                AppString.get(R.string.runtime_text_0654)
                         + CalendarUtils.fa(candidates.size())
-                        + " مورد");
+                        + AppString.get(R.string.runtime_text_0655));
 
         if (candidates.isEmpty()) {
             TextView empty = text(
-                    "هنوز هشداری شناسایی نشده است.",
+                    AppString.get(R.string.runtime_text_0284),
                     12,
                     AppSettings.textSecondary(this));
             empty.setGravity(Gravity.CENTER);
@@ -456,14 +456,14 @@ public final class SmartAlarmActivity extends Activity {
         boolean past = candidate.triggerMillis() <= System.currentTimeMillis();
         StringBuilder detail = new StringBuilder();
         detail.append(candidate.dateText());
-        detail.append("  •  زمان متن: ").append(candidate.baseTimeText());
+        detail.append(AppString.get(R.string.runtime_text_0656)).append(candidate.baseTimeText());
         if (!candidate.endTimeText().isEmpty()) {
-            detail.append(" تا ").append(candidate.endTimeText());
+            detail.append(AppString.get(R.string.runtime_text_0657)).append(candidate.endTimeText());
         }
-        detail.append("\nزنگ: ").append(candidate.triggerTimeText());
+        detail.append(AppString.get(R.string.runtime_text_0658)).append(candidate.triggerTimeText());
         detail.append("  •  ").append(candidate.offsetText());
         detail.append("  •  ").append(CalendarUtils.calendarName(candidate.calendarType));
-        if (past) detail.append("\n⚠ زمان زنگ در گذشته است و ذخیره نمی‌شود.");
+        if (past) detail.append(AppString.get(R.string.runtime_text_0659));
 
         TextView detailView = text(
                 detail.toString(),
@@ -477,11 +477,11 @@ public final class SmartAlarmActivity extends Activity {
         actions.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         actions.setGravity(Gravity.CENTER);
 
-        Button edit = softButton("ویرایش");
+        Button edit = softButton(AppString.get(R.string.runtime_text_0007));
         edit.setOnClickListener(v -> editCandidate(index));
         actions.addView(edit, weightedButtonParams());
 
-        Button duplicate = softButton("کپی");
+        Button duplicate = softButton(AppString.get(R.string.runtime_text_0660));
         duplicate.setOnClickListener(v -> {
             SmartAlarmParser.Candidate copy = copyCandidate(candidate);
             candidates.add(index + 1, copy);
@@ -489,7 +489,7 @@ public final class SmartAlarmActivity extends Activity {
         });
         actions.addView(duplicate, weightedButtonParams());
 
-        Button delete = softButton("حذف");
+        Button delete = softButton(AppString.get(R.string.runtime_text_0006));
         delete.setTextColor(0xFFC44C4C);
         delete.setOnClickListener(v -> {
             candidates.remove(index);
@@ -516,13 +516,13 @@ public final class SmartAlarmActivity extends Activity {
         root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         root.setPadding(dp(8), dp(2), dp(8), 0);
 
-        TextView labelTitle = dialogLabel("عنوان");
+        TextView labelTitle = dialogLabel(AppString.get(R.string.runtime_text_0275));
         root.addView(labelTitle);
 
         EditText label = dialogEdit(draft.label, false);
         root.addView(label, new LinearLayout.LayoutParams(-1, dp(52)));
 
-        TextView dateTitle = dialogLabel("تاریخ و ساعت اصلی");
+        TextView dateTitle = dialogLabel(AppString.get(R.string.runtime_text_0276));
         root.addView(dateTitle);
 
         LinearLayout dateRow = new LinearLayout(this);
@@ -538,14 +538,14 @@ public final class SmartAlarmActivity extends Activity {
         dateRow.addView(time, timeParams);
         root.addView(dateRow);
 
-        TextView ringTitle = dialogLabel("زمان زنگ");
+        TextView ringTitle = dialogLabel(AppString.get(R.string.runtime_text_0277));
         root.addView(ringTitle);
 
         LinearLayout ringRow = new LinearLayout(this);
         ringRow.setOrientation(LinearLayout.HORIZONTAL);
         ringRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        Spinner mode = spinner(new String[]{"سرِ وقت", "قبل از زمان", "بعد از زمان"});
+        Spinner mode = spinner(new String[]{AppString.get(R.string.runtime_text_0269), AppString.get(R.string.runtime_text_0270), AppString.get(R.string.runtime_text_0271)});
         mode.setSelection(draft.offsetMode);
         ringRow.addView(mode, new LinearLayout.LayoutParams(0, dp(52), 1f));
 
@@ -557,16 +557,16 @@ public final class SmartAlarmActivity extends Activity {
         ringRow.addView(minutes, mp);
         root.addView(ringRow);
 
-        TextView priorityTitle = dialogLabel("اولویت");
+        TextView priorityTitle = dialogLabel(AppString.get(R.string.runtime_text_0278));
         root.addView(priorityTitle);
         Spinner priority = spinner(new String[]{
-                "کم", "نسبتاً کم", "متوسط", "زیاد", "خیلی زیاد"
+                AppString.get(R.string.runtime_text_0024), AppString.get(R.string.runtime_text_0025), AppString.get(R.string.runtime_text_0026), AppString.get(R.string.runtime_text_0027), AppString.get(R.string.runtime_text_0028)
         });
         priority.setSelection(currentState.priority);
         root.addView(priority, new LinearLayout.LayoutParams(-1, dp(52)));
 
         Switch vibrate = new Switch(this);
-        vibrate.setText("لرزش همراه هشدار");
+        vibrate.setText(AppString.get(R.string.runtime_text_0279));
         vibrate.setTextColor(AppSettings.textPrimary(this));
         vibrate.setChecked(currentState.vibrate);
         vibrate.setPadding(0, dp(6), 0, 0);
@@ -598,17 +598,17 @@ public final class SmartAlarmActivity extends Activity {
                 true).show());
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("ویرایش هشدار")
+                .setTitle(AppString.get(R.string.runtime_text_0280))
                 .setView(root)
-                .setNegativeButton("انصراف", null)
-                .setPositiveButton("ذخیره", null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0005), null)
                 .create();
 
         dialog.setOnShowListener(ignored ->
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                     String newLabel = label.getText().toString().trim();
                     if (newLabel.isEmpty()) {
-                        label.setError("عنوان نمی‌تواند خالی باشد");
+                        label.setError(AppString.get(R.string.runtime_text_0281));
                         return;
                     }
 
@@ -688,27 +688,27 @@ public final class SmartAlarmActivity extends Activity {
         ClockWidgetProvider.updateAll(this);
 
         StringBuilder message = new StringBuilder();
-        message.append(CalendarUtils.fa(saved)).append(" هشدار ذخیره شد");
+        message.append(CalendarUtils.fa(saved)).append(AppString.get(R.string.runtime_text_0661));
         if (skippedPast > 0) {
             message.append("\n")
                     .append(CalendarUtils.fa(skippedPast))
-                    .append(" مورد گذشته رد شد");
+                    .append(AppString.get(R.string.runtime_text_0662));
         }
         if (skippedDuplicate > 0) {
             message.append("\n")
                     .append(CalendarUtils.fa(skippedDuplicate))
-                    .append(" مورد تکراری ذخیره نشد");
+                    .append(AppString.get(R.string.runtime_text_0663));
         }
         if (scheduleFailed > 0) {
             message.append("\n")
                     .append(CalendarUtils.fa(scheduleFailed))
-                    .append(" مورد زمان‌بندی نشد و ذخیره نشد");
+                    .append(AppString.get(R.string.runtime_text_0664));
         }
 
         if (scheduleFailed > 0
                 && !PermissionHelper.exactAlarmsGranted(this)
                 && Build.VERSION.SDK_INT >= 31) {
-            message.append("\nبرای اجرای دقیق، دسترسی آلارم دقیق را فعال کنید.");
+            message.append(AppString.get(R.string.runtime_text_0665));
             LogoToast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
             try {
                 startActivity(new Intent(
