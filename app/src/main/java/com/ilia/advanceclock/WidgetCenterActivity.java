@@ -32,7 +32,7 @@ public final class WidgetCenterActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(24));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -130,7 +130,7 @@ public final class WidgetCenterActivity extends Activity {
 
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        card.setLayoutDirection(AppSettings.layoutDirection(this));
         card.setPadding(dp(15), dp(14), dp(15), dp(14));
         card.setBackgroundResource(R.drawable.bg_card);
 
@@ -179,7 +179,7 @@ public final class WidgetCenterActivity extends Activity {
 
             LinearLayout buttons = new LinearLayout(this);
             buttons.setOrientation(LinearLayout.HORIZONTAL);
-            buttons.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            buttons.setLayoutDirection(AppSettings.layoutDirection(this));
             buttons.setGravity(Gravity.START);
             card.addView(buttons, new LinearLayout.LayoutParams(-1, -2));
 
