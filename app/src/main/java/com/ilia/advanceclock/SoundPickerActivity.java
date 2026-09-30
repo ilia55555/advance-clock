@@ -22,9 +22,9 @@ public final class SoundPickerActivity extends Activity {
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); AppSettings.applyModalOverlay(this); super.onCreate(state);
         LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL); root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setOrientation(LinearLayout.VERTICAL); root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(18)); root.setBackgroundColor(AppSettings.background(this));
-        LinearLayout top = new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout top = new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL); top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         TextView title = new TextView(this); title.setText(AppString.get(R.string.runtime_text_0150)); title.setTextSize(24);
         title.setTextColor(AppSettings.textPrimary(this)); title.setTypeface(null, 1);
         top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1));
