@@ -198,7 +198,7 @@ public final class WidgetSizeUtils {
         ArrayList<SizeF> sizes = exactSizes(options);
         if (!sizes.isEmpty()) {
             StringBuilder builder = new StringBuilder(
-                    "اندازه‌های دقیق گزارش‌شده توسط لانچر:");
+                    AppString.get(R.string.runtime_text_0475));
             int shown = 0;
             for (SizeF size : sizes) {
                 if (size == null
@@ -214,7 +214,7 @@ public final class WidgetSizeUtils {
                         .append(dpToCells(size.getWidth()))
                         .append(" × ")
                         .append(dpToCells(size.getHeight()))
-                        .append(" خانه");
+                        .append(AppString.get(R.string.runtime_text_0476));
                 shown++;
                 if (shown >= 4) break;
             }
@@ -227,15 +227,15 @@ public final class WidgetSizeUtils {
                 fallbackWidthCells,
                 fallbackHeightCells);
 
-        return "اندازه برآوردشده از لانچر: "
+        return AppString.get(R.string.runtime_text_0477)
                 + Math.round(size.widthDp)
                 + "×"
                 + Math.round(size.heightDp)
                 + "dp"
-                + "\nتقریب شبکه: "
+                + AppString.get(R.string.runtime_text_0478)
                 + dpToCells(size.widthDp)
                 + " × "
                 + dpToCells(size.heightDp)
-                + " خانه";
+                + AppString.get(R.string.runtime_text_0476);
     }
 }
