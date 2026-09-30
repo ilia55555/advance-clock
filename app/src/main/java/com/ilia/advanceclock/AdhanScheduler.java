@@ -94,11 +94,11 @@ public final class AdhanScheduler {
     }
 
     public static String title(int type) {
-        if (type == FAJR) return "اذان صبح";
-        if (type == DHUHR) return "اذان ظهر";
-        if (type == ASR) return "عصر";
-        if (type == MAGHRIB) return "اذان مغرب";
-        return "عشاء";
+        if (type == FAJR) return AppString.get(R.string.runtime_text_0078);
+        if (type == DHUHR) return AppString.get(R.string.runtime_text_0079);
+        if (type == ASR) return AppString.get(R.string.runtime_text_0082);
+        if (type == MAGHRIB) return AppString.get(R.string.runtime_text_0080);
+        return AppString.get(R.string.runtime_text_0081);
     }
 
     private static long prayerMillis(Context context, Calendar day, int type) {
