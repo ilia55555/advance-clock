@@ -491,25 +491,25 @@ public final class MediaWidgetRemoteViewsService
     private static String typeLabel(String mime) {
         String value = normalizedMime(mime);
 
-        if (value.startsWith("image/")) return "تصویر";
-        if (value.startsWith("audio/")) return "صوت";
-        if (value.startsWith("video/")) return "ویدیو";
-        if (value.startsWith("text/")) return "متن";
+        if (value.startsWith("image/")) return AppString.get(R.string.runtime_text_0061);
+        if (value.startsWith("audio/")) return AppString.get(R.string.runtime_text_0062);
+        if (value.startsWith("video/")) return AppString.get(R.string.runtime_text_0063);
+        if (value.startsWith("text/")) return AppString.get(R.string.runtime_text_0064);
         if (value.contains("pdf")) return "PDF";
         if (value.contains("zip")
                 || value.contains("rar")
                 || value.contains("7z")) {
-            return "فایل فشرده";
+            return AppString.get(R.string.runtime_text_0525);
         }
         if (value.contains("word")
                 || value.contains("document")) {
-            return "سند";
+            return AppString.get(R.string.runtime_text_0065);
         }
         if (value.contains("sheet")
                 || value.contains("excel")) {
-            return "صفحه گسترده";
+            return AppString.get(R.string.runtime_text_0066);
         }
-        return "فایل";
+        return AppString.get(R.string.runtime_text_0059);
     }
 
     private static String formatTime(int millis) {
