@@ -929,4 +929,36 @@
     <string name="calendar_event_text_082" formatted="false">يوم عرفة</string>
     <string name="calendar_event_text_083" formatted="false">عيد الأضحى</string>
     <string name="calendar_event_text_084" formatted="false">إجازة عيد الأضحى</string>
+    <!-- Offline Iran location labels -->
+    <string name="iran_location_text_001" formatted="false">تهران، استان تهران، ایران</string>
+    <string name="iran_location_text_002" formatted="false">کرج، استان البرز، ایران</string>
+    <string name="iran_location_text_003" formatted="false">قم، استان قم، ایران</string>
+    <string name="iran_location_text_004" formatted="false">اصفهان، استان اصفهان، ایران</string>
+    <string name="iran_location_text_005" formatted="false">شیراز، استان فارس، ایران</string>
+    <string name="iran_location_text_006" formatted="false">مشهد، خراسان رضوی، ایران</string>
+    <string name="iran_location_text_007" formatted="false">تبریز، آذربایجان شرقی، ایران</string>
+    <string name="iran_location_text_008" formatted="false">ارومیه، آذربایجان غربی، ایران</string>
+    <string name="iran_location_text_009" formatted="false">اردبیل، استان اردبیل، ایران</string>
+    <string name="iran_location_text_010" formatted="false">رشت، استان گیلان، ایران</string>
+    <string name="iran_location_text_011" formatted="false">ساری، استان مازندران، ایران</string>
+    <string name="iran_location_text_012" formatted="false">گرگان، استان گلستان، ایران</string>
+    <string name="iran_location_text_013" formatted="false">سمنان، استان سمنان، ایران</string>
+    <string name="iran_location_text_014" formatted="false">قزوین، استان قزوین، ایران</string>
+    <string name="iran_location_text_015" formatted="false">زنجان، استان زنجان، ایران</string>
+    <string name="iran_location_text_016" formatted="false">همدان، استان همدان، ایران</string>
+    <string name="iran_location_text_017" formatted="false">کرمانشاه، استان کرمانشاه، ایران</string>
+    <string name="iran_location_text_018" formatted="false">سنندج، استان کردستان، ایران</string>
+    <string name="iran_location_text_019" formatted="false">ایلام، استان ایلام، ایران</string>
+    <string name="iran_location_text_020" formatted="false">خرم‌آباد، استان لرستان، ایران</string>
+    <string name="iran_location_text_021" formatted="false">اهواز، استان خوزستان، ایران</string>
+    <string name="iran_location_text_022" formatted="false">شهرکرد، چهارمحال و بختیاری، ایران</string>
+    <string name="iran_location_text_023" formatted="false">یاسوج، کهگیلویه و بویراحمد، ایران</string>
+    <string name="iran_location_text_024" formatted="false">بوشهر، استان بوشهر، ایران</string>
+    <string name="iran_location_text_025" formatted="false">بندرعباس، استان هرمزگان، ایران</string>
+    <string name="iran_location_text_026" formatted="false">کرمان، استان کرمان، ایران</string>
+    <string name="iran_location_text_027" formatted="false">یزد، استان یزد، ایران</string>
+    <string name="iran_location_text_028" formatted="false">بیرجند، خراسان جنوبی، ایران</string>
+    <string name="iran_location_text_029" formatted="false">بجنورد، خراسان شمالی، ایران</string>
+    <string name="iran_location_text_030" formatted="false">زاهدان، سیستان و بلوچستان، ایران</string>
+    <string name="iran_location_text_031" formatted="false">اراک، استان مرکزی، ایران</string>
 </resources>
