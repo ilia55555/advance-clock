@@ -36,9 +36,9 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
             CalendarUtils.PERSIAN, CalendarUtils.HIJRI, CalendarUtils.GREGORIAN
     };
     private static final String[] CALENDAR_LABELS = {
-            "نمایش تاریخ شمسی",
-            "نمایش تاریخ قمری",
-            "نمایش تاریخ میلادی"
+            AppString.get(R.string.runtime_text_0590),
+            AppString.get(R.string.runtime_text_0591),
+            AppString.get(R.string.runtime_text_0592)
     };
     private Spinner timeMode;
     private Switch showIcons;
@@ -48,8 +48,8 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
             "sunset", "maghrib", "isha", "midnight"
     };
     private static final String[] PRAYER_TIME_LABELS = {
-            "صبح", "طلوع", "ظهر", "عصر",
-            "غروب", "مغرب", "عشاء", "نیمه‌شب"
+            AppString.get(R.string.runtime_text_0434), AppString.get(R.string.runtime_text_0083), AppString.get(R.string.runtime_text_0435), AppString.get(R.string.runtime_text_0082),
+            AppString.get(R.string.runtime_text_0084), AppString.get(R.string.runtime_text_0436), AppString.get(R.string.runtime_text_0081), AppString.get(R.string.runtime_text_0085)
     };
     private Switch showCurrentBadge;
     private TextView preview;
@@ -87,7 +87,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         top.setGravity(Gravity.CENTER_VERTICAL);
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView title = label("تنظیمات ویجت اوقات شرعی", 23);
+        TextView title = label(AppString.get(R.string.runtime_text_0593), 23);
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         top.addView(title, new LinearLayout.LayoutParams(0, dp(58), 1f));
 
@@ -96,13 +96,13 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
         preview = new TextView(this);
-        preview.setText("اوقات شرعی\nافق تهران\nصبح ۰۴:۵۱   طلوع ۰۶:۱۸   ظهر ۱۲:۰۳   عصر ۱۵:۲۴\nغروب ۱۸:۰۲   مغرب ۱۸:۲۰   عشاء ۱۹:۴۸   نیمه‌شب ۲۳:۳۱");
+        preview.setText(AppString.get(R.string.runtime_text_0594));
         preview.setTextDirection(View.TEXT_DIRECTION_RTL);
         preview.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         preview.setPadding(dp(16), dp(12), dp(16), dp(12));
@@ -110,50 +110,50 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         previewLp.bottomMargin = dp(12);
         root.addView(preview, previewLp);
 
-        root.addView(section("ظاهر و رنگ"));
-        root.addView(label("پس‌زمینه", 12));
+        root.addView(section(AppString.get(R.string.runtime_text_0595)));
+        root.addView(label(AppString.get(R.string.runtime_text_0243), 12));
         background = spinner(new String[]{
-                "سرمه‌ای شیشه‌ای",
-                "سرمه‌ای شفاف",
-                "مشکی شیشه‌ای",
-                "روشن"
+                AppString.get(R.string.runtime_text_0596),
+                AppString.get(R.string.runtime_text_0597),
+                AppString.get(R.string.runtime_text_0598),
+                AppString.get(R.string.runtime_text_0044)
         });
         background.setSelection(PrayerTimesWidgetPrefs.background(this, widgetId));
         root.addView(background, fieldLp());
 
-        root.addView(label("رنگ متن اصلی", 12));
+        root.addView(label(AppString.get(R.string.runtime_text_0599), 12));
         mainColor = colorSpinner();
         mainColor.setSelection(colorPosition(
                 PrayerTimesWidgetPrefs.mainTextColor(this, widgetId)));
         root.addView(mainColor, fieldLp());
 
-        root.addView(label("رنگ متن فرعی", 12));
+        root.addView(label(AppString.get(R.string.runtime_text_0600), 12));
         secondaryColor = colorSpinner();
         secondaryColor.setSelection(colorPosition(
                 PrayerTimesWidgetPrefs.secondaryTextColor(this, widgetId)));
         root.addView(secondaryColor, fieldLp());
 
-        root.addView(label("رنگ تأکیدی و افق فعلی", 12));
+        root.addView(label(AppString.get(R.string.runtime_text_0601), 12));
         accentColor = colorSpinner();
         accentColor.setSelection(colorPosition(
                 PrayerTimesWidgetPrefs.accentColor(this, widgetId)));
         root.addView(accentColor, fieldLp());
 
-        root.addView(label("رنگ وقت فعال / اذان بعدی", 12));
+        root.addView(label(AppString.get(R.string.runtime_text_0602), 12));
         activeColor = colorSpinner();
         activeColor.setSelection(colorPosition(
                 PrayerTimesWidgetPrefs.activePrayerColor(this, widgetId)));
         root.addView(activeColor, fieldLp());
 
-        root.addView(label("اندازه نوشته‌ها", 12));
-        fontSize = spinner(new String[]{"کوچک", "معمولی", "بزرگ"});
+        root.addView(label(AppString.get(R.string.runtime_text_0603), 12));
+        fontSize = spinner(new String[]{AppString.get(R.string.runtime_text_0049), AppString.get(R.string.runtime_text_0050), AppString.get(R.string.runtime_text_0051)});
         fontSize.setSelection(PrayerTimesWidgetPrefs.fontSize(this, widgetId));
         root.addView(fontSize, fieldLp());
 
-        root.addView(section("محتوا"));
-        showHeader = addSwitch(root, "نمایش هدر «اوقات شرعی»",
+        root.addView(section(AppString.get(R.string.runtime_text_0232)));
+        showHeader = addSwitch(root, AppString.get(R.string.runtime_text_0604),
                 PrayerTimesWidgetPrefs.showHeader(this, widgetId));
-        root.addView(label("تقویم‌های هدر هر افق", 12));
+        root.addView(label(AppString.get(R.string.runtime_text_0605), 12));
         for (int index = 0; index < shownCalendars.length; index++) {
             shownCalendars[index] = addSwitch(
                     root,
@@ -161,13 +161,13 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
                     PrayerTimesWidgetPrefs.showCalendar(
                             this, widgetId, CALENDAR_TYPES[index]));
         }
-        root.addView(label("نمایش زمان", 12));
-        timeMode = spinner(new String[]{"ساعت محلی افق", "شمارش معکوس تا اذان بعدی"});
+        root.addView(label(AppString.get(R.string.runtime_text_0606), 12));
+        timeMode = spinner(new String[]{AppString.get(R.string.runtime_text_0607), AppString.get(R.string.runtime_text_0608)});
         timeMode.setSelection(PrayerTimesWidgetPrefs.timeMode(this, widgetId));
         root.addView(timeMode, fieldLp());
-        showIcons = addSwitch(root, "نمایش آیکون‌های اوقات",
+        showIcons = addSwitch(root, AppString.get(R.string.runtime_text_0609),
                 PrayerTimesWidgetPrefs.showIcons(this, widgetId));
-        root.addView(label("اوقات قابل نمایش (هر ۸ مورد به‌صورت پیش‌فرض فعال‌اند)", 12));
+        root.addView(label(AppString.get(R.string.runtime_text_0610), 12));
         for (int index = 0; index < shownPrayerTimes.length; index++) {
             shownPrayerTimes[index] = addSwitch(
                     root,
@@ -175,11 +175,11 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
                     PrayerTimesWidgetPrefs.showPrayerTime(
                             this, widgetId, PRAYER_TIME_KEYS[index]));
         }
-        showCurrentBadge = addSwitch(root, "برجسته‌کردن افق اصلی",
+        showCurrentBadge = addSwitch(root, AppString.get(R.string.runtime_text_0611),
                 PrayerTimesWidgetPrefs.showCurrentBadge(this, widgetId));
 
         Button manage = new Button(this);
-        manage.setText("مدیریت افق‌ها");
+        manage.setText(AppString.get(R.string.runtime_text_0612));
         manage.setAllCaps(false);
         manage.setTextColor(AppSettings.primaryColor(this));
         manage.setBackgroundResource(R.drawable.bg_soft_button);
@@ -188,7 +188,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         root.addView(manage, new LinearLayout.LayoutParams(-1, dp(50)));
 
         Button reset = new Button(this);
-        reset.setText("بازگردانی تنظیمات پیش‌فرض ویجت");
+        reset.setText(AppString.get(R.string.runtime_text_0613));
         reset.setAllCaps(false);
         reset.setTextColor(AppSettings.textSecondary(this));
         reset.setBackgroundResource(R.drawable.bg_field);
@@ -203,7 +203,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         page.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1f));
 
         Button save = new Button(this);
-        save.setText("ذخیره و اعمال");
+        save.setText(AppString.get(R.string.runtime_text_0614));
         save.setAllCaps(false);
         save.setTextColor(0xFFFFFFFF);
         save.setTextSize(15);
@@ -323,9 +323,9 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
 
     private Spinner colorSpinner() {
         return spinner(new String[]{
-                "سفید یخی", "آبی روشن", "فیروزه‌ای", "طلایی",
-                "نارنجی", "قرمز", "سبز", "بنفش",
-                "صورتی", "نقره‌ای", "سرمه‌ای", "سرمه‌ای تیره"
+                AppString.get(R.string.runtime_text_0615), AppString.get(R.string.runtime_text_0616), AppString.get(R.string.runtime_text_0249), AppString.get(R.string.runtime_text_0253),
+                AppString.get(R.string.runtime_text_0254), AppString.get(R.string.runtime_text_0251), AppString.get(R.string.runtime_text_0252), AppString.get(R.string.runtime_text_0250),
+                AppString.get(R.string.runtime_text_0255), AppString.get(R.string.runtime_text_0617), AppString.get(R.string.runtime_text_0618), AppString.get(R.string.runtime_text_0619)
         });
     }
 
