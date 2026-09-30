@@ -38,7 +38,7 @@ public final class NoForgetQuickAddActivity extends Activity {
 
         String[] labels = PriorityUtils.labels();
         String[] values = new String[labels.length];
-        for (int i = 0; i < labels.length; i++) values[i] = "اهمیت " + labels[i];
+        for (int i = 0; i < labels.length; i++) values[i] = AppString.get(R.string.runtime_text_0420) + labels[i];
 
         ArrayAdapter<String> p = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, values);
@@ -49,7 +49,7 @@ public final class NoForgetQuickAddActivity extends Activity {
         findViewById(R.id.quick_note_save).setOnClickListener(v -> {
             String value = text.getText().toString().trim();
             if (value.isEmpty()) {
-                LogoToast.makeText(this, "یادداشت خالی است", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, AppString.get(R.string.runtime_text_0385), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -93,7 +93,7 @@ public final class NoForgetQuickAddActivity extends Activity {
             startActivityForResult(
                     new Intent(Intent.ACTION_PICK_ACTIVITY)
                             .putExtra(Intent.EXTRA_INTENT, base)
-                            .putExtra(Intent.EXTRA_TITLE, "انتخاب برنامه"),
+                            .putExtra(Intent.EXTRA_TITLE, AppString.get(R.string.runtime_text_0206)),
                     REQ_APP);
             return;
         }
@@ -169,6 +169,6 @@ public final class NoForgetQuickAddActivity extends Activity {
                 null)) {
             if (cursor != null && cursor.moveToFirst()) return cursor.getString(0);
         } catch (Exception ignored) {}
-        return "فایل";
+        return AppString.get(R.string.runtime_text_0059);
     }
 }
