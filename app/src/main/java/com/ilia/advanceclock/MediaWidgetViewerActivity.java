@@ -289,7 +289,7 @@ public final class MediaWidgetViewerActivity extends Activity {
         buttons.setGravity(Gravity.CENTER);
         buttons.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
-        Button back = controlButton("−10 ث");
+        Button back = controlButton(AppString.get(R.string.runtime_text_0688));
         back.setOnClickListener(v -> {
             seekTo(position() - SEEK_STEP_MS);
             showControlsTemporarily();
@@ -301,7 +301,7 @@ public final class MediaWidgetViewerActivity extends Activity {
         playPause.setImageResource(R.drawable.ic_md_pause);
         playPause.setColorFilter(Color.WHITE);
         playPause.setBackgroundResource(R.drawable.bg_soft_button);
-        playPause.setContentDescription("پخش یا مکث");
+        playPause.setContentDescription(AppString.get(R.string.runtime_text_0068));
         playPause.setPadding(dp(11), dp(11), dp(11), dp(11));
         LinearLayout.LayoutParams playLp = new LinearLayout.LayoutParams(
                 dp(50), dp(46));
@@ -312,7 +312,7 @@ public final class MediaWidgetViewerActivity extends Activity {
             showControlsTemporarily();
         });
 
-        Button forward = controlButton("+10 ث");
+        Button forward = controlButton(AppString.get(R.string.runtime_text_0689));
         forward.setOnClickListener(v -> {
             seekTo(position() + SEEK_STEP_MS);
             showControlsTemporarily();
