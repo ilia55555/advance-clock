@@ -32,7 +32,7 @@ public final class SettingsActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(pad, dp(12), pad, pad);
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -122,7 +122,7 @@ public final class SettingsActivity extends Activity {
         LinearLayout prayerRow = new LinearLayout(this);
         prayerRow.setOrientation(LinearLayout.HORIZONTAL);
         prayerRow.setGravity(Gravity.CENTER_VERTICAL);
-        prayerRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        prayerRow.setLayoutDirection(AppSettings.layoutDirection(this));
         Switch adhanEnabled = settingSwitch(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(this));
         prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, dp(50), 1f));
 
@@ -331,7 +331,7 @@ public final class SettingsActivity extends Activity {
     private LinearLayout settingsCard() {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        card.setLayoutDirection(AppSettings.layoutDirection(this));
         card.setPadding(dp(14), dp(14), dp(14), dp(14));
         card.setBackgroundResource(R.drawable.bg_card);
         return card;
@@ -371,6 +371,7 @@ public final class SettingsActivity extends Activity {
                 values);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setLayoutDirection(AppSettings.layoutDirection(this));
         return spinner;
     }
 
