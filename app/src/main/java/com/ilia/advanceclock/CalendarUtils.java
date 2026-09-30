@@ -2,6 +2,7 @@ package com.ilia.advanceclock;
 
 import android.icu.util.ULocale;
 
+import java.text.DateFormatSymbols;
 import java.util.Locale;
 
 public final class CalendarUtils {
@@ -70,10 +71,13 @@ public final class CalendarUtils {
     public static String monthName(int type, int month) {
         int index = Math.max(0, Math.min(11, month));
         switch (type) {
-            case GREGORIAN: return GREGORIAN_MONTHS[index];
-            case HIJRI: return HIJRI_MONTHS[index];
+            case GREGORIAN:
+                String localized = DateFormatSymbols.getInstance(Locale.getDefault())
+                        .getMonths()[index];
+                return localized.isEmpty() ? GREGORIAN_MONTHS[index] : localized;
+            case HIJRI: return UiText.tr(HIJRI_MONTHS[index]);
             case PERSIAN:
-            default: return PERSIAN_MONTHS[index];
+            default: return UiText.tr(PERSIAN_MONTHS[index]);
         }
     }
 
