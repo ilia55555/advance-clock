@@ -727,16 +727,23 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:layoutDirection="rtl">
+                    android:layoutDirection="ltr">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/runtime_text_0018"
-                        android:textColor="?attr/appTextPrimary"
-                        android:textSize="19sp"
-                        android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/add_clock_widget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_soft_button"
+                        android:minWidth="0dp"
+                        android:paddingHorizontal="11dp"
+                        android:text="@string/runtime_text_0389"
+                        android:textAllCaps="false"
+                        android:textColor="?attr/appPrimary"
+                        android:textSize="11sp" />
+
+                    <Space
+                        android:layout_width="6dp"
+                        android:layout_height="1dp" />
 
                     <Button
                         android:id="@+id/smart_alarm_button"
@@ -750,21 +757,16 @@
                         android:textColor="?attr/appPrimary"
                         android:textSize="11sp" />
 
-                    <Space
-                        android:layout_width="6dp"
-                        android:layout_height="1dp" />
-
-                    <Button
-                        android:id="@+id/add_clock_widget"
-                        android:layout_width="wrap_content"
-                        android:layout_height="42dp"
-                        android:background="@drawable/bg_soft_button"
-                        android:minWidth="0dp"
-                        android:paddingHorizontal="11dp"
-                        android:text="@string/runtime_text_0389"
-                        android:textAllCaps="false"
-                        android:textColor="?attr/appPrimary"
-                        android:textSize="11sp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:text="@string/runtime_text_0018"
+                        android:textColor="?attr/appTextPrimary"
+                        android:textDirection="locale"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
