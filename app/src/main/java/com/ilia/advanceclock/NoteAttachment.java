@@ -34,7 +34,7 @@ final class NoteAttachment {
                 if(o!=null) values.add(new NoteAttachment(
                         o.optString("kind",KIND_FILE),
                         o.optString("value",""),
-                        o.optString("name","فایل"),
+                        o.optString("name",AppString.get(R.string.runtime_text_0059)),
                         o.optString("mime","*/*")));
             }
         } catch(Exception ignored){}
