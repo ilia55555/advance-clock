@@ -75,8 +75,10 @@ public final class AdhanSoundService extends Service {
         else if (ACTION_RAISE.equals(action)) raiseVolume();
         else if (ACTION_START.equals(action)) {
             type = intent.getIntExtra("adhanType", AdhanScheduler.FAJR);
+            boolean openWhileUnlocked = shouldOpenFullscreenWhileUnlocked();
             startForeground(3_300_000 + type, notification());
             startPlayback();
+            if (openWhileUnlocked) openRingActivity();
         }
         return START_NOT_STICKY;
     }
@@ -112,6 +114,26 @@ public final class AdhanSoundService extends Service {
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
         return locked ? AppSettings.adhanFullscreenLocked(this)
                 : AppSettings.adhanFullscreenUnlocked(this);
+    }
+
+    private boolean shouldOpenFullscreenWhileUnlocked() {
+        KeyguardManager keyguard = getSystemService(KeyguardManager.class);
+        boolean locked = keyguard != null && keyguard.isKeyguardLocked();
+        return !locked && AppSettings.adhanFullscreenUnlocked(this);
+    }
+
+    private void openRingActivity() {
+        try {
+            Intent ring = new Intent(this, AdhanRingActivity.class)
+                    .putExtra("adhanType", type)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(ring);
+        } catch (Exception ignored) {
+            // Android may still enforce its background-activity policy.
+            // The high-priority full-screen notification remains the fallback.
+        }
     }
 
     private void startPlayback() {
