@@ -98,12 +98,12 @@ public final class AdhanSoundService extends Service {
                         CalendarUtils.fa(AdhanScheduler.title(type))))
                 .setContentText(AppSettings.adhanNotification(this)
                         ? AppSettings.prayerLocationLabel(this)
-                        : UiText.tr(this, "اذان در حال اجرا"))
+                        : AppString.get(R.string.runtime_text_0407))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setOngoing(true)
                 .setContentIntent(open)
                 .addAction(new Notification.Action.Builder(
-                        null, UiText.tr(this, "قطع اذان"), stop).build());
+                        null, AppString.get(R.string.runtime_text_0307), stop).build());
         if (shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
         return builder.build();
     }
