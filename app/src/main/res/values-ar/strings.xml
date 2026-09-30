@@ -1019,4 +1019,12 @@
     <string name="preview_file_number">الملف %1$d</string>
     <string name="preview_note_number">الملاحظة %1$d</string>
     <string name="ui_symbol_minus" formatted="false">−</string>
+    <string name="adhan_skip_title">عدم تشغيل الأذان</string>
+    <string name="adhan_skip_description">لن يتم تشغيل الأذان في الأيام المحددة.</string>
+    <string name="adhan_skip_mode_off">إيقاف</string>
+    <string name="adhan_skip_mode_weekdays">أيام الأسبوع</string>
+    <string name="adhan_skip_mode_dates">تواريخ محددة</string>
+    <string name="adhan_skip_add_date">إضافة تاريخ</string>
+    <string name="adhan_skip_no_dates">لم يتم تحديد أي تاريخ بعد.</string>
+    <string name="adhan_skip_remove_date">حذف</string>
 </resources>
