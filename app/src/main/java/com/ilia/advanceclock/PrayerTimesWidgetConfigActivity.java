@@ -77,7 +77,7 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
