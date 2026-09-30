@@ -43,7 +43,7 @@ public final class SettingsActivity extends Activity {
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         TextView title = new TextView(this);
-        title.setText("تنظیمات");
+        title.setText(AppString.get(R.string.runtime_text_0001));
         title.setTextSize(25);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -54,12 +54,12 @@ public final class SettingsActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
-        root.addView(label("رنگ اپ"));
+        root.addView(label(AppString.get(R.string.runtime_text_0152)));
         Spinner palette = spinner(AppSettings.paletteNames());
         palette.setSelection(AppSettings.palette(this));
         root.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
@@ -74,18 +74,18 @@ public final class SettingsActivity extends Activity {
         calendar.setSelection(AppSettings.defaultCalendar(this));
         root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label("رویدادها و مناسبت‌ها"));
+        root.addView(label(AppString.get(R.string.runtime_text_0153)));
         LinearLayout eventsCard = settingsCard();
 
         TextView eventsTitle = new TextView(this);
-        eventsTitle.setText("نمایش مناسبت‌ها زیر تقویم");
+        eventsTitle.setText(AppString.get(R.string.runtime_text_0154));
         eventsTitle.setTextColor(AppSettings.textPrimary(this));
         eventsTitle.setTextSize(17);
         eventsTitle.setTypeface(null, android.graphics.Typeface.BOLD);
         eventsCard.addView(eventsTitle);
 
         Switch showCalendarEvents = settingSwitch(
-                "نمایش باکس رویداد زیر تقویم",
+                AppString.get(R.string.runtime_text_0155),
                 AppSettings.showCalendarEvents(this));
         eventsCard.addView(showCalendarEvents);
 
@@ -117,17 +117,17 @@ public final class SettingsActivity extends Activity {
         refreshExtraSources.run();
         root.addView(eventsCard, settingsCardParams());
 
-        root.addView(label("اذان"));
+        root.addView(label(AppString.get(R.string.runtime_text_0077)));
         LinearLayout prayerCard = settingsCard();
         LinearLayout prayerRow = new LinearLayout(this);
         prayerRow.setOrientation(LinearLayout.HORIZONTAL);
         prayerRow.setGravity(Gravity.CENTER_VERTICAL);
         prayerRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        Switch adhanEnabled = settingSwitch("نمایش بخش اذان", AppSettings.adhanEnabled(this));
+        Switch adhanEnabled = settingSwitch(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(this));
         prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, dp(50), 1f));
 
         Button prayerSettings = new Button(this);
-        prayerSettings.setText("تنظیمات");
+        prayerSettings.setText(AppString.get(R.string.runtime_text_0001));
         prayerSettings.setAllCaps(false);
         prayerSettings.setTextColor(AppSettings.primaryColor(this));
         prayerSettings.setBackgroundResource(R.drawable.bg_soft_button);
@@ -137,20 +137,20 @@ public final class SettingsActivity extends Activity {
         prayerCard.addView(prayerRow);
         root.addView(prayerCard, settingsCardParams());
 
-        root.addView(label("چیدمان صفحه ساعت"));
+        root.addView(label(AppString.get(R.string.runtime_text_0156)));
         Spinner layout = spinner(new String[]{
-                "فرم ایجاد داخل صفحه، بدون دکمه +",
-                "پیش‌فرض فشرده: فرم ایجاد در مودال با دکمه +"
+                AppString.get(R.string.runtime_text_0157),
+                AppString.get(R.string.runtime_text_0158)
         });
         layout.setSelection(AppSettings.clockLayoutMode(this));
         root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
 
         Switch autoDeleteExpiredAlarms = settingSwitch(
-                "حذف خودکار ساعت‌های گذشته و بدون تکرار آینده",
+                AppString.get(R.string.runtime_text_0359),
                 AppSettings.autoDeleteExpiredAlarms(this));
         root.addView(autoDeleteExpiredAlarms);
 
-        root.addView(label("تب‌های قابل نمایش در صفحه اصلی"));
+        root.addView(label(AppString.get(R.string.runtime_text_0159)));
         Switch tabClock = tabSwitch(getString(R.string.tab_clock), "clock");
         Switch tabNotes = tabSwitch(getString(R.string.tab_notes), "noforget");
         Switch tabStopwatch = tabSwitch(getString(R.string.tab_stopwatch), "stopwatch");
@@ -162,11 +162,11 @@ public final class SettingsActivity extends Activity {
         root.addView(tabTimer);
         root.addView(tabWorld);
 
-        root.addView(label("استایل صفحه زنگ"));
+        root.addView(label(AppString.get(R.string.runtime_text_0160)));
         Spinner alarmStyle = spinner(new String[]{
-                "کلاسیک روشن",
-                "تمرکز تیره",
-                "طلوع گرم"
+                AppString.get(R.string.runtime_text_0161),
+                AppString.get(R.string.runtime_text_0162),
+                AppString.get(R.string.runtime_text_0163)
         });
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
         root.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
@@ -268,7 +268,7 @@ public final class SettingsActivity extends Activity {
                     && !tabStopwatch.isChecked() && !tabTimer.isChecked()
                     && !tabWorld.isChecked()) {
                 button.setChecked(true);
-                LogoToast.makeText(this, "حداقل یک تب باید فعال باشد", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(this, AppString.get(R.string.runtime_text_0164), Toast.LENGTH_SHORT).show();
                 return;
             }
             AppSettings.setTabEnabled(this, "clock", tabClock.isChecked());
@@ -355,12 +355,12 @@ public final class SettingsActivity extends Activity {
 
     private String eventSourceLabel(int type) {
         if (type == CalendarUtils.PERSIAN) {
-            return "نمایش رویدادهای شمسی ایران";
+            return AppString.get(R.string.runtime_text_0472);
         }
         if (type == CalendarUtils.HIJRI) {
-            return "نمایش رویدادهای قمری کشورهای عربی";
+            return AppString.get(R.string.runtime_text_0473);
         }
-        return "نمایش رویدادهای میلادی بین‌المللی";
+        return AppString.get(R.string.runtime_text_0474);
     }
 
     private Spinner spinner(String[] values) {
