@@ -52,7 +52,7 @@ public final class NotificationSettingsActivity extends Activity {
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         TextView title = new TextView(this);
-        title.setText("تنظیمات اعلان");
+        title.setText(AppString.get(R.string.runtime_text_0069));
         title.setTextSize(25);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -65,14 +65,14 @@ public final class NotificationSettingsActivity extends Activity {
                 PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
 
         root.addView(top);
 
         TextView label = new TextView(this);
-        label.setText("اعلان‌ها");
+        label.setText(AppString.get(R.string.runtime_text_0070));
         label.setTextSize(16);
         label.setTextColor(AppSettings.textPrimary(this));
         label.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -81,38 +81,38 @@ public final class NotificationSettingsActivity extends Activity {
 
         persistentDate = addSwitch(
                 root,
-                "اعلان دائمی تاریخ",
+                AppString.get(R.string.runtime_text_0071),
                 AppSettings.persistentDateNotificationEnabled(this));
 
         persistentExtraCalendars = addSwitch(
                 root,
-                "نمایش تقویم‌های دیگر",
+                AppString.get(R.string.runtime_text_0072),
                 AppSettings.persistentDateExtraCalendars(this));
 
         alarmReminders = addSwitch(
                 root,
-                "یادآوری هشدارها",
+                AppString.get(R.string.runtime_text_0073),
                 AppSettings.alarmReminderNotificationsEnabled(this));
 
         noteReminders = addSwitch(
                 root,
-                "یادآوری یادداشت‌ها",
+                AppString.get(R.string.runtime_text_0074),
                 AppSettings.noteReminderNotificationsEnabled(this));
 
         lockscreenDetails = addSwitch(
                 root,
-                "نمایش جزئیات روی صفحه قفل",
+                AppString.get(R.string.runtime_text_0075),
                 AppSettings.notificationLockscreenDetails(this));
 
         alarmFullscreenUnlocked = addSwitch(root,
-                "تمام‌صفحه هشدار وقتی گوشی باز است",
+                AppString.get(R.string.runtime_text_0217),
                 AppSettings.alarmFullscreenUnlocked(this));
         alarmFullscreenLocked = addSwitch(root,
-                "تمام‌صفحه هشدار روی صفحه قفل",
+                AppString.get(R.string.runtime_text_0218),
                 AppSettings.alarmFullscreenLocked(this));
 
         Button alarmSound = new Button(this);
-        alarmSound.setText("صدای پیش‌فرض هشدار • "
+        alarmSound.setText(AppString.get(R.string.runtime_text_0687)
                 + SoundLibrary.name(this, AppSettings.defaultAlarmSoundUri(this)));
         alarmSound.setAllCaps(false);
         alarmSound.setTextColor(AppSettings.textPrimary(this));
