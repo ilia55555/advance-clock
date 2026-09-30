@@ -969,4 +969,25 @@ Lock screen</string>
     <string name="smart_alarm_json_no_datetime" formatted="false">The JSON is valid, but no usable date and time were found.</string>
     <string name="smart_alarm_json_fallback" formatted="false">The input looked like JSON but was invalid, so it was analyzed as plain text.</string>
     <string name="smart_alarm_no_datetime" formatted="false">No recognizable date and time were found. Example: 2026/09/26 at 13:00</string>
+    <!-- Non-linguistic UI text still referenced by resource ID -->
+    <string name="ui_placeholder_time_hm" formatted="false">00:00</string>
+    <string name="ui_placeholder_time_hms" formatted="false">00:00:00.00</string>
+    <string name="ui_placeholder_timer" formatted="false">00:05:00</string>
+    <string name="ui_placeholder_prayer" formatted="false">—:—</string>
+    <string name="ui_symbol_previous" formatted="false">&lt;</string>
+    <string name="ui_symbol_next" formatted="false">&gt;</string>
+    <string name="ui_symbol_plus" formatted="false">+</string>
+    <string name="ui_symbol_back_arrow" formatted="false">→</string>
+    <string name="ui_symbol_location" formatted="false">⌖</string>
+    <string name="ui_prayer_icon_fajr" formatted="false">◒</string>
+    <string name="ui_prayer_icon_sunrise" formatted="false">☀</string>
+    <string name="ui_prayer_icon_dhuhr" formatted="false">☼</string>
+    <string name="ui_prayer_icon_asr" formatted="false">◉</string>
+    <string name="ui_prayer_icon_sunset" formatted="false">◓</string>
+    <string name="ui_prayer_icon_isha" formatted="false">☾</string>
+    <string name="ui_prayer_icon_midnight" formatted="false">◷</string>
+    <string name="ui_symbol_up" formatted="false">↑</string>
+    <string name="ui_symbol_down" formatted="false">↓</string>
+    <string name="ui_sample_alarm_datetime" formatted="false">2026/03/21 08:00</string>
+    <string name="ui_default_timer_minutes" formatted="false">5</string>
 </resources>
