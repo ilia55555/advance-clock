@@ -180,7 +180,7 @@ public final class TripleCalendarView extends View {
         String[] weekdays = calendarType == CalendarUtils.GREGORIAN
                 ? WEEKDAYS_GREGORIAN : WEEKDAYS_IRAN_HIJRI;
         for (int col = 0; col < 7; col++) {
-            centered(c, UiText.tr(getContext(), weekdays[col]), COL_CENTER[col], 129, 15,
+            centered(c, weekdays[col], COL_CENTER[col], 129, 15,
                     col == 6 ? holidayRed() : primary(), bold);
         }
     }
