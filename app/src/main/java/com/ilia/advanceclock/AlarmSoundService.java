@@ -24,6 +24,7 @@ public final class AlarmSoundService extends Service {
     public static final String ACTION_START = "com.ilia.advanceclock.START_ALARM";
     public static final String ACTION_STOP = "com.ilia.advanceclock.STOP_ALARM";
     public static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_ALARM";
+    public static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_ALARM";
 
     private MediaPlayer player;
     private Vibrator vibrator;
@@ -54,11 +55,16 @@ public final class AlarmSoundService extends Service {
             int stream = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1);
             int current = intent.getIntExtra(EXTRA_VOLUME_STREAM_VALUE, -1);
             int previous = intent.getIntExtra(EXTRA_PREV_VOLUME_STREAM_VALUE, -1);
-            if (current >= 0 && previous >= 0 && current < previous
-                    && (stream == AudioManager.STREAM_ALARM
-                    || stream == AudioManager.STREAM_MUSIC
-                    || stream == AudioManager.STREAM_RING)) {
+            if (current < 0 || previous < 0
+                    || (stream != AudioManager.STREAM_ALARM
+                    && stream != AudioManager.STREAM_MUSIC
+                    && stream != AudioManager.STREAM_RING)) {
+                return;
+            }
+            if (current < previous) {
                 muteCurrentAlarm();
+            } else if (current > previous) {
+                unmuteCurrentAlarm();
             }
         }
     };
@@ -89,6 +95,10 @@ public final class AlarmSoundService extends Service {
         return new Intent(context, AlarmSoundService.class).setAction(ACTION_MUTE);
     }
 
+    public static Intent unmuteIntent(Context context) {
+        return new Intent(context, AlarmSoundService.class).setAction(ACTION_UNMUTE);
+    }
+
     @Override public void onCreate() {
         super.onCreate();
         NotificationHelper.ensureChannel(this);
@@ -112,6 +122,10 @@ public final class AlarmSoundService extends Service {
         }
         if (ACTION_MUTE.equals(intent.getAction())) {
             muteCurrentAlarm();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_UNMUTE.equals(intent.getAction())) {
+            unmuteCurrentAlarm();
             return START_NOT_STICKY;
         }
 
@@ -221,6 +235,14 @@ public final class AlarmSoundService extends Service {
         muted = true;
         try {
             if (player != null) player.setVolume(0f, 0f);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void unmuteCurrentAlarm() {
+        muted = false;
+        try {
+            if (player != null) player.setVolume(1f, 1f);
         } catch (Exception ignored) {
         }
     }
