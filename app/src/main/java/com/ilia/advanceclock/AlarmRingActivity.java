@@ -24,7 +24,7 @@ import java.util.Locale;
 public final class AlarmRingActivity extends Activity {
     private static final int[] SNOOZE_VALUES = {5,15,30,60,120,180,360,720,1440};
     private static final String[] SNOOZE_LABELS = {
-            "۵ دقیقه","۱۵ دقیقه","۳۰ دقیقه","۱ ساعت","۲ ساعت","۳ ساعت","۶ ساعت","۱۲ ساعت","۲۴ ساعت"
+            AppString.get(R.string.runtime_text_0575),AppString.get(R.string.runtime_text_0576),AppString.get(R.string.runtime_text_0577),AppString.get(R.string.runtime_text_0578),AppString.get(R.string.runtime_text_0579),AppString.get(R.string.runtime_text_0580),AppString.get(R.string.runtime_text_0581),AppString.get(R.string.runtime_text_0582),AppString.get(R.string.runtime_text_0583)
     };
 
     private static WeakReference<AlarmRingActivity> showing = new WeakReference<>(null);
@@ -70,7 +70,7 @@ public final class AlarmRingActivity extends Activity {
         String toolKind = intent == null ? null : intent.getStringExtra("toolKind");
 
         TextView title = findViewById(R.id.ring_title);
-        title.setText(label == null || label.trim().isEmpty() ? "آلارم" : label);
+        title.setText(label == null || label.trim().isEmpty() ? AppString.get(R.string.runtime_text_0019) : label);
 
         TextView time = findViewById(R.id.ring_time);
         time.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
@@ -90,8 +90,8 @@ public final class AlarmRingActivity extends Activity {
         TextView subtitle = findViewById(R.id.ring_subtitle);
         subtitle.setText(timeTool
                 ? ToolAlarmScheduler.TIMER.equals(toolKind)
-                ? "زمان تایمر به پایان رسیده است" : "کرنومتر به حد نهایی رسیده است"
-                : "زمان زنگ هشدار رسیده است");
+                ? AppString.get(R.string.runtime_text_0584) : AppString.get(R.string.runtime_text_0585)
+                : AppString.get(R.string.runtime_text_0586));
         renderAlarmImages(item);
     }
 
@@ -220,7 +220,7 @@ public final class AlarmRingActivity extends Activity {
         NotificationManager nm = getSystemService(NotificationManager.class);
         if (nm != null && alarmId != -1L) nm.cancel(NotificationHelper.notificationId(alarmId));
         ClockWidgetProvider.updateAll(this);
-        if (!ok) LogoToast.makeText(this, "برای یادآوری مجدد، دسترسی آلارم دقیق لازم است.", Toast.LENGTH_LONG).show();
+        if (!ok) LogoToast.makeText(this, AppString.get(R.string.runtime_text_0587), Toast.LENGTH_LONG).show();
         finishAndRemoveTask();
     }
 
