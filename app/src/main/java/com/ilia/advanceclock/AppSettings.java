@@ -175,7 +175,7 @@ public final class AppSettings {
 
     public static String prayerLocationLabel(Context context) {
         return prefs(context).getString(
-                "prayer_location_label", "موقعیت فعلی");
+                "prayer_location_label", AppString.get(R.string.runtime_text_0371));
     }
 
     public static String prayerTimeZoneId(Context context) {
@@ -209,7 +209,7 @@ public final class AppSettings {
                 .putString("prayer_longitude", Double.toString(longitude))
                 .putString("prayer_location_label",
                         label == null || label.trim().isEmpty()
-                                ? "موقعیت فعلی" : label.trim())
+                                ? AppString.get(R.string.runtime_text_0371) : label.trim())
                 .putString("prayer_time_zone",
                         timeZoneId == null || timeZoneId.trim().isEmpty()
                                 ? java.util.TimeZone.getDefault().getID()
@@ -238,7 +238,7 @@ public final class AppSettings {
             for (int i = 0; i < array.length(); i++) {
                 org.json.JSONObject item = array.optJSONObject(i);
                 if (item != null) values.add(new PrayerHorizon(
-                        item.optString("label", "افق"), item.optDouble("lat"),
+                        item.optString("label", AppString.get(R.string.runtime_text_0418)), item.optDouble("lat"),
                         item.optDouble("lon"), item.optString("zone", "Asia/Tehran")));
             }
         } catch (Exception ignored) {}
