@@ -2,6 +2,7 @@ package com.ilia.advanceclock;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -75,6 +76,22 @@ public final class AdvanceClockApplication extends Application {
             }
             synchronized (OPEN_ACTIVITIES) { refreshScheduled = false; }
         });
+    }
+
+    /**
+     * Rebuild the whole Activity task after a locale change. Recreating individual Activities
+     * leaves windows from the old configuration in the back stack on some Android versions;
+     * starting a fresh task guarantees that every Context is created with the selected locale.
+     */
+    static void restartForLanguage(Activity source) {
+        if (source == null || source.isFinishing() || source.isDestroyed()) return;
+        AppSettings.applyLanguage(source.getApplicationContext());
+        AppSettings.applyLanguage(source);
+        UiText.invalidate();
+        Intent restart = new Intent(source, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        source.startActivity(restart);
+        source.overridePendingTransition(0, 0);
     }
 
     private static void fixPrayerArrows(Activity activity) {

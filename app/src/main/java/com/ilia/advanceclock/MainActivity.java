@@ -202,7 +202,9 @@ public final class MainActivity extends Activity {
             getWindow().getDecorView().postDelayed(() ->
                     FirstRunSetupDialog.show(this, languageChanged -> {
                         appPrefs.edit().putBoolean(INITIAL_SETUP, true).apply();
-                        if (languageChanged) recreate();
+                        if (languageChanged) {
+                            AdvanceClockApplication.restartForLanguage(this);
+                        }
                         else if (!onboardingDone) startPermissionFlow();
                     }), 300);
         } else if (!onboardingDone) {
