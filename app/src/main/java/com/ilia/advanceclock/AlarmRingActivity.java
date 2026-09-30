@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -222,6 +223,19 @@ public final class AlarmRingActivity extends Activity {
         ClockWidgetProvider.updateAll(this);
         if (!ok) LogoToast.makeText(this, AppString.get(R.string.runtime_text_0587), Toast.LENGTH_LONG).show();
         finishAndRemoveTask();
+    }
+
+    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            startService(AlarmSoundService.muteIntent(this));
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) return true;
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override public void onBackPressed() {
