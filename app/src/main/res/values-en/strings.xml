@@ -1016,4 +1016,12 @@ Lock screen</string>
     <string name="preview_file_number">File %1$d</string>
     <string name="preview_note_number">Note %1$d</string>
     <string name="ui_symbol_minus" formatted="false">−</string>
+    <string name="adhan_skip_title">Do not play Adhan</string>
+    <string name="adhan_skip_description">Adhan will not play on the selected days.</string>
+    <string name="adhan_skip_mode_off">Off</string>
+    <string name="adhan_skip_mode_weekdays">Days of week</string>
+    <string name="adhan_skip_mode_dates">Specific dates</string>
+    <string name="adhan_skip_add_date">Add date</string>
+    <string name="adhan_skip_no_dates">No dates selected yet.</string>
+    <string name="adhan_skip_remove_date">Remove date</string>
 </resources>
