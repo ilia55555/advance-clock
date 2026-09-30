@@ -123,15 +123,15 @@ final class StopwatchPanelController {
                 }
                 if (mode != 0 && limitMillis <= 0L) {
                     LogoToast.makeText(host, mode == 2
-                            ? "تاریخ و ساعت آینده را انتخاب کنید"
-                            : "مدت‌زمان بیشتر از صفر وارد کنید", Toast.LENGTH_SHORT).show();
+                            ? AppString.get(R.string.runtime_text_0165)
+                            : AppString.get(R.string.runtime_text_0298), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
-            if(limitMillis>0L&&accumulatedMillis>=limitMillis){LogoToast.makeText(host,"ابتدا کرنومتر را صفر کنید",Toast.LENGTH_SHORT).show();return;}
+            if(limitMillis>0L&&accumulatedMillis>=limitMillis){LogoToast.makeText(host,AppString.get(R.string.runtime_text_0299),Toast.LENGTH_SHORT).show();return;}
             startedAtWall=System.currentTimeMillis();
             if (mode == 2 && selectedTarget <= startedAtWall) {
-                LogoToast.makeText(host, "تاریخ و ساعت پایان گذشته است", Toast.LENGTH_SHORT).show();
+                LogoToast.makeText(host, AppString.get(R.string.runtime_text_0300), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (mode == 2) limitMillis = accumulatedMillis + selectedTarget - startedAtWall;
@@ -140,7 +140,7 @@ final class StopwatchPanelController {
                 String label=labelInput.getText().toString().trim();
                 if(label.isEmpty())label=ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH);
                 boolean scheduled=ToolAlarmScheduler.schedule(host,ToolAlarmScheduler.STOPWATCH,startedAtWall+(limitMillis-accumulatedMillis),label);
-                if(!scheduled)LogoToast.makeText(host,"برای هشدار دقیق، مجوز آلارم دقیق را فعال کنید",Toast.LENGTH_LONG).show();
+                if(!scheduled)LogoToast.makeText(host,AppString.get(R.string.runtime_text_0149),Toast.LENGTH_LONG).show();
             }
             handler.post(ticker);
         }
@@ -170,7 +170,7 @@ final class StopwatchPanelController {
 
     private void updateControls() {
         boolean configurable = !running && accumulatedMillis == 0L;
-        startButton.setText(running ? "توقف" : accumulatedMillis > 0 ? "ادامه" : "شروع");
+        startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : accumulatedMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
         lapButton.setEnabled(running);
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);
         limitInputs.setVisibility(configurable && mode == 1 ? View.VISIBLE : View.GONE);
@@ -188,7 +188,7 @@ final class StopwatchPanelController {
 
     private void populateLimitInputs(){if(limitMillis<=0 || mode != 1)return;long total=limitMillis/1000;hoursInput.setText(String.valueOf(total/3600));minutesInput.setText(String.valueOf((total/60)%60));secondsInput.setText(String.valueOf(total%60));}
     private void renderTime(long millis){timeView.setText(format(millis));}
-    private void renderLaps(){lapList.removeAllViews();for(int i=0;i<laps.size();i++){TextView row=new TextView(host);row.setText(String.format(Locale.US,"دور %d     %s",laps.size()-i,format(laps.get(i))));row.setTextColor(AppSettings.textPrimary(host));row.setTextSize(17);row.setGravity(android.view.Gravity.CENTER);row.setPadding(12,18,12,18);lapList.addView(row);}}
+    private void renderLaps(){lapList.removeAllViews();for(int i=0;i<laps.size();i++){TextView row=new TextView(host);row.setText(String.format(Locale.US,AppString.get(R.string.runtime_text_0437),laps.size()-i,format(laps.get(i))));row.setTextColor(AppSettings.textPrimary(host));row.setTextSize(17);row.setGravity(android.view.Gravity.CENTER);row.setPadding(12,18,12,18);lapList.addView(row);}}
     private static String format(long millis){long cs=millis/10;return String.format(Locale.US,"%02d:%02d:%02d.%02d",cs/360000,(cs/6000)%60,(cs/100)%60,cs%100);}
     private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(!encoded.isEmpty())encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();}
     private void restore(){SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);running=p.getBoolean("stopwatch_running",false);mode=p.getInt("stopwatch_mode",0);calendarType=p.getInt("stopwatch_calendar",AppSettings.defaultCalendar(host));selectedTarget=p.getLong("stopwatch_target",0);accumulatedMillis=p.getLong("stopwatch_accumulated",0);startedAtWall=p.getLong("stopwatch_started",0);limitMillis=p.getLong("stopwatch_limit",0);laps.clear();String encoded=p.getString("stopwatch_laps","");if(!encoded.isEmpty())for(String value:encoded.split(","))try{laps.add(Long.parseLong(value));}catch(NumberFormatException ignored){}if(running&&limitMillis>0&&currentElapsed()>=limitMillis){running=false;accumulatedMillis=limitMillis;startedAtWall=0;save();}}
