@@ -222,9 +222,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.widget_date,
-                UiText.tr(context, CalendarUtils.formatDate(
+                CalendarUtils.formatDate(
                         System.currentTimeMillis(),
-                        AppSettings.defaultCalendar(context))));
+                        AppSettings.defaultCalendar(context)));
 
         root.removeAllViews(R.id.widget_alarm_list);
 
@@ -283,16 +283,16 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
             row.setTextViewText(
                     R.id.widget_row_time,
-                    UiText.tr(context, CalendarUtils.formatDate(
+                    CalendarUtils.formatDate(
                             item.triggerAtMillis,
                             AppSettings.defaultCalendar(
-                                    context))
+                                    context)
                             + "  "
                             + clock));
 
             row.setTextViewText(
                     R.id.widget_row_priority,
-                    UiText.tr(context, PriorityUtils.label(item.priority)));
+                    PriorityUtils.label(item.priority));
 
             row.setViewVisibility(
                     R.id.widget_row_time,
