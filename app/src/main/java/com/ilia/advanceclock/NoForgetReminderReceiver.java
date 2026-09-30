@@ -69,9 +69,9 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         builder.setSmallIcon(R.drawable.ic_note)
                 .setContentTitle(title)
                 .setContentText(
-                        UiText.tr(context, AppString.get(R.string.runtime_text_0410)
+                        AppString.get(R.string.runtime_text_0410)
                                 +AlarmReminderUtils.labelForMinutes(minutes)
-                                +AppString.get(R.string.runtime_text_0411)))
+                                +AppString.get(R.string.runtime_text_0411))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setVisibility(AppSettings.notificationVisibility(context))
