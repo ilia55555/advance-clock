@@ -844,6 +844,7 @@ Unlocked</string>
 Lock screen</string>
     <string formatted="false" name="runtime_text_0705">Note saved; enable exact alarm access.</string>
     <string name="prayer_times_widget_description">Show prayer times for all selected horizons</string>
+    <string name="prayer_times_widget_name">Prayer Times Widget</string>
     <!-- Calendar event and source labels: resource-ID-only localization -->
     <string name="calendar_event_text_001" formatted="false">Institute of Geophysics, University of Tehran Calendar Center</string>
     <string name="calendar_event_text_002" formatted="false">United Nations Observances Calendar</string>
