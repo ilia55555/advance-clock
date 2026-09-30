@@ -28,10 +28,10 @@ public final class TripleCalendarView extends View {
     private static final int MUTED_DARK = 0xFF98A7A2;
 
     private static final String[] WEEKDAYS_IRAN_HIJRI = {
-            "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه"
+            AppString.get(R.string.runtime_text_0180), AppString.get(R.string.runtime_text_0181), AppString.get(R.string.runtime_text_0182), AppString.get(R.string.runtime_text_0552), AppString.get(R.string.runtime_text_0184), AppString.get(R.string.runtime_text_0185), AppString.get(R.string.runtime_text_0186)
     };
     private static final String[] WEEKDAYS_GREGORIAN = {
-            "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه", "یکشنبه"
+            AppString.get(R.string.runtime_text_0182), AppString.get(R.string.runtime_text_0552), AppString.get(R.string.runtime_text_0184), AppString.get(R.string.runtime_text_0185), AppString.get(R.string.runtime_text_0186), AppString.get(R.string.runtime_text_0180), AppString.get(R.string.runtime_text_0181)
     };
     private static final float[] CELL_LEFT = {553f,470f,386f,302f,218f,134f,50f};
     private static final float[] CELL_TOP = {161f,247f,334f,420f,506f,592f};
@@ -156,7 +156,7 @@ public final class TripleCalendarView extends View {
 
         // Swapped to match the direction of finger swipes requested by the user.
         centered(c, "‹", 65, 65, 26, WHITE, medium);
-        centered(c, UiText.tr(getContext(), "ماه قبل"), 108, 65, 16, WHITE, medium);
+        centered(c, AppString.get(R.string.runtime_text_0175), 108, 65, 16, WHITE, medium);
         chevron(c, 228, 63);
 
         centered(c,
@@ -165,7 +165,7 @@ public final class TripleCalendarView extends View {
                 338, 65, 23, WHITE, bold);
 
         chevron(c, 447, 63);
-        centered(c, UiText.tr(getContext(), "ماه بعد"), 579, 65, 16, WHITE, medium);
+        centered(c, AppString.get(R.string.runtime_text_0176), 579, 65, 16, WHITE, medium);
         centered(c, "›", 614, 65, 26, WHITE, medium);
     }
 
