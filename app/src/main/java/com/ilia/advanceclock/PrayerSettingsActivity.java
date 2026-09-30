@@ -74,14 +74,7 @@ public final class PrayerSettingsActivity extends Activity {
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-        TextView title = new TextView(this);
-        title.setText(AppString.get(R.string.runtime_text_0076));
-        title.setTextSize(24);
-        title.setTextColor(AppSettings.textPrimary(this));
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
+        top.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
         ImageButton close = new ImageButton(this);
         close.setImageResource(R.drawable.ic_md_close);
@@ -91,6 +84,16 @@ public final class PrayerSettingsActivity extends Activity {
         close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
+        TextView title = new TextView(this);
+        title.setText(AppString.get(R.string.runtime_text_0076));
+        title.setTextSize(24);
+        title.setTextColor(AppSettings.textPrimary(this));
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
+
         root.addView(top);
 
         LinearLayout masterCard = card();
@@ -461,11 +464,7 @@ public final class PrayerSettingsActivity extends Activity {
         LinearLayout header = new LinearLayout(this);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        TextView heading = text(AppString.get(R.string.runtime_text_0569) + title, 20, AppSettings.textPrimary(this));
-        heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        heading.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
-        header.addView(heading, new LinearLayout.LayoutParams(0, dp(56), 1f));
+        header.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
         ImageButton close = new ImageButton(this);
         close.setImageResource(R.drawable.ic_md_close);
@@ -475,6 +474,13 @@ public final class PrayerSettingsActivity extends Activity {
         close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> dialog.dismiss());
         header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
+        TextView heading = text(AppString.get(R.string.runtime_text_0569) + title, 20, AppSettings.textPrimary(this));
+        heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        heading.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        heading.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        header.addView(heading, new LinearLayout.LayoutParams(0, dp(56), 1f));
+
         root.addView(header);
 
         LinearLayout output = card();
