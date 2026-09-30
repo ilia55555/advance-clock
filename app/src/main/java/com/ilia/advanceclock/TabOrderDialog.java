@@ -77,10 +77,10 @@ public final class TabOrderDialog {
 
     private static String title(String tab) {
         switch (tab) {
-            case "noforget": return "یادداشت‌ها";
-            case "stopwatch": return "کرنومتر";
-            case "timer": return "تایمر";
-            case "world": return "ساعت جهانی";
+            case "noforget": return AppString.get(R.string.runtime_text_0016);
+            case "stopwatch": return AppString.get(R.string.runtime_text_0041);
+            case "timer": return AppString.get(R.string.runtime_text_0040);
+            case "world": return AppString.get(R.string.runtime_text_0039);
             default: return AppString.get(R.string.runtime_text_0013);
         }
     }
