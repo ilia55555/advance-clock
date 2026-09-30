@@ -86,7 +86,7 @@ public final class WidgetSettingsActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -435,7 +435,7 @@ public final class WidgetSettingsActivity extends Activity {
             boolean checked) {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        card.setLayoutDirection(AppSettings.layoutDirection(this));
         card.setPadding(dp(12), dp(6), dp(12), dp(9));
         card.setBackgroundResource(R.drawable.bg_card);
 
