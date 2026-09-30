@@ -35,11 +35,11 @@ public final class TimeUtils {
 
     public static String repeatLabel(int repeatType) {
         switch (repeatType) {
-            case AlarmItem.REPEAT_DAILY: return "هر روز";
-            case AlarmItem.REPEAT_WEEKLY: return "هر هفته";
-            case AlarmItem.REPEAT_MONTHLY: return "هر ماه";
-            case AlarmItem.REPEAT_YEARLY: return "هر سال";
-            default: return "بدون تکرار";
+            case AlarmItem.REPEAT_DAILY: return AppString.get(R.string.runtime_text_0030);
+            case AlarmItem.REPEAT_WEEKLY: return AppString.get(R.string.runtime_text_0031);
+            case AlarmItem.REPEAT_MONTHLY: return AppString.get(R.string.runtime_text_0032);
+            case AlarmItem.REPEAT_YEARLY: return AppString.get(R.string.runtime_text_0033);
+            default: return AppString.get(R.string.runtime_text_0029);
         }
     }
 }
