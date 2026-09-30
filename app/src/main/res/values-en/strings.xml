@@ -929,4 +929,36 @@ Lock screen</string>
     <string name="calendar_event_text_082" formatted="false">Day of Arafah</string>
     <string name="calendar_event_text_083" formatted="false">Eid al-Adha</string>
     <string name="calendar_event_text_084" formatted="false">Eid al-Adha holiday</string>
+    <!-- Offline Iran location labels -->
+    <string name="iran_location_text_001" formatted="false">Tehran, Tehran Province, Iran</string>
+    <string name="iran_location_text_002" formatted="false">Karaj, Alborz Province, Iran</string>
+    <string name="iran_location_text_003" formatted="false">Qom, Qom Province, Iran</string>
+    <string name="iran_location_text_004" formatted="false">Isfahan, Isfahan Province, Iran</string>
+    <string name="iran_location_text_005" formatted="false">Shiraz, Fars Province, Iran</string>
+    <string name="iran_location_text_006" formatted="false">Mashhad, Razavi Khorasan, Iran</string>
+    <string name="iran_location_text_007" formatted="false">Tabriz, East Azerbaijan, Iran</string>
+    <string name="iran_location_text_008" formatted="false">Urmia, West Azerbaijan, Iran</string>
+    <string name="iran_location_text_009" formatted="false">Ardabil, Ardabil Province, Iran</string>
+    <string name="iran_location_text_010" formatted="false">Rasht, Gilan Province, Iran</string>
+    <string name="iran_location_text_011" formatted="false">Sari, Mazandaran Province, Iran</string>
+    <string name="iran_location_text_012" formatted="false">Gorgan, Golestan Province, Iran</string>
+    <string name="iran_location_text_013" formatted="false">Semnan, Semnan Province, Iran</string>
+    <string name="iran_location_text_014" formatted="false">Qazvin, Qazvin Province, Iran</string>
+    <string name="iran_location_text_015" formatted="false">Zanjan, Zanjan Province, Iran</string>
+    <string name="iran_location_text_016" formatted="false">Hamadan, Hamadan Province, Iran</string>
+    <string name="iran_location_text_017" formatted="false">Kermanshah, Kermanshah Province, Iran</string>
+    <string name="iran_location_text_018" formatted="false">Sanandaj, Kurdistan Province, Iran</string>
+    <string name="iran_location_text_019" formatted="false">Ilam, Ilam Province, Iran</string>
+    <string name="iran_location_text_020" formatted="false">Khorramabad, Lorestan Province, Iran</string>
+    <string name="iran_location_text_021" formatted="false">Ahvaz, Khuzestan Province, Iran</string>
+    <string name="iran_location_text_022" formatted="false">Shahrekord, Chaharmahal and Bakhtiari, Iran</string>
+    <string name="iran_location_text_023" formatted="false">Yasuj, Kohgiluyeh and Boyer-Ahmad, Iran</string>
+    <string name="iran_location_text_024" formatted="false">Bushehr, Bushehr Province, Iran</string>
+    <string name="iran_location_text_025" formatted="false">Bandar Abbas, Hormozgan Province, Iran</string>
+    <string name="iran_location_text_026" formatted="false">Kerman, Kerman Province, Iran</string>
+    <string name="iran_location_text_027" formatted="false">Yazd, Yazd Province, Iran</string>
+    <string name="iran_location_text_028" formatted="false">Birjand, South Khorasan, Iran</string>
+    <string name="iran_location_text_029" formatted="false">Bojnurd, North Khorasan, Iran</string>
+    <string name="iran_location_text_030" formatted="false">Zahedan, Sistan and Baluchestan, Iran</string>
+    <string name="iran_location_text_031" formatted="false">Arak, Markazi Province, Iran</string>
 </resources>
