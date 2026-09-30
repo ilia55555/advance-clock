@@ -844,4 +844,12 @@ Sans rappel</string>
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">Ne pas diffuser l’adhan</string>
+    <string name="adhan_skip_description">L’adhan ne sera pas diffusé les jours sélectionnés.</string>
+    <string name="adhan_skip_mode_off">Désactivé</string>
+    <string name="adhan_skip_mode_weekdays">Jours de la semaine</string>
+    <string name="adhan_skip_mode_dates">Dates précises</string>
+    <string name="adhan_skip_add_date">Ajouter une date</string>
+    <string name="adhan_skip_no_dates">Aucune date sélectionnée.</string>
+    <string name="adhan_skip_remove_date">Supprimer</string>
 </resources>
