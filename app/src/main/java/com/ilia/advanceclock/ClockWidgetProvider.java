@@ -222,9 +222,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.widget_date,
-                CalendarUtils.formatDate(
+                UiText.trComposite(context, CalendarUtils.formatDate(
                         System.currentTimeMillis(),
-                        AppSettings.defaultCalendar(context)));
+                        AppSettings.defaultCalendar(context))));
 
         root.removeAllViews(R.id.widget_alarm_list);
 
@@ -238,14 +238,15 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         if (rowCount <= 0) {
             root.setTextViewText(
                     R.id.widget_empty,
-                    "برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید");
+                    UiText.trComposite(context,
+                            "برای نمایش هشدارها، ارتفاع ویجت را بیشتر کنید"));
             root.setViewVisibility(
                     R.id.widget_empty,
                     View.VISIBLE);
         } else {
             root.setTextViewText(
                     R.id.widget_empty,
-                    "هشداری تنظیم نشده");
+                    UiText.trComposite(context, "هشداری تنظیم نشده"));
             root.setViewVisibility(
                     R.id.widget_empty,
                     items.isEmpty()
@@ -271,8 +272,8 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     R.id.widget_row_title,
                     item.label == null
                             || item.label.trim().isEmpty()
-                            ? "هشدار"
-                            : item.label);
+                            ? UiText.tr(context, "هشدار")
+                            : UiText.trComposite(context, item.label));
 
             String clock =
                     new java.text.SimpleDateFormat(
@@ -283,16 +284,16 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
             row.setTextViewText(
                     R.id.widget_row_time,
-                    CalendarUtils.formatDate(
+                    UiText.trComposite(context, CalendarUtils.formatDate(
                             item.triggerAtMillis,
                             AppSettings.defaultCalendar(
                                     context))
                             + "  "
-                            + clock);
+                            + clock));
 
             row.setTextViewText(
                     R.id.widget_row_priority,
-                    PriorityUtils.label(item.priority));
+                    UiText.tr(context, PriorityUtils.label(item.priority)));
 
             row.setViewVisibility(
                     R.id.widget_row_time,

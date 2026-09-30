@@ -13,7 +13,7 @@
         android:layout_width="64dp"
         android:layout_height="58dp"
         android:background="@android:color/transparent"
-        android:contentDescription="پیش‌نمایش"
+        android:contentDescription="@string/ui_preview"
         android:padding="3dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_note" />
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="فایل"
+            android:text="@string/ui_file"
             android:textColor="#173F3B"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="نوع فایل"
+            android:text="@string/ui_file_type"
             android:textColor="#758783"
             android:textSize="10sp" />
     </LinearLayout>
@@ -52,7 +52,7 @@
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:background="@android:color/transparent"
-        android:contentDescription="پخش یا مکث"
+        android:contentDescription="@string/ui_play_pause"
         android:padding="9dp"
         android:src="@drawable/ic_md_play"
         android:visibility="gone" />

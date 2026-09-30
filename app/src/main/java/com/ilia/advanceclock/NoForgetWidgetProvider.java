@@ -227,9 +227,9 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.noforget_widget_date,
-                CalendarUtils.formatDate(
+                UiText.trComposite(context, CalendarUtils.formatDate(
                         System.currentTimeMillis(),
-                        AppSettings.defaultCalendar(context)));
+                        AppSettings.defaultCalendar(context))));
 
         root.removeAllViews(
                 R.id.noforget_widget_list);
@@ -244,14 +244,15 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         if (rowCount <= 0) {
             root.setTextViewText(
                     R.id.noforget_widget_empty,
-                    "برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید");
+                    UiText.trComposite(context,
+                            "برای نمایش یادداشت‌ها، ارتفاع ویجت را بیشتر کنید"));
             root.setViewVisibility(
                     R.id.noforget_widget_empty,
                     View.VISIBLE);
         } else {
             root.setTextViewText(
                     R.id.noforget_widget_empty,
-                    "یادداشتی برای نمایش نیست");
+                    UiText.trComposite(context, "یادداشتی برای نمایش نیست"));
             root.setViewVisibility(
                     R.id.noforget_widget_empty,
                     items.isEmpty()
@@ -277,17 +278,17 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     R.id.noforget_row_title,
                     item.title.trim().isEmpty()
                             ? (item.body.trim().isEmpty()
-                            ? "دست‌نویس"
-                            : item.body)
-                            : item.title);
+                            ? UiText.tr(context, "دست‌نویس")
+                            : UiText.trComposite(context, item.body))
+                            : UiText.trComposite(context, item.title));
 
             String meta = item.hasDue
                     ? CalendarUtils.formatDate(
                     item.dueAtMillis,
                     AppSettings.defaultCalendar(context))
-                    : "بدون آلارم";
+                    : UiText.tr(context, "بدون آلارم");
             if (item.reminderEnabled) {
-                meta = "آلارم • " + meta;
+                meta = UiText.tr(context, "آلارم") + " • " + meta;
             }
 
             row.setTextViewText(
@@ -295,7 +296,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     meta);
             row.setTextViewText(
                     R.id.noforget_row_priority,
-                    PriorityUtils.label(item.priority));
+                    UiText.tr(context, PriorityUtils.label(item.priority)));
 
             row.setViewVisibility(
                     R.id.noforget_row_meta,

@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -85,7 +86,75 @@ public final class UiText {
             if (translated == null) continue;
             if (!key.equals(translated)) result = result.replace(key, translated);
         }
+        if ("en".equals(AppSettings.language(context)) && containsArabicScript(result)) {
+            return transliterateArabicScript(result);
+        }
         return result;
+    }
+
+    private static boolean containsArabicScript(String value) {
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (c >= '\u0600' && c <= '\u06ff') return true;
+        }
+        return false;
+    }
+
+    /**
+     * Last-resort English-mode safeguard for user data and proper names absent from the catalog.
+     * UI copy is translated by the catalog first; this prevents an untranslated Arabic-script
+     * fragment (for example a stored city label) from leaking into an otherwise English surface.
+     */
+    private static String transliterateArabicScript(String value) {
+        StringBuilder out = new StringBuilder(value.length() * 2);
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            switch (c) {
+                case 'ا': case 'أ': case 'إ': case 'آ': out.append('a'); break;
+                case 'ب': out.append('b'); break;
+                case 'پ': out.append('p'); break;
+                case 'ت': case 'ط': out.append('t'); break;
+                case 'ث': out.append("th"); break;
+                case 'ج': out.append('j'); break;
+                case 'چ': out.append("ch"); break;
+                case 'ح': case 'ه': case 'ة': out.append('h'); break;
+                case 'خ': out.append("kh"); break;
+                case 'د': out.append('d'); break;
+                case 'ذ': out.append("dh"); break;
+                case 'ر': out.append('r'); break;
+                case 'ز': case 'ض': case 'ظ': out.append('z'); break;
+                case 'ژ': out.append("zh"); break;
+                case 'س': case 'ص': out.append('s'); break;
+                case 'ش': out.append("sh"); break;
+                case 'ع': case 'ء': case 'ئ': case 'ؤ': out.append('\''); break;
+                case 'غ': out.append("gh"); break;
+                case 'ف': out.append('f'); break;
+                case 'ق': out.append('q'); break;
+                case 'ک': case 'ك': out.append('k'); break;
+                case 'گ': out.append('g'); break;
+                case 'ل': out.append('l'); break;
+                case 'م': out.append('m'); break;
+                case 'ن': out.append('n'); break;
+                case 'و': out.append('v'); break;
+                case 'ی': case 'ي': case 'ى': out.append('y'); break;
+                case '۰': case '٠': out.append('0'); break;
+                case '۱': case '١': out.append('1'); break;
+                case '۲': case '٢': out.append('2'); break;
+                case '۳': case '٣': out.append('3'); break;
+                case '۴': case '٤': out.append('4'); break;
+                case '۵': case '٥': out.append('5'); break;
+                case '۶': case '٦': out.append('6'); break;
+                case '۷': case '٧': out.append('7'); break;
+                case '۸': case '٨': out.append('8'); break;
+                case '۹': case '٩': out.append('9'); break;
+                case '،': out.append(','); break;
+                case '؛': out.append(';'); break;
+                case '؟': out.append('?'); break;
+                default:
+                    if (c < '\u0600' || c > '\u06ff') out.append(c);
+            }
+        }
+        return out.toString().replace('\u200c', ' ');
     }
 
     public static String[] translateArray(String... values) {
@@ -131,6 +200,14 @@ public final class UiText {
             if (listener != null && root != null && root.getViewTreeObserver().isAlive())
                 root.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
         }
+    }
+
+    /** Localize a dialog window, which is not part of its host activity's decor tree. */
+    public static void localize(Dialog dialog) {
+        if (dialog == null || dialog.getWindow() == null) return;
+        View root = dialog.getWindow().getDecorView();
+        Context context = dialog.getContext();
+        root.post(() -> localizeView(context, root));
     }
 
     private static void localizeTree(Activity activity, View root) {

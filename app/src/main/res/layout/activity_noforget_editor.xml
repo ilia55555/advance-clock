@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="یادداشت"
+                android:text="@string/runtime_text_0015"
                 android:textColor="#FFFFFF"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="متن، نقاشی، اهمیت و آلارم"
+                android:text="@string/layout_text_0017"
                 android:textColor="#E0F2F1"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/bg_field"
-                android:hint="عنوان یادداشت"
+                android:hint="@string/runtime_text_0122"
                 android:inputType="textCapSentences"
                 android:paddingHorizontal="14dp"
                 android:textColor="?attr/appTextPrimary"
@@ -66,7 +66,7 @@
                 android:layout_marginTop="9dp"
                 android:background="@drawable/bg_field"
                 android:gravity="top|start"
-                android:hint="متن یادداشت خود را اینجا بنویسید..."
+                android:hint="@string/runtime_text_0123"
                 android:inputType="textCapSentences|textMultiLine"
                 android:padding="14dp"
                 android:textColor="?attr/appTextPrimary"
@@ -96,7 +96,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="آلارم برای این یادداشت"
+                    android:text="@string/runtime_text_0124"
                     android:textColor="?attr/appTextPrimary"
                     android:textSize="15sp" />
 
@@ -126,7 +126,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/bg_field"
-                        android:text="تاریخ"
+                        android:text="@string/runtime_text_0014"
                         android:textAllCaps="false"
                         android:textColor="?attr/appPrimary" />
 
@@ -138,7 +138,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/bg_field"
-                        android:text="ساعت"
+                        android:text="@string/runtime_text_0013"
                         android:textAllCaps="false"
                         android:textColor="?attr/appPrimary" />
                 </LinearLayout>
@@ -149,7 +149,7 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_field"
-                    android:text="بدون تکرار"
+                    android:text="@string/runtime_text_0029"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary" />
 
@@ -160,7 +160,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_field"
                     android:paddingHorizontal="12dp"
-                    android:text="لرزش"
+                    android:text="@string/runtime_text_0022"
                     android:textColor="?attr/appTextPrimary" />
 
                 <Switch
@@ -170,7 +170,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_field"
                     android:paddingHorizontal="12dp"
-                    android:text="تمام‌صفحه وقتی گوشی باز است"
+                    android:text="@string/runtime_text_0210"
                     android:textColor="?attr/appTextPrimary" />
 
                 <Switch
@@ -180,7 +180,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_field"
                     android:paddingHorizontal="12dp"
-                    android:text="تمام‌صفحه روی صفحه قفل"
+                    android:text="@string/runtime_text_0211"
                     android:textColor="?attr/appTextPrimary" />
 
                 <Button
@@ -189,7 +189,7 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_field"
-                    android:text="صدای هشدار"
+                    android:text="@string/runtime_text_0125"
                     android:textAllCaps="false"
                     android:textColor="?attr/appPrimary" />
             </LinearLayout>
@@ -206,7 +206,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="فایل‌ها، تصاویر و برنامه‌ها"
+                android:text="@string/layout_text_0018"
                 android:textColor="?attr/appTextPrimary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -216,8 +216,8 @@
                 android:layout_height="52dp"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
-                <Button android:id="@+id/note_add_files" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="+ فایل یا تصویر" android:textAllCaps="false" />
-                <Button android:id="@+id/note_add_app" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="+ برنامه" android:textAllCaps="false" />
+                <Button android:id="@+id/note_add_files" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="@string/layout_text_0019" android:textAllCaps="false" />
+                <Button android:id="@+id/note_add_app" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="@string/layout_text_0020" android:textAllCaps="false" />
             </LinearLayout>
 
             <HorizontalScrollView
@@ -240,7 +240,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="نقاشی و ترسیم"
+                android:text="@string/runtime_text_0119"
                 android:textColor="?attr/appTextPrimary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -263,7 +263,7 @@
                         android:layout_width="48dp"
                         android:layout_height="44dp"
                         android:background="@drawable/bg_soft_button"
-                        android:contentDescription="قبلی"
+                        android:contentDescription="@string/layout_text_0008"
                         android:padding="11dp"
                         android:src="@drawable/ic_md_undo"
                         android:tint="?attr/appPrimary" />
@@ -275,7 +275,7 @@
                         android:layout_width="48dp"
                         android:layout_height="44dp"
                         android:background="@drawable/bg_soft_button"
-                        android:contentDescription="حذف"
+                        android:contentDescription="@string/runtime_text_0006"
                         android:padding="11dp"
                         android:src="@drawable/ic_md_delete"
                         android:tint="#C44C4C" />
@@ -287,7 +287,7 @@
                         android:layout_width="48dp"
                         android:layout_height="44dp"
                         android:background="@drawable/bg_soft_button"
-                        android:contentDescription="بعدی"
+                        android:contentDescription="@string/layout_text_0009"
                         android:padding="11dp"
                         android:src="@drawable/ic_md_redo"
                         android:tint="?attr/appPrimary" />
@@ -299,7 +299,7 @@
                         android:layout_width="48dp"
                         android:layout_height="44dp"
                         android:background="@drawable/bg_soft_button"
-                        android:contentDescription="پالت"
+                        android:contentDescription="@string/layout_text_0010"
                         android:padding="11dp"
                         android:src="@drawable/ic_md_palette"
                         android:tint="?attr/appPrimary" />
@@ -320,7 +320,7 @@
                         android:layout_width="48dp"
                         android:layout_height="44dp"
                         android:background="@drawable/bg_soft_button"
-                        android:contentDescription="نمایش یا مخفی کردن گرید"
+                        android:contentDescription="@string/layout_text_0011"
                         android:padding="10dp"
                         android:src="@drawable/ic_grid"
                         android:tint="?attr/appPrimary" />
@@ -340,7 +340,7 @@
             android:layout_height="58dp"
             android:layout_marginTop="14dp"
             android:background="@drawable/bg_orange_button"
-            android:text="ذخیره یادداشت"
+            android:text="@string/runtime_text_0120"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
@@ -352,7 +352,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_soft_button"
-            android:text="حذف یادداشت"
+            android:text="@string/runtime_text_0121"
             android:textAllCaps="false"
             android:textColor="#C44C4C" />
 
@@ -362,7 +362,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_soft_button"
-            android:text="انصراف"
+            android:text="@string/runtime_text_0003"
             android:textAllCaps="false"
             android:textColor="?attr/appPrimary" />
     </LinearLayout>

@@ -63,12 +63,14 @@ public final class PaletteDialog {
             updatePreview.run();
         });
 
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("پالت رنگ قلم")
                 .setView(root)
                 .setNegativeButton("انصراف", null)
                 .setPositiveButton("انتخاب رنگ", (d, which) -> callback.onColor(selected[0]))
-                .show();
+                .create();
+        dialog.show();
+        UiText.localize(dialog);
     }
 
     private static TextView label(Context context, String text) {

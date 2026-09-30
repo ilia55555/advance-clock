@@ -571,6 +571,7 @@ public final class PrayerSettingsActivity extends Activity {
             recreate();
         });
         dialog.show();
+        UiText.localize(dialog);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setLayout(-1, -1);
             dialog.getWindow().setStatusBarColor(AppSettings.primaryColor(this));

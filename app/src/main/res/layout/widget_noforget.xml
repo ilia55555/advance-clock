@@ -41,7 +41,7 @@
                 android:ellipsize="end"
                 android:gravity="left"
                 android:maxLines="1"
-                android:text="امروز"
+                android:text="@string/ui_today"
                 android:textAlignment="viewStart"
                 android:textColor="#758783"
                 android:textSize="10sp" />
@@ -61,7 +61,7 @@
             android:id="@+id/noforget_widget_theme"
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:contentDescription="تنظیمات ویجت"
+            android:contentDescription="@string/ui_widget_settings"
             android:padding="7dp"
             android:src="@drawable/ic_md_settings"
             android:tint="#006666" />
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="5dp"
-        android:text="یادداشت"
+        android:text="@string/ui_note"
         android:textColor="#758783"
         android:textSize="10sp"
         android:textStyle="bold" />
@@ -83,7 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="8dp"
-        android:text="یادداشتی برای نمایش نیست"
+        android:text="@string/ui_no_note_display"
         android:textColor="#758783"
         android:textSize="12sp" />
 

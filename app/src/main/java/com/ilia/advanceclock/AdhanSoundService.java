@@ -94,13 +94,16 @@ public final class AdhanSoundService extends Service {
         Notification.Builder builder = new Notification.Builder(
                 this, NotificationHelper.ADHAN_CHANNEL)
                 .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(CalendarUtils.fa(AdhanScheduler.title(type)))
-                .setContentText(CalendarUtils.fa(AppSettings.adhanNotification(this)
-                        ? AppSettings.prayerLocationLabel(this) : "اذان در حال اجرا"))
+                .setContentTitle(UiText.trComposite(this,
+                        CalendarUtils.fa(AdhanScheduler.title(type))))
+                .setContentText(UiText.trComposite(this,
+                        CalendarUtils.fa(AppSettings.adhanNotification(this)
+                                ? AppSettings.prayerLocationLabel(this) : "اذان در حال اجرا")))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setOngoing(true)
                 .setContentIntent(open)
-                .addAction(new Notification.Action.Builder(null, "قطع اذان", stop).build());
+                .addAction(new Notification.Action.Builder(
+                        null, UiText.tr(this, "قطع اذان"), stop).build());
         if (shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
         return builder.build();
     }

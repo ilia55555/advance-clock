@@ -29,7 +29,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="دارک مود و لایت مود"
+                android:contentDescription="@string/runtime_text_0388"
                 android:padding="12dp"
                 android:src="@drawable/ic_md_dark"
                 android:tint="#FFFFFF" />
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="تاریخ امروز"
+                    android:text="@string/runtime_text_0414"
                     android:textColor="#D9EFED"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -67,7 +67,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="منو"
+                android:contentDescription="@string/runtime_text_0387"
                 android:padding="12dp"
                 android:src="@drawable/ic_md_more_vert"
                 android:tint="#FFFFFF" />
@@ -235,7 +235,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="ایجاد هشدار"
+                        android:text="@string/runtime_text_0390"
                         android:textColor="?attr/appTextPrimary"
                         android:textSize="21sp"
                         android:textStyle="bold" />
@@ -244,7 +244,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="تاریخ، زمان، اهمیت، تکرار و یادآوری را تنظیم کنید"
+                        android:text="@string/layout_text_0006"
                         android:textColor="?attr/appTextSecondary"
                         android:textSize="13sp" />
 
@@ -261,7 +261,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="ساعت"
+                            android:text="@string/runtime_text_0013"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary"
                             android:textSize="16sp" />
@@ -274,7 +274,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="تاریخ"
+                            android:text="@string/runtime_text_0014"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary"
                             android:textSize="14sp" />
@@ -304,7 +304,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="بدون تکرار"
+                            android:text="@string/runtime_text_0029"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary"
                             android:textSize="13sp" />
@@ -323,7 +323,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="یادآوری&#10;بدون یادآوری"
+                            android:text="@string/layout_text_0002"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary"
                             android:textSize="12sp" />
@@ -342,7 +342,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="لرزش"
+                                android:text="@string/runtime_text_0022"
                                 android:textColor="?attr/appTextSecondary"
                                 android:textSize="12sp" />
 
@@ -360,7 +360,7 @@
                         android:layout_height="58dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/bg_field"
-                        android:hint="برچسب؛ مثلاً صبح بخیر!"
+                        android:hint="@string/layout_text_0007"
                         android:inputType="textCapSentences"
                         android:paddingHorizontal="14dp"
                         android:textColor="?attr/appTextPrimary"
@@ -371,7 +371,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="عکس‌های هشدار (اختیاری، حداکثر ۲ عکس)"
+                        android:text="@string/runtime_text_0143"
                         android:textColor="?attr/appTextSecondary"
                         android:textSize="12sp" />
 
@@ -388,7 +388,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="افزودن عکس ۱"
+                            android:text="@string/runtime_text_0141"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary"
                             android:textSize="12sp" />
@@ -403,7 +403,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/bg_field"
-                            android:text="افزودن عکس ۲"
+                            android:text="@string/runtime_text_0142"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary"
                             android:textSize="12sp" />
@@ -415,7 +415,7 @@
                         android:layout_height="58dp"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_orange_button"
-                        android:text="ذخیره هشدار"
+                        android:text="@string/runtime_text_0139"
                         android:textAllCaps="false"
                         android:textColor="#FFFFFF"
                         android:textSize="17sp"
@@ -477,7 +477,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="اذان صبح"
+                                    android:text="@string/runtime_text_0078"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -502,7 +502,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="طلوع"
+                                    android:text="@string/runtime_text_0083"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -527,7 +527,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="اذان ظهر"
+                                    android:text="@string/runtime_text_0079"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -552,7 +552,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="عصر"
+                                    android:text="@string/runtime_text_0082"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -577,7 +577,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="غروب"
+                                    android:text="@string/runtime_text_0084"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -602,7 +602,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="اذان مغرب"
+                                    android:text="@string/runtime_text_0080"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -627,7 +627,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="عشاء"
+                                    android:text="@string/runtime_text_0081"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -652,7 +652,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="نیمه‌شب"
+                                    android:text="@string/runtime_text_0085"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -733,7 +733,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="هشدارها"
+                        android:text="@string/runtime_text_0018"
                         android:textColor="?attr/appTextPrimary"
                         android:textSize="19sp"
                         android:textStyle="bold" />
@@ -745,7 +745,7 @@
                         android:background="@drawable/bg_soft_button"
                         android:minWidth="0dp"
                         android:paddingHorizontal="11dp"
-                        android:text="هشدار هوشمند"
+                        android:text="@string/runtime_text_0263"
                         android:textAllCaps="false"
                         android:textColor="?attr/appPrimary"
                         android:textSize="11sp" />
@@ -761,7 +761,7 @@
                         android:background="@drawable/bg_soft_button"
                         android:minWidth="0dp"
                         android:paddingHorizontal="11dp"
-                        android:text="+ ویجت"
+                        android:text="@string/runtime_text_0389"
                         android:textAllCaps="false"
                         android:textColor="?attr/appPrimary"
                         android:textSize="11sp" />
@@ -812,7 +812,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:background="@drawable/bg_field"
-                        android:hint="عنوان یادداشت"
+                        android:hint="@string/runtime_text_0122"
                         android:inputType="textCapSentences"
                         android:paddingHorizontal="14dp"
                         android:textColor="?attr/appTextPrimary"
@@ -826,7 +826,7 @@
                         android:layout_marginTop="8dp"
                         android:background="@drawable/bg_field"
                         android:gravity="top|start"
-                        android:hint="متن یادداشت خود را اینجا بنویسید..."
+                        android:hint="@string/runtime_text_0123"
                         android:inputType="textCapSentences|textMultiLine"
                         android:padding="14dp"
                         android:textColor="?attr/appTextPrimary"
@@ -856,7 +856,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="آلارم برای این یادداشت"
+                            android:text="@string/runtime_text_0124"
                             android:textColor="?attr/appTextPrimary"
                             android:textSize="14sp" />
 
@@ -886,7 +886,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_field"
-                                android:text="تاریخ"
+                                android:text="@string/runtime_text_0014"
                                 android:textAllCaps="false"
                                 android:textColor="?attr/appPrimary" />
 
@@ -898,7 +898,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_field"
-                                android:text="ساعت"
+                                android:text="@string/runtime_text_0013"
                                 android:textAllCaps="false"
                                 android:textColor="?attr/appPrimary" />
                         </LinearLayout>
@@ -909,7 +909,7 @@
                             android:layout_height="52dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/bg_field"
-                            android:text="بدون تکرار"
+                            android:text="@string/runtime_text_0029"
                             android:textAllCaps="false"
                             android:textColor="?attr/appPrimary" />
                     </LinearLayout>
@@ -920,7 +920,7 @@
                         android:layout_height="56dp"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/bg_orange_button"
-                        android:text="ذخیره یادداشت"
+                        android:text="@string/runtime_text_0120"
                         android:textAllCaps="false"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp"
@@ -939,7 +939,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="نقاشی و ترسیم"
+                        android:text="@string/runtime_text_0119"
                         android:textColor="?attr/appTextPrimary"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -962,7 +962,7 @@
                                 android:layout_width="48dp"
                                 android:layout_height="44dp"
                                 android:background="@drawable/bg_soft_button"
-                                android:contentDescription="قبلی"
+                                android:contentDescription="@string/layout_text_0008"
                                 android:padding="11dp"
                                 android:src="@drawable/ic_md_undo"
                                 android:tint="?attr/appPrimary" />
@@ -974,7 +974,7 @@
                                 android:layout_width="48dp"
                                 android:layout_height="44dp"
                                 android:background="@drawable/bg_soft_button"
-                                android:contentDescription="حذف"
+                                android:contentDescription="@string/runtime_text_0006"
                                 android:padding="11dp"
                                 android:src="@drawable/ic_md_delete"
                                 android:tint="#C44C4C" />
@@ -986,7 +986,7 @@
                                 android:layout_width="48dp"
                                 android:layout_height="44dp"
                                 android:background="@drawable/bg_soft_button"
-                                android:contentDescription="بعدی"
+                                android:contentDescription="@string/layout_text_0009"
                                 android:padding="11dp"
                                 android:src="@drawable/ic_md_redo"
                                 android:tint="?attr/appPrimary" />
@@ -998,7 +998,7 @@
                                 android:layout_width="48dp"
                                 android:layout_height="44dp"
                                 android:background="@drawable/bg_soft_button"
-                                android:contentDescription="پالت"
+                                android:contentDescription="@string/layout_text_0010"
                                 android:padding="11dp"
                                 android:src="@drawable/ic_md_palette"
                                 android:tint="?attr/appPrimary" />
@@ -1019,7 +1019,7 @@
                                 android:layout_width="48dp"
                                 android:layout_height="44dp"
                                 android:background="@drawable/bg_soft_button"
-                                android:contentDescription="نمایش یا مخفی کردن گرید"
+                                android:contentDescription="@string/layout_text_0011"
                                 android:padding="10dp"
                                 android:src="@drawable/ic_grid"
                                 android:tint="?attr/appPrimary" />
@@ -1045,7 +1045,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="یادداشت‌ها"
+                        android:text="@string/runtime_text_0016"
                         android:textColor="?attr/appTextPrimary"
                         android:textSize="19sp"
                         android:textStyle="bold" />
@@ -1057,7 +1057,7 @@
                         android:background="@drawable/bg_soft_button"
                         android:minWidth="0dp"
                         android:paddingHorizontal="12dp"
-                        android:text="+ ویجت"
+                        android:text="@string/runtime_text_0389"
                         android:textAllCaps="false"
                         android:textColor="?attr/appPrimary"
                         android:textSize="11sp" />

@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
-import base64
-import json
 import pathlib
-import zlib
-from xml.sax.saxutils import escape
+import xml.etree.ElementTree as ET
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-PAYLOAD_DIR = ROOT / "tools" / "localization_payload"
-DATA = "".join((PAYLOAD_DIR / f"part{i}.txt").read_text(encoding="utf-8").strip() for i in range(5))
-payload = json.loads(zlib.decompress(base64.b64decode(DATA)).decode("utf-8"))
-sources = payload["sources"]
-translations = payload["translations"]
-palettes = payload["palette"]
 
 FOLDERS = {
     "fa": "values-fa",
@@ -28,27 +19,24 @@ FOLDERS = {
     "ar": "values-ar",
 }
 
-def android_escape(value):
-    # Android's resource parser requires apostrophes and literal backslashes escaped.
-    return escape(value.replace("\\", "\\\\").replace("'", "\\'"))
-
-def items(values):
-    return "\n".join(f"        <item>{android_escape(value)}</item>" for value in values)
-
-def base_xml():
-    return f'''<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <!-- Complete Persian source catalog. Array order must match runtime_translation. -->\n    <string-array name="runtime_source_fa" translatable="false">\n{items(sources)}\n    </string-array>\n    <string-array name="runtime_translation">\n{items(translations['fa'])}\n    </string-array>\n    <string-array name="palette_names">\n{items(palettes['fa'])}\n    </string-array>\n</resources>\n'''
-
-def locale_xml(code):
-    return f'''<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <string-array name="runtime_translation">\n{items(translations[code])}\n    </string-array>\n    <string-array name="palette_names">\n{items(palettes[code])}\n    </string-array>\n</resources>\n'''
-
 res = ROOT / "app" / "src" / "main" / "res"
-(res / "values" / "localization_full.xml").write_text(base_xml(), encoding="utf-8")
-for code, folder in FOLDERS.items():
-    target = res / folder / "localization_full.xml"
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(locale_xml(code), encoding="utf-8")
+base = ET.parse(res / "values" / "strings.xml").getroot()
+expected_ids = {
+    item.attrib["name"]
+    for item in base
+    if item.tag in {"string", "string-array"}
+}
+assert expected_ids, "The central runtime string catalog is empty"
 
-expected = len(sources)
-assert all(len(translations[code]) == expected for code in translations)
-assert all(len(palettes[code]) == 7 for code in palettes)
-print(f"Generated {len(FOLDERS) + 1} localization files with {expected} translated UI entries each.")
+for folder in FOLDERS.values():
+    target = res / folder / "strings.xml"
+    assert target.is_file(), f"Missing central locale file: {target}"
+    content = ET.parse(target).getroot()
+    actual_ids = {
+        item.attrib["name"]
+        for item in content
+        if item.tag in {"string", "string-array"}
+    }
+    assert actual_ids == expected_ids, f"String IDs are incomplete in {target}"
+
+print(f"Verified {len(FOLDERS)} central locale files with {len(expected_ids)} string IDs each.")

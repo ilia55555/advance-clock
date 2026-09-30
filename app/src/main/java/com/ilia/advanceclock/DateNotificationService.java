@@ -141,9 +141,10 @@ public final class DateNotificationService extends Service {
 
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL,
-                "تاریخ روز",
+                UiText.trComposite(context, "تاریخ روز"),
                 NotificationManager.IMPORTANCE_LOW);
-        channel.setDescription("نمایش دائمی تاریخ روز در نوار وضعیت");
+        channel.setDescription(UiText.trComposite(context,
+                "نمایش دائمی تاریخ روز در نوار وضعیت"));
         channel.setShowBadge(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         channel.setSound(null, null);
@@ -188,10 +189,11 @@ public final class DateNotificationService extends Service {
                 ? new Notification.Builder(context, CHANNEL)
                 : new Notification.Builder(context);
 
-        builder.setContentTitle(title)
+        builder.setContentTitle(UiText.trComposite(context, title))
                 .setContentText(twoOtherDates.length() == 0
-                        ? "تاریخ امروز"
-                        : twoOtherDates.toString().replace("\n", "  •  "))
+                        ? UiText.tr(context, "تاریخ امروز")
+                        : UiText.trComposite(context,
+                                twoOtherDates.toString().replace("\n", "  •  ")))
                 .setContentIntent(content)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -202,7 +204,7 @@ public final class DateNotificationService extends Service {
 
         if (twoOtherDates.length() > 0) {
             builder.setStyle(new Notification.BigTextStyle()
-                    .bigText(twoOtherDates.toString()));
+                    .bigText(UiText.trComposite(context, twoOtherDates.toString())));
         }
 
         if (Build.VERSION.SDK_INT >= 23) {
