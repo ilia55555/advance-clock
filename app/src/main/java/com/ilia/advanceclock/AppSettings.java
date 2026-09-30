@@ -174,8 +174,10 @@ public final class AppSettings {
     }
 
     public static String prayerLocationLabel(Context context) {
-        return prefs(context).getString(
+        String stored = prefs(context).getString(
                 "prayer_location_label", AppString.get(R.string.runtime_text_0371));
+        return IranOfflineLocations.localizedLabel(
+                prayerLatitude(context), prayerLongitude(context), stored);
     }
 
     public static String prayerTimeZoneId(Context context) {
@@ -237,9 +239,19 @@ public final class AppSettings {
                     prefs(context).getString("prayer_horizons", "[]"));
             for (int i = 0; i < array.length(); i++) {
                 org.json.JSONObject item = array.optJSONObject(i);
-                if (item != null) values.add(new PrayerHorizon(
-                        item.optString("label", AppString.get(R.string.runtime_text_0418)), item.optDouble("lat"),
-                        item.optDouble("lon"), item.optString("zone", "Asia/Tehran")));
+                if (item != null) {
+                    double latitude = item.optDouble("lat");
+                    double longitude = item.optDouble("lon");
+                    String storedLabel = item.optString(
+                            "label", AppString.get(R.string.runtime_text_0418));
+                    String localizedLabel = IranOfflineLocations.localizedLabel(
+                            latitude, longitude, storedLabel);
+                    values.add(new PrayerHorizon(
+                            localizedLabel,
+                            latitude,
+                            longitude,
+                            item.optString("zone", "Asia/Tehran")));
+                }
             }
         } catch (Exception ignored) {}
         if (values.isEmpty() && prayerLocationSet(context)) {
