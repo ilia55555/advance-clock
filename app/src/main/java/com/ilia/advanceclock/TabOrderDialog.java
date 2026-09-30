@@ -54,11 +54,11 @@ public final class TabOrderDialog {
         };
         render[0].run();
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("ترتیب تب‌ها")
-                .setMessage("با دکمه‌های بالا و پایین، جای هر تب را تغییر دهید.")
+                .setTitle(AppString.get(R.string.runtime_text_0107))
+                .setMessage(AppString.get(R.string.runtime_text_0679))
                 .setView(list)
-                .setNegativeButton("انصراف", null)
-                .setPositiveButton("ذخیره", (buttonDialog, which) -> {
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0005), (buttonDialog, which) -> {
                     AppSettings.setTabOrder(context, order);
                     onSaved.run();
                 })
@@ -81,7 +81,7 @@ public final class TabOrderDialog {
             case "stopwatch": return "کرنومتر";
             case "timer": return "تایمر";
             case "world": return "ساعت جهانی";
-            default: return "ساعت";
+            default: return AppString.get(R.string.runtime_text_0013);
         }
     }
 
