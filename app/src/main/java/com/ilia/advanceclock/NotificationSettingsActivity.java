@@ -41,7 +41,7 @@ public final class NotificationSettingsActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(pad, dp(12), pad, dp(24));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -175,7 +175,7 @@ public final class NotificationSettingsActivity extends Activity {
         sw.setTextColor(AppSettings.textPrimary(this));
         sw.setChecked(checked);
         sw.setGravity(Gravity.CENTER_VERTICAL);
-        sw.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        sw.setLayoutDirection(AppSettings.layoutDirection(this));
         sw.setPadding(dp(12), 0, dp(12), 0);
         sw.setBackgroundResource(R.drawable.bg_card);
 
