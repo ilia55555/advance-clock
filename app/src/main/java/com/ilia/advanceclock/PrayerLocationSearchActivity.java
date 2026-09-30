@@ -73,7 +73,7 @@ public final class PrayerLocationSearchActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(18));
         root.setBackgroundColor(AppSettings.background(this));
 
@@ -136,7 +136,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         resultScroll.setFillViewport(true);
         results = new LinearLayout(this);
         results.setOrientation(LinearLayout.VERTICAL);
-        results.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        results.setLayoutDirection(AppSettings.layoutDirection(this));
         resultScroll.addView(results, new ScrollView.LayoutParams(-1, -2));
         root.addView(resultScroll, new LinearLayout.LayoutParams(-1, 0, 1f));
 
@@ -446,7 +446,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        row.setLayoutDirection(AppSettings.layoutDirection(this));
         row.setBackgroundResource(R.drawable.bg_card);
         row.setPadding(dp(14), 0, dp(8), 0);
         TextView label = text(location.label, 14, AppSettings.textPrimary(this));
