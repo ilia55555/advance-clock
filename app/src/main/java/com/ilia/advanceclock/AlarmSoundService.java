@@ -107,12 +107,12 @@ public final class AlarmSoundService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        String title = label == null || label.trim().isEmpty() ? "آلارم" : label;
+        String title = label == null || label.trim().isEmpty() ? AppString.get(R.string.runtime_text_0019) : label;
         String message = ToolAlarmScheduler.TIMER.equals(toolKind)
-                ? "زمان تایمر به پایان رسید"
+                ? AppString.get(R.string.runtime_text_0573)
                 : ToolAlarmScheduler.STOPWATCH.equals(toolKind)
-                ? "کرنومتر به حد نهایی رسید"
-                : "زمان آلارم رسیده است";
+                ? AppString.get(R.string.runtime_text_0302)
+                : AppString.get(R.string.runtime_text_0574);
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, NotificationHelper.ALARM_CHANNEL)
                 : new Notification.Builder(this);
@@ -127,7 +127,7 @@ public final class AlarmSoundService extends Service {
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentIntent(fullScreen)
                 .addAction(new Notification.Action.Builder(
-                        null, UiText.tr(this, "قطع"), stopAction).build());
+                        null, AppString.get(R.string.runtime_text_0406), stopAction).build());
         if (shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
         return builder.build();
     }
