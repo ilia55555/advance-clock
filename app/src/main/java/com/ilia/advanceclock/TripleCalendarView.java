@@ -27,11 +27,17 @@ public final class TripleCalendarView extends View {
     private static final int MUTED_LIGHT = 0xFF97A28E;
     private static final int MUTED_DARK = 0xFF98A7A2;
 
-    private static final String[] WEEKDAYS_IRAN_HIJRI = {
-            AppString.get(R.string.runtime_text_0180), AppString.get(R.string.runtime_text_0181), AppString.get(R.string.runtime_text_0182), AppString.get(R.string.runtime_text_0552), AppString.get(R.string.runtime_text_0184), AppString.get(R.string.runtime_text_0185), AppString.get(R.string.runtime_text_0186)
+    private static final int[] WEEKDAY_IDS_IRAN_HIJRI = {
+            R.string.runtime_text_0180, R.string.runtime_text_0181,
+            R.string.runtime_text_0182, R.string.runtime_text_0552,
+            R.string.runtime_text_0184, R.string.runtime_text_0185,
+            R.string.runtime_text_0186
     };
-    private static final String[] WEEKDAYS_GREGORIAN = {
-            AppString.get(R.string.runtime_text_0182), AppString.get(R.string.runtime_text_0552), AppString.get(R.string.runtime_text_0184), AppString.get(R.string.runtime_text_0185), AppString.get(R.string.runtime_text_0186), AppString.get(R.string.runtime_text_0180), AppString.get(R.string.runtime_text_0181)
+    private static final int[] WEEKDAY_IDS_GREGORIAN = {
+            R.string.runtime_text_0182, R.string.runtime_text_0552,
+            R.string.runtime_text_0184, R.string.runtime_text_0185,
+            R.string.runtime_text_0186, R.string.runtime_text_0180,
+            R.string.runtime_text_0181
     };
     private static final float[] CELL_LEFT = {553f,470f,386f,302f,218f,134f,50f};
     private static final float[] CELL_TOP = {161f,247f,334f,420f,506f,592f};
@@ -177,10 +183,10 @@ public final class TripleCalendarView extends View {
     }
 
     private void drawWeekdays(Canvas c) {
-        String[] weekdays = calendarType == CalendarUtils.GREGORIAN
-                ? WEEKDAYS_GREGORIAN : WEEKDAYS_IRAN_HIJRI;
+        int[] weekdayIds = calendarType == CalendarUtils.GREGORIAN
+                ? WEEKDAY_IDS_GREGORIAN : WEEKDAY_IDS_IRAN_HIJRI;
         for (int col = 0; col < 7; col++) {
-            centered(c, weekdays[col], COL_CENTER[col], 129, 15,
+            centered(c, AppString.get(weekdayIds[col]), COL_CENTER[col], 129, 15,
                     col == 6 ? holidayRed() : primary(), bold);
         }
     }
