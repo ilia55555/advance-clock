@@ -11,16 +11,16 @@ public final class CalendarUtils {
     public static final int HIJRI = 2;
 
     private static final String[] PERSIAN_MONTHS = {
-            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+            AppString.get(R.string.runtime_text_0187), AppString.get(R.string.runtime_text_0188), AppString.get(R.string.runtime_text_0189), AppString.get(R.string.runtime_text_0190), AppString.get(R.string.runtime_text_0191), AppString.get(R.string.runtime_text_0192),
+            AppString.get(R.string.runtime_text_0193), AppString.get(R.string.runtime_text_0194), AppString.get(R.string.runtime_text_0195), AppString.get(R.string.runtime_text_0196), AppString.get(R.string.runtime_text_0197), AppString.get(R.string.runtime_text_0198)
     };
     private static final String[] GREGORIAN_MONTHS = {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
     };
     private static final String[] HIJRI_MONTHS = {
-            "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی",
-            "رجب", "شعبان", "رمضان", "شوال", "ذی القعده", "ذی الحجه"
+            AppString.get(R.string.runtime_text_0620), AppString.get(R.string.runtime_text_0621), AppString.get(R.string.runtime_text_0622), AppString.get(R.string.runtime_text_0623), AppString.get(R.string.runtime_text_0624), AppString.get(R.string.runtime_text_0625),
+            AppString.get(R.string.runtime_text_0626), AppString.get(R.string.runtime_text_0627), AppString.get(R.string.runtime_text_0628), AppString.get(R.string.runtime_text_0629), AppString.get(R.string.runtime_text_0630), AppString.get(R.string.runtime_text_0631)
     };
 
     private CalendarUtils() {}
@@ -61,10 +61,10 @@ public final class CalendarUtils {
 
     public static String calendarName(int type) {
         switch (type) {
-            case GREGORIAN: return "میلادی";
-            case HIJRI: return "قمری";
+            case GREGORIAN: return AppString.get(R.string.runtime_text_0178);
+            case HIJRI: return AppString.get(R.string.runtime_text_0179);
             case PERSIAN:
-            default: return "شمسی";
+            default: return AppString.get(R.string.runtime_text_0177);
         }
     }
 
