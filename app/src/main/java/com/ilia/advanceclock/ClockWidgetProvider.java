@@ -286,9 +286,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     CalendarUtils.formatDate(
                             item.triggerAtMillis,
                             AppSettings.defaultCalendar(
-                                    context)
+                                    context))
                             + "  "
-                            + clock));
+                            + clock);
 
             row.setTextViewText(
                     R.id.widget_row_priority,
