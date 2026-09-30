@@ -58,7 +58,7 @@ public final class TabOrderDialog {
                 .setMessage("با دکمه‌های بالا و پایین، جای هر تب را تغییر دهید.")
                 .setView(list)
                 .setNegativeButton("انصراف", null)
-                .setPositiveButton("ذخیره", (dialog, which) -> {
+                .setPositiveButton("ذخیره", (buttonDialog, which) -> {
                     AppSettings.setTabOrder(context, order);
                     onSaved.run();
                 })
