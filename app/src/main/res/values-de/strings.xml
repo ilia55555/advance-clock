@@ -844,4 +844,12 @@ Sperrbildschirm</string>
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">Adhan nicht abspielen</string>
+    <string name="adhan_skip_description">An den ausgewählten Tagen wird kein Adhan abgespielt.</string>
+    <string name="adhan_skip_mode_off">Aus</string>
+    <string name="adhan_skip_mode_weekdays">Wochentage</string>
+    <string name="adhan_skip_mode_dates">Bestimmte Daten</string>
+    <string name="adhan_skip_add_date">Datum hinzufügen</string>
+    <string name="adhan_skip_no_dates">Noch keine Daten ausgewählt.</string>
+    <string name="adhan_skip_remove_date">Entfernen</string>
 </resources>
