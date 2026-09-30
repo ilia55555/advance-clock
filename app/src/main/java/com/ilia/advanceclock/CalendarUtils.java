@@ -75,9 +75,9 @@ public final class CalendarUtils {
                 String localized = DateFormatSymbols.getInstance(Locale.getDefault())
                         .getMonths()[index];
                 return localized.isEmpty() ? GREGORIAN_MONTHS[index] : localized;
-            case HIJRI: return UiText.tr(HIJRI_MONTHS[index]);
+            case HIJRI: return HIJRI_MONTHS[index];
             case PERSIAN:
-            default: return UiText.tr(PERSIAN_MONTHS[index]);
+            default: return PERSIAN_MONTHS[index];
         }
     }
 
