@@ -80,11 +80,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         LinearLayout toolbar = new LinearLayout(this);
         toolbar.setOrientation(LinearLayout.HORIZONTAL);
         toolbar.setGravity(Gravity.CENTER_VERTICAL);
-        toolbar.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-        TextView title = text(AppString.get(R.string.runtime_text_0441), 24, AppSettings.textPrimary(this));
-        title.setTypeface(null, android.graphics.Typeface.BOLD);
-        toolbar.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
+        toolbar.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
         ImageButton close = new ImageButton(this);
         close.setImageResource(R.drawable.ic_md_close);
@@ -94,6 +90,13 @@ public final class PrayerLocationSearchActivity extends Activity {
         close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         toolbar.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
+        TextView title = text(AppString.get(R.string.runtime_text_0441), 24, AppSettings.textPrimary(this));
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        toolbar.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
+
         root.addView(toolbar);
 
         Button gps = new Button(this);
