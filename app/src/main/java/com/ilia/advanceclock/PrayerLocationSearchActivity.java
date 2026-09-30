@@ -82,7 +82,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         toolbar.setGravity(Gravity.CENTER_VERTICAL);
         toolbar.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView title = text("افزودن افق", 24, AppSettings.textPrimary(this));
+        TextView title = text(AppString.get(R.string.runtime_text_0441), 24, AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         toolbar.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
 
@@ -91,13 +91,13 @@ public final class PrayerLocationSearchActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         toolbar.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(toolbar);
 
         Button gps = new Button(this);
-        gps.setText("گرفتن افق از GPS");
+        gps.setText(AppString.get(R.string.runtime_text_0442));
         gps.setAllCaps(false);
         gps.setTextColor(0xFFFFFFFF);
         gps.setBackgroundResource(R.drawable.bg_orange_button);
@@ -111,7 +111,7 @@ public final class PrayerLocationSearchActivity extends Activity {
 
         searchInput = new EditText(this);
         searchInput.setSingleLine(true);
-        searchInput.setHint("نام شهر، روستا، استان یا کشور");
+        searchInput.setHint(AppString.get(R.string.runtime_text_0100));
         searchInput.setTextColor(AppSettings.textPrimary(this));
         searchInput.setHintTextColor(AppSettings.textSecondary(this));
         searchInput.setBackgroundResource(R.drawable.bg_field);
@@ -126,7 +126,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         progressParams.topMargin = dp(10);
         root.addView(progress, progressParams);
 
-        status = text("با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند", 13,
+        status = text(AppString.get(R.string.runtime_text_0101), 13,
                 AppSettings.textSecondary(this));
         status.setGravity(Gravity.CENTER);
         status.setPadding(0, dp(8), 0, dp(8));
@@ -141,7 +141,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         root.addView(resultScroll, new LinearLayout.LayoutParams(-1, 0, 1f));
 
         TextView attribution = text(
-                "ایران و منطقه‌زمانی‌ها آفلاین • جستجوی جهانی © OpenStreetMap",
+                AppString.get(R.string.runtime_text_0443),
                 11,
                 AppSettings.textSecondary(this));
         attribution.setGravity(Gravity.CENTER);
@@ -175,7 +175,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         if (query.isEmpty()) {
             progress.setVisibility(View.GONE);
             results.removeAllViews();
-            status.setText("با تایپ کردن، نتایج لحظه‌ای نمایش داده می‌شوند");
+            status.setText(AppString.get(R.string.runtime_text_0101));
             return;
         }
 
@@ -188,14 +188,14 @@ public final class PrayerLocationSearchActivity extends Activity {
         if (query.length() < 2) {
             progress.setVisibility(View.GONE);
             results.removeAllViews();
-            status.setText("برای جستجوی جهانی یک حرف دیگر وارد کنید");
+            status.setText(AppString.get(R.string.runtime_text_0444));
             return;
         }
 
         progress.setVisibility(View.VISIBLE);
         status.setText(hasInternetConnection()
-                ? "در حال جستجوی لحظه‌ای…"
-                : "در حال جستجو در نتایج ذخیره‌شده…");
+                ? AppString.get(R.string.runtime_text_0445)
+                : AppString.get(R.string.runtime_text_0446));
 
         pendingSearch = () -> performSearch(query, generation);
         handler.postDelayed(pendingSearch, immediate ? 0L : 450L);
@@ -212,7 +212,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         if (generation != searchGeneration) return;
         progress.setVisibility(View.GONE);
         results.removeAllViews();
-        status.setText(CalendarUtils.fa(Integer.toString(found.size())) + " نتیجه آفلاین");
+        status.setText(CalendarUtils.fa(Integer.toString(found.size())) + AppString.get(R.string.runtime_text_0447));
         for (IranOfflineLocations.Location location : found) {
             addResultButton(new LocationResult(
                     location.label,
@@ -429,14 +429,14 @@ public final class PrayerLocationSearchActivity extends Activity {
 
         if (response.results.isEmpty()) {
             String message = response.connectionFailed
-                    ? "نتیجه آفلاین پیدا نشد؛ برای مکان جدید اینترنت لازم است"
-                    : "مکانی پیدا نشد؛ عبارت را تغییر دهید";
+                    ? AppString.get(R.string.runtime_text_0448)
+                    : AppString.get(R.string.runtime_text_0449);
             status.setText(message);
             return;
         }
 
         String count = CalendarUtils.fa(Integer.toString(response.results.size()));
-        status.setText(count + (response.fromCache ? " نتیجه ذخیره‌شده" : " نتیجه"));
+        status.setText(count + (response.fromCache ? AppString.get(R.string.runtime_text_0450) : AppString.get(R.string.runtime_text_0451)));
         for (LocationResult location : response.results) addResultButton(location);
     }
 
@@ -485,20 +485,20 @@ public final class PrayerLocationSearchActivity extends Activity {
         }
 
         if (!hasInternetConnection()) {
-            String message = "منطقه زمانی این مکان هنوز آفلاین ذخیره نشده؛ یک بار با اینترنت انتخابش کنید";
+            String message = AppString.get(R.string.runtime_text_0452);
             status.setText(message);
             LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
             return;
         }
 
         progress.setVisibility(View.VISIBLE);
-        status.setText("در حال تشخیص منطقه زمانی…");
+        status.setText(AppString.get(R.string.runtime_text_0453));
         new Thread(() -> {
             String zone = resolveTimeZoneOnline(location.latitude, location.longitude);
             runOnUiThread(() -> {
                 progress.setVisibility(View.GONE);
                 if (!isUsableTimeZone(zone)) {
-                    String message = "منطقه زمانی این مکان تشخیص داده نشد؛ دوباره تلاش کنید";
+                    String message = AppString.get(R.string.runtime_text_0454);
                     status.setText(message);
                     LogoToast.makeText(this, message, Toast.LENGTH_LONG).show();
                     return;
@@ -588,7 +588,7 @@ public final class PrayerLocationSearchActivity extends Activity {
                     this, location.latitude, location.longitude, location.label, timeZoneId);
         }
         setResult(RESULT_OK);
-        status.setText("افق اضافه شد");
+        status.setText(AppString.get(R.string.runtime_text_0455));
         scheduleSearch(true);
     }
 
@@ -617,7 +617,7 @@ public final class PrayerLocationSearchActivity extends Activity {
         if (value == null || value.trim().isEmpty()) return;
         String part = value.trim();
         if (target.toString().contains(part)) return;
-        if (target.length() > 0) target.append("، ");
+        if (target.length() > 0) target.append(AppString.get(R.string.runtime_text_0456));
         target.append(part);
     }
 
