@@ -25,14 +25,14 @@ public final class SoundPickerActivity extends Activity {
         root.setOrientation(LinearLayout.VERTICAL); root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         root.setPadding(dp(18), dp(12), dp(18), dp(18)); root.setBackgroundColor(AppSettings.background(this));
         LinearLayout top = new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
-        TextView title = new TextView(this); title.setText("انتخاب صدا"); title.setTextSize(24);
+        TextView title = new TextView(this); title.setText(AppString.get(R.string.runtime_text_0150)); title.setTextSize(24);
         title.setTextColor(AppSettings.textPrimary(this)); title.setTypeface(null, 1);
         top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1));
         ImageButton close = new ImageButton(this); close.setImageResource(R.drawable.ic_md_close);
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0); close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48))); root.addView(top);
-        Button upload = button("+ آپلود صدای جدید"); upload.setOnClickListener(v -> upload());
+        Button upload = button(AppString.get(R.string.runtime_text_0151)); upload.setOnClickListener(v -> upload());
         root.addView(upload, new LinearLayout.LayoutParams(-1, dp(54)));
         ScrollView scroll = new ScrollView(this); list = new LinearLayout(this);
         list.setOrientation(LinearLayout.VERTICAL); scroll.addView(list, new ScrollView.LayoutParams(-1, -2));
