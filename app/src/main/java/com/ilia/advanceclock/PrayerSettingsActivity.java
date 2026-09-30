@@ -77,7 +77,7 @@ public final class PrayerSettingsActivity extends Activity {
         top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         TextView title = new TextView(this);
-        title.setText("تنظیمات اذان و اوقات شرعی");
+        title.setText(AppString.get(R.string.runtime_text_0076));
         title.setTextSize(24);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -88,21 +88,21 @@ public final class PrayerSettingsActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(top);
 
         LinearLayout masterCard = card();
         TextView masterTitle = text(
-                "نمایش اوقات شرعی",
+                AppString.get(R.string.runtime_text_0086),
                 18,
                 AppSettings.textPrimary(this));
         masterTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         masterCard.addView(masterTitle);
 
         Switch master = toggle(
-                "نمایش نوار اوقات شرعی زیر تقویم",
+                AppString.get(R.string.runtime_text_0351),
                 AppSettings.adhanEnabled(this));
         master.setOnCheckedChangeListener((button, checked) -> {
             AppSettings.setAdhanEnabled(this, checked);
@@ -113,7 +113,7 @@ public final class PrayerSettingsActivity extends Activity {
 
         LinearLayout locationCard = card();
         TextView locationTitle = text(
-                "افق‌ها",
+                AppString.get(R.string.runtime_text_0352),
                 17,
                 AppSettings.textPrimary(this));
         locationTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -123,12 +123,12 @@ public final class PrayerSettingsActivity extends Activity {
         locationStatus.setPadding(0, dp(4), 0, dp(8));
         locationCard.addView(locationStatus);
 
-        Button searchLocation = fieldButton("افزودن افق +");
+        Button searchLocation = fieldButton(AppString.get(R.string.runtime_text_0353));
         searchLocation.setOnClickListener(v -> startActivityForResult(
                 new Intent(this, PrayerLocationSearchActivity.class), REQ_HORIZON));
         locationCard.addView(searchLocation, new LinearLayout.LayoutParams(-1, dp(52)));
 
-        locationButton = fieldButton("دریافت موقعیت دقیق فعلی");
+        locationButton = fieldButton(AppString.get(R.string.runtime_text_0089));
         horizonList = new LinearLayout(this);
         horizonList.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams horizonParams = new LinearLayout.LayoutParams(-1, -2);
@@ -138,15 +138,15 @@ public final class PrayerSettingsActivity extends Activity {
         root.addView(locationCard, cardParams());
 
         LinearLayout azanCard = card();
-        TextView azanTitle = text("تنظیم اذان", 17, AppSettings.textPrimary(this));
+        TextView azanTitle = text(AppString.get(R.string.runtime_text_0342), 17, AppSettings.textPrimary(this));
         azanTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         azanCard.addView(azanTitle);
-        addAdhanSettingRow(azanCard, "تنظیم همه موارد", 899);
-        addAdhanSettingRow(azanCard, "اذان صبح", AdhanScheduler.FAJR);
-        addAdhanSettingRow(azanCard, "اذان ظهر", AdhanScheduler.DHUHR);
-        addAdhanSettingRow(azanCard, "عصر", AdhanScheduler.ASR);
-        addAdhanSettingRow(azanCard, "اذان مغرب", AdhanScheduler.MAGHRIB);
-        addAdhanSettingRow(azanCard, "عشاء", AdhanScheduler.ISHA);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0343), 899);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0078), AdhanScheduler.FAJR);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0079), AdhanScheduler.DHUHR);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0082), AdhanScheduler.ASR);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0080), AdhanScheduler.MAGHRIB);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0081), AdhanScheduler.ISHA);
 
         adhanScheduleStatus = text(
                 "",
@@ -157,7 +157,7 @@ public final class PrayerSettingsActivity extends Activity {
         azanCard.addView(adhanScheduleStatus);
 
         root.addView(azanCard, cardParams());
-        Button preview = fieldButton("پیش‌نمایش صفحه اذان");
+        Button preview = fieldButton(AppString.get(R.string.runtime_text_0096));
         preview.setOnClickListener(v -> previewAdhan());
         root.addView(preview, new LinearLayout.LayoutParams(-1, dp(54)));
 
@@ -193,10 +193,10 @@ public final class PrayerSettingsActivity extends Activity {
                             + coordinateText(
                             AppSettings.prayerLatitude(this),
                             AppSettings.prayerLongitude(this)));
-            locationButton.setText("به‌روزرسانی موقعیت دقیق فعلی");
+            locationButton.setText(AppString.get(R.string.runtime_text_0372));
         } else {
-            locationStatus.setText("موقعیت تنظیم نشده");
-            locationButton.setText("دریافت موقعیت دقیق فعلی");
+            locationStatus.setText(AppString.get(R.string.runtime_text_0097));
+            locationButton.setText(AppString.get(R.string.runtime_text_0089));
         }
         renderHorizons();
 
@@ -207,7 +207,7 @@ public final class PrayerSettingsActivity extends Activity {
         horizonList.removeAllViews();
         List<AppSettings.PrayerHorizon> horizons = AppSettings.prayerHorizons(this);
         if (horizons.isEmpty()) {
-            TextView empty = text("هنوز افقی اضافه نشده است.", 12,
+            TextView empty = text(AppString.get(R.string.runtime_text_0354), 12,
                     AppSettings.textSecondary(this));
             empty.setPadding(dp(10), dp(14), dp(10), dp(14));
             horizonList.addView(empty);
@@ -229,12 +229,12 @@ public final class PrayerSettingsActivity extends Activity {
 
             boolean isPrimary = AppSettings.isPrimaryPrayerHorizon(
                     this, horizon.latitude, horizon.longitude);
-            Button primary = fieldButton(isPrimary ? "پیش‌فرض ✓" : "پیش‌فرض");
+            Button primary = fieldButton(isPrimary ? AppString.get(R.string.runtime_text_0356) : AppString.get(R.string.runtime_text_0565));
             primary.setGravity(Gravity.CENTER);
             primary.setEnabled(!isPrimary);
             primary.setContentDescription(
-                    isPrimary ? "افق پیش‌فرض " + horizon.label
-                            : "انتخاب " + horizon.label + " به عنوان افق پیش‌فرض");
+                    isPrimary ? AppString.get(R.string.runtime_text_0358) + horizon.label
+                            : AppString.get(R.string.runtime_text_0566) + horizon.label + AppString.get(R.string.runtime_text_0567));
             primary.setOnClickListener(v -> {
                 AppSettings.setPrimaryPrayerHorizon(
                         this,
@@ -258,7 +258,7 @@ public final class PrayerSettingsActivity extends Activity {
             remove.setPadding(0, 0, 0, dp(2));
             remove.setTextColor(0xFFD32F2F);
             remove.setBackground(deleteHorizonBackground(false));
-            remove.setContentDescription("حذف " + horizon.label);
+            remove.setContentDescription(AppString.get(R.string.runtime_text_0509) + horizon.label);
 
             final boolean[] armed = {false};
             remove.setOnClickListener(v -> {
@@ -308,23 +308,23 @@ public final class PrayerSettingsActivity extends Activity {
         String message;
         switch (status) {
             case DISABLED:
-                message = "همه اعلان‌های اذان خاموش‌اند.";
+                message = AppString.get(R.string.runtime_text_0366);
                 break;
             case LOCATION_MISSING:
-                message = "⚠ اذان زمان‌بندی نشده است؛ برای ثبت موقعیت اینجا بزنید.";
+                message = AppString.get(R.string.runtime_text_0362);
                 break;
             case EXACT_PERMISSION_MISSING:
-                message = "⚠ اذان زمان‌بندی نشده است؛ مجوز آلارم دقیق را فعال کنید.";
+                message = AppString.get(R.string.runtime_text_0363);
                 break;
             case NOTIFICATION_PERMISSION_MISSING:
-                message = "⚠ زمان اذان ثبت شده، اما مجوز نمایش اعلان داده نشده است.";
+                message = AppString.get(R.string.runtime_text_0364);
                 break;
             case SCHEDULE_FAILED:
-                message = "⚠ زمان‌بندی اذان ناموفق بود؛ برای تلاش دوباره اینجا بزنید.";
+                message = AppString.get(R.string.runtime_text_0365);
                 break;
             case SCHEDULED:
             default:
-                message = "اذان فعال است";
+                message = AppString.get(R.string.runtime_text_0355);
                 break;
         }
         adhanScheduleStatus.setText(message);
@@ -376,7 +376,7 @@ public final class PrayerSettingsActivity extends Activity {
         summary.setEllipsize(android.text.TextUtils.TruncateAt.END);
         row.addView(summary, new LinearLayout.LayoutParams(0, dp(58), 1f));
 
-        Button configure = fieldButton("تنظیمات");
+        Button configure = fieldButton(AppString.get(R.string.runtime_text_0001));
         configure.setGravity(Gravity.CENTER);
         configure.setOnClickListener(v -> showAdhanSettingsDialog(title, type));
         LinearLayout.LayoutParams configureParams =
@@ -386,7 +386,7 @@ public final class PrayerSettingsActivity extends Activity {
 
         Switch enabled = new Switch(this);
         enabled.setChecked(adhanTypeEnabled(type));
-        enabled.setContentDescription("فعال یا غیرفعال کردن " + title);
+        enabled.setContentDescription(AppString.get(R.string.runtime_text_0350) + title);
         enabled.setOnCheckedChangeListener((button, checked) ->
                 updateAdhanSetting(() -> setAdhanTypeEnabled(type, checked), checked));
         row.addView(enabled, new LinearLayout.LayoutParams(dp(52), dp(52)));
@@ -409,11 +409,11 @@ public final class PrayerSettingsActivity extends Activity {
                 }
             }
             return same
-                    ? SoundLibrary.name(this, firstSound) + " • " + firstVolume + "٪"
-                    : "تنظیمات جداگانه";
+                    ? SoundLibrary.name(this, firstSound) + " • " + firstVolume + AppString.get(R.string.runtime_text_0568)
+                    : AppString.get(R.string.runtime_text_0344);
         }
         return SoundLibrary.name(this, AppSettings.adhanSoundUri(this, type))
-                + " • " + AppSettings.adhanVolume(this, type) + "٪";
+                + " • " + AppSettings.adhanVolume(this, type) + AppString.get(R.string.runtime_text_0568);
     }
 
     private boolean adhanTypeEnabled(int type) {
@@ -462,7 +462,7 @@ public final class PrayerSettingsActivity extends Activity {
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        TextView heading = text("تنظیمات " + title, 20, AppSettings.textPrimary(this));
+        TextView heading = text(AppString.get(R.string.runtime_text_0569) + title, 20, AppSettings.textPrimary(this));
         heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         heading.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         header.addView(heading, new LinearLayout.LayoutParams(0, dp(56), 1f));
@@ -472,31 +472,31 @@ public final class PrayerSettingsActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription("بستن");
+        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> dialog.dismiss());
         header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
         root.addView(header);
 
         LinearLayout output = card();
-        TextView outputTitle = text("تنظیم صدا و نحوه اعلام", 16,
+        TextView outputTitle = text(AppString.get(R.string.runtime_text_0345), 16,
                 AppSettings.textPrimary(this));
         outputTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         output.addView(outputTitle);
 
         int initialVolume = AppSettings.adhanVolume(
                 this, type == 899 ? AdhanScheduler.FAJR : type);
-        TextView volumeLabel = text("میزان صدا: " + initialVolume + "٪", 13,
+        TextView volumeLabel = text(AppString.get(R.string.runtime_text_0348) + initialVolume + AppString.get(R.string.runtime_text_0568), 13,
                 AppSettings.textSecondary(this));
         volumeLabel.setPadding(0, dp(8), 0, 0);
         output.addView(volumeLabel);
         SeekBar volume = new SeekBar(this);
         volume.setMax(100);
         volume.setProgress(initialVolume);
-        volume.setContentDescription("میزان صدای " + title);
+        volume.setContentDescription(AppString.get(R.string.runtime_text_0349) + title);
         volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(
                     SeekBar seekBar, int progress, boolean fromUser) {
-                volumeLabel.setText("میزان صدا: " + progress + "٪");
+                volumeLabel.setText(AppString.get(R.string.runtime_text_0348) + progress + AppString.get(R.string.runtime_text_0568));
                 if (!fromUser) return;
                 if (type == 899) {
                     for (int item = AdhanScheduler.FAJR;
@@ -512,21 +512,21 @@ public final class PrayerSettingsActivity extends Activity {
         });
         output.addView(volume, new LinearLayout.LayoutParams(-1, dp(48)));
 
-        Switch fullscreenUnlocked = toggle("تمام‌صفحه وقتی گوشی باز است",
+        Switch fullscreenUnlocked = toggle(AppString.get(R.string.runtime_text_0210),
                 AppSettings.adhanFullscreenUnlocked(this));
         fullscreenUnlocked.setOnCheckedChangeListener((button, checked) ->
                 AppSettings.setAdhanFullscreenUnlocked(this, checked));
-        Switch fullscreenLocked = toggle("تمام‌صفحه روی صفحه قفل",
+        Switch fullscreenLocked = toggle(AppString.get(R.string.runtime_text_0211),
                 AppSettings.adhanFullscreenLocked(this));
         fullscreenLocked.setOnCheckedChangeListener((button, checked) ->
                 AppSettings.setAdhanFullscreenLocked(this, checked));
-        Switch notification = toggle("اعلان اذان", AppSettings.adhanNotification(this));
+        Switch notification = toggle(AppString.get(R.string.runtime_text_0093), AppSettings.adhanNotification(this));
         notification.setOnCheckedChangeListener((button, checked) ->
                 AppSettings.setAdhanNotification(this, checked));
-        Switch vibrate = toggle("لرزش اذان", AppSettings.adhanVibrate(this));
+        Switch vibrate = toggle(AppString.get(R.string.runtime_text_0094), AppSettings.adhanVibrate(this));
         vibrate.setOnCheckedChangeListener((button, checked) ->
                 AppSettings.setAdhanVibrate(this, checked));
-        Switch sound = toggle("صدای اذان", AppSettings.adhanSound(this));
+        Switch sound = toggle(AppString.get(R.string.runtime_text_0095), AppSettings.adhanSound(this));
         sound.setOnCheckedChangeListener((button, checked) ->
                 AppSettings.setAdhanSound(this, checked));
         output.addView(fullscreenUnlocked);
@@ -537,10 +537,10 @@ public final class PrayerSettingsActivity extends Activity {
         root.addView(output, cardParams());
 
         LinearLayout muezzin = card();
-        TextView muezzinTitle = text("موذن", 16, AppSettings.textPrimary(this));
+        TextView muezzinTitle = text(AppString.get(R.string.runtime_text_0346), 16, AppSettings.textPrimary(this));
         muezzinTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         muezzin.addView(muezzinTitle);
-        Button upload = fieldButton("+ آپلود صدای موذن");
+        Button upload = fieldButton(AppString.get(R.string.runtime_text_0347));
         upload.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         upload.setPadding(dp(16), 0, dp(16), 0);
         upload.setOnClickListener(v -> uploadAdhanAudio(type));
@@ -600,7 +600,7 @@ public final class PrayerSettingsActivity extends Activity {
             check.setImageResource(R.drawable.ic_md_check);
             check.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
             check.setVisibility(checked ? View.VISIBLE : View.INVISIBLE);
-            check.setContentDescription(checked ? "انتخاب‌شده" : null);
+            check.setContentDescription(checked ? AppString.get(R.string.runtime_text_0341) : null);
             row.addView(check, new LinearLayout.LayoutParams(dp(24), dp(24)));
             row.setOnClickListener(v -> {
                 setAdhanSound(type, item.uri);
@@ -730,7 +730,7 @@ public final class PrayerSettingsActivity extends Activity {
         } else {
             LogoToast.makeText(
                     this,
-                    "مجوز موقعیت داده نشد؛ شهر یا روستا را جستجو کنید.",
+                    AppString.get(R.string.runtime_text_0570),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -748,7 +748,7 @@ public final class PrayerSettingsActivity extends Activity {
         LocationManager manager =
                 (LocationManager) getSystemService(LOCATION_SERVICE);
         if (manager == null) {
-            LogoToast.makeText(this, "سرویس موقعیت در دسترس نیست.", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0367), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -764,13 +764,13 @@ public final class PrayerSettingsActivity extends Activity {
         if (provider == null) {
             LogoToast.makeText(
                     this,
-                    "مکان دستگاه را روشن کنید و دوباره تلاش کنید.",
+                    AppString.get(R.string.runtime_text_0368),
                     Toast.LENGTH_LONG).show();
             return;
         }
 
         locationButton.setEnabled(false);
-        locationButton.setText("در حال دریافت موقعیت…");
+        locationButton.setText(AppString.get(R.string.runtime_text_0098));
 
         final String selectedProvider = provider;
         final int requestGeneration = ++locationRequestGeneration;
@@ -782,7 +782,7 @@ public final class PrayerSettingsActivity extends Activity {
             refresh();
             LogoToast.makeText(
                     this,
-                    "دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.",
+                    AppString.get(R.string.runtime_text_0571),
                     Toast.LENGTH_LONG).show();
         };
         locationHandler.postDelayed(locationTimeout, 20_000L);
@@ -832,7 +832,7 @@ public final class PrayerSettingsActivity extends Activity {
         refresh();
         LogoToast.makeText(
                 this,
-                "شروع دریافت موقعیت ممکن نشد؛ وضعیت مکان و مجوز را بررسی کنید.",
+                AppString.get(R.string.runtime_text_0369),
                 Toast.LENGTH_LONG).show();
     }
 
@@ -843,7 +843,7 @@ public final class PrayerSettingsActivity extends Activity {
             refresh();
             LogoToast.makeText(
                     this,
-                    "موقعیت دقیق دریافت نشد؛ دوباره تلاش کنید.",
+                    AppString.get(R.string.runtime_text_0370),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -921,7 +921,7 @@ public final class PrayerSettingsActivity extends Activity {
     private String coordinateText(double lat, double lon) {
         return String.format(
                 Locale.US,
-                "عرض %.5f°  •  طول %.5f°",
+                AppString.get(R.string.runtime_text_0572),
                 lat,
                 lon);
     }
