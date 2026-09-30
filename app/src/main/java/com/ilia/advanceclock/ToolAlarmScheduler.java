@@ -82,6 +82,6 @@ public final class ToolAlarmScheduler {
     }
 
     static String defaultLabel(String kind) {
-        return TIMER.equals(kind) ? "تایمر تمام شد" : "کرنومتر به حد نهایی رسید";
+        return TIMER.equals(kind) ? AppString.get(R.string.runtime_text_0301) : AppString.get(R.string.runtime_text_0302);
     }
 }
