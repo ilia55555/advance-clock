@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -644,6 +645,8 @@ public final class PrayerSettingsActivity extends Activity {
 
     private void showAdhanSettingsDialog(String title, int type) {
         Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setLayoutDirection(AppSettings.layoutDirection(this));
@@ -761,7 +764,11 @@ public final class PrayerSettingsActivity extends Activity {
         activeAdhanType = type;
         renderMuezzinList(type);
 
-        dialog.setContentView(root);
+        dialog.setContentView(
+                root,
+                new android.view.ViewGroup.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT));
         dialog.setOnDismissListener(value -> {
             activeAdhanType = -1;
             activeMuezzinList = null;
@@ -769,9 +776,17 @@ public final class PrayerSettingsActivity extends Activity {
         });
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setLayout(-1, -1);
-            dialog.getWindow().setStatusBarColor(AppSettings.primaryColor(this));
-            dialog.getWindow().setNavigationBarColor(AppSettings.background(this));
+            android.view.Window window = dialog.getWindow();
+            window.setBackgroundDrawable(
+                    new ColorDrawable(AppSettings.background(this)));
+            window.clearFlags(
+                    android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.setLayout(
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT,
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT);
+            window.setGravity(Gravity.FILL);
+            window.setStatusBarColor(AppSettings.primaryColor(this));
+            window.setNavigationBarColor(AppSettings.background(this));
         }
         AppSettings.applyFullscreenInsets(root);
     }
