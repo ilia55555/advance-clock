@@ -94,8 +94,7 @@ public final class AdhanSoundService extends Service {
         Notification.Builder builder = new Notification.Builder(
                 this, NotificationHelper.ADHAN_CHANNEL)
                 .setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(UiText.tr(this,
-                        CalendarUtils.fa(AdhanScheduler.title(type))))
+                .setContentTitle(CalendarUtils.fa(AdhanScheduler.title(type)))
                 .setContentText(AppSettings.adhanNotification(this)
                         ? AppSettings.prayerLocationLabel(this)
                         : AppString.get(R.string.runtime_text_0407))
