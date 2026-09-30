@@ -156,7 +156,7 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.media_widget_title,
-                UiText.tr(context, "یادآوری فایل‌ها"));
+                AppString.get(R.string.runtime_text_0115));
         root.setTextColor(
                 R.id.media_widget_title,
                 text);
@@ -210,8 +210,7 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
         if (items.isEmpty()) {
             root.setTextViewText(
                     R.id.media_widget_empty,
-                    UiText.tr(context,
-                            "فایلی انتخاب نشده است\nبرای افزودن لمس کنید"));
+                    AppString.get(R.string.runtime_text_0404));
             root.setViewVisibility(
                     R.id.media_widget_empty,
                     View.VISIBLE);
