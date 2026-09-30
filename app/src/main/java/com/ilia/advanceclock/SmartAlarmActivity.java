@@ -58,7 +58,7 @@ public final class SmartAlarmActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(24));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -244,7 +244,7 @@ public final class SmartAlarmActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        row.setLayoutDirection(AppSettings.layoutDirection(this));
 
         bulkMode = spinner(new String[]{AppString.get(R.string.runtime_text_0269), AppString.get(R.string.runtime_text_0270), AppString.get(R.string.runtime_text_0271)});
         row.addView(bulkMode, new LinearLayout.LayoutParams(0, dp(52), 1f));
@@ -267,7 +267,7 @@ public final class SmartAlarmActivity extends Activity {
         LinearLayout presets = new LinearLayout(this);
         presets.setOrientation(LinearLayout.HORIZONTAL);
         presets.setGravity(Gravity.CENTER);
-        presets.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        presets.setLayoutDirection(AppSettings.layoutDirection(this));
         presets.setPadding(0, dp(8), 0, 0);
         for (int value : new int[]{5, 10, 15, 30}) {
             Button b = softButton(CalendarUtils.fa(value) + AppString.get(R.string.runtime_text_0647));
@@ -316,7 +316,7 @@ public final class SmartAlarmActivity extends Activity {
 
         previewList = new LinearLayout(this);
         previewList.setOrientation(LinearLayout.VERTICAL);
-        previewList.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        previewList.setLayoutDirection(AppSettings.layoutDirection(this));
         card.addView(previewList, new LinearLayout.LayoutParams(-1, -2));
 
         saveAll = primaryButton(AppString.get(R.string.runtime_text_0274));
@@ -432,7 +432,7 @@ public final class SmartAlarmActivity extends Activity {
     private View buildPreviewRow(int index, SmartAlarmParser.Candidate candidate) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.VERTICAL);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        row.setLayoutDirection(AppSettings.layoutDirection(this));
         row.setPadding(dp(12), dp(11), dp(12), dp(11));
         row.setBackgroundResource(R.drawable.bg_field);
 
@@ -513,7 +513,7 @@ public final class SmartAlarmActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(8), dp(2), dp(8), 0);
 
         TextView labelTitle = dialogLabel(AppString.get(R.string.runtime_text_0275));
@@ -527,7 +527,7 @@ public final class SmartAlarmActivity extends Activity {
 
         LinearLayout dateRow = new LinearLayout(this);
         dateRow.setOrientation(LinearLayout.HORIZONTAL);
-        dateRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        dateRow.setLayoutDirection(AppSettings.layoutDirection(this));
 
         Button date = fieldButton(draft.dateText());
         dateRow.addView(date, new LinearLayout.LayoutParams(0, dp(52), 1f));
@@ -543,7 +543,7 @@ public final class SmartAlarmActivity extends Activity {
 
         LinearLayout ringRow = new LinearLayout(this);
         ringRow.setOrientation(LinearLayout.HORIZONTAL);
-        ringRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        ringRow.setLayoutDirection(AppSettings.layoutDirection(this));
 
         Spinner mode = spinner(new String[]{AppString.get(R.string.runtime_text_0269), AppString.get(R.string.runtime_text_0270), AppString.get(R.string.runtime_text_0271)});
         mode.setSelection(draft.offsetMode);
@@ -895,7 +895,7 @@ public final class SmartAlarmActivity extends Activity {
     private LinearLayout card() {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        card.setLayoutDirection(AppSettings.layoutDirection(this));
         card.setPadding(dp(14), dp(14), dp(14), dp(14));
         card.setBackgroundResource(R.drawable.bg_card);
         return card;
