@@ -844,4 +844,12 @@ Tela de bloqueio</string>
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">Não reproduzir o adhan</string>
+    <string name="adhan_skip_description">O adhan não será reproduzido nos dias selecionados.</string>
+    <string name="adhan_skip_mode_off">Desativado</string>
+    <string name="adhan_skip_mode_weekdays">Dias da semana</string>
+    <string name="adhan_skip_mode_dates">Datas específicas</string>
+    <string name="adhan_skip_add_date">Adicionar data</string>
+    <string name="adhan_skip_no_dates">Nenhuma data selecionada ainda.</string>
+    <string name="adhan_skip_remove_date">Remover</string>
 </resources>
