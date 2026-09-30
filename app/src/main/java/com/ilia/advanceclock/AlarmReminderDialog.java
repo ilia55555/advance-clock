@@ -33,7 +33,7 @@ public final class AlarmReminderDialog {
         }
 
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("یادآوری‌ها")
+                .setTitle(AppString.get(R.string.runtime_text_0021))
                 .setMultiChoiceItems(labels, checked, (d, which, isChecked) -> {
                     checked[which] = isChecked;
                     ListView list = ((AlertDialog) d).getListView();
@@ -64,8 +64,8 @@ public final class AlarmReminderDialog {
                         list.setItemChecked(0, true);
                     }
                 })
-                .setNegativeButton("انصراف", null)
-                .setPositiveButton("تأیید", null)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0004), null)
                 .create();
 
         dialog.setOnShowListener(ignored ->
