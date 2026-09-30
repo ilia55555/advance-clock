@@ -844,4 +844,12 @@
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">अज़ान न चलाएँ</string>
+    <string name="adhan_skip_description">चुने गए दिनों में अज़ान नहीं चलेगी।</string>
+    <string name="adhan_skip_mode_off">बंद</string>
+    <string name="adhan_skip_mode_weekdays">सप्ताह के दिन</string>
+    <string name="adhan_skip_mode_dates">विशिष्ट तारीखें</string>
+    <string name="adhan_skip_add_date">तारीख जोड़ें</string>
+    <string name="adhan_skip_no_dates">अभी कोई तारीख नहीं चुनी गई है।</string>
+    <string name="adhan_skip_remove_date">हटाएँ</string>
 </resources>
