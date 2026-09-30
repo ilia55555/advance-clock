@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="00:00"
+        android:text="@string/ui_placeholder_time_hm"
         android:textColor="#FFFFFF"
         android:textSize="76sp"
         android:textStyle="bold" />
