@@ -396,13 +396,16 @@ public final class PrayerSettingsActivity extends Activity {
         mode.setSelection(AppSettings.adhanSkipMode(this, type));
         skipCard.addView(mode, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        ScrollView optionsScroll = new ScrollView(this);
+        optionsScroll.setFillViewport(true);
         LinearLayout options = new LinearLayout(this);
         options.setOrientation(LinearLayout.VERTICAL);
         options.setLayoutDirection(AppSettings.layoutDirection(this));
+        optionsScroll.addView(options, new ScrollView.LayoutParams(-1, -2));
         LinearLayout.LayoutParams optionsParams =
-                new LinearLayout.LayoutParams(-1, -2);
+                new LinearLayout.LayoutParams(-1, dp(210));
         optionsParams.topMargin = dp(8);
-        skipCard.addView(options, optionsParams);
+        skipCard.addView(optionsScroll, optionsParams);
 
         mode.setOnItemSelectedListener(
                 new android.widget.AdapterView.OnItemSelectedListener() {
@@ -432,6 +435,9 @@ public final class PrayerSettingsActivity extends Activity {
             LinearLayout options, Spinner mode, int type) {
         options.removeAllViews();
         int selectedMode = mode.getSelectedItemPosition();
+        View optionsContainer = (View) options.getParent();
+        optionsContainer.setVisibility(
+                selectedMode == AppSettings.ADHAN_SKIP_NONE ? View.GONE : View.VISIBLE);
 
         if (selectedMode == AppSettings.ADHAN_SKIP_WEEKDAYS) {
             int[] days = {
