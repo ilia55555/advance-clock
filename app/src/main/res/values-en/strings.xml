@@ -394,17 +394,17 @@
     <string formatted="false" name="runtime_text_0309">Stop alarm</string>
     <string formatted="false" name="runtime_text_0310">Files, images, apps, and websites</string>
     <string formatted="false" name="runtime_text_0311">Note reminder</string>
-    <string formatted="false" name="runtime_text_0312">Your note time has arrived</string>
+    <string formatted="false" name="runtime_text_0312">It is time for your note</string>
     <string formatted="false" name="runtime_text_0313">Alarms</string>
     <string formatted="false" name="runtime_text_0314">Prayer-time notifications</string>
     <string formatted="false" name="runtime_text_0315">Note alarms</string>
     <string formatted="false" name="runtime_text_0316">Timed note alarms</string>
     <string formatted="false" name="runtime_text_0317">Tools</string>
-    <string formatted="false" name="runtime_text_0318">Compass tools</string>
+    <string formatted="false" name="runtime_text_0318">Compass tool</string>
     <string formatted="false" name="runtime_text_0319">Display mode</string>
     <string formatted="false" name="runtime_text_0320">Classic compass</string>
     <string formatted="false" name="runtime_text_0321">Qibla compass</string>
-    <string formatted="false" name="runtime_text_0322">Eight cardinal directions</string>
+    <string formatted="false" name="runtime_text_0322">Eight principal directions</string>
     <string formatted="false" name="runtime_text_0323">Reading direction sensor…</string>
     <string formatted="false" name="runtime_text_0324">This device does not have an orientation sensor.</string>
     <string formatted="false" name="runtime_text_0325">Set your location in Prayer Time Settings before using the Qibla compass.</string>

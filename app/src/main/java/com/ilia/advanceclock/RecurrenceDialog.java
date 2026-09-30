@@ -198,7 +198,6 @@ public final class RecurrenceDialog {
                 })
                 .create();
         dialog.show();
-        UiText.localize(dialog);
     }
 
     private static int dp(Context context, int value) {

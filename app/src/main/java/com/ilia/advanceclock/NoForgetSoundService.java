@@ -64,13 +64,14 @@ public final class NoForgetSoundService extends Service {
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, NotificationHelper.NOTE_ALARM_CHANNEL)
                 : new Notification.Builder(this);
+        String notificationTitle = item.title.trim().isEmpty()
+                ? UiText.tr(this, "یادآوری یادداشت") : item.title;
+        String notificationBody = item.body.trim().isEmpty()
+                ? UiText.tr(this, "زمان یادداشت شما رسیده است") : item.body;
         builder.setSmallIcon(R.drawable.ic_note)
-                .setContentTitle(UiText.trComposite(this, item.title.trim().isEmpty()
-                        ? "یادآوری یادداشت" : CalendarUtils.fa(item.title)))
-                .setContentText(UiText.trComposite(this, item.body.trim().isEmpty()
-                        ? "زمان یادداشت شما رسیده است" : CalendarUtils.fa(item.body)))
-                .setStyle(new Notification.BigTextStyle().bigText(
-                        UiText.trComposite(this, CalendarUtils.fa(item.body))))
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationBody)
+                .setStyle(new Notification.BigTextStyle().bigText(notificationBody))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setVisibility(AppSettings.notificationVisibility(this)).setPriority(Notification.PRIORITY_MAX)
                 .setOngoing(true).setContentIntent(open)

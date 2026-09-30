@@ -64,7 +64,6 @@ public final class TabOrderDialog {
                 })
                 .create();
         dialog.show();
-        UiText.localize(dialog);
     }
 
     private static Button moveButton(Context context, String text) {

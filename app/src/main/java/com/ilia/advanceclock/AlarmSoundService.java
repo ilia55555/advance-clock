@@ -118,8 +118,8 @@ public final class AlarmSoundService extends Service {
                 : new Notification.Builder(this);
 
         builder.setSmallIcon(R.drawable.ic_alarm)
-                .setContentTitle(UiText.trComposite(this, CalendarUtils.fa(title)))
-                .setContentText(UiText.trComposite(this, CalendarUtils.fa(message)))
+                .setContentTitle(title)
+                .setContentText(message)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)

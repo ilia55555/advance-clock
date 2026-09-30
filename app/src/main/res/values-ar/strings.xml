@@ -277,9 +277,9 @@
     <string formatted="false" name="runtime_text_0237">الأولوية: الأعلى أولًا</string>
     <string formatted="false" name="runtime_text_0238">ذكي: أقرب موعد أولًا</string>
     <string formatted="false" name="runtime_text_0239">أحدث ملاحظة أولًا</string>
-    <string formatted="false" name="runtime_text_0240">إعدادات ويدجت الساعة</string>
-    <string formatted="false" name="runtime_text_0241">إعدادات ويدجت الملاحظات</string>
-    <string formatted="false" name="runtime_text_0242">إعدادات ويدجت الساعة العالمية</string>
+    <string formatted="false" name="runtime_text_0240">إعدادات أداة الساعة</string>
+    <string formatted="false" name="runtime_text_0241">إعدادات أداة الملاحظات</string>
+    <string formatted="false" name="runtime_text_0242">إعدادات أداة الساعة العالمية</string>
     <string formatted="false" name="runtime_text_0243">الخلفية</string>
     <string formatted="false" name="runtime_text_0244">شفاف (افتراضي)</string>
     <string formatted="false" name="runtime_text_0245">أسود 70٪</string>
@@ -354,8 +354,8 @@
     <string formatted="false" name="runtime_text_0314">إشعارات أوقات الصلاة</string>
     <string formatted="false" name="runtime_text_0315">منبّهات الملاحظات</string>
     <string formatted="false" name="runtime_text_0316">منبّهات الملاحظات المجدولة</string>
-    <string formatted="false" name="runtime_text_0317">ابزارها</string>
-    <string formatted="false" name="runtime_text_0318">ابزار قطب‌نما</string>
+    <string formatted="false" name="runtime_text_0317">الأدوات</string>
+    <string formatted="false" name="runtime_text_0318">أدوات البوصلة</string>
     <string formatted="false" name="runtime_text_0319">وضع العرض</string>
     <string formatted="false" name="runtime_text_0320">بوصلة كلاسيكية</string>
     <string formatted="false" name="runtime_text_0321">بوصلة القبلة</string>
@@ -373,8 +373,8 @@
     <string formatted="false" name="runtime_text_0333">الجنوب الغربي</string>
     <string formatted="false" name="runtime_text_0334">الغرب</string>
     <string formatted="false" name="runtime_text_0335">الشمال الغربي</string>
-    <string formatted="false" name="runtime_text_0336">ش ش</string>
-    <string formatted="false" name="runtime_text_0337">ج ش</string>
+    <string formatted="false" name="runtime_text_0336">ش ق</string>
+    <string formatted="false" name="runtime_text_0337">ج ق</string>
     <string formatted="false" name="runtime_text_0338">ج غ</string>
     <string formatted="false" name="runtime_text_0339">ش غ</string>
     <string formatted="false" name="runtime_text_0340">البوصلة</string>
@@ -480,7 +480,7 @@
     <string formatted="false" name="layout_text_0010">لوحة الألوان</string>
     <string formatted="false" name="layout_text_0011">إظهار الشبكة أو إخفاؤها</string>
     <string formatted="false" name="layout_text_0012">بلا حد</string>
-    <string formatted="false" name="layout_text_0013">عنوان منبّه حد ساعة الإيقاف (اختياري)</string>
+    <string formatted="false" name="layout_text_0013">عنوان منبّه الحد الأقصى لساعة الإيقاف (اختياري)</string>
     <string formatted="false" name="layout_text_0014">مدة 5 دقائق</string>
     <string formatted="false" name="layout_text_0015">تاريخ ووقت الانتهاء</string>
     <string formatted="false" name="layout_text_0016">عنوان منبّه المؤقت (اختياري)</string>
@@ -622,7 +622,7 @@
     <string formatted="false" name="runtime_text_0542">لتغيير حجم الأداة، اضغط مطولًا عليها وحرّكها قليلًا ثم اتركها.</string>
     <string formatted="false" name="runtime_text_0543">إعادة إعدادات مظهر هذه الأداة</string>
     <string formatted="false" name="runtime_text_0544">الحد الأقصى </string>
-    <string formatted="false" name="runtime_text_0545"> من الملفات قابل للاختيار.</string>
+    <string formatted="false" name="runtime_text_0545"> ملفات قابلة للاختيار.</string>
     <string formatted="false" name="runtime_text_0546">لم يُحدد ملف بعد.</string>
     <string formatted="false" name="runtime_text_0547">↑ أعلى</string>
     <string formatted="false" name="runtime_text_0548">↓ أسفل</string>
@@ -770,7 +770,7 @@
     <string formatted="false" name="runtime_text_0678">دائم؛ كل أسبوع في الأيام المحددة</string>
     <string formatted="false" name="runtime_text_0679">استخدم زري الأعلى والأسفل لإعادة ترتيب علامات التبويب.</string>
     <string formatted="false" name="runtime_text_0680">رحيم مؤذن زاده أردبيلي</string>
-    <string formatted="false" name="runtime_text_0681">محمد آقائي</string>
+    <string formatted="false" name="runtime_text_0681">محمد آغاتي</string>
     <string formatted="false" name="runtime_text_0682">أذان التطبيق</string>
     <string formatted="false" name="runtime_text_0683">منبّه التطبيق</string>
     <string formatted="false" name="runtime_text_0684">الصوت</string>

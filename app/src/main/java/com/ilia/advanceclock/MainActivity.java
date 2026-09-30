@@ -202,7 +202,9 @@ public final class MainActivity extends Activity {
             getWindow().getDecorView().postDelayed(() ->
                     FirstRunSetupDialog.show(this, languageChanged -> {
                         appPrefs.edit().putBoolean(INITIAL_SETUP, true).apply();
-                        if (languageChanged) recreate();
+                        if (languageChanged) {
+                            AdvanceClockApplication.restartForLanguage(this);
+                        }
                         else if (!onboardingDone) startPermissionFlow();
                     }), 300);
         } else if (!onboardingDone) {
@@ -686,13 +688,6 @@ public final class MainActivity extends Activity {
     }
 
     private void setupCalendars() {
-        View root = findViewById(R.id.root_main);
-        root.post(() -> {
-            int calendarWidth = Math.round(root.getWidth() * 0.98f);
-            applyCalendarWidth(clockCalendar, calendarWidth);
-            applyCalendarWidth(noteCalendar, calendarWidth);
-        });
-
         int type = AppSettings.defaultCalendar(this);
         clockCalendar.setCalendarType(type);
         noteCalendar.setCalendarType(type);
@@ -737,14 +732,6 @@ public final class MainActivity extends Activity {
             applyDate(quickNoteDue, millis);
             updateQuickNoteLabels();
         });
-    }
-
-    private void applyCalendarWidth(TripleCalendarView calendar, int width) {
-        LinearLayout.LayoutParams params =
-                (LinearLayout.LayoutParams) calendar.getLayoutParams();
-        params.width = width;
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        calendar.setLayoutParams(params);
     }
 
     private void setupAlarmComposer() {

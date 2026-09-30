@@ -98,6 +98,5 @@ public final class AlarmReminderDialog {
                         }));
 
         dialog.show();
-        UiText.localize(dialog);
     }
 }

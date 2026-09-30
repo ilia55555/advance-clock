@@ -59,7 +59,6 @@ final class NoteModalStyler {
             styleAction(dialog.getButton(AlertDialog.BUTTON_POSITIVE), true);
             styleAction(dialog.getButton(AlertDialog.BUTTON_NEGATIVE), false);
             styleAction(dialog.getButton(AlertDialog.BUTTON_NEUTRAL), false);
-            UiText.localize(dialog);
         });
         dialog.show();
     }
