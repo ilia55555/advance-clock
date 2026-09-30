@@ -88,8 +88,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             int active = PrayerTimesWidgetPrefs.activePrayerColor(context, widgetId);
 
             if (horizons.isEmpty()) {
-                row.setTextViewText(R.id.prayer_widget_empty, UiText.tr(context,
-                        "افقی انتخاب نشده • برای افزودن لمس کنید"));
+                row.setTextViewText(R.id.prayer_widget_empty, AppString.get(R.string.runtime_text_0405));
                 row.setViewVisibility(R.id.prayer_widget_empty, View.VISIBLE);
                 row.setViewVisibility(R.id.prayer_widget_content, View.GONE);
                 row.setTextColor(R.id.prayer_widget_empty, main);
@@ -136,7 +135,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     R.id.prayer_label_dhuhr, R.id.prayer_label_asr, R.id.prayer_label_sunset,
                     R.id.prayer_label_maghrib, R.id.prayer_label_isha,
                     R.id.prayer_label_midnight};
-            String[] labels = {"صبح", "طلوع", "ظهر", "عصر", "غروب", "مغرب", "عشاء", "نیمه‌شب"};
+            String[] labels = {AppString.get(R.string.runtime_text_0434), AppString.get(R.string.runtime_text_0083), AppString.get(R.string.runtime_text_0435), AppString.get(R.string.runtime_text_0082), AppString.get(R.string.runtime_text_0084), AppString.get(R.string.runtime_text_0436), AppString.get(R.string.runtime_text_0081), AppString.get(R.string.runtime_text_0085)};
             for (int index = 0; index < labelIds.length; index++) {
                 row.setTextViewText(labelIds[index], UiText.tr(context, labels[index]));
             }
@@ -453,7 +452,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     today.maghribMinutes,
                     today.ishaMinutes
             };
-            String[] labels = {"صبح", "ظهر", "عصر", "مغرب", "عشاء"};
+            String[] labels = {AppString.get(R.string.runtime_text_0434), AppString.get(R.string.runtime_text_0435), AppString.get(R.string.runtime_text_0082), AppString.get(R.string.runtime_text_0436), AppString.get(R.string.runtime_text_0081)};
 
             for (int i = 0; i < values.length; i++) {
                 if (values[i] >= 0 && values[i] >= nowMinutes) {
@@ -472,7 +471,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             if (nextDay.fajrMinutes < 0) return null;
             return new NextPrayer(
                     NEXT_FAJR,
-                    "صبح",
+                    AppString.get(R.string.runtime_text_0434),
                     targetMillis(current, nextDay.fajrMinutes, true));
         }
 
@@ -507,7 +506,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         }
 
         private String shortName(String label) {
-            if (label == null || label.trim().isEmpty()) return "افق";
+            if (label == null || label.trim().isEmpty()) return AppString.get(R.string.runtime_text_0418);
             String value = label.trim();
             int comma = value.indexOf('،');
             if (comma < 0) comma = value.indexOf(',');
