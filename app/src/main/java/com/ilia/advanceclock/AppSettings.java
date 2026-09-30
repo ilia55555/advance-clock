@@ -522,6 +522,17 @@ public final class AppSettings {
         return 0;
     }
 
+    public static boolean isRtlLanguage(Context context) {
+        String code = Locale.forLanguageTag(language(context)).getLanguage();
+        return "fa".equals(code) || "ar".equals(code);
+    }
+
+    public static int layoutDirection(Context context) {
+        return isRtlLanguage(context)
+                ? View.LAYOUT_DIRECTION_RTL
+                : View.LAYOUT_DIRECTION_LTR;
+    }
+
     public static void applyLanguage(Context context) {
         String selected = language(context);
         Locale locale = Locale.forLanguageTag(selected);
