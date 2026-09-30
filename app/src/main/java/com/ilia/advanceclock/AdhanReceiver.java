@@ -10,6 +10,12 @@ public final class AdhanReceiver extends BroadcastReceiver {
         int type = intent == null
                 ? AdhanScheduler.FAJR
                 : intent.getIntExtra("adhanType", AdhanScheduler.FAJR);
+
+        if (AppSettings.isAdhanSuppressedNow(context)) {
+            AdhanScheduler.scheduleNext(context, type);
+            return;
+        }
+
         if (!AppSettings.adhanSound(context)
                 && !AppSettings.adhanVibrate(context)
                 && !AppSettings.adhanNotification(context)
