@@ -66,7 +66,7 @@ public final class PrayerSettingsActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(24));
         root.setBackgroundColor(AppSettings.background(this));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
@@ -218,7 +218,7 @@ public final class PrayerSettingsActivity extends Activity {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setGravity(Gravity.CENTER_VERTICAL);
-            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            row.setLayoutDirection(AppSettings.layoutDirection(this));
             row.setBackgroundResource(R.drawable.bg_field);
             row.setPadding(dp(12), 0, dp(8), 0);
 
@@ -361,7 +361,7 @@ public final class PrayerSettingsActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        row.setLayoutDirection(AppSettings.layoutDirection(this));
         row.setPadding(dp(10), dp(4), dp(10), dp(4));
         row.setBackgroundResource(R.drawable.bg_field);
 
@@ -454,7 +454,7 @@ public final class PrayerSettingsActivity extends Activity {
         Dialog dialog = new Dialog(this);
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(10), dp(18), dp(18));
         root.setBackgroundColor(AppSettings.background(this));
 
@@ -555,7 +555,7 @@ public final class PrayerSettingsActivity extends Activity {
         soundScroll.setPadding(dp(8), dp(8), dp(8), dp(8));
         activeMuezzinList = new LinearLayout(this);
         activeMuezzinList.setOrientation(LinearLayout.VERTICAL);
-        activeMuezzinList.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        activeMuezzinList.setLayoutDirection(AppSettings.layoutDirection(this));
         soundScroll.addView(activeMuezzinList, new ScrollView.LayoutParams(-1, -2));
         LinearLayout.LayoutParams soundScrollParams = new LinearLayout.LayoutParams(-1, 0, 1f);
         soundScrollParams.topMargin = dp(10);
@@ -588,7 +588,7 @@ public final class PrayerSettingsActivity extends Activity {
             boolean checked = item.uri.equals(selected);
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            row.setLayoutDirection(AppSettings.layoutDirection(this));
             row.setGravity(Gravity.CENTER_VERTICAL);
             row.setPadding(dp(14), 0, dp(12), 0);
             row.setBackground(soundRowBackground(checked));
@@ -951,7 +951,7 @@ public final class PrayerSettingsActivity extends Activity {
     private LinearLayout card() {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        card.setLayoutDirection(AppSettings.layoutDirection(this));
         card.setPadding(dp(14), dp(14), dp(14), dp(14));
         card.setBackgroundResource(R.drawable.bg_card);
         return card;
