@@ -76,8 +76,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                 AppString.get(R.string.runtime_text_0319), 13, AppSettings.textSecondary(this));
         selectorCard.addView(selectorLabel);
         Spinner selector = new Spinner(this);
-        String[] modes = UiText.translateArray(
-                AppString.get(R.string.runtime_text_0320), AppString.get(R.string.runtime_text_0321), AppString.get(R.string.runtime_text_0322));
+        String[] modes = new String[]{
+                AppString.get(R.string.runtime_text_0320), AppString.get(R.string.runtime_text_0321), AppString.get(R.string.runtime_text_0322)};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_dropdown_item, modes);
         selector.setAdapter(adapter);
@@ -206,7 +206,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     private String directionName(float angle) {
         String[] names = {AppString.get(R.string.runtime_text_0328), AppString.get(R.string.runtime_text_0329), AppString.get(R.string.runtime_text_0330), AppString.get(R.string.runtime_text_0331),
                 AppString.get(R.string.runtime_text_0332), AppString.get(R.string.runtime_text_0333), AppString.get(R.string.runtime_text_0334), AppString.get(R.string.runtime_text_0335)};
-        return UiText.tr(this, names[Math.round(angle / 45f) % 8]);
+        return names[Math.round(angle / 45f) % 8];
     }
 
     private GradientDrawable antiqueCardBackground() {
@@ -285,8 +285,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                         cx + (float) Math.cos(radians) * (radius - dp(7)),
                         cy + (float) Math.sin(radians) * (radius - dp(7)), paint);
             }
-            String[] labels = UiText.translateArray(
-                    AppString.get(R.string.runtime_text_0457), AppString.get(R.string.runtime_text_0336), AppString.get(R.string.runtime_text_0458), AppString.get(R.string.runtime_text_0337), AppString.get(R.string.runtime_text_0459), AppString.get(R.string.runtime_text_0338), AppString.get(R.string.runtime_text_0460), AppString.get(R.string.runtime_text_0339));
+            String[] labels = new String[]{
+                    AppString.get(R.string.runtime_text_0457), AppString.get(R.string.runtime_text_0336), AppString.get(R.string.runtime_text_0458), AppString.get(R.string.runtime_text_0337), AppString.get(R.string.runtime_text_0459), AppString.get(R.string.runtime_text_0338), AppString.get(R.string.runtime_text_0460), AppString.get(R.string.runtime_text_0339)};
             paint.setStyle(Paint.Style.FILL);
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTypeface(Typeface.create(Typeface.SERIF, Typeface.BOLD));
