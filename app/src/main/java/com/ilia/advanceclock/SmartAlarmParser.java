@@ -66,7 +66,7 @@ public final class SmartAlarmParser {
         }
 
         public String offsetText() {
-            if (offsetMode == OFFSET_EXACT || offsetMinutes <= 0) return "سرِ وقت";
+            if (offsetMode == OFFSET_EXACT || offsetMinutes <= 0) return AppString.get(R.string.runtime_text_0269);
             return CalendarUtils.fa(offsetMinutes)
                     + " دقیقه "
                     + (offsetMode == OFFSET_BEFORE ? "قبل" : "بعد");
@@ -112,7 +112,7 @@ public final class SmartAlarmParser {
         Result result = new Result();
         String text = normalize(raw);
         if (text.trim().isEmpty()) {
-            result.warnings.add("متنی برای تحلیل وارد نشده است.");
+            result.warnings.add(AppString.get(R.string.smart_alarm_no_input));
             return result;
         }
 
@@ -124,11 +124,11 @@ public final class SmartAlarmParser {
                 result.jsonDetected = true;
                 dedupe(result);
                 if (result.candidates.isEmpty()) {
-                    result.warnings.add("JSON معتبر بود، اما تاریخ و ساعت قابل استفاده پیدا نشد.");
+                    result.warnings.add(AppString.get(R.string.smart_alarm_json_no_datetime));
                 }
                 return result;
             } catch (Exception ignored) {
-                result.warnings.add("ساختار شبیه JSON بود ولی JSON معتبر نبود؛ به‌صورت متن عادی تحلیل شد.");
+                result.warnings.add(AppString.get(R.string.smart_alarm_json_fallback));
             }
         }
 
@@ -162,7 +162,7 @@ public final class SmartAlarmParser {
             JSONObject object = (JSONObject) value;
             Candidate direct = candidateFromJson(context, object);
             if (direct != null) {
-                if ("هشدار هوشمند".equals(direct.label)
+                if (AppString.get(R.string.runtime_text_0263).equals(direct.label)
                         && labelHint != null
                         && !labelHint.trim().isEmpty()) {
                     direct.label = cleanLabel(labelHint);
@@ -190,7 +190,7 @@ public final class SmartAlarmParser {
                     && !labelHint.trim().isEmpty()) {
                 for (int i = before; i < result.candidates.size(); i++) {
                     Candidate candidate = result.candidates.get(i);
-                    if ("هشدار هوشمند".equals(candidate.label)
+                    if (AppString.get(R.string.runtime_text_0263).equals(candidate.label)
                             || candidate.label.matches("[\\d\\s:./\\-–—]+")) {
                         candidate.label = cleanLabel(labelHint);
                     }
@@ -243,7 +243,7 @@ public final class SmartAlarmParser {
         c.label = cleanLabel(firstString(o,
                 "title", "label", "name", "reason", "description",
                 "عنوان", "برچسب", "علت", "توضیحات"));
-        if (c.label.isEmpty()) c.label = "هشدار هوشمند";
+        if (c.label.isEmpty()) c.label = AppString.get(R.string.runtime_text_0263);
         c.source = o.toString();
 
         TimeParts e = parseTime(end);
@@ -345,7 +345,7 @@ public final class SmartAlarmParser {
             if (date == null) continue;
 
             String baseLabel = preferredLabel(segment);
-            if (baseLabel.isEmpty()) baseLabel = "هشدار هوشمند";
+            if (baseLabel.isEmpty()) baseLabel = AppString.get(R.string.runtime_text_0263);
             OffsetParts offset = offsetFromText(segment);
 
             for (int timeIndex = 0; timeIndex < linkedTimes.size(); timeIndex++) {
@@ -494,7 +494,7 @@ public final class SmartAlarmParser {
         if (hits.isEmpty()) return;
 
         String label = deriveLabel(segment);
-        if (label.isEmpty()) label = "هشدار هوشمند";
+        if (label.isEmpty()) label = AppString.get(R.string.runtime_text_0263);
 
         for (int i = 0; i < hits.size(); i++) {
             TimeHit hit = hits.get(i);
