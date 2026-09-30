@@ -266,7 +266,9 @@ public final class PrayerLocationSearchActivity extends Activity {
                 .appendQueryParameter("format", "jsonv2")
                 .appendQueryParameter("addressdetails", "1")
                 .appendQueryParameter("limit", "20")
-                .appendQueryParameter("accept-language", "fa,en")
+                .appendQueryParameter(
+                        "accept-language",
+                        AppSettings.language(this) + ",en")
                 .build();
         HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
         connection.setConnectTimeout(10_000);
@@ -389,21 +391,21 @@ public final class PrayerLocationSearchActivity extends Activity {
     private String cachedResponse(String query) {
         android.content.SharedPreferences cache =
                 getSharedPreferences(SEARCH_PREFS, MODE_PRIVATE);
-        String multi = cache.getString(CACHE_PREFIX + normalizedQuery(query), "");
-        if (multi != null && !multi.isEmpty()) return multi;
-        if (query.equalsIgnoreCase(cache.getString(LEGACY_CACHE_QUERY, ""))) {
-            String legacy = cache.getString(LEGACY_CACHE_RESPONSE, "");
-            return legacy == null || legacy.isEmpty() ? null : legacy;
-        }
-        return null;
+        String multi = cache.getString(cacheKey(query), "");
+        return multi == null || multi.isEmpty() ? null : multi;
     }
 
     private void cacheResponse(String query, String response) {
         getSharedPreferences(SEARCH_PREFS, MODE_PRIVATE).edit()
-                .putString(CACHE_PREFIX + normalizedQuery(query), response)
-                .putString(LEGACY_CACHE_QUERY, query)
-                .putString(LEGACY_CACHE_RESPONSE, response)
+                .putString(cacheKey(query), response)
                 .apply();
+    }
+
+    private String cacheKey(String query) {
+        return CACHE_PREFIX
+                + AppSettings.language(this)
+                + "::"
+                + normalizedQuery(query);
     }
 
     private String coordinateKey(double latitude, double longitude) {
