@@ -932,4 +932,36 @@
     <string name="calendar_event_text_082" formatted="false">يوم عرفة</string>
     <string name="calendar_event_text_083" formatted="false">عيد الأضحى</string>
     <string name="calendar_event_text_084" formatted="false">إجازة عيد الأضحى</string>
+    <!-- Offline Iran location labels -->
+    <string name="iran_location_text_001" formatted="false">طهران، محافظة طهران، إيران</string>
+    <string name="iran_location_text_002" formatted="false">كرج، محافظة ألبرز، إيران</string>
+    <string name="iran_location_text_003" formatted="false">قم، محافظة قم، إيران</string>
+    <string name="iran_location_text_004" formatted="false">أصفهان، محافظة أصفهان، إيران</string>
+    <string name="iran_location_text_005" formatted="false">شيراز، محافظة فارس، إيران</string>
+    <string name="iran_location_text_006" formatted="false">مشهد، خراسان الرضوية، إيران</string>
+    <string name="iran_location_text_007" formatted="false">تبريز، أذربيجان الشرقية، إيران</string>
+    <string name="iran_location_text_008" formatted="false">أرومية، أذربيجان الغربية، إيران</string>
+    <string name="iran_location_text_009" formatted="false">أردبيل، محافظة أردبيل، إيران</string>
+    <string name="iran_location_text_010" formatted="false">رشت، محافظة جيلان، إيران</string>
+    <string name="iran_location_text_011" formatted="false">ساري، محافظة مازندران، إيران</string>
+    <string name="iran_location_text_012" formatted="false">جرجان، محافظة غلستان، إيران</string>
+    <string name="iran_location_text_013" formatted="false">سمنان، محافظة سمنان، إيران</string>
+    <string name="iran_location_text_014" formatted="false">قزوين، محافظة قزوين، إيران</string>
+    <string name="iran_location_text_015" formatted="false">زنجان، محافظة زنجان، إيران</string>
+    <string name="iran_location_text_016" formatted="false">همدان، محافظة همدان، إيران</string>
+    <string name="iran_location_text_017" formatted="false">كرمانشاه، محافظة كرمانشاه، إيران</string>
+    <string name="iran_location_text_018" formatted="false">سنندج، محافظة كردستان، إيران</string>
+    <string name="iran_location_text_019" formatted="false">إيلام، محافظة إيلام، إيران</string>
+    <string name="iran_location_text_020" formatted="false">خرم آباد، محافظة لرستان، إيران</string>
+    <string name="iran_location_text_021" formatted="false">الأهواز، محافظة خوزستان، إيران</string>
+    <string name="iran_location_text_022" formatted="false">شهركرد، تشهارمحال وبختياري، إيران</string>
+    <string name="iran_location_text_023" formatted="false">ياسوج، كهكيلويه وبوير أحمد، إيران</string>
+    <string name="iran_location_text_024" formatted="false">بوشهر، محافظة بوشهر، إيران</string>
+    <string name="iran_location_text_025" formatted="false">بندر عباس، محافظة هرمزغان، إيران</string>
+    <string name="iran_location_text_026" formatted="false">كرمان، محافظة كرمان، إيران</string>
+    <string name="iran_location_text_027" formatted="false">يزد، محافظة يزد، إيران</string>
+    <string name="iran_location_text_028" formatted="false">بيرجند، خراسان الجنوبية، إيران</string>
+    <string name="iran_location_text_029" formatted="false">بجنورد، خراسان الشمالية، إيران</string>
+    <string name="iran_location_text_030" formatted="false">زاهدان، سيستان وبلوشستان، إيران</string>
+    <string name="iran_location_text_031" formatted="false">أراك، محافظة مركزي، إيران</string>
 </resources>
