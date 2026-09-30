@@ -83,7 +83,7 @@ public final class AlarmEditorActivity extends Activity {
         String[] labels = PriorityUtils.labels();
         String[] priorityValues = new String[labels.length];
         for (int i = 0; i < labels.length; i++) {
-            priorityValues[i] = "اهمیت " + labels[i];
+            priorityValues[i] = AppString.get(R.string.runtime_text_0420) + labels[i];
         }
 
         ArrayAdapter<String> pr = new ArrayAdapter<>(
@@ -226,7 +226,7 @@ public final class AlarmEditorActivity extends Activity {
 
     private void updateReminderButton() {
         remindersButton.setText(
-                "یادآوری\n"
+                AppString.get(R.string.runtime_text_0419)
                         + AlarmReminderUtils.summary(
                         reminderMode,
                         reminderMinutesJson));
@@ -252,7 +252,7 @@ public final class AlarmEditorActivity extends Activity {
         if (trigger <= System.currentTimeMillis()) {
             LogoToast.makeText(
                     this,
-                    "هشدار را نمی‌توان برای تاریخ یا ساعت گذشته تنظیم کرد",
+                    AppString.get(R.string.runtime_text_0147),
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -293,7 +293,7 @@ public final class AlarmEditorActivity extends Activity {
                 && Build.VERSION.SDK_INT >= 31) {
             LogoToast.makeText(
                     this,
-                    "هشدار ذخیره شد؛ دسترسی آلارم دقیق را فعال کنید.",
+                    AppString.get(R.string.runtime_text_0423),
                     Toast.LENGTH_LONG).show();
             try {
                 startActivity(new Intent(
@@ -301,7 +301,7 @@ public final class AlarmEditorActivity extends Activity {
                         Uri.parse("package:" + getPackageName())));
             } catch (Exception ignored) {}
         } else {
-            LogoToast.makeText(this, "هشدار ذخیره شد", Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0145), Toast.LENGTH_SHORT).show();
         }
         finish();
     }
@@ -353,8 +353,8 @@ public final class AlarmEditorActivity extends Activity {
         image2Preview.setVisibility(has2 ? View.VISIBLE : View.GONE);
         imagePreviewSpace.setVisibility(has1 && has2 ? View.VISIBLE : View.GONE);
 
-        image1Button.setText(has1 ? "تغییر عکس ۱ ✓" : "افزودن عکس ۱");
-        image2Button.setText(has2 ? "تغییر عکس ۲ ✓" : "افزودن عکس ۲");
+        image1Button.setText(has1 ? AppString.get(R.string.runtime_text_0588) : AppString.get(R.string.runtime_text_0141));
+        image2Button.setText(has2 ? AppString.get(R.string.runtime_text_0589) : AppString.get(R.string.runtime_text_0142));
 
         if (has1) {
             try { image1Preview.setImageURI(Uri.parse(imageUri1)); } catch (Exception ignored) {}
