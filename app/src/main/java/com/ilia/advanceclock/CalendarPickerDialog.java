@@ -40,7 +40,7 @@ public final class CalendarPickerDialog {
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(pad, pad, pad, dp(context, 8));
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(context));
 
         TextView title = new TextView(context);
         title.setText(monthYearOnly ? AppString.get(R.string.runtime_text_0668) : AppString.get(R.string.runtime_text_0169));
@@ -65,7 +65,7 @@ public final class CalendarPickerDialog {
         LinearLayout pickers = new LinearLayout(context);
         pickers.setOrientation(LinearLayout.HORIZONTAL);
         pickers.setGravity(Gravity.CENTER);
-        pickers.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        pickers.setLayoutDirection(AppSettings.layoutDirection(context));
         LinearLayout.LayoutParams pickersLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, dp(context, 180));
         pickersLp.topMargin = dp(context, 8);
