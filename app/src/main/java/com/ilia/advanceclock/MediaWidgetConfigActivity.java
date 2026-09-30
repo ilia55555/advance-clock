@@ -119,19 +119,7 @@ public final class MediaWidgetConfigActivity extends Activity {
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-        TextView title = new TextView(this);
-        title.setText(editExisting
-                ? AppString.get(R.string.runtime_text_0526)
-                : AppString.get(R.string.runtime_text_0527));
-        title.setTextSize(23);
-        title.setTextColor(AppSettings.textPrimary(this));
-        title.setTypeface(null, android.graphics.Typeface.BOLD);
-        top.addView(title, new LinearLayout.LayoutParams(
-                0,
-                dp(56),
-                1f));
+        top.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
         ImageButton close = new ImageButton(this);
         close.setImageResource(R.drawable.ic_md_close);
@@ -149,6 +137,20 @@ public final class MediaWidgetConfigActivity extends Activity {
         top.addView(close, new LinearLayout.LayoutParams(
                 dp(48),
                 dp(48)));
+
+        TextView title = new TextView(this);
+        title.setText(editExisting
+                ? AppString.get(R.string.runtime_text_0526)
+                : AppString.get(R.string.runtime_text_0527));
+        title.setTextSize(23);
+        title.setTextColor(AppSettings.textPrimary(this));
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        top.addView(title, new LinearLayout.LayoutParams(
+                0,
+                dp(56),
+                1f));
 
         root.addView(top);
     }
