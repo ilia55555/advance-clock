@@ -844,4 +844,12 @@ Pantalla de bloqueo</string>
     <string name="ui_snooze_after">یادآوری مجدد بعد از</string>
     <string name="ui_snooze">یادآوری مجدد</string>
     <string name="ui_stop_alarm">قطع آلارم</string>
+    <string name="adhan_skip_title">No reproducir el adhan</string>
+    <string name="adhan_skip_description">El adhan no se reproducirá en los días seleccionados.</string>
+    <string name="adhan_skip_mode_off">Desactivado</string>
+    <string name="adhan_skip_mode_weekdays">Días de la semana</string>
+    <string name="adhan_skip_mode_dates">Fechas específicas</string>
+    <string name="adhan_skip_add_date">Añadir fecha</string>
+    <string name="adhan_skip_no_dates">Aún no hay fechas seleccionadas.</string>
+    <string name="adhan_skip_remove_date">Eliminar</string>
 </resources>
