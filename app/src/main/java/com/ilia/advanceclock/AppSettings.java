@@ -36,6 +36,10 @@ public final class AppSettings {
 
     public static final int CLOCK_LAYOUT_CURRENT = 0;
     public static final int CLOCK_LAYOUT_CALENDAR_FIRST = 1;
+
+    public static final int ADHAN_SKIP_NONE = 0;
+    public static final int ADHAN_SKIP_WEEKDAYS = 1;
+    public static final int ADHAN_SKIP_DATES = 2;
     public static final String LANGUAGE_PERSIAN = "fa";
     public static final String LANGUAGE_ENGLISH = "en";
     public static final String LANGUAGE_CHINESE = "zh-CN";
@@ -415,6 +419,96 @@ public final class AppSettings {
     public static void setIshaAdhanEnabled(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_isha_enabled", value).apply();
         AdhanScheduler.rescheduleAll(context);
+    }
+
+    public static int adhanSkipMode(Context context) {
+        int value = prefs(context).getInt("adhan_skip_mode", ADHAN_SKIP_NONE);
+        return Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, value));
+    }
+
+    public static void setAdhanSkipMode(Context context, int value) {
+        prefs(context).edit().putInt(
+                "adhan_skip_mode",
+                Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, value))).apply();
+    }
+
+    public static int adhanSkipWeekdayMask(Context context) {
+        return prefs(context).getInt("adhan_skip_weekday_mask", 0);
+    }
+
+    public static boolean adhanSkipWeekday(Context context, int calendarDayOfWeek) {
+        int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
+        return (adhanSkipWeekdayMask(context) & bit) != 0;
+    }
+
+    public static void setAdhanSkipWeekday(
+            Context context, int calendarDayOfWeek, boolean skip) {
+        int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
+        int mask = adhanSkipWeekdayMask(context);
+        mask = skip ? (mask | bit) : (mask & ~bit);
+        prefs(context).edit().putInt("adhan_skip_weekday_mask", mask).apply();
+    }
+
+    public static java.util.Set<String> adhanSkipDates(Context context) {
+        java.util.Set<String> stored = prefs(context).getStringSet(
+                "adhan_skip_dates", java.util.Collections.emptySet());
+        return new java.util.HashSet<>(stored);
+    }
+
+    public static void addAdhanSkipDate(Context context, long millis) {
+        java.util.Set<String> values = adhanSkipDates(context);
+        values.add(adhanSkipDateKey(context, millis));
+        prefs(context).edit().putStringSet("adhan_skip_dates", values).apply();
+    }
+
+    public static void removeAdhanSkipDate(Context context, String key) {
+        java.util.Set<String> values = adhanSkipDates(context);
+        values.remove(key);
+        prefs(context).edit().putStringSet("adhan_skip_dates", values).apply();
+    }
+
+    public static String adhanSkipDateKey(Context context, long millis) {
+        java.util.Calendar calendar = java.util.Calendar.getInstance(prayerTimeZone(context));
+        calendar.setTimeInMillis(millis);
+        return String.format(
+                java.util.Locale.US,
+                "%04d-%02d-%02d",
+                calendar.get(java.util.Calendar.YEAR),
+                calendar.get(java.util.Calendar.MONTH) + 1,
+                calendar.get(java.util.Calendar.DAY_OF_MONTH));
+    }
+
+    public static long adhanSkipDateMillis(Context context, String key) {
+        try {
+            String[] parts = key.split("-");
+            if (parts.length != 3) return 0L;
+            java.util.Calendar calendar = java.util.Calendar.getInstance(prayerTimeZone(context));
+            calendar.clear();
+            calendar.set(
+                    Integer.parseInt(parts[0]),
+                    Integer.parseInt(parts[1]) - 1,
+                    Integer.parseInt(parts[2]),
+                    12,
+                    0,
+                    0);
+            return calendar.getTimeInMillis();
+        } catch (Exception ignored) {
+            return 0L;
+        }
+    }
+
+    public static boolean isAdhanSuppressedNow(Context context) {
+        int mode = adhanSkipMode(context);
+        if (mode == ADHAN_SKIP_NONE) return false;
+
+        java.util.Calendar now = java.util.Calendar.getInstance(prayerTimeZone(context));
+        if (mode == ADHAN_SKIP_WEEKDAYS) {
+            return adhanSkipWeekday(
+                    context, now.get(java.util.Calendar.DAY_OF_WEEK));
+        }
+
+        return adhanSkipDates(context).contains(
+                adhanSkipDateKey(context, now.getTimeInMillis()));
     }
 
     public static boolean adhanFullscreenUnlocked(Context context) {
