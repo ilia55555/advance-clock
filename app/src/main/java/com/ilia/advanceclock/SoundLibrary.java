@@ -25,11 +25,11 @@ final class SoundLibrary {
 
     static List<Sound> all(Context context) {
         ArrayList<Sound> sounds = new ArrayList<>();
-        sounds.add(new Sound("پیش‌فرض سیستم", ""));
-        addNamedBundledSound(context, sounds, "rawadhan_1", "رحیم مؤذن‌زاده اردبیلی");
-        addNamedBundledSound(context, sounds, "rawadhan_2", "محمد آقاتی");
-        addBundledSounds(context, sounds, "adhan", "اذان برنامه", 10);
-        addBundledSounds(context, sounds, "alarm", "زنگ برنامه", 10);
+        sounds.add(new Sound(AppString.get(R.string.runtime_text_0144), ""));
+        addNamedBundledSound(context, sounds, "rawadhan_1", AppString.get(R.string.runtime_text_0680));
+        addNamedBundledSound(context, sounds, "rawadhan_2", AppString.get(R.string.runtime_text_0681));
+        addBundledSounds(context, sounds, "adhan", AppString.get(R.string.runtime_text_0682), 10);
+        addBundledSounds(context, sounds, "alarm", AppString.get(R.string.runtime_text_0683), 10);
         try {
             JSONArray array = new JSONArray(context.getSharedPreferences(PREFS, 0)
                     .getString(KEY, "[]"));
@@ -37,7 +37,7 @@ final class SoundLibrary {
                 JSONObject item = array.optJSONObject(i);
                 if (item == null) continue;
                 String uri = item.optString("uri", "");
-                if (!uri.isEmpty()) sounds.add(new Sound(item.optString("name", "صدا"), uri));
+                if (!uri.isEmpty()) sounds.add(new Sound(item.optString("name", AppString.get(R.string.runtime_text_0684)), uri));
             }
         } catch (Exception ignored) {}
         return sounds;
@@ -86,7 +86,7 @@ final class SoundLibrary {
 
     static String name(Context context, String uri) {
         for (Sound sound : all(context)) if (sound.uri.equals(uri == null ? "" : uri)) return sound.name;
-        return "صدای انتخابی";
+        return AppString.get(R.string.runtime_text_0685);
     }
 
     private static String displayName(Context context, Uri uri) {
@@ -97,6 +97,6 @@ final class SoundLibrary {
                 if (name != null && !name.trim().isEmpty()) return name;
             }
         } catch (Exception ignored) {}
-        return uri.getLastPathSegment() == null ? "صدای کاربر" : uri.getLastPathSegment();
+        return uri.getLastPathSegment() == null ? AppString.get(R.string.runtime_text_0686) : uri.getLastPathSegment();
     }
 }
