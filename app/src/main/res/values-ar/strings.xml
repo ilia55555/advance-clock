@@ -799,6 +799,7 @@
 شاشة القفل</string>
     <string formatted="false" name="runtime_text_0705">تم حفظ الملاحظة؛ فعّل إذن المنبّه الدقيق.</string>
     <string name="prayer_times_widget_description">عرض مواقيت الصلاة لكل الآفاق المحددة</string>
+    <string name="prayer_times_widget_name">أداة مواقيت الصلاة</string>
     <string name="ui_today">اليوم</string>
     <string name="ui_widget_settings">إعدادات الأداة</string>
     <string name="ui_configure_widget">ضبط الأداة</string>
