@@ -227,9 +227,9 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.noforget_widget_date,
-                UiText.tr(context, CalendarUtils.formatDate(
+                CalendarUtils.formatDate(
                         System.currentTimeMillis(),
-                        AppSettings.defaultCalendar(context))));
+                        AppSettings.defaultCalendar(context)));
 
         root.removeAllViews(
                 R.id.noforget_widget_list);
@@ -295,7 +295,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     meta);
             row.setTextViewText(
                     R.id.noforget_row_priority,
-                    UiText.tr(context, PriorityUtils.label(item.priority)));
+                    PriorityUtils.label(item.priority));
 
             row.setViewVisibility(
                     R.id.noforget_row_meta,
