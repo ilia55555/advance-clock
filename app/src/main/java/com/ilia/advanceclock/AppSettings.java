@@ -421,50 +421,121 @@ public final class AppSettings {
         AdhanScheduler.rescheduleAll(context);
     }
 
-    public static int adhanSkipMode(Context context) {
-        int value = prefs(context).getInt("adhan_skip_mode", ADHAN_SKIP_NONE);
-        return Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, value));
+    private static String adhanSkipKey(String base, int type) {
+        return base + "_" + Math.max(AdhanScheduler.FAJR, Math.min(AdhanScheduler.ISHA, type));
     }
 
-    public static void setAdhanSkipMode(Context context, int value) {
-        prefs(context).edit().putInt(
-                "adhan_skip_mode",
-                Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, value))).apply();
+    private static int normalizedAdhanType(int type) {
+        return type == 899
+                ? AdhanScheduler.FAJR
+                : Math.max(AdhanScheduler.FAJR, Math.min(AdhanScheduler.ISHA, type));
     }
 
-    public static int adhanSkipWeekdayMask(Context context) {
+    public static int adhanSkipMode(Context context, int type) {
+        int normalized = normalizedAdhanType(type);
+        String key = adhanSkipKey("adhan_skip_mode", normalized);
+        if (prefs(context).contains(key)) {
+            int value = prefs(context).getInt(key, ADHAN_SKIP_NONE);
+            return Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, value));
+        }
+        int legacy = prefs(context).getInt("adhan_skip_mode", ADHAN_SKIP_NONE);
+        return Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, legacy));
+    }
+
+    public static void setAdhanSkipMode(Context context, int type, int value) {
+        int safe = Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, value));
+        android.content.SharedPreferences.Editor editor = prefs(context).edit();
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                editor.putInt(adhanSkipKey("adhan_skip_mode", item), safe);
+            }
+        } else {
+            editor.putInt(adhanSkipKey("adhan_skip_mode", normalizedAdhanType(type)), safe);
+        }
+        editor.apply();
+    }
+
+    public static int adhanSkipWeekdayMask(Context context, int type) {
+        int normalized = normalizedAdhanType(type);
+        String key = adhanSkipKey("adhan_skip_weekday_mask", normalized);
+        if (prefs(context).contains(key)) {
+            return prefs(context).getInt(key, 0);
+        }
         return prefs(context).getInt("adhan_skip_weekday_mask", 0);
     }
 
-    public static boolean adhanSkipWeekday(Context context, int calendarDayOfWeek) {
+    public static boolean adhanSkipWeekday(
+            Context context, int type, int calendarDayOfWeek) {
         int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
-        return (adhanSkipWeekdayMask(context) & bit) != 0;
+        return (adhanSkipWeekdayMask(context, type) & bit) != 0;
     }
 
     public static void setAdhanSkipWeekday(
-            Context context, int calendarDayOfWeek, boolean skip) {
-        int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
-        int mask = adhanSkipWeekdayMask(context);
-        mask = skip ? (mask | bit) : (mask & ~bit);
-        prefs(context).edit().putInt("adhan_skip_weekday_mask", mask).apply();
+            Context context, int type, int calendarDayOfWeek, boolean skip) {
+        android.content.SharedPreferences.Editor editor = prefs(context).edit();
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
+                int mask = adhanSkipWeekdayMask(context, item);
+                mask = skip ? (mask | bit) : (mask & ~bit);
+                editor.putInt(adhanSkipKey("adhan_skip_weekday_mask", item), mask);
+            }
+        } else {
+            int normalized = normalizedAdhanType(type);
+            int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
+            int mask = adhanSkipWeekdayMask(context, normalized);
+            mask = skip ? (mask | bit) : (mask & ~bit);
+            editor.putInt(adhanSkipKey("adhan_skip_weekday_mask", normalized), mask);
+        }
+        editor.apply();
     }
 
-    public static java.util.Set<String> adhanSkipDates(Context context) {
-        java.util.Set<String> stored = prefs(context).getStringSet(
+    public static java.util.Set<String> adhanSkipDates(Context context, int type) {
+        int normalized = normalizedAdhanType(type);
+        String key = adhanSkipKey("adhan_skip_dates", normalized);
+        if (prefs(context).contains(key)) {
+            java.util.Set<String> stored = prefs(context).getStringSet(
+                    key, java.util.Collections.emptySet());
+            return new java.util.HashSet<>(stored);
+        }
+        java.util.Set<String> legacy = prefs(context).getStringSet(
                 "adhan_skip_dates", java.util.Collections.emptySet());
-        return new java.util.HashSet<>(stored);
+        return new java.util.HashSet<>(legacy);
     }
 
-    public static void addAdhanSkipDate(Context context, long millis) {
-        java.util.Set<String> values = adhanSkipDates(context);
-        values.add(adhanSkipDateKey(context, millis));
-        prefs(context).edit().putStringSet("adhan_skip_dates", values).apply();
+    public static void addAdhanSkipDate(Context context, int type, long millis) {
+        String value = adhanSkipDateKey(context, millis);
+        android.content.SharedPreferences.Editor editor = prefs(context).edit();
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                java.util.Set<String> values = adhanSkipDates(context, item);
+                values.add(value);
+                editor.putStringSet(adhanSkipKey("adhan_skip_dates", item), values);
+            }
+        } else {
+            int normalized = normalizedAdhanType(type);
+            java.util.Set<String> values = adhanSkipDates(context, normalized);
+            values.add(value);
+            editor.putStringSet(adhanSkipKey("adhan_skip_dates", normalized), values);
+        }
+        editor.apply();
     }
 
-    public static void removeAdhanSkipDate(Context context, String key) {
-        java.util.Set<String> values = adhanSkipDates(context);
-        values.remove(key);
-        prefs(context).edit().putStringSet("adhan_skip_dates", values).apply();
+    public static void removeAdhanSkipDate(Context context, int type, String keyValue) {
+        android.content.SharedPreferences.Editor editor = prefs(context).edit();
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                java.util.Set<String> values = adhanSkipDates(context, item);
+                values.remove(keyValue);
+                editor.putStringSet(adhanSkipKey("adhan_skip_dates", item), values);
+            }
+        } else {
+            int normalized = normalizedAdhanType(type);
+            java.util.Set<String> values = adhanSkipDates(context, normalized);
+            values.remove(keyValue);
+            editor.putStringSet(adhanSkipKey("adhan_skip_dates", normalized), values);
+        }
+        editor.apply();
     }
 
     public static String adhanSkipDateKey(Context context, long millis) {
@@ -497,17 +568,17 @@ public final class AppSettings {
         }
     }
 
-    public static boolean isAdhanSuppressedNow(Context context) {
-        int mode = adhanSkipMode(context);
+    public static boolean isAdhanSuppressedNow(Context context, int type) {
+        int mode = adhanSkipMode(context, type);
         if (mode == ADHAN_SKIP_NONE) return false;
 
         java.util.Calendar now = java.util.Calendar.getInstance(prayerTimeZone(context));
         if (mode == ADHAN_SKIP_WEEKDAYS) {
             return adhanSkipWeekday(
-                    context, now.get(java.util.Calendar.DAY_OF_WEEK));
+                    context, type, now.get(java.util.Calendar.DAY_OF_WEEK));
         }
 
-        return adhanSkipDates(context).contains(
+        return adhanSkipDates(context, type).contains(
                 adhanSkipDateKey(context, now.getTimeInMillis()));
     }
 
