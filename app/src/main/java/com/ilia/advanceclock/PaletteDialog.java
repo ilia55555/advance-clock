@@ -19,14 +19,14 @@ public final class PaletteDialog {
         root.setPadding(dp(context,16), dp(context,8), dp(context,16), dp(context,8));
         root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        TextView hexLabel = label(context, "رنگ‌های آماده");
+        TextView hexLabel = label(context, AppString.get(R.string.runtime_text_0559));
         root.addView(hexLabel);
 
         HexPaletteView hex = new HexPaletteView(context);
         hex.setSelectedColor(initialColor);
         root.addView(hex, new LinearLayout.LayoutParams(-1, -2));
 
-        TextView mixerLabel = label(context, "پالت کشیدنی");
+        TextView mixerLabel = label(context, AppString.get(R.string.runtime_text_0560));
         mixerLabel.setPadding(0, dp(context,10), 0, dp(context,5));
         root.addView(mixerLabel);
 
@@ -36,7 +36,7 @@ public final class PaletteDialog {
 
         TextView preview = new TextView(context);
         preview.setGravity(Gravity.CENTER);
-        preview.setText("نمونه رنگ قلم");
+        preview.setText(AppString.get(R.string.runtime_text_0561));
         preview.setTextSize(15);
         preview.setTextColor(0xFFFFFFFF);
         preview.setPadding(dp(context,12),0,dp(context,12),0);
@@ -64,10 +64,10 @@ public final class PaletteDialog {
         });
 
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("پالت رنگ قلم")
+                .setTitle(AppString.get(R.string.runtime_text_0562))
                 .setView(root)
-                .setNegativeButton("انصراف", null)
-                .setPositiveButton("انتخاب رنگ", (d, which) -> callback.onColor(selected[0]))
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0563), (d, which) -> callback.onColor(selected[0]))
                 .create();
         dialog.show();
     }
