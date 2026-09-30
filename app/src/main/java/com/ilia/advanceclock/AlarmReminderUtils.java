@@ -18,24 +18,24 @@ public final class AlarmReminderUtils {
 
     public static String[] optionLabels() {
         return new String[]{
-                "بدون یادآوری", "خودکار (هوشمند)",
-                "۵ دقیقه", "۱۵ دقیقه", "۳۰ دقیقه",
-                "۱ ساعت", "۲ ساعت", "۳ ساعت", "۶ ساعت", "۱۲ ساعت", "۲۴ ساعت"
+                AppString.get(R.string.runtime_text_0035), AppString.get(R.string.runtime_text_0036),
+                AppString.get(R.string.runtime_text_0575), AppString.get(R.string.runtime_text_0576), AppString.get(R.string.runtime_text_0577),
+                AppString.get(R.string.runtime_text_0578), AppString.get(R.string.runtime_text_0579), AppString.get(R.string.runtime_text_0580), AppString.get(R.string.runtime_text_0581), AppString.get(R.string.runtime_text_0582), AppString.get(R.string.runtime_text_0583)
         };
     }
 
     public static String labelForMinutes(int minutes) {
         switch (minutes) {
-            case 5: return "۵ دقیقه";
-            case 15: return "۱۵ دقیقه";
-            case 30: return "۳۰ دقیقه";
-            case 60: return "۱ ساعت";
-            case 120: return "۲ ساعت";
-            case 180: return "۳ ساعت";
-            case 360: return "۶ ساعت";
-            case 720: return "۱۲ ساعت";
-            case 1440: return "۲۴ ساعت";
-            default: return minutes + " دقیقه";
+            case 5: return AppString.get(R.string.runtime_text_0575);
+            case 15: return AppString.get(R.string.runtime_text_0576);
+            case 30: return AppString.get(R.string.runtime_text_0577);
+            case 60: return AppString.get(R.string.runtime_text_0578);
+            case 120: return AppString.get(R.string.runtime_text_0579);
+            case 180: return AppString.get(R.string.runtime_text_0580);
+            case 360: return AppString.get(R.string.runtime_text_0581);
+            case 720: return AppString.get(R.string.runtime_text_0582);
+            case 1440: return AppString.get(R.string.runtime_text_0583);
+            default: return minutes + AppString.get(R.string.runtime_text_0647);
         }
     }
 
@@ -71,12 +71,12 @@ public final class AlarmReminderUtils {
     }
 
     public static String summary(int mode, String customJson) {
-        if (mode == MODE_NONE) return "بدون یادآوری";
-        if (mode == MODE_SMART) return "خودکار (هوشمند)";
+        if (mode == MODE_NONE) return AppString.get(R.string.runtime_text_0035);
+        if (mode == MODE_SMART) return AppString.get(R.string.runtime_text_0036);
         List<Integer> values = effective(mode, customJson);
-        if (values.isEmpty()) return "بدون یادآوری";
+        if (values.isEmpty()) return AppString.get(R.string.runtime_text_0035);
         if (values.size() == 1) return labelForMinutes(values.get(0));
-        return values.size() + " یادآوری";
+        return values.size() + AppString.get(R.string.runtime_text_0671);
     }
 
     private static boolean isAllowed(int value) {
