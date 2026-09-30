@@ -3,8 +3,6 @@ package com.ilia.advanceclock;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,12 +13,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public final class AdhanRingActivity extends Activity {
-    private final Handler keyHandler = new Handler(Looper.getMainLooper());
-    private boolean volumeDownRepeating;
-    private final Runnable pendingMute = () -> {
-        if (!volumeDownRepeating) send(AdhanSoundService.ACTION_MUTE);
-    };
-
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         super.onCreate(savedInstanceState);
@@ -51,38 +43,26 @@ public final class AdhanRingActivity extends Activity {
     }
 
     @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            keyHandler.removeCallbacks(pendingMute);
-            send(AdhanSoundService.ACTION_RAISE);
-            ((Button) findViewById(R.id.adhan_sound_toggle)).setText(AppString.get(R.string.runtime_text_0305));
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            send(AdhanSoundService.ACTION_MUTE);
+            ((Button) findViewById(R.id.adhan_sound_toggle))
+                    .setText(AppString.get(R.string.runtime_text_0306));
             return true;
         }
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            if (event.getRepeatCount() == 0) {
-                volumeDownRepeating = false;
-                keyHandler.postDelayed(pendingMute, 650L);
-            } else {
-                volumeDownRepeating = true;
-                keyHandler.removeCallbacks(pendingMute);
-                send(AdhanSoundService.ACTION_LOWER);
-                ((Button) findViewById(R.id.adhan_sound_toggle)).setText(AppString.get(R.string.runtime_text_0305));
-            }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            send(AdhanSoundService.ACTION_RAISE);
+            ((Button) findViewById(R.id.adhan_sound_toggle))
+                    .setText(AppString.get(R.string.runtime_text_0305));
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            keyHandler.removeCallbacks(pendingMute);
-            if (!volumeDownRepeating) {
-                send(AdhanSoundService.ACTION_MUTE);
-                ((Button) findViewById(R.id.adhan_sound_toggle)).setText(AppString.get(R.string.runtime_text_0306));
-            }
-            volumeDownRepeating = false;
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+                || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             return true;
         }
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) return true;
         return super.onKeyUp(keyCode, event);
     }
 
@@ -99,8 +79,4 @@ public final class AdhanRingActivity extends Activity {
         finishAndRemoveTask();
     }
 
-    @Override protected void onDestroy() {
-        keyHandler.removeCallbacks(pendingMute);
-        super.onDestroy();
-    }
 }
