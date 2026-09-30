@@ -47,7 +47,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(10), dp(18), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
 
