@@ -130,7 +130,7 @@ public final class AdhanSoundService extends Service {
                 this, NotificationHelper.ADHAN_CHANNEL)
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setContentTitle(CalendarUtils.fa(AdhanScheduler.title(type)))
-                .setContentText(AppSettings.adhanNotification(this)
+                .setContentText(AppSettings.adhanNotification(this, type)
                         ? AppSettings.prayerLocationLabel(this)
                         : AppString.get(R.string.runtime_text_0407))
                 .setCategory(Notification.CATEGORY_ALARM)
@@ -145,14 +145,14 @@ public final class AdhanSoundService extends Service {
     private boolean shouldOpenFullscreen() {
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
-        return locked ? AppSettings.adhanFullscreenLocked(this)
-                : AppSettings.adhanFullscreenUnlocked(this);
+        return locked ? AppSettings.adhanFullscreenLocked(this, type)
+                : AppSettings.adhanFullscreenUnlocked(this, type);
     }
 
     private boolean shouldOpenFullscreenWhileUnlocked() {
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
-        return !locked && AppSettings.adhanFullscreenUnlocked(this);
+        return !locked && AppSettings.adhanFullscreenUnlocked(this, type);
     }
 
     private void openRingActivity() {
@@ -175,7 +175,7 @@ public final class AdhanSoundService extends Service {
         muted = false;
         stopHandler.removeCallbacks(maximumDuration);
         stopHandler.postDelayed(maximumDuration, 10 * 60_000L);
-        if (AppSettings.adhanSound(this)) {
+        if (AppSettings.adhanSound(this, type)) {
             String selected = AppSettings.adhanSoundUri(this, type);
             Uri audioUri = selected == null || selected.isEmpty() ? null : Uri.parse(selected);
             if (audioUri == null) {
@@ -200,7 +200,7 @@ public final class AdhanSoundService extends Service {
                 } catch (Exception ignored) { stopPlayback(); }
             }
         }
-        if (AppSettings.adhanVibrate(this)) {
+        if (AppSettings.adhanVibrate(this, type)) {
             vibrator = getSystemService(Vibrator.class);
             if (vibrator != null) vibrator.vibrate(VibrationEffect.createWaveform(
                     new long[]{0, 700, 350, 700}, -1));
