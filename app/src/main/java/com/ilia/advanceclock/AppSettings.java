@@ -582,18 +582,67 @@ public final class AppSettings {
                 adhanSkipDateKey(context, now.getTimeInMillis()));
     }
 
+    private static boolean adhanBooleanForType(
+            Context context, String baseKey, int type, boolean defaultValue) {
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                if (!adhanBooleanForType(context, baseKey, item, defaultValue)) return false;
+            }
+            return true;
+        }
+        int normalized = normalizedAdhanType(type);
+        String key = baseKey + "_" + normalized;
+        android.content.SharedPreferences values = prefs(context);
+        if (values.contains(key)) return values.getBoolean(key, defaultValue);
+        return values.getBoolean(baseKey, defaultValue);
+    }
+
+    private static void setAdhanBooleanForType(
+            Context context, String baseKey, int type, boolean value) {
+        android.content.SharedPreferences.Editor editor = prefs(context).edit();
+        if (type == 899) {
+            editor.putBoolean(baseKey, value);
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                editor.putBoolean(baseKey + "_" + item, value);
+            }
+        } else {
+            editor.putBoolean(baseKey + "_" + normalizedAdhanType(type), value);
+        }
+        editor.apply();
+    }
+
     public static boolean adhanFullscreenUnlocked(Context context) {
-        return prefs(context).getBoolean("adhan_fullscreen_unlocked", true);
+        return adhanFullscreenUnlocked(context, 899);
+    }
+    public static boolean adhanFullscreenUnlocked(Context context, int type) {
+        return adhanBooleanForType(
+                context, "adhan_fullscreen_unlocked", type, true);
     }
     public static void setAdhanFullscreenUnlocked(Context context, boolean value) {
-        prefs(context).edit().putBoolean("adhan_fullscreen_unlocked", value).apply();
+        setAdhanFullscreenUnlocked(context, 899, value);
     }
+    public static void setAdhanFullscreenUnlocked(
+            Context context, int type, boolean value) {
+        setAdhanBooleanForType(
+                context, "adhan_fullscreen_unlocked", type, value);
+    }
+
     public static boolean adhanFullscreenLocked(Context context) {
-        return prefs(context).getBoolean("adhan_fullscreen_locked", true);
+        return adhanFullscreenLocked(context, 899);
+    }
+    public static boolean adhanFullscreenLocked(Context context, int type) {
+        return adhanBooleanForType(
+                context, "adhan_fullscreen_locked", type, true);
     }
     public static void setAdhanFullscreenLocked(Context context, boolean value) {
-        prefs(context).edit().putBoolean("adhan_fullscreen_locked", value).apply();
+        setAdhanFullscreenLocked(context, 899, value);
     }
+    public static void setAdhanFullscreenLocked(
+            Context context, int type, boolean value) {
+        setAdhanBooleanForType(
+                context, "adhan_fullscreen_locked", type, value);
+    }
+
     public static boolean alarmFullscreenUnlocked(Context context) {
         return prefs(context).getBoolean("alarm_fullscreen_unlocked", true);
     }
@@ -613,18 +662,39 @@ public final class AppSettings {
     public static void setAdhanFullscreen(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_fullscreen", value).apply();
     }
+
     public static boolean adhanNotification(Context context) {
-        return prefs(context).getBoolean("adhan_notification", true);
+        return adhanNotification(context, 899);
+    }
+    public static boolean adhanNotification(Context context, int type) {
+        return adhanBooleanForType(
+                context, "adhan_notification", type, true);
     }
     public static void setAdhanNotification(Context context, boolean value) {
-        prefs(context).edit().putBoolean("adhan_notification", value).apply();
+        setAdhanNotification(context, 899, value);
     }
+    public static void setAdhanNotification(
+            Context context, int type, boolean value) {
+        setAdhanBooleanForType(
+                context, "adhan_notification", type, value);
+    }
+
     public static boolean adhanSound(Context context) {
-        return prefs(context).getBoolean("adhan_sound", true);
+        return adhanSound(context, 899);
+    }
+    public static boolean adhanSound(Context context, int type) {
+        return adhanBooleanForType(
+                context, "adhan_sound", type, true);
     }
     public static void setAdhanSound(Context context, boolean value) {
-        prefs(context).edit().putBoolean("adhan_sound", value).apply();
+        setAdhanSound(context, 899, value);
     }
+    public static void setAdhanSound(
+            Context context, int type, boolean value) {
+        setAdhanBooleanForType(
+                context, "adhan_sound", type, value);
+    }
+
     public static String adhanSoundUri(Context context, int type) {
         String key = "adhan_sound_uri_" + type;
         if (prefs(context).contains(key)) {
@@ -636,8 +706,10 @@ public final class AppSettings {
                 + context.getPackageName() + "/raw/rawadhan_2";
     }
     public static void setAdhanSoundUri(Context context, int type, String uri) {
-        prefs(context).edit().putString("adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
+        prefs(context).edit().putString(
+                "adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
     }
+
     public static int adhanVolume(Context context, int type) {
         return Math.max(0, Math.min(100,
                 prefs(context).getInt("adhan_volume_" + type, 100)));
@@ -646,19 +718,29 @@ public final class AppSettings {
         prefs(context).edit().putInt(
                 "adhan_volume_" + type, Math.max(0, Math.min(100, value))).apply();
     }
+
     public static String defaultAlarmSoundUri(Context context) {
         return prefs(context).getString("default_alarm_sound_uri", "");
     }
     public static void setDefaultAlarmSoundUri(Context context, String uri) {
-        prefs(context).edit().putString("default_alarm_sound_uri", uri == null ? "" : uri).apply();
+        prefs(context).edit().putString(
+                "default_alarm_sound_uri", uri == null ? "" : uri).apply();
     }
 
     public static boolean adhanVibrate(Context context) {
-        return prefs(context).getBoolean("adhan_vibrate", true);
+        return adhanVibrate(context, 899);
     }
-
+    public static boolean adhanVibrate(Context context, int type) {
+        return adhanBooleanForType(
+                context, "adhan_vibrate", type, true);
+    }
     public static void setAdhanVibrate(Context context, boolean value) {
-        prefs(context).edit().putBoolean("adhan_vibrate", value).apply();
+        setAdhanVibrate(context, 899, value);
+    }
+    public static void setAdhanVibrate(
+            Context context, int type, boolean value) {
+        setAdhanBooleanForType(
+                context, "adhan_vibrate", type, value);
     }
 
     public static String language(Context context) {
