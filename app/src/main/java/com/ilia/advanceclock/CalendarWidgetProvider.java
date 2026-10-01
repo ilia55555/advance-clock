@@ -134,9 +134,14 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 ? eventBoxHeight(eventLines)
                 : 0;
 
+        int prayerBlockHeight = rows == 0
+                ? 0
+                : PRAYER_ROW_GAP
+                        + rows * PRAYER_ROW_HEIGHT
+                        + Math.max(0, rows - 1) * PRAYER_ROW_GAP;
+
         int totalHeight = calendarHeight
-                + (rows == 0 ? 0 : PRAYER_ROW_GAP)
-                + rows * (PRAYER_ROW_HEIGHT + PRAYER_ROW_GAP)
+                + prayerBlockHeight
                 + (showEvents ? EVENT_GAP + eventHeight : 0)
                 + BOTTOM_PADDING;
 
@@ -150,7 +155,9 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
         canvas.drawColor(AppSettings.surface(context));
         calendar.draw(canvas);
 
-        float y = calendarHeight + (rows == 0 ? 0 : PRAYER_ROW_GAP);
+        float y = calendarHeight;
+        if (rows > 0) y += PRAYER_ROW_GAP;
+
         for (int i = 0; i < rows; i++) {
             drawPrayerRow(
                     context,
@@ -158,11 +165,12 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                     y,
                     horizons.get(i),
                     System.currentTimeMillis());
-            y += PRAYER_ROW_HEIGHT + PRAYER_ROW_GAP;
+            y += PRAYER_ROW_HEIGHT;
+            if (i < rows - 1) y += PRAYER_ROW_GAP;
         }
 
         if (showEvents) {
-            if (rows == 0) y = calendarHeight + EVENT_GAP;
+            y += EVENT_GAP;
             drawEventBox(context, canvas, y, eventHeight, eventLines);
         }
 
