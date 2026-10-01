@@ -1024,4 +1024,8 @@ Lock screen</string>
     <string name="adhan_skip_add_date">Add date</string>
     <string name="adhan_skip_no_dates">No dates selected yet.</string>
     <string name="adhan_skip_remove_date">Remove date</string>
+    <string name="adhan_asr_name">Asr Adhan</string>
+    <string name="adhan_isha_name">Isha Adhan</string>
+    <string name="adhan_settings_title_format">%1$s settings</string>
+    <string name="adhan_settings_all_title">All Adhan settings</string>
 </resources>
