@@ -156,9 +156,9 @@ public final class PrayerSettingsActivity extends Activity {
         addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0343), 899);
         addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0078), AdhanScheduler.FAJR);
         addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0079), AdhanScheduler.DHUHR);
-        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0082), AdhanScheduler.ASR);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.adhan_asr_name), AdhanScheduler.ASR);
         addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0080), AdhanScheduler.MAGHRIB);
-        addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0081), AdhanScheduler.ISHA);
+        addAdhanSettingRow(azanCard, AppString.get(R.string.adhan_isha_name), AdhanScheduler.ISHA);
 
         adhanScheduleStatus = text(
                 "",
@@ -745,7 +745,10 @@ public final class PrayerSettingsActivity extends Activity {
         close.setOnClickListener(v -> dialog.dismiss());
         header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
 
-        TextView heading = text(AppString.get(R.string.runtime_text_0569) + title, 20, AppSettings.textPrimary(this));
+        String dialogTitle = type == 899
+                ? AppString.get(R.string.adhan_settings_all_title)
+                : AppString.get(R.string.adhan_settings_title_format, title);
+        TextView heading = text(dialogTitle, 20, AppSettings.textPrimary(this));
         heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         heading.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         heading.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
