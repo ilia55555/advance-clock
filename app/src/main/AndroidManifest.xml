@@ -31,6 +31,7 @@
 
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:exported="false" />
+        <activity android:name=".CalendarWidgetConfigActivity" android:exported="false" />
         <activity android:name=".CompassToolActivity" android:exported="false" />
         <activity
             android:name=".PrayerTimesWidgetConfigActivity"
