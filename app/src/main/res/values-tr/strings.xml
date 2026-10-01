@@ -852,4 +852,8 @@ Kilit ekranı</string>
     <string name="adhan_skip_add_date">Tarih ekle</string>
     <string name="adhan_skip_no_dates">Henüz tarih seçilmedi.</string>
     <string name="adhan_skip_remove_date">Kaldır</string>
+    <string name="adhan_asr_name">İkindi ezanı</string>
+    <string name="adhan_isha_name">Yatsı ezanı</string>
+    <string name="adhan_settings_title_format">%1$s ayarları</string>
+    <string name="adhan_settings_all_title">Tüm ezan ayarları</string>
 </resources>
