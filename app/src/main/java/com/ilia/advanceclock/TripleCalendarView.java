@@ -276,8 +276,8 @@ public final class TripleCalendarView extends View {
             String smallRight = CalendarUtils.fa(
                     b.get(android.icu.util.Calendar.DAY_OF_MONTH));
 
-            centered(c, smallLeft, left + 20, top + 62, 16, muted, medium);
-            centered(c, smallRight, left + 57, top + 62, 16, muted, medium);
+            centered(c, smallLeft, left + 20, top + 62, 18, muted, medium);
+            centered(c, smallRight, left + 57, top + 62, 18, muted, medium);
         }
     }
 
