@@ -103,7 +103,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         int rowCount = Math.max(
                 0,
-                (height - reserved) / 72);
+                (height - reserved) / 88);
         rowCount = Math.min(
                 WidgetPrefs.maxItems(context, widgetId),
                 Math.min(10, rowCount));
