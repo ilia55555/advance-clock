@@ -852,4 +852,8 @@ Tela de bloqueio</string>
     <string name="adhan_skip_add_date">Adicionar data</string>
     <string name="adhan_skip_no_dates">Nenhuma data selecionada ainda.</string>
     <string name="adhan_skip_remove_date">Remover</string>
+    <string name="adhan_asr_name">Adhan do Asr</string>
+    <string name="adhan_isha_name">Adhan do Isha</string>
+    <string name="adhan_settings_title_format">Configurações de %1$s</string>
+    <string name="adhan_settings_all_title">Configurações de todos os adhans</string>
 </resources>
