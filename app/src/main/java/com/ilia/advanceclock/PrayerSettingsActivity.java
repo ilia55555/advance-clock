@@ -714,31 +714,40 @@ public final class PrayerSettingsActivity extends Activity {
         outputTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         output.addView(outputTitle);
 
-        int initialVolume = AppSettings.adhanVolume(
-                this, type == 899 ? AdhanScheduler.FAJR : type);
-        TextView volumeLabel = text(AppString.get(R.string.runtime_text_0348) + initialVolume + AppString.get(R.string.runtime_text_0568), 13,
+        boolean mixedVolume = type == 899
+                && !AppSettings.allAdhanVolumesMatch(this);
+        int initialVolume = AppSettings.adhanVolume(this, type);
+        TextView volumeLabel = text(
+                mixedVolume
+                        ? AppString.get(R.string.runtime_text_0344)
+                        : AppString.get(R.string.runtime_text_0348)
+                                + initialVolume
+                                + AppString.get(R.string.runtime_text_0568),
+                13,
                 AppSettings.textSecondary(this));
         volumeLabel.setPadding(0, dp(8), 0, 0);
         output.addView(volumeLabel);
+
         SeekBar volume = new SeekBar(this);
         volume.setMax(100);
         volume.setProgress(initialVolume);
-        volume.setContentDescription(AppString.get(R.string.runtime_text_0349) + title);
+        volume.setContentDescription(
+                AppString.get(R.string.runtime_text_0349) + title);
         volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(
                     SeekBar seekBar, int progress, boolean fromUser) {
-                volumeLabel.setText(AppString.get(R.string.runtime_text_0348) + progress + AppString.get(R.string.runtime_text_0568));
                 if (!fromUser) return;
-                if (type == 899) {
-                    for (int item = AdhanScheduler.FAJR;
-                            item <= AdhanScheduler.ISHA; item++) {
-                        AppSettings.setAdhanVolume(PrayerSettingsActivity.this, item, progress);
-                    }
-                } else {
-                    AppSettings.setAdhanVolume(PrayerSettingsActivity.this, type, progress);
-                }
+                AppSettings.setAdhanVolume(
+                        PrayerSettingsActivity.this, type, progress);
+                volumeLabel.setText(
+                        AppString.get(R.string.runtime_text_0348)
+                                + progress
+                                + AppString.get(R.string.runtime_text_0568));
+                setResult(RESULT_OK);
             }
+
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
         output.addView(volume, new LinearLayout.LayoutParams(-1, dp(48)));
