@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -57,11 +58,13 @@ final class FirstRunSetupDialog {
 
         TextView languageLabel = label(activity);
         content.addView(languageLabel);
-        Spinner language = spinner(activity, activity.getResources().getStringArray(
-                R.array.language_options));
+        Spinner language = languageSpinner(
+                activity,
+                activity.getResources().getStringArray(R.array.language_options));
         language.setBackgroundResource(R.drawable.bg_field);
         language.setPadding(dp(activity, 12), 0, dp(activity, 12), 0);
-        language.setSelection(AppSettings.languagePosition(activity), false);
+        language.setSelection(
+                AppSettings.selectableLanguagePosition(activity), false);
         content.addView(language, fieldParams(activity));
 
         TextView calendarLabel = label(activity);
@@ -87,7 +90,12 @@ final class FirstRunSetupDialog {
         dialog.setCancelable(false);
 
         Runnable refreshLanguage = () -> {
-            String code = AppSettings.languageCodes()[language.getSelectedItemPosition()];
+            int position = language.getSelectedItemPosition();
+            if (!AppSettings.isSelectableLanguagePosition(position)) {
+                position = AppSettings.selectableLanguagePosition(activity);
+                language.setSelection(position, false);
+            }
+            String code = AppSettings.languageCodes()[position];
             Context localized = localizedContext(activity, code);
             title.setText(localized.getString(R.string.first_setup_title));
             message.setText(localized.getString(R.string.first_setup_message));
@@ -118,8 +126,11 @@ final class FirstRunSetupDialog {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundResource(
                     R.drawable.bg_teal_button);
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                String selectedLanguage = AppSettings.languageCodes()[
-                        language.getSelectedItemPosition()];
+                int languagePosition = language.getSelectedItemPosition();
+                if (!AppSettings.isSelectableLanguagePosition(languagePosition)) {
+                    languagePosition = AppSettings.selectableLanguagePosition(activity);
+                }
+                String selectedLanguage = AppSettings.languageCodes()[languagePosition];
                 boolean languageChanged = !selectedLanguage.equals(AppSettings.language(activity));
                 AppSettings.setLanguage(activity, selectedLanguage);
                 AppSettings.setDefaultCalendar(activity, calendar.getSelectedItemPosition());
@@ -140,6 +151,41 @@ final class FirstRunSetupDialog {
     private static Spinner spinner(Activity activity, String[] values) {
         Spinner spinner = new Spinner(activity);
         spinner.setAdapter(adapter(activity, values));
+        return spinner;
+    }
+
+    private static Spinner languageSpinner(
+            Activity activity, String[] values) {
+        Spinner spinner = new Spinner(activity);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                activity,
+                android.R.layout.simple_spinner_item,
+                values) {
+            @Override public boolean areAllItemsEnabled() {
+                return false;
+            }
+
+            @Override public boolean isEnabled(int position) {
+                return AppSettings.isSelectableLanguagePosition(position);
+            }
+
+            @Override public View getDropDownView(
+                    int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                boolean enabled = isEnabled(position);
+                view.setEnabled(enabled);
+                view.setAlpha(enabled ? 1f : 0.38f);
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(enabled
+                            ? AppSettings.textPrimary(activity)
+                            : AppSettings.textSecondary(activity));
+                }
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         return spinner;
     }
 
