@@ -1034,4 +1034,19 @@ Lock screen</string>
     <string name="calendar_widget_settings_description">Choose which sections are shown in the calendar widget.</string>
     <string name="calendar_widget_show_events">Show events</string>
     <string name="calendar_widget_show_prayer">Show prayer times</string>
+    <string name="time_tools_widget_name">Stopwatch & Timer</string>
+    <string name="time_tools_widget_description">Combined stopwatch and timer widget with direct controls</string>
+    <string name="time_tools_widget_settings_title">Stopwatch & Timer widget settings</string>
+    <string name="time_tools_widget_settings_description">Choose the default tab, visible controls, and default timer duration.</string>
+    <string name="time_tools_widget_default_tab">Default tab</string>
+    <string name="time_tools_widget_show_details">Show status details</string>
+    <string name="time_tools_widget_show_reset">Show reset button</string>
+    <string name="time_tools_widget_show_lap">Show stopwatch lap button</string>
+    <string name="time_tools_widget_show_open">Show open-full-tab button</string>
+    <string name="time_tools_widget_timer_default">Default timer duration</string>
+    <string name="time_tools_widget_open">Open</string>
+    <string name="time_tools_widget_limit">Limit</string>
+    <string name="time_tools_widget_stopwatch_ready">Stopwatch ready</string>
+    <string name="time_tools_widget_timer_paused">Timer paused</string>
+    <string name="time_tools_widget_default_duration">Default duration</string>
 </resources>
