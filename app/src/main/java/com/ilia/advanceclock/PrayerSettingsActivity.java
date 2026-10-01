@@ -743,23 +743,35 @@ public final class PrayerSettingsActivity extends Activity {
         });
         output.addView(volume, new LinearLayout.LayoutParams(-1, dp(48)));
 
-        Switch fullscreenUnlocked = toggle(AppString.get(R.string.runtime_text_0210),
-                AppSettings.adhanFullscreenUnlocked(this));
+        Switch fullscreenUnlocked = toggle(
+                AppString.get(R.string.runtime_text_0210),
+                AppSettings.adhanFullscreenUnlocked(this, type));
         fullscreenUnlocked.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanFullscreenUnlocked(this, checked));
-        Switch fullscreenLocked = toggle(AppString.get(R.string.runtime_text_0211),
-                AppSettings.adhanFullscreenLocked(this));
+                AppSettings.setAdhanFullscreenUnlocked(this, type, checked));
+
+        Switch fullscreenLocked = toggle(
+                AppString.get(R.string.runtime_text_0211),
+                AppSettings.adhanFullscreenLocked(this, type));
         fullscreenLocked.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanFullscreenLocked(this, checked));
-        Switch notification = toggle(AppString.get(R.string.runtime_text_0093), AppSettings.adhanNotification(this));
+                AppSettings.setAdhanFullscreenLocked(this, type, checked));
+
+        Switch notification = toggle(
+                AppString.get(R.string.runtime_text_0093),
+                AppSettings.adhanNotification(this, type));
         notification.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanNotification(this, checked));
-        Switch vibrate = toggle(AppString.get(R.string.runtime_text_0094), AppSettings.adhanVibrate(this));
+                AppSettings.setAdhanNotification(this, type, checked));
+
+        Switch vibrate = toggle(
+                AppString.get(R.string.runtime_text_0094),
+                AppSettings.adhanVibrate(this, type));
         vibrate.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanVibrate(this, checked));
-        Switch sound = toggle(AppString.get(R.string.runtime_text_0095), AppSettings.adhanSound(this));
+                AppSettings.setAdhanVibrate(this, type, checked));
+
+        Switch sound = toggle(
+                AppString.get(R.string.runtime_text_0095),
+                AppSettings.adhanSound(this, type));
         sound.setOnCheckedChangeListener((button, checked) ->
-                AppSettings.setAdhanSound(this, checked));
+                AppSettings.setAdhanSound(this, type, checked));
         output.addView(fullscreenUnlocked);
         output.addView(fullscreenLocked);
         output.addView(notification);
