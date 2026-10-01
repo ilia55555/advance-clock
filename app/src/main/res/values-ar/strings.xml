@@ -1052,4 +1052,8 @@
     <string name="time_tools_widget_stopwatch_ready">ساعة الإيقاف جاهزة</string>
     <string name="time_tools_widget_timer_paused">المؤقت متوقف مؤقتًا</string>
     <string name="time_tools_widget_default_duration">المدة الافتراضية</string>
+    <string name="alarm_remaining_hours_minutes">متبقي %1$d ساعة و%2$d دقيقة</string>
+    <string name="alarm_remaining_hours">متبقي %1$d ساعة</string>
+    <string name="alarm_remaining_minutes">متبقي %1$d دقيقة</string>
+    <string name="alarm_remaining_expired">انتهى وقت المنبه</string>
 </resources>
