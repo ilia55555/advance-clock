@@ -16,5 +16,6 @@ public final class ToolAlarmReceiver extends BroadcastReceiver {
                 .putExtra("toolKind", kind);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(service);
         else context.startService(service);
+        TimeToolsWidgetProvider.updateAll(context);
     }
 }
