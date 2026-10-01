@@ -317,6 +317,7 @@ public final class AppSettings {
         }
         prefs(context).edit().putString("prayer_horizons", array.toString()).apply();
         PrayerTimesWidgetProvider.updateAll(context);
+        CalendarWidgetProvider.updateAll(context);
     }
 
     public static void addPrayerHorizon(
@@ -326,6 +327,7 @@ public final class AppSettings {
             if (Math.abs(item.latitude - latitude) < 0.0001
                     && Math.abs(item.longitude - longitude) < 0.0001) {
                 PrayerTimesWidgetProvider.updateAll(context);
+        CalendarWidgetProvider.updateAll(context);
                 return;
             }
         org.json.JSONArray array = new org.json.JSONArray();
@@ -340,6 +342,7 @@ public final class AppSettings {
             added.put("zone", timeZoneId); array.put(added); } catch (Exception ignored) {}
         prefs(context).edit().putString("prayer_horizons", array.toString()).apply();
         PrayerTimesWidgetProvider.updateAll(context);
+        CalendarWidgetProvider.updateAll(context);
     }
 
     public static boolean hasPrayerHorizon(Context context, double latitude, double longitude) {
@@ -374,6 +377,7 @@ public final class AppSettings {
             setPrayerLocation(context, first.latitude, first.longitude, first.label, first.timeZoneId);
         }
         PrayerTimesWidgetProvider.updateAll(context);
+        CalendarWidgetProvider.updateAll(context);
     }
 
     public static boolean fajrAdhanEnabled(Context context) {
