@@ -31,7 +31,14 @@
 
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:exported="false" />
-        <activity android:name=".CalendarWidgetConfigActivity" android:exported="false" />
+        <activity
+            android:name=".CalendarWidgetConfigActivity"
+            android:exported="true"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
         <activity android:name=".CompassToolActivity" android:exported="false" />
         <activity
             android:name=".PrayerTimesWidgetConfigActivity"
