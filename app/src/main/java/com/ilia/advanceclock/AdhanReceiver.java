@@ -16,11 +16,11 @@ public final class AdhanReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (!AppSettings.adhanSound(context)
-                && !AppSettings.adhanVibrate(context)
-                && !AppSettings.adhanNotification(context)
-                && !AppSettings.adhanFullscreenLocked(context)
-                && !AppSettings.adhanFullscreenUnlocked(context)) {
+        if (!AppSettings.adhanSound(context, type)
+                && !AppSettings.adhanVibrate(context, type)
+                && !AppSettings.adhanNotification(context, type)
+                && !AppSettings.adhanFullscreenLocked(context, type)
+                && !AppSettings.adhanFullscreenUnlocked(context, type)) {
             AdhanScheduler.scheduleNext(context, type);
             return;
         }
