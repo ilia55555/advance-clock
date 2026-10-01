@@ -1030,4 +1030,8 @@
     <string name="adhan_settings_all_title">تنظیمات همه اذان‌ها</string>
     <string name="calendar_widget_name">تقویم سه‌گانه</string>
     <string name="calendar_widget_description">تقویم شمسی، میلادی و قمری همراه با اوقات شرعی</string>
+    <string name="calendar_widget_settings_title">تنظیمات ویجت تقویم</string>
+    <string name="calendar_widget_settings_description">بخش‌های قابل نمایش در ویجت تقویم را انتخاب کنید.</string>
+    <string name="calendar_widget_show_events">نمایش رویدادها</string>
+    <string name="calendar_widget_show_prayer">نمایش اوقات شرعی</string>
 </resources>
