@@ -443,8 +443,14 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
     private static int eventBoxHeight(
             List<String> lines) {
         int count = Math.max(1, lines.size());
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setTextSize(EVENT_TEXT_SIZE);
+        Paint.FontMetrics metrics = paint.getFontMetrics();
+        int lineHeight = Math.max(
+                EVENT_TEXT_SIZE,
+                Math.round(metrics.descent - metrics.ascent));
         return EVENT_PADDING * 2
-                + count * EVENT_TEXT_SIZE
+                + count * lineHeight
                 + Math.max(0, count - 1) * EVENT_LINE_GAP;
     }
 
@@ -602,7 +608,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 CalendarUtils.fa(times.asr())
         };
 
-        float start = showCity ? 466f : 538f;
+        float start = showCity ? 484f : 556f;
         float[] centers = {
                 start,
                 start - 72f,
@@ -647,22 +653,24 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                     top + 49f);
         }
 
-        Paint arrowPaint =
-                new Paint(Paint.ANTI_ALIAS_FLAG);
-        arrowPaint.setTypeface(
-                Typeface.create(
-                        "sans-serif",
-                        Typeface.BOLD));
-        arrowPaint.setTextSize(22f);
-        arrowPaint.setTextAlign(Paint.Align.CENTER);
-        arrowPaint.setColor(
-                AppSettings.primaryColor(context));
-        drawVerticallyCentered(
-                canvas,
-                arrowPaint,
-                "<",
-                14f,
-                top + PRAYER_ROW_HEIGHT / 2f);
+        if (showCity) {
+            Paint arrowPaint =
+                    new Paint(Paint.ANTI_ALIAS_FLAG);
+            arrowPaint.setTypeface(
+                    Typeface.create(
+                            "sans-serif",
+                            Typeface.BOLD));
+            arrowPaint.setTextSize(22f);
+            arrowPaint.setTextAlign(Paint.Align.CENTER);
+            arrowPaint.setColor(
+                    AppSettings.primaryColor(context));
+            drawVerticallyCentered(
+                    canvas,
+                    arrowPaint,
+                    "<",
+                    12f,
+                    top + PRAYER_ROW_HEIGHT / 2f);
+        }
     }
 
     private static String shortHorizonLabel(
