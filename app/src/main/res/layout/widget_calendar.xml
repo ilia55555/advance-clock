@@ -11,5 +11,5 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="false"
         android:contentDescription="@string/calendar_widget_name"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitXY" />
 </FrameLayout>
