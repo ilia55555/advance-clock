@@ -99,6 +99,12 @@ public final class WidgetCenterActivity extends Activity {
                 "clock");
 
         addWidgetCard(
+                getString(R.string.calendar_widget_name),
+                getString(R.string.calendar_widget_description),
+                CalendarWidgetProvider.class,
+                "calendar");
+
+        addWidgetCard(
                 AppString.get(R.string.runtime_text_0016),
                 AppString.get(R.string.runtime_text_0486),
                 NoForgetWidgetProvider.class,
@@ -211,6 +217,7 @@ public final class WidgetCenterActivity extends Activity {
     }
 
     private int previewResource(String kind) {
+        if ("calendar".equals(kind)) return R.drawable.preview_widget_calendar;
         if ("note".equals(kind)) return R.drawable.preview_widget_notes;
         if ("world".equals(kind)) return R.drawable.preview_widget_world;
         if ("prayer".equals(kind)) {
