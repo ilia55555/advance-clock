@@ -56,6 +56,9 @@ public final class MainActivity extends Activity {
         @Override public void run() {
             updateHeaderClock();
             applyPrayerTimesUi();
+            if ("clock".equals(currentTab) && alarmList != null) {
+                renderAlarms();
+            }
             long now = System.currentTimeMillis();
             long delay = 60_000L - (now % 60_000L) + 60L;
             headerHandler.postDelayed(this, delay);
@@ -1475,8 +1478,15 @@ public final class MainActivity extends Activity {
                 item.reminderMode,
                 item.reminderMinutesJson);
 
+        long nextOccurrence = AlarmCountdownUtils.nextOccurrence(
+                item,
+                System.currentTimeMillis());
+        long displayAt = nextOccurrence > 0L
+                ? nextOccurrence
+                : item.triggerAtMillis;
+
         TextView time = smallText(
-                formatAppDateTime(item.triggerAtMillis)
+                formatAppDateTime(displayAt)
                         + "  •  "
                         + RecurrenceUtils.summary(
                         item.recurrenceMode,
@@ -1488,8 +1498,16 @@ public final class MainActivity extends Activity {
                         ? AppString.get(R.string.runtime_text_0430) + reminder
                         : "")
                         + (item.vibrate ? AppString.get(R.string.runtime_text_0431) : ""));
-        time.setPadding(0, dp(6), 0, dp(10));
+        time.setPadding(0, dp(6), 0, dp(4));
         card.addView(time);
+
+        TextView remaining = smallText(
+                AlarmCountdownUtils.remainingText(this, item));
+        remaining.setTextColor(AppSettings.primaryColor(this));
+        remaining.setTextSize(14);
+        remaining.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        remaining.setPadding(0, 0, 0, dp(10));
+        card.addView(remaining);
 
         LinearLayout actions = actionRow();
 
