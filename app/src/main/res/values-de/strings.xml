@@ -852,4 +852,8 @@ Sperrbildschirm</string>
     <string name="adhan_skip_add_date">Datum hinzufügen</string>
     <string name="adhan_skip_no_dates">Noch keine Daten ausgewählt.</string>
     <string name="adhan_skip_remove_date">Entfernen</string>
+    <string name="adhan_asr_name">Asr-Adhan</string>
+    <string name="adhan_isha_name">Ischa-Adhan</string>
+    <string name="adhan_settings_title_format">Einstellungen: %1$s</string>
+    <string name="adhan_settings_all_title">Einstellungen für alle Adhans</string>
 </resources>
