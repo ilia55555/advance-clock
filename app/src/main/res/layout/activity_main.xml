@@ -552,7 +552,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="@string/runtime_text_0082"
+                                    android:text="@string/adhan_asr_name"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
@@ -627,7 +627,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:maxLines="1"
-                                    android:text="@string/runtime_text_0081"
+                                    android:text="@string/adhan_isha_name"
                                     android:textColor="?attr/appTextSecondary"
                                     android:textSize="10sp" />
 
