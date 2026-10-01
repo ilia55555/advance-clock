@@ -1037,4 +1037,19 @@
     <string name="calendar_widget_settings_description">اختر الأقسام التي تظهر في أداة التقويم.</string>
     <string name="calendar_widget_show_events">إظهار الأحداث</string>
     <string name="calendar_widget_show_prayer">إظهار مواقيت الصلاة</string>
+    <string name="time_tools_widget_name">ساعة الإيقاف والمؤقت</string>
+    <string name="time_tools_widget_description">أداة مشتركة لساعة الإيقاف والمؤقت مع تحكم مباشر</string>
+    <string name="time_tools_widget_settings_title">إعدادات أداة ساعة الإيقاف والمؤقت</string>
+    <string name="time_tools_widget_settings_description">اختر علامة التبويب الافتراضية وعناصر التحكم الظاهرة ومدة المؤقت الافتراضية.</string>
+    <string name="time_tools_widget_default_tab">علامة التبويب الافتراضية</string>
+    <string name="time_tools_widget_show_details">إظهار تفاصيل الحالة</string>
+    <string name="time_tools_widget_show_reset">إظهار زر إعادة الضبط</string>
+    <string name="time_tools_widget_show_lap">إظهار زر الدورة لساعة الإيقاف</string>
+    <string name="time_tools_widget_show_open">إظهار زر فتح علامة التبويب الكاملة</string>
+    <string name="time_tools_widget_timer_default">مدة المؤقت الافتراضية</string>
+    <string name="time_tools_widget_open">فتح</string>
+    <string name="time_tools_widget_limit">الحد</string>
+    <string name="time_tools_widget_stopwatch_ready">ساعة الإيقاف جاهزة</string>
+    <string name="time_tools_widget_timer_paused">المؤقت متوقف مؤقتًا</string>
+    <string name="time_tools_widget_default_duration">المدة الافتراضية</string>
 </resources>
