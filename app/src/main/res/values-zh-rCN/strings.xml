@@ -852,4 +852,8 @@
     <string name="adhan_skip_add_date">添加日期</string>
     <string name="adhan_skip_no_dates">尚未选择日期。</string>
     <string name="adhan_skip_remove_date">删除日期</string>
+    <string name="adhan_asr_name">晡礼宣礼</string>
+    <string name="adhan_isha_name">宵礼宣礼</string>
+    <string name="adhan_settings_title_format">%1$s设置</string>
+    <string name="adhan_settings_all_title">所有宣礼设置</string>
 </resources>
