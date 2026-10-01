@@ -1053,4 +1053,28 @@
     <string name="alarm_remaining_hours">%1$d ساعت مانده</string>
     <string name="alarm_remaining_minutes">%1$d دقیقه مانده</string>
     <string name="alarm_remaining_expired">زمان هشدار گذشته است</string>
+
+    <string name="alarm_remaining_full_format">%1$s مانده</string>
+    <string name="alarm_remaining_separator"> و </string>
+    <string name="alarm_remaining_less_than_minute">کمتر از یک دقیقه مانده</string>
+    <plurals name="alarm_remaining_years">
+        <item quantity="one">%1$d سال</item>
+        <item quantity="other">%1$d سال</item>
+    </plurals>
+    <plurals name="alarm_remaining_months">
+        <item quantity="one">%1$d ماه</item>
+        <item quantity="other">%1$d ماه</item>
+    </plurals>
+    <plurals name="alarm_remaining_days">
+        <item quantity="one">%1$d روز</item>
+        <item quantity="other">%1$d روز</item>
+    </plurals>
+    <plurals name="alarm_remaining_hours_unit">
+        <item quantity="one">%1$d ساعت</item>
+        <item quantity="other">%1$d ساعت</item>
+    </plurals>
+    <plurals name="alarm_remaining_minutes_unit">
+        <item quantity="one">%1$d دقیقه</item>
+        <item quantity="other">%1$d دقیقه</item>
+    </plurals>
 </resources>
