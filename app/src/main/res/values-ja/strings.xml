@@ -852,4 +852,8 @@
     <string name="adhan_skip_add_date">日付を追加</string>
     <string name="adhan_skip_no_dates">まだ日付が選択されていません。</string>
     <string name="adhan_skip_remove_date">削除</string>
+    <string name="adhan_asr_name">アスルのアザーン</string>
+    <string name="adhan_isha_name">イシャーのアザーン</string>
+    <string name="adhan_settings_title_format">%1$s の設定</string>
+    <string name="adhan_settings_all_title">すべてのアザーン設定</string>
 </resources>
