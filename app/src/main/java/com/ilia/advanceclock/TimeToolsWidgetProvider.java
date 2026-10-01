@@ -196,7 +196,7 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 "setBackgroundResource",
                 dark
                         ? R.drawable.time_tools_widget_background_dark
-                        : R.drawable.widget_background);
+                        : R.drawable.time_tools_widget_background_light);
 
         styleTab(
                 root,
@@ -309,6 +309,24 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
         root.setOnClickPendingIntent(
                 R.id.time_tools_open,
+                openTabPendingIntent(
+                        context,
+                        widgetId,
+                        stopwatch ? "stopwatch" : "timer"));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_static_time,
+                openTabPendingIntent(
+                        context,
+                        widgetId,
+                        stopwatch ? "stopwatch" : "timer"));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_chronometer,
+                openTabPendingIntent(
+                        context,
+                        widgetId,
+                        stopwatch ? "stopwatch" : "timer"));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_detail,
                 openTabPendingIntent(
                         context,
                         widgetId,
