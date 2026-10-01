@@ -711,12 +711,39 @@ public final class AppSettings {
     }
 
     public static int adhanVolume(Context context, int type) {
+        if (type == 899) {
+            int common = commonAdhanVolume(context);
+            return common >= 0
+                    ? common
+                    : adhanVolume(context, AdhanScheduler.FAJR);
+        }
         return Math.max(0, Math.min(100,
                 prefs(context).getInt("adhan_volume_" + type, 100)));
     }
+
+    public static int commonAdhanVolume(Context context) {
+        int first = adhanVolume(context, AdhanScheduler.FAJR);
+        for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+            if (adhanVolume(context, item) != first) return -1;
+        }
+        return first;
+    }
+
+    public static boolean allAdhanVolumesMatch(Context context) {
+        return commonAdhanVolume(context) >= 0;
+    }
+
     public static void setAdhanVolume(Context context, int type, int value) {
-        prefs(context).edit().putInt(
-                "adhan_volume_" + type, Math.max(0, Math.min(100, value))).apply();
+        int safe = Math.max(0, Math.min(100, value));
+        android.content.SharedPreferences.Editor editor = prefs(context).edit();
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                editor.putInt("adhan_volume_" + item, safe);
+            }
+        } else {
+            editor.putInt("adhan_volume_" + type, safe);
+        }
+        editor.apply();
     }
 
     public static String defaultAlarmSoundUri(Context context) {
