@@ -16,26 +16,34 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
 public final class CalendarWidgetProvider extends AppWidgetProvider {
     private static final int BASE_WIDTH = 600;
-    private static final int PRAYER_ROW_HEIGHT = 106;
-    private static final int PRAYER_ROW_GAP = 10;
-    private static final int EVENT_GAP = 10;
-    private static final int EVENT_HORIZONTAL_PADDING = 22;
-    private static final int EVENT_VERTICAL_PADDING = 18;
-    private static final int EVENT_TEXT_SIZE = 17;
-    private static final int EVENT_LINE_GAP = 9;
-    private static final int BOTTOM_PADDING = 12;
+
+    // These values intentionally mirror activity_main.xml.
+    private static final int PRAYER_ROW_HEIGHT = 72;
+    private static final int PRAYER_FIRST_GAP = 8;
+    private static final int PRAYER_ADDITIONAL_GAP = 6;
+    private static final int EVENT_GAP = 8;
+    private static final int CARD_RADIUS = 22;
+    private static final int EVENT_PADDING = 14;
+    private static final int EVENT_TEXT_SIZE = 14;
+    private static final int EVENT_LINE_GAP = 6;
+    private static final int BOTTOM_PADDING = 8;
 
     @Override public void onUpdate(
             Context context,
             AppWidgetManager manager,
             int[] appWidgetIds) {
         for (int id : appWidgetIds) {
-            update(context, manager, id, manager.getAppWidgetOptions(id));
+            update(
+                    context,
+                    manager,
+                    id,
+                    manager.getAppWidgetOptions(id));
         }
     }
 
@@ -74,7 +82,11 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
         int[] ids = manager.getAppWidgetIds(
                 new ComponentName(context, CalendarWidgetProvider.class));
         for (int id : ids) {
-            update(context, manager, id, manager.getAppWidgetOptions(id));
+            update(
+                    context,
+                    manager,
+                    id,
+                    manager.getAppWidgetOptions(id));
         }
     }
 
@@ -83,12 +95,35 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             AppWidgetManager manager,
             int widgetId,
             Bundle options) {
+        WidgetSizeUtils.updateResponsive(
+                context,
+                manager,
+                widgetId,
+                options,
+                (widthDp, heightDp) -> createRemoteViews(
+                        context,
+                        widgetId,
+                        widthDp,
+                        heightDp));
+    }
+
+    private static RemoteViews createRemoteViews(
+            Context context,
+            int widgetId,
+            float widthDp,
+            float heightDp) {
         RemoteViews views = new RemoteViews(
                 context.getPackageName(),
                 R.layout.widget_calendar);
 
-        Bitmap image = render(context, widgetId);
-        views.setImageViewBitmap(R.id.calendar_widget_image, image);
+        Bitmap image = render(
+                context,
+                widgetId,
+                widthDp,
+                heightDp);
+        views.setImageViewBitmap(
+                R.id.calendar_widget_image,
+                image);
 
         Intent open = new Intent(context, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -96,52 +131,135 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 context,
                 9_100_000 + widgetId,
                 open,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        views.setOnClickPendingIntent(R.id.calendar_widget_root, openPi);
-        views.setOnClickPendingIntent(R.id.calendar_widget_image, openPi);
+                PendingIntent.FLAG_UPDATE_CURRENT
+                        | PendingIntent.FLAG_IMMUTABLE);
+        views.setOnClickPendingIntent(
+                R.id.calendar_widget_root,
+                openPi);
+        views.setOnClickPendingIntent(
+                R.id.calendar_widget_image,
+                openPi);
 
-        manager.updateAppWidget(widgetId, views);
+        return views;
     }
 
-    private static Bitmap render(Context context, int widgetId) {
+    private static Bitmap render(
+            Context context,
+            int widgetId,
+            float widthDp,
+            float heightDp) {
+        Bitmap natural = renderNatural(context, widgetId);
+
+        float safeWidth = Math.max(1f, widthDp);
+        float safeHeight = Math.max(1f, heightDp);
+        float aspect = safeHeight / safeWidth;
+
+        int outWidth = 600;
+        int outHeight = Math.max(
+                80,
+                Math.round(outWidth * aspect));
+
+        if (outHeight > 1800) {
+            outHeight = 1800;
+            outWidth = Math.max(
+                    80,
+                    Math.round(outHeight / aspect));
+        }
+
+        Bitmap output = Bitmap.createBitmap(
+                Math.max(1, outWidth),
+                Math.max(1, outHeight),
+                Bitmap.Config.RGB_565);
+        output.setDensity(Bitmap.DENSITY_NONE);
+
+        Canvas canvas = new Canvas(output);
+        canvas.drawColor(AppSettings.background(context));
+
+        float scale = Math.min(
+                outWidth / (float) natural.getWidth(),
+                outHeight / (float) natural.getHeight());
+
+        float drawnWidth = natural.getWidth() * scale;
+        float drawnHeight = natural.getHeight() * scale;
+        float left = (outWidth - drawnWidth) / 2f;
+        float top = 0f;
+
+        RectF destination = new RectF(
+                left,
+                top,
+                left + drawnWidth,
+                top + drawnHeight);
+
+        Paint bitmapPaint = new Paint(
+                Paint.ANTI_ALIAS_FLAG
+                        | Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(
+                natural,
+                null,
+                destination,
+                bitmapPaint);
+
+        natural.recycle();
+        return output;
+    }
+
+    private static Bitmap renderNatural(
+            Context context,
+            int widgetId) {
         TripleCalendarView calendar = new TripleCalendarView(context);
-        calendar.setCalendarType(AppSettings.defaultCalendar(context));
-        calendar.setSelectedMillis(System.currentTimeMillis());
+        calendar.setCalendarType(
+                AppSettings.defaultCalendar(context));
+        calendar.setSelectedMillis(
+                System.currentTimeMillis());
 
         int widthSpec = View.MeasureSpec.makeMeasureSpec(
-                BASE_WIDTH, View.MeasureSpec.EXACTLY);
+                BASE_WIDTH,
+                View.MeasureSpec.EXACTLY);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(
-                0, View.MeasureSpec.UNSPECIFIED);
+                0,
+                View.MeasureSpec.UNSPECIFIED);
         calendar.measure(widthSpec, heightSpec);
         int calendarHeight = calendar.getMeasuredHeight();
-        calendar.layout(0, 0, BASE_WIDTH, calendarHeight);
+        calendar.layout(
+                0,
+                0,
+                BASE_WIDTH,
+                calendarHeight);
 
         boolean showPrayer =
-                CalendarWidgetPrefs.showPrayerTimes(context, widgetId);
+                CalendarWidgetPrefs.showPrayerTimes(
+                        context, widgetId);
         boolean showEvents =
-                CalendarWidgetPrefs.showEvents(context, widgetId);
+                CalendarWidgetPrefs.showEvents(
+                        context, widgetId);
 
         List<AppSettings.PrayerHorizon> horizons =
                 showPrayer
-                        ? AppSettings.prayerHorizons(context)
-                        : java.util.Collections.emptyList();
-        int rows = Math.min(2, horizons.size());
+                        ? orderedHorizons(context)
+                        : Collections.emptyList();
 
         ArrayList<String> eventLines = showEvents
-                ? buildEventLines(context, System.currentTimeMillis())
+                ? buildEventLines(
+                        context,
+                        System.currentTimeMillis())
                 : new ArrayList<>();
+
+        int prayerHeight = 0;
+        if (!horizons.isEmpty()) {
+            prayerHeight = PRAYER_FIRST_GAP
+                    + horizons.size() * PRAYER_ROW_HEIGHT
+                    + Math.max(
+                            0,
+                            horizons.size() - 1)
+                    * PRAYER_ADDITIONAL_GAP;
+        }
+
         int eventHeight = showEvents
                 ? eventBoxHeight(eventLines)
                 : 0;
 
-        int prayerBlockHeight = rows == 0
-                ? 0
-                : PRAYER_ROW_GAP
-                        + rows * PRAYER_ROW_HEIGHT
-                        + Math.max(0, rows - 1) * PRAYER_ROW_GAP;
-
         int totalHeight = calendarHeight
-                + prayerBlockHeight
+                + prayerHeight
                 + (showEvents ? EVENT_GAP + eventHeight : 0)
                 + BOTTOM_PADDING;
 
@@ -152,47 +270,100 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
         bitmap.setDensity(Bitmap.DENSITY_NONE);
 
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(AppSettings.surface(context));
+        canvas.drawColor(AppSettings.background(context));
         calendar.draw(canvas);
 
         float y = calendarHeight;
-        if (rows > 0) y += PRAYER_ROW_GAP;
 
-        for (int i = 0; i < rows; i++) {
-            drawPrayerRow(
-                    context,
-                    canvas,
-                    y,
-                    horizons.get(i),
-                    System.currentTimeMillis());
-            y += PRAYER_ROW_HEIGHT;
-            if (i < rows - 1) y += PRAYER_ROW_GAP;
+        if (!horizons.isEmpty()) {
+            y += PRAYER_FIRST_GAP;
+            boolean multiple = horizons.size() > 1;
+            for (int i = 0; i < horizons.size(); i++) {
+                drawPrayerRow(
+                        context,
+                        canvas,
+                        y,
+                        horizons.get(i),
+                        System.currentTimeMillis(),
+                        i == 0,
+                        multiple);
+                y += PRAYER_ROW_HEIGHT;
+                if (i < horizons.size() - 1) {
+                    y += PRAYER_ADDITIONAL_GAP;
+                }
+            }
         }
 
         if (showEvents) {
             y += EVENT_GAP;
-            drawEventBox(context, canvas, y, eventHeight, eventLines);
+            drawEventBox(
+                    context,
+                    canvas,
+                    y,
+                    eventHeight,
+                    eventLines);
         }
 
         return bitmap;
+    }
+
+    private static List<AppSettings.PrayerHorizon> orderedHorizons(
+            Context context) {
+        List<AppSettings.PrayerHorizon> source =
+                AppSettings.prayerHorizons(context);
+        if (source.isEmpty()) return source;
+
+        ArrayList<AppSettings.PrayerHorizon> ordered =
+                new ArrayList<>();
+        AppSettings.PrayerHorizon primary = null;
+
+        for (AppSettings.PrayerHorizon item : source) {
+            if (AppSettings.isPrimaryPrayerHorizon(
+                    context,
+                    item.latitude,
+                    item.longitude)) {
+                primary = item;
+                break;
+            }
+        }
+
+        if (primary != null) ordered.add(primary);
+
+        for (AppSettings.PrayerHorizon item : source) {
+            if (primary != null
+                    && Math.abs(item.latitude - primary.latitude) < 0.0001
+                    && Math.abs(item.longitude - primary.longitude) < 0.0001) {
+                continue;
+            }
+            ordered.add(item);
+        }
+
+        return ordered;
     }
 
     private static ArrayList<String> buildEventLines(
             Context context,
             long millis) {
         ArrayList<String> raw = new ArrayList<>();
-        int primaryType = AppSettings.defaultCalendar(context);
+        int primaryType =
+                AppSettings.defaultCalendar(context);
 
         for (int source = CalendarUtils.PERSIAN;
              source <= CalendarUtils.HIJRI;
              source++) {
             if (!CalendarEventRepository.sourceEnabled(
-                    context, primaryType, source)) {
+                    context,
+                    primaryType,
+                    source)) {
                 continue;
             }
+
             List<CalendarEventRepository.Event> events =
                     CalendarEventRepository.eventsFor(
-                            context, millis, source);
+                            context,
+                            millis,
+                            source);
+
             for (CalendarEventRepository.Event event : events) {
                 if (event.title != null
                         && !event.title.trim().isEmpty()) {
@@ -201,23 +372,35 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             }
         }
 
-        if (CalendarEventRepository.isWeekend(millis, primaryType)) {
-            raw.add(context.getString(R.string.runtime_text_0391));
+        if (CalendarEventRepository.isWeekend(
+                millis,
+                primaryType)) {
+            raw.add(context.getString(
+                    R.string.runtime_text_0391));
         }
 
         if (raw.isEmpty()) {
-            raw.add(context.getString(R.string.runtime_text_0392));
+            raw.add(context.getString(
+                    R.string.runtime_text_0392));
         }
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setTextSize(EVENT_TEXT_SIZE);
-        paint.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        paint.setTypeface(
+                Typeface.create(
+                        "sans-serif",
+                        Typeface.NORMAL));
 
-        float maxWidth =
-                BASE_WIDTH - 2f * (12f + EVENT_HORIZONTAL_PADDING);
+        float maxWidth = BASE_WIDTH
+                - 2f * EVENT_PADDING;
+
         ArrayList<String> wrapped = new ArrayList<>();
         for (String value : raw) {
-            wrapText(value, paint, maxWidth, wrapped);
+            wrapText(
+                    value,
+                    paint,
+                    maxWidth,
+                    wrapped);
         }
         return wrapped;
     }
@@ -227,7 +410,8 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             Paint paint,
             float maxWidth,
             ArrayList<String> out) {
-        String remaining = text == null ? "" : text.trim();
+        String remaining =
+                text == null ? "" : text.trim();
         if (remaining.isEmpty()) return;
 
         while (!remaining.isEmpty()) {
@@ -243,17 +427,25 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 if (cut > 0) count = cut;
             }
 
-            String line = remaining.substring(0, count).trim();
+            String line = remaining
+                    .substring(0, count)
+                    .trim();
             if (!line.isEmpty()) out.add(line);
+
             remaining = remaining.substring(
-                    Math.min(count, remaining.length())).trim();
+                    Math.min(
+                            count,
+                            remaining.length()))
+                    .trim();
         }
     }
 
-    private static int eventBoxHeight(List<String> lines) {
+    private static int eventBoxHeight(
+            List<String> lines) {
         int count = Math.max(1, lines.size());
-        return EVENT_VERTICAL_PADDING * 2
-                + count * (EVENT_TEXT_SIZE + EVENT_LINE_GAP);
+        return EVENT_PADDING * 2
+                + count * EVENT_TEXT_SIZE
+                + Math.max(0, count - 1) * EVENT_LINE_GAP;
     }
 
     private static void drawEventBox(
@@ -262,42 +454,68 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             float top,
             int height,
             List<String> lines) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        int surface = AppSettings.surface(context);
-        int text = AppSettings.textPrimary(context);
-        int border = AppSettings.secondaryColor(context);
-
         RectF card = new RectF(
-                5f,
+                0f,
                 top,
-                BASE_WIDTH - 5f,
+                BASE_WIDTH,
                 top + height);
 
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(surface);
-        canvas.drawRoundRect(card, 28f, 28f, paint);
+        fill.setStyle(Paint.Style.FILL);
+        fill.setColor(AppSettings.surface(context));
+        canvas.drawRoundRect(
+                card,
+                CARD_RADIUS,
+                CARD_RADIUS,
+                fill);
 
         stroke.setStyle(Paint.Style.STROKE);
-        stroke.setStrokeWidth(1.5f);
-        stroke.setColor(withAlpha(border, 0x28));
-        canvas.drawRoundRect(card, 28f, 28f, stroke);
+        stroke.setStrokeWidth(1f);
+        stroke.setColor(borderColor(context));
+        canvas.drawRoundRect(
+                new RectF(
+                        0.5f,
+                        top + 0.5f,
+                        BASE_WIDTH - 0.5f,
+                        top + height - 0.5f),
+                CARD_RADIUS,
+                CARD_RADIUS,
+                stroke);
 
         boolean rtl = AppSettings.isRtlLanguage(context);
-        paint.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-        paint.setTextSize(EVENT_TEXT_SIZE);
-        paint.setColor(text);
-        paint.setTextAlign(rtl ? Paint.Align.RIGHT : Paint.Align.LEFT);
+
+        Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setTypeface(
+                Typeface.create(
+                        "sans-serif",
+                        Typeface.NORMAL));
+        textPaint.setTextSize(EVENT_TEXT_SIZE);
+        textPaint.setColor(
+                AppSettings.textPrimary(context));
+        textPaint.setTextAlign(
+                rtl
+                        ? Paint.Align.RIGHT
+                        : Paint.Align.LEFT);
 
         float x = rtl
-                ? BASE_WIDTH - 12f - EVENT_HORIZONTAL_PADDING
-                : 12f + EVENT_HORIZONTAL_PADDING;
-        float y = top + EVENT_VERTICAL_PADDING + EVENT_TEXT_SIZE;
+                ? BASE_WIDTH - EVENT_PADDING
+                : EVENT_PADDING;
+        Paint.FontMetrics metrics =
+                textPaint.getFontMetrics();
+        float lineHeight =
+                metrics.descent - metrics.ascent;
+        float baseline =
+                top + EVENT_PADDING - metrics.ascent;
 
         for (String line : lines) {
-            canvas.drawText(line, x, y, paint);
-            y += EVENT_TEXT_SIZE + EVENT_LINE_GAP;
+            canvas.drawText(
+                    line,
+                    x,
+                    baseline,
+                    textPaint);
+            baseline += lineHeight + EVENT_LINE_GAP;
         }
     }
 
@@ -306,50 +524,70 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             Canvas canvas,
             float top,
             AppSettings.PrayerHorizon horizon,
-            long millis) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            long millis,
+            boolean primaryRow,
+            boolean multipleHorizons) {
+        Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        int surface = AppSettings.surface(context);
-        int primary = AppSettings.primaryColor(context);
-        int text = AppSettings.textPrimary(context);
-        int muted = AppSettings.textSecondary(context);
-
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(surface);
         RectF card = new RectF(
-                5f,
+                0f,
                 top,
-                BASE_WIDTH - 5f,
+                BASE_WIDTH,
                 top + PRAYER_ROW_HEIGHT);
-        canvas.drawRoundRect(card, 28f, 28f, paint);
+
+        fill.setStyle(Paint.Style.FILL);
+        fill.setColor(AppSettings.surface(context));
+        canvas.drawRoundRect(
+                card,
+                CARD_RADIUS,
+                CARD_RADIUS,
+                fill);
 
         stroke.setStyle(Paint.Style.STROKE);
-        stroke.setStrokeWidth(1.5f);
-        stroke.setColor(withAlpha(primary, 0x2F));
-        canvas.drawRoundRect(card, 28f, 28f, stroke);
-
-        String city = shortHorizonLabel(
-                context,
-                horizon.label);
-
-        paint.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        paint.setTextSize(21f);
-        paint.setTextAlign(Paint.Align.RIGHT);
-        paint.setColor(text);
-        drawVerticallyCentered(
-                canvas,
-                paint,
-                city,
-                BASE_WIDTH - 31f,
-                top + PRAYER_ROW_HEIGHT / 2f);
+        stroke.setStrokeWidth(1f);
+        stroke.setColor(borderColor(context));
+        canvas.drawRoundRect(
+                new RectF(
+                        0.5f,
+                        top + 0.5f,
+                        BASE_WIDTH - 0.5f,
+                        top + PRAYER_ROW_HEIGHT - 0.5f),
+                CARD_RADIUS,
+                CARD_RADIUS,
+                stroke);
 
         PrayerTimeCalculator.Times times =
                 PrayerTimeCalculator.calculate(
                         millis,
                         horizon.latitude,
                         horizon.longitude,
-                        TimeZone.getTimeZone(horizon.timeZoneId));
+                        TimeZone.getTimeZone(
+                                horizon.timeZoneId));
+
+        boolean showCity =
+                !primaryRow || multipleHorizons;
+
+        if (showCity) {
+            Paint cityPaint =
+                    new Paint(Paint.ANTI_ALIAS_FLAG);
+            cityPaint.setTypeface(
+                    Typeface.create(
+                            "sans-serif",
+                            Typeface.BOLD));
+            cityPaint.setTextSize(15f);
+            cityPaint.setTextAlign(Paint.Align.CENTER);
+            cityPaint.setColor(
+                    AppSettings.textPrimary(context));
+            drawVerticallyCentered(
+                    canvas,
+                    cityPaint,
+                    shortHorizonLabel(
+                            context,
+                            horizon.label),
+                    BASE_WIDTH - 44f,
+                    top + PRAYER_ROW_HEIGHT / 2f);
+        }
 
         String[] labels = {
                 context.getString(R.string.runtime_text_0078),
@@ -363,52 +601,85 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 CalendarUtils.fa(times.dhuhr()),
                 CalendarUtils.fa(times.asr())
         };
-        float[] centers = {430f, 330f, 230f, 130f};
 
-        paint.setTextAlign(Paint.Align.CENTER);
+        float start = showCity ? 466f : 538f;
+        float[] centers = {
+                start,
+                start - 72f,
+                start - 144f,
+                start - 216f
+        };
+
+        Paint labelPaint =
+                new Paint(Paint.ANTI_ALIAS_FLAG);
+        labelPaint.setTypeface(
+                Typeface.create(
+                        "sans-serif",
+                        Typeface.NORMAL));
+        labelPaint.setTextSize(10f);
+        labelPaint.setTextAlign(Paint.Align.CENTER);
+        labelPaint.setColor(
+                AppSettings.textSecondary(context));
+
+        Paint timePaint =
+                new Paint(Paint.ANTI_ALIAS_FLAG);
+        timePaint.setTypeface(
+                Typeface.create(
+                        "sans-serif",
+                        Typeface.BOLD));
+        timePaint.setTextSize(15f);
+        timePaint.setTextAlign(Paint.Align.CENTER);
+        timePaint.setColor(
+                AppSettings.primaryColor(context));
+
         for (int i = 0; i < labels.length; i++) {
-            paint.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-            paint.setTextSize(14f);
-            paint.setColor(muted);
             drawVerticallyCentered(
                     canvas,
-                    paint,
+                    labelPaint,
                     labels[i],
                     centers[i],
-                    top + 37f);
-
-            paint.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-            paint.setTextSize(19f);
-            paint.setColor(primary);
+                    top + 25f);
             drawVerticallyCentered(
                     canvas,
-                    paint,
+                    timePaint,
                     values[i],
                     centers[i],
-                    top + 69f);
+                    top + 49f);
         }
 
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        paint.setTextSize(30f);
-        paint.setColor(primary);
+        Paint arrowPaint =
+                new Paint(Paint.ANTI_ALIAS_FLAG);
+        arrowPaint.setTypeface(
+                Typeface.create(
+                        "sans-serif",
+                        Typeface.BOLD));
+        arrowPaint.setTextSize(22f);
+        arrowPaint.setTextAlign(Paint.Align.CENTER);
+        arrowPaint.setColor(
+                AppSettings.primaryColor(context));
         drawVerticallyCentered(
                 canvas,
-                paint,
+                arrowPaint,
                 "<",
-                23f,
+                14f,
                 top + PRAYER_ROW_HEIGHT / 2f);
     }
 
     private static String shortHorizonLabel(
             Context context,
             String label) {
-        if (label == null || label.trim().isEmpty()) {
-            return context.getString(R.string.runtime_text_0418);
+        if (label == null
+                || label.trim().isEmpty()) {
+            return context.getString(
+                    R.string.runtime_text_0418);
         }
+
         String value = label.trim();
         int comma = value.indexOf('،');
-        if (comma < 0) comma = value.indexOf(',');
+        if (comma < 0) {
+            comma = value.indexOf(',');
+        }
+
         return comma > 0
                 ? value.substring(0, comma).trim()
                 : value;
@@ -420,12 +691,21 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             String value,
             float x,
             float cy) {
-        Paint.FontMetrics metrics = paint.getFontMetrics();
-        float baseline = cy - (metrics.ascent + metrics.descent) / 2f;
-        canvas.drawText(value == null ? "" : value, x, baseline, paint);
+        Paint.FontMetrics metrics =
+                paint.getFontMetrics();
+        float baseline = cy
+                - (metrics.ascent + metrics.descent) / 2f;
+        canvas.drawText(
+                value == null ? "" : value,
+                x,
+                baseline,
+                paint);
     }
 
-    private static int withAlpha(int color, int alpha) {
-        return (color & 0x00FFFFFF) | ((alpha & 0xFF) << 24);
+    private static int borderColor(Context context) {
+        return AppSettings.themeMode(context)
+                == AppSettings.THEME_DARK
+                ? 0xFF343D3A
+                : 0xFFDCE8E6;
     }
 }
