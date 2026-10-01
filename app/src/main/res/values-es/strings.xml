@@ -852,4 +852,8 @@ Pantalla de bloqueo</string>
     <string name="adhan_skip_add_date">Añadir fecha</string>
     <string name="adhan_skip_no_dates">Aún no hay fechas seleccionadas.</string>
     <string name="adhan_skip_remove_date">Eliminar</string>
+    <string name="adhan_asr_name">Adhan de Asr</string>
+    <string name="adhan_isha_name">Adhan de Isha</string>
+    <string name="adhan_settings_title_format">Ajustes de %1$s</string>
+    <string name="adhan_settings_all_title">Ajustes de todos los adhanes</string>
 </resources>
