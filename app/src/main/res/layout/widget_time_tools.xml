@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/time_tools_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:id="@+id/time_tools_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        android:layoutDirection="ltr">
+
+        <TextView
+            android:id="@+id/time_tools_tab_stopwatch"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tab_stopwatch"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="6dp"
+            android:layout_height="1dp" />
+
+        <TextView
+            android:id="@+id/time_tools_tab_timer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tab_timer"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="4dp">
+
+        <Chronometer
+            android:id="@+id/time_tools_chronometer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textDirection="ltr"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/time_tools_static_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="00:00:00"
+            android:textDirection="ltr"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/time_tools_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="10sp"
+        android:layout_marginBottom="4dp" />
+
+    <LinearLayout
+        android:id="@+id/time_tools_controls"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:layoutDirection="ltr">
+
+        <Button
+            android:id="@+id/time_tools_reset"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_soft_button"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/runtime_text_0167"
+            android:textAllCaps="false"
+            android:textSize="10sp" />
+
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/time_tools_primary"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.15"
+            android:background="@drawable/bg_teal_button"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/runtime_text_0010"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/time_tools_lap"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_soft_button"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/runtime_text_0168"
+            android:textAllCaps="false"
+            android:textSize="10sp" />
+
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/time_tools_open"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_soft_button"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/time_tools_widget_open"
+            android:textAllCaps="false"
+            android:textSize="10sp" />
+    </LinearLayout>
+</LinearLayout>
