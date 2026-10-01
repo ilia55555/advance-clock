@@ -140,7 +140,8 @@ public final class TimerActivity extends Activity {
     }
 
     private void renderTime(long millis) { long total=(millis+999)/1000; timeView.setText(String.format(Locale.US,"%02d:%02d:%02d",total/3600,(total/60)%60,total%60)); }
-    private void save() { getSharedPreferences(PREFS,MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply(); }
+    private void save() { getSharedPreferences(PREFS,MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(this);
+    }
     private void restore() { SharedPreferences p=getSharedPreferences(PREFS,MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(this)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
     @Override protected void onResume(){super.onResume();restore();updateControls();renderSelection();renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?Math.max(0,selectedTarget-System.currentTimeMillis()):readDuration());if(running)handler.post(ticker);}
     @Override protected void onPause(){handler.removeCallbacks(ticker);save();super.onPause();}
