@@ -494,7 +494,16 @@ public final class MainActivity extends Activity {
             city.setTypeface(null, Typeface.BOLD);
             city.setMaxLines(1);
             row.addView(city, new LinearLayout.LayoutParams(dp(72), dp(72)));
-            String[] labels = {AppString.get(R.string.runtime_text_0078), AppString.get(R.string.runtime_text_0083), AppString.get(R.string.runtime_text_0079), AppString.get(R.string.runtime_text_0082), AppString.get(R.string.runtime_text_0084), AppString.get(R.string.runtime_text_0080), AppString.get(R.string.runtime_text_0081), AppString.get(R.string.runtime_text_0085)};
+            String[] labels = {
+                    AppString.get(R.string.runtime_text_0078),
+                    AppString.get(R.string.runtime_text_0083),
+                    AppString.get(R.string.runtime_text_0079),
+                    AppString.get(R.string.adhan_asr_name),
+                    AppString.get(R.string.runtime_text_0084),
+                    AppString.get(R.string.runtime_text_0080),
+                    AppString.get(R.string.adhan_isha_name),
+                    AppString.get(R.string.runtime_text_0085)
+            };
             String[] values = {times.fajr(), times.sunrise(), times.dhuhr(), times.asr(),
                     times.sunset(), times.maghrib(), times.isha(), times.midnight()};
             for (int index = 0; index < labels.length; index++)
