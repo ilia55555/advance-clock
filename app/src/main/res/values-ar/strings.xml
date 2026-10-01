@@ -1056,4 +1056,43 @@
     <string name="alarm_remaining_hours">متبقي %1$d ساعة</string>
     <string name="alarm_remaining_minutes">متبقي %1$d دقيقة</string>
     <string name="alarm_remaining_expired">انتهى وقت المنبه</string>
+
+    <string name="alarm_remaining_full_format">متبقي %1$s</string>
+    <string name="alarm_remaining_separator"> و</string>
+    <string name="alarm_remaining_less_than_minute">متبقي أقل من دقيقة</string>
+    <plurals name="alarm_remaining_years">
+        <item quantity="one">%1$d سنة</item>
+        <item quantity="two">%1$d سنتان</item>
+        <item quantity="few">%1$d سنوات</item>
+        <item quantity="many">%1$d سنة</item>
+        <item quantity="other">%1$d سنة</item>
+    </plurals>
+    <plurals name="alarm_remaining_months">
+        <item quantity="one">%1$d شهر</item>
+        <item quantity="two">%1$d شهران</item>
+        <item quantity="few">%1$d أشهر</item>
+        <item quantity="many">%1$d شهرًا</item>
+        <item quantity="other">%1$d شهر</item>
+    </plurals>
+    <plurals name="alarm_remaining_days">
+        <item quantity="one">%1$d يوم</item>
+        <item quantity="two">%1$d يومان</item>
+        <item quantity="few">%1$d أيام</item>
+        <item quantity="many">%1$d يومًا</item>
+        <item quantity="other">%1$d يوم</item>
+    </plurals>
+    <plurals name="alarm_remaining_hours_unit">
+        <item quantity="one">%1$d ساعة</item>
+        <item quantity="two">%1$d ساعتان</item>
+        <item quantity="few">%1$d ساعات</item>
+        <item quantity="many">%1$d ساعة</item>
+        <item quantity="other">%1$d ساعة</item>
+    </plurals>
+    <plurals name="alarm_remaining_minutes_unit">
+        <item quantity="one">%1$d دقيقة</item>
+        <item quantity="two">%1$d دقيقتان</item>
+        <item quantity="few">%1$d دقائق</item>
+        <item quantity="many">%1$d دقيقة</item>
+        <item quantity="other">%1$d دقيقة</item>
+    </plurals>
 </resources>
