@@ -208,6 +208,19 @@
         </receiver>
 
         <receiver
+            android:name=".CalendarWidgetProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/calendar_widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calendar_widget_info" />
+        </receiver>
+
+        <receiver
             android:name=".ClockWidgetProvider"
             android:enabled="true"
             android:exported="true">
