@@ -302,6 +302,7 @@ public final class SettingsActivity extends Activity {
         setResult(RESULT_OK);
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
         ClockWidgetProvider.updateAll(this);
+        CalendarWidgetProvider.updateAll(this);
         NoForgetWidgetProvider.updateAll(this);
     }
 
