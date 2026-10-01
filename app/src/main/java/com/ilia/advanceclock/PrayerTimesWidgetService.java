@@ -377,22 +377,34 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
 
         private void applyFontSize(RemoteViews row, int mode) {
             float city;
+            float date;
+            float clock;
             float label;
             float value;
             float icon;
             if (compact) {
-                city = mode == 0 ? 10f : (mode == 2 ? 12f : 11f);
-                label = mode == 0 ? 6f : (mode == 2 ? 8f : 7f);
-                value = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
-                icon = 8f;
+                city = mode == 0 ? 11f : (mode == 2 ? 13f : 12f);
+                date = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
+                clock = mode == 0 ? 10f : (mode == 2 ? 13f : 12f);
+                label = mode == 0 ? 7f : (mode == 2 ? 9f : 8f);
+                value = mode == 0 ? 9f : (mode == 2 ? 11f : 10f);
+                icon = mode == 0 ? 9f : (mode == 2 ? 11f : 10f);
             } else {
-                city = mode == 0 ? 14f : (mode == 2 ? 18f : 16f);
-                label = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
-                value = mode == 0 ? 10f : (mode == 2 ? 13f : 11f);
-                icon = mode == 0 ? 10f : (mode == 2 ? 14f : 12f);
+                city = mode == 0 ? 18f : (mode == 2 ? 22f : 20f);
+                date = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
+                clock = mode == 0 ? 24f : (mode == 2 ? 32f : 28f);
+                label = mode == 0 ? 10f : (mode == 2 ? 14f : 12f);
+                value = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
+                icon = mode == 0 ? 12f : (mode == 2 ? 16f : 14f);
             }
             row.setTextViewTextSize(
                     R.id.prayer_widget_city, TypedValue.COMPLEX_UNIT_SP, city);
+            row.setTextViewTextSize(
+                    R.id.prayer_widget_local_date, TypedValue.COMPLEX_UNIT_SP, date);
+            row.setTextViewTextSize(
+                    R.id.prayer_widget_local_time, TypedValue.COMPLEX_UNIT_SP, clock);
+            row.setTextViewTextSize(
+                    R.id.prayer_widget_countdown, TypedValue.COMPLEX_UNIT_SP, clock);
 
             int[] labels = {
                     R.id.prayer_label_fajr,
