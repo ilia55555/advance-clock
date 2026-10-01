@@ -59,6 +59,7 @@ public final class PrayerSettingsActivity extends Activity {
     private LinearLayout activeMuezzinList;
     private Switch masterAdhanSwitch;
     private Switch allAdhanSwitch;
+    private final Switch[] adhanTypeSwitches = new Switch[5];
     private boolean syncingAdhanSwitches;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -586,7 +587,11 @@ public final class PrayerSettingsActivity extends Activity {
         Switch enabled = new Switch(this);
         enabled.setChecked(adhanTypeEnabled(type));
         enabled.setContentDescription(AppString.get(R.string.runtime_text_0350) + title);
-        if (type == 899) allAdhanSwitch = enabled;
+        if (type == 899) {
+            allAdhanSwitch = enabled;
+        } else if (type >= AdhanScheduler.FAJR && type <= AdhanScheduler.ISHA) {
+            adhanTypeSwitches[type] = enabled;
+        }
         enabled.setOnCheckedChangeListener((button, checked) -> {
             if (syncingAdhanSwitches) return;
             updateAdhanSetting(() -> setAdhanTypeEnabled(type, checked), checked);
@@ -604,6 +609,10 @@ public final class PrayerSettingsActivity extends Activity {
         try {
             if (masterAdhanSwitch != null) {
                 masterAdhanSwitch.setChecked(AppSettings.adhanEnabled(this));
+            }
+            for (int type = AdhanScheduler.FAJR; type <= AdhanScheduler.ISHA; type++) {
+                Switch item = adhanTypeSwitches[type];
+                if (item != null) item.setChecked(adhanTypeEnabled(type));
             }
             if (allAdhanSwitch != null) {
                 allAdhanSwitch.setChecked(adhanTypeEnabled(899));
