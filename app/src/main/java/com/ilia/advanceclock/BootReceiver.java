@@ -14,6 +14,7 @@ public final class BootReceiver extends BroadcastReceiver {
         AdhanScheduler.rescheduleAll(context);
         ClockWidgetProvider.updateAll(context);
         CalendarWidgetProvider.updateAll(context);
+        TimeToolsWidgetProvider.updateAll(context);
         WorldClockWidgetProvider.updateAll(context);
         NoForgetWidgetProvider.updateAll(context);
         MediaWidgetProvider.updateAll(context);
