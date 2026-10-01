@@ -1028,4 +1028,6 @@ Lock screen</string>
     <string name="adhan_isha_name">Isha Adhan</string>
     <string name="adhan_settings_title_format">%1$s settings</string>
     <string name="adhan_settings_all_title">All Adhan settings</string>
+    <string name="calendar_widget_name">Triple Calendar</string>
+    <string name="calendar_widget_description">Persian, Gregorian and Hijri calendar with prayer times</string>
 </resources>
