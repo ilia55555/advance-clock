@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -68,7 +69,8 @@ public final class SettingsActivity extends Activity {
         root.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
 
         root.addView(label(getString(R.string.language_label)));
-        Spinner language = spinner(getResources().getStringArray(R.array.language_options));
+        Spinner language = languageSpinner(
+                getResources().getStringArray(R.array.language_options));
         language.setSelection(AppSettings.languagePosition(this));
         root.addView(language, new LinearLayout.LayoutParams(-1, dp(54)));
 
@@ -188,6 +190,13 @@ public final class SettingsActivity extends Activity {
         });
 
         watch(language, position -> {
+            if (!AppSettings.isSelectableLanguagePosition(position)) {
+                int current = AppSettings.languagePosition(this);
+                if (language.getSelectedItemPosition() != current) {
+                    language.setSelection(current);
+                }
+                return;
+            }
             String selected = AppSettings.languageCodes()[position];
             if (AppSettings.language(this).equals(selected)) return;
             AppSettings.setLanguage(this, selected);
@@ -373,6 +382,41 @@ public final class SettingsActivity extends Activity {
                 android.R.layout.simple_spinner_item,
                 values);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setLayoutDirection(AppSettings.layoutDirection(this));
+        return spinner;
+    }
+
+    private Spinner languageSpinner(String[] values) {
+        Spinner spinner = new Spinner(this);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                values) {
+            @Override public boolean areAllItemsEnabled() {
+                return false;
+            }
+
+            @Override public boolean isEnabled(int position) {
+                return AppSettings.isSelectableLanguagePosition(position);
+            }
+
+            @Override public View getDropDownView(
+                    int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                boolean enabled = isEnabled(position);
+                view.setEnabled(enabled);
+                view.setAlpha(enabled ? 1f : 0.38f);
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(enabled
+                            ? AppSettings.textPrimary(SettingsActivity.this)
+                            : AppSettings.textSecondary(SettingsActivity.this));
+                }
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setLayoutDirection(AppSettings.layoutDirection(this));
         return spinner;
