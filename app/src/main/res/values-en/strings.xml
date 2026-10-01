@@ -160,9 +160,9 @@
     <string formatted="false" name="runtime_text_0075">Show details on lock screen</string>
     <string formatted="false" name="runtime_text_0076">Prayer and adhan settings</string>
     <string formatted="false" name="runtime_text_0077">Adhan</string>
-    <string formatted="false" name="runtime_text_0078">Fajr adhan</string>
-    <string formatted="false" name="runtime_text_0079">Dhuhr adhan</string>
-    <string formatted="false" name="runtime_text_0080">Maghrib adhan</string>
+    <string formatted="false" name="runtime_text_0078">Fajr Adhan</string>
+    <string formatted="false" name="runtime_text_0079">Dhuhr Adhan</string>
+    <string formatted="false" name="runtime_text_0080">Maghrib Adhan</string>
     <string formatted="false" name="runtime_text_0081">Isha</string>
     <string formatted="false" name="runtime_text_0082">Asr</string>
     <string formatted="false" name="runtime_text_0083">Sunrise</string>
