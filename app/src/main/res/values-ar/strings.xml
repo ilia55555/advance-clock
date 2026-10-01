@@ -1027,4 +1027,8 @@
     <string name="adhan_skip_add_date">إضافة تاريخ</string>
     <string name="adhan_skip_no_dates">لم يتم تحديد أي تاريخ بعد.</string>
     <string name="adhan_skip_remove_date">حذف</string>
+    <string name="adhan_asr_name">أذان العصر</string>
+    <string name="adhan_isha_name">أذان العشاء</string>
+    <string name="adhan_settings_title_format">إعدادات %1$s</string>
+    <string name="adhan_settings_all_title">إعدادات جميع الأذانات</string>
 </resources>
