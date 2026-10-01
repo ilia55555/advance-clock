@@ -388,20 +388,29 @@ public final class PrayerSettingsActivity extends Activity {
         description.setPadding(0, dp(4), 0, dp(8));
         skipCard.addView(description);
 
+        boolean mixedSkipMode = type == 899
+                && !AppSettings.allAdhanSkipModesMatch(this);
+        java.util.ArrayList<String> modeItems = new java.util.ArrayList<>();
+        modeItems.add(AppString.get(R.string.adhan_skip_mode_off));
+        modeItems.add(AppString.get(R.string.adhan_skip_mode_weekdays));
+        modeItems.add(AppString.get(R.string.adhan_skip_mode_dates));
+        if (mixedSkipMode) {
+            modeItems.add(AppString.get(R.string.runtime_text_0344));
+        }
+
         Spinner mode = new Spinner(this);
         ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                new String[]{
-                        AppString.get(R.string.adhan_skip_mode_off),
-                        AppString.get(R.string.adhan_skip_mode_weekdays),
-                        AppString.get(R.string.adhan_skip_mode_dates)
-                });
+                modeItems);
         modeAdapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         mode.setAdapter(modeAdapter);
         mode.setLayoutDirection(AppSettings.layoutDirection(this));
-        mode.setSelection(AppSettings.adhanSkipMode(this, type));
+        mode.setSelection(
+                mixedSkipMode
+                        ? 3
+                        : AppSettings.adhanSkipMode(this, type));
         skipCard.addView(mode, new LinearLayout.LayoutParams(-1, dp(54)));
 
         ScrollView optionsScroll = new ScrollView(this);
@@ -422,7 +431,14 @@ public final class PrayerSettingsActivity extends Activity {
                             View view,
                             int position,
                             long id) {
-                        if (AppSettings.adhanSkipMode(
+                        if (type == 899 && position > AppSettings.ADHAN_SKIP_DATES) {
+                            renderAdhanSkipOptions(options, mode, type);
+                            return;
+                        }
+                        boolean mixed = type == 899
+                                && !AppSettings.allAdhanSkipModesMatch(
+                                        PrayerSettingsActivity.this);
+                        if (mixed || AppSettings.adhanSkipMode(
                                 PrayerSettingsActivity.this, type) != position) {
                             AppSettings.setAdhanSkipMode(
                                     PrayerSettingsActivity.this, type, position);
@@ -444,10 +460,30 @@ public final class PrayerSettingsActivity extends Activity {
         options.removeAllViews();
         int selectedMode = mode.getSelectedItemPosition();
         View optionsContainer = (View) options.getParent();
+
+        if (type == 899 && selectedMode > AppSettings.ADHAN_SKIP_DATES) {
+            optionsContainer.setVisibility(View.VISIBLE);
+            TextView mixed = text(
+                    AppString.get(R.string.runtime_text_0344),
+                    13,
+                    AppSettings.textSecondary(this));
+            mixed.setPadding(dp(8), dp(12), dp(8), dp(12));
+            options.addView(mixed);
+            return;
+        }
+
         optionsContainer.setVisibility(
                 selectedMode == AppSettings.ADHAN_SKIP_NONE ? View.GONE : View.VISIBLE);
 
         if (selectedMode == AppSettings.ADHAN_SKIP_WEEKDAYS) {
+            if (type == 899 && !AppSettings.allAdhanSkipWeekdaysMatch(this)) {
+                TextView mixed = text(
+                        AppString.get(R.string.runtime_text_0344),
+                        12,
+                        AppSettings.textSecondary(this));
+                mixed.setPadding(dp(8), dp(4), dp(8), dp(8));
+                options.addView(mixed);
+            }
             int[] days = {
                     java.util.Calendar.SATURDAY,
                     java.util.Calendar.SUNDAY,
@@ -485,6 +521,15 @@ public final class PrayerSettingsActivity extends Activity {
         }
 
         if (selectedMode != AppSettings.ADHAN_SKIP_DATES) return;
+
+        if (type == 899 && !AppSettings.allAdhanSkipDatesMatch(this)) {
+            TextView mixed = text(
+                    AppString.get(R.string.runtime_text_0344),
+                    12,
+                    AppSettings.textSecondary(this));
+            mixed.setPadding(dp(8), dp(4), dp(8), dp(8));
+            options.addView(mixed);
+        }
 
         Button addDate = fieldButton(
                 AppString.get(R.string.adhan_skip_add_date));
@@ -848,8 +893,26 @@ public final class PrayerSettingsActivity extends Activity {
     private void renderMuezzinList(int type) {
         if (activeMuezzinList == null) return;
         activeMuezzinList.removeAllViews();
-        String selected = AppSettings.adhanSoundUri(
-                this, type == 899 ? AdhanScheduler.FAJR : type);
+
+        String selected;
+        boolean mixed = type == 899 && !AppSettings.allAdhanSoundsMatch(this);
+        if (mixed) {
+            selected = "";
+            TextView mixedLabel = text(
+                    AppString.get(R.string.runtime_text_0344),
+                    13,
+                    AppSettings.textSecondary(this));
+            mixedLabel.setPadding(dp(10), dp(8), dp(10), dp(10));
+            activeMuezzinList.addView(
+                    mixedLabel,
+                    new LinearLayout.LayoutParams(-1, -2));
+        } else {
+            selected = type == 899
+                    ? AppSettings.commonAdhanSoundUri(this)
+                    : AppSettings.adhanSoundUri(this, type);
+            if (selected == null) selected = "";
+        }
+
         for (SoundLibrary.Sound item : SoundLibrary.all(this)) {
             boolean checked = item.uri.equals(selected);
             LinearLayout row = new LinearLayout(this);
