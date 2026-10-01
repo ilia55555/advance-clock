@@ -1049,4 +1049,8 @@ Lock screen</string>
     <string name="time_tools_widget_stopwatch_ready">Stopwatch ready</string>
     <string name="time_tools_widget_timer_paused">Timer paused</string>
     <string name="time_tools_widget_default_duration">Default duration</string>
+    <string name="alarm_remaining_hours_minutes">%1$d hr %2$d min remaining</string>
+    <string name="alarm_remaining_hours">%1$d hr remaining</string>
+    <string name="alarm_remaining_minutes">%1$d min remaining</string>
+    <string name="alarm_remaining_expired">Alarm time has passed</string>
 </resources>
