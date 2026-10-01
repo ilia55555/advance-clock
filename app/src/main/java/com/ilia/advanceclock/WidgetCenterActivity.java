@@ -105,6 +105,12 @@ public final class WidgetCenterActivity extends Activity {
                 "calendar");
 
         addWidgetCard(
+                getString(R.string.time_tools_widget_name),
+                getString(R.string.time_tools_widget_description),
+                TimeToolsWidgetProvider.class,
+                "time_tools");
+
+        addWidgetCard(
                 AppString.get(R.string.runtime_text_0016),
                 AppString.get(R.string.runtime_text_0486),
                 NoForgetWidgetProvider.class,
@@ -218,6 +224,7 @@ public final class WidgetCenterActivity extends Activity {
 
     private int previewResource(String kind) {
         if ("calendar".equals(kind)) return R.drawable.preview_widget_calendar;
+        if ("time_tools".equals(kind)) return R.drawable.preview_widget_time_tools;
         if ("note".equals(kind)) return R.drawable.preview_widget_notes;
         if ("world".equals(kind)) return R.drawable.preview_widget_world;
         if ("prayer".equals(kind)) {
@@ -265,6 +272,9 @@ public final class WidgetCenterActivity extends Activity {
         Intent intent;
         if ("calendar".equals(kind)) {
             intent = new Intent(this, CalendarWidgetConfigActivity.class)
+                    .putExtra("editExisting", true);
+        } else if ("time_tools".equals(kind)) {
+            intent = new Intent(this, TimeToolsWidgetConfigActivity.class)
                     .putExtra("editExisting", true);
         } else if ("world".equals(kind)) {
             intent = new Intent(this, WorldClockWidgetConfigActivity.class);
