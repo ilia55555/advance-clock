@@ -57,6 +57,9 @@ public final class PrayerSettingsActivity extends Activity {
     private int locationRequestGeneration;
     private int activeAdhanType = -1;
     private LinearLayout activeMuezzinList;
+    private Switch masterAdhanSwitch;
+    private Switch allAdhanSwitch;
+    private boolean syncingAdhanSwitches;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -107,14 +110,16 @@ public final class PrayerSettingsActivity extends Activity {
         masterTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         masterCard.addView(masterTitle);
 
-        Switch master = toggle(
+        masterAdhanSwitch = toggle(
                 AppString.get(R.string.runtime_text_0351),
                 AppSettings.adhanEnabled(this));
-        master.setOnCheckedChangeListener((button, checked) -> {
+        masterAdhanSwitch.setOnCheckedChangeListener((button, checked) -> {
+            if (syncingAdhanSwitches) return;
             AppSettings.setAdhanEnabled(this, checked);
+            syncAdhanSwitches();
             setResult(RESULT_OK);
         });
-        masterCard.addView(master);
+        masterCard.addView(masterAdhanSwitch);
         root.addView(masterCard, cardParams());
 
         LinearLayout locationCard = card();
@@ -206,6 +211,7 @@ public final class PrayerSettingsActivity extends Activity {
             locationButton.setText(AppString.get(R.string.runtime_text_0089));
         }
         renderHorizons();
+        syncAdhanSwitches();
 
     }
 
@@ -580,13 +586,31 @@ public final class PrayerSettingsActivity extends Activity {
         Switch enabled = new Switch(this);
         enabled.setChecked(adhanTypeEnabled(type));
         enabled.setContentDescription(AppString.get(R.string.runtime_text_0350) + title);
-        enabled.setOnCheckedChangeListener((button, checked) ->
-                updateAdhanSetting(() -> setAdhanTypeEnabled(type, checked), checked));
+        if (type == 899) allAdhanSwitch = enabled;
+        enabled.setOnCheckedChangeListener((button, checked) -> {
+            if (syncingAdhanSwitches) return;
+            updateAdhanSetting(() -> setAdhanTypeEnabled(type, checked), checked);
+            syncAdhanSwitches();
+        });
         row.addView(enabled, new LinearLayout.LayoutParams(dp(52), dp(52)));
 
         LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(66));
         rowParams.topMargin = dp(7);
         parent.addView(row, rowParams);
+    }
+
+    private void syncAdhanSwitches() {
+        syncingAdhanSwitches = true;
+        try {
+            if (masterAdhanSwitch != null) {
+                masterAdhanSwitch.setChecked(AppSettings.adhanEnabled(this));
+            }
+            if (allAdhanSwitch != null) {
+                allAdhanSwitch.setChecked(adhanTypeEnabled(899));
+            }
+        } finally {
+            syncingAdhanSwitches = false;
+        }
     }
 
     private String adhanSettingSummary(int type) {
