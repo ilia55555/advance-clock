@@ -432,6 +432,10 @@ public final class AppSettings {
     }
 
     public static int adhanSkipMode(Context context, int type) {
+        if (type == 899) {
+            int common = commonAdhanSkipMode(context);
+            return common >= 0 ? common : adhanSkipMode(context, AdhanScheduler.FAJR);
+        }
         int normalized = normalizedAdhanType(type);
         String key = adhanSkipKey("adhan_skip_mode", normalized);
         if (prefs(context).contains(key)) {
@@ -440,6 +444,18 @@ public final class AppSettings {
         }
         int legacy = prefs(context).getInt("adhan_skip_mode", ADHAN_SKIP_NONE);
         return Math.max(ADHAN_SKIP_NONE, Math.min(ADHAN_SKIP_DATES, legacy));
+    }
+
+    public static int commonAdhanSkipMode(Context context) {
+        int first = adhanSkipMode(context, AdhanScheduler.FAJR);
+        for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+            if (adhanSkipMode(context, item) != first) return -1;
+        }
+        return first;
+    }
+
+    public static boolean allAdhanSkipModesMatch(Context context) {
+        return commonAdhanSkipMode(context) >= 0;
     }
 
     public static void setAdhanSkipMode(Context context, int type, int value) {
@@ -466,8 +482,22 @@ public final class AppSettings {
 
     public static boolean adhanSkipWeekday(
             Context context, int type, int calendarDayOfWeek) {
+        if (type == 899) {
+            for (int item = AdhanScheduler.FAJR; item <= AdhanScheduler.ISHA; item++) {
+                if (!adhanSkipWeekday(context, item, calendarDayOfWeek)) return false;
+            }
+            return true;
+        }
         int bit = 1 << Math.max(1, Math.min(7, calendarDayOfWeek));
         return (adhanSkipWeekdayMask(context, type) & bit) != 0;
+    }
+
+    public static boolean allAdhanSkipWeekdaysMatch(Context context) {
+        int first = adhanSkipWeekdayMask(context, AdhanScheduler.FAJR);
+        for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+            if (adhanSkipWeekdayMask(context, item) != first) return false;
+        }
+        return true;
     }
 
     public static void setAdhanSkipWeekday(
@@ -491,6 +521,8 @@ public final class AppSettings {
     }
 
     public static java.util.Set<String> adhanSkipDates(Context context, int type) {
+        if (type == 899) return commonAdhanSkipDates(context);
+
         int normalized = normalizedAdhanType(type);
         String key = adhanSkipKey("adhan_skip_dates", normalized);
         if (prefs(context).contains(key)) {
@@ -501,6 +533,23 @@ public final class AppSettings {
         java.util.Set<String> legacy = prefs(context).getStringSet(
                 "adhan_skip_dates", java.util.Collections.emptySet());
         return new java.util.HashSet<>(legacy);
+    }
+
+    public static java.util.Set<String> commonAdhanSkipDates(Context context) {
+        java.util.Set<String> common = new java.util.HashSet<>(
+                adhanSkipDates(context, AdhanScheduler.FAJR));
+        for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+            common.retainAll(adhanSkipDates(context, item));
+        }
+        return common;
+    }
+
+    public static boolean allAdhanSkipDatesMatch(Context context) {
+        java.util.Set<String> first = adhanSkipDates(context, AdhanScheduler.FAJR);
+        for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+            if (!first.equals(adhanSkipDates(context, item))) return false;
+        }
+        return true;
     }
 
     public static void addAdhanSkipDate(Context context, int type, long millis) {
@@ -708,6 +757,18 @@ public final class AppSettings {
     public static void setAdhanSoundUri(Context context, int type, String uri) {
         prefs(context).edit().putString(
                 "adhan_sound_uri_" + type, uri == null ? "" : uri).apply();
+    }
+
+    public static String commonAdhanSoundUri(Context context) {
+        String first = adhanSoundUri(context, AdhanScheduler.FAJR);
+        for (int item = AdhanScheduler.DHUHR; item <= AdhanScheduler.ISHA; item++) {
+            if (!first.equals(adhanSoundUri(context, item))) return null;
+        }
+        return first;
+    }
+
+    public static boolean allAdhanSoundsMatch(Context context) {
+        return commonAdhanSoundUri(context) != null;
     }
 
     public static int adhanVolume(Context context, int type) {
