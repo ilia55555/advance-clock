@@ -1028,4 +1028,6 @@
     <string name="adhan_isha_name">اذان عشاء</string>
     <string name="adhan_settings_title_format">تنظیمات %1$s</string>
     <string name="adhan_settings_all_title">تنظیمات همه اذان‌ها</string>
+    <string name="calendar_widget_name">تقویم سه‌گانه</string>
+    <string name="calendar_widget_description">تقویم شمسی، میلادی و قمری همراه با اوقات شرعی</string>
 </resources>
