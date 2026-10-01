@@ -1030,4 +1030,8 @@ Lock screen</string>
     <string name="adhan_settings_all_title">All Adhan settings</string>
     <string name="calendar_widget_name">Triple Calendar</string>
     <string name="calendar_widget_description">Persian, Gregorian and Hijri calendar with prayer times</string>
+    <string name="calendar_widget_settings_title">Calendar widget settings</string>
+    <string name="calendar_widget_settings_description">Choose which sections are shown in the calendar widget.</string>
+    <string name="calendar_widget_show_events">Show events</string>
+    <string name="calendar_widget_show_prayer">Show prayer times</string>
 </resources>
