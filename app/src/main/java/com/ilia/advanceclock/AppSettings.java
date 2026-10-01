@@ -857,6 +857,24 @@ public final class AppSettings {
         return 0;
     }
 
+    public static boolean isSelectableLanguageCode(String code) {
+        return LANGUAGE_ENGLISH.equals(code)
+                || LANGUAGE_PERSIAN.equals(code)
+                || LANGUAGE_ARABIC.equals(code);
+    }
+
+    public static boolean isSelectableLanguagePosition(int position) {
+        String[] codes = languageCodes();
+        return position >= 0
+                && position < codes.length
+                && isSelectableLanguageCode(codes[position]);
+    }
+
+    public static int selectableLanguagePosition(Context context) {
+        int position = languagePosition(context);
+        return isSelectableLanguagePosition(position) ? position : 0;
+    }
+
     public static boolean isRtlLanguage(Context context) {
         String code = Locale.forLanguageTag(language(context)).getLanguage();
         return "fa".equals(code) || "ar".equals(code);
