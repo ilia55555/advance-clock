@@ -103,7 +103,7 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
 
         int rowCount = Math.max(
                 0,
-                (height - reserved) / 56);
+                (height - reserved) / 72);
         rowCount = Math.min(
                 WidgetPrefs.maxItems(context, widgetId),
                 Math.min(10, rowCount));
@@ -267,6 +267,13 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     context.getPackageName(),
                     R.layout.widget_alarm_row);
 
+            long nextOccurrence = AlarmCountdownUtils.nextOccurrence(
+                    item,
+                    System.currentTimeMillis());
+            long displayAt = nextOccurrence > 0L
+                    ? nextOccurrence
+                    : item.triggerAtMillis;
+
             row.setTextViewText(
                     R.id.widget_row_title,
                     item.label == null
@@ -279,16 +286,22 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                             "HH:mm",
                             java.util.Locale.getDefault())
                             .format(new java.util.Date(
-                                    item.triggerAtMillis));
+                                    displayAt));
 
             row.setTextViewText(
                     R.id.widget_row_time,
                     CalendarUtils.formatDate(
-                            item.triggerAtMillis,
+                            displayAt,
                             AppSettings.defaultCalendar(
                                     context))
                             + "  "
                             + clock);
+
+            row.setTextViewText(
+                    R.id.widget_row_remaining,
+                    AlarmCountdownUtils.remainingText(
+                            context,
+                            item));
 
             row.setTextViewText(
                     R.id.widget_row_priority,
@@ -304,6 +317,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     showPriority
                             ? View.VISIBLE
                             : View.GONE);
+            row.setViewVisibility(
+                    R.id.widget_row_remaining,
+                    View.VISIBLE);
 
             row.setTextColor(
                     R.id.widget_row_title,
@@ -316,6 +332,9 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     item.priority >= PriorityUtils.HIGH
                             ? 0xFFC84D4D
                             : primary);
+            row.setTextColor(
+                    R.id.widget_row_remaining,
+                    primary);
 
             row.setTextViewTextSize(
                     R.id.widget_row_title,
@@ -329,6 +348,10 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                     R.id.widget_row_priority,
                     TypedValue.COMPLEX_UNIT_SP,
                     sizes[5]);
+            row.setTextViewTextSize(
+                    R.id.widget_row_remaining,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    sizes[4]);
 
             Intent edit = new Intent(
                     context,
@@ -484,8 +507,8 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                 new ArrayList<>();
 
         for (AlarmItem item : source) {
-            if (item.enabled
-                    && item.triggerAtMillis > now) {
+            if (!item.enabled) continue;
+            if (AlarmCountdownUtils.nextOccurrence(item, now) > now) {
                 upcoming.add(item);
             }
         }
@@ -497,8 +520,8 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
         if (sortMode == 1) {
             upcoming.sort((a, b) ->
                     Long.compare(
-                            a.triggerAtMillis,
-                            b.triggerAtMillis));
+                            AlarmCountdownUtils.nextOccurrence(a, now),
+                            AlarmCountdownUtils.nextOccurrence(b, now)));
         } else if (sortMode == 2) {
             upcoming.sort((a, b) -> {
                 int priority =
@@ -507,16 +530,17 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                                 a.priority);
                 if (priority != 0) return priority;
                 return Long.compare(
-                        a.triggerAtMillis,
-                        b.triggerAtMillis);
+                        AlarmCountdownUtils.nextOccurrence(a, now),
+                        AlarmCountdownUtils.nextOccurrence(b, now));
             });
         } else {
             AlarmItem nearest = null;
+            long nearestAt = Long.MAX_VALUE;
             for (AlarmItem item : upcoming) {
-                if (nearest == null
-                        || item.triggerAtMillis
-                        < nearest.triggerAtMillis) {
+                long next = AlarmCountdownUtils.nextOccurrence(item, now);
+                if (nearest == null || next < nearestAt) {
                     nearest = item;
+                    nearestAt = next;
                 }
             }
 
@@ -528,8 +552,8 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                                 a.priority);
                 if (priority != 0) return priority;
                 return Long.compare(
-                        a.triggerAtMillis,
-                        b.triggerAtMillis);
+                        AlarmCountdownUtils.nextOccurrence(a, now),
+                        AlarmCountdownUtils.nextOccurrence(b, now));
             });
 
             if (nearest != null) {
