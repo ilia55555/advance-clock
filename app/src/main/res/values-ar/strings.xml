@@ -1031,4 +1031,6 @@
     <string name="adhan_isha_name">أذان العشاء</string>
     <string name="adhan_settings_title_format">إعدادات %1$s</string>
     <string name="adhan_settings_all_title">إعدادات جميع الأذانات</string>
+    <string name="calendar_widget_name">التقويم الثلاثي</string>
+    <string name="calendar_widget_description">تقويم فارسي وميلادي وهجري مع مواقيت الصلاة</string>
 </resources>
