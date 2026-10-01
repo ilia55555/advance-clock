@@ -263,7 +263,9 @@ public final class WidgetCenterActivity extends Activity {
 
     private void editWidget(String kind, int widgetId) {
         Intent intent;
-        if ("world".equals(kind)) {
+        if ("calendar".equals(kind)) {
+            intent = new Intent(this, MainActivity.class);
+        } else if ("world".equals(kind)) {
             intent = new Intent(this, WorldClockWidgetConfigActivity.class);
         } else if ("prayer".equals(kind)) {
             intent = new Intent(this, PrayerTimesWidgetConfigActivity.class)
