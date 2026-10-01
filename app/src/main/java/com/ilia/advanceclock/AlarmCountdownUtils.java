@@ -39,11 +39,9 @@ public final class AlarmCountdownUtils {
 
         ZoneId zone = ZoneId.systemDefault();
         ZonedDateTime cursor = Instant.ofEpochMilli(nowMillis)
-                .atZone(zone)
-                .truncatedTo(ChronoUnit.MINUTES);
+                .atZone(zone);
         ZonedDateTime target = Instant.ofEpochMilli(next)
-                .atZone(zone)
-                .truncatedTo(ChronoUnit.MINUTES);
+                .atZone(zone);
 
         if (!target.isAfter(cursor)) {
             return context.getString(
