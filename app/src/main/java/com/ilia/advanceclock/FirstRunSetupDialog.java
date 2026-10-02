@@ -373,7 +373,8 @@ final class FirstRunSetupDialog {
                 new ArrayAdapter<String>(
                         activity,
                         android.R.layout.simple_spinner_item,
-                        values) {
+                        new java.util.ArrayList<>(
+                                java.util.Arrays.asList(values))) {
                     @Override
                     public boolean areAllItemsEnabled() {
                         return false;
@@ -429,7 +430,8 @@ final class FirstRunSetupDialog {
                 new ArrayAdapter<>(
                         activity,
                         android.R.layout.simple_spinner_item,
-                        values);
+                        new java.util.ArrayList<>(
+                                java.util.Arrays.asList(values)));
         adapter.setDropDownViewResource(
                 android.R.layout
                         .simple_spinner_dropdown_item);
