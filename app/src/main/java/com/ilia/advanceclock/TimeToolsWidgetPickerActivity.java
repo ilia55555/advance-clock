@@ -118,7 +118,7 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
         cancel.setAllCaps(false);
         cancel.setTextColor(AppSettings.textPrimary(this));
         cancel.setBackgroundResource(R.drawable.bg_soft_button);
-        cancel.setOnClickListener(v -> closeToHome());
+        cancel.setOnClickListener(v -> finish());
 
         Button save = new Button(this);
         save.setText(AppString.get(R.string.runtime_text_0005));
@@ -448,19 +448,7 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
         }
 
         TimeToolsWidgetProvider.updateAll(this);
-        closeToHome();
-    }
-
-    private void closeToHome() {
-        android.content.Intent home =
-                new android.content.Intent(
-                        android.content.Intent.ACTION_MAIN);
-        home.addCategory(
-                android.content.Intent.CATEGORY_HOME);
-        home.addFlags(
-                android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(home);
-        super.finish();
+        finish();
     }
 
     private NumberPicker picker(
