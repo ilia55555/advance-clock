@@ -2,6 +2,8 @@ package com.ilia.advanceclock;
 
 import android.content.Context;
 
+import java.util.Locale;
+
 /**
  * Thin access layer for Android string resources.
  *
@@ -31,5 +33,13 @@ public final class AppString {
             throw new IllegalStateException("AppString is not initialized");
         }
         return AppSettings.localizedContext(context).getString(resId, formatArgs);
+    }
+
+    public static Locale locale() {
+        Context context = appContext;
+        if (context == null) {
+            throw new IllegalStateException("AppString is not initialized");
+        }
+        return Locale.forLanguageTag(AppSettings.language(context));
     }
 }
