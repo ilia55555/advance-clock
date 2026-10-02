@@ -53,7 +53,7 @@ public final class CalendarWidgetConfigActivity extends Activity {
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
 
         TextView title = new TextView(this);
-        title.setText(R.string.calendar_widget_settings_title);
+        title.setText(AppString.get(R.string.calendar_widget_settings_title));
         title.setTextSize(23);
         title.setTextColor(AppSettings.textPrimary(this));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -63,7 +63,7 @@ public final class CalendarWidgetConfigActivity extends Activity {
         page.addView(top);
 
         TextView hint = new TextView(this);
-        hint.setText(R.string.calendar_widget_settings_description);
+        hint.setText(AppString.get(R.string.calendar_widget_settings_description));
         hint.setTextSize(13);
         hint.setTextColor(AppSettings.textSecondary(this));
         hint.setPadding(0, dp(4), 0, dp(12));
@@ -76,7 +76,7 @@ public final class CalendarWidgetConfigActivity extends Activity {
         card.setBackgroundResource(R.drawable.bg_card);
 
         showEvents = new Switch(this);
-        showEvents.setText(R.string.calendar_widget_show_events);
+        showEvents.setText(AppString.get(R.string.calendar_widget_show_events));
         showEvents.setTextSize(15);
         showEvents.setTextColor(AppSettings.textPrimary(this));
         showEvents.setChecked(CalendarWidgetPrefs.showEvents(this, widgetId));
@@ -84,7 +84,7 @@ public final class CalendarWidgetConfigActivity extends Activity {
         card.addView(showEvents, new LinearLayout.LayoutParams(-1, dp(54)));
 
         showPrayer = new Switch(this);
-        showPrayer.setText(R.string.calendar_widget_show_prayer);
+        showPrayer.setText(AppString.get(R.string.calendar_widget_show_prayer));
         showPrayer.setTextSize(15);
         showPrayer.setTextColor(AppSettings.textPrimary(this));
         showPrayer.setChecked(CalendarWidgetPrefs.showPrayerTimes(this, widgetId));
@@ -97,7 +97,7 @@ public final class CalendarWidgetConfigActivity extends Activity {
         page.addView(spacer, new LinearLayout.LayoutParams(-1, 0, 1f));
 
         Button save = new Button(this);
-        save.setText(R.string.runtime_text_0005);
+        save.setText(AppString.get(R.string.runtime_text_0005));
         save.setAllCaps(false);
         save.setTextSize(15);
         save.setTextColor(0xFFFFFFFF);
