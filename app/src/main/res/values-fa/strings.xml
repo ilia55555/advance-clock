@@ -1070,4 +1070,8 @@
     <string name="location_access_enable_gps">روشن کردن GPS / مکان</string>
     <string name="location_access_retry">تلاش مجدد</string>
     <string name="location_access_get_current">دریافت موقعیت فعلی</string>
+    <string name="world_clock_widget_time_weight">ضخامت اعداد ساعت</string>
+    <string name="world_clock_widget_weight_thin">نازک</string>
+    <string name="world_clock_widget_weight_normal">معمولی</string>
+    <string name="world_clock_widget_weight_bold">ضخیم</string>
 </resources>
