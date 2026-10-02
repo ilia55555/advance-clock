@@ -35,11 +35,17 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
     private static void update(Context context, AppWidgetManager manager, int id) {
         Bundle options = manager.getAppWidgetOptions(id);
-        int minWidth = options == null ? 280
-                : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 280);
-        int minHeight = options == null ? 110
-                : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110);
-        boolean compact = minWidth < 280 || minHeight < 100;
+        WidgetSizeUtils.WidgetSize size =
+                WidgetSizeUtils.currentSize(
+                        context,
+                        options,
+                        5,
+                        2);
+        float widthDp = Math.max(180f, size.widthDp);
+        float heightDp = Math.max(80f, size.heightDp);
+        boolean compact =
+                widthDp < 250f
+                        || heightDp < 96f;
 
         RemoteViews views = new RemoteViews(
                 context.getPackageName(),
@@ -59,6 +65,19 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
         views.setTextColor(R.id.prayer_widget_title, main);
         views.setTextViewText(R.id.prayer_widget_title,
                 AppString.get(R.string.runtime_text_0417));
+
+        float headerScale = clamp(
+                Math.min(
+                        widthDp / 350f,
+                        heightDp / 130f),
+                0.88f,
+                1.12f);
+        views.setTextViewTextSize(
+                R.id.prayer_widget_title,
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
+                compact
+                        ? 13f * headerScale
+                        : 16f * headerScale);
         views.setTextColor(R.id.prayer_widget_date, secondary);
         views.setTextColor(R.id.prayer_widget_manage, accent);
         views.setInt(R.id.prayer_widget_settings, "setColorFilter", secondary);
@@ -74,9 +93,12 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
         Intent service = new Intent(context, PrayerTimesWidgetService.class)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
-                .putExtra("compact", compact);
+                .putExtra("compact", compact)
+                .putExtra("widthDp", widthDp)
+                .putExtra("heightDp", heightDp);
         service.setData(Uri.parse("advanceclock://prayer-widget/" + id + "/"
                 + (compact ? "compact/" : "full/")
+                + Math.round(widthDp) + "x" + Math.round(heightDp) + "/"
                 + System.currentTimeMillis()));
         views.setRemoteAdapter(R.id.prayer_widget_list, service);
 
@@ -121,6 +143,15 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
         manager.updateAppWidget(id, views);
         manager.notifyAppWidgetViewDataChanged(id, R.id.prayer_widget_list);
+    }
+
+    private static float clamp(
+            float value,
+            float min,
+            float max) {
+        return Math.max(
+                min,
+                Math.min(max, value));
     }
 
 }
