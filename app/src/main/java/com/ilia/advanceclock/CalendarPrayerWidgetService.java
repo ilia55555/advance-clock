@@ -98,20 +98,16 @@ public final class CalendarPrayerWidgetService extends RemoteViewsService {
 
             row.setTextViewText(
                     R.id.calendar_prayer_fajr_label,
-                    context.getString(
-                            R.string.runtime_text_0078));
+                    AppString.get(R.string.runtime_text_0078));
             row.setTextViewText(
                     R.id.calendar_prayer_sunrise_label,
-                    context.getString(
-                            R.string.runtime_text_0083));
+                    AppString.get(R.string.runtime_text_0083));
             row.setTextViewText(
                     R.id.calendar_prayer_dhuhr_label,
-                    context.getString(
-                            R.string.runtime_text_0079));
+                    AppString.get(R.string.runtime_text_0079));
             row.setTextViewText(
                     R.id.calendar_prayer_asr_label,
-                    context.getString(
-                            R.string.adhan_asr_name));
+                    AppString.get(R.string.adhan_asr_name));
 
             row.setTextViewText(
                     R.id.calendar_prayer_fajr_time,
