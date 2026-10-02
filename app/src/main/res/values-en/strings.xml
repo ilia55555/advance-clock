@@ -1077,4 +1077,17 @@ Lock screen</string>
         <item quantity="one">%1$d minute</item>
         <item quantity="other">%1$d minutes</item>
     </plurals>
+
+    <string name="calendar_month_gregorian_01">January</string>
+    <string name="calendar_month_gregorian_02">February</string>
+    <string name="calendar_month_gregorian_03">March</string>
+    <string name="calendar_month_gregorian_04">April</string>
+    <string name="calendar_month_gregorian_05">May</string>
+    <string name="calendar_month_gregorian_06">June</string>
+    <string name="calendar_month_gregorian_07">July</string>
+    <string name="calendar_month_gregorian_08">August</string>
+    <string name="calendar_month_gregorian_09">September</string>
+    <string name="calendar_month_gregorian_10">October</string>
+    <string name="calendar_month_gregorian_11">November</string>
+    <string name="calendar_month_gregorian_12">December</string>
 </resources>
