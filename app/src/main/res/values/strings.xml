@@ -409,7 +409,7 @@
     <string formatted="false" name="runtime_text_0322">هشت جهت اصلی</string>
     <string formatted="false" name="runtime_text_0323">در حال دریافت جهت از حسگر…</string>
     <string formatted="false" name="runtime_text_0324">حسگر جهت‌یابی در این دستگاه در دسترس نیست.</string>
-    <string formatted="false" name="runtime_text_0325">برای قبله‌نما ابتدا موقعیت را در تنظیمات اوقات شرعی ثبت کنید.</string>
+    <string formatted="false" name="runtime_text_0325">برای تعیین جهت قبله، GPS و مجوز موقعیت را فعال کنید.</string>
     <string formatted="false" name="runtime_text_0326">جهت قبله %.0f°  •  انحراف فعلی %.0f°</string>
     <string formatted="false" name="runtime_text_0327">زاویه نسبت به شمال  </string>
     <string formatted="false" name="runtime_text_0328">شمال</string>
