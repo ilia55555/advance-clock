@@ -633,7 +633,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 R.id.calendar_day_root,
                 "setBackgroundResource",
                 selected
-                        ? R.drawable.bg_teal_button
+                        ? selectedDayBackground(context)
                         : today
                         ? R.drawable.bg_soft_button
                         : android.R.color.transparent);
@@ -649,6 +649,27 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
 
         sizeDayText(item, widthDp);
         return item;
+    }
+
+    private static int selectedDayBackground(
+            Context context) {
+        switch (AppSettings.palette(context)) {
+            case AppSettings.PALETTE_TERRACOTTA_NAVY:
+                return R.drawable.widget_calendar_selected_palette_0;
+            case AppSettings.PALETTE_MAGENTA_SKY:
+                return R.drawable.widget_calendar_selected_palette_1;
+            case AppSettings.PALETTE_MAGENTA_CHARCOAL:
+                return R.drawable.widget_calendar_selected_palette_2;
+            case AppSettings.PALETTE_TEAL_RED:
+                return R.drawable.widget_calendar_selected_palette_3;
+            case AppSettings.PALETTE_PURPLE_GOLD:
+                return R.drawable.widget_calendar_selected_palette_4;
+            case AppSettings.PALETTE_NEON_MAGENTA_GRAPHITE:
+                return R.drawable.widget_calendar_selected_palette_5;
+            case AppSettings.PALETTE_BLUE_CYAN:
+            default:
+                return R.drawable.widget_calendar_selected_palette_6;
+        }
     }
 
     private static void sizeDayText(
