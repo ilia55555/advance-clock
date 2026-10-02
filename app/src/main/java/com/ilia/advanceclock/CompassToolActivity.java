@@ -200,9 +200,19 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         SensorManager.remapCoordinateSystem(matrix, axisX, axisY, adjusted);
         float[] orientation = new float[3];
         SensorManager.getOrientation(adjusted, orientation);
-        float azimuth = (float) Math.toDegrees(orientation[0]);
-        if (azimuth < 0) azimuth += 360f;
-        compassView.setAzimuth(azimuth);
+        float azimuth =
+                (float) Math.toDegrees(
+                        orientation[0]);
+        if (azimuth < 0f) {
+            azimuth += 360f;
+        }
+
+        float trueAzimuth =
+                QiblaUtils.trueHeading(
+                        azimuth,
+                        qiblaLocation);
+        compassView.setAzimuth(
+                trueAzimuth);
         updateStatus();
     }
 
