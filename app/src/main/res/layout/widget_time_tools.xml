@@ -24,7 +24,7 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
-        <Space
+        <TextView
             android:layout_width="6dp"
             android:layout_height="1dp" />
 
@@ -95,7 +95,7 @@
             android:textAllCaps="false"
             android:textSize="10sp" />
 
-        <Space
+        <TextView
             android:layout_width="5dp"
             android:layout_height="1dp" />
 
@@ -112,7 +112,7 @@
             android:textColor="#FFFFFF"
             android:textSize="10sp" />
 
-        <Space
+        <TextView
             android:layout_width="5dp"
             android:layout_height="1dp" />
 
@@ -128,7 +128,7 @@
             android:textAllCaps="false"
             android:textSize="10sp" />
 
-        <Space
+        <TextView
             android:layout_width="5dp"
             android:layout_height="1dp" />
 
