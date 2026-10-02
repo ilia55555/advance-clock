@@ -27,7 +27,7 @@ final class FirstRunSetupDialog {
         int padding = dp(activity, 22);
         LinearLayout content = new LinearLayout(activity);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        content.setLayoutDirection(AppSettings.layoutDirection(activity));
         content.setPadding(padding, dp(activity, 18), padding, dp(activity, 10));
         GradientDrawable card = new GradientDrawable();
         card.setColor(AppSettings.surface(activity));
@@ -89,25 +89,63 @@ final class FirstRunSetupDialog {
                 .create();
         dialog.setCancelable(false);
 
+        final boolean[] refreshing = {false};
         Runnable refreshLanguage = () -> {
-            int position = language.getSelectedItemPosition();
-            if (!AppSettings.isSelectableLanguagePosition(position)) {
-                position = AppSettings.selectableLanguagePosition(activity);
+            if (refreshing[0]) return;
+            refreshing[0] = true;
+            try {
+                int position = language.getSelectedItemPosition();
+                if (!AppSettings.isSelectableLanguagePosition(position)) {
+                    position = AppSettings.selectableLanguagePosition(activity);
+                }
+
+                String code = AppSettings.languageCodes()[position];
+                Context localized = localizedContext(activity, code);
+                int direction = isRtl(code)
+                        ? View.LAYOUT_DIRECTION_RTL
+                        : View.LAYOUT_DIRECTION_LTR;
+
+                title.setText(localized.getString(R.string.first_setup_title));
+                message.setText(localized.getString(R.string.first_setup_message));
+                languageLabel.setText(localized.getString(R.string.language_label));
+                calendarLabel.setText(localized.getString(R.string.calendar_label));
+                adhan.setText(localized.getString(R.string.runtime_text_0360));
+
+                int calendarPosition = calendar.getSelectedItemPosition();
+
+                language.setAdapter(languageAdapter(
+                        activity,
+                        localized.getResources().getStringArray(
+                                R.array.language_options)));
                 language.setSelection(position, false);
-            }
-            String code = AppSettings.languageCodes()[position];
-            Context localized = localizedContext(activity, code);
-            title.setText(localized.getString(R.string.first_setup_title));
-            message.setText(localized.getString(R.string.first_setup_message));
-            languageLabel.setText(localized.getString(R.string.language_label));
-            calendarLabel.setText(localized.getString(R.string.calendar_label));
-            int calendarPosition = calendar.getSelectedItemPosition();
-            calendar.setAdapter(adapter(activity, localized.getResources().getStringArray(
-                    R.array.calendar_options)));
-            calendar.setSelection(Math.max(0, calendarPosition), false);
-            if (dialog.isShowing()) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(
-                        localized.getString(R.string.continue_label));
+
+                calendar.setAdapter(adapter(
+                        activity,
+                        localized.getResources().getStringArray(
+                                R.array.calendar_options)));
+                calendar.setSelection(
+                        Math.max(0, calendarPosition),
+                        false);
+
+                content.setLayoutDirection(direction);
+                languageLabel.setLayoutDirection(direction);
+                calendarLabel.setLayoutDirection(direction);
+                language.setLayoutDirection(direction);
+                calendar.setLayoutDirection(direction);
+                adhan.setLayoutDirection(direction);
+                adhan.setTextDirection(
+                        isRtl(code)
+                                ? View.TEXT_DIRECTION_RTL
+                                : View.TEXT_DIRECTION_LTR);
+
+                if (dialog.isShowing()) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(
+                            localized.getString(R.string.continue_label));
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                            .setLayoutDirection(direction);
+                }
+            } finally {
+                refreshing[0] = false;
             }
         };
 
@@ -145,7 +183,13 @@ final class FirstRunSetupDialog {
     private static Context localizedContext(Context context, String languageCode) {
         Configuration configuration = new Configuration(context.getResources().getConfiguration());
         configuration.setLocale(Locale.forLanguageTag(languageCode));
+        configuration.setLayoutDirection(Locale.forLanguageTag(languageCode));
         return context.createConfigurationContext(configuration);
+    }
+
+    private static boolean isRtl(String languageCode) {
+        String language = Locale.forLanguageTag(languageCode).getLanguage();
+        return "fa".equals(language) || "ar".equals(language);
     }
 
     private static Spinner spinner(Activity activity, String[] values) {
@@ -157,6 +201,13 @@ final class FirstRunSetupDialog {
     private static Spinner languageSpinner(
             Activity activity, String[] values) {
         Spinner spinner = new Spinner(activity);
+        spinner.setAdapter(languageAdapter(activity, values));
+        return spinner;
+    }
+
+    private static ArrayAdapter<String> languageAdapter(
+            Activity activity,
+            String[] values) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 activity,
                 android.R.layout.simple_spinner_item,
@@ -185,8 +236,7 @@ final class FirstRunSetupDialog {
         };
         adapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        return spinner;
+        return adapter;
     }
 
     private static ArrayAdapter<String> adapter(Activity activity, String[] values) {
