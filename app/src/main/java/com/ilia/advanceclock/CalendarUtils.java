@@ -2,7 +2,6 @@ package com.ilia.advanceclock;
 
 import android.icu.util.ULocale;
 
-import java.text.DateFormatSymbols;
 import java.util.Locale;
 
 public final class CalendarUtils {
@@ -18,9 +17,19 @@ public final class CalendarUtils {
             R.string.runtime_text_0195, R.string.runtime_text_0196,
             R.string.runtime_text_0197, R.string.runtime_text_0198
     };
-    private static final String[] GREGORIAN_MONTHS = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
+    private static final int[] GREGORIAN_MONTH_IDS = {
+            R.string.calendar_month_gregorian_01,
+            R.string.calendar_month_gregorian_02,
+            R.string.calendar_month_gregorian_03,
+            R.string.calendar_month_gregorian_04,
+            R.string.calendar_month_gregorian_05,
+            R.string.calendar_month_gregorian_06,
+            R.string.calendar_month_gregorian_07,
+            R.string.calendar_month_gregorian_08,
+            R.string.calendar_month_gregorian_09,
+            R.string.calendar_month_gregorian_10,
+            R.string.calendar_month_gregorian_11,
+            R.string.calendar_month_gregorian_12
     };
     private static final int[] HIJRI_MONTH_IDS = {
             R.string.runtime_text_0620, R.string.runtime_text_0621,
@@ -80,9 +89,7 @@ public final class CalendarUtils {
         int index = Math.max(0, Math.min(11, month));
         switch (type) {
             case GREGORIAN:
-                String localized = DateFormatSymbols.getInstance(Locale.getDefault())
-                        .getMonths()[index];
-                return localized.isEmpty() ? GREGORIAN_MONTHS[index] : localized;
+                return AppString.get(GREGORIAN_MONTH_IDS[index]);
             case HIJRI:
                 return AppString.get(HIJRI_MONTH_IDS[index]);
             case PERSIAN:
@@ -144,7 +151,7 @@ public final class CalendarUtils {
     }
 
     public static String fa(String value) {
-        String language = Locale.getDefault().getLanguage();
+        String language = AppString.locale().getLanguage();
         if (!"fa".equals(language) && !"ar".equals(language)) return value;
         char[] en = {'0','1','2','3','4','5','6','7','8','9'};
         char[] localized = "ar".equals(language)
