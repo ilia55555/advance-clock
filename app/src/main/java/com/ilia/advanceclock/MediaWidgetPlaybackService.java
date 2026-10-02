@@ -119,9 +119,11 @@ public final class MediaWidgetPlaybackService extends Service {
                     stopForeground(STOP_FOREGROUND_REMOVE);
                     stopSelf();
                 } else {
+                    startForeground(
+                            NOTIFICATION_ID,
+                            buildNotification(true, false));
                     player.start();
                     writeState(true);
-                    updateNotification(true, false);
                     scheduleTicker(true);
                 }
             } catch (Exception ignored) {
@@ -149,12 +151,24 @@ public final class MediaWidgetPlaybackService extends Service {
                 && player != null
                 && prepared) {
             try {
+                boolean playing = safeIsPlaying();
+                if (!playing) {
+                    startForeground(
+                            NOTIFICATION_ID,
+                            buildNotification(false, false));
+                }
+
                 int target = clamp(
                         safePosition() + deltaMs,
                         0,
                         Math.max(0, safeDuration()));
                 player.seekTo(target);
-                writeState(safeIsPlaying());
+                writeState(playing);
+
+                if (!playing) {
+                    stopForeground(STOP_FOREGROUND_REMOVE);
+                    stopSelf();
+                }
             } catch (Exception ignored) {
                 stopPlayback();
             }
