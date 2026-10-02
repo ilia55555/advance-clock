@@ -6,7 +6,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
@@ -26,6 +32,10 @@ public final class AdhanRingActivity
     private Sensor rotationSensor;
     private QiblaAdhanBackgroundView qiblaBackgroundView;
     private boolean liveQiblaEnabled;
+    private Location qiblaLocation;
+    private LocationManager locationManager;
+    private CancellationSignal locationCancellation;
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,20 +159,24 @@ public final class AdhanRingActivity
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
-        liveQiblaEnabled =
-                AppSettings.prayerLocationSet(this);
-
-        if (liveQiblaEnabled) {
-            sensorManager =
-                    (SensorManager)
-                            getSystemService(
-                                    SENSOR_SERVICE);
-            rotationSensor =
-                    sensorManager == null
-                            ? null
-                            : sensorManager.getDefaultSensor(
-                            Sensor.TYPE_ROTATION_VECTOR);
+        qiblaLocation =
+                QiblaUtils.bestKnownLocation(this);
+        if (qiblaLocation != null) {
+            qiblaBackgroundView.setLocation(
+                    qiblaLocation.getLatitude(),
+                    qiblaLocation.getLongitude());
         }
+
+        liveQiblaEnabled = true;
+        sensorManager =
+                (SensorManager)
+                        getSystemService(
+                                SENSOR_SERVICE);
+        rotationSensor =
+                sensorManager == null
+                        ? null
+                        : sensorManager.getDefaultSensor(
+                        Sensor.TYPE_ROTATION_VECTOR);
     }
 
     @Override
@@ -177,6 +191,10 @@ public final class AdhanRingActivity
                     rotationSensor,
                     SensorManager.SENSOR_DELAY_UI);
         }
+
+        if (liveQiblaEnabled) {
+            refreshCurrentQiblaLocation();
+        }
     }
 
     @Override
@@ -185,6 +203,7 @@ public final class AdhanRingActivity
             sensorManager.unregisterListener(
                     this);
         }
+        cancelLocationRequest();
         super.onPause();
     }
 
@@ -248,13 +267,130 @@ public final class AdhanRingActivity
         }
 
         qiblaBackgroundView.setAzimuth(
-                azimuth);
+                QiblaUtils.trueHeading(
+                        azimuth,
+                        qiblaLocation));
     }
 
     @Override
     public void onAccuracyChanged(
             Sensor sensor,
             int accuracy) {}
+
+    @SuppressWarnings("MissingPermission")
+    private void refreshCurrentQiblaLocation() {
+        Location known =
+                QiblaUtils.bestKnownLocation(this);
+        if (known != null) {
+            applyQiblaLocation(known);
+        }
+
+        if (!QiblaUtils.hasLocationPermission(this)) {
+            return;
+        }
+
+        cancelLocationRequest();
+        locationManager =
+                (LocationManager)
+                        getSystemService(
+                                LOCATION_SERVICE);
+        if (locationManager == null) return;
+
+        String provider = null;
+        try {
+            if (locationManager.isProviderEnabled(
+                    LocationManager.GPS_PROVIDER)) {
+                provider = LocationManager.GPS_PROVIDER;
+            } else if (locationManager.isProviderEnabled(
+                    LocationManager.NETWORK_PROVIDER)) {
+                provider = LocationManager.NETWORK_PROVIDER;
+            }
+        } catch (RuntimeException ignored) {
+        }
+
+        if (provider == null) return;
+
+        final String selectedProvider = provider;
+        if (Build.VERSION.SDK_INT >= 30) {
+            locationCancellation =
+                    new CancellationSignal();
+            try {
+                locationManager.getCurrentLocation(
+                        selectedProvider,
+                        locationCancellation,
+                        getMainExecutor(),
+                        this::applyQiblaLocation);
+            } catch (RuntimeException ignored) {
+            }
+            return;
+        }
+
+        locationListener =
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(
+                            Location location) {
+                        applyQiblaLocation(location);
+                        cancelLocationRequest();
+                    }
+
+                    @Override public void onStatusChanged(
+                            String provider,
+                            int status,
+                            Bundle extras) {}
+
+                    @Override public void onProviderEnabled(
+                            String provider) {}
+
+                    @Override public void onProviderDisabled(
+                            String provider) {}
+                };
+
+        try {
+            locationManager.requestSingleUpdate(
+                    selectedProvider,
+                    locationListener,
+                    Looper.getMainLooper());
+        } catch (RuntimeException ignored) {
+        }
+    }
+
+    private void applyQiblaLocation(
+            Location location) {
+        if (location == null) return;
+
+        qiblaLocation = location;
+        QiblaUtils.remember(
+                this,
+                location.getLatitude(),
+                location.getLongitude());
+
+        if (qiblaBackgroundView != null) {
+            qiblaBackgroundView.setLocation(
+                    location.getLatitude(),
+                    location.getLongitude());
+        }
+    }
+
+    private void cancelLocationRequest() {
+        if (locationCancellation != null) {
+            locationCancellation.cancel();
+            locationCancellation = null;
+        }
+
+        if (locationManager != null
+                && locationListener != null) {
+            try {
+                locationManager.removeUpdates(
+                        locationListener);
+            } catch (RuntimeException ignored) {
+            }
+        }
+
+        locationListener = null;
+        locationManager = null;
+    }
+
 
     @Override
     public boolean onKeyDown(
