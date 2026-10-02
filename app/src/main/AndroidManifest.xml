@@ -47,6 +47,10 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TimeToolsWidgetPickerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true" />
         <activity android:name=".CompassToolActivity" android:exported="false" />
         <activity
             android:name=".PrayerTimesWidgetConfigActivity"
