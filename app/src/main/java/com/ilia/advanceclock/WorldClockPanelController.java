@@ -73,6 +73,7 @@ final class WorldClockPanelController {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ArrayList<ZoneOption> allZones = new ArrayList<>();
     private final ArrayList<ZoneOption> filteredZones = new ArrayList<>();
+    private final ArrayList<ClockRowBinding> clockRows = new ArrayList<>();
     private Runnable pendingZoneSearch;
     private int searchGeneration;
     private long referenceMillis;
@@ -82,7 +83,7 @@ final class WorldClockPanelController {
 
     private final Runnable ticker = new Runnable() {
         @Override public void run() {
-            renderClocks();
+            updateClockTimes();
             if (resumed && active) {
                 long now = System.currentTimeMillis();
                 handler.postDelayed(this, 60_000L - now % 60_000L + 50L);
@@ -823,78 +824,196 @@ final class WorldClockPanelController {
 
     private void renderClocks() {
         list.removeAllViews();
-        List<String> zones = WorldClockStore.zones(host);
-        long shownMillis = referenceMode ? referenceMillis : System.currentTimeMillis();
-        referenceSummary.setText(referenceMode
-                ? AppString.get(R.string.runtime_text_0506) + localDateTime(shownMillis)
-                : AppString.get(R.string.runtime_text_0507));
-        nowButton.setVisibility(referenceMode ? View.VISIBLE : View.GONE);
+        clockRows.clear();
+
+        List<String> zones =
+                WorldClockStore.zones(host);
 
         for (String zoneId : zones) {
-            LinearLayout row = new LinearLayout(host);
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setGravity(Gravity.CENTER_VERTICAL);
-            row.setPadding(dp(14), dp(10), dp(14), dp(10));
-            row.setBackgroundResource(R.drawable.bg_card);
+            LinearLayout row =
+                    new LinearLayout(host);
+            row.setOrientation(
+                    LinearLayout.HORIZONTAL);
+            row.setGravity(
+                    Gravity.CENTER_VERTICAL);
+            row.setPadding(
+                    dp(14),
+                    dp(10),
+                    dp(14),
+                    dp(10));
+            row.setBackgroundResource(
+                    R.drawable.bg_card);
 
             String displayCity =
-                    WorldClockStore.label(host, zoneId, cityName(zoneId));
-            LinearLayout details = new LinearLayout(host);
-            details.setOrientation(LinearLayout.VERTICAL);
-            TextView name = text(displayCity, 16, AppSettings.textPrimary(host));
-            name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-            details.addView(name);
-            TextView geography = text(geography(zoneId), 11, AppSettings.textSecondary(host));
-            details.addView(geography);
-            row.addView(details, new LinearLayout.LayoutParams(0, dp(58), 1f));
+                    WorldClockStore.label(
+                            host,
+                            zoneId,
+                            cityName(zoneId));
 
-            TimeZone zone = TimeZone.getTimeZone(zoneId);
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            timeFormat.setTimeZone(zone);
-            SimpleDateFormat dateFormat =
-                    new SimpleDateFormat(AppString.get(R.string.runtime_text_0508), Locale.getDefault());
-            dateFormat.setTimeZone(zone);
-            LinearLayout converted = new LinearLayout(host);
-            converted.setOrientation(LinearLayout.VERTICAL);
-            converted.setGravity(Gravity.CENTER);
-            TextView time = text(
-                    timeFormat.format(new Date(shownMillis)),
-                    23,
-                    AppSettings.primaryColor(host));
+            LinearLayout details =
+                    new LinearLayout(host);
+            details.setOrientation(
+                    LinearLayout.VERTICAL);
+
+            TextView name =
+                    text(
+                            displayCity,
+                            16,
+                            AppSettings.textPrimary(host));
+            name.setTypeface(
+                    Typeface.DEFAULT,
+                    Typeface.BOLD);
+            details.addView(name);
+
+            TextView geography =
+                    text(
+                            geography(zoneId),
+                            11,
+                            AppSettings.textSecondary(host));
+            details.addView(geography);
+
+            row.addView(
+                    details,
+                    new LinearLayout.LayoutParams(
+                            0,
+                            dp(58),
+                            1f));
+
+            LinearLayout converted =
+                    new LinearLayout(host);
+            converted.setOrientation(
+                    LinearLayout.VERTICAL);
+            converted.setGravity(
+                    Gravity.CENTER);
+
+            TextView time =
+                    text(
+                            "",
+                            23,
+                            AppSettings.primaryColor(host));
             time.setGravity(Gravity.CENTER);
             converted.addView(time);
-            TextView date = text(
-                    dateFormat.format(new Date(shownMillis)),
-                    11,
-                    AppSettings.textSecondary(host));
+
+            TextView date =
+                    text(
+                            "",
+                            11,
+                            AppSettings.textSecondary(host));
             date.setGravity(Gravity.CENTER);
             converted.addView(date);
-            row.addView(converted, new LinearLayout.LayoutParams(dp(122), dp(58)));
 
-            ImageButton remove = new ImageButton(host);
-            remove.setImageResource(R.drawable.ic_delete_red);
-            remove.setBackgroundResource(R.drawable.bg_delete_outline);
-            remove.setContentDescription(AppString.get(R.string.runtime_text_0509) + displayCity);
-            remove.setPadding(dp(5), dp(5), dp(5), dp(5));
+            row.addView(
+                    converted,
+                    new LinearLayout.LayoutParams(
+                            dp(122),
+                            dp(58)));
+
+            ImageButton remove =
+                    new ImageButton(host);
+            remove.setImageResource(
+                    R.drawable.ic_delete_red);
+            remove.setBackgroundResource(
+                    R.drawable.bg_delete_outline);
+            remove.setContentDescription(
+                    AppString.get(
+                            R.string.runtime_text_0509)
+                            + displayCity);
+            remove.setPadding(
+                    dp(5),
+                    dp(5),
+                    dp(5),
+                    dp(5));
+
             boolean[] deleteArmed = {false};
             remove.setOnClickListener(v -> {
                 if (!deleteArmed[0]) {
                     deleteArmed[0] = true;
-                    remove.setImageResource(R.drawable.ic_md_delete);
-                    remove.setBackgroundResource(R.drawable.bg_delete_confirm);
-                    remove.setContentDescription(AppString.get(R.string.runtime_text_0510) + displayCity);
+                    remove.setImageResource(
+                            R.drawable.ic_md_delete);
+                    remove.setBackgroundResource(
+                            R.drawable.bg_delete_confirm);
+                    remove.setContentDescription(
+                            AppString.get(
+                                    R.string.runtime_text_0510)
+                                    + displayCity);
                     LogoToast.makeText(
                             host,
-                            AppString.get(R.string.runtime_text_0511),
+                            AppString.get(
+                                    R.string.runtime_text_0511),
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
                 removeZone(zoneId);
             });
-            row.addView(remove, new LinearLayout.LayoutParams(dp(20), dp(20)));
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+
+            row.addView(
+                    remove,
+                    new LinearLayout.LayoutParams(
+                            dp(20),
+                            dp(20)));
+
+            LinearLayout.LayoutParams lp =
+                    new LinearLayout.LayoutParams(
+                            -1,
+                            -2);
             lp.bottomMargin = dp(8);
             list.addView(row, lp);
+
+            clockRows.add(
+                    new ClockRowBinding(
+                            zoneId,
+                            TimeZone.getTimeZone(zoneId),
+                            time,
+                            date));
+        }
+
+        updateClockTimes();
+    }
+
+    private void updateClockTimes() {
+        long shownMillis =
+                referenceMode
+                        ? referenceMillis
+                        : System.currentTimeMillis();
+
+        referenceSummary.setText(
+                referenceMode
+                        ? AppString.get(
+                        R.string.runtime_text_0506)
+                        + localDateTime(shownMillis)
+                        : AppString.get(
+                        R.string.runtime_text_0507));
+
+        nowButton.setVisibility(
+                referenceMode
+                        ? View.VISIBLE
+                        : View.GONE);
+
+        String datePattern =
+                AppString.get(
+                        R.string.runtime_text_0508);
+
+        for (ClockRowBinding binding : clockRows) {
+            SimpleDateFormat timeFormat =
+                    new SimpleDateFormat(
+                            "HH:mm",
+                            Locale.getDefault());
+            timeFormat.setTimeZone(
+                    binding.zone);
+
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat(
+                            datePattern,
+                            Locale.getDefault());
+            dateFormat.setTimeZone(
+                    binding.zone);
+
+            binding.timeView.setText(
+                    timeFormat.format(
+                            new Date(shownMillis)));
+            binding.dateView.setText(
+                    dateFormat.format(
+                            new Date(shownMillis)));
         }
     }
 
@@ -987,14 +1106,24 @@ final class WorldClockPanelController {
         active = value;
         handler.removeCallbacks(ticker);
         if (active && resumed) {
-            handler.post(ticker);
+            updateClockTimes();
+            long now = System.currentTimeMillis();
+            handler.postDelayed(
+                    ticker,
+                    60_000L - now % 60_000L + 50L);
         }
     }
 
     void onResume() {
         resumed = true;
         handler.removeCallbacks(ticker);
-        if (active) handler.post(ticker);
+        if (active) {
+            updateClockTimes();
+            long now = System.currentTimeMillis();
+            handler.postDelayed(
+                    ticker,
+                    60_000L - now % 60_000L + 50L);
+        }
     }
 
     void onPause() {
@@ -1004,6 +1133,24 @@ final class WorldClockPanelController {
 
     private int dp(int value) {
         return Math.round(value * host.getResources().getDisplayMetrics().density);
+    }
+
+    private static final class ClockRowBinding {
+        final String zoneId;
+        final TimeZone zone;
+        final TextView timeView;
+        final TextView dateView;
+
+        ClockRowBinding(
+                String zoneId,
+                TimeZone zone,
+                TextView timeView,
+                TextView dateView) {
+            this.zoneId = zoneId;
+            this.zone = zone;
+            this.timeView = timeView;
+            this.dateView = dateView;
+        }
     }
 
     private static final class ZoneOption {
