@@ -1092,4 +1092,8 @@ Lock screen</string>
     <string name="calendar_month_gregorian_12">December</string>
     <string name="tools_dialog_compass_description">Compass, principal directions, and Qibla direction</string>
     <string name="prayer_open_qibla">Open Qibla compass</string>
+    <string name="adhan_qibla_display_title">Qibla display during Adhan</string>
+    <string name="adhan_qibla_display_none">Do not show</string>
+    <string name="adhan_qibla_display_button">Show an Open Qibla button on the Adhan screen</string>
+    <string name="adhan_qibla_display_background">Show the Qibla compass in the Adhan screen background</string>
 </resources>
