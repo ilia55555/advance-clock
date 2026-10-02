@@ -1057,4 +1057,17 @@
     <string name="adhan_qibla_display_none">اصلاً نمایش داده نشود</string>
     <string name="adhan_qibla_display_button">دکمه باز کردن قبله‌نما روی صفحه اذان</string>
     <string name="adhan_qibla_display_background">نمایش قبله‌نما در پس‌زمینه صفحه اذان</string>
+    <string name="location_access_title">GPS و مجوز موقعیت</string>
+    <string name="location_access_ready">GPS روشن است و مجوز موقعیت داده شده است.</string>
+    <string name="location_access_permission_needed">برای دریافت موقعیت دقیق و جهت صحیح قبله، مجوز موقعیت را بدهید.</string>
+    <string name="location_access_permission_denied">مجوز موقعیت رد شده است. برای نمایش دوباره پنجره اعطای مجوز، دوباره درخواست کنید.</string>
+    <string name="location_access_permission_blocked">مجوز موقعیت برای این برنامه مسدود شده است. آن را از تنظیمات برنامه فعال کنید.</string>
+    <string name="location_access_gps_off">مکان/GPS دستگاه خاموش است. برای موقعیت دقیق آن را روشن کنید.</string>
+    <string name="location_access_error">موقعیت دریافت نشد. GPS و دسترسی موقعیت را بررسی کنید و دوباره تلاش کنید.</string>
+    <string name="location_access_grant">اعطای مجوز موقعیت</string>
+    <string name="location_access_request_again">درخواست دوباره مجوز</string>
+    <string name="location_access_open_app_settings">باز کردن تنظیمات مجوز برنامه</string>
+    <string name="location_access_enable_gps">روشن کردن GPS / مکان</string>
+    <string name="location_access_retry">تلاش مجدد</string>
+    <string name="location_access_get_current">دریافت موقعیت فعلی</string>
 </resources>
