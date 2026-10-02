@@ -1092,4 +1092,8 @@
     <string name="calendar_month_gregorian_12">دسامبر</string>
     <string name="tools_dialog_compass_description">نمایش قطب‌نما، جهت‌های اصلی و جهت قبله</string>
     <string name="prayer_open_qibla">باز کردن قبله‌نما</string>
+    <string name="adhan_qibla_display_title">نحوه نمایش قبله‌نما هنگام اذان</string>
+    <string name="adhan_qibla_display_none">اصلاً نمایش داده نشود</string>
+    <string name="adhan_qibla_display_button">دکمه باز کردن قبله‌نما روی صفحه اذان</string>
+    <string name="adhan_qibla_display_background">نمایش قبله‌نما در پس‌زمینه صفحه اذان</string>
 </resources>
