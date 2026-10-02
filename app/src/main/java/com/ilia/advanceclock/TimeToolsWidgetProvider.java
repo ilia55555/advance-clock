@@ -388,12 +388,6 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         context,
                         widgetId,
                         stopwatch ? "stopwatch" : "timer"));
-        root.setOnClickPendingIntent(
-                R.id.time_tools_detail,
-                openTabPendingIntent(
-                        context,
-                        widgetId,
-                        stopwatch ? "stopwatch" : "timer"));
 
         if (stopwatch) {
             renderStopwatch(
@@ -428,16 +422,9 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         stopwatch,
                         true));
 
-        boolean showDetails =
-                TimeToolsWidgetPrefs.showDetails(
-                        context,
-                        widgetId)
-                        && !compactHeight;
         root.setViewVisibility(
                 R.id.time_tools_detail,
-                showDetails
-                        ? View.VISIBLE
-                        : View.GONE);
+                View.GONE);
 
         boolean showReset =
                 TimeToolsWidgetPrefs.showReset(
