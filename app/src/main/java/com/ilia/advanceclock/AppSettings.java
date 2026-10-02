@@ -1,9 +1,11 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.app.LocaleManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.LocaleList;
 import android.view.View;
 
@@ -895,6 +897,13 @@ public final class AppSettings {
         String selected = language(context);
         Locale locale = Locale.forLanguageTag(selected);
         Locale.setDefault(locale);
+        if (Build.VERSION.SDK_INT >= 33) {
+            LocaleManager manager = context.getSystemService(LocaleManager.class);
+            LocaleList selectedLocales = new LocaleList(locale);
+            if (manager != null && !selectedLocales.equals(manager.getApplicationLocales())) {
+                manager.setApplicationLocales(selectedLocales);
+            }
+        }
         Configuration configuration = new Configuration(context.getResources().getConfiguration());
         configuration.setLocales(new LocaleList(locale));
         configuration.setLayoutDirection(locale);

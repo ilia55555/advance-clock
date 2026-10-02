@@ -2,7 +2,9 @@ package com.ilia.advanceclock;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +17,10 @@ import java.util.WeakHashMap;
 public final class AdvanceClockApplication extends Application {
     private static final WeakHashMap<Activity, Boolean> OPEN_ACTIVITIES = new WeakHashMap<>();
     private static boolean refreshScheduled;
+
+    @Override protected void attachBaseContext(Context base) {
+        super.attachBaseContext(AppSettings.localizedContext(base));
+    }
 
     @Override public void onCreate() {
         super.onCreate();
@@ -43,6 +49,14 @@ public final class AdvanceClockApplication extends Application {
                 NoteComposerVisibilityController.forget(activity);
             }
         });
+    }
+
+    @Override public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Time-zone, theme, font-scale and device-locale changes can replace the process
+        // Resources configuration. Restore the user's explicit app locale for every component.
+        AppSettings.applyLanguage(this);
+        AppString.init(this);
     }
 
     /**
