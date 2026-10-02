@@ -52,7 +52,7 @@ public final class MediaWidgetPlaybackService extends Service {
             if (player == null || !prepared) return;
             writeState(safeIsPlaying());
             if (safeIsPlaying()) {
-                handler.postDelayed(this, 1000L);
+                handler.postDelayed(this, 2000L);
             }
         }
     };
@@ -113,13 +113,17 @@ public final class MediaWidgetPlaybackService extends Service {
             try {
                 if (player.isPlaying()) {
                     player.pause();
+                    writeState(false);
+                    updateNotification(false, false);
+                    scheduleTicker(false);
+                    stopForeground(STOP_FOREGROUND_REMOVE);
+                    stopSelf();
                 } else {
                     player.start();
+                    writeState(true);
+                    updateNotification(true, false);
+                    scheduleTicker(true);
                 }
-                boolean playing = player.isPlaying();
-                writeState(playing);
-                updateNotification(playing, false);
-                scheduleTicker(playing);
             } catch (Exception ignored) {
                 stopPlayback();
             }
@@ -131,7 +135,7 @@ public final class MediaWidgetPlaybackService extends Service {
                 name,
                 mime,
                 widgetId,
-                0,
+                storedPosition(uriValue),
                 true);
     }
 
@@ -157,12 +161,20 @@ public final class MediaWidgetPlaybackService extends Service {
             return;
         }
 
+        int storedDuration = storedDuration(uriValue);
+        int target = Math.max(
+                0,
+                storedPosition(uriValue) + deltaMs);
+        if (storedDuration > 0) {
+            target = Math.min(target, storedDuration);
+        }
+
         startNew(
                 uriValue,
                 name,
                 mime,
                 widgetId,
-                Math.max(0, deltaMs),
+                target,
                 true);
     }
 
@@ -183,7 +195,6 @@ public final class MediaWidgetPlaybackService extends Service {
         currentWidgetId = widgetId;
         prepared = false;
 
-        writeState(false);
         startForeground(
                 NOTIFICATION_ID,
                 buildNotification(false, true));
@@ -215,9 +226,14 @@ public final class MediaWidgetPlaybackService extends Service {
                 }
             });
             player.setOnCompletionListener(mp -> {
-                writeState(false);
+                writeStateAt(
+                        false,
+                        0,
+                        safeDuration());
                 updateNotification(false, false);
                 scheduleTicker(false);
+                stopForeground(STOP_FOREGROUND_REMOVE);
+                stopSelf();
             });
             player.setOnErrorListener((mp, what, extra) -> {
                 stopPlayback();
@@ -232,19 +248,29 @@ public final class MediaWidgetPlaybackService extends Service {
     private void scheduleTicker(boolean playing) {
         handler.removeCallbacks(progressTicker);
         if (playing) {
-            handler.postDelayed(progressTicker, 1000L);
+            handler.postDelayed(progressTicker, 2000L);
         }
     }
 
     private void writeState(boolean playing) {
+        writeStateAt(
+                playing,
+                safePosition(),
+                safeDuration());
+    }
+
+    private void writeStateAt(
+            boolean playing,
+            int position,
+            int duration) {
         getSharedPreferences(PREFS, MODE_PRIVATE)
                 .edit()
                 .putString(KEY_URI, currentUri)
                 .putString(KEY_NAME, currentName)
                 .putString(KEY_MIME, currentMime)
                 .putBoolean(KEY_PLAYING, playing)
-                .putInt(KEY_POSITION, safePosition())
-                .putInt(KEY_DURATION, safeDuration())
+                .putInt(KEY_POSITION, Math.max(0, position))
+                .putInt(KEY_DURATION, Math.max(0, duration))
                 .apply();
         notifyWidgets();
     }
@@ -257,7 +283,6 @@ public final class MediaWidgetPlaybackService extends Service {
                     NOTIFICATION_ID,
                     buildNotification(playing, preparing));
         }
-        notifyWidgets();
     }
 
     private Notification buildNotification(
@@ -340,6 +365,34 @@ public final class MediaWidgetPlaybackService extends Service {
         } catch (Exception ignored) {
             return false;
         }
+    }
+
+    private int storedPosition(String uriValue) {
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        PREFS,
+                        MODE_PRIVATE);
+        if (!uriValue.equals(
+                prefs.getString(KEY_URI, ""))) {
+            return 0;
+        }
+        return Math.max(
+                0,
+                prefs.getInt(KEY_POSITION, 0));
+    }
+
+    private int storedDuration(String uriValue) {
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        PREFS,
+                        MODE_PRIVATE);
+        if (!uriValue.equals(
+                prefs.getString(KEY_URI, ""))) {
+            return 0;
+        }
+        return Math.max(
+                0,
+                prefs.getInt(KEY_DURATION, 0));
     }
 
     private static int clamp(int value, int min, int max) {
@@ -431,8 +484,12 @@ public final class MediaWidgetPlaybackService extends Service {
     }
 
     @Override public void onDestroy() {
+        if (!currentUri.isEmpty()
+                && player != null
+                && prepared) {
+            writeState(false);
+        }
         releasePlayer();
-        clearState();
         notifyWidgets();
         super.onDestroy();
     }
