@@ -1,9 +1,11 @@
 package com.ilia.advanceclock;
 
 import android.app.Activity;
+import android.app.LocaleManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.LocaleList;
 import android.view.View;
 
@@ -845,6 +847,7 @@ public final class AppSettings {
         // Locale recreation reads this value immediately; persist synchronously so a newly
         // created Activity can never observe the previous language.
         prefs(context).edit().putString("app_language", value).commit();
+        applyLanguage(context);
     }
 
     public static String[] languageCodes() {
@@ -894,10 +897,32 @@ public final class AppSettings {
         String selected = language(context);
         Locale locale = Locale.forLanguageTag(selected);
         Locale.setDefault(locale);
+        if (Build.VERSION.SDK_INT >= 33) {
+            LocaleManager manager = context.getSystemService(LocaleManager.class);
+            LocaleList selectedLocales = new LocaleList(locale);
+            if (manager != null && !selectedLocales.equals(manager.getApplicationLocales())) {
+                manager.setApplicationLocales(selectedLocales);
+            }
+        }
         Configuration configuration = new Configuration(context.getResources().getConfiguration());
         configuration.setLocales(new LocaleList(locale));
+        configuration.setLayoutDirection(locale);
         context.getResources().updateConfiguration(
                 configuration, context.getResources().getDisplayMetrics());
+    }
+
+    /**
+     * Returns a context whose resources always use the explicitly saved app language. Unlike
+     * mutating a long-lived Resources instance, this context cannot silently fall back to the
+     * device locale after Android dispatches a configuration change.
+     */
+    public static Context localizedContext(Context context) {
+        Locale locale = Locale.forLanguageTag(language(context));
+        Configuration configuration = new Configuration(
+                context.getResources().getConfiguration());
+        configuration.setLocales(new LocaleList(locale));
+        configuration.setLayoutDirection(locale);
+        return context.createConfigurationContext(configuration);
     }
 
     public static String languageForDevice() {
