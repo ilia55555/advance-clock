@@ -507,18 +507,23 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             }
             canvas.restore();
 
-            if (selectedMode == MODE_QIBLA
-                    && qiblaLocation != null) {
-                drawQiblaNeedle(
+            if (selectedMode == MODE_QIBLA) {
+                if (qiblaLocation != null) {
+                    drawQiblaNeedle(
+                            canvas,
+                            cx,
+                            cy,
+                            radius,
+                            signedAngle(
+                                    (float) qiblaBearing()
+                                            - azimuth));
+                }
+            } else {
+                drawNorthNeedle(
                         canvas,
                         cx,
                         cy,
-                        radius,
-                        signedAngle(
-                                (float) qiblaBearing()
-                                        - azimuth));
-            } else {
-                drawNorthNeedle(canvas, cx, cy, radius);
+                        radius);
             }
             paint.setColor(0xFF6A4326);
             paint.setStyle(Paint.Style.FILL);
