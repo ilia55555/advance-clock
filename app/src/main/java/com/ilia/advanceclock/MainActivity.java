@@ -421,7 +421,7 @@ public final class MainActivity extends Activity {
     private void applyPrayerTimesUi() {
         if (prayerTimesCard == null || clockCalendar == null) return;
 
-        boolean visible = AppSettings.adhanEnabled(this);
+        boolean visible = AppSettings.showPrayerTimes(this);
         prayerTimesCard.setVisibility(visible ? View.VISIBLE : View.GONE);
         if (!visible) return;
 
