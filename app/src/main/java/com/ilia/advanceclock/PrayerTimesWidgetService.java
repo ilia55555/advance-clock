@@ -24,7 +24,14 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         boolean compact = intent.getBooleanExtra("compact", false);
-        return new Factory(this, widgetId, compact);
+        float widthDp = intent.getFloatExtra("widthDp", 350f);
+        float heightDp = intent.getFloatExtra("heightDp", 140f);
+        return new Factory(
+                this,
+                widgetId,
+                compact,
+                widthDp,
+                heightDp);
     }
 
     private static final class Factory implements RemoteViewsFactory {
@@ -37,12 +44,21 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         private final Context context;
         private final int widgetId;
         private final boolean compact;
+        private final float widgetWidthDp;
+        private final float widgetHeightDp;
         private List<AppSettings.PrayerHorizon> horizons = Collections.emptyList();
 
-        Factory(Context context, int widgetId, boolean compact) {
+        Factory(
+                Context context,
+                int widgetId,
+                boolean compact,
+                float widgetWidthDp,
+                float widgetHeightDp) {
             this.context = context;
             this.widgetId = widgetId;
             this.compact = compact;
+            this.widgetWidthDp = Math.max(180f, widgetWidthDp);
+            this.widgetHeightDp = Math.max(80f, widgetHeightDp);
         }
 
         @Override public void onCreate() {}
@@ -375,36 +391,73 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setTextColor(value, color);
         }
 
-        private void applyFontSize(RemoteViews row, int mode) {
-            float city;
-            float date;
-            float clock;
-            float label;
-            float value;
-            float icon;
-            if (compact) {
-                city = mode == 0 ? 11f : (mode == 2 ? 13f : 12f);
-                date = mode == 0 ? 8f : (mode == 2 ? 10f : 9f);
-                clock = mode == 0 ? 10f : (mode == 2 ? 13f : 12f);
-                label = mode == 0 ? 7f : (mode == 2 ? 9f : 8f);
-                value = mode == 0 ? 9f : (mode == 2 ? 11f : 10f);
-                icon = mode == 0 ? 9f : (mode == 2 ? 11f : 10f);
-            } else {
-                city = mode == 0 ? 18f : (mode == 2 ? 22f : 20f);
-                date = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
-                clock = mode == 0 ? 24f : (mode == 2 ? 32f : 28f);
-                label = mode == 0 ? 10f : (mode == 2 ? 14f : 12f);
-                value = mode == 0 ? 13f : (mode == 2 ? 17f : 15f);
-                icon = mode == 0 ? 12f : (mode == 2 ? 16f : 14f);
-            }
+        private void applyFontSize(
+                RemoteViews row,
+                int mode) {
+            float widthScale =
+                    clamp(
+                            widgetWidthDp / 360f,
+                            0.82f,
+                            1.16f);
+            float heightScale =
+                    clamp(
+                            widgetHeightDp / 145f,
+                            0.84f,
+                            1.14f);
+            float geometryScale =
+                    Math.min(
+                            widthScale,
+                            heightScale);
+
+            // The user size option is deliberately a small adjustment.
+            // Geometry of the actual widget remains the main source of sizing.
+            float preferenceScale =
+                    mode == 0
+                            ? 0.90f
+                            : mode == 2
+                            ? 1.10f
+                            : 1f;
+            float scale =
+                    geometryScale
+                            * preferenceScale;
+
+            float city =
+                    (compact ? 12f : 17f)
+                            * scale;
+            float date =
+                    (compact ? 8.5f : 11.5f)
+                            * scale;
+            float clock =
+                    (compact ? 11f : 20f)
+                            * scale;
+            float label =
+                    (compact ? 8f : 10.5f)
+                            * scale;
+            float value =
+                    (compact ? 10f : 12.5f)
+                            * scale;
+            float icon =
+                    (compact ? 10f : 13f)
+                            * scale;
+
+            // Use DIP instead of SP so Android's system font-scale setting
+            // does not make the same widget dramatically different across phones.
             row.setTextViewTextSize(
-                    R.id.prayer_widget_city, TypedValue.COMPLEX_UNIT_SP, city);
+                    R.id.prayer_widget_city,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    clamp(city, compact ? 10f : 14f, compact ? 14f : 20f));
             row.setTextViewTextSize(
-                    R.id.prayer_widget_local_date, TypedValue.COMPLEX_UNIT_SP, date);
+                    R.id.prayer_widget_local_date,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    clamp(date, compact ? 7.5f : 9f, compact ? 11f : 14f));
             row.setTextViewTextSize(
-                    R.id.prayer_widget_local_time, TypedValue.COMPLEX_UNIT_SP, clock);
+                    R.id.prayer_widget_local_time,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    clamp(clock, compact ? 9f : 16f, compact ? 14f : 24f));
             row.setTextViewTextSize(
-                    R.id.prayer_widget_countdown, TypedValue.COMPLEX_UNIT_SP, clock);
+                    R.id.prayer_widget_countdown,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    clamp(clock, compact ? 9f : 16f, compact ? 14f : 24f));
 
             int[] labels = {
                     R.id.prayer_label_fajr,
@@ -436,15 +489,50 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     R.id.prayer_icon_isha,
                     R.id.prayer_icon_midnight
             };
+
+            float safeLabel =
+                    clamp(
+                            label,
+                            compact ? 7f : 8.5f,
+                            compact ? 10f : 12.5f);
+            float safeValue =
+                    clamp(
+                            value,
+                            compact ? 8.5f : 10.5f,
+                            compact ? 12f : 14.5f);
+            float safeIcon =
+                    clamp(
+                            icon,
+                            compact ? 8.5f : 10.5f,
+                            compact ? 12f : 15f);
+
             for (int id : labels) {
-                row.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, label);
+                row.setTextViewTextSize(
+                        id,
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        safeLabel);
             }
             for (int id : values) {
-                row.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, value);
+                row.setTextViewTextSize(
+                        id,
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        safeValue);
             }
             for (int id : icons) {
-                row.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, icon);
+                row.setTextViewTextSize(
+                        id,
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        safeIcon);
             }
+        }
+
+        private float clamp(
+                float value,
+                float min,
+                float max) {
+            return Math.max(
+                    min,
+                    Math.min(max, value));
         }
 
         private NextPrayer nextPrayer(
