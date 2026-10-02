@@ -157,6 +157,20 @@ public final class AppSettings {
         AdhanScheduler.rescheduleAll(context);
     }
 
+    public static boolean showPrayerTimes(Context context) {
+        SharedPreferences preferences = prefs(context);
+        if (!preferences.contains("show_prayer_times")) {
+            boolean initial = preferences.getBoolean("adhan_enabled", false);
+            preferences.edit().putBoolean("show_prayer_times", initial).apply();
+            return initial;
+        }
+        return preferences.getBoolean("show_prayer_times", false);
+    }
+
+    public static void setShowPrayerTimes(Context context, boolean value) {
+        prefs(context).edit().putBoolean("show_prayer_times", value).apply();
+    }
+
     public static boolean prayerLocationSet(Context context) {
         return prefs(context).getBoolean("prayer_location_set", false);
     }
