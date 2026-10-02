@@ -40,9 +40,39 @@ public final class WorldClockWidgetService extends RemoteViewsService {
         @Override public RemoteViews getViewAt(int position) {
             if (position < 0 || position >= visible.size()) return null;
             String zone = visible.get(position);
-            int layout = WorldClockWidgetProvider.compact(context, widgetId)
-                    ? R.layout.widget_world_clock_item_compact
-                    : R.layout.widget_world_clock_item;
+            boolean compact =
+                    WorldClockWidgetProvider.compact(
+                            context,
+                            widgetId);
+            int weight =
+                    WorldClockWidgetPrefs.timeWeight(
+                            context,
+                            widgetId);
+
+            int layout;
+            if (compact) {
+                if (weight == 0) {
+                    layout =
+                            R.layout.widget_world_clock_item_compact;
+                } else if (weight == 1) {
+                    layout =
+                            R.layout.widget_world_clock_item_compact_normal;
+                } else {
+                    layout =
+                            R.layout.widget_world_clock_item_compact_bold;
+                }
+            } else {
+                if (weight == 0) {
+                    layout =
+                            R.layout.widget_world_clock_item;
+                } else if (weight == 1) {
+                    layout =
+                            R.layout.widget_world_clock_item_normal;
+                } else {
+                    layout =
+                            R.layout.widget_world_clock_item_bold;
+                }
+            }
             RemoteViews item = new RemoteViews(context.getPackageName(), layout);
             item.setViewVisibility(R.id.world_item_root, android.view.View.VISIBLE);
             item.setTextViewText(
@@ -60,7 +90,7 @@ public final class WorldClockWidgetService extends RemoteViewsService {
             return item;
         }
         @Override public RemoteViews getLoadingView() { return null; }
-        @Override public int getViewTypeCount() { return 2; }
+        @Override public int getViewTypeCount() { return 6; }
         @Override public long getItemId(int position) { return position; }
         @Override public boolean hasStableIds() { return true; }
 
