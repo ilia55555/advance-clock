@@ -2,6 +2,7 @@ package com.ilia.advanceclock;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,11 +22,14 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -51,6 +56,15 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     private LocationManager locationManager;
     private CancellationSignal locationCancellation;
     private LocationListener locationListener;
+    private LinearLayout locationAccessCard;
+    private TextView locationAccessStatus;
+    private Button locationPermissionAction;
+    private Button locationGpsAction;
+    private Button locationRetryAction;
+    private final Handler locationHandler =
+            new Handler(Looper.getMainLooper());
+    private Runnable locationTimeout;
+    private int locationAccessErrorRes;
     private static final int REQ_QIBLA_LOCATION = 911;
 
     @Override protected void onCreate(Bundle state) {
@@ -124,6 +138,84 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         selectorParams.bottomMargin = dp(14);
         root.addView(selectorCard, selectorParams);
 
+        locationAccessCard = new LinearLayout(this);
+        locationAccessCard.setOrientation(LinearLayout.VERTICAL);
+        locationAccessCard.setLayoutDirection(
+                AppSettings.layoutDirection(this));
+        locationAccessCard.setPadding(
+                dp(14),
+                dp(12),
+                dp(14),
+                dp(12));
+        locationAccessCard.setBackgroundResource(
+                R.drawable.bg_card);
+
+        TextView accessTitle = text(
+                AppString.get(R.string.location_access_title),
+                14,
+                AppSettings.textPrimary(this));
+        accessTitle.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD);
+        locationAccessCard.addView(accessTitle);
+
+        locationAccessStatus = text(
+                "",
+                12,
+                AppSettings.textSecondary(this));
+        locationAccessStatus.setPadding(
+                0,
+                dp(3),
+                0,
+                dp(6));
+        locationAccessCard.addView(locationAccessStatus);
+
+        locationPermissionAction =
+                accessButton("");
+        locationPermissionAction.setVisibility(View.GONE);
+        locationPermissionAction.setOnClickListener(v ->
+                handleLocationPermissionAction());
+        locationAccessCard.addView(
+                locationPermissionAction,
+                new LinearLayout.LayoutParams(-1, dp(46)));
+
+        locationGpsAction =
+                accessButton(
+                        AppString.get(
+                                R.string.location_access_enable_gps));
+        locationGpsAction.setVisibility(View.GONE);
+        locationGpsAction.setOnClickListener(v ->
+                openLocationSettings());
+        LinearLayout.LayoutParams gpsParams =
+                new LinearLayout.LayoutParams(-1, dp(46));
+        gpsParams.topMargin = dp(6);
+        locationAccessCard.addView(
+                locationGpsAction,
+                gpsParams);
+
+        locationRetryAction =
+                accessButton(
+                        AppString.get(
+                                R.string.location_access_retry));
+        locationRetryAction.setVisibility(View.GONE);
+        locationRetryAction.setOnClickListener(v -> {
+            locationAccessErrorRes = 0;
+            ensureQiblaLocation();
+        });
+        LinearLayout.LayoutParams retryParams =
+                new LinearLayout.LayoutParams(-1, dp(46));
+        retryParams.topMargin = dp(6);
+        locationAccessCard.addView(
+                locationRetryAction,
+                retryParams);
+
+        LinearLayout.LayoutParams accessParams =
+                new LinearLayout.LayoutParams(-1, -2);
+        accessParams.bottomMargin = dp(12);
+        root.addView(
+                locationAccessCard,
+                accessParams);
+
         LinearLayout compassCard = new LinearLayout(this);
         compassCard.setOrientation(LinearLayout.VERTICAL);
         compassCard.setGravity(Gravity.CENTER);
@@ -142,6 +234,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                     android.widget.AdapterView<?> parent, View view, int position, long id) {
                 selectedMode = position;
                 getSharedPreferences(PREFS, 0).edit().putInt(KEY_MODE, position).apply();
+                refreshLocationAccessUi();
                 if (selectedMode == MODE_QIBLA) {
                     ensureQiblaLocation();
                 }
@@ -153,6 +246,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         });
 
         qiblaLocation = QiblaUtils.bestKnownLocation(this);
+        refreshLocationAccessUi();
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         rotationSensor = sensorManager == null ? null
@@ -177,6 +271,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     @Override protected void onPause() {
         if (sensorManager != null) sensorManager.unregisterListener(this);
         cancelLocationRequest();
+        clearLocationTimeout();
         super.onPause();
     }
 
@@ -248,30 +343,150 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     }
 
     private void ensureQiblaLocation() {
-        Location known = QiblaUtils.bestKnownLocation(this);
+        Location known =
+                QiblaUtils.bestKnownLocation(this);
         if (known != null) {
             qiblaLocation = known;
             QiblaUtils.remember(
                     this,
                     known.getLatitude(),
                     known.getLongitude());
-            if (compassView != null) compassView.invalidate();
+            if (compassView != null) {
+                compassView.invalidate();
+            }
             updateStatus();
         }
 
-        if (!QiblaUtils.hasLocationPermission(this)) {
-            if (Build.VERSION.SDK_INT >= 23) {
-                requestPermissions(
-                        new String[]{
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                        },
-                        REQ_QIBLA_LOCATION);
-            }
+        refreshLocationAccessUi();
+
+        if (!QiblaUtils.hasLocationPermission(this)
+                || !QiblaUtils.isLocationEnabled(this)) {
             return;
         }
 
         requestFreshLocation();
+    }
+
+    private void requestLocationPermission() {
+        if (Build.VERSION.SDK_INT < 23) {
+            ensureQiblaLocation();
+            return;
+        }
+
+        if (QiblaUtils.locationPermissionBlocked(this)) {
+            openAppPermissionSettings();
+            return;
+        }
+
+        QiblaUtils.markLocationPermissionRequested(this);
+        requestPermissions(
+                new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                },
+                REQ_QIBLA_LOCATION);
+    }
+
+    private void handleLocationPermissionAction() {
+        if (QiblaUtils.locationPermissionBlocked(this)) {
+            openAppPermissionSettings();
+        } else {
+            requestLocationPermission();
+        }
+    }
+
+    private void openAppPermissionSettings() {
+        try {
+            startActivity(
+                    new Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.parse(
+                                    "package:"
+                                            + getPackageName())));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void openLocationSettings() {
+        try {
+            startActivity(
+                    new Intent(
+                            Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void refreshLocationAccessUi() {
+        if (locationAccessCard == null) return;
+
+        boolean qiblaMode =
+                selectedMode == MODE_QIBLA;
+        locationAccessCard.setVisibility(
+                qiblaMode
+                        ? View.VISIBLE
+                        : View.GONE);
+        if (!qiblaMode) return;
+
+        boolean permission =
+                QiblaUtils.hasLocationPermission(this);
+        boolean gpsEnabled =
+                QiblaUtils.isLocationEnabled(this);
+        boolean blocked =
+                QiblaUtils.locationPermissionBlocked(this);
+        boolean requested =
+                QiblaUtils.locationPermissionWasRequested(this);
+
+        locationPermissionAction.setVisibility(View.GONE);
+        locationGpsAction.setVisibility(View.GONE);
+        locationRetryAction.setVisibility(View.GONE);
+
+        if (!permission) {
+            locationAccessStatus.setText(
+                    AppString.get(
+                            blocked
+                                    ? R.string.location_access_permission_blocked
+                                    : requested
+                                    ? R.string.location_access_permission_denied
+                                    : R.string.location_access_permission_needed));
+            locationAccessStatus.setTextColor(0xFFC44C4C);
+
+            locationPermissionAction.setText(
+                    AppString.get(
+                            blocked
+                                    ? R.string.location_access_open_app_settings
+                                    : requested
+                                    ? R.string.location_access_request_again
+                                    : R.string.location_access_grant));
+            locationPermissionAction.setVisibility(View.VISIBLE);
+
+            if (!gpsEnabled) {
+                locationGpsAction.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+
+        if (!gpsEnabled) {
+            locationAccessStatus.setText(
+                    AppString.get(
+                            R.string.location_access_gps_off));
+            locationAccessStatus.setTextColor(0xFFC44C4C);
+            locationGpsAction.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        if (locationAccessErrorRes != 0) {
+            locationAccessStatus.setText(
+                    AppString.get(locationAccessErrorRes));
+            locationAccessStatus.setTextColor(0xFFC44C4C);
+            locationRetryAction.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        locationAccessStatus.setText(
+                AppString.get(
+                        R.string.location_access_ready));
+        locationAccessStatus.setTextColor(
+                AppSettings.textSecondary(this));
     }
 
     @SuppressWarnings("MissingPermission")
@@ -281,7 +496,11 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         locationManager =
                 (LocationManager)
                         getSystemService(LOCATION_SERVICE);
-        if (locationManager == null) return;
+        if (locationManager == null) {
+            locationAccessErrorRes = R.string.runtime_text_0367;
+            refreshLocationAccessUi();
+            return;
+        }
 
         String provider = null;
         try {
@@ -295,7 +514,30 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         } catch (RuntimeException ignored) {
         }
 
-        if (provider == null) return;
+        if (provider == null) {
+            locationAccessErrorRes = 0;
+            refreshLocationAccessUi();
+            return;
+        }
+
+        locationAccessErrorRes = 0;
+        if (locationAccessStatus != null) {
+            locationAccessStatus.setText(
+                    AppString.get(R.string.runtime_text_0098));
+            locationAccessStatus.setTextColor(
+                    AppSettings.textSecondary(this));
+            locationRetryAction.setVisibility(View.GONE);
+        }
+
+        clearLocationTimeout();
+        locationTimeout = () -> {
+            cancelLocationRequest();
+            locationAccessErrorRes = R.string.runtime_text_0571;
+            refreshLocationAccessUi();
+        };
+        locationHandler.postDelayed(
+                locationTimeout,
+                15_000L);
 
         final String selectedProvider = provider;
         if (Build.VERSION.SDK_INT >= 30) {
@@ -305,8 +547,21 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                         selectedProvider,
                         locationCancellation,
                         getMainExecutor(),
-                        this::applyQiblaLocation);
+                        location -> {
+                            clearLocationTimeout();
+                            if (location == null) {
+                                locationAccessErrorRes =
+                                        R.string.runtime_text_0370;
+                                refreshLocationAccessUi();
+                                return;
+                            }
+                            applyQiblaLocation(location);
+                        });
             } catch (RuntimeException ignored) {
+                clearLocationTimeout();
+                locationAccessErrorRes =
+                        R.string.runtime_text_0369;
+                refreshLocationAccessUi();
             }
             return;
         }
@@ -316,7 +571,14 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                     @Override
                     public void onLocationChanged(
                             Location location) {
-                        applyQiblaLocation(location);
+                        clearLocationTimeout();
+                        if (location == null) {
+                            locationAccessErrorRes =
+                                    R.string.runtime_text_0370;
+                            refreshLocationAccessUi();
+                        } else {
+                            applyQiblaLocation(location);
+                        }
                         cancelLocationRequest();
                     }
 
@@ -337,11 +599,17 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                     locationListener,
                     Looper.getMainLooper());
         } catch (RuntimeException ignored) {
+            clearLocationTimeout();
+            locationAccessErrorRes =
+                    R.string.runtime_text_0369;
+            refreshLocationAccessUi();
         }
     }
 
     private void applyQiblaLocation(Location location) {
         if (location == null) return;
+        clearLocationTimeout();
+        locationAccessErrorRes = 0;
         qiblaLocation = location;
         QiblaUtils.remember(
                 this,
@@ -351,6 +619,14 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             compassView.invalidate();
         }
         updateStatus();
+        refreshLocationAccessUi();
+    }
+
+    private void clearLocationTimeout() {
+        if (locationTimeout != null) {
+            locationHandler.removeCallbacks(locationTimeout);
+            locationTimeout = null;
+        }
     }
 
     private void cancelLocationRequest() {
@@ -394,6 +670,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         }
 
         if (granted) {
+            locationAccessErrorRes = 0;
             ensureQiblaLocation();
         } else {
             qiblaLocation =
@@ -401,6 +678,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             if (compassView != null) {
                 compassView.invalidate();
             }
+            refreshLocationAccessUi();
             updateStatus();
         }
     }
@@ -422,6 +700,18 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         background.setCornerRadius(dp(18));
         background.setStroke(dp(2), 0xFF795331);
         return background;
+    }
+
+    private Button accessButton(String value) {
+        Button button = new Button(this);
+        button.setText(value);
+        button.setAllCaps(false);
+        button.setTextSize(13);
+        button.setTextColor(AppSettings.primaryColor(this));
+        button.setGravity(Gravity.CENTER);
+        button.setPadding(dp(10), 0, dp(10), 0);
+        button.setBackgroundResource(R.drawable.bg_field);
+        return button;
     }
 
     private TextView text(String value, int size, int color) {
