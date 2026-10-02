@@ -390,7 +390,7 @@ public final class MainActivity extends Activity {
                     return true;
                 }
                 if (item.getItemId() == 8) {
-                    startActivity(new Intent(this, CompassToolActivity.class));
+                    ToolsDialog.show(this);
                     return true;
                 }
                 if (item.getItemId() == 3) {
