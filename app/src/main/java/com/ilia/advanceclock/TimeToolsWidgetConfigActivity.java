@@ -21,7 +21,6 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
     private int widgetId;
 
     private Spinner defaultTab;
-    private Switch showDetails;
     private Switch showReset;
     private Switch showLap;
     private Switch showOpen;
@@ -82,11 +81,6 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
 
         root.addView(sectionTitle(
                 AppString.get(R.string.runtime_text_0232)));
-
-        showDetails = addSwitch(
-                root,
-                AppString.get(R.string.time_tools_widget_show_details),
-                TimeToolsWidgetPrefs.showDetails(this, widgetId));
 
         showReset = addSwitch(
                 root,
@@ -197,7 +191,7 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
         close.setContentDescription(
                 AppString.get(R.string.runtime_text_0002));
-        close.setOnClickListener(v -> finish());
+        close.setOnClickListener(v -> closeToHome());
         top.addView(
                 close,
                 new LinearLayout.LayoutParams(dp(48), dp(48)));
@@ -313,10 +307,6 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
                 this,
                 widgetId,
                 defaultTab.getSelectedItemPosition());
-        TimeToolsWidgetPrefs.setShowDetails(
-                this,
-                widgetId,
-                showDetails.isChecked());
         TimeToolsWidgetPrefs.setShowReset(
                 this,
                 widgetId,
@@ -347,7 +337,16 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 widgetId);
         setResult(RESULT_OK, result);
-        finish();
+        closeToHome();
+    }
+
+    private void closeToHome() {
+        AppSettings.playFullscreenExit(this);
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(home);
+        super.finish();
     }
 
     @Override public void finish() {
