@@ -83,6 +83,20 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         time.setSelection(colorPosition(WorldClockWidgetPrefs.timeColor(this, widgetId)));
         root.addView(time, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        root.addView(label(
+                AppString.get(R.string.world_clock_widget_time_weight),
+                13));
+        Spinner weight = spinner(new String[]{
+                AppString.get(R.string.world_clock_widget_weight_thin),
+                AppString.get(R.string.world_clock_widget_weight_normal),
+                AppString.get(R.string.world_clock_widget_weight_bold)
+        });
+        weight.setSelection(
+                WorldClockWidgetPrefs.timeWeight(this, widgetId));
+        root.addView(
+                weight,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
         setContentView(root);
         AppSettings.applyFullscreenInsets(root);
         AppSettings.playFullscreenEnter(this);
@@ -93,8 +107,10 @@ public final class WorldClockWidgetConfigActivity extends Activity {
                     COLORS[text.getSelectedItemPosition()], COLORS[time.getSelectedItemPosition()],
                     true, true, 3);
             WorldClockWidgetPrefs.save(this, widgetId,
-                    background.getSelectedItemPosition(), COLORS[text.getSelectedItemPosition()],
-                    COLORS[time.getSelectedItemPosition()]);
+                    background.getSelectedItemPosition(),
+                    COLORS[text.getSelectedItemPosition()],
+                    COLORS[time.getSelectedItemPosition()],
+                    weight.getSelectedItemPosition());
             WorldClockWidgetProvider.updateAll(this);
             setResult(RESULT_OK, new Intent().putExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId));
@@ -102,6 +118,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         watch(background, refreshPreview);
         watch(text, refreshPreview);
         watch(time, refreshPreview);
+        watch(weight, refreshPreview);
         refreshPreview.run();
 
     }
