@@ -20,14 +20,14 @@ public final class QiblaAdhanBackgroundView extends View {
         super(context);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         directionLabels = new String[]{
-                AppString.get(R.string.runtime_text_0457),
-                AppString.get(R.string.runtime_text_0336),
-                AppString.get(R.string.runtime_text_0458),
-                AppString.get(R.string.runtime_text_0337),
-                AppString.get(R.string.runtime_text_0459),
-                AppString.get(R.string.runtime_text_0338),
-                AppString.get(R.string.runtime_text_0460),
-                AppString.get(R.string.runtime_text_0339)
+                AppString.get(R.string.runtime_text_0328),
+                AppString.get(R.string.runtime_text_0329),
+                AppString.get(R.string.runtime_text_0330),
+                AppString.get(R.string.runtime_text_0331),
+                AppString.get(R.string.runtime_text_0332),
+                AppString.get(R.string.runtime_text_0333),
+                AppString.get(R.string.runtime_text_0334),
+                AppString.get(R.string.runtime_text_0335)
         };
         android.location.Location location =
                 QiblaUtils.bestKnownLocation(context);
@@ -151,8 +151,8 @@ public final class QiblaAdhanBackgroundView extends View {
         paint.setFakeBoldText(true);
         paint.setTextSize(
                 Math.max(
-                        dp(12),
-                        radius * 0.09f));
+                        dp(9),
+                        radius * 0.06f));
         paint.setAlpha(125);
 
         for (int index = 0;
