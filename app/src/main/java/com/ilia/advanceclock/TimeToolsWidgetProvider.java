@@ -214,6 +214,16 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         ? R.drawable.time_tools_widget_background_dark
                         : R.drawable.time_tools_widget_background_light);
 
+        root.setTextViewText(
+                R.id.time_tools_tab_stopwatch,
+                AppString.get(R.string.tab_stopwatch));
+        root.setTextViewText(
+                R.id.time_tools_tab_timer,
+                AppString.get(R.string.tab_timer));
+        root.setTextViewText(
+                R.id.time_tools_open,
+                AppString.get(R.string.time_tools_widget_open));
+
         styleTab(
                 context,
                 root,
@@ -497,7 +507,7 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.time_tools_primary,
-                context.getString(
+                AppString.get(
                         running
                                 ? R.string.runtime_text_0011
                                 : elapsed > 0L
@@ -534,13 +544,13 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
         String detail = latestLap(context, p);
         if (detail.isEmpty() && limit > 0L) {
-            detail = context.getString(
+            detail = AppString.get(
                     R.string.time_tools_widget_limit)
                     + " "
                     + formatTimer(limit);
         }
         if (detail.isEmpty()) {
-            detail = context.getString(
+            detail = AppString.get(
                     R.string.time_tools_widget_stopwatch_ready);
         }
 
@@ -549,11 +559,11 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 detail);
         root.setTextViewText(
                 R.id.time_tools_reset,
-                context.getString(
+                AppString.get(
                         R.string.runtime_text_0167));
         root.setTextViewText(
                 R.id.time_tools_lap,
-                context.getString(
+                AppString.get(
                         R.string.runtime_text_0168));
     }
 
@@ -586,7 +596,7 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
         root.setTextViewText(
                 R.id.time_tools_primary,
-                context.getString(
+                AppString.get(
                         running
                                 ? R.string.runtime_text_0011
                                 : remaining > 0L
@@ -627,7 +637,7 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
             long deadline = p.getLong(
                     "timer_end",
                     0L);
-            detail = context.getString(
+            detail = AppString.get(
                     R.string.runtime_text_0479)
                     + CalendarUtils.formatDate(
                             deadline,
@@ -635,18 +645,19 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                                     "timer_calendar",
                                     AppSettings.defaultCalendar(context)))
                     + "  "
-                    + String.format(
-                            Locale.US,
-                            "%tR",
-                            deadline);
+                    + CalendarUtils.fa(
+                            String.format(
+                                    Locale.US,
+                                    "%tR",
+                                    deadline));
         } else if (remaining > 0L) {
-            detail = context.getString(
+            detail = AppString.get(
                     R.string.time_tools_widget_timer_paused);
         } else if (dateMode) {
-            detail = context.getString(
+            detail = AppString.get(
                     R.string.runtime_text_0480);
         } else {
-            detail = context.getString(
+            detail = AppString.get(
                     R.string.time_tools_widget_default_duration)
                     + " "
                     + formatTimer(
@@ -660,7 +671,7 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 detail);
         root.setTextViewText(
                 R.id.time_tools_reset,
-                context.getString(
+                AppString.get(
                         R.string.runtime_text_0171));
     }
 
@@ -692,15 +703,15 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
             root.setTextViewText(
                     R.id.time_tools_mode_primary,
-                    context.getString(
+                    AppString.get(
                             R.string.layout_text_0012));
             root.setTextViewText(
                     R.id.time_tools_mode_secondary,
-                    context.getString(
+                    AppString.get(
                             R.string.runtime_text_0172));
             root.setTextViewText(
                     R.id.time_tools_mode_tertiary,
-                    context.getString(
+                    AppString.get(
                             R.string.runtime_text_0173));
             root.setViewVisibility(
                     R.id.time_tools_mode_gap_tertiary,
@@ -722,11 +733,11 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
             root.setTextViewText(
                     R.id.time_tools_mode_primary,
-                    context.getString(
+                    AppString.get(
                             R.string.runtime_text_0172));
             root.setTextViewText(
                     R.id.time_tools_mode_secondary,
-                    context.getString(
+                    AppString.get(
                             R.string.layout_text_0015));
             root.setViewVisibility(
                     R.id.time_tools_mode_gap_tertiary,
@@ -821,10 +832,11 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         calendarType));
         root.setTextViewText(
                 R.id.time_tools_config_time,
-                String.format(
-                        Locale.US,
-                        "%tR",
-                        target));
+                CalendarUtils.fa(
+                        String.format(
+                                Locale.US,
+                                "%tR",
+                                target)));
         root.setViewVisibility(
                 R.id.time_tools_config_gap,
                 View.VISIBLE);
@@ -1394,12 +1406,13 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
 
         try {
             long lap = Long.parseLong(values[0]);
-            return String.format(
-                    Locale.US,
-                    context.getString(
-                            R.string.runtime_text_0437),
-                    values.length,
-                    formatStopwatch(lap));
+            return CalendarUtils.fa(
+                    String.format(
+                            Locale.US,
+                            AppString.get(
+                                    R.string.runtime_text_0437),
+                            values.length,
+                            formatStopwatch(lap)));
         } catch (Exception ignored) {
             return "";
         }
@@ -1408,13 +1421,14 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
     private static String formatStopwatch(
             long millis) {
         long cs = Math.max(0L, millis) / 10L;
-        return String.format(
-                Locale.US,
-                "%02d:%02d:%02d.%02d",
-                cs / 360000L,
-                (cs / 6000L) % 60L,
-                (cs / 100L) % 60L,
-                cs % 100L);
+        return CalendarUtils.fa(
+                String.format(
+                        Locale.US,
+                        "%02d:%02d:%02d.%02d",
+                        cs / 360000L,
+                        (cs / 6000L) % 60L,
+                        (cs / 100L) % 60L,
+                        cs % 100L));
     }
 
     private static String formatTimer(
@@ -1422,11 +1436,12 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
         long total = (Math.max(
                 0L,
                 millis) + 999L) / 1000L;
-        return String.format(
-                Locale.US,
-                "%02d:%02d:%02d",
-                total / 3600L,
-                (total / 60L) % 60L,
-                total % 60L);
+        return CalendarUtils.fa(
+                String.format(
+                        Locale.US,
+                        "%02d:%02d:%02d",
+                        total / 3600L,
+                        (total / 60L) % 60L,
+                        total % 60L));
     }
 }
