@@ -12,8 +12,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -21,9 +19,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Surface;
@@ -53,17 +48,12 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     private TextView status;
     private int selectedMode;
     private Location qiblaLocation;
-    private LocationManager locationManager;
-    private CancellationSignal locationCancellation;
-    private LocationListener locationListener;
+    private QiblaLocationClient qiblaLocationClient;
     private LinearLayout locationAccessCard;
     private TextView locationAccessStatus;
     private Button locationPermissionAction;
     private Button locationGpsAction;
     private Button locationRetryAction;
-    private final Handler locationHandler =
-            new Handler(Looper.getMainLooper());
-    private Runnable locationTimeout;
     private int locationAccessErrorRes;
     private static final int REQ_QIBLA_LOCATION = 911;
 
@@ -246,6 +236,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         });
 
         qiblaLocation = QiblaUtils.bestKnownLocation(this);
+        qiblaLocationClient = new QiblaLocationClient(this);
         refreshLocationAccessUi();
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -270,8 +261,9 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
 
     @Override protected void onPause() {
         if (sensorManager != null) sensorManager.unregisterListener(this);
-        cancelLocationRequest();
-        clearLocationTimeout();
+        if (qiblaLocationClient != null) {
+            qiblaLocationClient.cancel();
+        }
         super.onPause();
     }
 
@@ -474,6 +466,10 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             return;
         }
 
+        if (qiblaLocation != null) {
+            locationAccessErrorRes = 0;
+        }
+
         if (locationAccessErrorRes != 0) {
             locationAccessStatus.setText(
                     AppString.get(locationAccessErrorRes));
@@ -489,161 +485,63 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                 AppSettings.textSecondary(this));
     }
 
-    @SuppressWarnings("MissingPermission")
     private void requestFreshLocation() {
-        cancelLocationRequest();
-
-        locationManager =
-                (LocationManager)
-                        getSystemService(LOCATION_SERVICE);
-        if (locationManager == null) {
-            locationAccessErrorRes = R.string.runtime_text_0367;
-            refreshLocationAccessUi();
-            return;
-        }
-
-        String provider = null;
-        try {
-            if (locationManager.isProviderEnabled(
-                    LocationManager.GPS_PROVIDER)) {
-                provider = LocationManager.GPS_PROVIDER;
-            } else if (locationManager.isProviderEnabled(
-                    LocationManager.NETWORK_PROVIDER)) {
-                provider = LocationManager.NETWORK_PROVIDER;
-            }
-        } catch (RuntimeException ignored) {
-        }
-
-        if (provider == null) {
-            locationAccessErrorRes = 0;
-            refreshLocationAccessUi();
-            return;
+        if (qiblaLocationClient == null) {
+            qiblaLocationClient =
+                    new QiblaLocationClient(this);
         }
 
         locationAccessErrorRes = 0;
         if (locationAccessStatus != null) {
             locationAccessStatus.setText(
-                    AppString.get(R.string.runtime_text_0098));
+                    AppString.get(
+                            R.string.runtime_text_0098));
             locationAccessStatus.setTextColor(
                     AppSettings.textSecondary(this));
             locationRetryAction.setVisibility(View.GONE);
         }
 
-        clearLocationTimeout();
-        locationTimeout = () -> {
-            cancelLocationRequest();
-            locationAccessErrorRes = R.string.runtime_text_0571;
-            refreshLocationAccessUi();
-        };
-        locationHandler.postDelayed(
-                locationTimeout,
-                15_000L);
-
-        final String selectedProvider = provider;
-        if (Build.VERSION.SDK_INT >= 30) {
-            locationCancellation = new CancellationSignal();
-            try {
-                locationManager.getCurrentLocation(
-                        selectedProvider,
-                        locationCancellation,
-                        getMainExecutor(),
-                        location -> {
-                            clearLocationTimeout();
-                            if (location == null) {
-                                locationAccessErrorRes =
-                                        R.string.runtime_text_0370;
-                                refreshLocationAccessUi();
-                                return;
-                            }
-                            applyQiblaLocation(location);
-                        });
-            } catch (RuntimeException ignored) {
-                clearLocationTimeout();
-                locationAccessErrorRes =
-                        R.string.runtime_text_0369;
-                refreshLocationAccessUi();
-            }
-            return;
-        }
-
-        locationListener =
-                new LocationListener() {
+        qiblaLocationClient.request(
+                new QiblaLocationClient.Callback() {
                     @Override
-                    public void onLocationChanged(
+                    public void onLocation(
                             Location location) {
-                        clearLocationTimeout();
-                        if (location == null) {
-                            locationAccessErrorRes =
-                                    R.string.runtime_text_0370;
-                            refreshLocationAccessUi();
-                        } else {
-                            applyQiblaLocation(location);
-                        }
-                        cancelLocationRequest();
+                        applyQiblaLocation(location);
                     }
 
-                    @Override public void onStatusChanged(
-                            String provider,
-                            int status,
-                            Bundle extras) {}
-
-                    @Override public void onProviderEnabled(
-                            String provider) {}
-
-                    @Override public void onProviderDisabled(
-                            String provider) {}
-                };
-        try {
-            locationManager.requestSingleUpdate(
-                    selectedProvider,
-                    locationListener,
-                    Looper.getMainLooper());
-        } catch (RuntimeException ignored) {
-            clearLocationTimeout();
-            locationAccessErrorRes =
-                    R.string.runtime_text_0369;
-            refreshLocationAccessUi();
-        }
+                    @Override
+                    public void onError(
+                            int stringRes) {
+                        if (qiblaLocation != null
+                                && QiblaUtils.hasLocationPermission(
+                                CompassToolActivity.this)
+                                && QiblaUtils.isLocationEnabled(
+                                CompassToolActivity.this)) {
+                            locationAccessErrorRes = 0;
+                        } else {
+                            locationAccessErrorRes = stringRes;
+                        }
+                        refreshLocationAccessUi();
+                    }
+                });
     }
 
     private void applyQiblaLocation(Location location) {
         if (location == null) return;
-        clearLocationTimeout();
+
         locationAccessErrorRes = 0;
         qiblaLocation = location;
         QiblaUtils.remember(
                 this,
                 location.getLatitude(),
                 location.getLongitude());
+
         if (compassView != null) {
             compassView.invalidate();
         }
+
         updateStatus();
         refreshLocationAccessUi();
-    }
-
-    private void clearLocationTimeout() {
-        if (locationTimeout != null) {
-            locationHandler.removeCallbacks(locationTimeout);
-            locationTimeout = null;
-        }
-    }
-
-    private void cancelLocationRequest() {
-        if (locationCancellation != null) {
-            locationCancellation.cancel();
-            locationCancellation = null;
-        }
-        if (locationManager != null
-                && locationListener != null) {
-            try {
-                locationManager.removeUpdates(
-                        locationListener);
-            } catch (RuntimeException ignored) {
-            }
-        }
-        locationListener = null;
-        locationManager = null;
     }
 
     @Override
