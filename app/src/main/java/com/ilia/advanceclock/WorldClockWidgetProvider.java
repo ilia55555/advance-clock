@@ -108,7 +108,7 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
         int zoneCount = WorldClockStore.zones(context).size();
         boolean singleColumn = widthCells <= 3;
         int visualColumns = singleColumn ? 1 : 2;
-        boolean compact = size.heightDp < 106f;
+        boolean compact = size.heightDp < 76f;
         int capacity = Math.max(1, zoneCount);
         int pages = Math.max(1, (zoneCount + capacity - 1) / capacity);
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
