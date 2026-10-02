@@ -1127,4 +1127,8 @@
     <string name="location_access_enable_gps">تشغيل GPS / الموقع</string>
     <string name="location_access_retry">إعادة المحاولة</string>
     <string name="location_access_get_current">الحصول على الموقع الحالي</string>
+    <string name="world_clock_widget_time_weight">سُمك أرقام الساعة</string>
+    <string name="world_clock_widget_weight_thin">رفيع</string>
+    <string name="world_clock_widget_weight_normal">عادي</string>
+    <string name="world_clock_widget_weight_bold">عريض</string>
 </resources>
