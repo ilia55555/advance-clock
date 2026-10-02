@@ -680,11 +680,18 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                         cy + (float) Math.sin(radians) * (radius - dp(7)), paint);
             }
             String[] labels = new String[]{
-                    AppString.get(R.string.runtime_text_0457), AppString.get(R.string.runtime_text_0336), AppString.get(R.string.runtime_text_0458), AppString.get(R.string.runtime_text_0337), AppString.get(R.string.runtime_text_0459), AppString.get(R.string.runtime_text_0338), AppString.get(R.string.runtime_text_0460), AppString.get(R.string.runtime_text_0339)};
+                    AppString.get(R.string.runtime_text_0328),
+                    AppString.get(R.string.runtime_text_0329),
+                    AppString.get(R.string.runtime_text_0330),
+                    AppString.get(R.string.runtime_text_0331),
+                    AppString.get(R.string.runtime_text_0332),
+                    AppString.get(R.string.runtime_text_0333),
+                    AppString.get(R.string.runtime_text_0334),
+                    AppString.get(R.string.runtime_text_0335)};
             paint.setStyle(Paint.Style.FILL);
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTypeface(Typeface.create(Typeface.SERIF, Typeface.BOLD));
-            paint.setTextSize(radius * .105f);
+            paint.setTextSize(Math.max(dp(9), radius * .062f));
             for (int index = 0; index < labels.length; index++) {
                 double radians = Math.toRadians(index * 45 - 90);
                 paint.setColor(index == 0 ? 0xFF9D2017 : 0xFF3F2A1B);
