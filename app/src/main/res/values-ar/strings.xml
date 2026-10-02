@@ -1114,4 +1114,17 @@
     <string name="adhan_qibla_display_none">عدم العرض</string>
     <string name="adhan_qibla_display_button">إظهار زر فتح بوصلة القبلة في شاشة الأذان</string>
     <string name="adhan_qibla_display_background">إظهار بوصلة القبلة في خلفية شاشة الأذان</string>
+    <string name="location_access_title">GPS وإذن الموقع</string>
+    <string name="location_access_ready">الموقع مفعّل وتم منح إذن الوصول إلى الموقع.</string>
+    <string name="location_access_permission_needed">امنح إذن الموقع للحصول على موقع دقيق واتجاه قبلة صحيح.</string>
+    <string name="location_access_permission_denied">تم رفض إذن الموقع. اطلب الإذن مرة أخرى لإظهار نافذة منح الإذن.</string>
+    <string name="location_access_permission_blocked">إذن الموقع محظور لهذا التطبيق. فعّله من إعدادات التطبيق.</string>
+    <string name="location_access_gps_off">الموقع/GPS متوقف. فعّله للحصول على موقع دقيق.</string>
+    <string name="location_access_error">تعذر الحصول على موقعك. تحقق من GPS وإذن الموقع ثم حاول مجددًا.</string>
+    <string name="location_access_grant">منح إذن الموقع</string>
+    <string name="location_access_request_again">طلب الإذن مرة أخرى</string>
+    <string name="location_access_open_app_settings">فتح إعدادات أذونات التطبيق</string>
+    <string name="location_access_enable_gps">تشغيل GPS / الموقع</string>
+    <string name="location_access_retry">إعادة المحاولة</string>
+    <string name="location_access_get_current">الحصول على الموقع الحالي</string>
 </resources>
