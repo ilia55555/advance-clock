@@ -19,7 +19,7 @@ public final class WorldClockWidgetPrefs {
     }
 
     public static int timeWeight(Context context, int id) {
-        return prefs(context).getInt("time_weight_" + id, 2);
+        return prefs(context).getInt("time_weight_" + id, 1);
     }
 
     public static void save(Context context, int id, int background,
