@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.GeomagneticField;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -18,6 +19,34 @@ public final class QiblaUtils {
     private static final String KEY_LON = "longitude";
 
     private QiblaUtils() {}
+
+    public static float trueHeading(
+            float magneticHeading,
+            Location location) {
+        if (location == null) {
+            return normalize(magneticHeading);
+        }
+
+        try {
+            GeomagneticField field =
+                    new GeomagneticField(
+                            (float) location.getLatitude(),
+                            (float) location.getLongitude(),
+                            (float) location.getAltitude(),
+                            System.currentTimeMillis());
+            return normalize(
+                    magneticHeading
+                            + field.getDeclination());
+        } catch (RuntimeException ignored) {
+            return normalize(magneticHeading);
+        }
+    }
+
+    private static float normalize(float value) {
+        float result = value % 360f;
+        if (result < 0f) result += 360f;
+        return result;
+    }
 
     public static double bearing(
             double latitude,
