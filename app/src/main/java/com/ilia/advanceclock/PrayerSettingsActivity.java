@@ -146,6 +146,27 @@ public final class PrayerSettingsActivity extends Activity {
         horizonParams.topMargin = dp(8);
         locationCard.addView(horizonList, horizonParams);
 
+        Button qiblaButton =
+                fieldButton(
+                        AppString.get(
+                                R.string.prayer_open_qibla));
+        qiblaButton.setOnClickListener(v ->
+                startActivity(
+                        new Intent(
+                                this,
+                                CompassToolActivity.class)
+                                .putExtra(
+                                        CompassToolActivity.EXTRA_START_MODE,
+                                        CompassToolActivity.MODE_QIBLA)));
+        LinearLayout.LayoutParams qiblaParams =
+                new LinearLayout.LayoutParams(
+                        -1,
+                        dp(52));
+        qiblaParams.topMargin = dp(10);
+        locationCard.addView(
+                qiblaButton,
+                qiblaParams);
+
         root.addView(locationCard, cardParams());
 
         LinearLayout azanCard = card();
