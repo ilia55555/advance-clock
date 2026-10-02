@@ -191,7 +191,7 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
         close.setContentDescription(
                 AppString.get(R.string.runtime_text_0002));
-        close.setOnClickListener(v -> closeToHome());
+        close.setOnClickListener(v -> finish());
         top.addView(
                 close,
                 new LinearLayout.LayoutParams(dp(48), dp(48)));
@@ -337,16 +337,7 @@ public final class TimeToolsWidgetConfigActivity extends Activity {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 widgetId);
         setResult(RESULT_OK, result);
-        closeToHome();
-    }
-
-    private void closeToHome() {
-        AppSettings.playFullscreenExit(this);
-        Intent home = new Intent(Intent.ACTION_MAIN);
-        home.addCategory(Intent.CATEGORY_HOME);
-        home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(home);
-        super.finish();
+        finish();
     }
 
     @Override public void finish() {
