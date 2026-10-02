@@ -197,17 +197,4 @@ public final class DateNotificationService extends Service {
         return bitmap;
     }
 
-    @Override public void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
-        if (timeReceiverRegistered) {
-            try {
-                unregisterReceiver(timeReceiver);
-            } catch (Exception ignored) {
-            }
-            timeReceiverRegistered = false;
-        }
-        super.onDestroy();
-    }
-
-
 }
