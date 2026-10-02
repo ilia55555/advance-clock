@@ -401,7 +401,7 @@
     <string formatted="false" name="runtime_text_0315">هشدار یادداشت‌ها</string>
     <string formatted="false" name="runtime_text_0316">هشدارهای زمان‌دار یادداشت‌ها</string>
     <string formatted="false" name="runtime_text_0317">ابزارها</string>
-    <string formatted="false" name="runtime_text_0318">ابزار قطب‌نما</string>
+    <string formatted="false" name="runtime_text_0318">قطب‌نما و قبله‌نما</string>
     <string formatted="false" name="runtime_text_0319">نمایش روی صفحه</string>
     <string formatted="false" name="runtime_text_0320">قطب‌نمای کلاسیک</string>
     <string formatted="false" name="runtime_text_0321">قبله‌نما</string>
@@ -1051,4 +1051,6 @@
     <string name="time_tools_widget_stopwatch_ready">کرنومتر آماده است</string>
     <string name="time_tools_widget_timer_paused">تایمر متوقف شده است</string>
     <string name="time_tools_widget_default_duration">مدت پیش‌فرض</string>
+    <string name="tools_dialog_compass_description">نمایش قطب‌نما، جهت‌های اصلی و جهت قبله</string>
+    <string name="prayer_open_qibla">باز کردن قبله‌نما</string>
 </resources>
