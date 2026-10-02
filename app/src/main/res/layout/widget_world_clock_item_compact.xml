@@ -25,7 +25,9 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:textColor="#FFFFFF"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="normal" />
     <TextClock
         android:id="@+id/world_item_date"
         android:layout_width="match_parent"
