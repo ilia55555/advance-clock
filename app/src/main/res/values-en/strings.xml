@@ -400,7 +400,7 @@
     <string formatted="false" name="runtime_text_0315">Note alarms</string>
     <string formatted="false" name="runtime_text_0316">Timed note alarms</string>
     <string formatted="false" name="runtime_text_0317">Tools</string>
-    <string formatted="false" name="runtime_text_0318">Compass tool</string>
+    <string formatted="false" name="runtime_text_0318">Compass &amp; Qibla</string>
     <string formatted="false" name="runtime_text_0319">Display mode</string>
     <string formatted="false" name="runtime_text_0320">Classic compass</string>
     <string formatted="false" name="runtime_text_0321">Qibla compass</string>
@@ -1090,4 +1090,6 @@ Lock screen</string>
     <string name="calendar_month_gregorian_10">October</string>
     <string name="calendar_month_gregorian_11">November</string>
     <string name="calendar_month_gregorian_12">December</string>
+    <string name="tools_dialog_compass_description">Compass, principal directions, and Qibla direction</string>
+    <string name="prayer_open_qibla">Open Qibla compass</string>
 </resources>
