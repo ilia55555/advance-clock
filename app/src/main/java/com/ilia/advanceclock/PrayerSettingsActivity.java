@@ -113,11 +113,10 @@ public final class PrayerSettingsActivity extends Activity {
 
         masterAdhanSwitch = toggle(
                 AppString.get(R.string.runtime_text_0351),
-                AppSettings.adhanEnabled(this));
+                AppSettings.showPrayerTimes(this));
         masterAdhanSwitch.setOnCheckedChangeListener((button, checked) -> {
             if (syncingAdhanSwitches) return;
-            AppSettings.setAdhanEnabled(this, checked);
-            syncAdhanSwitches();
+            AppSettings.setShowPrayerTimes(this, checked);
             setResult(RESULT_OK);
         });
         masterCard.addView(masterAdhanSwitch);
@@ -653,7 +652,7 @@ public final class PrayerSettingsActivity extends Activity {
         syncingAdhanSwitches = true;
         try {
             if (masterAdhanSwitch != null) {
-                masterAdhanSwitch.setChecked(AppSettings.adhanEnabled(this));
+                masterAdhanSwitch.setChecked(AppSettings.showPrayerTimes(this));
             }
             for (int type = AdhanScheduler.FAJR; type <= AdhanScheduler.ISHA; type++) {
                 Switch item = adhanTypeSwitches[type];
