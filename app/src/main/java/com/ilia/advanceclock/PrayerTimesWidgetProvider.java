@@ -69,23 +69,23 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
         float headerScale = clamp(
                 Math.min(
                         widthDp / 350f,
-                        heightDp / 130f),
-                0.88f,
-                1.12f);
+                        heightDp / 120f),
+                0.93f,
+                1.10f);
         views.setTextViewTextSize(
                 R.id.prayer_widget_title,
                 android.util.TypedValue.COMPLEX_UNIT_DIP,
                 compact
-                        ? 13f * headerScale
-                        : 16f * headerScale);
+                        ? 13.5f * headerScale
+                        : 16.5f * headerScale);
         views.setTextColor(R.id.prayer_widget_date, secondary);
         views.setTextColor(R.id.prayer_widget_manage, accent);
         views.setTextViewTextSize(
                 R.id.prayer_widget_manage,
                 android.util.TypedValue.COMPLEX_UNIT_DIP,
                 compact
-                        ? 11f * headerScale
-                        : 13f * headerScale);
+                        ? 11.5f * headerScale
+                        : 13.5f * headerScale);
         views.setInt(R.id.prayer_widget_settings, "setColorFilter", secondary);
 
         boolean showHeader = PrayerTimesWidgetPrefs.showHeader(context, id);
