@@ -355,7 +355,7 @@
     <string formatted="false" name="runtime_text_0315">منبّهات الملاحظات</string>
     <string formatted="false" name="runtime_text_0316">منبّهات الملاحظات المجدولة</string>
     <string formatted="false" name="runtime_text_0317">الأدوات</string>
-    <string formatted="false" name="runtime_text_0318">أدوات البوصلة</string>
+    <string formatted="false" name="runtime_text_0318">البوصلة وبوصلة القبلة</string>
     <string formatted="false" name="runtime_text_0319">وضع العرض</string>
     <string formatted="false" name="runtime_text_0320">بوصلة كلاسيكية</string>
     <string formatted="false" name="runtime_text_0321">بوصلة القبلة</string>
@@ -1108,4 +1108,6 @@
     <string name="calendar_month_gregorian_10">أكتوبر</string>
     <string name="calendar_month_gregorian_11">نوفمبر</string>
     <string name="calendar_month_gregorian_12">ديسمبر</string>
+    <string name="tools_dialog_compass_description">البوصلة والاتجاهات الأساسية واتجاه القبلة</string>
+    <string name="prayer_open_qibla">فتح بوصلة القبلة</string>
 </resources>
