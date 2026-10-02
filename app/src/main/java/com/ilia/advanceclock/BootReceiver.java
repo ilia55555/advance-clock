@@ -7,27 +7,54 @@ import android.content.Context;
 import android.content.Intent;
 
 public final class BootReceiver extends BroadcastReceiver {
-    @Override public void onReceive(Context context, Intent intent) {
-        AlarmScheduler.rescheduleAll(context);
-        ToolAlarmScheduler.rescheduleAll(context);
-        NoForgetScheduler.rescheduleAll(context);
-        AdhanScheduler.rescheduleAll(context);
-        ClockWidgetProvider.updateAll(context);
-        CalendarWidgetProvider.updateAll(context);
-        TimeToolsWidgetProvider.updateAll(context);
-        WorldClockWidgetProvider.updateAll(context);
-        NoForgetWidgetProvider.updateAll(context);
-        MediaWidgetProvider.updateAll(context);
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action =
+                intent == null
+                        ? null
+                        : intent.getAction();
 
-        String action = intent == null ? null : intent.getAction();
-        if (Intent.ACTION_BOOT_COMPLETED.equals(action)
-                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
+        boolean bootOrUpgrade =
+                Intent.ACTION_BOOT_COMPLETED.equals(action)
+                        || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action);
+        boolean clockChanged =
+                Intent.ACTION_TIME_CHANGED.equals(action)
+                        || Intent.ACTION_TIMEZONE_CHANGED.equals(action);
+        boolean dateChanged =
+                Intent.ACTION_DATE_CHANGED.equals(action);
+
+        if (bootOrUpgrade || clockChanged || action == null) {
+            AlarmScheduler.rescheduleAll(context);
+            ToolAlarmScheduler.rescheduleAll(context);
+            NoForgetScheduler.rescheduleAll(context);
+            AdhanScheduler.rescheduleAll(context);
+
+            ClockWidgetProvider.updateAll(context);
+            CalendarWidgetProvider.updateAll(context);
+            TimeToolsWidgetProvider.updateAll(context);
+            WorldClockWidgetProvider.updateAll(context);
+            NoForgetWidgetProvider.updateAll(context);
+            PrayerTimesWidgetProvider.updateAll(context);
+        } else if (dateChanged) {
+            // Midnight only changes date-oriented surfaces. AlarmManager entries
+            // already remain valid, so do not cancel/recreate every exact alarm.
+            ClockWidgetProvider.updateAll(context);
+            CalendarWidgetProvider.updateAll(context);
+            WorldClockWidgetProvider.updateAll(context);
+            NoForgetWidgetProvider.updateAll(context);
+            PrayerTimesWidgetProvider.updateAll(context);
+        }
+
+        if (bootOrUpgrade) {
+            MediaWidgetProvider.updateAll(context);
+
             AppWidgetManager widgetManager =
                     AppWidgetManager.getInstance(context);
-            int[] mediaIds = widgetManager.getAppWidgetIds(
-                    new ComponentName(
-                            context,
-                            MediaWidgetProvider.class));
+            int[] mediaIds =
+                    widgetManager.getAppWidgetIds(
+                            new ComponentName(
+                                    context,
+                                    MediaWidgetProvider.class));
             for (int mediaId : mediaIds) {
                 MediaPreviewScheduler.schedule(
                         context,
@@ -35,21 +62,12 @@ public final class BootReceiver extends BroadcastReceiver {
             }
         }
 
-        // Refresh/start only when the user has enabled the persistent date
-        // notification. Otherwise make sure an old service/notification is gone.
+        // The date notification no longer needs a foreground service or a
+        // minute-by-minute ticker. These system broadcasts are sufficient.
         if (AppSettings.persistentDateNotificationEnabled(context)) {
             DateNotificationService.refreshNow(context);
         } else {
             DateNotificationService.stop(context);
-        }
-
-        if ((Intent.ACTION_BOOT_COMPLETED.equals(action)
-                || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action))
-                && AppSettings.persistentDateNotificationEnabled(context)) {
-            try {
-                DateNotificationService.start(context);
-            } catch (Exception ignored) {
-            }
         }
     }
 }
