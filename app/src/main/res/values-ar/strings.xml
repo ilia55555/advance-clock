@@ -362,7 +362,7 @@
     <string formatted="false" name="runtime_text_0322">الاتجاهات الثمانية الأساسية</string>
     <string formatted="false" name="runtime_text_0323">جارٍ قراءة مستشعر الاتجاه…</string>
     <string formatted="false" name="runtime_text_0324">لا يتوفر مستشعر اتجاه في هذا الجهاز.</string>
-    <string formatted="false" name="runtime_text_0325">اضبط موقعك في إعدادات مواقيت الصلاة قبل استخدام بوصلة القبلة.</string>
+    <string formatted="false" name="runtime_text_0325">فعّل GPS وإذن الموقع لتحديد اتجاه القبلة.</string>
     <string formatted="false" name="runtime_text_0326">القبلة %.0f° • الانحراف الحالي %.0f°</string>
     <string formatted="false" name="runtime_text_0327">الزاوية من الشمال  </string>
     <string formatted="false" name="runtime_text_0328">الشمال</string>
