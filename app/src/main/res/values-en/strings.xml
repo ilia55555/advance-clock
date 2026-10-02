@@ -407,7 +407,7 @@
     <string formatted="false" name="runtime_text_0322">Eight principal directions</string>
     <string formatted="false" name="runtime_text_0323">Reading direction sensor…</string>
     <string formatted="false" name="runtime_text_0324">This device does not have an orientation sensor.</string>
-    <string formatted="false" name="runtime_text_0325">Set your location in Prayer Time Settings before using the Qibla compass.</string>
+    <string formatted="false" name="runtime_text_0325">Enable GPS and location permission to determine the Qibla direction.</string>
     <string formatted="false" name="runtime_text_0326">Qibla %.0f° • Current deviation %.0f°</string>
     <string formatted="false" name="runtime_text_0327">Bearing from north  </string>
     <string formatted="false" name="runtime_text_0328">North</string>
