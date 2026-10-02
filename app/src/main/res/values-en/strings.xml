@@ -1096,4 +1096,17 @@ Lock screen</string>
     <string name="adhan_qibla_display_none">Do not show</string>
     <string name="adhan_qibla_display_button">Show an Open Qibla button on the Adhan screen</string>
     <string name="adhan_qibla_display_background">Show the Qibla compass in the Adhan screen background</string>
+    <string name="location_access_title">GPS &amp; location permission</string>
+    <string name="location_access_ready">Location is on and location permission is granted.</string>
+    <string name="location_access_permission_needed">Allow location access for precise location and accurate Qibla direction.</string>
+    <string name="location_access_permission_denied">Location permission was denied. Request it again to show the permission prompt.</string>
+    <string name="location_access_permission_blocked">Location permission is blocked for this app. Enable it from App settings.</string>
+    <string name="location_access_gps_off">Device location/GPS is off. Turn it on for an accurate location.</string>
+    <string name="location_access_error">Could not get your location. Check GPS and location access, then try again.</string>
+    <string name="location_access_grant">Grant location permission</string>
+    <string name="location_access_request_again">Request permission again</string>
+    <string name="location_access_open_app_settings">Open app permission settings</string>
+    <string name="location_access_enable_gps">Turn on GPS / Location</string>
+    <string name="location_access_retry">Try again</string>
+    <string name="location_access_get_current">Get current location</string>
 </resources>
