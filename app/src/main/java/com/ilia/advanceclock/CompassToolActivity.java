@@ -1,5 +1,6 @@
 package com.ilia.advanceclock;
 
+import android.Manifest;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,11 +9,18 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
@@ -34,14 +42,16 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
 
     private static final String PREFS = "compass_tool";
     private static final String KEY_MODE = "display_mode";
-    private static final double KAABA_LATITUDE = 21.422487;
-    private static final double KAABA_LONGITUDE = 39.826206;
-
     private SensorManager sensorManager;
     private Sensor rotationSensor;
     private CompassView compassView;
     private TextView status;
     private int selectedMode;
+    private Location qiblaLocation;
+    private LocationManager locationManager;
+    private CancellationSignal locationCancellation;
+    private LocationListener locationListener;
+    private static final int REQ_QIBLA_LOCATION = 911;
 
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this);
@@ -132,12 +142,17 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                     android.widget.AdapterView<?> parent, View view, int position, long id) {
                 selectedMode = position;
                 getSharedPreferences(PREFS, 0).edit().putInt(KEY_MODE, position).apply();
+                if (selectedMode == MODE_QIBLA) {
+                    ensureQiblaLocation();
+                }
                 compassView.invalidate();
                 updateStatus();
             }
 
             @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
         });
+
+        qiblaLocation = QiblaUtils.bestKnownLocation(this);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         rotationSensor = sensorManager == null ? null
@@ -154,10 +169,14 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         } else if (status != null) {
             status.setText(AppString.get(R.string.runtime_text_0324));
         }
+        if (selectedMode == MODE_QIBLA) {
+            ensureQiblaLocation();
+        }
     }
 
     @Override protected void onPause() {
         if (sensorManager != null) sensorManager.unregisterListener(this);
+        cancelLocationRequest();
         super.onPause();
     }
 
@@ -193,12 +212,15 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         if (status == null || compassView == null || rotationSensor == null) return;
         float heading = compassView.azimuth;
         if (selectedMode == MODE_QIBLA) {
-            if (!AppSettings.prayerLocationSet(this)) {
+            if (qiblaLocation == null) {
                 status.setText(AppString.get(R.string.runtime_text_0325));
             } else {
-                status.setText(String.format(Locale.getDefault(),
+                double bearing = qiblaBearing();
+                status.setText(String.format(
+                        AppString.locale(),
                         AppString.get(R.string.runtime_text_0326),
-                        qiblaBearing(), signedAngle((float) qiblaBearing() - heading)));
+                        bearing,
+                        signedAngle((float) bearing - heading)));
             }
         } else if (selectedMode == MODE_DIRECTIONS) {
             status.setText(directionName(heading) + "  •  " + Math.round(heading) + "°");
@@ -209,15 +231,168 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     }
 
     private double qiblaBearing() {
-        double latitude = Math.toRadians(AppSettings.prayerLatitude(this));
-        double longitudeDifference = Math.toRadians(
-                KAABA_LONGITUDE - AppSettings.prayerLongitude(this));
-        double kaabaLatitude = Math.toRadians(KAABA_LATITUDE);
-        double y = Math.sin(longitudeDifference) * Math.cos(kaabaLatitude);
-        double x = Math.cos(latitude) * Math.sin(kaabaLatitude)
-                - Math.sin(latitude) * Math.cos(kaabaLatitude)
-                * Math.cos(longitudeDifference);
-        return (Math.toDegrees(Math.atan2(y, x)) + 360d) % 360d;
+        if (qiblaLocation == null) return 0d;
+        return QiblaUtils.bearing(
+                qiblaLocation.getLatitude(),
+                qiblaLocation.getLongitude());
+    }
+
+    private void ensureQiblaLocation() {
+        Location known = QiblaUtils.bestKnownLocation(this);
+        if (known != null) {
+            qiblaLocation = known;
+            QiblaUtils.remember(
+                    this,
+                    known.getLatitude(),
+                    known.getLongitude());
+            if (compassView != null) compassView.invalidate();
+            updateStatus();
+        }
+
+        if (!QiblaUtils.hasLocationPermission(this)) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                requestPermissions(
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                        },
+                        REQ_QIBLA_LOCATION);
+            }
+            return;
+        }
+
+        requestFreshLocation();
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void requestFreshLocation() {
+        cancelLocationRequest();
+
+        locationManager =
+                (LocationManager)
+                        getSystemService(LOCATION_SERVICE);
+        if (locationManager == null) return;
+
+        String provider = null;
+        try {
+            if (locationManager.isProviderEnabled(
+                    LocationManager.GPS_PROVIDER)) {
+                provider = LocationManager.GPS_PROVIDER;
+            } else if (locationManager.isProviderEnabled(
+                    LocationManager.NETWORK_PROVIDER)) {
+                provider = LocationManager.NETWORK_PROVIDER;
+            }
+        } catch (RuntimeException ignored) {
+        }
+
+        if (provider == null) return;
+
+        final String selectedProvider = provider;
+        if (Build.VERSION.SDK_INT >= 30) {
+            locationCancellation = new CancellationSignal();
+            try {
+                locationManager.getCurrentLocation(
+                        selectedProvider,
+                        locationCancellation,
+                        getMainExecutor(),
+                        this::applyQiblaLocation);
+            } catch (RuntimeException ignored) {
+            }
+            return;
+        }
+
+        locationListener =
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(
+                            Location location) {
+                        applyQiblaLocation(location);
+                        cancelLocationRequest();
+                    }
+
+                    @Override public void onStatusChanged(
+                            String provider,
+                            int status,
+                            Bundle extras) {}
+
+                    @Override public void onProviderEnabled(
+                            String provider) {}
+
+                    @Override public void onProviderDisabled(
+                            String provider) {}
+                };
+        try {
+            locationManager.requestSingleUpdate(
+                    selectedProvider,
+                    locationListener,
+                    Looper.getMainLooper());
+        } catch (RuntimeException ignored) {
+        }
+    }
+
+    private void applyQiblaLocation(Location location) {
+        if (location == null) return;
+        qiblaLocation = location;
+        QiblaUtils.remember(
+                this,
+                location.getLatitude(),
+                location.getLongitude());
+        if (compassView != null) {
+            compassView.invalidate();
+        }
+        updateStatus();
+    }
+
+    private void cancelLocationRequest() {
+        if (locationCancellation != null) {
+            locationCancellation.cancel();
+            locationCancellation = null;
+        }
+        if (locationManager != null
+                && locationListener != null) {
+            try {
+                locationManager.removeUpdates(
+                        locationListener);
+            } catch (RuntimeException ignored) {
+            }
+        }
+        locationListener = null;
+        locationManager = null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults) {
+        super.onRequestPermissionsResult(
+                requestCode,
+                permissions,
+                grantResults);
+
+        if (requestCode != REQ_QIBLA_LOCATION) {
+            return;
+        }
+
+        boolean granted = false;
+        for (int result : grantResults) {
+            if (result
+                    == PackageManager.PERMISSION_GRANTED) {
+                granted = true;
+                break;
+            }
+        }
+
+        if (granted) {
+            ensureQiblaLocation();
+        } else {
+            qiblaLocation =
+                    QiblaUtils.bestKnownLocation(this);
+            if (compassView != null) {
+                compassView.invalidate();
+            }
+            updateStatus();
+        }
     }
 
     private float signedAngle(float angle) {
@@ -322,10 +497,16 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             }
             canvas.restore();
 
-            if (selectedMode == MODE_QIBLA && AppSettings.prayerLocationSet(
-                    CompassToolActivity.this)) {
-                drawQiblaNeedle(canvas, cx, cy, radius,
-                        signedAngle((float) qiblaBearing() - azimuth));
+            if (selectedMode == MODE_QIBLA
+                    && qiblaLocation != null) {
+                drawQiblaNeedle(
+                        canvas,
+                        cx,
+                        cy,
+                        radius,
+                        signedAngle(
+                                (float) qiblaBearing()
+                                        - azimuth));
             } else {
                 drawNorthNeedle(canvas, cx, cy, radius);
             }
