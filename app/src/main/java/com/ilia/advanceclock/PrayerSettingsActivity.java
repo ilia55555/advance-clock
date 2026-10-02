@@ -1249,6 +1249,7 @@ public final class PrayerSettingsActivity extends Activity {
 
         double lat = location.getLatitude();
         double lon = location.getLongitude();
+        QiblaUtils.remember(this, lat, lon);
         String fallback = coordinateText(lat, lon);
         AppSettings.setPrayerLocation(this, lat, lon, fallback);
         locationButton.setEnabled(true);
