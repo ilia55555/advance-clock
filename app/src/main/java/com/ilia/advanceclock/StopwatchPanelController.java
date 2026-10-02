@@ -30,6 +30,8 @@ final class StopwatchPanelController {
     private Button unlimitedModeButton, durationModeButton, dateTimeModeButton;
     private Button dateButton, timeButton;
     private boolean running;
+    private boolean resumed;
+    private boolean active;
     private int mode;
     private int calendarType;
     private long accumulatedMillis, startedAtWall, limitMillis, selectedTarget;
@@ -42,7 +44,9 @@ final class StopwatchPanelController {
                 save(); updateControls(); renderTime(limitMillis); return;
             }
             renderTime(elapsed);
-            if (running) handler.postDelayed(this, 31L);
+            if (running && resumed && active) {
+                handler.postDelayed(this, 31L);
+            }
         }
     };
 
@@ -192,6 +196,29 @@ final class StopwatchPanelController {
     private static String format(long millis){long cs=millis/10;return String.format(Locale.US,"%02d:%02d:%02d.%02d",cs/360000,(cs/6000)%60,(cs/100)%60,cs%100);}
     private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(!encoded.isEmpty())encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();TimeToolsWidgetProvider.updateAll(host);}
     private void restore(){SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);running=p.getBoolean("stopwatch_running",false);mode=p.getInt("stopwatch_mode",0);calendarType=p.getInt("stopwatch_calendar",AppSettings.defaultCalendar(host));selectedTarget=p.getLong("stopwatch_target",0);accumulatedMillis=p.getLong("stopwatch_accumulated",0);startedAtWall=p.getLong("stopwatch_started",0);limitMillis=p.getLong("stopwatch_limit",0);laps.clear();String encoded=p.getString("stopwatch_laps","");if(!encoded.isEmpty())for(String value:encoded.split(","))try{laps.add(Long.parseLong(value));}catch(NumberFormatException ignored){}if(running&&limitMillis>0&&currentElapsed()>=limitMillis){running=false;accumulatedMillis=limitMillis;startedAtWall=0;save();}}
-    void onResume(){restore();renderTarget();renderLaps();updateControls();renderTime(currentElapsed());if(running)handler.post(ticker);}
-    void onPause(){handler.removeCallbacks(ticker);save();}
+    void setActive(boolean value) {
+        active = value;
+        handler.removeCallbacks(ticker);
+        if (active && resumed) {
+            renderTime(currentElapsed());
+            if (running) handler.post(ticker);
+        }
+    }
+
+    void onResume(){
+        resumed = true;
+        restore();
+        renderTarget();
+        renderLaps();
+        updateControls();
+        renderTime(currentElapsed());
+        handler.removeCallbacks(ticker);
+        if(active && running) handler.post(ticker);
+    }
+
+    void onPause(){
+        resumed = false;
+        handler.removeCallbacks(ticker);
+        save();
+    }
 }
