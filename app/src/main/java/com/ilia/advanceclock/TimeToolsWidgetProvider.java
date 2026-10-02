@@ -29,6 +29,12 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
             "com.ilia.advanceclock.TIME_TOOLS_RESET";
     private static final String ACTION_LAP =
             "com.ilia.advanceclock.TIME_TOOLS_LAP";
+    private static final String ACTION_MODE_PRIMARY =
+            "com.ilia.advanceclock.TIME_TOOLS_MODE_PRIMARY";
+    private static final String ACTION_MODE_SECONDARY =
+            "com.ilia.advanceclock.TIME_TOOLS_MODE_SECONDARY";
+    private static final String ACTION_MODE_TERTIARY =
+            "com.ilia.advanceclock.TIME_TOOLS_MODE_TERTIARY";
 
     @Override public void onUpdate(
             Context context,
@@ -83,7 +89,10 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 || ACTION_TAB_TIMER.equals(action)
                 || ACTION_TOGGLE.equals(action)
                 || ACTION_RESET.equals(action)
-                || ACTION_LAP.equals(action)) {
+                || ACTION_LAP.equals(action)
+                || ACTION_MODE_PRIMARY.equals(action)
+                || ACTION_MODE_SECONDARY.equals(action)
+                || ACTION_MODE_TERTIARY.equals(action)) {
             int widgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -118,6 +127,13 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 } else if (ACTION_LAP.equals(action)
                         && tab == TimeToolsWidgetPrefs.TAB_STOPWATCH) {
                     addStopwatchLap(context);
+                } else if (ACTION_MODE_PRIMARY.equals(action)) {
+                    setMode(context, tab, 0);
+                } else if (ACTION_MODE_SECONDARY.equals(action)) {
+                    setMode(context, tab, 1);
+                } else if (ACTION_MODE_TERTIARY.equals(action)
+                        && tab == TimeToolsWidgetPrefs.TAB_STOPWATCH) {
+                    setMode(context, tab, 2);
                 }
             }
 
@@ -199,16 +215,16 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         : R.drawable.time_tools_widget_background_light);
 
         styleTab(
+                context,
                 root,
                 R.id.time_tools_tab_stopwatch,
                 stopwatch,
-                primary,
                 text);
         styleTab(
+                context,
                 root,
                 R.id.time_tools_tab_timer,
                 !stopwatch,
-                primary,
                 text);
 
         float width = Math.max(1f, widthDp);
@@ -245,7 +261,12 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 R.id.time_tools_reset,
                 R.id.time_tools_primary,
                 R.id.time_tools_lap,
-                R.id.time_tools_open}) {
+                R.id.time_tools_open,
+                R.id.time_tools_mode_primary,
+                R.id.time_tools_mode_secondary,
+                R.id.time_tools_mode_tertiary,
+                R.id.time_tools_config_value,
+                R.id.time_tools_config_time}) {
             root.setTextViewTextSize(
                     id,
                     TypedValue.COMPLEX_UNIT_SP,
@@ -270,6 +291,27 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
         root.setTextColor(
                 R.id.time_tools_open,
                 primary);
+
+        int inactiveBackground =
+                inactiveButtonBackground(context);
+        for (int id : new int[]{
+                R.id.time_tools_reset,
+                R.id.time_tools_lap,
+                R.id.time_tools_open,
+                R.id.time_tools_config_value,
+                R.id.time_tools_config_time}) {
+            root.setInt(
+                    id,
+                    "setBackgroundResource",
+                    inactiveBackground);
+        }
+        root.setInt(
+                R.id.time_tools_primary,
+                "setBackgroundResource",
+                activeButtonBackground(context));
+        root.setTextColor(
+                R.id.time_tools_primary,
+                0xFFFFFFFF);
 
         root.setOnClickPendingIntent(
                 R.id.time_tools_tab_stopwatch,
@@ -306,6 +348,27 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         widgetId,
                         ACTION_LAP,
                         5));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_mode_primary,
+                actionPendingIntent(
+                        context,
+                        widgetId,
+                        ACTION_MODE_PRIMARY,
+                        6));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_mode_secondary,
+                actionPendingIntent(
+                        context,
+                        widgetId,
+                        ACTION_MODE_SECONDARY,
+                        7));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_mode_tertiary,
+                actionPendingIntent(
+                        context,
+                        widgetId,
+                        ACTION_MODE_TERTIARY,
+                        8));
 
         root.setOnClickPendingIntent(
                 R.id.time_tools_open,
@@ -343,6 +406,27 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                     root,
                     widgetId);
         }
+
+        renderModes(
+                context,
+                root,
+                widgetId,
+                stopwatch);
+
+        root.setOnClickPendingIntent(
+                R.id.time_tools_config_value,
+                pickerPendingIntent(
+                        context,
+                        widgetId,
+                        stopwatch,
+                        false));
+        root.setOnClickPendingIntent(
+                R.id.time_tools_config_time,
+                pickerPendingIntent(
+                        context,
+                        widgetId,
+                        stopwatch,
+                        true));
 
         boolean showDetails =
                 TimeToolsWidgetPrefs.showDetails(
@@ -394,6 +478,11 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                     View.GONE);
         }
 
+        root.setViewVisibility(
+                R.id.time_tools_modes,
+                tinyHeight
+                        ? View.GONE
+                        : View.VISIBLE);
         root.setViewVisibility(
                 R.id.time_tools_controls,
                 tinyHeight
@@ -588,21 +677,280 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                         R.string.runtime_text_0171));
     }
 
+    private static void renderModes(
+            Context context,
+            RemoteViews root,
+            int widgetId,
+            boolean stopwatch) {
+        SharedPreferences p = context.getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE);
+
+        boolean configurable;
+        int mode;
+
+        if (stopwatch) {
+            configurable =
+                    !p.getBoolean(
+                            "stopwatch_running",
+                            false)
+                            && stopwatchElapsed(p) == 0L;
+            mode = Math.max(
+                    0,
+                    Math.min(
+                            2,
+                            p.getInt(
+                                    "stopwatch_mode",
+                                    0)));
+
+            root.setTextViewText(
+                    R.id.time_tools_mode_primary,
+                    context.getString(
+                            R.string.layout_text_0012));
+            root.setTextViewText(
+                    R.id.time_tools_mode_secondary,
+                    context.getString(
+                            R.string.runtime_text_0172));
+            root.setTextViewText(
+                    R.id.time_tools_mode_tertiary,
+                    context.getString(
+                            R.string.runtime_text_0173));
+            root.setViewVisibility(
+                    R.id.time_tools_mode_gap_tertiary,
+                    View.VISIBLE);
+            root.setViewVisibility(
+                    R.id.time_tools_mode_tertiary,
+                    View.VISIBLE);
+        } else {
+            configurable =
+                    !p.getBoolean(
+                            "timer_running",
+                            false)
+                            && timerRemaining(p) == 0L;
+            mode = p.getBoolean(
+                    "timer_date_mode",
+                    false)
+                    ? 1
+                    : 0;
+
+            root.setTextViewText(
+                    R.id.time_tools_mode_primary,
+                    context.getString(
+                            R.string.runtime_text_0172));
+            root.setTextViewText(
+                    R.id.time_tools_mode_secondary,
+                    context.getString(
+                            R.string.layout_text_0015));
+            root.setViewVisibility(
+                    R.id.time_tools_mode_gap_tertiary,
+                    View.GONE);
+            root.setViewVisibility(
+                    R.id.time_tools_mode_tertiary,
+                    View.GONE);
+        }
+
+        styleModeButton(
+                context,
+                root,
+                R.id.time_tools_mode_primary,
+                mode == 0,
+                configurable);
+        styleModeButton(
+                context,
+                root,
+                R.id.time_tools_mode_secondary,
+                mode == 1,
+                configurable);
+        if (stopwatch) {
+            styleModeButton(
+                    context,
+                    root,
+                    R.id.time_tools_mode_tertiary,
+                    mode == 2,
+                    configurable);
+        }
+
+        if (!configurable) {
+            root.setViewVisibility(
+                    R.id.time_tools_config_row,
+                    View.GONE);
+            return;
+        }
+
+        if (stopwatch && mode == 0) {
+            root.setViewVisibility(
+                    R.id.time_tools_config_row,
+                    View.GONE);
+            return;
+        }
+
+        root.setViewVisibility(
+                R.id.time_tools_config_row,
+                View.VISIBLE);
+
+        if ((stopwatch && mode == 1)
+                || (!stopwatch && mode == 0)) {
+            long value = stopwatch
+                    ? p.getLong(
+                    "stopwatch_limit",
+                    5 * 60_000L)
+                    : TimeToolsWidgetPrefs.timerDefaultMillis(
+                    context,
+                    widgetId);
+            if (value <= 0L) value = 5 * 60_000L;
+
+            root.setTextViewText(
+                    R.id.time_tools_config_value,
+                    formatTimer(value));
+            root.setViewVisibility(
+                    R.id.time_tools_config_gap,
+                    View.GONE);
+            root.setViewVisibility(
+                    R.id.time_tools_config_time,
+                    View.GONE);
+            return;
+        }
+
+        long target = p.getLong(
+                stopwatch
+                        ? "stopwatch_target"
+                        : "timer_target",
+                0L);
+        if (target <= System.currentTimeMillis()) {
+            target = System.currentTimeMillis()
+                    + 5 * 60_000L;
+        }
+
+        int calendarType = p.getInt(
+                stopwatch
+                        ? "stopwatch_calendar"
+                        : "timer_calendar",
+                AppSettings.defaultCalendar(context));
+
+        root.setTextViewText(
+                R.id.time_tools_config_value,
+                CalendarUtils.formatDate(
+                        target,
+                        calendarType));
+        root.setTextViewText(
+                R.id.time_tools_config_time,
+                String.format(
+                        Locale.US,
+                        "%tR",
+                        target));
+        root.setViewVisibility(
+                R.id.time_tools_config_gap,
+                View.VISIBLE);
+        root.setViewVisibility(
+                R.id.time_tools_config_time,
+                View.VISIBLE);
+    }
+
     private static void styleTab(
+            Context context,
             RemoteViews root,
             int id,
             boolean active,
-            int primary,
             int text) {
         root.setInt(
                 id,
                 "setBackgroundResource",
                 active
-                        ? R.drawable.bg_teal_button
-                        : R.drawable.bg_soft_button);
+                        ? activeButtonBackground(context)
+                        : inactiveButtonBackground(context));
         root.setTextColor(
                 id,
                 active ? 0xFFFFFFFF : text);
+    }
+
+    private static void styleModeButton(
+            Context context,
+            RemoteViews root,
+            int id,
+            boolean active,
+            boolean enabled) {
+        root.setInt(
+                id,
+                "setBackgroundResource",
+                active
+                        ? activeButtonBackground(context)
+                        : inactiveButtonBackground(context));
+        root.setTextColor(
+                id,
+                active
+                        ? 0xFFFFFFFF
+                        : AppSettings.textPrimary(context));
+        root.setBoolean(
+                id,
+                "setEnabled",
+                enabled);
+        root.setFloat(
+                id,
+                "setAlpha",
+                enabled ? 1f : 0.45f);
+    }
+
+    private static int activeButtonBackground(
+            Context context) {
+        switch (AppSettings.palette(context)) {
+            case AppSettings.PALETTE_TERRACOTTA_NAVY:
+                return R.drawable.widget_calendar_selected_palette_0;
+            case AppSettings.PALETTE_MAGENTA_SKY:
+                return R.drawable.widget_calendar_selected_palette_1;
+            case AppSettings.PALETTE_MAGENTA_CHARCOAL:
+                return R.drawable.widget_calendar_selected_palette_2;
+            case AppSettings.PALETTE_TEAL_RED:
+                return R.drawable.widget_calendar_selected_palette_3;
+            case AppSettings.PALETTE_PURPLE_GOLD:
+                return R.drawable.widget_calendar_selected_palette_4;
+            case AppSettings.PALETTE_NEON_MAGENTA_GRAPHITE:
+                return R.drawable.widget_calendar_selected_palette_5;
+            case AppSettings.PALETTE_BLUE_CYAN:
+            default:
+                return R.drawable.widget_calendar_selected_palette_6;
+        }
+    }
+
+    private static int inactiveButtonBackground(
+            Context context) {
+        return AppSettings.themeMode(context)
+                == AppSettings.THEME_DARK
+                ? R.drawable.time_tools_widget_button_dark
+                : R.drawable.time_tools_widget_button_light;
+    }
+
+    private static PendingIntent pickerPendingIntent(
+            Context context,
+            int widgetId,
+            boolean stopwatch,
+            boolean timeOnly) {
+        Intent intent = new Intent(
+                context,
+                TimeToolsWidgetPickerActivity.class)
+                .putExtra(
+                        AppWidgetManager.EXTRA_APPWIDGET_ID,
+                        widgetId)
+                .putExtra(
+                        "tool",
+                        stopwatch
+                                ? "stopwatch"
+                                : "timer")
+                .putExtra(
+                        "timeOnly",
+                        timeOnly)
+                .addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        return PendingIntent.getActivity(
+                context,
+                9_400_000
+                        + Math.abs(widgetId % 100_000) * 2
+                        + (timeOnly ? 1 : 0)
+                        + (stopwatch ? 200_000 : 0),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+                        | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private static PendingIntent actionPendingIntent(
@@ -650,6 +998,96 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
                         | PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    private static void setMode(
+            Context context,
+            int tab,
+            int mode) {
+        SharedPreferences p = context.getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE);
+
+        if (tab == TimeToolsWidgetPrefs.TAB_STOPWATCH) {
+            if (p.getBoolean(
+                    "stopwatch_running",
+                    false)
+                    || stopwatchElapsed(p) > 0L) {
+                return;
+            }
+
+            int safeMode =
+                    Math.max(
+                            0,
+                            Math.min(
+                                    2,
+                                    mode));
+            SharedPreferences.Editor editor =
+                    p.edit()
+                            .putInt(
+                                    "stopwatch_mode",
+                                    safeMode);
+
+            if (safeMode == 0) {
+                editor.putLong(
+                        "stopwatch_limit",
+                        0L);
+            } else if (safeMode == 1
+                    && p.getLong(
+                    "stopwatch_limit",
+                    0L) <= 0L) {
+                editor.putLong(
+                        "stopwatch_limit",
+                        5 * 60_000L);
+            } else if (safeMode == 2
+                    && p.getLong(
+                    "stopwatch_target",
+                    0L)
+                    <= System.currentTimeMillis()) {
+                editor.putLong(
+                        "stopwatch_target",
+                        System.currentTimeMillis()
+                                + 5 * 60_000L);
+                editor.putInt(
+                        "stopwatch_calendar",
+                        AppSettings.defaultCalendar(
+                                context));
+            }
+
+            editor.apply();
+            return;
+        }
+
+        if (p.getBoolean(
+                "timer_running",
+                false)
+                || timerRemaining(p) > 0L) {
+            return;
+        }
+
+        boolean dateMode = mode == 1;
+        SharedPreferences.Editor editor =
+                p.edit()
+                        .putBoolean(
+                                "timer_date_mode",
+                                dateMode);
+
+        if (dateMode
+                && p.getLong(
+                "timer_target",
+                0L)
+                <= System.currentTimeMillis()) {
+            editor.putLong(
+                    "timer_target",
+                    System.currentTimeMillis()
+                            + 5 * 60_000L);
+            editor.putInt(
+                    "timer_calendar",
+                    AppSettings.defaultCalendar(
+                            context));
+        }
+
+        editor.apply();
     }
 
     private static void toggleStopwatch(
