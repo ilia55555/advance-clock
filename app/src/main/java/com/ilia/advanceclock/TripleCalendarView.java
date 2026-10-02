@@ -61,6 +61,15 @@ public final class TripleCalendarView extends View {
     private OnDateSelectedListener dateListener;
     private OnMonthYearClickListener monthYearListener;
 
+    private DayRenderData[] cachedDays = new DayRenderData[0];
+    private int cachedCalendarType = -1;
+    private int cachedDisplayYear = Integer.MIN_VALUE;
+    private int cachedDisplayMonth = -1;
+    private int cachedLeading;
+    private int cachedRowCount = 5;
+    private String cachedFooterOne = "";
+    private String cachedFooterTwo = "";
+
     public TripleCalendarView(Context context) { this(context, null); }
     public TripleCalendarView(Context context, AttributeSet attrs) { this(context, attrs, 0); }
 
@@ -74,6 +83,8 @@ public final class TripleCalendarView extends View {
         stroke.setStyle(Paint.Style.STROKE);
         stroke.setStrokeCap(Paint.Cap.ROUND);
         stroke.setStrokeJoin(Paint.Join.ROUND);
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        rebuildCalendarCache();
     }
 
     public void setOnDateSelectedListener(OnDateSelectedListener l) { dateListener = l; }
@@ -83,6 +94,7 @@ public final class TripleCalendarView extends View {
     public void setCalendarType(int type) {
         calendarType = Math.max(0, Math.min(2, type));
         syncVisibleFrom(selectedMillis);
+        rebuildCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -92,6 +104,7 @@ public final class TripleCalendarView extends View {
     public void setSelectedMillis(long millis) {
         selectedMillis = millis;
         syncVisibleFrom(millis);
+        rebuildCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -101,6 +114,7 @@ public final class TripleCalendarView extends View {
         android.icu.util.Calendar visible = CalendarUtils.fromMillis(calendarType, millis);
         displayYear = visible.get(android.icu.util.Calendar.YEAR);
         displayMonth = visible.get(android.icu.util.Calendar.MONTH);
+        rebuildCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -199,108 +213,172 @@ public final class TripleCalendarView extends View {
     }
 
     private void drawDays(Canvas c) {
-        android.icu.util.Calendar first = first();
-        int leading = leadingDays(first);
-        int days = first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
+        ensureCalendarCache();
 
-        android.icu.util.Calendar sel = CalendarUtils.fromMillis(calendarType, selectedMillis);
-        android.icu.util.Calendar today = CalendarUtils.fromMillis(
-                calendarType, System.currentTimeMillis());
+        android.icu.util.Calendar sel =
+                CalendarUtils.fromMillis(calendarType, selectedMillis);
+        android.icu.util.Calendar today =
+                CalendarUtils.fromMillis(
+                        calendarType,
+                        System.currentTimeMillis());
 
-        int other1 = CalendarUtils.otherTypeOne(calendarType);
-        int other2 = CalendarUtils.otherTypeTwo(calendarType);
+        int selectedYear =
+                sel.get(android.icu.util.Calendar.YEAR);
+        int selectedMonth =
+                sel.get(android.icu.util.Calendar.MONTH);
+        int selectedDay =
+                sel.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
-        for (int day = 1; day <= days; day++) {
-            int slot = leading + day - 1;
-            int row = slot / 7;
-            int col = slot % 7;
-            if (row >= CELL_TOP.length) break;
+        int todayYear =
+                today.get(android.icu.util.Calendar.YEAR);
+        int todayMonth =
+                today.get(android.icu.util.Calendar.MONTH);
+        int todayDay =
+                today.get(android.icu.util.Calendar.DAY_OF_MONTH);
 
-            long millis = CalendarUtils.toMillis(
-                    calendarType, displayYear, displayMonth, day, 12, 0);
-            android.icu.util.Calendar a = CalendarUtils.fromMillis(other1, millis);
-            android.icu.util.Calendar b = CalendarUtils.fromMillis(other2, millis);
+        boolean dark = dark();
+        int primary = primary();
+        int holidayRed = holidayRed();
 
+        for (DayRenderData item : cachedDays) {
             boolean selected =
-                    sel.get(android.icu.util.Calendar.YEAR) == displayYear
-                    && sel.get(android.icu.util.Calendar.MONTH) == displayMonth
-                    && sel.get(android.icu.util.Calendar.DAY_OF_MONTH) == day;
+                    selectedYear == displayYear
+                            && selectedMonth == displayMonth
+                            && selectedDay == item.day;
             boolean isToday =
-                    today.get(android.icu.util.Calendar.YEAR) == displayYear
-                    && today.get(android.icu.util.Calendar.MONTH) == displayMonth
-                    && today.get(android.icu.util.Calendar.DAY_OF_MONTH) == day;
-            boolean holiday = CalendarEventRepository.isWeekend(millis, calendarType)
-                    || CalendarEventRepository.isOfficialHolidayInEnabledSources(
-                    getContext(), millis, calendarType);
+                    todayYear == displayYear
+                            && todayMonth == displayMonth
+                            && todayDay == item.day;
 
-            float left = CELL_LEFT[col], top = CELL_TOP[row];
-            int fill = selected ? primary()
-                    : (holiday
-                    ? blendOnSurface(holidayRed(), dark() ? 0.24f : 0.12f)
-                    : (dark() ? CELL_DARK : CELL_LIGHT));
+            float left = CELL_LEFT[item.col];
+            float top = CELL_TOP[item.row];
+
+            int fill = selected
+                    ? primary
+                    : (item.holiday
+                    ? blendOnSurface(
+                            holidayRed,
+                            dark ? 0.24f : 0.12f)
+                    : (dark ? CELL_DARK : CELL_LIGHT));
 
             paint.setColor(fill);
-            c.drawRoundRect(new RectF(left, top, left + CELL_W, top + CELL_H), 11, 11, paint);
+            c.drawRoundRect(
+                    new RectF(
+                            left,
+                            top,
+                            left + CELL_W,
+                            top + CELL_H),
+                    11,
+                    11,
+                    paint);
 
             if (isToday) {
                 stroke.setStyle(Paint.Style.STROKE);
                 stroke.setStrokeWidth(2.8f);
-                stroke.setColor(primary());
+                stroke.setColor(primary);
                 c.drawRoundRect(
-                        new RectF(left + 1.5f, top + 1.5f,
-                                left + CELL_W - 1.5f, top + CELL_H - 1.5f),
-                        10, 10, stroke);
+                        new RectF(
+                                left + 1.5f,
+                                top + 1.5f,
+                                left + CELL_W - 1.5f,
+                                top + CELL_H - 1.5f),
+                        10,
+                        10,
+                        stroke);
                 if (selected) {
                     stroke.setStrokeWidth(1.6f);
                     stroke.setColor(WHITE);
                     c.drawRoundRect(
-                            new RectF(left + 5f, top + 5f,
-                                    left + CELL_W - 5f, top + CELL_H - 5f),
-                            8, 8, stroke);
+                            new RectF(
+                                    left + 5f,
+                                    top + 5f,
+                                    left + CELL_W - 5f,
+                                    top + CELL_H - 5f),
+                            8,
+                            8,
+                            stroke);
                 }
             }
 
-            int main = selected ? WHITE
-                    : (holiday ? holidayRed() : (dark() ? MAIN_TEXT_DARK : MAIN_TEXT_LIGHT));
-            int muted = selected ? 0xFFDDECEA
-                    : (holiday ? holidayRed() : (dark() ? MUTED_DARK : MUTED_LIGHT));
+            int main = selected
+                    ? WHITE
+                    : (item.holiday
+                    ? holidayRed
+                    : (dark
+                    ? MAIN_TEXT_DARK
+                    : MAIN_TEXT_LIGHT));
+            int muted = selected
+                    ? 0xFFDDECEA
+                    : (item.holiday
+                    ? holidayRed
+                    : (dark
+                    ? MUTED_DARK
+                    : MUTED_LIGHT));
 
-            centered(c, CalendarUtils.fa(day), left + CELL_W / 2f, top + 30,
-                    29, main, regular);
+            centered(
+                    c,
+                    item.mainDay,
+                    left + CELL_W / 2f,
+                    top + 30,
+                    29,
+                    main,
+                    regular);
 
-            // Use the same Persian-digit glyph set, typeface and size for both
-            // secondary calendars so Gregorian and Hijri numbers have identical
-            // visual weight and readability.
-            String smallLeft = CalendarUtils.fa(
-                    a.get(android.icu.util.Calendar.DAY_OF_MONTH));
-            String smallRight = CalendarUtils.fa(
-                    b.get(android.icu.util.Calendar.DAY_OF_MONTH));
-
-            centered(c, smallLeft, left + 20, top + 62, 18, muted, medium);
-            centered(c, smallRight, left + 57, top + 62, 18, muted, medium);
+            centered(
+                    c,
+                    item.smallLeft,
+                    left + 20,
+                    top + 62,
+                    18,
+                    muted,
+                    medium);
+            centered(
+                    c,
+                    item.smallRight,
+                    left + 57,
+                    top + 62,
+                    18,
+                    muted,
+                    medium);
         }
     }
 
     private void drawFooter(Canvas c) {
-        float shift = Math.max(0, rowCount() - 5) * EXTRA_ROW_H;
-        android.icu.util.Calendar first = first();
-        android.icu.util.Calendar last = CalendarUtils.create(calendarType);
-        last.clear();
-        last.set(displayYear, displayMonth,
-                first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH),
-                12, 0, 0);
+        ensureCalendarCache();
+        float shift =
+                Math.max(0, cachedRowCount - 5)
+                        * EXTRA_ROW_H;
 
-        int one = CalendarUtils.otherTypeOne(calendarType);
-        int two = CalendarUtils.otherTypeTwo(calendarType);
-
-        centered(c, rangeFor(one, first.getTimeInMillis(), last.getTimeInMillis()),
-                340, 620 + shift, 20, primary(), regular);
+        centered(
+                c,
+                cachedFooterOne,
+                340,
+                620 + shift,
+                20,
+                primary(),
+                regular);
         stroke.setColor(primary());
         stroke.setStrokeWidth(1);
-        c.drawLine(46, 642 + shift, 163, 642 + shift, stroke);
-        c.drawLine(516, 642 + shift, 634, 642 + shift, stroke);
-        centered(c, rangeFor(two, first.getTimeInMillis(), last.getTimeInMillis()),
-                340, 662 + shift, 16, primary(), regular);
+        c.drawLine(
+                46,
+                642 + shift,
+                163,
+                642 + shift,
+                stroke);
+        c.drawLine(
+                516,
+                642 + shift,
+                634,
+                642 + shift,
+                stroke);
+        centered(
+                c,
+                cachedFooterTwo,
+                340,
+                662 + shift,
+                16,
+                primary(),
+                regular);
     }
 
     private String rangeFor(int type, long start, long end) {
@@ -312,6 +390,107 @@ public final class TripleCalendarView extends View {
                 ? String.valueOf(b.get(android.icu.util.Calendar.YEAR))
                 : CalendarUtils.fa(b.get(android.icu.util.Calendar.YEAR));
         return am.equals(bm) ? am + " " + y : am + " - " + bm + " " + y;
+    }
+
+    private void ensureCalendarCache() {
+        if (cachedCalendarType != calendarType
+                || cachedDisplayYear != displayYear
+                || cachedDisplayMonth != displayMonth) {
+            rebuildCalendarCache();
+        }
+    }
+
+    private void rebuildCalendarCache() {
+        android.icu.util.Calendar first = first();
+        int leading = leadingDays(first);
+        int days = first.getActualMaximum(
+                android.icu.util.Calendar.DAY_OF_MONTH);
+        int rows = (leading + days + 6) / 7;
+
+        DayRenderData[] data =
+                new DayRenderData[days];
+        int other1 =
+                CalendarUtils.otherTypeOne(calendarType);
+        int other2 =
+                CalendarUtils.otherTypeTwo(calendarType);
+
+        for (int day = 1; day <= days; day++) {
+            int slot = leading + day - 1;
+            int row = slot / 7;
+            int col = slot % 7;
+
+            long millis =
+                    CalendarUtils.toMillis(
+                            calendarType,
+                            displayYear,
+                            displayMonth,
+                            day,
+                            12,
+                            0);
+
+            android.icu.util.Calendar a =
+                    CalendarUtils.fromMillis(
+                            other1,
+                            millis);
+            android.icu.util.Calendar b =
+                    CalendarUtils.fromMillis(
+                            other2,
+                            millis);
+
+            boolean holiday =
+                    CalendarEventRepository.isWeekend(
+                            millis,
+                            calendarType)
+                            || CalendarEventRepository
+                            .isOfficialHolidayInEnabledSources(
+                                    getContext(),
+                                    millis,
+                                    calendarType);
+
+            data[day - 1] =
+                    new DayRenderData(
+                            day,
+                            row,
+                            col,
+                            CalendarUtils.fa(day),
+                            CalendarUtils.fa(
+                                    a.get(
+                                            android.icu.util.Calendar
+                                                    .DAY_OF_MONTH)),
+                            CalendarUtils.fa(
+                                    b.get(
+                                            android.icu.util.Calendar
+                                                    .DAY_OF_MONTH)),
+                            holiday);
+        }
+
+        android.icu.util.Calendar last =
+                CalendarUtils.create(calendarType);
+        last.clear();
+        last.set(
+                displayYear,
+                displayMonth,
+                days,
+                12,
+                0,
+                0);
+
+        cachedDays = data;
+        cachedLeading = leading;
+        cachedRowCount = rows;
+        cachedFooterOne =
+                rangeFor(
+                        other1,
+                        first.getTimeInMillis(),
+                        last.getTimeInMillis());
+        cachedFooterTwo =
+                rangeFor(
+                        other2,
+                        first.getTimeInMillis(),
+                        last.getTimeInMillis());
+        cachedCalendarType = calendarType;
+        cachedDisplayYear = displayYear;
+        cachedDisplayMonth = displayMonth;
     }
 
     private void centered(Canvas c, String text, float cx, float cy,
@@ -449,15 +628,14 @@ public final class TripleCalendarView extends View {
         }
         displayMonth = m;
         displayYear = y;
+        rebuildCalendarCache();
         requestLayout();
         invalidate();
     }
 
     private int rowCount() {
-        android.icu.util.Calendar first = first();
-        int leading = leadingDays(first);
-        return (leading
-                + first.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH) + 6) / 7;
+        ensureCalendarCache();
+        return cachedRowCount;
     }
 
     private int leadingDays(android.icu.util.Calendar first) {
@@ -472,6 +650,33 @@ public final class TripleCalendarView extends View {
 
     private int holidayRed() {
         return dark() ? 0xFFFF7B7B : 0xFFC62828;
+    }
+
+    private static final class DayRenderData {
+        final int day;
+        final int row;
+        final int col;
+        final String mainDay;
+        final String smallLeft;
+        final String smallRight;
+        final boolean holiday;
+
+        DayRenderData(
+                int day,
+                int row,
+                int col,
+                String mainDay,
+                String smallLeft,
+                String smallRight,
+                boolean holiday) {
+            this.day = day;
+            this.row = row;
+            this.col = col;
+            this.mainDay = mainDay;
+            this.smallLeft = smallLeft;
+            this.smallRight = smallRight;
+            this.holiday = holiday;
+        }
     }
 
     private float baseHeight() {
