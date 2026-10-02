@@ -396,14 +396,14 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                 int mode) {
             float widthScale =
                     clamp(
-                            widgetWidthDp / 360f,
-                            0.82f,
-                            1.16f);
+                            widgetWidthDp / 350f,
+                            0.90f,
+                            1.14f);
             float heightScale =
                     clamp(
-                            widgetHeightDp / 145f,
-                            0.84f,
-                            1.14f);
+                            widgetHeightDp / 120f,
+                            0.93f,
+                            1.12f);
             float geometryScale =
                     Math.min(
                             widthScale,
@@ -422,22 +422,22 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                             * preferenceScale;
 
             float city =
-                    (compact ? 12f : 17f)
+                    (compact ? 12.5f : 18f)
                             * scale;
             float date =
-                    (compact ? 8.5f : 11.5f)
+                    (compact ? 9f : 12f)
                             * scale;
             float clock =
-                    (compact ? 11f : 20f)
+                    (compact ? 11.5f : 22f)
                             * scale;
             float label =
-                    (compact ? 8f : 10.5f)
+                    (compact ? 8.5f : 11.5f)
                             * scale;
             float value =
-                    (compact ? 10f : 12.5f)
+                    (compact ? 10.5f : 13.5f)
                             * scale;
             float icon =
-                    (compact ? 10f : 13f)
+                    (compact ? 10.5f : 14.5f)
                             * scale;
 
             // Use DIP instead of SP so Android's system font-scale setting
@@ -445,19 +445,19 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setTextViewTextSize(
                     R.id.prayer_widget_city,
                     TypedValue.COMPLEX_UNIT_DIP,
-                    clamp(city, compact ? 10f : 14f, compact ? 14f : 20f));
+                    clamp(city, compact ? 10.5f : 15.5f, compact ? 14.5f : 20.5f));
             row.setTextViewTextSize(
                     R.id.prayer_widget_local_date,
                     TypedValue.COMPLEX_UNIT_DIP,
-                    clamp(date, compact ? 7.5f : 9f, compact ? 11f : 14f));
+                    clamp(date, compact ? 8f : 10f, compact ? 11.5f : 14.5f));
             row.setTextViewTextSize(
                     R.id.prayer_widget_local_time,
                     TypedValue.COMPLEX_UNIT_DIP,
-                    clamp(clock, compact ? 9f : 16f, compact ? 14f : 24f));
+                    clamp(clock, compact ? 9.5f : 18f, compact ? 14.5f : 25f));
             row.setTextViewTextSize(
                     R.id.prayer_widget_countdown,
                     TypedValue.COMPLEX_UNIT_DIP,
-                    clamp(clock, compact ? 9f : 16f, compact ? 14f : 24f));
+                    clamp(clock, compact ? 9.5f : 18f, compact ? 14.5f : 25f));
 
             int[] labels = {
                     R.id.prayer_label_fajr,
@@ -493,18 +493,18 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             float safeLabel =
                     clamp(
                             label,
-                            compact ? 7f : 8.5f,
-                            compact ? 10f : 12.5f);
+                            compact ? 7.5f : 9.8f,
+                            compact ? 10.5f : 13f);
             float safeValue =
                     clamp(
                             value,
-                            compact ? 8.5f : 10.5f,
-                            compact ? 12f : 14.5f);
+                            compact ? 9f : 11.5f,
+                            compact ? 12.5f : 15f);
             float safeIcon =
                     clamp(
                             icon,
-                            compact ? 8.5f : 10.5f,
-                            compact ? 12f : 15f);
+                            compact ? 9f : 11.5f,
+                            compact ? 12.5f : 15.5f);
 
             for (int id : labels) {
                 row.setTextViewTextSize(
