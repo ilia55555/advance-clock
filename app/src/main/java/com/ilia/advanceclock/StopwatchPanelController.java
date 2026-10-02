@@ -45,7 +45,7 @@ final class StopwatchPanelController {
             }
             renderTime(elapsed);
             if (running && resumed && active) {
-                handler.postDelayed(this, 31L);
+                handler.postDelayed(this, 50L);
             }
         }
     };
