@@ -8,15 +8,13 @@ import android.graphics.RectF;
 import android.view.View;
 
 public final class QiblaAdhanBackgroundView extends View {
-    private static final double KAABA_LATITUDE = 21.422487;
-    private static final double KAABA_LONGITUDE = 39.826206;
-
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Path path = new Path();
     private final String[] directionLabels;
 
     private float azimuth;
     private float qiblaBearing;
+    private boolean hasQiblaBearing;
 
     public QiblaAdhanBackgroundView(Context context) {
         super(context);
@@ -31,38 +29,28 @@ public final class QiblaAdhanBackgroundView extends View {
                 AppString.get(R.string.runtime_text_0460),
                 AppString.get(R.string.runtime_text_0339)
         };
-        refreshBearing();
+        android.location.Location location =
+                QiblaUtils.bestKnownLocation(context);
+        if (location != null) {
+            setLocation(
+                    location.getLatitude(),
+                    location.getLongitude());
+        }
     }
 
-    public void refreshBearing() {
-        if (!AppSettings.prayerLocationSet(getContext())) {
-            qiblaBearing = 0f;
-            invalidate();
-            return;
-        }
-
-        double latitude = Math.toRadians(
-                AppSettings.prayerLatitude(getContext()));
-        double longitudeDifference = Math.toRadians(
-                KAABA_LONGITUDE
-                        - AppSettings.prayerLongitude(getContext()));
-        double kaabaLatitude = Math.toRadians(KAABA_LATITUDE);
-
-        double y =
-                Math.sin(longitudeDifference)
-                        * Math.cos(kaabaLatitude);
-        double x =
-                Math.cos(latitude)
-                        * Math.sin(kaabaLatitude)
-                        - Math.sin(latitude)
-                        * Math.cos(kaabaLatitude)
-                        * Math.cos(longitudeDifference);
-
+    public void setLocation(
+            double latitude,
+            double longitude) {
         qiblaBearing =
-                (float) ((Math.toDegrees(
-                        Math.atan2(y, x))
-                        + 360d) % 360d);
+                (float) QiblaUtils.bearing(
+                        latitude,
+                        longitude);
+        hasQiblaBearing = true;
         invalidate();
+    }
+
+    public boolean hasQiblaBearing() {
+        return hasQiblaBearing;
     }
 
     public void setAzimuth(float value) {
@@ -80,10 +68,6 @@ public final class QiblaAdhanBackgroundView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!AppSettings.prayerLocationSet(getContext())) {
-            return;
-        }
-
         float cx = getWidth() / 2f;
         float cy = getHeight() * 0.48f;
         float radius =
@@ -94,7 +78,7 @@ public final class QiblaAdhanBackgroundView extends View {
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(0xFF0D3146);
-        paint.setAlpha(145);
+        paint.setAlpha(205);
         canvas.drawCircle(
                 cx,
                 cy,
@@ -104,7 +88,7 @@ public final class QiblaAdhanBackgroundView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(dp(2));
         paint.setColor(0xFF8ED8D0);
-        paint.setAlpha(92);
+        paint.setAlpha(150);
         canvas.drawCircle(cx, cy, radius, paint);
         canvas.drawCircle(
                 cx,
@@ -196,13 +180,15 @@ public final class QiblaAdhanBackgroundView extends View {
 
         canvas.restore();
 
-        drawQiblaNeedle(
-                canvas,
-                cx,
-                cy,
-                radius,
-                signedAngle(
-                        qiblaBearing - azimuth));
+        if (hasQiblaBearing) {
+            drawQiblaNeedle(
+                    canvas,
+                    cx,
+                    cy,
+                    radius,
+                    signedAngle(
+                            qiblaBearing - azimuth));
+        }
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(0xFFECC75A);
