@@ -22,7 +22,7 @@ public final class AppString {
         if (context == null) {
             throw new IllegalStateException("AppString is not initialized");
         }
-        return context.getString(resId);
+        return AppSettings.localizedContext(context).getString(resId);
     }
 
     public static String get(int resId, Object... formatArgs) {
@@ -30,6 +30,6 @@ public final class AppString {
         if (context == null) {
             throw new IllegalStateException("AppString is not initialized");
         }
-        return context.getString(resId, formatArgs);
+        return AppSettings.localizedContext(context).getString(resId, formatArgs);
     }
 }
