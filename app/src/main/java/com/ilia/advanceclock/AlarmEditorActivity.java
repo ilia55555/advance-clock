@@ -80,11 +80,7 @@ public final class AlarmEditorActivity extends Activity {
         soundValue = findViewById(R.id.alarm_sound_value);
         dateCalendarType = AppSettings.defaultCalendar(this);
 
-        String[] labels = PriorityUtils.labels();
-        String[] priorityValues = new String[labels.length];
-        for (int i = 0; i < labels.length; i++) {
-            priorityValues[i] = AppString.get(R.string.runtime_text_0420) + labels[i];
-        }
+        String[] priorityValues = PriorityUtils.displayLabels();
 
         ArrayAdapter<String> pr = new ArrayAdapter<>(
                 this,
