@@ -1028,4 +1028,27 @@
     <string name="calendar_month_gregorian_10">اکتبر</string>
     <string name="calendar_month_gregorian_11">نوامبر</string>
     <string name="calendar_month_gregorian_12">دسامبر</string>
+
+    <string name="adhan_asr_name">اذان عصر</string>
+    <string name="calendar_widget_name">تقویم سه‌گانه</string>
+    <string name="calendar_widget_description">تقویم شمسی، میلادی و قمری همراه با اوقات شرعی</string>
+    <string name="calendar_widget_settings_title">تنظیمات ویجت تقویم</string>
+    <string name="calendar_widget_settings_description">بخش‌های قابل نمایش در ویجت تقویم را انتخاب کنید.</string>
+    <string name="calendar_widget_show_events">نمایش رویدادها</string>
+    <string name="calendar_widget_show_prayer">نمایش اوقات شرعی</string>
+    <string name="time_tools_widget_name">کرنومتر و تایمر</string>
+    <string name="time_tools_widget_description">ویجت مشترک کرنومتر و تایمر با کنترل مستقیم</string>
+    <string name="time_tools_widget_settings_title">تنظیمات ویجت کرنومتر و تایمر</string>
+    <string name="time_tools_widget_settings_description">تب پیش‌فرض، کنترل‌های قابل نمایش و مدت پیش‌فرض تایمر را تنظیم کنید.</string>
+    <string name="time_tools_widget_default_tab">تب پیش‌فرض</string>
+    <string name="time_tools_widget_show_details">نمایش جزئیات وضعیت</string>
+    <string name="time_tools_widget_show_reset">نمایش دکمه بازنشانی</string>
+    <string name="time_tools_widget_show_lap">نمایش دکمه ثبت دور کرنومتر</string>
+    <string name="time_tools_widget_show_open">نمایش دکمه باز کردن تب کامل</string>
+    <string name="time_tools_widget_timer_default">مدت پیش‌فرض تایمر</string>
+    <string name="time_tools_widget_open">باز کردن</string>
+    <string name="time_tools_widget_limit">حد نهایی</string>
+    <string name="time_tools_widget_stopwatch_ready">کرنومتر آماده است</string>
+    <string name="time_tools_widget_timer_paused">تایمر متوقف شده است</string>
+    <string name="time_tools_widget_default_duration">مدت پیش‌فرض</string>
 </resources>
