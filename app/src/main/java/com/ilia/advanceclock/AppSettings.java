@@ -848,10 +848,10 @@ public final class AppSettings {
     }
 
     public static String[] languageCodes() {
-        return new String[]{LANGUAGE_ENGLISH, LANGUAGE_PERSIAN, LANGUAGE_CHINESE,
-                LANGUAGE_FRENCH, LANGUAGE_GERMAN, LANGUAGE_SPANISH, LANGUAGE_RUSSIAN,
-                LANGUAGE_TURKISH, LANGUAGE_PORTUGUESE, LANGUAGE_HINDI,
-                LANGUAGE_JAPANESE, LANGUAGE_ARABIC};
+        return new String[]{LANGUAGE_ENGLISH, LANGUAGE_PERSIAN, LANGUAGE_ARABIC,
+                LANGUAGE_CHINESE, LANGUAGE_FRENCH, LANGUAGE_GERMAN, LANGUAGE_SPANISH,
+                LANGUAGE_RUSSIAN, LANGUAGE_TURKISH, LANGUAGE_PORTUGUESE,
+                LANGUAGE_HINDI, LANGUAGE_JAPANESE};
     }
 
     public static int languagePosition(Context context) {
