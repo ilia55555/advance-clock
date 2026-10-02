@@ -1282,6 +1282,10 @@ public final class PrayerSettingsActivity extends Activity {
             return;
         }
 
+        if (QiblaUtils.bestKnownLocation(this) != null) {
+            locationAccessErrorRes = 0;
+        }
+
         if (locationAccessErrorRes != 0) {
             locationAccessStatus.setText(
                     AppString.get(locationAccessErrorRes));
