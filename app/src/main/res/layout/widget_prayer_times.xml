@@ -12,7 +12,7 @@
     <LinearLayout
         android:id="@+id/prayer_widget_header"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="32dp"
         android:layoutDirection="rtl"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -48,8 +48,8 @@
 
         <TextView
             android:id="@+id/prayer_widget_manage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginStart="5dp"
             android:background="@drawable/widget_prayer_chip"
             android:contentDescription="@string/ui_manage_horizons"
@@ -60,8 +60,8 @@
 
         <ImageView
             android:id="@+id/prayer_widget_settings"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:background="@drawable/widget_prayer_chip"
             android:contentDescription="@string/ui_widget_settings"
             android:padding="5dp"
