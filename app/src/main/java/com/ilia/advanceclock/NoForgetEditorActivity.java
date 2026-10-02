@@ -149,11 +149,7 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     private void setupPriority(){
-        String[] labels=PriorityUtils.labels();
-        String[] priorityValues=new String[labels.length];
-        for(int i=0;i<labels.length;i++){
-            priorityValues[i]=AppString.get(R.string.runtime_text_0420)+labels[i];
-        }
+        String[] priorityValues=PriorityUtils.displayLabels();
         ArrayAdapter<String> adapter=new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
