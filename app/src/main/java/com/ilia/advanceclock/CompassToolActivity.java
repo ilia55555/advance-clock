@@ -26,11 +26,14 @@ import java.util.Locale;
 
 /** A sensor-driven, antique-style compass and qibla tool. */
 public final class CompassToolActivity extends Activity implements SensorEventListener {
+    public static final String EXTRA_START_MODE = "compass_start_mode";
+
+    public static final int MODE_COMPASS = 0;
+    public static final int MODE_QIBLA = 1;
+    public static final int MODE_DIRECTIONS = 2;
+
     private static final String PREFS = "compass_tool";
     private static final String KEY_MODE = "display_mode";
-    private static final int MODE_COMPASS = 0;
-    private static final int MODE_QIBLA = 1;
-    private static final int MODE_DIRECTIONS = 2;
     private static final double KAABA_LATITUDE = 21.422487;
     private static final double KAABA_LONGITUDE = 39.826206;
 
@@ -88,8 +91,21 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         selector.setAdapter(adapter);
         selector.setBackgroundResource(R.drawable.bg_field);
         selector.setPadding(dp(12), 0, dp(12), 0);
-        selectedMode = getSharedPreferences(PREFS, 0).getInt(KEY_MODE, MODE_COMPASS);
-        if (selectedMode < MODE_COMPASS || selectedMode > MODE_DIRECTIONS) {
+        int requestedMode = getIntent().getIntExtra(
+                EXTRA_START_MODE,
+                -1);
+        if (requestedMode >= MODE_COMPASS
+                && requestedMode <= MODE_DIRECTIONS) {
+            selectedMode = requestedMode;
+        } else {
+            selectedMode = getSharedPreferences(
+                    PREFS,
+                    0).getInt(
+                    KEY_MODE,
+                    MODE_COMPASS);
+        }
+        if (selectedMode < MODE_COMPASS
+                || selectedMode > MODE_DIRECTIONS) {
             selectedMode = MODE_COMPASS;
         }
         selector.setSelection(selectedMode);
