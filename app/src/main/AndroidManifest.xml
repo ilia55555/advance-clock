@@ -156,6 +156,11 @@
             android:exported="false" />
 
         <service
+            android:name=".CalendarPrayerWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <service
             android:name=".MediaWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
