@@ -18,18 +18,24 @@ public final class WorldClockWidgetPrefs {
         return prefs(context).getInt("time_" + id, 0xFFFFFFFF);
     }
 
+    public static int timeWeight(Context context, int id) {
+        return prefs(context).getInt("time_weight_" + id, 2);
+    }
+
     public static void save(Context context, int id, int background,
-                            int textColor, int timeColor) {
+                            int textColor, int timeColor, int timeWeight) {
         prefs(context).edit()
                 .putInt("background_" + id, background)
                 .putInt("text_" + id, textColor)
                 .putInt("time_" + id, timeColor)
+                .putInt("time_weight_" + id, Math.max(0, Math.min(2, timeWeight)))
                 .apply();
     }
 
     public static void delete(Context context, int id) {
         prefs(context).edit().remove("background_" + id).remove("text_" + id)
-                .remove("time_" + id).remove("title_" + id).apply();
+                .remove("time_" + id).remove("time_weight_" + id)
+                .remove("title_" + id).apply();
     }
 
     public static int backgroundResource(Context context, int id) {
