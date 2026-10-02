@@ -103,6 +103,8 @@ public final class MainActivity extends Activity {
     private float swipeDownY;
     private boolean swipeStartedOnCalendar;
     private int lastPrayerAutoIndex = -1;
+    private final java.util.HashSet<String> warmedTabs =
+            new java.util.HashSet<>();
 
     private Button quickAlarmDate;
     private Button quickAlarmTime;
@@ -1225,11 +1227,11 @@ public final class MainActivity extends Activity {
         boolean timer = "timer".equals(tab);
         boolean world = "world".equals(tab);
 
-        clockPanel.setVisibility(clock ? View.VISIBLE : View.GONE);
-        noForgetPanel.setVisibility(notes ? View.VISIBLE : View.GONE);
-        stopwatchPanel.setVisibility(stopwatch ? View.VISIBLE : View.GONE);
-        timerPanel.setVisibility(timer ? View.VISIBLE : View.GONE);
-        worldPanel.setVisibility(world ? View.VISIBLE : View.GONE);
+        setTabPanelVisibility("clock", clockPanel, clock);
+        setTabPanelVisibility("noforget", noForgetPanel, notes);
+        setTabPanelVisibility("stopwatch", stopwatchPanel, stopwatch);
+        setTabPanelVisibility("timer", timerPanel, timer);
+        setTabPanelVisibility("world", worldPanel, world);
 
         stopwatchController.setActive(stopwatch);
         timerController.setActive(timer);
@@ -1284,6 +1286,26 @@ public final class MainActivity extends Activity {
         view.getLocationOnScreen(location);
         return rawX >= location[0] && rawX < location[0] + view.getWidth()
                 && rawY >= location[1] && rawY < location[1] + view.getHeight();
+    }
+
+    private void setTabPanelVisibility(
+            String tab,
+            View panel,
+            boolean active) {
+        if (active) {
+            warmedTabs.add(tab);
+            if (panel.getVisibility() != View.VISIBLE) {
+                panel.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+
+        int target = warmedTabs.contains(tab)
+                ? View.INVISIBLE
+                : View.GONE;
+        if (panel.getVisibility() != target) {
+            panel.setVisibility(target);
+        }
     }
 
     private void moveToAdjacentTab(boolean towardRight) {
