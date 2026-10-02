@@ -1109,4 +1109,8 @@ Lock screen</string>
     <string name="location_access_enable_gps">Turn on GPS / Location</string>
     <string name="location_access_retry">Try again</string>
     <string name="location_access_get_current">Get current location</string>
+    <string name="world_clock_widget_time_weight">Clock digit weight</string>
+    <string name="world_clock_widget_weight_thin">Thin</string>
+    <string name="world_clock_widget_weight_normal">Regular</string>
+    <string name="world_clock_widget_weight_bold">Bold</string>
 </resources>
