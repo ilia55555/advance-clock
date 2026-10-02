@@ -1015,4 +1015,17 @@
     <string name="preview_file_number">فایل %1$d</string>
     <string name="preview_note_number">یادداشت %1$d</string>
     <string name="ui_symbol_minus" formatted="false">−</string>
+
+    <string name="calendar_month_gregorian_01">ژانویه</string>
+    <string name="calendar_month_gregorian_02">فوریه</string>
+    <string name="calendar_month_gregorian_03">مارس</string>
+    <string name="calendar_month_gregorian_04">آوریل</string>
+    <string name="calendar_month_gregorian_05">مه</string>
+    <string name="calendar_month_gregorian_06">ژوئن</string>
+    <string name="calendar_month_gregorian_07">ژوئیه</string>
+    <string name="calendar_month_gregorian_08">اوت</string>
+    <string name="calendar_month_gregorian_09">سپتامبر</string>
+    <string name="calendar_month_gregorian_10">اکتبر</string>
+    <string name="calendar_month_gregorian_11">نوامبر</string>
+    <string name="calendar_month_gregorian_12">دسامبر</string>
 </resources>
