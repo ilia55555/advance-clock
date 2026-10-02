@@ -845,6 +845,7 @@ public final class AppSettings {
         // Locale recreation reads this value immediately; persist synchronously so a newly
         // created Activity can never observe the previous language.
         prefs(context).edit().putString("app_language", value).commit();
+        applyLanguage(context);
     }
 
     public static String[] languageCodes() {
@@ -896,8 +897,23 @@ public final class AppSettings {
         Locale.setDefault(locale);
         Configuration configuration = new Configuration(context.getResources().getConfiguration());
         configuration.setLocales(new LocaleList(locale));
+        configuration.setLayoutDirection(locale);
         context.getResources().updateConfiguration(
                 configuration, context.getResources().getDisplayMetrics());
+    }
+
+    /**
+     * Returns a context whose resources always use the explicitly saved app language. Unlike
+     * mutating a long-lived Resources instance, this context cannot silently fall back to the
+     * device locale after Android dispatches a configuration change.
+     */
+    public static Context localizedContext(Context context) {
+        Locale locale = Locale.forLanguageTag(language(context));
+        Configuration configuration = new Configuration(
+                context.getResources().getConfiguration());
+        configuration.setLocales(new LocaleList(locale));
+        configuration.setLayoutDirection(locale);
+        return context.createConfigurationContext(configuration);
     }
 
     public static String languageForDevice() {
