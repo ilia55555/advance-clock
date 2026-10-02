@@ -60,6 +60,7 @@ public final class PrayerSettingsActivity extends Activity {
     private LocationManager activeLocationManager;
     private LocationListener activeLocationListener;
     private int locationRequestGeneration;
+    private QiblaLocationClient qiblaLocationClient;
     private int activeAdhanType = -1;
     private LinearLayout activeMuezzinList;
     private Switch masterAdhanSwitch;
@@ -71,6 +72,7 @@ public final class PrayerSettingsActivity extends Activity {
         AppSettings.applyTheme(this);
         AppSettings.applyModalOverlay(this);
         super.onCreate(savedInstanceState);
+        qiblaLocationClient = new QiblaLocationClient(this);
 
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
@@ -320,6 +322,13 @@ public final class PrayerSettingsActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
+
+        if (QiblaUtils.hasLocationPermission(this)
+                && QiblaUtils.isLocationEnabled(this)
+                && QiblaUtils.bestKnownLocation(this) != null) {
+            locationAccessErrorRes = 0;
+        }
+
         boolean permissionGranted = PermissionHelper.exactAlarmsGranted(this);
         if (permissionGranted
                 && AdhanScheduler.status(this) == AdhanScheduler.Status.SCHEDULE_FAILED) {
@@ -1315,149 +1324,135 @@ public final class PrayerSettingsActivity extends Activity {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void fetchCurrentLocation() {
-        if (Build.VERSION.SDK_INT >= 23
-                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        LocationManager manager =
-                (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (manager == null) {
-            locationAccessErrorRes = R.string.runtime_text_0367;
+        if (!QiblaUtils.hasLocationPermission(this)) {
             refreshLocationAccessUi();
             return;
         }
 
-        String provider = null;
-        try {
-            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                provider = LocationManager.GPS_PROVIDER;
-            } else if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                provider = LocationManager.NETWORK_PROVIDER;
-            }
-        } catch (Exception ignored) {}
-
-        if (provider == null) {
+        if (!QiblaUtils.isLocationEnabled(this)) {
             locationAccessErrorRes = 0;
             refreshLocationAccessUi();
             return;
         }
 
+        if (qiblaLocationClient == null) {
+            qiblaLocationClient =
+                    new QiblaLocationClient(this);
+        }
+
+        final int requestGeneration =
+                ++locationRequestGeneration;
+
         locationAccessErrorRes = 0;
         locationButton.setEnabled(false);
-        locationButton.setText(AppString.get(R.string.runtime_text_0098));
+        locationButton.setText(
+                AppString.get(
+                        R.string.runtime_text_0098));
+
         if (locationAccessStatus != null) {
             locationAccessStatus.setText(
-                    AppString.get(R.string.runtime_text_0098));
+                    AppString.get(
+                            R.string.runtime_text_0098));
             locationAccessStatus.setTextColor(
                     AppSettings.textSecondary(this));
             locationRetryAction.setVisibility(View.GONE);
         }
 
-        final String selectedProvider = provider;
-        final int requestGeneration = ++locationRequestGeneration;
-        activeLocationManager = manager;
-        locationTimeout = () -> {
-            if (requestGeneration != locationRequestGeneration) return;
-            cancelLocationRequest();
-            locationButton.setEnabled(true);
-            refresh();
-            locationAccessErrorRes = R.string.runtime_text_0571;
-            refreshLocationAccessUi();
-        };
-        locationHandler.postDelayed(locationTimeout, 20_000L);
-        if (Build.VERSION.SDK_INT >= 30) {
-            locationCancellation = new CancellationSignal();
-            try {
-                manager.getCurrentLocation(
-                        selectedProvider,
-                        locationCancellation,
-                        command -> runOnUiThread(command),
-                        location -> {
-                            if (requestGeneration != locationRequestGeneration) return;
-                            clearLocationTimeout();
-                            handleLocation(location, requestGeneration);
-                        });
-            } catch (RuntimeException error) {
-                failLocationRequest(requestGeneration);
-            }
-            return;
-        }
-
-        activeLocationListener = new LocationListener() {
-                    @Override public void onLocationChanged(Location location) {
-                        if (requestGeneration != locationRequestGeneration) return;
-                        handleLocation(location, requestGeneration);
+        qiblaLocationClient.request(
+                new QiblaLocationClient.Callback() {
+                    @Override
+                    public void onLocation(
+                            Location location) {
+                        if (requestGeneration
+                                != locationRequestGeneration) {
+                            return;
+                        }
+                        handleLocation(
+                                location,
+                                requestGeneration);
                     }
 
-                    @Override public void onStatusChanged(
-                            String provider, int status, Bundle extras) {}
+                    @Override
+                    public void onError(
+                            int stringRes) {
+                        if (requestGeneration
+                                != locationRequestGeneration) {
+                            return;
+                        }
 
-                    @Override public void onProviderEnabled(String provider) {}
+                        locationButton.setEnabled(true);
 
-                    @Override public void onProviderDisabled(String provider) {}
-                };
-        try {
-            manager.requestSingleUpdate(
-                    selectedProvider, activeLocationListener, Looper.getMainLooper());
-        } catch (RuntimeException error) {
-            failLocationRequest(requestGeneration);
-        }
+                        Location fallback =
+                                QiblaUtils.bestKnownLocation(
+                                        PrayerSettingsActivity.this);
+                        if (fallback != null
+                                && QiblaUtils.hasLocationPermission(
+                                PrayerSettingsActivity.this)
+                                && QiblaUtils.isLocationEnabled(
+                                PrayerSettingsActivity.this)) {
+                            locationAccessErrorRes = 0;
+                        } else {
+                            locationAccessErrorRes =
+                                    stringRes;
+                        }
+
+                        refresh();
+                        refreshLocationAccessUi();
+                    }
+                });
     }
 
-    private void failLocationRequest(int requestGeneration) {
-        if (requestGeneration != locationRequestGeneration) return;
-        cancelLocationRequest();
-        locationButton.setEnabled(true);
-        refresh();
-        locationAccessErrorRes = R.string.runtime_text_0369;
-        refreshLocationAccessUi();
-    }
-
-    private void handleLocation(Location location, int requestGeneration) {
-        clearLocationTimeout();
-        if (location == null) {
-            locationButton.setEnabled(true);
-            refresh();
-            locationAccessErrorRes = R.string.runtime_text_0370;
-            refreshLocationAccessUi();
+    private void handleLocation(
+            Location location,
+            int requestGeneration) {
+        if (location == null
+                || requestGeneration
+                != locationRequestGeneration) {
             return;
         }
 
         locationAccessErrorRes = 0;
-        double lat = location.getLatitude();
-        double lon = location.getLongitude();
-        QiblaUtils.remember(this, lat, lon);
-        String fallback = coordinateText(lat, lon);
-        AppSettings.setPrayerLocation(this, lat, lon, fallback);
+
+        double lat =
+                location.getLatitude();
+        double lon =
+                location.getLongitude();
+
+        QiblaUtils.remember(
+                this,
+                lat,
+                lon);
+
+        String fallback =
+                coordinateText(
+                        lat,
+                        lon);
+
+        AppSettings.setPrayerLocation(
+                this,
+                lat,
+                lon,
+                fallback);
+
         locationButton.setEnabled(true);
         refresh();
         setResult(RESULT_OK);
 
-        new Thread(() -> resolveLocationName(
-                lat, lon, fallback, requestGeneration)).start();
-    }
-
-    private void clearLocationTimeout() {
-        if (locationTimeout != null) locationHandler.removeCallbacks(locationTimeout);
-        locationTimeout = null;
-        locationCancellation = null;
-        if (activeLocationManager != null && activeLocationListener != null) {
-            activeLocationManager.removeUpdates(activeLocationListener);
-        }
-        activeLocationManager = null;
-        activeLocationListener = null;
+        new Thread(() ->
+                resolveLocationName(
+                        lat,
+                        lon,
+                        fallback,
+                        requestGeneration))
+                .start();
     }
 
     private void cancelLocationRequest() {
         locationRequestGeneration++;
-        if (locationCancellation != null) locationCancellation.cancel();
-        clearLocationTimeout();
+        if (qiblaLocationClient != null) {
+            qiblaLocationClient.cancel();
+        }
     }
 
     @Override protected void onDestroy() {
