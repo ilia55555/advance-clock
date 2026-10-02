@@ -33,9 +33,16 @@ final class TimerPanelController {
         @Override public void run() {
             long remaining = currentRemaining();
             renderTime(remaining);
-            if (remaining <= 0L) completeLocally();
-            else if (running && resumed && active) {
-                handler.postDelayed(this, Math.min(250L, remaining));
+            if (remaining <= 0L) {
+                completeLocally();
+            } else if (running && resumed && active) {
+                long visibleSeconds = (remaining + 999L) / 1000L;
+                long delay = remaining - (visibleSeconds - 1L) * 1000L;
+                handler.postDelayed(
+                        this,
+                        Math.max(
+                                50L,
+                                Math.min(delay, remaining)));
             }
         }
     };
