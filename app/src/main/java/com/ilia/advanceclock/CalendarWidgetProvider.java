@@ -228,6 +228,10 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                         ? R.drawable.time_tools_widget_background_dark
                         : R.drawable.time_tools_widget_background_light);
 
+        root.setTextViewText(
+                R.id.calendar_widget_today,
+                AppString.get(R.string.ui_today));
+
         int type = AppSettings.defaultCalendar(context);
         long selectedMillis =
                 CalendarWidgetPrefs.selectedMillis(
@@ -414,7 +418,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < WEEKDAY_VIEW_IDS.length; i++) {
             root.setTextViewText(
                     WEEKDAY_VIEW_IDS[i],
-                    context.getString(labels[i]));
+                    AppString.get(labels[i]));
             root.setTextColor(
                     WEEKDAY_VIEW_IDS[i],
                     i == 6
@@ -776,13 +780,11 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 primaryType)) {
             values.add(
                     "• "
-                            + context.getString(
-                            R.string.runtime_text_0391));
+                            + AppString.get(R.string.runtime_text_0391));
         }
 
         if (values.isEmpty()) {
-            return context.getString(
-                    R.string.runtime_text_0392);
+            return AppString.get(R.string.runtime_text_0392);
         }
 
         StringBuilder out =
@@ -862,8 +864,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             String label) {
         if (label == null
                 || label.trim().isEmpty()) {
-            return context.getString(
-                    R.string.runtime_text_0418);
+            return AppString.get(R.string.runtime_text_0418);
         }
 
         String value = label.trim();
