@@ -1140,7 +1140,7 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 limit = target - now;
                 if (limit <= 0L) return;
             } else if (limit <= 0L) {
-                return;
+                limit = 5 * 60_000L;
             }
         }
 
