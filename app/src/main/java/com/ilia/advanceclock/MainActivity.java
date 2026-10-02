@@ -911,11 +911,7 @@ public final class MainActivity extends Activity {
     }
 
     private void setPrioritySpinner(Spinner spinner, int selection) {
-        String[] source = PriorityUtils.labels();
-        String[] values = new String[source.length];
-        for (int i = 0; i < source.length; i++) {
-            values[i] = AppString.get(R.string.runtime_text_0420) + source[i];
-        }
+        String[] values = PriorityUtils.displayLabels();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, values);
@@ -1580,7 +1576,7 @@ public final class MainActivity extends Activity {
         }
 
         StringBuilder meta = new StringBuilder();
-        meta.append(AppString.get(R.string.runtime_text_0420)).append(PriorityUtils.label(item.priority));
+        meta.append(PriorityUtils.displayLabel(item.priority));
         if (item.hasDue) {
             meta.append("  •  ").append(formatAppDateTime(item.dueAtMillis));
         }
