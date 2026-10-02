@@ -15,8 +15,22 @@ public final class PriorityUtils {
 
     public static String[] labels() { return LABELS.clone(); }
 
+    public static String[] displayLabels() {
+        String[] out = new String[LABELS.length];
+        for (int i = 0; i < LABELS.length; i++) {
+            out[i] = displayLabel(i);
+        }
+        return out;
+    }
+
     public static String label(int value) {
         return LABELS[Math.max(0, Math.min(LABELS.length - 1, value))];
+    }
+
+    public static String displayLabel(int value) {
+        return AppString.get(R.string.runtime_text_0420).trim()
+                + " "
+                + label(value).trim();
     }
 
     public static int clamp(int value) {
