@@ -42,6 +42,10 @@ public final class AppSettings {
     public static final int ADHAN_SKIP_NONE = 0;
     public static final int ADHAN_SKIP_WEEKDAYS = 1;
     public static final int ADHAN_SKIP_DATES = 2;
+
+    public static final int ADHAN_QIBLA_NONE = 0;
+    public static final int ADHAN_QIBLA_BUTTON = 1;
+    public static final int ADHAN_QIBLA_BACKGROUND = 2;
     public static final String LANGUAGE_PERSIAN = "fa";
     public static final String LANGUAGE_ENGLISH = "en";
     public static final String LANGUAGE_CHINESE = "zh-CN";
@@ -730,6 +734,32 @@ public final class AppSettings {
     }
     public static void setAdhanFullscreen(Context context, boolean value) {
         prefs(context).edit().putBoolean("adhan_fullscreen", value).apply();
+    }
+
+    public static int adhanQiblaDisplayMode(Context context) {
+        int value = prefs(context).getInt(
+                "adhan_qibla_display_mode",
+                ADHAN_QIBLA_NONE);
+        return Math.max(
+                ADHAN_QIBLA_NONE,
+                Math.min(
+                        ADHAN_QIBLA_BACKGROUND,
+                        value));
+    }
+
+    public static void setAdhanQiblaDisplayMode(
+            Context context,
+            int value) {
+        int safe = Math.max(
+                ADHAN_QIBLA_NONE,
+                Math.min(
+                        ADHAN_QIBLA_BACKGROUND,
+                        value));
+        prefs(context).edit()
+                .putInt(
+                        "adhan_qibla_display_mode",
+                        safe)
+                .apply();
     }
 
     public static boolean adhanNotification(Context context) {
