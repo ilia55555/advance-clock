@@ -1230,6 +1230,11 @@ public final class MainActivity extends Activity {
         stopwatchPanel.setVisibility(stopwatch ? View.VISIBLE : View.GONE);
         timerPanel.setVisibility(timer ? View.VISIBLE : View.GONE);
         worldPanel.setVisibility(world ? View.VISIBLE : View.GONE);
+
+        stopwatchController.setActive(stopwatch);
+        timerController.setActive(timer);
+        worldController.setActive(world);
+
         clockIndicator.setVisibility(clock ? View.VISIBLE : View.INVISIBLE);
         noForgetIndicator.setVisibility(notes ? View.VISIBLE : View.INVISIBLE);
         stopwatchIndicator.setVisibility(stopwatch ? View.VISIBLE : View.INVISIBLE);
