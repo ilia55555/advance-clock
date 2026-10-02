@@ -55,9 +55,11 @@ public final class MainActivity extends Activity {
     private final Runnable headerTicker = new Runnable() {
         @Override public void run() {
             updateHeaderClock();
-            applyPrayerTimesUi();
-            if ("clock".equals(currentTab) && alarmList != null) {
-                renderAlarms();
+            if ("clock".equals(currentTab)) {
+                applyPrayerTimesUi();
+                if (alarmList != null) {
+                    renderAlarms();
+                }
             }
             long now = System.currentTimeMillis();
             long delay = 60_000L - (now % 60_000L) + 60L;
@@ -216,7 +218,6 @@ public final class MainActivity extends Activity {
             getWindow().getDecorView().postDelayed(this::startPermissionFlow, 450);
         }
 
-        headerHandler.post(headerTicker);
     }
 
     private void bindViews() {
@@ -1133,13 +1134,13 @@ public final class MainActivity extends Activity {
         applyPrayerTimesUi();
         applyCalendarEventsUi();
         NotificationHelper.ensureChannels(this);
-        try { DateNotificationService.start(this); } catch (Exception ignored) {}
-        AlarmScheduler.rescheduleAll(this);
-        ToolAlarmScheduler.rescheduleAll(this);
-        NoForgetScheduler.rescheduleAll(this);
-        AdhanScheduler.rescheduleAll(this);
         renderAlarms();
         renderNoForget();
+
+        headerHandler.removeCallbacks(headerTicker);
+        long now = System.currentTimeMillis();
+        long delay = 60_000L - Math.floorMod(now, 60_000L) + 60L;
+        headerHandler.postDelayed(headerTicker, delay);
 
         if (waitingForSettings) {
             waitingForSettings = false;
@@ -1149,6 +1150,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        headerHandler.removeCallbacks(headerTicker);
         stopwatchController.onPause();
         timerController.onPause();
         worldController.onPause();
@@ -1425,6 +1427,7 @@ public final class MainActivity extends Activity {
         if (PermissionHelper.exactAlarmsGranted(this)) {
             AlarmScheduler.rescheduleAll(this);
             NoForgetScheduler.rescheduleAll(this);
+            AdhanScheduler.rescheduleAll(this);
         }
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
     }
