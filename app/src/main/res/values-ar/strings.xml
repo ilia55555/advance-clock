@@ -1110,4 +1110,8 @@
     <string name="calendar_month_gregorian_12">ديسمبر</string>
     <string name="tools_dialog_compass_description">البوصلة والاتجاهات الأساسية واتجاه القبلة</string>
     <string name="prayer_open_qibla">فتح بوصلة القبلة</string>
+    <string name="adhan_qibla_display_title">طريقة عرض بوصلة القبلة أثناء الأذان</string>
+    <string name="adhan_qibla_display_none">عدم العرض</string>
+    <string name="adhan_qibla_display_button">إظهار زر فتح بوصلة القبلة في شاشة الأذان</string>
+    <string name="adhan_qibla_display_background">إظهار بوصلة القبلة في خلفية شاشة الأذان</string>
 </resources>
