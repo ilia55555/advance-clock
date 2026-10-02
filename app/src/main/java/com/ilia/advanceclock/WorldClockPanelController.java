@@ -77,12 +77,16 @@ final class WorldClockPanelController {
     private int searchGeneration;
     private long referenceMillis;
     private boolean referenceMode;
+    private boolean resumed;
+    private boolean active;
 
     private final Runnable ticker = new Runnable() {
         @Override public void run() {
             renderClocks();
-            long now = System.currentTimeMillis();
-            handler.postDelayed(this, 60_000L - now % 60_000L + 50L);
+            if (resumed && active) {
+                long now = System.currentTimeMillis();
+                handler.postDelayed(this, 60_000L - now % 60_000L + 50L);
+            }
         }
     };
 
@@ -979,12 +983,22 @@ final class WorldClockPanelController {
         return view;
     }
 
-    void onResume() {
+    void setActive(boolean value) {
+        active = value;
         handler.removeCallbacks(ticker);
-        handler.post(ticker);
+        if (active && resumed) {
+            handler.post(ticker);
+        }
+    }
+
+    void onResume() {
+        resumed = true;
+        handler.removeCallbacks(ticker);
+        if (active) handler.post(ticker);
     }
 
     void onPause() {
+        resumed = false;
         handler.removeCallbacks(ticker);
     }
 
