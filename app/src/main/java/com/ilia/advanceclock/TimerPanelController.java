@@ -24,6 +24,8 @@ final class TimerPanelController {
     private EditText hoursInput, minutesInput, secondsInput, labelInput;
     private Button startButton, dateButton, timeButton, durationModeButton, dateTimeModeButton;
     private boolean running, dateTimeMode;
+    private boolean resumed;
+    private boolean active;
     private long remainingMillis, deadline, selectedTarget;
     private int calendarType;
 
@@ -32,7 +34,9 @@ final class TimerPanelController {
             long remaining = currentRemaining();
             renderTime(remaining);
             if (remaining <= 0L) completeLocally();
-            else if (running) handler.postDelayed(this, Math.min(250L, remaining));
+            else if (running && resumed && active) {
+                handler.postDelayed(this, Math.min(250L, remaining));
+            }
         }
     };
 
@@ -164,6 +168,32 @@ final class TimerPanelController {
     private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
     }
     private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
-    void onResume(){restore();updateControls();renderSelection();renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?Math.max(0,selectedTarget-System.currentTimeMillis()):readDuration());if(running)handler.post(ticker);}
-    void onPause(){handler.removeCallbacks(ticker);save();}
+    void setActive(boolean value) {
+        active = value;
+        handler.removeCallbacks(ticker);
+        if (active && resumed) {
+            renderTime(running || remainingMillis > 0
+                    ? currentRemaining()
+                    : dateTimeMode
+                    ? Math.max(0, selectedTarget - System.currentTimeMillis())
+                    : readDuration());
+            if (running) handler.post(ticker);
+        }
+    }
+
+    void onResume(){
+        resumed = true;
+        restore();
+        updateControls();
+        renderSelection();
+        renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?Math.max(0,selectedTarget-System.currentTimeMillis()):readDuration());
+        handler.removeCallbacks(ticker);
+        if(active && running) handler.post(ticker);
+    }
+
+    void onPause(){
+        resumed = false;
+        handler.removeCallbacks(ticker);
+        save();
+    }
 }
