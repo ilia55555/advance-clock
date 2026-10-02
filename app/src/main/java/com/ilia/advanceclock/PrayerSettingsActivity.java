@@ -47,6 +47,11 @@ public final class PrayerSettingsActivity extends Activity {
 
     private Button locationButton;
     private TextView locationStatus;
+    private TextView locationAccessStatus;
+    private Button locationPermissionAction;
+    private Button locationGpsAction;
+    private Button locationRetryAction;
+    private int locationAccessErrorRes;
     private TextView adhanScheduleStatus;
     private LinearLayout horizonList;
     private final Handler locationHandler = new Handler(Looper.getMainLooper());
@@ -134,12 +139,78 @@ public final class PrayerSettingsActivity extends Activity {
         locationStatus.setPadding(0, dp(4), 0, dp(8));
         locationCard.addView(locationStatus);
 
+        TextView accessTitle = text(
+                AppString.get(R.string.location_access_title),
+                14,
+                AppSettings.textPrimary(this));
+        accessTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        accessTitle.setPadding(0, dp(6), 0, dp(3));
+        locationCard.addView(accessTitle);
+
+        locationAccessStatus = text(
+                "",
+                12,
+                AppSettings.textSecondary(this));
+        locationAccessStatus.setPadding(0, 0, 0, dp(6));
+        locationCard.addView(locationAccessStatus);
+
+        locationPermissionAction =
+                fieldButton("");
+        locationPermissionAction.setVisibility(View.GONE);
+        locationPermissionAction.setOnClickListener(v ->
+                handleLocationPermissionAction());
+        locationCard.addView(
+                locationPermissionAction,
+                new LinearLayout.LayoutParams(-1, dp(48)));
+
+        locationGpsAction =
+                fieldButton(
+                        AppString.get(
+                                R.string.location_access_enable_gps));
+        locationGpsAction.setVisibility(View.GONE);
+        locationGpsAction.setOnClickListener(v ->
+                openLocationSettings());
+        LinearLayout.LayoutParams gpsActionParams =
+                new LinearLayout.LayoutParams(-1, dp(48));
+        gpsActionParams.topMargin = dp(6);
+        locationCard.addView(
+                locationGpsAction,
+                gpsActionParams);
+
+        locationRetryAction =
+                fieldButton(
+                        AppString.get(
+                                R.string.location_access_retry));
+        locationRetryAction.setVisibility(View.GONE);
+        locationRetryAction.setOnClickListener(v -> {
+            locationAccessErrorRes = 0;
+            requestPreciseLocation();
+        });
+        LinearLayout.LayoutParams retryActionParams =
+                new LinearLayout.LayoutParams(-1, dp(48));
+        retryActionParams.topMargin = dp(6);
+        locationCard.addView(
+                locationRetryAction,
+                retryActionParams);
+
         Button searchLocation = fieldButton(AppString.get(R.string.runtime_text_0353));
         searchLocation.setOnClickListener(v -> startActivityForResult(
                 new Intent(this, PrayerLocationSearchActivity.class), REQ_HORIZON));
-        locationCard.addView(searchLocation, new LinearLayout.LayoutParams(-1, dp(52)));
+        LinearLayout.LayoutParams searchParams =
+                new LinearLayout.LayoutParams(-1, dp(52));
+        searchParams.topMargin = dp(8);
+        locationCard.addView(searchLocation, searchParams);
 
         locationButton = fieldButton(AppString.get(R.string.runtime_text_0089));
+        locationButton.setOnClickListener(v -> {
+            locationAccessErrorRes = 0;
+            requestPreciseLocation();
+        });
+        LinearLayout.LayoutParams currentLocationParams =
+                new LinearLayout.LayoutParams(-1, dp(52));
+        currentLocationParams.topMargin = dp(6);
+        locationCard.addView(locationButton, currentLocationParams);
+
         horizonList = new LinearLayout(this);
         horizonList.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams horizonParams = new LinearLayout.LayoutParams(-1, -2);
@@ -278,6 +349,7 @@ public final class PrayerSettingsActivity extends Activity {
             locationStatus.setText(AppString.get(R.string.runtime_text_0097));
             locationButton.setText(AppString.get(R.string.runtime_text_0089));
         }
+        refreshLocationAccessUi();
         renderHorizons();
         syncAdhanSwitches();
 
@@ -1090,20 +1162,130 @@ public final class PrayerSettingsActivity extends Activity {
     }
 
     private void requestPreciseLocation() {
-        if (Build.VERSION.SDK_INT >= 23
-                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    },
-                    REQ_LOCATION);
+        if (!QiblaUtils.hasLocationPermission(this)) {
+            requestLocationPermission();
             return;
         }
+
+        if (!QiblaUtils.isLocationEnabled(this)) {
+            locationAccessErrorRes = 0;
+            refreshLocationAccessUi();
+            return;
+        }
+
         fetchCurrentLocation();
+    }
+
+    private void requestLocationPermission() {
+        if (Build.VERSION.SDK_INT < 23) {
+            fetchCurrentLocation();
+            return;
+        }
+
+        if (QiblaUtils.locationPermissionBlocked(this)) {
+            openAppPermissionSettings();
+            return;
+        }
+
+        QiblaUtils.markLocationPermissionRequested(this);
+        requestPermissions(
+                new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                },
+                REQ_LOCATION);
+    }
+
+    private void handleLocationPermissionAction() {
+        if (QiblaUtils.locationPermissionBlocked(this)) {
+            openAppPermissionSettings();
+        } else {
+            requestLocationPermission();
+        }
+    }
+
+    private void openAppPermissionSettings() {
+        try {
+            Intent intent = new Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void openLocationSettings() {
+        try {
+            startActivity(
+                    new Intent(
+                            Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void refreshLocationAccessUi() {
+        if (locationAccessStatus == null) return;
+
+        boolean permission =
+                QiblaUtils.hasLocationPermission(this);
+        boolean gpsEnabled =
+                QiblaUtils.isLocationEnabled(this);
+        boolean blocked =
+                QiblaUtils.locationPermissionBlocked(this);
+        boolean requested =
+                QiblaUtils.locationPermissionWasRequested(this);
+
+        locationPermissionAction.setVisibility(View.GONE);
+        locationGpsAction.setVisibility(View.GONE);
+        locationRetryAction.setVisibility(View.GONE);
+
+        if (!permission) {
+            locationAccessStatus.setText(
+                    AppString.get(
+                            blocked
+                                    ? R.string.location_access_permission_blocked
+                                    : requested
+                                    ? R.string.location_access_permission_denied
+                                    : R.string.location_access_permission_needed));
+            locationAccessStatus.setTextColor(0xFFC44C4C);
+
+            locationPermissionAction.setText(
+                    AppString.get(
+                            blocked
+                                    ? R.string.location_access_open_app_settings
+                                    : requested
+                                    ? R.string.location_access_request_again
+                                    : R.string.location_access_grant));
+            locationPermissionAction.setVisibility(View.VISIBLE);
+
+            if (!gpsEnabled) {
+                locationGpsAction.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+
+        if (!gpsEnabled) {
+            locationAccessStatus.setText(
+                    AppString.get(
+                            R.string.location_access_gps_off));
+            locationAccessStatus.setTextColor(0xFFC44C4C);
+            locationGpsAction.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        if (locationAccessErrorRes != 0) {
+            locationAccessStatus.setText(
+                    AppString.get(locationAccessErrorRes));
+            locationAccessStatus.setTextColor(0xFFC44C4C);
+            locationRetryAction.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        locationAccessStatus.setText(
+                AppString.get(
+                        R.string.location_access_ready));
+        locationAccessStatus.setTextColor(
+                AppSettings.textSecondary(this));
     }
 
     @Override public void onRequestPermissionsResult(
@@ -1125,12 +1307,11 @@ public final class PrayerSettingsActivity extends Activity {
             }
         }
         if (granted) {
+            locationAccessErrorRes = 0;
             fetchCurrentLocation();
         } else {
-            LogoToast.makeText(
-                    this,
-                    AppString.get(R.string.runtime_text_0570),
-                    Toast.LENGTH_LONG).show();
+            locationAccessErrorRes = 0;
+            refreshLocationAccessUi();
         }
     }
 
@@ -1147,7 +1328,8 @@ public final class PrayerSettingsActivity extends Activity {
         LocationManager manager =
                 (LocationManager) getSystemService(LOCATION_SERVICE);
         if (manager == null) {
-            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0367), Toast.LENGTH_SHORT).show();
+            locationAccessErrorRes = R.string.runtime_text_0367;
+            refreshLocationAccessUi();
             return;
         }
 
@@ -1161,15 +1343,21 @@ public final class PrayerSettingsActivity extends Activity {
         } catch (Exception ignored) {}
 
         if (provider == null) {
-            LogoToast.makeText(
-                    this,
-                    AppString.get(R.string.runtime_text_0368),
-                    Toast.LENGTH_LONG).show();
+            locationAccessErrorRes = 0;
+            refreshLocationAccessUi();
             return;
         }
 
+        locationAccessErrorRes = 0;
         locationButton.setEnabled(false);
         locationButton.setText(AppString.get(R.string.runtime_text_0098));
+        if (locationAccessStatus != null) {
+            locationAccessStatus.setText(
+                    AppString.get(R.string.runtime_text_0098));
+            locationAccessStatus.setTextColor(
+                    AppSettings.textSecondary(this));
+            locationRetryAction.setVisibility(View.GONE);
+        }
 
         final String selectedProvider = provider;
         final int requestGeneration = ++locationRequestGeneration;
@@ -1179,10 +1367,8 @@ public final class PrayerSettingsActivity extends Activity {
             cancelLocationRequest();
             locationButton.setEnabled(true);
             refresh();
-            LogoToast.makeText(
-                    this,
-                    AppString.get(R.string.runtime_text_0571),
-                    Toast.LENGTH_LONG).show();
+            locationAccessErrorRes = R.string.runtime_text_0571;
+            refreshLocationAccessUi();
         };
         locationHandler.postDelayed(locationTimeout, 20_000L);
         if (Build.VERSION.SDK_INT >= 30) {
@@ -1229,10 +1415,8 @@ public final class PrayerSettingsActivity extends Activity {
         cancelLocationRequest();
         locationButton.setEnabled(true);
         refresh();
-        LogoToast.makeText(
-                this,
-                AppString.get(R.string.runtime_text_0369),
-                Toast.LENGTH_LONG).show();
+        locationAccessErrorRes = R.string.runtime_text_0369;
+        refreshLocationAccessUi();
     }
 
     private void handleLocation(Location location, int requestGeneration) {
@@ -1240,13 +1424,12 @@ public final class PrayerSettingsActivity extends Activity {
         if (location == null) {
             locationButton.setEnabled(true);
             refresh();
-            LogoToast.makeText(
-                    this,
-                    AppString.get(R.string.runtime_text_0370),
-                    Toast.LENGTH_LONG).show();
+            locationAccessErrorRes = R.string.runtime_text_0370;
+            refreshLocationAccessUi();
             return;
         }
 
+        locationAccessErrorRes = 0;
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         QiblaUtils.remember(this, lat, lon);
