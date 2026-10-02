@@ -6,11 +6,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -20,33 +18,11 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 
 public final class DateNotificationService extends Service {
     public static final String CHANNEL = "advance_clock_date_v1";
     private static final int ID = 73;
-
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private boolean timeReceiverRegistered;
-
-    private final Runnable refresh = new Runnable() {
-        @Override public void run() {
-            refreshNow(DateNotificationService.this);
-            scheduleNextMinute();
-        }
-    };
-
-    private final BroadcastReceiver timeReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) {
-            // Manual date/time changes and midnight must replace the icon
-            // immediately instead of waiting for the minute ticker.
-            handler.removeCallbacks(refresh);
-            refreshNow(DateNotificationService.this);
-            scheduleNextMinute();
-        }
-    };
 
     public static void start(Context context) {
         if (!AppSettings.persistentDateNotificationEnabled(context)
@@ -57,80 +33,64 @@ public final class DateNotificationService extends Service {
             return;
         }
 
-        Intent intent = new Intent(context, DateNotificationService.class);
-        if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(intent);
-        else context.startService(intent);
+        refreshNow(context);
+        stopLegacyService(context);
     }
 
     public static void stop(Context context) {
+        stopLegacyService(context);
+        NotificationManager manager =
+                context.getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.cancel(ID);
+        }
+    }
+
+    private static void stopLegacyService(Context context) {
         try {
-            context.stopService(new Intent(context, DateNotificationService.class));
+            context.stopService(
+                    new Intent(
+                            context,
+                            DateNotificationService.class));
         } catch (Exception ignored) {
         }
-        NotificationManager manager = context.getSystemService(NotificationManager.class);
-        if (manager != null) manager.cancel(ID);
     }
 
     public static void refreshNow(Context context) {
-        if (!AppSettings.persistentDateNotificationEnabled(context)) {
+        if (!AppSettings.persistentDateNotificationEnabled(context)
+                || (Build.VERSION.SDK_INT >= 33
+                && context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED)) {
             stop(context);
             return;
         }
+
         ensureChannel(context);
-        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        NotificationManager manager =
+                context.getSystemService(NotificationManager.class);
         if (manager == null) return;
+
         try {
-            manager.notify(ID, buildNotification(context));
+            manager.notify(
+                    ID,
+                    buildNotification(context));
         } catch (SecurityException ignored) {
         }
     }
 
-    @Override public void onCreate() {
-        super.onCreate();
-        if (!AppSettings.persistentDateNotificationEnabled(this)) {
-            stopSelf();
-            return;
-        }
-        ensureChannel(this);
-        startForeground(ID, buildNotification(this));
-        registerTimeReceiver();
-
-        handler.removeCallbacks(refresh);
-        handler.post(refresh);
-    }
-
-    @Override public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!AppSettings.persistentDateNotificationEnabled(this)) {
-            stopForeground(STOP_FOREGROUND_REMOVE);
-            stopSelf();
-            return START_NOT_STICKY;
-        }
+    @Override
+    public int onStartCommand(
+            Intent intent,
+            int flags,
+            int startId) {
         refreshNow(this);
-        handler.removeCallbacks(refresh);
-        scheduleNextMinute();
-        return START_STICKY;
+        stopSelf(startId);
+        return START_NOT_STICKY;
     }
 
-    private void registerTimeReceiver() {
-        if (timeReceiverRegistered) return;
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_TIME_CHANGED);
-        filter.addAction(Intent.ACTION_DATE_CHANGED);
-        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(timeReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(timeReceiver, filter);
-        }
-        timeReceiverRegistered = true;
-    }
-
-    private void scheduleNextMinute() {
-        long now = System.currentTimeMillis();
-        long delay = 60_000L - Math.floorMod(now, 60_000L) + 60L;
-        handler.postDelayed(refresh, delay);
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     public static void ensureChannel(Context context) {
@@ -249,7 +209,5 @@ public final class DateNotificationService extends Service {
         super.onDestroy();
     }
 
-    @Override public IBinder onBind(Intent intent) {
-        return null;
-    }
+
 }
