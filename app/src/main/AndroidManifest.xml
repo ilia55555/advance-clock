@@ -42,7 +42,8 @@
         <activity
             android:name=".TimeToolsWidgetConfigActivity"
             android:exported="true"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -50,7 +51,8 @@
         <activity
             android:name=".TimeToolsWidgetPickerActivity"
             android:exported="false"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:taskAffinity="" />
         <activity android:name=".CompassToolActivity" android:exported="false" />
         <activity
             android:name=".PrayerTimesWidgetConfigActivity"
