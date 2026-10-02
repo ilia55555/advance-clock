@@ -146,28 +146,75 @@ public final class PrayerSettingsActivity extends Activity {
         horizonParams.topMargin = dp(8);
         locationCard.addView(horizonList, horizonParams);
 
-        Button qiblaButton =
-                fieldButton(
-                        AppString.get(
-                                R.string.prayer_open_qibla));
-        qiblaButton.setOnClickListener(v ->
-                startActivity(
-                        new Intent(
-                                this,
-                                CompassToolActivity.class)
-                                .putExtra(
-                                        CompassToolActivity.EXTRA_START_MODE,
-                                        CompassToolActivity.MODE_QIBLA)));
-        LinearLayout.LayoutParams qiblaParams =
+        root.addView(locationCard, cardParams());
+
+        LinearLayout qiblaDisplayCard = card();
+        TextView qiblaDisplayTitle = text(
+                AppString.get(
+                        R.string.adhan_qibla_display_title),
+                17,
+                AppSettings.textPrimary(this));
+        qiblaDisplayTitle.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD);
+        qiblaDisplayCard.addView(qiblaDisplayTitle);
+
+        Spinner qiblaDisplayMode = new Spinner(this);
+        ArrayAdapter<String> qiblaDisplayAdapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_spinner_item,
+                        new String[]{
+                                AppString.get(
+                                        R.string.adhan_qibla_display_none),
+                                AppString.get(
+                                        R.string.adhan_qibla_display_button),
+                                AppString.get(
+                                        R.string.adhan_qibla_display_background)
+                        });
+        qiblaDisplayAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        qiblaDisplayMode.setAdapter(qiblaDisplayAdapter);
+        qiblaDisplayMode.setLayoutDirection(
+                AppSettings.layoutDirection(this));
+        qiblaDisplayMode.setBackgroundResource(
+                R.drawable.bg_field);
+        qiblaDisplayMode.setSelection(
+                AppSettings.adhanQiblaDisplayMode(this));
+        qiblaDisplayMode.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(
+                            android.widget.AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+                        if (AppSettings.adhanQiblaDisplayMode(
+                                PrayerSettingsActivity.this)
+                                == position) {
+                            return;
+                        }
+                        AppSettings.setAdhanQiblaDisplayMode(
+                                PrayerSettingsActivity.this,
+                                position);
+                        setResult(RESULT_OK);
+                    }
+
+                    @Override
+                    public void onNothingSelected(
+                            android.widget.AdapterView<?> parent) {}
+                });
+        LinearLayout.LayoutParams qiblaDisplayParams =
                 new LinearLayout.LayoutParams(
                         -1,
-                        dp(52));
-        qiblaParams.topMargin = dp(10);
-        locationCard.addView(
-                qiblaButton,
-                qiblaParams);
-
-        root.addView(locationCard, cardParams());
+                        dp(54));
+        qiblaDisplayParams.topMargin = dp(8);
+        qiblaDisplayCard.addView(
+                qiblaDisplayMode,
+                qiblaDisplayParams);
+        root.addView(
+                qiblaDisplayCard,
+                cardParams());
 
         LinearLayout azanCard = card();
         TextView azanTitle = text(AppString.get(R.string.runtime_text_0342), 17, AppSettings.textPrimary(this));
