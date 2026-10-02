@@ -33,7 +33,7 @@
         android:textSize="105sp"
         android:textStyle="normal"
         android:fontFamily="sans-serif-light"
-        android:textScaleX="0.82" />
+        android:textScaleX="1.0" />
     <TextClock
         android:id="@+id/world_item_date"
         android:layout_width="match_parent"
