@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +18,8 @@ public final class QiblaUtils {
     private static final String KEY_HAS = "has_location";
     private static final String KEY_LAT = "latitude";
     private static final String KEY_LON = "longitude";
+    private static final String KEY_PERMISSION_REQUESTED =
+            "location_permission_requested";
 
     private QiblaUtils() {}
 
@@ -135,6 +138,65 @@ public final class QiblaUtils {
         }
 
         return null;
+    }
+
+    public static void markLocationPermissionRequested(
+            Context context) {
+        context.getSharedPreferences(
+                        PREFS,
+                        Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(
+                        KEY_PERMISSION_REQUESTED,
+                        true)
+                .apply();
+    }
+
+    public static boolean locationPermissionWasRequested(
+            Context context) {
+        return context.getSharedPreferences(
+                        PREFS,
+                        Context.MODE_PRIVATE)
+                .getBoolean(
+                        KEY_PERMISSION_REQUESTED,
+                        false);
+    }
+
+    public static boolean locationPermissionBlocked(
+            Activity activity) {
+        if (Build.VERSION.SDK_INT < 23
+                || hasLocationPermission(activity)
+                || !locationPermissionWasRequested(activity)) {
+            return false;
+        }
+
+        return !activity.shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                && !activity.shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+    }
+
+    public static boolean isLocationEnabled(
+            Context context) {
+        LocationManager manager =
+                (LocationManager)
+                        context.getSystemService(
+                                Context.LOCATION_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+
+        try {
+            if (Build.VERSION.SDK_INT >= 28) {
+                return manager.isLocationEnabled();
+            }
+            return manager.isProviderEnabled(
+                    LocationManager.GPS_PROVIDER)
+                    || manager.isProviderEnabled(
+                    LocationManager.NETWORK_PROVIDER);
+        } catch (RuntimeException ignored) {
+            return false;
+        }
     }
 
     public static boolean hasLocationPermission(
