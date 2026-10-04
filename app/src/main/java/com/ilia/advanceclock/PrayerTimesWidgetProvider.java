@@ -43,9 +43,17 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                         2);
         float widthDp = Math.max(180f, size.widthDp);
         float heightDp = Math.max(80f, size.heightDp);
-        boolean compact =
-                widthDp < 250f
-                        || heightDp < 96f;
+        // Horizontal room determines whether the compact layout is needed.
+        // Height is handled continuously so launchers with different 5x2 metrics
+        // do not unexpectedly switch between two visual modes.
+        boolean compact = widthDp < 250f;
+        boolean showHeader = PrayerTimesWidgetPrefs.showHeader(context, id);
+        float headerHeightDp = showHeader
+                ? clamp(
+                        heightDp * 0.17f,
+                        compact ? 24f : 28f,
+                        compact ? 34f : 42f)
+                : 0f;
 
         RemoteViews views = new RemoteViews(
                 context.getPackageName(),
@@ -69,9 +77,9 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
         float headerScale = clamp(
                 Math.min(
                         widthDp / 350f,
-                        heightDp / 120f),
-                0.93f,
-                1.10f);
+                        headerHeightDp / (compact ? 24f : 28f)),
+                0.90f,
+                1.22f);
         views.setTextViewTextSize(
                 R.id.prayer_widget_title,
                 android.util.TypedValue.COMPLEX_UNIT_DIP,
@@ -88,9 +96,20 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                         : 13.5f * headerScale);
         views.setInt(R.id.prayer_widget_settings, "setColorFilter", secondary);
 
-        boolean showHeader = PrayerTimesWidgetPrefs.showHeader(context, id);
         views.setViewVisibility(
                 R.id.prayer_widget_header, showHeader ? View.VISIBLE : View.GONE);
+        if (showHeader) {
+            views.setInt(
+                    R.id.prayer_widget_header,
+                    "setMinimumHeight",
+                    dp(context, headerHeightDp));
+            if (android.os.Build.VERSION.SDK_INT >= 31) {
+                views.setViewLayoutHeight(
+                        R.id.prayer_widget_header,
+                        headerHeightDp,
+                        android.util.TypedValue.COMPLEX_UNIT_DIP);
+            }
+        }
 
         // Dates belong to each horizon because their local calendar day can differ.
         views.setViewVisibility(R.id.prayer_widget_date, View.GONE);
@@ -101,10 +120,12 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 .putExtra("compact", compact)
                 .putExtra("widthDp", widthDp)
-                .putExtra("heightDp", heightDp);
+                .putExtra("heightDp", heightDp)
+                .putExtra("headerHeightDp", headerHeightDp);
         service.setData(Uri.parse("advanceclock://prayer-widget/" + id + "/"
                 + (compact ? "compact/" : "full/")
                 + Math.round(widthDp) + "x" + Math.round(heightDp) + "/"
+                + Math.round(headerHeightDp) + "/"
                 + System.currentTimeMillis()));
         views.setRemoteAdapter(R.id.prayer_widget_list, service);
 
@@ -149,6 +170,14 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
 
         manager.updateAppWidget(id, views);
         manager.notifyAppWidgetViewDataChanged(id, R.id.prayer_widget_list);
+    }
+
+    private static int dp(Context context, float value) {
+        return Math.round(
+                android.util.TypedValue.applyDimension(
+                        android.util.TypedValue.COMPLEX_UNIT_DIP,
+                        value,
+                        context.getResources().getDisplayMetrics()));
     }
 
     private static float clamp(
