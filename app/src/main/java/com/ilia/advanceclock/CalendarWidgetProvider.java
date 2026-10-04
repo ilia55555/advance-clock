@@ -316,6 +316,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 month,
                 selectedMillis,
                 widthDp,
+                heightDp,
                 text,
                 muted,
                 primary,
@@ -388,17 +389,17 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                     serviceIntent);
         }
 
-        if (widthDp < 250f) {
+        float cellWidthDp = Math.max(28f, (widthDp - 16f) / 7f);
+        root.setTextViewTextSize(
+                R.id.calendar_widget_title,
+                TypedValue.COMPLEX_UNIT_DIP,
+                clamp(widthDp / 24f, 13f, 20f));
+        float weekdaySize = clamp(cellWidthDp * 0.24f, 9.5f, 13f);
+        for (int id : WEEKDAY_VIEW_IDS) {
             root.setTextViewTextSize(
-                    R.id.calendar_widget_title,
-                    TypedValue.COMPLEX_UNIT_SP,
-                    12f);
-            for (int id : WEEKDAY_VIEW_IDS) {
-                root.setTextViewTextSize(
-                        id,
-                        TypedValue.COMPLEX_UNIT_SP,
-                        8f);
-            }
+                    id,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    weekdaySize);
         }
 
         return root;
@@ -436,6 +437,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             int month,
             long selectedMillis,
             float widthDp,
+            float heightDp,
             int text,
             int muted,
             int primary,
@@ -479,6 +481,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                             blankDay(
                                     context,
                                     widthDp,
+                                    heightDp,
                                     text,
                                     muted));
                     continue;
@@ -503,6 +506,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                                 millis,
                                 selectedMillis,
                                 widthDp,
+                                heightDp,
                                 text,
                                 muted,
                                 primary,
@@ -514,6 +518,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
     private static RemoteViews blankDay(
             Context context,
             float widthDp,
+            float heightDp,
             int text,
             int muted) {
         RemoteViews item = new RemoteViews(
@@ -532,7 +537,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                 R.id.calendar_day_root,
                 "setBackgroundResource",
                 android.R.color.transparent);
-        sizeDayText(item, widthDp);
+        sizeDayText(item, widthDp, heightDp);
         return item;
     }
 
@@ -545,6 +550,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             long millis,
             long selectedMillis,
             float widthDp,
+            float heightDp,
             int text,
             int muted,
             int primary,
@@ -651,7 +657,7 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                         100 + slot,
                         millis));
 
-        sizeDayText(item, widthDp);
+        sizeDayText(item, widthDp, heightDp);
         return item;
     }
 
@@ -678,30 +684,52 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
 
     private static void sizeDayText(
             RemoteViews item,
-            float widthDp) {
-        float main = widthDp < 250f
-                ? 10f
-                : widthDp < 330f
-                ? 12f
-                : 14f;
-        float alt = widthDp < 250f
-                ? 7f
-                : widthDp < 330f
-                ? 8f
-                : 9f;
+            float widthDp,
+            float heightDp) {
+        // Each day owns one seventh of the usable width. Use both dimensions
+        // so a tall calendar does not keep tiny fixed text just because its
+        // width happens to match another launcher/device.
+        float cellWidthDp = Math.max(
+                28f,
+                (widthDp - 16f) / 7f);
+        float estimatedRowHeightDp = Math.max(
+                30f,
+                (heightDp - 72f) / 6f);
 
+        float main = clamp(
+                Math.min(
+                        cellWidthDp * 0.38f,
+                        estimatedRowHeightDp * 0.30f),
+                14f,
+                22f);
+        float alt = clamp(
+                Math.min(
+                        cellWidthDp * 0.23f,
+                        estimatedRowHeightDp * 0.18f),
+                9f,
+                13f);
+
+        // DIP keeps the calendar visually consistent when two phones use
+        // different system font-scale settings.
         item.setTextViewTextSize(
                 R.id.calendar_day_main,
-                TypedValue.COMPLEX_UNIT_SP,
+                TypedValue.COMPLEX_UNIT_DIP,
                 main);
         item.setTextViewTextSize(
                 R.id.calendar_day_alt_1,
-                TypedValue.COMPLEX_UNIT_SP,
+                TypedValue.COMPLEX_UNIT_DIP,
                 alt);
         item.setTextViewTextSize(
                 R.id.calendar_day_alt_2,
-                TypedValue.COMPLEX_UNIT_SP,
+                TypedValue.COMPLEX_UNIT_DIP,
                 alt);
+    }
+
+    private static float clamp(
+            float value,
+            float min,
+            float max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     private static void bindSelectedDate(
