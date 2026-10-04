@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Locale;
 
 public final class MediaPreviewCache {
-    private static final int PREVIEW_WIDTH = 480;
-    private static final int PREVIEW_HEIGHT = 320;
+    private static final int PREVIEW_WIDTH = 960;
+    private static final int PREVIEW_HEIGHT = 1280;
 
     private MediaPreviewCache() {}
 
@@ -267,7 +267,7 @@ public final class MediaPreviewCache {
                 sha256(uri) + ".jpg");
 
         try (FileOutputStream out = new FileOutputStream(file)) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out);
             out.flush();
             return file.getAbsolutePath();
         } catch (Exception ignored) {
