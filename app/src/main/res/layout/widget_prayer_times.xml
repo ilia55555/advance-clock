@@ -12,7 +12,8 @@
     <LinearLayout
         android:id="@+id/prayer_widget_header"
         android:layout_width="match_parent"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
+        android:minHeight="28dp"
         android:layoutDirection="rtl"
         android:gravity="center_vertical"
         android:orientation="horizontal"
