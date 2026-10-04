@@ -864,4 +864,13 @@ Kilit ekranı</string>
     <string name="world_clock_widget_size_5">Büyük</string>
     <string name="world_clock_widget_size_6">Daha büyük</string>
     <string name="world_clock_widget_size_7">Çok büyük</string>
+    <string name="world_clock_widget_name_size">Şehir adı boyutu</string>
+    <string name="world_clock_widget_date_size">Tarih boyutu</string>
+    <string name="world_clock_widget_top_gap">Şehir adı-saat aralığı</string>
+    <string name="world_clock_widget_bottom_gap">Saat-tarih aralığı</string>
+    <string name="world_clock_widget_gap_1">Aralık yok</string>
+    <string name="world_clock_widget_gap_2">Çok dar</string>
+    <string name="world_clock_widget_gap_3">Dar</string>
+    <string name="world_clock_widget_gap_4">Normal</string>
+    <string name="world_clock_widget_gap_5">Geniş</string>
 </resources>
