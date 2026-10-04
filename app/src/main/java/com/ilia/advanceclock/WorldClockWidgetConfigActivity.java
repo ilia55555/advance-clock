@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +22,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
             0xFFE53935, 0xFF43A047, 0xFF8E24AA, 0xFFFB8C00, 0xFFD81B60,
             0xFFB0BEC5, 0xFF6D4C41
     };
+
     private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @Override protected void onCreate(Bundle state) {
@@ -29,10 +30,15 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         AppSettings.applyModalOverlay(this);
         super.onCreate(state);
         setResult(RESULT_CANCELED);
-        widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+
+        widgetId = getIntent().getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0672), Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(
+                    this,
+                    AppString.get(R.string.runtime_text_0672),
+                    Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -42,6 +48,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         root.setPadding(dp(20), dp(18), dp(20), dp(20));
         root.setBackgroundColor(AppSettings.background(this));
         root.setLayoutDirection(AppSettings.layoutDirection(this));
+
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
@@ -49,40 +56,74 @@ public final class WorldClockWidgetConfigActivity extends Activity {
 
         ImageButton close = new ImageButton(this);
         close.setImageResource(R.drawable.ic_md_close);
-        close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
+        close.setColorFilter(
+                AppSettings.textPrimary(this),
+                PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
-        close.setContentDescription(AppString.get(R.string.runtime_text_0002));
+        close.setContentDescription(
+                AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
-        top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        top.addView(
+                close,
+                new LinearLayout.LayoutParams(dp(48), dp(48)));
 
-        TextView title = label(AppString.get(R.string.runtime_text_0242), 23);
+        TextView title = label(
+                AppString.get(R.string.runtime_text_0242),
+                23);
         title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
-        top.addView(title, new LinearLayout.LayoutParams(0, dp(60), 1f));
+        top.addView(
+                title,
+                new LinearLayout.LayoutParams(0, dp(60), 1f));
 
         root.addView(top);
 
         WidgetPreviewView preview = new WidgetPreviewView(this);
-        LinearLayout.LayoutParams previewLp = new LinearLayout.LayoutParams(-1, dp(126));
+        LinearLayout.LayoutParams previewLp =
+                new LinearLayout.LayoutParams(-1, dp(126));
         previewLp.bottomMargin = dp(12);
         root.addView(preview, previewLp);
 
-        root.addView(label(AppString.get(R.string.runtime_text_0243), 13));
-        Spinner background = spinner(new String[]{AppString.get(R.string.runtime_text_0244), AppString.get(R.string.runtime_text_0245), AppString.get(R.string.runtime_text_0246), AppString.get(R.string.runtime_text_0247),
-                AppString.get(R.string.runtime_text_0248), AppString.get(R.string.runtime_text_0249), AppString.get(R.string.runtime_text_0250), AppString.get(R.string.runtime_text_0673), AppString.get(R.string.runtime_text_0252)});
-        background.setSelection(WorldClockWidgetPrefs.background(this, widgetId));
-        root.addView(background, new LinearLayout.LayoutParams(-1, dp(54)));
+        root.addView(label(
+                AppString.get(R.string.runtime_text_0243),
+                13));
+        Spinner background = spinner(new String[]{
+                AppString.get(R.string.runtime_text_0244),
+                AppString.get(R.string.runtime_text_0245),
+                AppString.get(R.string.runtime_text_0246),
+                AppString.get(R.string.runtime_text_0247),
+                AppString.get(R.string.runtime_text_0248),
+                AppString.get(R.string.runtime_text_0249),
+                AppString.get(R.string.runtime_text_0250),
+                AppString.get(R.string.runtime_text_0673),
+                AppString.get(R.string.runtime_text_0252)
+        });
+        background.setSelection(
+                WorldClockWidgetPrefs.background(this, widgetId));
+        root.addView(
+                background,
+                new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label(AppString.get(R.string.runtime_text_0674), 13));
+        root.addView(label(
+                AppString.get(R.string.runtime_text_0674),
+                13));
         Spinner text = colorSpinner();
-        text.setSelection(colorPosition(WorldClockWidgetPrefs.textColor(this, widgetId)));
-        root.addView(text, new LinearLayout.LayoutParams(-1, dp(54)));
+        text.setSelection(colorPosition(
+                WorldClockWidgetPrefs.textColor(this, widgetId)));
+        root.addView(
+                text,
+                new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label(AppString.get(R.string.runtime_text_0675), 13));
+        root.addView(label(
+                AppString.get(R.string.runtime_text_0675),
+                13));
         Spinner time = colorSpinner();
-        time.setSelection(colorPosition(WorldClockWidgetPrefs.timeColor(this, widgetId)));
-        root.addView(time, new LinearLayout.LayoutParams(-1, dp(54)));
+        time.setSelection(colorPosition(
+                WorldClockWidgetPrefs.timeColor(this, widgetId)));
+        root.addView(
+                time,
+                new LinearLayout.LayoutParams(-1, dp(54)));
 
         root.addView(label(
                 AppString.get(R.string.world_clock_widget_time_weight),
@@ -101,7 +142,124 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         root.addView(label(
                 AppString.get(R.string.world_clock_widget_time_size),
                 13));
-        Spinner size = spinner(new String[]{
+        Spinner timeSize = spinner(sizeValues());
+        timeSize.setSelection(
+                WorldClockWidgetPrefs.timeSize(this, widgetId));
+        root.addView(
+                timeSize,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
+        root.addView(label(
+                AppString.get(R.string.world_clock_widget_name_size),
+                13));
+        Spinner nameSize = spinner(sizeValues());
+        nameSize.setSelection(
+                WorldClockWidgetPrefs.nameSize(this, widgetId));
+        root.addView(
+                nameSize,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
+        root.addView(label(
+                AppString.get(R.string.world_clock_widget_date_size),
+                13));
+        Spinner dateSize = spinner(sizeValues());
+        dateSize.setSelection(
+                WorldClockWidgetPrefs.dateSize(this, widgetId));
+        root.addView(
+                dateSize,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
+        root.addView(label(
+                AppString.get(R.string.world_clock_widget_top_gap),
+                13));
+        Spinner topGap = spinner(gapValues());
+        topGap.setSelection(
+                WorldClockWidgetPrefs.topGap(this, widgetId));
+        root.addView(
+                topGap,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
+        root.addView(label(
+                AppString.get(R.string.world_clock_widget_bottom_gap),
+                13));
+        Spinner bottomGap = spinner(gapValues());
+        bottomGap.setSelection(
+                WorldClockWidgetPrefs.bottomGap(this, widgetId));
+        root.addView(
+                bottomGap,
+                new LinearLayout.LayoutParams(-1, dp(54)));
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
+        scroll.addView(
+                root,
+                new ScrollView.LayoutParams(
+                        ScrollView.LayoutParams.MATCH_PARENT,
+                        ScrollView.LayoutParams.WRAP_CONTENT));
+        setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
+
+        Runnable refreshPreview = () -> {
+            preview.configure(
+                    "world",
+                    previewBackground(
+                            background.getSelectedItemPosition()),
+                    COLORS[text.getSelectedItemPosition()],
+                    COLORS[time.getSelectedItemPosition()],
+                    true,
+                    true,
+                    3);
+            preview.setWorldTextSize(
+                    timeSize.getSelectedItemPosition());
+            preview.setWorldNameTextSize(
+                    nameSize.getSelectedItemPosition());
+            preview.setWorldDateTextSize(
+                    dateSize.getSelectedItemPosition());
+            preview.setWorldGaps(
+                    topGap.getSelectedItemPosition(),
+                    bottomGap.getSelectedItemPosition());
+
+            WorldClockWidgetPrefs.save(
+                    this,
+                    widgetId,
+                    background.getSelectedItemPosition(),
+                    COLORS[text.getSelectedItemPosition()],
+                    COLORS[time.getSelectedItemPosition()],
+                    weight.getSelectedItemPosition(),
+                    timeSize.getSelectedItemPosition(),
+                    nameSize.getSelectedItemPosition(),
+                    dateSize.getSelectedItemPosition(),
+                    topGap.getSelectedItemPosition(),
+                    bottomGap.getSelectedItemPosition());
+
+            WorldClockWidgetProvider.updateAll(this);
+            setResult(
+                    RESULT_OK,
+                    new Intent().putExtra(
+                            AppWidgetManager.EXTRA_APPWIDGET_ID,
+                            widgetId));
+        };
+
+        watch(background, refreshPreview);
+        watch(text, refreshPreview);
+        watch(time, refreshPreview);
+        watch(weight, refreshPreview);
+        watch(timeSize, refreshPreview);
+        watch(nameSize, refreshPreview);
+        watch(dateSize, refreshPreview);
+        watch(topGap, refreshPreview);
+        watch(bottomGap, refreshPreview);
+        refreshPreview.run();
+    }
+
+    @Override public void finish() {
+        super.finish();
+        AppSettings.playFullscreenExit(this);
+    }
+
+    private String[] sizeValues() {
+        return new String[]{
                 AppString.get(R.string.world_clock_widget_size_1),
                 AppString.get(R.string.world_clock_widget_size_2),
                 AppString.get(R.string.world_clock_widget_size_3),
@@ -109,47 +267,17 @@ public final class WorldClockWidgetConfigActivity extends Activity {
                 AppString.get(R.string.world_clock_widget_size_5),
                 AppString.get(R.string.world_clock_widget_size_6),
                 AppString.get(R.string.world_clock_widget_size_7)
-        });
-        size.setSelection(WorldClockWidgetPrefs.timeSize(this, widgetId));
-        root.addView(size, new LinearLayout.LayoutParams(-1, dp(54)));
-
-        ScrollView scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
-        scroll.addView(root, new ScrollView.LayoutParams(
-                ScrollView.LayoutParams.MATCH_PARENT,
-                ScrollView.LayoutParams.WRAP_CONTENT));
-        setContentView(scroll);
-        AppSettings.applyFullscreenInsets(scroll);
-        AppSettings.playFullscreenEnter(this);
-
-        Runnable refreshPreview = () -> {
-            preview.configure("world",
-                    previewBackground(background.getSelectedItemPosition()),
-                    COLORS[text.getSelectedItemPosition()], COLORS[time.getSelectedItemPosition()],
-                    true, true, 3);
-            preview.setWorldTextSize(size.getSelectedItemPosition());
-            WorldClockWidgetPrefs.save(this, widgetId,
-                    background.getSelectedItemPosition(),
-                    COLORS[text.getSelectedItemPosition()],
-                    COLORS[time.getSelectedItemPosition()],
-                    weight.getSelectedItemPosition(),
-                    size.getSelectedItemPosition());
-            WorldClockWidgetProvider.updateAll(this);
-            setResult(RESULT_OK, new Intent().putExtra(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId));
         };
-        watch(background, refreshPreview);
-        watch(text, refreshPreview);
-        watch(time, refreshPreview);
-        watch(weight, refreshPreview);
-        watch(size, refreshPreview);
-        refreshPreview.run();
-
     }
 
-    @Override public void finish() {
-        super.finish();
-        AppSettings.playFullscreenExit(this);
+    private String[] gapValues() {
+        return new String[]{
+                AppString.get(R.string.world_clock_widget_gap_1),
+                AppString.get(R.string.world_clock_widget_gap_2),
+                AppString.get(R.string.world_clock_widget_gap_3),
+                AppString.get(R.string.world_clock_widget_gap_4),
+                AppString.get(R.string.world_clock_widget_gap_5)
+        };
     }
 
     private int previewBackground(int position) {
@@ -166,36 +294,63 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         }
     }
 
-    private void watch(Spinner spinner, Runnable changed) {
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(
-                    AdapterView<?> parent, View view, int position, long id) {
-                changed.run();
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
+    private void watch(
+            Spinner spinner,
+            Runnable changed) {
+        spinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+                        changed.run();
+                    }
+
+                    @Override public void onNothingSelected(
+                            AdapterView<?> parent) {}
+                });
     }
 
     private Spinner colorSpinner() {
-        return spinner(new String[]{AppString.get(R.string.runtime_text_0676), AppString.get(R.string.runtime_text_0246), AppString.get(R.string.runtime_text_0248), AppString.get(R.string.runtime_text_0249), AppString.get(R.string.runtime_text_0253),
-                AppString.get(R.string.runtime_text_0251), AppString.get(R.string.runtime_text_0252), AppString.get(R.string.runtime_text_0250), AppString.get(R.string.runtime_text_0254), AppString.get(R.string.runtime_text_0255), AppString.get(R.string.runtime_text_0617), AppString.get(R.string.runtime_text_0677)});
+        return spinner(new String[]{
+                AppString.get(R.string.runtime_text_0676),
+                AppString.get(R.string.runtime_text_0246),
+                AppString.get(R.string.runtime_text_0248),
+                AppString.get(R.string.runtime_text_0249),
+                AppString.get(R.string.runtime_text_0253),
+                AppString.get(R.string.runtime_text_0251),
+                AppString.get(R.string.runtime_text_0252),
+                AppString.get(R.string.runtime_text_0250),
+                AppString.get(R.string.runtime_text_0254),
+                AppString.get(R.string.runtime_text_0255),
+                AppString.get(R.string.runtime_text_0617),
+                AppString.get(R.string.runtime_text_0677)
+        });
     }
 
     private Spinner spinner(String[] values) {
         Spinner spinner = new Spinner(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, values);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                values);
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         return spinner;
     }
 
     private int colorPosition(int color) {
-        for (int i = 0; i < COLORS.length; i++) if (COLORS[i] == color) return i;
+        for (int i = 0; i < COLORS.length; i++) {
+            if (COLORS[i] == color) return i;
+        }
         return 0;
     }
 
-    private TextView label(String value, int size) {
+    private TextView label(
+            String value,
+            int size) {
         TextView label = new TextView(this);
         label.setText(value);
         label.setTextSize(size);
@@ -205,6 +360,10 @@ public final class WorldClockWidgetConfigActivity extends Activity {
     }
 
     private int dp(int value) {
-        return Math.round(value * getResources().getDisplayMetrics().density);
+        return Math.round(
+                value
+                        * getResources()
+                        .getDisplayMetrics()
+                        .density);
     }
 }
