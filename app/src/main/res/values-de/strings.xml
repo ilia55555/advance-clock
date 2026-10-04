@@ -864,4 +864,13 @@ Sperrbildschirm</string>
     <string name="world_clock_widget_size_5">Groß</string>
     <string name="world_clock_widget_size_6">Größer</string>
     <string name="world_clock_widget_size_7">Sehr groß</string>
+    <string name="world_clock_widget_name_size">Größe des Stadtnamens</string>
+    <string name="world_clock_widget_date_size">Datumsgröße</string>
+    <string name="world_clock_widget_top_gap">Abstand Stadtname–Uhr</string>
+    <string name="world_clock_widget_bottom_gap">Abstand Uhr–Datum</string>
+    <string name="world_clock_widget_gap_1">Kein Abstand</string>
+    <string name="world_clock_widget_gap_2">Sehr eng</string>
+    <string name="world_clock_widget_gap_3">Eng</string>
+    <string name="world_clock_widget_gap_4">Normal</string>
+    <string name="world_clock_widget_gap_5">Weit</string>
 </resources>
