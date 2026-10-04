@@ -3,6 +3,7 @@ package com.ilia.advanceclock;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.TypedValue;
 import android.view.View;
@@ -26,12 +27,16 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         boolean compact = intent.getBooleanExtra("compact", false);
         float widthDp = intent.getFloatExtra("widthDp", 350f);
         float heightDp = intent.getFloatExtra("heightDp", 140f);
+        float headerHeightDp = intent.getFloatExtra(
+                "headerHeightDp",
+                compact ? 24f : 28f);
         return new Factory(
                 this,
                 widgetId,
                 compact,
                 widthDp,
-                heightDp);
+                heightDp,
+                headerHeightDp);
     }
 
     private static final class Factory implements RemoteViewsFactory {
@@ -46,6 +51,7 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         private final boolean compact;
         private final float widgetWidthDp;
         private final float widgetHeightDp;
+        private final float headerHeightDp;
         private List<AppSettings.PrayerHorizon> horizons = Collections.emptyList();
 
         Factory(
@@ -53,12 +59,14 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                 int widgetId,
                 boolean compact,
                 float widgetWidthDp,
-                float widgetHeightDp) {
+                float widgetHeightDp,
+                float headerHeightDp) {
             this.context = context;
             this.widgetId = widgetId;
             this.compact = compact;
             this.widgetWidthDp = Math.max(180f, widgetWidthDp);
             this.widgetHeightDp = Math.max(80f, widgetHeightDp);
+            this.headerHeightDp = Math.max(0f, headerHeightDp);
         }
 
         @Override public void onCreate() {}
@@ -97,6 +105,8 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                     compact
                             ? R.layout.widget_prayer_times_row_compact
                             : R.layout.widget_prayer_times_row_primary);
+            float rowHeightDp = adaptiveRowHeightDp();
+            applyRowGeometry(row, rowHeightDp);
 
             int main = PrayerTimesWidgetPrefs.mainTextColor(context, widgetId);
             int secondary = PrayerTimesWidgetPrefs.secondaryTextColor(context, widgetId);
@@ -240,7 +250,10 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
                 }
             }
 
-            applyFontSize(row, PrayerTimesWidgetPrefs.fontSize(context, widgetId));
+            applyFontSize(
+                    row,
+                    PrayerTimesWidgetPrefs.fontSize(context, widgetId),
+                    rowHeightDp);
 
             row.setOnClickFillInIntent(
                     R.id.prayer_widget_row_root, new Intent());
@@ -391,19 +404,53 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
             row.setTextColor(value, color);
         }
 
+        private float adaptiveRowHeightDp() {
+            float rootVerticalPadding = compact ? 10f : 0f;
+            float minRowHeight = compact ? 48f : 72f;
+
+            // One horizon is always one full widget page:
+            // fixed header + exactly one horizon filling the remaining height.
+            // Additional horizons keep the exact same geometry and are reached
+            // only by vertical scrolling; row height never shrinks with count.
+            return Math.max(
+                    minRowHeight,
+                    widgetHeightDp - rootVerticalPadding - headerHeightDp);
+        }
+
+        private void applyRowGeometry(
+                RemoteViews row,
+                float rowHeightDp) {
+            int minHeightPx = Math.round(
+                    TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            rowHeightDp,
+                            context.getResources().getDisplayMetrics()));
+            row.setInt(
+                    R.id.prayer_widget_row_root,
+                    "setMinimumHeight",
+                    minHeightPx);
+            if (Build.VERSION.SDK_INT >= 31) {
+                row.setViewLayoutHeight(
+                        R.id.prayer_widget_row_root,
+                        rowHeightDp,
+                        TypedValue.COMPLEX_UNIT_DIP);
+            }
+        }
+
         private void applyFontSize(
                 RemoteViews row,
-                int mode) {
+                int mode,
+                float rowHeightDp) {
             float widthScale =
                     clamp(
                             widgetWidthDp / 350f,
-                            0.90f,
-                            1.14f);
+                            0.88f,
+                            1.20f);
             float heightScale =
                     clamp(
-                            widgetHeightDp / 120f,
-                            0.93f,
-                            1.12f);
+                            rowHeightDp / (compact ? 56f : 80f),
+                            0.90f,
+                            1.35f);
             float geometryScale =
                     Math.min(
                             widthScale,

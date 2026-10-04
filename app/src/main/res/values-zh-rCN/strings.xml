@@ -856,4 +856,12 @@
     <string name="adhan_isha_name">宵礼宣礼</string>
     <string name="adhan_settings_title_format">%1$s设置</string>
     <string name="adhan_settings_all_title">所有宣礼设置</string>
+    <string name="world_clock_widget_time_size">时钟文字大小</string>
+    <string name="world_clock_widget_size_1">超小</string>
+    <string name="world_clock_widget_size_2">较小</string>
+    <string name="world_clock_widget_size_3">小</string>
+    <string name="world_clock_widget_size_4">正常</string>
+    <string name="world_clock_widget_size_5">大</string>
+    <string name="world_clock_widget_size_6">较大</string>
+    <string name="world_clock_widget_size_7">超大</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,8 +98,28 @@ public final class WorldClockWidgetConfigActivity extends Activity {
                 weight,
                 new LinearLayout.LayoutParams(-1, dp(54)));
 
-        setContentView(root);
-        AppSettings.applyFullscreenInsets(root);
+        root.addView(label(
+                AppString.get(R.string.world_clock_widget_time_size),
+                13));
+        Spinner size = spinner(new String[]{
+                AppString.get(R.string.world_clock_widget_size_1),
+                AppString.get(R.string.world_clock_widget_size_2),
+                AppString.get(R.string.world_clock_widget_size_3),
+                AppString.get(R.string.world_clock_widget_size_4),
+                AppString.get(R.string.world_clock_widget_size_5),
+                AppString.get(R.string.world_clock_widget_size_6),
+                AppString.get(R.string.world_clock_widget_size_7)
+        });
+        size.setSelection(WorldClockWidgetPrefs.timeSize(this, widgetId));
+        root.addView(size, new LinearLayout.LayoutParams(-1, dp(54)));
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
+        scroll.addView(root, new ScrollView.LayoutParams(
+                ScrollView.LayoutParams.MATCH_PARENT,
+                ScrollView.LayoutParams.WRAP_CONTENT));
+        setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
         AppSettings.playFullscreenEnter(this);
 
         Runnable refreshPreview = () -> {
@@ -106,11 +127,13 @@ public final class WorldClockWidgetConfigActivity extends Activity {
                     previewBackground(background.getSelectedItemPosition()),
                     COLORS[text.getSelectedItemPosition()], COLORS[time.getSelectedItemPosition()],
                     true, true, 3);
+            preview.setWorldTextSize(size.getSelectedItemPosition());
             WorldClockWidgetPrefs.save(this, widgetId,
                     background.getSelectedItemPosition(),
                     COLORS[text.getSelectedItemPosition()],
                     COLORS[time.getSelectedItemPosition()],
-                    weight.getSelectedItemPosition());
+                    weight.getSelectedItemPosition(),
+                    size.getSelectedItemPosition());
             WorldClockWidgetProvider.updateAll(this);
             setResult(RESULT_OK, new Intent().putExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId));
@@ -119,6 +142,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
         watch(text, refreshPreview);
         watch(time, refreshPreview);
         watch(weight, refreshPreview);
+        watch(size, refreshPreview);
         refreshPreview.run();
 
     }

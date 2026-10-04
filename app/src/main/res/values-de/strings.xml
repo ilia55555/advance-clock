@@ -856,4 +856,12 @@ Sperrbildschirm</string>
     <string name="adhan_isha_name">Ischa-Adhan</string>
     <string name="adhan_settings_title_format">Einstellungen: %1$s</string>
     <string name="adhan_settings_all_title">Einstellungen für alle Adhans</string>
+    <string name="world_clock_widget_time_size">Größe der Uhrschrift</string>
+    <string name="world_clock_widget_size_1">Sehr klein</string>
+    <string name="world_clock_widget_size_2">Kleiner</string>
+    <string name="world_clock_widget_size_3">Klein</string>
+    <string name="world_clock_widget_size_4">Normal</string>
+    <string name="world_clock_widget_size_5">Groß</string>
+    <string name="world_clock_widget_size_6">Größer</string>
+    <string name="world_clock_widget_size_7">Sehr groß</string>
 </resources>

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/prayer_widget_row_root"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
     android:layoutDirection="rtl"
     android:orientation="vertical"
     android:padding="4dp"
@@ -21,7 +22,7 @@
         <LinearLayout android:id="@+id/prayer_widget_next_box" android:layout_width="match_parent" android:layout_height="0dp" android:visibility="gone">
             <TextView android:id="@+id/prayer_widget_next_label" android:layout_width="0dp" android:layout_height="0dp" />
         </LinearLayout>
-        <LinearLayout android:id="@+id/prayer_widget_times" android:layout_width="match_parent" android:layout_height="22dp" android:gravity="center" android:orientation="horizontal" android:weightSum="8">
+        <LinearLayout android:id="@+id/prayer_widget_times" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:orientation="horizontal" android:weightSum="8">
             <LinearLayout android:id="@+id/prayer_time_fajr" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:padding="1dp">
                 <TextView android:id="@+id/prayer_icon_fajr" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
                 <TextView android:id="@+id/prayer_label_fajr" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:maxLines="1" android:text="@string/ui_fajr" android:textColor="#A9C9E8" android:textSize="9dp" />

@@ -856,4 +856,12 @@
     <string name="adhan_isha_name">Азан Иша</string>
     <string name="adhan_settings_title_format">Настройки: %1$s</string>
     <string name="adhan_settings_all_title">Настройки всех азанов</string>
+    <string name="world_clock_widget_time_size">Размер текста часов</string>
+    <string name="world_clock_widget_size_1">Очень маленький</string>
+    <string name="world_clock_widget_size_2">Меньше</string>
+    <string name="world_clock_widget_size_3">Маленький</string>
+    <string name="world_clock_widget_size_4">Обычный</string>
+    <string name="world_clock_widget_size_5">Большой</string>
+    <string name="world_clock_widget_size_6">Больше</string>
+    <string name="world_clock_widget_size_7">Очень большой</string>
 </resources>

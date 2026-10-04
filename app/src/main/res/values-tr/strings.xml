@@ -856,4 +856,12 @@ Kilit ekranı</string>
     <string name="adhan_isha_name">Yatsı ezanı</string>
     <string name="adhan_settings_title_format">%1$s ayarları</string>
     <string name="adhan_settings_all_title">Tüm ezan ayarları</string>
+    <string name="world_clock_widget_time_size">Saat metni boyutu</string>
+    <string name="world_clock_widget_size_1">Çok küçük</string>
+    <string name="world_clock_widget_size_2">Daha küçük</string>
+    <string name="world_clock_widget_size_3">Küçük</string>
+    <string name="world_clock_widget_size_4">Normal</string>
+    <string name="world_clock_widget_size_5">Büyük</string>
+    <string name="world_clock_widget_size_6">Daha büyük</string>
+    <string name="world_clock_widget_size_7">Çok büyük</string>
 </resources>

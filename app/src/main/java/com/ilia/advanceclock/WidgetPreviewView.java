@@ -15,6 +15,7 @@ final class WidgetPreviewView extends View {
     private boolean showHeader = true;
     private boolean showDetails = true;
     private int itemCount = 3;
+    private float worldTextScale = 1f;
 
     WidgetPreviewView(Context context) {
         super(context);
@@ -30,6 +31,12 @@ final class WidgetPreviewView extends View {
         this.showHeader = showHeader;
         this.showDetails = showDetails;
         this.itemCount = Math.max(1, Math.min(4, itemCount));
+        invalidate();
+    }
+
+    void setWorldTextSize(int preset) {
+        float[] factors = {0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f};
+        worldTextScale = factors[Math.max(0, Math.min(factors.length - 1, preset))];
         invalidate();
     }
 
@@ -57,9 +64,12 @@ final class WidgetPreviewView extends View {
         float columnWidth = (getWidth() - 20 * d) / columns;
         for (int i = 0; i < columns; i++) {
             float center = 10 * d + columnWidth * i + columnWidth / 2f;
-            text(canvas, cities[i], center, 37 * d, 14 * d, textColor, Paint.Align.CENTER, false);
-            text(canvas, times[i], center, 78 * d, 28 * d, timeColor, Paint.Align.CENTER, true);
-            text(canvas, AppString.get(R.string.preview_sample_date), center, 103 * d, 12 * d,
+            text(canvas, cities[i], center, 37 * d, 14 * d * worldTextScale,
+                    textColor, Paint.Align.CENTER, false);
+            text(canvas, times[i], center, 78 * d, 28 * d * worldTextScale,
+                    timeColor, Paint.Align.CENTER, true);
+            text(canvas, AppString.get(R.string.preview_sample_date), center, 103 * d,
+                    12 * d * worldTextScale,
                     textColor, Paint.Align.CENTER, false);
         }
     }

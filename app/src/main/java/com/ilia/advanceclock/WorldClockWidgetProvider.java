@@ -58,7 +58,8 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                     .remove("capacity_" + id).remove("page_" + id)
                     .remove("triple_" + id).remove("columns_" + id)
-                    .remove("compact_" + id).remove("controls_until_" + id).apply();
+                    .remove("compact_" + id).remove("controls_until_" + id)
+                    .remove("item_width_dp_" + id).remove("item_height_dp_" + id).apply();
         }
     }
 
@@ -91,6 +92,16 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
                 .getBoolean("compact_" + id, false);
     }
 
+    static float itemWidthDp(Context context, int id) {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .getFloat("item_width_dp_" + id, 82f);
+    }
+
+    static float itemHeightDp(Context context, int id) {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .getFloat("item_height_dp_" + id, 122f);
+    }
+
     private static int page(Context context, int id) {
         return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                 .getInt("page_" + id, 0);
@@ -108,13 +119,20 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
         int zoneCount = WorldClockStore.zones(context).size();
         boolean singleColumn = widthCells <= 3;
         int visualColumns = singleColumn ? 1 : 2;
-        boolean compact = size.heightDp < 76f;
+        boolean compact = size.heightDp < 122f;
+        float itemWidthDp = Math.max(40f,
+                (size.widthDp - 8f - (visualColumns - 1) * 4f) / visualColumns);
+        float itemHeightDp = compact
+                ? Math.max(40f, Math.min(56f, size.heightDp - 4f))
+                : 122f;
         int capacity = Math.max(1, zoneCount);
         int pages = Math.max(1, (zoneCount + capacity - 1) / capacity);
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                 .putInt("capacity_" + id, capacity)
                 .putInt("columns_" + id, visualColumns)
-                .putBoolean("compact_" + id, compact).apply();
+                .putBoolean("compact_" + id, compact)
+                .putFloat("item_width_dp_" + id, itemWidthDp)
+                .putFloat("item_height_dp_" + id, itemHeightDp).apply();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_world_clock);
         views.setInt(R.id.world_widget_grid, "setNumColumns", visualColumns);

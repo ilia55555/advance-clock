@@ -1113,4 +1113,12 @@
     <string name="world_clock_widget_weight_thin">نازک</string>
     <string name="world_clock_widget_weight_normal">معمولی</string>
     <string name="world_clock_widget_weight_bold">ضخیم</string>
+    <string name="world_clock_widget_time_size">اندازه نوشته ساعت</string>
+    <string name="world_clock_widget_size_1">خیلی کوچک</string>
+    <string name="world_clock_widget_size_2">کوچک‌تر</string>
+    <string name="world_clock_widget_size_3">کوچک</string>
+    <string name="world_clock_widget_size_4">معمولی</string>
+    <string name="world_clock_widget_size_5">بزرگ</string>
+    <string name="world_clock_widget_size_6">بزرگ‌تر</string>
+    <string name="world_clock_widget_size_7">خیلی بزرگ</string>
 </resources>

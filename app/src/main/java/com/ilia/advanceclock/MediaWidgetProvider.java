@@ -231,7 +231,9 @@ public final class MediaWidgetProvider extends AppWidgetProvider {
                 MediaWidgetRemoteViewsService.class)
                 .putExtra(
                         AppWidgetManager.EXTRA_APPWIDGET_ID,
-                        widgetId);
+                        widgetId)
+                .putExtra("widthDp", widthDp)
+                .putExtra("heightDp", heightDp);
         adapterIntent.setData(Uri.parse(
                 "advanceclock://media-widget/"
                         + widgetId
