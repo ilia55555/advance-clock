@@ -864,4 +864,13 @@
     <string name="world_clock_widget_size_5">बड़ा</string>
     <string name="world_clock_widget_size_6">और बड़ा</string>
     <string name="world_clock_widget_size_7">बहुत बड़ा</string>
+    <string name="world_clock_widget_name_size">शहर नाम का आकार</string>
+    <string name="world_clock_widget_date_size">तारीख का आकार</string>
+    <string name="world_clock_widget_top_gap">शहर नाम से घड़ी की दूरी</string>
+    <string name="world_clock_widget_bottom_gap">घड़ी से तारीख की दूरी</string>
+    <string name="world_clock_widget_gap_1">कोई दूरी नहीं</string>
+    <string name="world_clock_widget_gap_2">बहुत कम</string>
+    <string name="world_clock_widget_gap_3">कम</string>
+    <string name="world_clock_widget_gap_4">सामान्य</string>
+    <string name="world_clock_widget_gap_5">अधिक</string>
 </resources>
