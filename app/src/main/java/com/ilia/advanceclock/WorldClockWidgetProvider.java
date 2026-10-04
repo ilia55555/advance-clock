@@ -116,17 +116,43 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
             Context context, AppWidgetManager manager, int id, Bundle options) {
         WidgetSizeUtils.WidgetSize size = WidgetSizeUtils.currentSize(context, options, 5, 2);
         int widthCells = WidgetSizeUtils.dpToCells(size.widthDp);
+        int heightCells = WidgetSizeUtils.dpToCells(size.heightDp);
         int zoneCount = WorldClockStore.zones(context).size();
+
         boolean singleColumn = widthCells <= 3;
         int visualColumns = singleColumn ? 1 : 2;
-        boolean compact = size.heightDp < 122f;
-        float itemWidthDp = Math.max(40f,
-                (size.widthDp - 8f - (visualColumns - 1) * 4f) / visualColumns);
-        float itemHeightDp = compact
-                ? Math.max(40f, Math.min(56f, size.heightDp - 4f))
-                : 122f;
-        int capacity = Math.max(1, zoneCount);
-        int pages = Math.max(1, (zoneCount + capacity - 1) / capacity);
+
+        // The launcher row count is the contract for what may be visible:
+        // 5x1 -> exactly one complete clock row, 5x2 -> exactly two.
+        // Never send an extra row to GridView, otherwise MIUI can expose a
+        // clipped next row at the bottom.
+        int visibleRows = Math.max(1, heightCells);
+        int capacity = Math.max(
+                1,
+                Math.min(
+                        Math.max(1, zoneCount),
+                        visualColumns * visibleRows));
+
+        float horizontalSpacingDp = 4f;
+        float verticalSpacingDp = 2f;
+        float itemWidthDp = Math.max(
+                40f,
+                (size.widthDp
+                        - (visualColumns - 1) * horizontalSpacingDp)
+                        / visualColumns);
+        float itemHeightDp = Math.max(
+                40f,
+                (size.heightDp
+                        - (visibleRows - 1) * verticalSpacingDp)
+                        / visibleRows);
+
+        // Compactness depends on the height of one actual row, not on total
+        // widget height. This is what lets a 5x2 use two readable rows instead
+        // of two 122dp rows that cannot fit.
+        boolean compact = itemHeightDp < 96f;
+        int pages = Math.max(
+                1,
+                (zoneCount + capacity - 1) / capacity);
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                 .putInt("capacity_" + id, capacity)
                 .putInt("columns_" + id, visualColumns)
@@ -145,8 +171,17 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
                 pages > 1 && !controlsVisible ? View.VISIBLE : View.GONE);
         Intent service = new Intent(context, WorldClockWidgetService.class)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-        service.setData(Uri.parse("advanceclock://world-widget/" + id + "/" + capacity
-                + "/" + (compact ? "compact" : "regular")));
+        service.setData(Uri.parse(
+                "advanceclock://world-widget/"
+                        + id
+                        + "/"
+                        + capacity
+                        + "/"
+                        + visibleRows
+                        + "/"
+                        + Math.round(itemHeightDp)
+                        + "/"
+                        + (compact ? "compact" : "regular")));
         views.setRemoteAdapter(R.id.world_widget_grid, service);
 
         views.setOnClickPendingIntent(R.id.world_widget_previous,
