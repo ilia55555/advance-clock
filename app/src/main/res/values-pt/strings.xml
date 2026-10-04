@@ -856,4 +856,12 @@ Tela de bloqueio</string>
     <string name="adhan_isha_name">Adhan do Isha</string>
     <string name="adhan_settings_title_format">Configurações de %1$s</string>
     <string name="adhan_settings_all_title">Configurações de todos os adhans</string>
+    <string name="world_clock_widget_time_size">Tamanho do texto do relógio</string>
+    <string name="world_clock_widget_size_1">Muito pequeno</string>
+    <string name="world_clock_widget_size_2">Menor</string>
+    <string name="world_clock_widget_size_3">Pequeno</string>
+    <string name="world_clock_widget_size_4">Normal</string>
+    <string name="world_clock_widget_size_5">Grande</string>
+    <string name="world_clock_widget_size_6">Maior</string>
+    <string name="world_clock_widget_size_7">Muito grande</string>
 </resources>

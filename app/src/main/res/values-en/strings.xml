@@ -1113,4 +1113,12 @@ Lock screen</string>
     <string name="world_clock_widget_weight_thin">Thin</string>
     <string name="world_clock_widget_weight_normal">Regular</string>
     <string name="world_clock_widget_weight_bold">Bold</string>
+    <string name="world_clock_widget_time_size">Clock text size</string>
+    <string name="world_clock_widget_size_1">Extra small</string>
+    <string name="world_clock_widget_size_2">Smaller</string>
+    <string name="world_clock_widget_size_3">Small</string>
+    <string name="world_clock_widget_size_4">Normal</string>
+    <string name="world_clock_widget_size_5">Large</string>
+    <string name="world_clock_widget_size_6">Larger</string>
+    <string name="world_clock_widget_size_7">Extra large</string>
 </resources>

@@ -1131,4 +1131,12 @@
     <string name="world_clock_widget_weight_thin">رفيع</string>
     <string name="world_clock_widget_weight_normal">عادي</string>
     <string name="world_clock_widget_weight_bold">عريض</string>
+    <string name="world_clock_widget_time_size">حجم نص الساعة</string>
+    <string name="world_clock_widget_size_1">صغير جدًا</string>
+    <string name="world_clock_widget_size_2">أصغر</string>
+    <string name="world_clock_widget_size_3">صغير</string>
+    <string name="world_clock_widget_size_4">عادي</string>
+    <string name="world_clock_widget_size_5">كبير</string>
+    <string name="world_clock_widget_size_6">أكبر</string>
+    <string name="world_clock_widget_size_7">كبير جدًا</string>
 </resources>

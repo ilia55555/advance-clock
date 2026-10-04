@@ -856,4 +856,12 @@ Sans rappel</string>
     <string name="adhan_isha_name">Adhan de l’Isha</string>
     <string name="adhan_settings_title_format">Paramètres : %1$s</string>
     <string name="adhan_settings_all_title">Paramètres de tous les adhans</string>
+    <string name="world_clock_widget_time_size">Taille du texte de l’horloge</string>
+    <string name="world_clock_widget_size_1">Très petite</string>
+    <string name="world_clock_widget_size_2">Plus petite</string>
+    <string name="world_clock_widget_size_3">Petite</string>
+    <string name="world_clock_widget_size_4">Normale</string>
+    <string name="world_clock_widget_size_5">Grande</string>
+    <string name="world_clock_widget_size_6">Plus grande</string>
+    <string name="world_clock_widget_size_7">Très grande</string>
 </resources>

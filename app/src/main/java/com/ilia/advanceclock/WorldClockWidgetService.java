@@ -3,6 +3,7 @@ package com.ilia.advanceclock;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -83,11 +84,33 @@ public final class WorldClockWidgetService extends RemoteViewsService {
             item.setTextColor(R.id.world_item_date, textColor);
             item.setTextColor(R.id.world_item_time,
                     WorldClockWidgetPrefs.timeColor(context, widgetId));
+            applyTextSizes(item, compact);
             item.setString(R.id.world_item_time, "setTimeZone", zone);
             item.setString(R.id.world_item_date, "setTimeZone", zone);
             item.setOnClickFillInIntent(R.id.world_item_root,
                     new Intent().putExtra("openTab", "world"));
             return item;
+        }
+
+        private void applyTextSizes(RemoteViews item, boolean compact) {
+            float widthDp = WorldClockWidgetProvider.itemWidthDp(context, widgetId);
+            float heightDp = WorldClockWidgetProvider.itemHeightDp(context, widgetId);
+            int preset = WorldClockWidgetPrefs.timeSize(context, widgetId);
+            float[] factors = {0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f};
+            float factor = factors[preset];
+
+            float widthLimitSp = Math.max(10f, widthDp / 3.15f);
+            float heightLimitSp = Math.max(18f,
+                    compact ? heightDp * 0.55f : heightDp * 0.62f);
+            float timeSp = Math.min(widthLimitSp, heightLimitSp) * factor / 1.30f;
+            float nameSp = Math.min((compact ? 12f : 19f) * factor,
+                    Math.max(9f, heightDp * 0.18f));
+            float dateSp = Math.min((compact ? 10f : 15f) * factor,
+                    Math.max(8f, heightDp * 0.15f));
+
+            item.setTextViewTextSize(R.id.world_item_time, TypedValue.COMPLEX_UNIT_SP, timeSp);
+            item.setTextViewTextSize(R.id.world_item_name, TypedValue.COMPLEX_UNIT_SP, nameSp);
+            item.setTextViewTextSize(R.id.world_item_date, TypedValue.COMPLEX_UNIT_SP, dateSp);
         }
         @Override public RemoteViews getLoadingView() { return null; }
         @Override public int getViewTypeCount() { return 6; }

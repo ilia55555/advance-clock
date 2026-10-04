@@ -856,4 +856,12 @@
     <string name="adhan_isha_name">इशा अज़ान</string>
     <string name="adhan_settings_title_format">%1$s सेटिंग्स</string>
     <string name="adhan_settings_all_title">सभी अज़ान सेटिंग्स</string>
+    <string name="world_clock_widget_time_size">घड़ी के टेक्स्ट का आकार</string>
+    <string name="world_clock_widget_size_1">बहुत छोटा</string>
+    <string name="world_clock_widget_size_2">और छोटा</string>
+    <string name="world_clock_widget_size_3">छोटा</string>
+    <string name="world_clock_widget_size_4">सामान्य</string>
+    <string name="world_clock_widget_size_5">बड़ा</string>
+    <string name="world_clock_widget_size_6">और बड़ा</string>
+    <string name="world_clock_widget_size_7">बहुत बड़ा</string>
 </resources>
