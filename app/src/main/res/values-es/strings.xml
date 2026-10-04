@@ -864,4 +864,13 @@ Pantalla de bloqueo</string>
     <string name="world_clock_widget_size_5">Grande</string>
     <string name="world_clock_widget_size_6">Más grande</string>
     <string name="world_clock_widget_size_7">Muy grande</string>
+    <string name="world_clock_widget_name_size">Tamaño del nombre de ciudad</string>
+    <string name="world_clock_widget_date_size">Tamaño de fecha</string>
+    <string name="world_clock_widget_top_gap">Espacio ciudad-reloj</string>
+    <string name="world_clock_widget_bottom_gap">Espacio reloj-fecha</string>
+    <string name="world_clock_widget_gap_1">Sin espacio</string>
+    <string name="world_clock_widget_gap_2">Muy estrecho</string>
+    <string name="world_clock_widget_gap_3">Estrecho</string>
+    <string name="world_clock_widget_gap_4">Normal</string>
+    <string name="world_clock_widget_gap_5">Amplio</string>
 </resources>

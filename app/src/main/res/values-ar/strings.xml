@@ -1139,4 +1139,13 @@
     <string name="world_clock_widget_size_5">كبير</string>
     <string name="world_clock_widget_size_6">أكبر</string>
     <string name="world_clock_widget_size_7">كبير جدًا</string>
+    <string name="world_clock_widget_name_size">حجم اسم المدينة</string>
+    <string name="world_clock_widget_date_size">حجم التاريخ</string>
+    <string name="world_clock_widget_top_gap">المسافة بين اسم المدينة والساعة</string>
+    <string name="world_clock_widget_bottom_gap">المسافة بين الساعة والتاريخ</string>
+    <string name="world_clock_widget_gap_1">بدون مسافة</string>
+    <string name="world_clock_widget_gap_2">ضيق جدًا</string>
+    <string name="world_clock_widget_gap_3">ضيق</string>
+    <string name="world_clock_widget_gap_4">عادي</string>
+    <string name="world_clock_widget_gap_5">واسع</string>
 </resources>

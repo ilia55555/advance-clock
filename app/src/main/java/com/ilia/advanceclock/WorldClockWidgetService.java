@@ -95,22 +95,92 @@ public final class WorldClockWidgetService extends RemoteViewsService {
         private void applyTextSizes(RemoteViews item, boolean compact) {
             float widthDp = WorldClockWidgetProvider.itemWidthDp(context, widgetId);
             float heightDp = WorldClockWidgetProvider.itemHeightDp(context, widgetId);
-            int preset = WorldClockWidgetPrefs.timeSize(context, widgetId);
-            float[] factors = {0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f};
-            float factor = factors[preset];
 
-            float widthLimitSp = Math.max(10f, widthDp / 3.15f);
-            float heightLimitSp = Math.max(18f,
+            float[] factors = {
+                    0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f
+            };
+            float timeFactor = factors[
+                    WorldClockWidgetPrefs.timeSize(context, widgetId)];
+            float nameFactor = factors[
+                    WorldClockWidgetPrefs.nameSize(context, widgetId)];
+            float dateFactor = factors[
+                    WorldClockWidgetPrefs.dateSize(context, widgetId)];
+
+            float widthLimit = Math.max(10f, widthDp / 3.15f);
+            float heightLimit = Math.max(
+                    18f,
                     compact ? heightDp * 0.55f : heightDp * 0.62f);
-            float timeSp = Math.min(widthLimitSp, heightLimitSp) * factor / 1.30f;
-            float nameSp = Math.min((compact ? 12f : 19f) * factor,
-                    Math.max(9f, heightDp * 0.18f));
-            float dateSp = Math.min((compact ? 10f : 15f) * factor,
-                    Math.max(8f, heightDp * 0.15f));
 
-            item.setTextViewTextSize(R.id.world_item_time, TypedValue.COMPLEX_UNIT_SP, timeSp);
-            item.setTextViewTextSize(R.id.world_item_name, TypedValue.COMPLEX_UNIT_SP, nameSp);
-            item.setTextViewTextSize(R.id.world_item_date, TypedValue.COMPLEX_UNIT_SP, dateSp);
+            float timeSize = Math.min(widthLimit, heightLimit)
+                    * timeFactor / 1.30f;
+            float nameSize = Math.min(
+                    (compact ? 12f : 19f) * nameFactor,
+                    Math.max(9f, heightDp * (compact ? 0.22f : 0.18f)));
+            float dateSize = Math.min(
+                    (compact ? 10f : 15f) * dateFactor,
+                    Math.max(8f, heightDp * (compact ? 0.19f : 0.15f)));
+
+            float[] gapValues = compact
+                    ? new float[]{0f, 0.5f, 1f, 2f, 3f}
+                    : new float[]{0f, 1f, 2f, 4f, 6f};
+            float topGap = gapValues[
+                    WorldClockWidgetPrefs.topGap(context, widgetId)];
+            float bottomGap = gapValues[
+                    WorldClockWidgetPrefs.bottomGap(context, widgetId)];
+
+            // Protect every launcher from clipping/overlap. The independent
+            // user choices are preserved proportionally, but the whole block
+            // is reduced only when the requested geometry cannot fit.
+            float estimatedHeight =
+                    nameSize * 1.18f
+                            + timeSize * 1.12f
+                            + dateSize * 1.18f
+                            + topGap
+                            + bottomGap;
+            float availableHeight = Math.max(36f, heightDp - 4f);
+            if (estimatedHeight > availableHeight) {
+                float fit = Math.max(
+                        0.72f,
+                        availableHeight / estimatedHeight);
+                timeSize *= fit;
+                nameSize *= fit;
+                dateSize *= fit;
+                topGap *= fit;
+                bottomGap *= fit;
+            }
+
+            // DIP is intentional: the widget has its own size controls, so a
+            // different system font-scale on MIUI/other launchers must not
+            // change the visual geometry behind the user's back.
+            item.setTextViewTextSize(
+                    R.id.world_item_time,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    timeSize);
+            item.setTextViewTextSize(
+                    R.id.world_item_name,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    nameSize);
+            item.setTextViewTextSize(
+                    R.id.world_item_date,
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    dateSize);
+
+            int topPx = dp(topGap);
+            int bottomPx = dp(bottomGap);
+            item.setViewPadding(
+                    R.id.world_item_time,
+                    0,
+                    topPx,
+                    0,
+                    bottomPx);
+        }
+
+        private int dp(float value) {
+            return Math.round(
+                    TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            value,
+                            context.getResources().getDisplayMetrics()));
         }
         @Override public RemoteViews getLoadingView() { return null; }
         @Override public int getViewTypeCount() { return 6; }

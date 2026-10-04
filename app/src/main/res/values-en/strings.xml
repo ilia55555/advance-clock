@@ -1121,4 +1121,13 @@ Lock screen</string>
     <string name="world_clock_widget_size_5">Large</string>
     <string name="world_clock_widget_size_6">Larger</string>
     <string name="world_clock_widget_size_7">Extra large</string>
+    <string name="world_clock_widget_name_size">City name size</string>
+    <string name="world_clock_widget_date_size">Date size</string>
+    <string name="world_clock_widget_top_gap">City-to-clock spacing</string>
+    <string name="world_clock_widget_bottom_gap">Clock-to-date spacing</string>
+    <string name="world_clock_widget_gap_1">No gap</string>
+    <string name="world_clock_widget_gap_2">Very tight</string>
+    <string name="world_clock_widget_gap_3">Tight</string>
+    <string name="world_clock_widget_gap_4">Normal</string>
+    <string name="world_clock_widget_gap_5">Wide</string>
 </resources>

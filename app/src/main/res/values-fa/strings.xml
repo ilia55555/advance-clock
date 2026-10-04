@@ -1082,4 +1082,13 @@
     <string name="world_clock_widget_size_5">بزرگ</string>
     <string name="world_clock_widget_size_6">بزرگ‌تر</string>
     <string name="world_clock_widget_size_7">خیلی بزرگ</string>
+    <string name="world_clock_widget_name_size">اندازه نام شهر</string>
+    <string name="world_clock_widget_date_size">اندازه تاریخ</string>
+    <string name="world_clock_widget_top_gap">فاصله نام شهر تا ساعت</string>
+    <string name="world_clock_widget_bottom_gap">فاصله ساعت تا تاریخ</string>
+    <string name="world_clock_widget_gap_1">بدون فاصله</string>
+    <string name="world_clock_widget_gap_2">خیلی کم</string>
+    <string name="world_clock_widget_gap_3">کم</string>
+    <string name="world_clock_widget_gap_4">متوسط</string>
+    <string name="world_clock_widget_gap_5">زیاد</string>
 </resources>

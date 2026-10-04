@@ -864,4 +864,13 @@
     <string name="world_clock_widget_size_5">大</string>
     <string name="world_clock_widget_size_6">较大</string>
     <string name="world_clock_widget_size_7">超大</string>
+    <string name="world_clock_widget_name_size">城市名称大小</string>
+    <string name="world_clock_widget_date_size">日期大小</string>
+    <string name="world_clock_widget_top_gap">城市名称与时钟间距</string>
+    <string name="world_clock_widget_bottom_gap">时钟与日期间距</string>
+    <string name="world_clock_widget_gap_1">无间距</string>
+    <string name="world_clock_widget_gap_2">非常紧凑</string>
+    <string name="world_clock_widget_gap_3">紧凑</string>
+    <string name="world_clock_widget_gap_4">正常</string>
+    <string name="world_clock_widget_gap_5">宽</string>
 </resources>

@@ -864,4 +864,13 @@
     <string name="world_clock_widget_size_5">大</string>
     <string name="world_clock_widget_size_6">より大きい</string>
     <string name="world_clock_widget_size_7">特大</string>
+    <string name="world_clock_widget_name_size">都市名のサイズ</string>
+    <string name="world_clock_widget_date_size">日付のサイズ</string>
+    <string name="world_clock_widget_top_gap">都市名と時計の間隔</string>
+    <string name="world_clock_widget_bottom_gap">時計と日付の間隔</string>
+    <string name="world_clock_widget_gap_1">間隔なし</string>
+    <string name="world_clock_widget_gap_2">非常に狭い</string>
+    <string name="world_clock_widget_gap_3">狭い</string>
+    <string name="world_clock_widget_gap_4">標準</string>
+    <string name="world_clock_widget_gap_5">広い</string>
 </resources>

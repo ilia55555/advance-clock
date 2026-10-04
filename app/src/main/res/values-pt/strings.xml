@@ -864,4 +864,13 @@ Tela de bloqueio</string>
     <string name="world_clock_widget_size_5">Grande</string>
     <string name="world_clock_widget_size_6">Maior</string>
     <string name="world_clock_widget_size_7">Muito grande</string>
+    <string name="world_clock_widget_name_size">Tamanho do nome da cidade</string>
+    <string name="world_clock_widget_date_size">Tamanho da data</string>
+    <string name="world_clock_widget_top_gap">Espaço cidade-relógio</string>
+    <string name="world_clock_widget_bottom_gap">Espaço relógio-data</string>
+    <string name="world_clock_widget_gap_1">Sem espaço</string>
+    <string name="world_clock_widget_gap_2">Muito estreito</string>
+    <string name="world_clock_widget_gap_3">Estreito</string>
+    <string name="world_clock_widget_gap_4">Normal</string>
+    <string name="world_clock_widget_gap_5">Amplo</string>
 </resources>
