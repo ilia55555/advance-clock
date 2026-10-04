@@ -405,24 +405,16 @@ public final class PrayerTimesWidgetService extends RemoteViewsService {
         }
 
         private float adaptiveRowHeightDp() {
-            int count = Math.max(1, horizons.size());
             float rootVerticalPadding = compact ? 10f : 0f;
-            float divider = compact ? 4f : 0f;
             float minRowHeight = compact ? 48f : 72f;
-            float listHeight = Math.max(
-                    minRowHeight,
-                    widgetHeightDp - rootVerticalPadding - headerHeightDp);
 
-            int visibleRows = Math.max(
-                    1,
-                    Math.min(
-                            count,
-                            (int) Math.floor(
-                                    (listHeight + divider)
-                                            / (minRowHeight + divider))));
+            // One horizon is always one full widget page:
+            // fixed header + exactly one horizon filling the remaining height.
+            // Additional horizons keep the exact same geometry and are reached
+            // only by vertical scrolling; row height never shrinks with count.
             return Math.max(
                     minRowHeight,
-                    (listHeight - divider * (visibleRows - 1)) / visibleRows);
+                    widgetHeightDp - rootVerticalPadding - headerHeightDp);
         }
 
         private void applyRowGeometry(
