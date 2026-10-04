@@ -3,6 +3,7 @@ package com.ilia.advanceclock;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -84,12 +85,35 @@ public final class WorldClockWidgetService extends RemoteViewsService {
             item.setTextColor(R.id.world_item_date, textColor);
             item.setTextColor(R.id.world_item_time,
                     WorldClockWidgetPrefs.timeColor(context, widgetId));
+            applyRowHeight(item);
             applyTextSizes(item, compact);
             item.setString(R.id.world_item_time, "setTimeZone", zone);
             item.setString(R.id.world_item_date, "setTimeZone", zone);
             item.setOnClickFillInIntent(R.id.world_item_root,
                     new Intent().putExtra("openTab", "world"));
             return item;
+        }
+
+        private void applyRowHeight(RemoteViews item) {
+            float rowHeightDp =
+                    WorldClockWidgetProvider.itemHeightDp(
+                            context,
+                            widgetId);
+            int minHeightPx = Math.round(
+                    TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            rowHeightDp,
+                            context.getResources().getDisplayMetrics()));
+            item.setInt(
+                    R.id.world_item_root,
+                    "setMinimumHeight",
+                    minHeightPx);
+            if (Build.VERSION.SDK_INT >= 31) {
+                item.setViewLayoutHeight(
+                        R.id.world_item_root,
+                        rowHeightDp,
+                        TypedValue.COMPLEX_UNIT_DIP);
+            }
         }
 
         private void applyTextSizes(RemoteViews item, boolean compact) {
