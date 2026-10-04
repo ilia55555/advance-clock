@@ -122,7 +122,9 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
         boolean compact = size.heightDp < 122f;
         float itemWidthDp = Math.max(40f,
                 (size.widthDp - 8f - (visualColumns - 1) * 4f) / visualColumns);
-        float itemHeightDp = compact ? Math.max(40f, size.heightDp - 4f) : 122f;
+        float itemHeightDp = compact
+                ? Math.max(40f, Math.min(56f, size.heightDp - 4f))
+                : 122f;
         int capacity = Math.max(1, zoneCount);
         int pages = Math.max(1, (zoneCount + capacity - 1) / capacity);
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
