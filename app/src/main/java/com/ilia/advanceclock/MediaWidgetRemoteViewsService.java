@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,13 +23,21 @@ public final class MediaWidgetRemoteViewsService
         int widgetId = intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
-        return new Factory(getApplicationContext(), widgetId);
+        float widthDp = intent.getFloatExtra("widthDp", 320f);
+        float heightDp = intent.getFloatExtra("heightDp", 240f);
+        return new Factory(
+                getApplicationContext(),
+                widgetId,
+                widthDp,
+                heightDp);
     }
 
     private static final class Factory
             implements RemoteViewsService.RemoteViewsFactory {
         private final Context context;
         private final int widgetId;
+        private final float widgetWidthDp;
+        private final float widgetHeightDp;
         private final ArrayList<MediaWidgetPrefs.Item> items =
                 new ArrayList<>();
 
@@ -42,9 +52,15 @@ public final class MediaWidgetRemoteViewsService
         private float nameSize;
         private float metaSize;
 
-        Factory(Context context, int widgetId) {
+        Factory(
+                Context context,
+                int widgetId,
+                float widgetWidthDp,
+                float widgetHeightDp) {
             this.context = context;
             this.widgetId = widgetId;
+            this.widgetWidthDp = Math.max(120f, widgetWidthDp);
+            this.widgetHeightDp = Math.max(120f, widgetHeightDp);
         }
 
         @Override public void onCreate() {
@@ -379,7 +395,21 @@ public final class MediaWidgetRemoteViewsService
                 int viewId,
                 MediaWidgetPrefs.Item item,
                 boolean fullImage) {
-            Bitmap preview = loadCachedPreview(item);
+            Bitmap preview = null;
+
+            // Real images are decoded from the original persisted URI at a
+            // resolution derived from the current widget size. The old cache
+            // is only 480x320, which destroys portrait-image detail and then
+            // gets visibly upscaled when the widget grows.
+            if (fullImage
+                    && normalizedMime(item.mime).startsWith("image/")) {
+                preview = loadSourceImageForWidget(item);
+            }
+
+            if (preview == null) {
+                preview = loadCachedPreview(item);
+            }
+
             if (preview != null) {
                 row.setImageViewBitmap(
                         viewId,
@@ -396,6 +426,145 @@ public final class MediaWidgetRemoteViewsService
                         "setColorFilter",
                         secondary);
             }
+        }
+
+        private Bitmap loadSourceImageForWidget(
+                MediaWidgetPrefs.Item item) {
+            if (item == null
+                    || item.uri == null
+                    || item.uri.isEmpty()) {
+                return null;
+            }
+
+            try {
+                Uri uri = Uri.parse(item.uri);
+                float density = context.getResources()
+                        .getDisplayMetrics()
+                        .density;
+
+                int targetWidth = Math.round(
+                        Math.min(
+                                1000f,
+                                Math.max(
+                                        320f,
+                                        widgetWidthDp * density)));
+                int targetHeight = Math.round(
+                        Math.min(
+                                1500f,
+                                Math.max(
+                                        320f,
+                                        widgetHeightDp * density)));
+
+                // Keep RemoteViews bitmap memory bounded while still allowing
+                // substantially more detail than the old fixed 480x320 cache.
+                final float maxPixels = 720_000f;
+                float pixels = (float) targetWidth * targetHeight;
+                if (pixels > maxPixels) {
+                    float factor = (float) Math.sqrt(
+                            maxPixels / pixels);
+                    targetWidth = Math.max(
+                            1,
+                            Math.round(targetWidth * factor));
+                    targetHeight = Math.max(
+                            1,
+                            Math.round(targetHeight * factor));
+                }
+
+                return decodeSourceImage(
+                        uri,
+                        targetWidth,
+                        targetHeight);
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
+
+        private Bitmap decodeSourceImage(
+                Uri uri,
+                int targetWidth,
+                int targetHeight) {
+            try {
+                BitmapFactory.Options bounds =
+                        new BitmapFactory.Options();
+                bounds.inJustDecodeBounds = true;
+
+                try (InputStream first = context
+                        .getContentResolver()
+                        .openInputStream(uri)) {
+                    if (first == null) return null;
+                    BitmapFactory.decodeStream(
+                            first,
+                            null,
+                            bounds);
+                }
+
+                if (bounds.outWidth <= 0
+                        || bounds.outHeight <= 0) {
+                    return null;
+                }
+
+                BitmapFactory.Options options =
+                        new BitmapFactory.Options();
+                options.inSampleSize = sourceSampleSize(
+                        bounds.outWidth,
+                        bounds.outHeight,
+                        targetWidth,
+                        targetHeight);
+
+                Bitmap decoded;
+                try (InputStream second = context
+                        .getContentResolver()
+                        .openInputStream(uri)) {
+                    if (second == null) return null;
+                    decoded = BitmapFactory.decodeStream(
+                            second,
+                            null,
+                            options);
+                }
+
+                return scaleSourceToFit(
+                        decoded,
+                        targetWidth,
+                        targetHeight);
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
+
+        private int sourceSampleSize(
+                int width,
+                int height,
+                int targetWidth,
+                int targetHeight) {
+            int sample = 1;
+            while (width / (sample * 2) >= targetWidth
+                    && height / (sample * 2) >= targetHeight) {
+                sample *= 2;
+            }
+            return Math.max(1, sample);
+        }
+
+        private Bitmap scaleSourceToFit(
+                Bitmap source,
+                int targetWidth,
+                int targetHeight) {
+            if (source == null) return null;
+            int width = source.getWidth();
+            int height = source.getHeight();
+            if (width <= 0 || height <= 0) return source;
+
+            float ratio = Math.min(
+                    1f,
+                    Math.min(
+                            (float) targetWidth / width,
+                            (float) targetHeight / height));
+            if (ratio >= 0.995f) return source;
+
+            return Bitmap.createScaledBitmap(
+                    source,
+                    Math.max(1, Math.round(width * ratio)),
+                    Math.max(1, Math.round(height * ratio)),
+                    true);
         }
 
         private void styleControlButton(
