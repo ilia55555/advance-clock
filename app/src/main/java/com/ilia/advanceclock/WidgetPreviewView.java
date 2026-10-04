@@ -16,6 +16,10 @@ final class WidgetPreviewView extends View {
     private boolean showDetails = true;
     private int itemCount = 3;
     private float worldTextScale = 1f;
+    private float worldNameScale = 1f;
+    private float worldDateScale = 1f;
+    private float worldTopGapDp = 1f;
+    private float worldBottomGapDp = 1f;
 
     WidgetPreviewView(Context context) {
         super(context);
@@ -35,9 +39,31 @@ final class WidgetPreviewView extends View {
     }
 
     void setWorldTextSize(int preset) {
-        float[] factors = {0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f};
-        worldTextScale = factors[Math.max(0, Math.min(factors.length - 1, preset))];
+        worldTextScale = worldFactor(preset);
         invalidate();
+    }
+
+    void setWorldNameTextSize(int preset) {
+        worldNameScale = worldFactor(preset);
+        invalidate();
+    }
+
+    void setWorldDateTextSize(int preset) {
+        worldDateScale = worldFactor(preset);
+        invalidate();
+    }
+
+    void setWorldGaps(int topPreset, int bottomPreset) {
+        float[] gaps = {0f, 1f, 2f, 4f, 6f};
+        worldTopGapDp = gaps[Math.max(0, Math.min(gaps.length - 1, topPreset))];
+        worldBottomGapDp = gaps[
+                Math.max(0, Math.min(gaps.length - 1, bottomPreset))];
+        invalidate();
+    }
+
+    private float worldFactor(int preset) {
+        float[] factors = {0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f};
+        return factors[Math.max(0, Math.min(factors.length - 1, preset))];
     }
 
     @Override protected void onDraw(Canvas canvas) {
@@ -64,12 +90,23 @@ final class WidgetPreviewView extends View {
         float columnWidth = (getWidth() - 20 * d) / columns;
         for (int i = 0; i < columns; i++) {
             float center = 10 * d + columnWidth * i + columnWidth / 2f;
-            text(canvas, cities[i], center, 37 * d, 14 * d * worldTextScale,
+            float timeSize = 28 * d * worldTextScale;
+            float nameSize = 14 * d * worldNameScale;
+            float dateSize = 12 * d * worldDateScale;
+            float timeBaseline = 76 * d;
+            float nameBaseline = timeBaseline
+                    - timeSize * 0.86f
+                    - worldTopGapDp * d;
+            float dateBaseline = timeBaseline
+                    + dateSize * 1.12f
+                    + worldBottomGapDp * d;
+
+            text(canvas, cities[i], center, nameBaseline, nameSize,
                     textColor, Paint.Align.CENTER, false);
-            text(canvas, times[i], center, 78 * d, 28 * d * worldTextScale,
+            text(canvas, times[i], center, timeBaseline, timeSize,
                     timeColor, Paint.Align.CENTER, true);
-            text(canvas, AppString.get(R.string.preview_sample_date), center, 103 * d,
-                    12 * d * worldTextScale,
+            text(canvas, AppString.get(R.string.preview_sample_date), center,
+                    dateBaseline, dateSize,
                     textColor, Paint.Align.CENTER, false);
         }
     }
