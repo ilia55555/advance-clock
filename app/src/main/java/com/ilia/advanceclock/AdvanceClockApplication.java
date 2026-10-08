@@ -26,6 +26,7 @@ public final class AdvanceClockApplication extends Application {
         super.onCreate();
         AppSettings.applyLanguage(this);
         AppString.init(this);
+        CalendarUtils.setHijriReference(AppSettings.hijriReference(this));
         PrayerTimeZoneRepair.repairIfNeeded(this);
         MainNoteTabEnhancer.install(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

@@ -79,6 +79,17 @@ public final class SettingsActivity extends Activity {
         calendar.setSelection(AppSettings.defaultCalendar(this));
         root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        root.addView(label(getString(R.string.hijri_reference_label)));
+        Spinner hijriReference = spinner(new String[]{
+                getString(R.string.hijri_reference_iran),
+                getString(R.string.hijri_reference_umalqura)
+        });
+        hijriReference.setSelection(AppSettings.hijriReference(this));
+        root.addView(hijriReference, new LinearLayout.LayoutParams(-1, dp(54)));
+        TextView lunarCoverage = label(getString(R.string.hijri_reference_coverage));
+        lunarCoverage.setTextSize(13);
+        root.addView(lunarCoverage);
+
         root.addView(label(AppString.get(R.string.runtime_text_0153)));
         LinearLayout eventsCard = settingsCard();
 
@@ -181,6 +192,12 @@ public final class SettingsActivity extends Activity {
         AppSettings.playFullscreenEnter(this);
 
         // Every control below writes its setting immediately. There is no deferred Save step.
+        watch(hijriReference, position -> {
+            if (AppSettings.hijriReference(this) == position) return;
+            AppSettings.setHijriReference(this, position);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
         watch(palette, position -> {
             if (AppSettings.palette(this) == position) return;
             AppSettings.setPalette(this, position);

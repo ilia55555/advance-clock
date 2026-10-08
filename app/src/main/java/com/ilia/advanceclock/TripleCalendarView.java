@@ -1,6 +1,9 @@
 package com.ilia.advanceclock;
 
 import android.content.Context;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -67,8 +70,10 @@ public final class TripleCalendarView extends View {
     private int cachedDisplayMonth = -1;
     private int cachedLeading;
     private int cachedRowCount = 5;
-    private String cachedFooterOne = "";
-    private String cachedFooterTwo = "";
+    private String cachedConfiguration = "";
+    private final BroadcastReceiver dateChanges = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) { refreshCalendar(); }
+    };
 
     public TripleCalendarView(Context context) { this(context, null); }
     public TripleCalendarView(Context context, AttributeSet attrs) { this(context, attrs, 0); }
@@ -90,6 +95,31 @@ public final class TripleCalendarView extends View {
     public void setOnDateSelectedListener(OnDateSelectedListener l) { dateListener = l; }
     public void setOnMonthYearClickListener(OnMonthYearClickListener l) { monthYearListener = l; }
     public int getCalendarType() { return calendarType; }
+
+    public void refreshCalendar() {
+        rebuildCalendarCache();
+        requestLayout();
+        invalidate();
+    }
+
+    @Override protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            getContext().registerReceiver(dateChanges, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            getContext().registerReceiver(dateChanges, filter);
+        }
+        refreshCalendar();
+    }
+
+    @Override protected void onDetachedFromWindow() {
+        getContext().unregisterReceiver(dateChanges);
+        super.onDetachedFromWindow();
+    }
 
     public void setCalendarType(int type) {
         calendarType = Math.max(0, Math.min(2, type));
@@ -345,13 +375,17 @@ public final class TripleCalendarView extends View {
 
     private void drawFooter(Canvas c) {
         ensureCalendarCache();
+        android.icu.util.Calendar selected = CalendarUtils.fromMillis(calendarType, selectedMillis);
+        long footerMillis = selected.get(android.icu.util.Calendar.YEAR) == displayYear
+                && selected.get(android.icu.util.Calendar.MONTH) == displayMonth
+                ? selectedMillis : first().getTimeInMillis();
         float shift =
                 Math.max(0, cachedRowCount - 5)
                         * EXTRA_ROW_H;
 
         centered(
                 c,
-                cachedFooterOne,
+                CalendarUtils.formatDate(footerMillis, CalendarUtils.otherTypeOne(calendarType)),
                 340,
                 620 + shift,
                 20,
@@ -373,7 +407,7 @@ public final class TripleCalendarView extends View {
                 stroke);
         centered(
                 c,
-                cachedFooterTwo,
+                CalendarUtils.formatDate(footerMillis, CalendarUtils.otherTypeTwo(calendarType)),
                 340,
                 662 + shift,
                 16,
@@ -381,21 +415,19 @@ public final class TripleCalendarView extends View {
                 regular);
     }
 
-    private String rangeFor(int type, long start, long end) {
-        android.icu.util.Calendar a = CalendarUtils.fromMillis(type, start);
-        android.icu.util.Calendar b = CalendarUtils.fromMillis(type, end);
-        String am = CalendarUtils.monthName(type, a.get(android.icu.util.Calendar.MONTH));
-        String bm = CalendarUtils.monthName(type, b.get(android.icu.util.Calendar.MONTH));
-        String y = type == CalendarUtils.GREGORIAN
-                ? String.valueOf(b.get(android.icu.util.Calendar.YEAR))
-                : CalendarUtils.fa(b.get(android.icu.util.Calendar.YEAR));
-        return am.equals(bm) ? am + " " + y : am + " - " + bm + " " + y;
+    private String configurationKey() {
+        return java.util.TimeZone.getDefault().getID() + "|" + AppString.locale().toLanguageTag()
+                + "|" + CalendarUtils.hijriReference()
+                + "|" + AppSettings.additionalCalendarEventsEnabled(getContext(), CalendarUtils.PERSIAN)
+                + "|" + AppSettings.additionalCalendarEventsEnabled(getContext(), CalendarUtils.HIJRI)
+                + "|" + AppSettings.additionalCalendarEventsEnabled(getContext(), CalendarUtils.GREGORIAN);
     }
 
     private void ensureCalendarCache() {
         if (cachedCalendarType != calendarType
                 || cachedDisplayYear != displayYear
-                || cachedDisplayMonth != displayMonth) {
+                || cachedDisplayMonth != displayMonth
+                || !cachedConfiguration.equals(configurationKey())) {
             rebuildCalendarCache();
         }
     }
@@ -464,30 +496,10 @@ public final class TripleCalendarView extends View {
                             holiday);
         }
 
-        android.icu.util.Calendar last =
-                CalendarUtils.create(calendarType);
-        last.clear();
-        last.set(
-                displayYear,
-                displayMonth,
-                days,
-                12,
-                0,
-                0);
-
         cachedDays = data;
         cachedLeading = leading;
         cachedRowCount = rows;
-        cachedFooterOne =
-                rangeFor(
-                        other1,
-                        first.getTimeInMillis(),
-                        last.getTimeInMillis());
-        cachedFooterTwo =
-                rangeFor(
-                        other2,
-                        first.getTimeInMillis(),
-                        last.getTimeInMillis());
+        cachedConfiguration = configurationKey();
         cachedCalendarType = calendarType;
         cachedDisplayYear = displayYear;
         cachedDisplayMonth = displayMonth;
@@ -499,6 +511,9 @@ public final class TripleCalendarView extends View {
         paint.setColor(color);
         paint.setTextSize(size);
         paint.setTypeface(tf);
+        // Full day/month/year labels must stay inside the calendar on narrow screens.
+        float width = paint.measureText(text);
+        if (width > 560f) paint.setTextSize(size * 560f / width);
         paint.setTextAlign(Paint.Align.CENTER);
         Paint.FontMetrics fm = paint.getFontMetrics();
         c.drawText(text, cx, cy - (fm.ascent + fm.descent) / 2f, paint);
@@ -626,6 +641,8 @@ public final class TripleCalendarView extends View {
             m = 0;
             y++;
         }
+        if (y < CalendarUtils.minimumYear(calendarType)
+                || y > CalendarUtils.maximumYear(calendarType)) return;
         displayMonth = m;
         displayYear = y;
         rebuildCalendarCache();

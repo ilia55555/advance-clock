@@ -1130,4 +1130,30 @@ Lock screen</string>
     <string name="world_clock_widget_gap_3">Tight</string>
     <string name="world_clock_widget_gap_4">Normal</string>
     <string name="world_clock_widget_gap_5">Wide</string>
+
+    <!-- Offline calendar reference and recurring lunar occasions. -->
+    <string name="hijri_reference_label">Lunar calendar reference</string>
+    <string name="hijri_reference_iran">Iran</string>
+    <string name="hijri_reference_umalqura">Saudi Arabia (Umm al-Qura)</string>
+    <string name="hijri_reference_coverage">Works offline from 1900 to 2170. Iran reference dates cover through 20 March 2027; later lunar dates use the bundled Umm al-Qura calculation. Future moon-sighting announcements may differ.</string>
+    <string name="hijri_date_reference">Iran reference lunar date</string>
+    <string name="hijri_date_calculated">Calculated lunar date (Umm al-Qura)</string>
+    <string name="lunar_event_101">Birth of Imam Hasan</string>
+    <string name="lunar_event_102">Birth of Imam Hussein</string>
+    <string name="lunar_event_103">Birth of Imam Sajjad</string>
+    <string name="lunar_event_104">Martyrdom of Imam Sajjad (one account)</string>
+    <string name="lunar_event_105">Birth of Imam Baqir</string>
+    <string name="lunar_event_106">Martyrdom of Imam Baqir</string>
+    <string name="lunar_event_107">Birth of Imam Kazim (20 Dhu al-Hijjah account)</string>
+    <string name="lunar_event_108">Martyrdom of Imam Kazim</string>
+    <string name="lunar_event_109">Birth of Imam Reza</string>
+    <string name="lunar_event_110">Birth of Imam Jawad</string>
+    <string name="lunar_event_111">Martyrdom of Imam Jawad</string>
+    <string name="lunar_event_112">Birth of Imam Hadi</string>
+    <string name="lunar_event_113">Martyrdom of Imam Hadi</string>
+    <string name="lunar_event_114">Birth of Imam Hasan Askari</string>
+    <string name="lunar_event_115">Birth of Fatima</string>
+    <string name="lunar_event_116">Laylat al-Qadr (19 Ramadan)</string>
+    <string name="lunar_event_117">Laylat al-Qadr (23 Ramadan)</string>
+    <string name="hijri_calculated_short">(calculated)</string>
 </resources>

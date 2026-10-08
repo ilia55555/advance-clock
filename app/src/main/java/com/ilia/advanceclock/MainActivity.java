@@ -52,9 +52,18 @@ public final class MainActivity extends Activity {
     private final Calendar quickNoteDue = Calendar.getInstance();
 
     private final Handler headerHandler = new Handler(Looper.getMainLooper());
+    private final android.content.BroadcastReceiver calendarTimeChanges = new android.content.BroadcastReceiver() {
+        @Override public void onReceive(android.content.Context context, Intent intent) {
+            updateHeaderClock();
+            applyPrayerTimesUi();
+            applyCalendarEventsUi();
+        }
+    };
     private final Runnable headerTicker = new Runnable() {
         @Override public void run() {
             updateHeaderClock();
+            clockCalendar.invalidate();
+            noteCalendar.invalidate();
             if ("clock".equals(currentTab)) {
                 applyPrayerTimesUi();
                 if (alarmList != null) {
@@ -668,12 +677,13 @@ public final class MainActivity extends Activity {
                 this, primaryType, CalendarUtils.GREGORIAN);
 
         StringBuilder text = new StringBuilder();
+        java.util.Set<String> seenEvents = new java.util.HashSet<>();
         appendEventSource(
-                text, millis, CalendarUtils.PERSIAN, showPersian);
+                text, seenEvents, millis, CalendarUtils.PERSIAN, showPersian);
         appendEventSource(
-                text, millis, CalendarUtils.HIJRI, showHijri);
+                text, seenEvents, millis, CalendarUtils.HIJRI, showHijri);
         appendEventSource(
-                text, millis, CalendarUtils.GREGORIAN, showGregorian);
+                text, seenEvents, millis, CalendarUtils.GREGORIAN, showGregorian);
 
         if (CalendarEventRepository.isWeekend(millis, primaryType)) {
             if (text.length() > 0) text.append("\n");
@@ -689,6 +699,7 @@ public final class MainActivity extends Activity {
 
     private void appendEventSource(
             StringBuilder out,
+            java.util.Set<String> seenEvents,
             long millis,
             int sourceType,
             boolean enabled) {
@@ -697,6 +708,7 @@ public final class MainActivity extends Activity {
         java.util.List<CalendarEventRepository.Event> events =
                 CalendarEventRepository.eventsFor(this, millis, sourceType);
         for (CalendarEventRepository.Event event : events) {
+            if (!seenEvents.add(event.title)) continue;
             if (out.length() > 0) out.append("\n");
             out.append(event.title);
         }
@@ -1128,6 +1140,17 @@ public final class MainActivity extends Activity {
         stopwatchController.onResume();
         timerController.onResume();
         worldController.onResume();
+        clockCalendar.refreshCalendar();
+        noteCalendar.refreshCalendar();
+        android.content.IntentFilter calendarChanges = new android.content.IntentFilter();
+        calendarChanges.addAction(Intent.ACTION_DATE_CHANGED);
+        calendarChanges.addAction(Intent.ACTION_TIME_CHANGED);
+        calendarChanges.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(calendarTimeChanges, calendarChanges, RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(calendarTimeChanges, calendarChanges);
+        }
         applyTabOrder();
         applyTabVisibility();
         updateHeaderClock();
@@ -1150,6 +1173,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        unregisterReceiver(calendarTimeChanges);
         headerHandler.removeCallbacks(headerTicker);
         stopwatchController.onPause();
         timerController.onPause();

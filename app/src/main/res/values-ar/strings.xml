@@ -1148,4 +1148,30 @@
     <string name="world_clock_widget_gap_3">ضيق</string>
     <string name="world_clock_widget_gap_4">عادي</string>
     <string name="world_clock_widget_gap_5">واسع</string>
+
+    <!-- Offline calendar reference and recurring lunar occasions. -->
+    <string name="hijri_reference_label">مرجع التقويم الهجري</string>
+    <string name="hijri_reference_iran">إيران</string>
+    <string name="hijri_reference_umalqura">السعودية (أم القرى)</string>
+    <string name="hijri_reference_coverage">يعمل دون اتصال من 1900 إلى 2170. تغطي تواريخ المرجع الإيراني حتى 20 مارس 2027؛ وتعتمد التواريخ اللاحقة على حساب أم القرى المضمّن. قد تختلف إعلانات رؤية الهلال المستقبلية.</string>
+    <string name="hijri_date_reference">التاريخ الهجري وفق المرجع الإيراني</string>
+    <string name="hijri_date_calculated">التاريخ الهجري المحسوب (أم القرى)</string>
+    <string name="lunar_event_101">ولادة الإمام الحسن المجتبى (ع)</string>
+    <string name="lunar_event_102">ولادة الإمام الحسين (ع)</string>
+    <string name="lunar_event_103">ولادة الإمام زين العابدين (ع)</string>
+    <string name="lunar_event_104">استشهاد الإمام زين العابدين (ع) بحسب رواية</string>
+    <string name="lunar_event_105">ولادة الإمام محمد الباقر (ع)</string>
+    <string name="lunar_event_106">استشهاد الإمام محمد الباقر (ع)</string>
+    <string name="lunar_event_107">ولادة الإمام موسى الكاظم (ع) بحسب رواية 20 ذي الحجة</string>
+    <string name="lunar_event_108">استشهاد الإمام موسى الكاظم (ع)</string>
+    <string name="lunar_event_109">ولادة الإمام الرضا (ع)</string>
+    <string name="lunar_event_110">ولادة الإمام محمد الجواد (ع)</string>
+    <string name="lunar_event_111">استشهاد الإمام محمد الجواد (ع)</string>
+    <string name="lunar_event_112">ولادة الإمام علي الهادي (ع)</string>
+    <string name="lunar_event_113">استشهاد الإمام علي الهادي (ع)</string>
+    <string name="lunar_event_114">ولادة الإمام الحسن العسكري (ع)</string>
+    <string name="lunar_event_115">ولادة السيدة فاطمة الزهراء (س)</string>
+    <string name="lunar_event_116">ليلة القدر (19 رمضان)</string>
+    <string name="lunar_event_117">ليلة القدر (23 رمضان)</string>
+    <string name="hijri_calculated_short">(محسوب)</string>
 </resources>

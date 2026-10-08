@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class CalendarEventRepository {
-    public static final String DATASET_VERSION = "2026-09-27";
-    public static final String IRAN_SOURCE = AppString.get(R.string.calendar_event_text_001);
-    public static final String INTERNATIONAL_SOURCE = AppString.get(R.string.calendar_event_text_002);
-    public static final String ARAB_SOURCE = AppString.get(R.string.calendar_event_text_003);
-    public static final int REVIEWED_FROM_GREGORIAN_YEAR = 2026;
-    public static final int REVIEWED_THROUGH_GREGORIAN_YEAR = 2026;
+    public static final String DATASET_VERSION = "2026-10-08-lunar-rules";
+    public static final int SUPPORTED_FROM_GREGORIAN_YEAR = 1900;
+    public static final int SUPPORTED_THROUGH_GREGORIAN_YEAR = 2170;
     public static final class Event {
         public final String title;
         public final boolean holiday;
@@ -115,32 +112,26 @@ public final class CalendarEventRepository {
             boolean persianEnabled,
             boolean hijriEnabled,
             boolean gregorianEnabled) {
-        int year = CalendarUtils.fromMillis(CalendarUtils.GREGORIAN, millis)
-                .get(android.icu.util.Calendar.YEAR);
-        String base = AppString.get(R.string.calendar_event_text_010) + DATASET_VERSION;
-        if (year < REVIEWED_FROM_GREGORIAN_YEAR
-                || year > REVIEWED_THROUGH_GREGORIAN_YEAR) {
-            return base + AppString.get(R.string.calendar_event_text_011);
+        if (CalendarUtils.hijriReference() == CalendarUtils.HIJRI_UMALQURA) {
+            return AppString.get(R.string.hijri_reference_umalqura);
         }
-        ArrayList<String> sources = new ArrayList<>();
-        if (persianEnabled) sources.add(IRAN_SOURCE);
-        if (hijriEnabled) sources.add(ARAB_SOURCE);
-        if (gregorianEnabled) sources.add(INTERNATIONAL_SOURCE);
-        return base + AppString.get(R.string.calendar_event_text_012) + android.text.TextUtils.join(" / ", sources);
+        return AppString.get(CalendarUtils.hasIranReference(millis)
+                ? R.string.hijri_date_reference : R.string.hijri_date_calculated);
     }
 
     private static List<Event> attachMetadata(List<Event> events, int calendarType) {
-        String source = calendarType == CalendarUtils.PERSIAN
-                ? IRAN_SOURCE
-                : calendarType == CalendarUtils.HIJRI ? ARAB_SOURCE : INTERNATIONAL_SOURCE;
+        String source = AppString.get(calendarType == CalendarUtils.PERSIAN
+                ? R.string.calendar_event_text_001
+                : calendarType == CalendarUtils.HIJRI
+                ? R.string.calendar_event_text_003 : R.string.calendar_event_text_002);
         ArrayList<Event> enriched = new ArrayList<>(events.size());
         for (Event event : events) {
             enriched.add(new Event(
                     event.title,
                     event.holiday,
                     source,
-                    REVIEWED_FROM_GREGORIAN_YEAR,
-                    REVIEWED_THROUGH_GREGORIAN_YEAR,
+                    SUPPORTED_FROM_GREGORIAN_YEAR,
+                    SUPPORTED_THROUGH_GREGORIAN_YEAR,
                     DATASET_VERSION));
         }
         return enriched;
@@ -199,62 +190,70 @@ public final class CalendarEventRepository {
         add(out, pm, pd, 12, 5, AppString.get(R.string.calendar_event_text_056), false);
         add(out, pm, pd, 12, 15, AppString.get(R.string.calendar_event_text_057), false);
 
-        addOfficialIranianReligiousEvents(out, millis);
-    }
-
-    /**
-     * Religious holidays are keyed by the civil date published for the reviewed
-     * Iranian calendar dataset. They must not be inferred from Umm al-Qura or a
-     * generic ICU Islamic calendar because official Iranian observance can differ.
-     */
-    private static void addOfficialIranianReligiousEvents(List<Event> out, long millis) {
-        android.icu.util.Calendar g = CalendarUtils.fromMillis(
-                CalendarUtils.GREGORIAN, millis);
-        int year = g.get(android.icu.util.Calendar.YEAR);
-        int month = g.get(android.icu.util.Calendar.MONTH) + 1;
-        int day = g.get(android.icu.util.Calendar.DAY_OF_MONTH);
-        if (year != 2026) return;
-
-        add(out, month, day, 1, 3, AppString.get(R.string.calendar_event_text_058), true);
-        add(out, month, day, 1, 17, AppString.get(R.string.calendar_event_text_059), true);
-        add(out, month, day, 2, 4, AppString.get(R.string.calendar_event_text_060), true);
-        add(out, month, day, 3, 11, AppString.get(R.string.calendar_event_text_061), true);
-        add(out, month, day, 3, 21, AppString.get(R.string.calendar_event_text_062), true);
-        add(out, month, day, 3, 22, AppString.get(R.string.calendar_event_text_063), true);
-        add(out, month, day, 4, 15, AppString.get(R.string.calendar_event_text_064), true);
-        add(out, month, day, 5, 27, AppString.get(R.string.calendar_event_text_065), true);
-        add(out, month, day, 6, 5, AppString.get(R.string.calendar_event_text_066), true);
-        add(out, month, day, 6, 25, AppString.get(R.string.calendar_event_text_067), true);
-        add(out, month, day, 6, 26, AppString.get(R.string.calendar_event_text_068), true);
-        add(out, month, day, 8, 5, AppString.get(R.string.calendar_event_text_069), true);
-        add(out, month, day, 8, 13,
-                AppString.get(R.string.calendar_event_text_070), true);
-        add(out, month, day, 8, 15, AppString.get(R.string.calendar_event_text_071), true);
-        add(out, month, day, 8, 22, AppString.get(R.string.calendar_event_text_072), true);
-        add(out, month, day, 8, 31,
-                AppString.get(R.string.calendar_event_text_073), true);
-        add(out, month, day, 11, 14, AppString.get(R.string.calendar_event_text_074), true);
-        add(out, month, day, 12, 23, AppString.get(R.string.calendar_event_text_058), true);
+        addLunarEvents(out, millis, LunarEventRules.IRAN);
     }
 
     private static void addArabHijriEvents(List<Event> out, long millis) {
-        android.icu.util.Calendar h = CalendarUtils.fromMillis(CalendarUtils.HIJRI, millis);
-        int m = h.get(android.icu.util.Calendar.MONTH) + 1;
-        int d = h.get(android.icu.util.Calendar.DAY_OF_MONTH);
+        addLunarEvents(out, millis, LunarEventRules.ARAB);
+    }
 
-        add(out, m, d, 1, 1, AppString.get(R.string.calendar_event_text_075), true);
-        add(out, m, d, 3, 12, AppString.get(R.string.calendar_event_text_076), true);
-        add(out, m, d, 7, 27, AppString.get(R.string.calendar_event_text_077), false);
-        add(out, m, d, 9, 1, AppString.get(R.string.calendar_event_text_078), false);
-        add(out, m, d, 9, 27, AppString.get(R.string.calendar_event_text_079), false);
-        add(out, m, d, 10, 1, AppString.get(R.string.calendar_event_text_080), true);
-        add(out, m, d, 10, 2, AppString.get(R.string.calendar_event_text_081), true);
-        add(out, m, d, 10, 3, AppString.get(R.string.calendar_event_text_081), true);
-        add(out, m, d, 12, 9, AppString.get(R.string.calendar_event_text_082), true);
-        add(out, m, d, 12, 10, AppString.get(R.string.calendar_event_text_083), true);
-        add(out, m, d, 12, 11, AppString.get(R.string.calendar_event_text_084), true);
-        add(out, m, d, 12, 12, AppString.get(R.string.calendar_event_text_084), true);
-        add(out, m, d, 12, 13, AppString.get(R.string.calendar_event_text_084), true);
+    private static void addLunarEvents(List<Event> out, long millis, int source) {
+        android.icu.util.Calendar lunar = CalendarUtils.fromMillis(CalendarUtils.HIJRI, millis);
+        int year = lunar.get(android.icu.util.Calendar.YEAR);
+        int month = lunar.get(android.icu.util.Calendar.MONTH);
+        int day = lunar.get(android.icu.util.Calendar.DAY_OF_MONTH);
+        int length = CalendarUtils.daysInMonth(CalendarUtils.HIJRI, year, month);
+        for (LunarEventRules.Rule rule : LunarEventRules.forDate(month + 1, day, length, source)) {
+            out.add(new Event(AppString.get(lunarTitleId(rule.titleKey)), rule.holiday(source)));
+        }
+    }
+
+    private static int lunarTitleId(int key) {
+        switch (key) {
+            case 58: return R.string.calendar_event_text_058;
+            case 59: return R.string.calendar_event_text_059;
+            case 60: return R.string.calendar_event_text_060;
+            case 61: return R.string.calendar_event_text_061;
+            case 62: return R.string.calendar_event_text_062;
+            case 63: return R.string.calendar_event_text_063;
+            case 64: return R.string.calendar_event_text_064;
+            case 65: return R.string.calendar_event_text_065;
+            case 66: return R.string.calendar_event_text_066;
+            case 67: return R.string.calendar_event_text_067;
+            case 68: return R.string.calendar_event_text_068;
+            case 69: return R.string.calendar_event_text_069;
+            case 70: return R.string.calendar_event_text_070;
+            case 71: return R.string.calendar_event_text_071;
+            case 72: return R.string.calendar_event_text_072;
+            case 73: return R.string.calendar_event_text_073;
+            case 74: return R.string.calendar_event_text_074;
+            case 75: return R.string.calendar_event_text_075;
+            case 76: return R.string.calendar_event_text_076;
+            case 77: return R.string.calendar_event_text_077;
+            case 78: return R.string.calendar_event_text_078;
+            case 79: return R.string.calendar_event_text_079;
+            case 81: return R.string.calendar_event_text_081;
+            case 82: return R.string.calendar_event_text_082;
+            case 84: return R.string.calendar_event_text_084;
+            case 101: return R.string.lunar_event_101;
+            case 102: return R.string.lunar_event_102;
+            case 103: return R.string.lunar_event_103;
+            case 104: return R.string.lunar_event_104;
+            case 105: return R.string.lunar_event_105;
+            case 106: return R.string.lunar_event_106;
+            case 107: return R.string.lunar_event_107;
+            case 108: return R.string.lunar_event_108;
+            case 109: return R.string.lunar_event_109;
+            case 110: return R.string.lunar_event_110;
+            case 111: return R.string.lunar_event_111;
+            case 112: return R.string.lunar_event_112;
+            case 113: return R.string.lunar_event_113;
+            case 114: return R.string.lunar_event_114;
+            case 115: return R.string.lunar_event_115;
+            case 116: return R.string.lunar_event_116;
+            case 117: return R.string.lunar_event_117;
+            default: throw new IllegalArgumentException("Unknown lunar event: " + key);
+        }
     }
 
     private static void addInternationalGregorianEvents(List<Event> out, long millis) {

@@ -796,9 +796,8 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
             for (CalendarEventRepository.Event event : events) {
                 if (event.title != null
                         && !event.title.trim().isEmpty()) {
-                    values.add(
-                            "• "
-                                    + event.title.trim());
+                    String title = "• " + event.title.trim();
+                    if (!values.contains(title)) values.add(title);
                 }
             }
         }
@@ -962,24 +961,12 @@ public final class CalendarWidgetProvider extends AppWidgetProvider {
                         type,
                         visibleMillis);
 
-        calendar.set(
-                android.icu.util.Calendar.DAY_OF_MONTH,
-                1);
-        calendar.add(
-                android.icu.util.Calendar.MONTH,
-                delta);
-        calendar.set(
-                android.icu.util.Calendar.HOUR_OF_DAY,
-                12);
-        calendar.set(
-                android.icu.util.Calendar.MINUTE,
-                0);
-        calendar.set(
-                android.icu.util.Calendar.SECOND,
-                0);
-
-        long value =
-                calendar.getTimeInMillis();
+        int monthIndex = calendar.get(android.icu.util.Calendar.YEAR) * 12
+                + calendar.get(android.icu.util.Calendar.MONTH) + delta;
+        int year = Math.floorDiv(monthIndex, 12);
+        int month = Math.floorMod(monthIndex, 12);
+        if (year < CalendarUtils.minimumYear(type) || year > CalendarUtils.maximumYear(type)) return;
+        long value = CalendarUtils.toMillis(type, year, month, 1, 12, 0);
         CalendarWidgetPrefs.setVisibleMonthMillis(
                 context,
                 widgetId,

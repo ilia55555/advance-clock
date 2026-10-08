@@ -1091,4 +1091,30 @@
     <string name="world_clock_widget_gap_3">کم</string>
     <string name="world_clock_widget_gap_4">متوسط</string>
     <string name="world_clock_widget_gap_5">زیاد</string>
+
+    <!-- Offline calendar reference and recurring lunar occasions. -->
+    <string name="hijri_reference_label">مرجع تقویم قمری</string>
+    <string name="hijri_reference_iran">ایران</string>
+    <string name="hijri_reference_umalqura">عربستان (ام‌القری)</string>
+    <string name="hijri_reference_coverage">کاملاً آفلاین، از ۱۹۰۰ تا ۲۱۷۰ میلادی. تاریخ‌های مرجع ایران تا ۲۹ اسفند ۱۴۰۵ پوشش دارند؛ پس از آن، تاریخ قمری از جدول محاسباتی ام‌القری به دست می‌آید. اعلام رؤیت هلال ممکن است متفاوت باشد.</string>
+    <string name="hijri_date_reference">تاریخ قمری مرجع ایران</string>
+    <string name="hijri_date_calculated">تاریخ قمری محاسباتی (ام‌القری)</string>
+    <string name="lunar_event_101">ولادت امام حسن مجتبی (ع)</string>
+    <string name="lunar_event_102">ولادت امام حسین (ع)</string>
+    <string name="lunar_event_103">ولادت امام زین‌العابدین (ع)</string>
+    <string name="lunar_event_104">شهادت امام زین‌العابدین (ع) به روایتی</string>
+    <string name="lunar_event_105">ولادت امام محمد باقر (ع)</string>
+    <string name="lunar_event_106">شهادت امام محمد باقر (ع)</string>
+    <string name="lunar_event_107">ولادت امام موسی کاظم (ع) به روایت ۲۰ ذی‌الحجه</string>
+    <string name="lunar_event_108">شهادت امام موسی کاظم (ع)</string>
+    <string name="lunar_event_109">ولادت امام رضا (ع)</string>
+    <string name="lunar_event_110">ولادت امام محمد تقی (ع)</string>
+    <string name="lunar_event_111">شهادت امام محمد تقی (ع)</string>
+    <string name="lunar_event_112">ولادت امام علی نقی (ع)</string>
+    <string name="lunar_event_113">شهادت امام علی نقی (ع)</string>
+    <string name="lunar_event_114">ولادت امام حسن عسکری (ع)</string>
+    <string name="lunar_event_115">ولادت حضرت فاطمه زهرا (س) و روز مادر</string>
+    <string name="lunar_event_116">شب قدر (۱۹ رمضان)</string>
+    <string name="lunar_event_117">شب قدر (۲۳ رمضان)</string>
+    <string name="hijri_calculated_short">(محاسباتی)</string>
 </resources>

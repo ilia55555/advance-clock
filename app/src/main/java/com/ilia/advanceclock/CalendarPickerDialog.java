@@ -92,16 +92,10 @@ public final class CalendarPickerDialog {
             android.icu.util.Calendar c = CalendarUtils.fromMillis(calType, currentMillis[0]);
 
             int currentYear = c.get(android.icu.util.Calendar.YEAR);
-            if (calType == CalendarUtils.PERSIAN) {
-                year.setMinValue(1200);
-                year.setMaxValue(1600);
-            } else if (calType == CalendarUtils.HIJRI) {
-                year.setMinValue(1200);
-                year.setMaxValue(1700);
-            } else {
-                year.setMinValue(1900);
-                year.setMaxValue(2200);
-            }
+            // Reset both bounds before switching calendars (their year scales differ).
+            year.setMinValue(1);
+            year.setMaxValue(CalendarUtils.maximumYear(calType));
+            year.setMinValue(CalendarUtils.minimumYear(calType));
             year.setValue(Math.max(year.getMinValue(), Math.min(year.getMaxValue(), currentYear)));
 
             month.setMinValue(0);
@@ -113,10 +107,7 @@ public final class CalendarPickerDialog {
             month.setValue(c.get(android.icu.util.Calendar.MONTH));
 
             if (!monthYearOnly) {
-                android.icu.util.Calendar probe = CalendarUtils.create(calType);
-                probe.clear();
-                probe.set(year.getValue(), month.getValue(), 1);
-                int maxDay = probe.getActualMaximum(android.icu.util.Calendar.DAY_OF_MONTH);
+                int maxDay = CalendarUtils.daysInMonth(calType, year.getValue(), month.getValue());
                 day.setMinValue(1);
                 day.setMaxValue(maxDay);
                 day.setValue(Math.max(1, Math.min(maxDay,
@@ -136,6 +127,7 @@ public final class CalendarPickerDialog {
             if (updating[0]) return;
             int calType = type.getSelectedItemPosition();
             int d = monthYearOnly ? 1 : day.getValue();
+            d = Math.min(d, CalendarUtils.daysInMonth(calType, year.getValue(), month.getValue()));
             Calendar time = Calendar.getInstance();
             time.setTimeInMillis(initialMillis);
             currentMillis[0] = CalendarUtils.toMillis(

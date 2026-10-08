@@ -8,6 +8,9 @@ public final class CalendarUtils {
     public static final int PERSIAN = 0;
     public static final int GREGORIAN = 1;
     public static final int HIJRI = 2;
+    public static final int HIJRI_IRAN = OfflineCalendarMath.IRAN;
+    public static final int HIJRI_UMALQURA = OfflineCalendarMath.UMALQURA;
+    private static volatile int hijriReference = HIJRI_IRAN;
 
     private static final int[] PERSIAN_MONTH_IDS = {
             R.string.runtime_text_0187, R.string.runtime_text_0188,
@@ -43,23 +46,38 @@ public final class CalendarUtils {
     private CalendarUtils() {}
 
     public static android.icu.util.Calendar create(int type) {
-        ULocale locale;
-        switch (type) {
-            case GREGORIAN:
-                locale = new ULocale("en_US@calendar=gregorian");
-                break;
-            case HIJRI:
-                // Use the published Umm al-Qura calendar instead of ICU's
-                // generic tabular Islamic calendar. This is the civil calendar
-                // used for the shared Saudi/Arab occasion source.
-                locale = new ULocale("ar_SA@calendar=islamic-umalqura");
-                break;
-            case PERSIAN:
-            default:
-                locale = new ULocale("fa_IR@calendar=persian");
-                break;
+        if (type == GREGORIAN) {
+            android.icu.util.Calendar calendar = android.icu.util.Calendar.getInstance(
+                    android.icu.util.TimeZone.getTimeZone(java.util.TimeZone.getDefault().getID()),
+                    new ULocale("en_US@calendar=gregorian"));
+            calendar.setLenient(false);
+            return calendar;
         }
-        return android.icu.util.Calendar.getInstance(locale);
+        return new PinnedCalendar(type, hijriReference);
+    }
+
+    public static void setHijriReference(int reference) {
+        hijriReference = reference == HIJRI_UMALQURA ? HIJRI_UMALQURA : HIJRI_IRAN;
+    }
+
+    public static int hijriReference() { return hijriReference; }
+
+    public static int minimumYear(int type) {
+        return OfflineCalendarMath.minimumUiYear(type, hijriReference);
+    }
+
+    public static int maximumYear(int type) {
+        return OfflineCalendarMath.maximumUiYear(type, hijriReference);
+    }
+
+    public static int daysInMonth(int type, int year, int month) {
+        return OfflineCalendarMath.monthLength(type, year, month, hijriReference);
+    }
+
+    public static boolean hasIranReference(long millis) {
+        long day = java.time.Instant.ofEpochMilli(millis)
+                .atZone(java.time.ZoneId.systemDefault()).toLocalDate().toEpochDay();
+        return hijriReference == HIJRI_IRAN && OfflineCalendarMath.hasIranReference(day);
     }
 
     public static android.icu.util.Calendar fromMillis(int type, long millis) {
@@ -69,11 +87,9 @@ public final class CalendarUtils {
     }
 
     public static long toMillis(int type, int year, int month, int day, int hour, int minute) {
-        android.icu.util.Calendar c = create(type);
-        c.clear();
-        c.set(year, month, day, hour, minute, 0);
-        c.set(android.icu.util.Calendar.MILLISECOND, 0);
-        return c.getTimeInMillis();
+        long epochDay = OfflineCalendarMath.toEpochDay(type, year, month, day, hijriReference);
+        return java.time.LocalDate.ofEpochDay(epochDay).atTime(hour, minute)
+                .atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
     public static String calendarName(int type) {
@@ -113,7 +129,12 @@ public final class CalendarUtils {
     private static String formatDate(android.icu.util.Calendar c, int type) {
         String day = fa(c.get(android.icu.util.Calendar.DAY_OF_MONTH));
         String year = fa(c.get(android.icu.util.Calendar.YEAR));
-        return day + " " + monthName(type, c.get(android.icu.util.Calendar.MONTH)) + " " + year;
+        String date = day + " " + monthName(type, c.get(android.icu.util.Calendar.MONTH)) + " " + year;
+        if (type == HIJRI && hijriReference == HIJRI_IRAN
+                && !OfflineCalendarMath.hasIranReference(c.get(android.icu.util.Calendar.JULIAN_DAY) - 2440588L)) {
+            date += " " + AppString.get(R.string.hijri_calculated_short);
+        }
+        return date;
     }
 
     public static String formatNumeric(long millis, int type) {

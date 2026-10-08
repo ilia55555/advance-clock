@@ -111,6 +111,18 @@ public final class AppSettings {
         prefs(context).edit().putInt("default_calendar", value).apply();
     }
 
+    public static int hijriReference(Context context) {
+        return prefs(context).getInt("hijri_reference", CalendarUtils.HIJRI_IRAN)
+                == CalendarUtils.HIJRI_UMALQURA ? CalendarUtils.HIJRI_UMALQURA : CalendarUtils.HIJRI_IRAN;
+    }
+
+    public static void setHijriReference(Context context, int value) {
+        int reference = value == CalendarUtils.HIJRI_UMALQURA
+                ? CalendarUtils.HIJRI_UMALQURA : CalendarUtils.HIJRI_IRAN;
+        prefs(context).edit().putInt("hijri_reference", reference).apply();
+        CalendarUtils.setHijriReference(reference);
+    }
+
     public static boolean showCalendarEvents(Context context) {
         return prefs(context).getBoolean("show_calendar_events", true);
     }

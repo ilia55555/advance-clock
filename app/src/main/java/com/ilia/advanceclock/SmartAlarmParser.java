@@ -619,7 +619,9 @@ public final class SmartAlarmParser {
             year = century + year;
         }
 
-        if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+        if (month < 1 || month > 12 || day < 1 || day > 31
+                || year < CalendarUtils.minimumYear(type)
+                || year > CalendarUtils.maximumYear(type)) return null;
         try {
             long millis = CalendarUtils.toMillis(
                     type, year, month - 1, day, 12, 0);
@@ -681,6 +683,11 @@ public final class SmartAlarmParser {
                     ? explicitYear
                     : now.get(android.icu.util.Calendar.YEAR);
             int day = safeInt(dayMatcher.group(1), -1);
+            if (year < CalendarUtils.minimumYear(CalendarUtils.PERSIAN)
+                    || year > CalendarUtils.maximumYear(CalendarUtils.PERSIAN)
+                    || day < 1 || day > CalendarUtils.daysInMonth(CalendarUtils.PERSIAN, year, month)) {
+                return null;
+            }
             long millis = CalendarUtils.toMillis(
                     CalendarUtils.PERSIAN, year, month, day, 12, 0);
             android.icu.util.Calendar check = CalendarUtils.fromMillis(
@@ -693,6 +700,8 @@ public final class SmartAlarmParser {
             if (explicitYear <= 0
                     && millis < System.currentTimeMillis() - 86_400_000L) {
                 year++;
+                if (year > CalendarUtils.maximumYear(CalendarUtils.PERSIAN)
+                        || day > CalendarUtils.daysInMonth(CalendarUtils.PERSIAN, year, month)) return null;
             }
             return new DateParts(CalendarUtils.PERSIAN, year, month + 1, day);
         }

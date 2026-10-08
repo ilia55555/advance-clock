@@ -50,3 +50,26 @@ android {
 tasks.named('preBuild').configure {
     dependsOn tasks.named('generateLocalizations')
 }
+
+// Exercise the production adapter on JVM ICU without executing Android stub methods.
+// Only the ICU import and class name differ; the adapter logic is generated verbatim.
+def calendarAdapterOutput = layout.buildDirectory.dir('generated/calendarTest')
+def generateJvmCalendarAdapter = tasks.register('generateJvmCalendarAdapter') {
+    def source = file('src/main/java/com/ilia/advanceclock/PinnedCalendar.java')
+    inputs.file(source)
+    outputs.dir(calendarAdapterOutput)
+    doLast {
+        def target = calendarAdapterOutput.get().file('com/ilia/advanceclock/JvmPinnedCalendar.java').asFile
+        target.parentFile.mkdirs()
+        target.text = source.text.replace('android.icu.util.', 'com.ibm.icu.util.')
+                .replace('PinnedCalendar', 'JvmPinnedCalendar')
+    }
+}
+android.sourceSets.test.java.srcDir(calendarAdapterOutput)
+tasks.withType(JavaCompile).configureEach {
+    if (name.contains('UnitTest')) dependsOn(generateJvmCalendarAdapter)
+}
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.ibm.icu:icu4j:78.1'
+}

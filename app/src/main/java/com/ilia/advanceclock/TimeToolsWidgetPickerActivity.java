@@ -252,16 +252,9 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
                             type,
                             initialTarget);
 
-            if (type == CalendarUtils.PERSIAN) {
-                year.setMinValue(1200);
-                year.setMaxValue(1600);
-            } else if (type == CalendarUtils.HIJRI) {
-                year.setMinValue(1200);
-                year.setMaxValue(1700);
-            } else {
-                year.setMinValue(1900);
-                year.setMaxValue(2200);
-            }
+            year.setMinValue(1);
+            year.setMaxValue(CalendarUtils.maximumYear(type));
+            year.setMinValue(CalendarUtils.minimumYear(type));
 
             year.setValue(
                     Math.max(
@@ -375,15 +368,7 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
 
     private void updateDayRange(int preferred) {
         int type = calendarType.getSelectedItemPosition();
-        android.icu.util.Calendar probe =
-                CalendarUtils.create(type);
-        probe.clear();
-        probe.set(
-                year.getValue(),
-                month.getValue(),
-                1);
-        int max = probe.getActualMaximum(
-                android.icu.util.Calendar.DAY_OF_MONTH);
+        int max = CalendarUtils.daysInMonth(type, year.getValue(), month.getValue());
         day.setMinValue(1);
         day.setMaxValue(max);
         day.setValue(
