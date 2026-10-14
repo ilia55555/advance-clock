@@ -28,10 +28,11 @@
         android:theme="@style/Theme.AdvanceClock"
         android:usesCleartextTraffic="false">
 
-        <activity android:name=".SettingsActivity" android:exported="false" />
-        <activity android:name=".PrayerSettingsActivity" android:exported="false" />
+        <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".PrayerSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".CalendarWidgetConfigActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true">
             <intent-filter>
@@ -40,6 +41,7 @@
         </activity>
         <activity
             android:name=".TimeToolsWidgetConfigActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true"
             android:taskAffinity="">
@@ -49,36 +51,40 @@
         </activity>
         <activity
             android:name=".TimeToolsWidgetPickerActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:excludeFromRecents="true"
             android:taskAffinity="" />
-        <activity android:name=".CompassToolActivity" android:exported="false" />
+        <activity android:name=".CompassToolActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".PrayerTimesWidgetConfigActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <activity android:name=".SoundPickerActivity" android:exported="false" />
-        <activity android:name=".PrayerLocationSearchActivity" android:exported="false" />
-        <activity android:name=".SmartAlarmActivity" android:exported="false" />
-        <activity android:name=".StopwatchActivity" android:exported="false" />
-        <activity android:name=".TimerActivity" android:exported="false" />
-        <activity android:name=".NotificationSettingsActivity" android:exported="false" />
-        <activity android:name=".WidgetCenterActivity" android:exported="false" />
-        <activity android:name=".WorldClockWidgetConfigActivity" android:exported="true">
+        <activity android:name=".SoundPickerActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".PrayerLocationSearchActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".SmartAlarmActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".StopwatchActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".TimerActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".NotificationSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".WidgetCenterActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".WorldClockWidgetConfigActivity" android:screenOrientation="portrait" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MediaWidgetViewerActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:excludeFromRecents="true" />
         <activity
             android:name=".MediaWidgetConfigActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -86,16 +92,18 @@
         </activity>
         <activity
             android:name=".WidgetSettingsActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <activity android:name=".AlarmEditorActivity" android:exported="false" />
-        <activity android:name=".NoForgetEditorActivity" android:exported="false" />
+        <activity android:name=".AlarmEditorActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".NoForgetEditorActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".NoteReminderActivity"
+            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTask"
@@ -103,10 +111,12 @@
             android:turnScreenOn="true" />
         <activity
             android:name=".NoForgetQuickAddActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <activity
             android:name=".AlarmRingActivity"
+            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTask"
@@ -115,6 +125,7 @@
 
         <activity
             android:name=".AdhanRingActivity"
+            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTask"
@@ -123,6 +134,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
