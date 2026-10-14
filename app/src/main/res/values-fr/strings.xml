@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Clock Pro</string>
+    <string name="app_name">InfiniTime</string>
     <string name="widget_description">Horloge avancée et alarmes à venir</string>
     <string name="noforget_widget_description">Notes et rappels NoForget</string>
     <string name="media_widget_name">Rappels de fichiers</string>

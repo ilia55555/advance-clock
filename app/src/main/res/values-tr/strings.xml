@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Clock Pro</string>
+    <string name="app_name">InfiniTime</string>
     <string name="widget_description">Gelişmiş saat ve yaklaşan alarmlar</string>
     <string name="noforget_widget_description">NoForget notları ve hatırlatıcıları</string>
     <string name="media_widget_name">Dosya hatırlatıcıları</string>

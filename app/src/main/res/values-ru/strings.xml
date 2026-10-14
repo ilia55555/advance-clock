@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Clock Pro</string>
+    <string name="app_name">InfiniTime</string>
     <string name="widget_description">Расширенные часы и предстоящие будильники</string>
     <string name="noforget_widget_description">Заметки и напоминания NoForget</string>
     <string name="media_widget_name">Напоминания о файлах</string>

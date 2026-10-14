@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Clock Pro</string>
+    <string name="app_name">InfiniTime</string>
     <string name="widget_description">高级时钟和即将响起的闹钟</string>
     <string name="noforget_widget_description">NoForget 笔记和提醒</string>
     <string name="media_widget_name">文件提醒</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Clock Pro</string>
+    <string name="app_name">InfiniTime</string>
     <string name="widget_description">उन्नत घड़ी और आने वाले अलार्म</string>
     <string name="noforget_widget_description">NoForget नोट्स और रिमाइंडर</string>
     <string name="media_widget_name">फ़ाइल रिमाइंडर</string>
