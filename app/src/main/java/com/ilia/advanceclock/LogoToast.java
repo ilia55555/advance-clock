@@ -32,7 +32,7 @@ public final class LogoToast {
         content.setElevation(dp(appContext, 6));
 
         ImageView logo = new ImageView(appContext);
-        logo.setImageResource(R.drawable.infinitime_launcher);
+        logo.setImageDrawable(appContext.getApplicationInfo().loadIcon(appContext.getPackageManager()));
         logo.setScaleType(ImageView.ScaleType.FIT_CENTER);
         LinearLayout.LayoutParams logoParams =
                 new LinearLayout.LayoutParams(dp(appContext, 36), dp(appContext, 36));
