@@ -74,26 +74,19 @@ dependencies {
     testImplementation 'com.ibm.icu:icu4j:78.1'
 }
 
-// Keep the Play Store filename outside res (Android resource names cannot contain '-').
-// Accept the original image in app/ or the repository root; never edit build/generated.
-def launcherIconCandidates = [
-        layout.projectDirectory.file('ic_launcher-playstore.png').asFile,
-        rootProject.layout.projectDirectory.file('ic_launcher-playstore.png').asFile
-]
-// File trees contain only existing files: missing candidates must reach our helpful error,
-// rather than Gradle's input_file_does_not_exist validation.
-def launcherIconInputs = files(
-        fileTree(projectDir) { include 'ic_launcher-playstore.png' },
-        fileTree(rootProject.projectDir) { include 'ic_launcher-playstore.png' }
-)
+// Use the user's original image at app/src/main/infinitime.png.
+// Copy it into generated resources without changing the original file.
+def launcherIconInputs = fileTree(projectDir) {
+    include 'src/main/infinitime.png'
+}
 def launcherIconResources = layout.buildDirectory.dir('generated/res/launcherIcon')
 def generateLauncherIcon = tasks.register('generateLauncherIcon') {
     inputs.files(launcherIconInputs)
     outputs.dir(launcherIconResources)
     doLast {
-        def source = launcherIconCandidates.find { it.isFile() }
-        if (source == null) {
-            throw new GradleException('Launcher image missing. Place ic_launcher-playstore.png in the project root (beside settings.gradle) or in app/, then build again.')
+        def source = file('src/main/infinitime.png')
+        if (!source.isFile()) {
+            throw new GradleException('Launcher image missing: app/src/main/infinitime.png')
         }
         copy {
             from(source)
