@@ -19,6 +19,7 @@ import android.os.VibratorManager;
 public final class NoForgetSoundService extends Service {
     private static final String ACTION_START = "com.ilia.advanceclock.START_NOTE_REMINDER";
     static final String ACTION_STOP = "com.ilia.advanceclock.STOP_NOTE_REMINDER";
+    private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
     private MediaPlayer player;
     private Vibrator vibrator;
 
@@ -45,7 +46,13 @@ public final class NoForgetSoundService extends Service {
         long id = intent.getLongExtra("noteId", -1L);
         NoForgetItem item = new NoForgetStore(this).find(id);
         if (item == null) { stopSelf(); return START_NOT_STICKY; }
+        stopReminder();
         startForeground(NotificationHelper.reminderNotificationId(id), buildNotification(item));
+        ringTimeout.start(this, () -> {
+            NoteReminderActivity.finishIfShowing(id);
+            stopReminder();
+            stopSelf();
+        });
         play(item.soundUri);
         if (item.vibrate) vibrate();
         return START_NOT_STICKY;
@@ -109,6 +116,7 @@ public final class NoForgetSoundService extends Service {
     }
 
     private void stopReminder() {
+        ringTimeout.cancel();
         releasePlayer();
         try { if (vibrator != null) vibrator.cancel(); } catch (Exception ignored) {}
         vibrator = null;

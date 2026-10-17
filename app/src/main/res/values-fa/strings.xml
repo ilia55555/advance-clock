@@ -1117,4 +1117,7 @@
     <string name="lunar_event_116">شب قدر (۱۹ رمضان)</string>
     <string name="lunar_event_117">شب قدر (۲۳ رمضان)</string>
     <string name="hijri_calculated_short">(محاسباتی)</string>
+    <string name="alarm_auto_stop_title">قطع خودکار هشدارها</string>
+    <string name="alarm_auto_stop_minutes">%1$d دقیقه</string>
+    <string name="alarm_auto_stop_never">قطع نشود</string>
 </resources>

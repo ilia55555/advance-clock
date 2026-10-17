@@ -873,4 +873,7 @@ Pantalla de bloqueo</string>
     <string name="world_clock_widget_gap_3">Estrecho</string>
     <string name="world_clock_widget_gap_4">Normal</string>
     <string name="world_clock_widget_gap_5">Amplio</string>
+    <string name="alarm_auto_stop_title">Detención automática de alarmas</string>
+    <string name="alarm_auto_stop_minutes">%1$d minutos</string>
+    <string name="alarm_auto_stop_never">No detener</string>
 </resources>

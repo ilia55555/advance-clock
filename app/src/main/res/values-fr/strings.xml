@@ -873,4 +873,7 @@ Sans rappel</string>
     <string name="world_clock_widget_gap_3">Serré</string>
     <string name="world_clock_widget_gap_4">Normal</string>
     <string name="world_clock_widget_gap_5">Large</string>
+    <string name="alarm_auto_stop_title">Arrêt automatique des alarmes</string>
+    <string name="alarm_auto_stop_minutes">%1$d minutes</string>
+    <string name="alarm_auto_stop_never">Ne pas arrêter</string>
 </resources>

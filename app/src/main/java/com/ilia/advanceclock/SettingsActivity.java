@@ -187,6 +187,21 @@ public final class SettingsActivity extends Activity {
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
         root.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        root.addView(label(getString(R.string.alarm_auto_stop_title)));
+        String[] ringOptions = new String[AppSettings.ALARM_RING_MINUTES.length];
+        int ringSelection = 2;
+        for (int i = 0; i < ringOptions.length; i++) {
+            int minutes = AppSettings.ALARM_RING_MINUTES[i];
+            ringOptions[i] = minutes == 0 ? getString(R.string.alarm_auto_stop_never)
+                    : getString(R.string.alarm_auto_stop_minutes, minutes);
+            if (minutes == AppSettings.alarmRingMinutes(this)) ringSelection = i;
+        }
+        Spinner ringDuration = spinner(ringOptions);
+        ringDuration.setSelection(ringSelection);
+        root.addView(ringDuration, new LinearLayout.LayoutParams(-1, dp(54)));
+        watch(ringDuration, position -> AppSettings.setAlarmRingMinutes(
+                this, AppSettings.ALARM_RING_MINUTES[position]));
+
         setContentView(scroll);
         AppSettings.applyFullscreenInsets(scroll);
         AppSettings.playFullscreenEnter(this);

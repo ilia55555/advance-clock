@@ -873,4 +873,7 @@ Tela de bloqueio</string>
     <string name="world_clock_widget_gap_3">Estreito</string>
     <string name="world_clock_widget_gap_4">Normal</string>
     <string name="world_clock_widget_gap_5">Amplo</string>
+    <string name="alarm_auto_stop_title">Parada automática dos alarmes</string>
+    <string name="alarm_auto_stop_minutes">%1$d minutos</string>
+    <string name="alarm_auto_stop_never">Não parar</string>
 </resources>

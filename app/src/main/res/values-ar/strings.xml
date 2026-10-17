@@ -1174,4 +1174,7 @@
     <string name="lunar_event_116">ليلة القدر (19 رمضان)</string>
     <string name="lunar_event_117">ليلة القدر (23 رمضان)</string>
     <string name="hijri_calculated_short">(محسوب)</string>
+    <string name="alarm_auto_stop_title">الإيقاف التلقائي للتنبيهات</string>
+    <string name="alarm_auto_stop_minutes">%1$d دقيقة</string>
+    <string name="alarm_auto_stop_never">عدم الإيقاف</string>
 </resources>

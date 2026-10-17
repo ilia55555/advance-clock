@@ -873,4 +873,7 @@ Sperrbildschirm</string>
     <string name="world_clock_widget_gap_3">Eng</string>
     <string name="world_clock_widget_gap_4">Normal</string>
     <string name="world_clock_widget_gap_5">Weit</string>
+    <string name="alarm_auto_stop_title">Wecker automatisch stoppen</string>
+    <string name="alarm_auto_stop_minutes">%1$d Minuten</string>
+    <string name="alarm_auto_stop_never">Nicht stoppen</string>
 </resources>

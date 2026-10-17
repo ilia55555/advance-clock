@@ -873,4 +873,7 @@
     <string name="world_clock_widget_gap_3">Узкий</string>
     <string name="world_clock_widget_gap_4">Обычный</string>
     <string name="world_clock_widget_gap_5">Широкий</string>
+    <string name="alarm_auto_stop_title">Автоотключение будильника</string>
+    <string name="alarm_auto_stop_minutes">%1$d мин.</string>
+    <string name="alarm_auto_stop_never">Не отключать</string>
 </resources>

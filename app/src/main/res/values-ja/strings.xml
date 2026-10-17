@@ -873,4 +873,7 @@
     <string name="world_clock_widget_gap_3">狭い</string>
     <string name="world_clock_widget_gap_4">標準</string>
     <string name="world_clock_widget_gap_5">広い</string>
+    <string name="alarm_auto_stop_title">アラームの自動停止</string>
+    <string name="alarm_auto_stop_minutes">%1$d 分</string>
+    <string name="alarm_auto_stop_never">停止しない</string>
 </resources>

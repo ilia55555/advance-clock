@@ -26,6 +26,7 @@ public final class AlarmSoundService extends Service {
     public static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_ALARM";
     public static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_ALARM";
 
+    private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
     private MediaPlayer player;
     private Vibrator vibrator;
     private PowerManager.WakeLock wakeLock;
@@ -139,6 +140,11 @@ public final class AlarmSoundService extends Service {
                 NotificationHelper.notificationId(currentAlarmId),
                 buildNotification(currentAlarmId, label, toolKind)
         );
+        ringTimeout.start(this, () -> {
+            AlarmRingActivity.finishIfShowing(currentAlarmId);
+            stopAlarm();
+            stopSelf();
+        });
         acquireWakeLock();
         startSound();
         if (currentVibrate) {
@@ -275,6 +281,7 @@ public final class AlarmSoundService extends Service {
 
     private void acquireWakeLock() {
         try {
+            if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
             PowerManager pm = getSystemService(PowerManager.class);
             if (pm != null) {
                 wakeLock = pm.newWakeLock(
@@ -288,6 +295,7 @@ public final class AlarmSoundService extends Service {
     }
 
     private void stopAlarm() {
+        ringTimeout.cancel();
         stopPlayer();
         stopVibration();
         try {

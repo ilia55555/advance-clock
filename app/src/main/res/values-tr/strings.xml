@@ -873,4 +873,7 @@ Kilit ekranı</string>
     <string name="world_clock_widget_gap_3">Dar</string>
     <string name="world_clock_widget_gap_4">Normal</string>
     <string name="world_clock_widget_gap_5">Geniş</string>
+    <string name="alarm_auto_stop_title">Alarmı otomatik durdur</string>
+    <string name="alarm_auto_stop_minutes">%1$d dakika</string>
+    <string name="alarm_auto_stop_never">Durdurma</string>
 </resources>

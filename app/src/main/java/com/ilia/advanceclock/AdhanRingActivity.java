@@ -28,6 +28,22 @@ public final class AdhanRingActivity
         extends Activity
         implements SensorEventListener {
 
+    private static java.lang.ref.WeakReference<AdhanRingActivity> showing =
+            new java.lang.ref.WeakReference<>(null);
+
+    static void finishIfShowing(int type) {
+        AdhanRingActivity activity = showing.get();
+        if (activity != null && activity.getIntent().getIntExtra(
+                "adhanType", AdhanScheduler.FAJR) == type) {
+            activity.runOnUiThread(activity::finishAndRemoveTask);
+        }
+    }
+
+    @Override protected void onDestroy() {
+        if (showing.get() == this) showing.clear();
+        super.onDestroy();
+    }
+
     private SensorManager sensorManager;
     private Sensor rotationSensor;
     private QiblaAdhanBackgroundView qiblaBackgroundView;
@@ -41,6 +57,7 @@ public final class AdhanRingActivity
     protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         super.onCreate(savedInstanceState);
+        showing = new java.lang.ref.WeakReference<>(this);
 
         if (android.os.Build.VERSION.SDK_INT >= 27) {
             setShowWhenLocked(true);

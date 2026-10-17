@@ -873,4 +873,7 @@
     <string name="world_clock_widget_gap_3">紧凑</string>
     <string name="world_clock_widget_gap_4">正常</string>
     <string name="world_clock_widget_gap_5">宽</string>
+    <string name="alarm_auto_stop_title">闹钟自动停止</string>
+    <string name="alarm_auto_stop_minutes">%1$d 分钟</string>
+    <string name="alarm_auto_stop_never">不停止</string>
 </resources>

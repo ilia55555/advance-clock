@@ -20,11 +20,26 @@ import android.widget.TextView;
 import java.util.List;
 
 public final class NoteReminderActivity extends Activity {
+    private static java.lang.ref.WeakReference<NoteReminderActivity> showing =
+            new java.lang.ref.WeakReference<>(null);
     private long noteId=-1L;
+
+    static void finishIfShowing(long id) {
+        NoteReminderActivity activity = showing.get();
+        if (activity != null && activity.noteId == id) {
+            activity.runOnUiThread(activity::finishAndRemoveTask);
+        }
+    }
+
+    @Override protected void onDestroy() {
+        if (showing.get() == this) showing.clear();
+        super.onDestroy();
+    }
 
     @Override protected void onCreate(Bundle state){
         AppSettings.applyTheme(this);
         super.onCreate(state);
+        showing = new java.lang.ref.WeakReference<>(this);
         if(Build.VERSION.SDK_INT>=27){
             setShowWhenLocked(true);
             setTurnScreenOn(true);

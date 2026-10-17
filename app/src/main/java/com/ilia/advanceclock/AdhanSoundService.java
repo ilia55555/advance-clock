@@ -174,7 +174,9 @@ public final class AdhanSoundService extends Service {
         volume = AppSettings.adhanVolume(this, type) / 100f;
         muted = false;
         stopHandler.removeCallbacks(maximumDuration);
-        stopHandler.postDelayed(maximumDuration, 10 * 60_000L);
+        if (!AppSettings.adhanSound(this, type)) {
+            stopHandler.postDelayed(maximumDuration, 10 * 60_000L);
+        }
         if (AppSettings.adhanSound(this, type)) {
             String selected = AppSettings.adhanSoundUri(this, type);
             Uri audioUri = selected == null || selected.isEmpty() ? null : Uri.parse(selected);
@@ -195,9 +197,14 @@ public final class AdhanSoundService extends Service {
                     player.setLooping(false);
                     player.prepare();
                     applyVolume();
-                    player.start();
+                    player.setWakeMode(this, android.os.PowerManager.PARTIAL_WAKE_LOCK);
                     player.setOnCompletionListener(value -> stopSelf());
-                } catch (Exception ignored) { stopPlayback(); }
+                    player.setOnErrorListener((value, what, extra) -> {
+                        stopSelf();
+                        return true;
+                    });
+                    player.start();
+                } catch (Exception ignored) { stopSelf(); }
             }
         }
         if (AppSettings.adhanVibrate(this, type)) {
@@ -239,6 +246,7 @@ public final class AdhanSoundService extends Service {
     @Override public void onDestroy() {
         stopHandler.removeCallbacks(maximumDuration);
         stopPlayback();
+        AdhanRingActivity.finishIfShowing(type);
         try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
         try { unregisterReceiver(volumeReceiver); } catch (Exception ignored) {}
         stopForeground(STOP_FOREGROUND_REMOVE);

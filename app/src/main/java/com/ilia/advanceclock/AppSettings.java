@@ -998,6 +998,23 @@ public final class AppSettings {
         return false;
     }
 
+    public static final int[] ALARM_RING_MINUTES = {1, 3, 5, 10, 15, 30, 0};
+
+    public static int alarmRingMinutes(Context context) {
+        int value = prefs(context).getInt("alarm_ring_minutes", 5);
+        for (int allowed : ALARM_RING_MINUTES) if (value == allowed) return value;
+        return 5;
+    }
+
+    public static void setAlarmRingMinutes(Context context, int value) {
+        for (int allowed : ALARM_RING_MINUTES) {
+            if (value == allowed) {
+                prefs(context).edit().putInt("alarm_ring_minutes", value).apply();
+                return;
+            }
+        }
+    }
+
     public static int alarmScreenStyle(Context context) {
         return prefs(context).getInt("alarm_screen_style", 0);
     }

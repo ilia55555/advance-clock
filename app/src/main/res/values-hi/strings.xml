@@ -873,4 +873,7 @@
     <string name="world_clock_widget_gap_3">कम</string>
     <string name="world_clock_widget_gap_4">सामान्य</string>
     <string name="world_clock_widget_gap_5">अधिक</string>
+    <string name="alarm_auto_stop_title">अलार्म अपने आप बंद करें</string>
+    <string name="alarm_auto_stop_minutes">%1$d मिनट</string>
+    <string name="alarm_auto_stop_never">बंद न करें</string>
 </resources>
