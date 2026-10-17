@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Temporary system placeholder; replace through Android Studio Image Asset. -->
-    <background android:drawable="@android:color/white" />
-    <foreground android:drawable="@android:drawable/sym_def_app_icon" />
+    <!-- Generated from app/ic_launcher-playstore.png by generateLauncherIcon. -->
+    <background android:drawable="@drawable/ic_launcher_playstore" />
+    <foreground android:drawable="@android:color/transparent" />
 </adaptive-icon>

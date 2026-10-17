@@ -73,3 +73,27 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.ibm.icu:icu4j:78.1'
 }
+
+// Keep the Play Store filename outside res (Android resource names cannot contain '-').
+// Drop the original image into app/ic_launcher-playstore.png; never edit build/generated.
+def launcherIconSource = layout.projectDirectory.file('ic_launcher-playstore.png')
+def launcherIconResources = layout.buildDirectory.dir('generated/res/launcherIcon')
+def generateLauncherIcon = tasks.register('generateLauncherIcon') {
+    inputs.file(launcherIconSource).optional()
+    outputs.dir(launcherIconResources)
+    doLast {
+        def source = launcherIconSource.asFile
+        if (!source.isFile()) {
+            throw new GradleException('Place your launcher image at app/ic_launcher-playstore.png, then build again.')
+        }
+        copy {
+            from(source)
+            into(launcherIconResources.get().dir('drawable-nodpi'))
+            rename { 'ic_launcher_playstore.png' }
+        }
+    }
+}
+android.sourceSets.main.res.srcDir(launcherIconResources)
+tasks.named('preBuild').configure {
+    dependsOn(generateLauncherIcon)
+}
