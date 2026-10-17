@@ -73,29 +73,3 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.ibm.icu:icu4j:78.1'
 }
-
-// Use the user's original image at app/src/main/infinitime.png.
-// Copy it into generated resources without changing the original file.
-def launcherIconInputs = fileTree(projectDir) {
-    include 'src/main/infinitime.png'
-}
-def launcherIconResources = layout.buildDirectory.dir('generated/res/launcherIcon')
-def generateLauncherIcon = tasks.register('generateLauncherIcon') {
-    inputs.files(launcherIconInputs)
-    outputs.dir(launcherIconResources)
-    doLast {
-        def source = file('src/main/infinitime.png')
-        if (!source.isFile()) {
-            throw new GradleException('Launcher image missing: app/src/main/infinitime.png')
-        }
-        copy {
-            from(source)
-            into(launcherIconResources.get().dir('drawable-nodpi'))
-            rename { 'ic_launcher_playstore.png' }
-        }
-    }
-}
-android.sourceSets.main.res.srcDir(launcherIconResources)
-tasks.named('preBuild').configure {
-    dependsOn(generateLauncherIcon)
-}
