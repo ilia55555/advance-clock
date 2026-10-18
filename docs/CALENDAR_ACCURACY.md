@@ -16,8 +16,8 @@ selecting June from 31 May selects 30 June rather than 1 July.
 
 This is a guarantee of a defined calculation and supported range, **not a guarantee
 that a predicted lunar date equals every country's future moon-sighting announcement**.
-Future announcements are not available in advance. The application explicitly
-shows its lunar reference and the end of the Iranian reference coverage in Settings.
+Future announcements are not available in advance. Reference details and coverage
+are documented here; Settings does not display a lunar-reference selector or coverage text.
 The occasion rules describe recurring observances; future statutory holidays may
 also change independently of those rules.
 
@@ -38,8 +38,9 @@ also change independently of those rules.
 For example, 2026-10-08 is **1448/04/26** in Iran mode and **1448/04/27** in
 Umm al-Qura mode. That reference difference must not be fixed with a permanent
 one-day offset, since different months do not always have the same difference.
-Changing the selected reference updates dates and lunar occasions together in
-the application, widgets, and persistent date notification.
+The configured reference is used consistently for dates and lunar occasions in
+the application, widgets, and persistent date notification. Existing reference
+preferences are preserved when updating the application; new installs default to Iran.
 
 Lunar dates here are civil date labels, changing at local midnight. Evening
 observance and the religious sunset boundary are not separate date-picker days.
