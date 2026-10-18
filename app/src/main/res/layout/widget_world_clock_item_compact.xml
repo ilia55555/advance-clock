@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/world_item_root"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="1dp">
@@ -35,6 +35,7 @@
         android:format12Hour="EEE, MMM d"
         android:format24Hour="EEE, MMM d"
         android:gravity="center"
+        android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
         android:textColor="#FFFFFF"

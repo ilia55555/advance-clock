@@ -210,6 +210,7 @@ public final class WorldClockWidgetConfigActivity extends Activity {
                     true,
                     true,
                     3);
+            preview.setWorldWeight(weight.getSelectedItemPosition());
             preview.setWorldTextSize(
                     timeSize.getSelectedItemPosition());
             preview.setWorldNameTextSize(

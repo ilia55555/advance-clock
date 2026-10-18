@@ -3,15 +3,13 @@ package com.ilia.advanceclock;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.os.*;
+import android.util.SizeF;
 import android.view.View;
 import android.widget.RemoteViews;
+import java.util.*;
 
 public final class WorldClockWidgetProvider extends AppWidgetProvider {
     private static final String ACTION_NEXT = "com.ilia.advanceclock.WORLD_WIDGET_NEXT";
@@ -24,204 +22,131 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
     @Override public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
         for (int id : ids) update(context, manager, id, manager.getAppWidgetOptions(id));
     }
-
-    @Override public void onAppWidgetOptionsChanged(
-            Context context, AppWidgetManager manager, int id, Bundle options) {
+    @Override public void onAppWidgetOptionsChanged(Context context, AppWidgetManager manager, int id, Bundle options) {
+        setPage(context, id, 0);
         update(context, manager, id, options);
     }
-
     @Override public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         String action = intent == null ? null : intent.getAction();
-        if (!ACTION_NEXT.equals(action) && !ACTION_PREVIOUS.equals(action)
-                && !ACTION_SHOW_CONTROLS.equals(action)) return;
-        int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+        if (!ACTION_NEXT.equals(action) && !ACTION_PREVIOUS.equals(action) && !ACTION_SHOW_CONTROLS.equals(action)) return;
+        int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         if (id == AppWidgetManager.INVALID_APPWIDGET_ID) return;
+        int capacity = Math.max(1, intent.getIntExtra("capacity", 1));
+        int pages = Math.max(1, (WorldClockStore.zones(context).size() + capacity - 1) / capacity);
         if (!ACTION_SHOW_CONTROLS.equals(action)) {
-            int page = page(context, id) + (ACTION_NEXT.equals(action) ? 1 : -1);
-            int count = WorldClockStore.zones(context).size();
-            int pages = Math.max(1, (count + capacity(context, id) - 1) / capacity(context, id));
-            if (page < 0) page = pages - 1;
-            if (page >= pages) page = 0;
-            setPage(context, id, page);
+            int selected = Math.max(0, Math.min(page(context, id), pages - 1));
+            setPage(context, id, Math.floorMod(selected + (ACTION_NEXT.equals(action) ? 1 : -1), pages));
         }
         showControlsTemporarily(context, id);
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        manager.notifyAppWidgetViewDataChanged(id, R.id.world_widget_grid);
         update(context, manager, id, manager.getAppWidgetOptions(id));
     }
-
     @Override public void onDeleted(Context context, int[] ids) {
         for (int id : ids) {
             WorldClockWidgetPrefs.delete(context, id);
-            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                    .remove("capacity_" + id).remove("page_" + id)
-                    .remove("triple_" + id).remove("columns_" + id)
-                    .remove("compact_" + id).remove("controls_until_" + id)
-                    .remove("item_width_dp_" + id).remove("item_height_dp_" + id).apply();
+            android.content.SharedPreferences.Editor edit = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+            for (String key : new String[]{"capacity_", "page_", "triple_", "columns_", "compact_", "controls_until_", "item_width_dp_", "item_height_dp_"}) edit.remove(key + id);
+            edit.apply();
         }
     }
-
     public static void updateAll(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, WorldClockWidgetProvider.class));
-        for (int id : ids) {
-            manager.notifyAppWidgetViewDataChanged(id, R.id.world_widget_grid);
+        for (int id : manager.getAppWidgetIds(new ComponentName(context, WorldClockWidgetProvider.class)))
             update(context, manager, id, manager.getAppWidgetOptions(id));
+    }
+    private static int page(Context context, int id) { return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt("page_" + id, 0); }
+    private static void setPage(Context context, int id, int page) { context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt("page_" + id, page).apply(); }
+
+    private static void update(Context context, AppWidgetManager manager, int id, Bundle options) {
+        List<String> zones = WorldClockStore.zones(context);
+        if (Build.VERSION.SDK_INT >= 31) {
+            Map<SizeF, RemoteViews> alternatives = new LinkedHashMap<>();
+            for (SizeF size : WidgetSizeUtils.exactSizes(options)) {
+                if (size == null || !Float.isFinite(size.getWidth()) || !Float.isFinite(size.getHeight()) || size.getWidth() <= 0 || size.getHeight() <= 0) continue;
+                alternatives.put(size, create(context, id, size.getWidth(), size.getHeight(), zones));
+                if (alternatives.size() == 16) break;
+            }
+            if (!alternatives.isEmpty()) {
+                // The host chooses its actual size; no guessed orientation/aspect ratio.
+                manager.updateAppWidget(id, new RemoteViews(alternatives));
+                return;
+            }
         }
-    }
-
-    static int capacity(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getInt("capacity_" + id, 1);
-    }
-
-    static int normalizedPage(Context context, int id, int count) {
-        int pages = Math.max(1, (count + capacity(context, id) - 1) / capacity(context, id));
-        int page = page(context, id);
-        if (page >= pages) {
-            page = pages - 1;
-            setPage(context, id, page);
+        int minW = options == null ? 0 : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
+        int minH = options == null ? 0 : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0);
+        int maxW = options == null ? 0 : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, minW);
+        int maxH = options == null ? 0 : options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, minH);
+        if (minW > 0 && minH > 0 && maxW > 0 && maxH > 0) {
+            RemoteViews portrait = create(context, id, minW, maxH, zones);
+            RemoteViews landscape = create(context, id, maxW, minH, zones);
+            manager.updateAppWidget(id, new RemoteViews(landscape, portrait));
+        } else {
+            WidgetSizeUtils.WidgetSize size = WidgetSizeUtils.currentSize(context, options, 5, 2);
+            manager.updateAppWidget(id, create(context, id, size.widthDp, size.heightDp, zones));
         }
-        return page;
+        if (Build.VERSION.SDK_INT < 31) manager.notifyAppWidgetViewDataChanged(id, R.id.world_widget_grid);
     }
 
-    static boolean compact(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getBoolean("compact_" + id, false);
-    }
-
-    static float itemWidthDp(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getFloat("item_width_dp_" + id, 82f);
-    }
-
-    static float itemHeightDp(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getFloat("item_height_dp_" + id, 122f);
-    }
-
-    private static int page(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getInt("page_" + id, 0);
-    }
-
-    private static void setPage(Context context, int id, int page) {
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                .putInt("page_" + id, page).apply();
-    }
-
-    private static void update(
-            Context context, AppWidgetManager manager, int id, Bundle options) {
-        WidgetSizeUtils.WidgetSize size = WidgetSizeUtils.currentSize(context, options, 5, 2);
-        int widthCells = WidgetSizeUtils.dpToCells(size.widthDp);
-        int heightCells = WidgetSizeUtils.dpToCells(size.heightDp);
-        int zoneCount = WorldClockStore.zones(context).size();
-
-        boolean singleColumn = widthCells <= 3;
-        int visualColumns = singleColumn ? 1 : 2;
-
-        // The launcher row count is the contract for what may be visible:
-        // 5x1 -> exactly one complete clock row, 5x2 -> exactly two.
-        // Never send an extra row to GridView, otherwise MIUI can expose a
-        // clipped next row at the bottom.
-        int visibleRows = Math.max(1, heightCells);
-        int capacity = Math.max(
-                1,
-                Math.min(
-                        Math.max(1, zoneCount),
-                        visualColumns * visibleRows));
-
-        float horizontalSpacingDp = 4f;
-        float verticalSpacingDp = 2f;
-        float itemWidthDp = Math.max(
-                40f,
-                (size.widthDp
-                        - (visualColumns - 1) * horizontalSpacingDp)
-                        / visualColumns);
-        float itemHeightDp = Math.max(
-                40f,
-                (size.heightDp
-                        - (visibleRows - 1) * verticalSpacingDp)
-                        / visibleRows);
-
-        // Compactness depends on the height of one actual row, not on total
-        // widget height. This is what lets a 5x2 use two readable rows instead
-        // of two 122dp rows that cannot fit.
-        boolean compact = itemHeightDp < 96f;
-        int pages = Math.max(
-                1,
-                (zoneCount + capacity - 1) / capacity);
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                .putInt("capacity_" + id, capacity)
-                .putInt("columns_" + id, visualColumns)
-                .putBoolean("compact_" + id, compact)
-                .putFloat("item_width_dp_" + id, itemWidthDp)
-                .putFloat("item_height_dp_" + id, itemHeightDp).apply();
-
+    private static RemoteViews create(Context context, int id, float width, float height, List<String> zones) {
+        WorldClockWidgetLayout base = WorldClockWidgetLayout.forSize(width, height, zones.size());
+        int selected = base.normalizePage(page(context, id));
+        WorldClockWidgetLayout layout = base.forPage(selected);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_world_clock);
-        views.setInt(R.id.world_widget_grid, "setNumColumns", visualColumns);
-        views.setInt(R.id.world_widget_root, "setBackgroundResource",
-                WorldClockWidgetPrefs.backgroundResource(context, id));
-        boolean controlsVisible = pages > 1 && controlsVisible(context, id);
-        views.setViewVisibility(R.id.world_widget_controls,
-                controlsVisible ? View.VISIBLE : View.GONE);
-        views.setViewVisibility(R.id.world_widget_scroll_trigger,
-                pages > 1 && !controlsVisible ? View.VISIBLE : View.GONE);
-        Intent service = new Intent(context, WorldClockWidgetService.class)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-        service.setData(Uri.parse(
-                "advanceclock://world-widget/"
-                        + id
-                        + "/"
-                        + capacity
-                        + "/"
-                        + visibleRows
-                        + "/"
-                        + Math.round(itemHeightDp)
-                        + "/"
-                        + (compact ? "compact" : "regular")));
-        views.setRemoteAdapter(R.id.world_widget_grid, service);
-
-        views.setOnClickPendingIntent(R.id.world_widget_previous,
-                action(context, id, ACTION_PREVIOUS, 10_000 + id));
-        views.setOnClickPendingIntent(R.id.world_widget_next,
-                action(context, id, ACTION_NEXT, 20_000 + id));
-        views.setOnClickPendingIntent(R.id.world_widget_scroll_trigger,
-                action(context, id, ACTION_SHOW_CONTROLS, 40_000 + id));
+        views.setInt(R.id.world_widget_grid, "setNumColumns", layout.columns);
+        views.setInt(R.id.world_widget_root, "setBackgroundResource", WorldClockWidgetPrefs.backgroundResource(context, id));
+        boolean controls = base.pages() > 1 && controlsVisible(context, id);
+        views.setViewVisibility(R.id.world_widget_controls, controls ? View.VISIBLE : View.GONE);
+        views.setViewVisibility(R.id.world_widget_scroll_trigger, base.pages() > 1 && !controls ? View.VISIBLE : View.GONE);
+        if (Build.VERSION.SDK_INT >= 31) {
+            RemoteViews.RemoteCollectionItems.Builder items = new RemoteViews.RemoteCollectionItems.Builder().setViewTypeCount(6).setHasStableIds(false);
+            WorldClockWidgetRenderer renderer = new WorldClockWidgetRenderer(context, id, layout);
+            int start = Math.min(zones.size(), selected * base.capacity);
+            for (int i = start; i < Math.min(zones.size(), start + base.capacity); i++) items.addItem(i, renderer.render(zones.get(i)));
+            views.setRemoteAdapter(R.id.world_widget_grid, items.build());
+        } else {
+            Intent service = new Intent(context, WorldClockWidgetService.class)
+                    .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id).putExtra("widthDp", width).putExtra("heightDp", height)
+                    .putExtra("capacity", base.capacity).putExtra("page", selected);
+            // Intent extras do not participate in RemoteViews adapter identity. Include
+            // width, height, page AND text styles in data to invalidate stale host caches.
+            service.setData(new Uri.Builder().scheme("advanceclock").authority("world-widget-v2")
+                    .appendPath(Integer.toString(id)).appendPath(base.geometryKey()).appendPath(Integer.toString(selected))
+                    .appendPath(styleKey(context, id)).build());
+            views.setRemoteAdapter(R.id.world_widget_grid, service);
+        }
+        views.setOnClickPendingIntent(R.id.world_widget_previous, action(context, id, ACTION_PREVIOUS, base));
+        views.setOnClickPendingIntent(R.id.world_widget_next, action(context, id, ACTION_NEXT, base));
+        views.setOnClickPendingIntent(R.id.world_widget_scroll_trigger, action(context, id, ACTION_SHOW_CONTROLS, base));
         Intent open = new Intent(context, MainActivity.class).putExtra("openTab", "world");
-        views.setPendingIntentTemplate(R.id.world_widget_grid,
-                PendingIntent.getActivity(context, 30_000 + id, open,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
-        manager.updateAppWidget(id, views);
-        manager.notifyAppWidgetViewDataChanged(id, R.id.world_widget_grid);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0);
+        views.setPendingIntentTemplate(R.id.world_widget_grid, PendingIntent.getActivity(context, 30_000 + id, open, flags));
+        return views;
     }
-
+    private static String styleKey(Context context, int id) {
+        return AppSettings.language(context) + "_" + WorldClockWidgetPrefs.background(context, id)
+                + "_" + WorldClockWidgetPrefs.textColor(context, id) + "_" + WorldClockWidgetPrefs.timeColor(context, id)
+                + "_" + WorldClockWidgetPrefs.timeWeight(context, id) + "_" + WorldClockWidgetPrefs.timeSize(context, id)
+                + "_" + WorldClockWidgetPrefs.nameSize(context, id) + "_" + WorldClockWidgetPrefs.dateSize(context, id)
+                + "_" + WorldClockWidgetPrefs.topGap(context, id) + "_" + WorldClockWidgetPrefs.bottomGap(context, id);
+    }
     private static boolean controlsVisible(Context context, int id) {
-        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getLong("controls_until_" + id, 0L) > System.currentTimeMillis();
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getLong("controls_until_" + id, 0) > System.currentTimeMillis();
     }
-
     private static void showControlsTemporarily(Context context, int id) {
-        long until = System.currentTimeMillis() + CONTROLS_VISIBLE_MILLIS;
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                .putLong("controls_until_" + id, until).apply();
-        Context appContext = context.getApplicationContext();
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putLong("controls_until_" + id, System.currentTimeMillis() + CONTROLS_VISIBLE_MILLIS).apply();
+        Context app = context.getApplicationContext();
         MAIN_HANDLER.postDelayed(() -> {
-            long storedUntil = appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                    .getLong("controls_until_" + id, 0L);
-            if (storedUntil > System.currentTimeMillis()) return;
-            AppWidgetManager manager = AppWidgetManager.getInstance(appContext);
-            update(appContext, manager, id, manager.getAppWidgetOptions(id));
-        }, CONTROLS_VISIBLE_MILLIS + 50L);
+            if (controlsVisible(app, id)) return;
+            AppWidgetManager manager = AppWidgetManager.getInstance(app);
+            update(app, manager, id, manager.getAppWidgetOptions(id));
+        }, CONTROLS_VISIBLE_MILLIS + 50);
     }
-
-    private static PendingIntent action(Context context, int id, String action, int request) {
-        Intent intent = new Intent(context, WorldClockWidgetProvider.class)
-                .setAction(action)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-        return PendingIntent.getBroadcast(context, request, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    private static PendingIntent action(Context context, int id, String action, WorldClockWidgetLayout layout) {
+        Intent intent = new Intent(context, WorldClockWidgetProvider.class).setAction(action)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id).putExtra("capacity", layout.capacity)
+                .setData(new Uri.Builder().scheme("advanceclock").authority("world-widget-action").appendPath(Integer.toString(id))
+                        .appendPath(action).appendPath(layout.geometryKey()).build());
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 }

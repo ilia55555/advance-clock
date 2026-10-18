@@ -15,11 +15,8 @@ final class WidgetPreviewView extends View {
     private boolean showHeader = true;
     private boolean showDetails = true;
     private int itemCount = 3;
-    private float worldTextScale = 1f;
-    private float worldNameScale = 1f;
-    private float worldDateScale = 1f;
-    private float worldTopGapDp = 1f;
-    private float worldBottomGapDp = 1f;
+    private int worldTimePreset = 3, worldNamePreset = 3, worldDatePreset = 3;
+    private int worldTopPreset = 1, worldBottomPreset = 1, worldWeight = 1;
 
     WidgetPreviewView(Context context) {
         super(context);
@@ -38,33 +35,11 @@ final class WidgetPreviewView extends View {
         invalidate();
     }
 
-    void setWorldTextSize(int preset) {
-        worldTextScale = worldFactor(preset);
-        invalidate();
-    }
-
-    void setWorldNameTextSize(int preset) {
-        worldNameScale = worldFactor(preset);
-        invalidate();
-    }
-
-    void setWorldDateTextSize(int preset) {
-        worldDateScale = worldFactor(preset);
-        invalidate();
-    }
-
-    void setWorldGaps(int topPreset, int bottomPreset) {
-        float[] gaps = {0f, 1f, 2f, 4f, 6f};
-        worldTopGapDp = gaps[Math.max(0, Math.min(gaps.length - 1, topPreset))];
-        worldBottomGapDp = gaps[
-                Math.max(0, Math.min(gaps.length - 1, bottomPreset))];
-        invalidate();
-    }
-
-    private float worldFactor(int preset) {
-        float[] factors = {0.70f, 0.80f, 0.90f, 1.00f, 1.10f, 1.20f, 1.30f};
-        return factors[Math.max(0, Math.min(factors.length - 1, preset))];
-    }
+    void setWorldTextSize(int preset) { worldTimePreset = preset; invalidate(); }
+    void setWorldNameTextSize(int preset) { worldNamePreset = preset; invalidate(); }
+    void setWorldDateTextSize(int preset) { worldDatePreset = preset; invalidate(); }
+    void setWorldWeight(int weight) { worldWeight = weight; invalidate(); }
+    void setWorldGaps(int top, int bottom) { worldTopPreset = top; worldBottomPreset = bottom; invalidate(); }
 
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -81,34 +56,43 @@ final class WidgetPreviewView extends View {
     }
 
     private void drawWorld(Canvas canvas, float d) {
-        String[] cities = {
-                AppString.get(R.string.preview_city_tehran),
-                AppString.get(R.string.preview_city_london),
-                AppString.get(R.string.preview_city_tokyo)};
-        String[] times = {"14:24", "11:54", "20:54"};
-        int columns = Math.min(3, itemCount);
-        float columnWidth = (getWidth() - 20 * d) / columns;
-        for (int i = 0; i < columns; i++) {
-            float center = 10 * d + columnWidth * i + columnWidth / 2f;
-            float timeSize = 28 * d * worldTextScale;
-            float nameSize = 14 * d * worldNameScale;
-            float dateSize = 12 * d * worldDateScale;
-            float timeBaseline = 76 * d;
-            float nameBaseline = timeBaseline
-                    - timeSize * 0.86f
-                    - worldTopGapDp * d;
-            float dateBaseline = timeBaseline
-                    + dateSize * 1.12f
-                    + worldBottomGapDp * d;
-
-            text(canvas, cities[i], center, nameBaseline, nameSize,
-                    textColor, Paint.Align.CENTER, false);
-            text(canvas, times[i], center, timeBaseline, timeSize,
-                    timeColor, Paint.Align.CENTER, true);
-            text(canvas, AppString.get(R.string.preview_sample_date), center,
-                    dateBaseline, dateSize,
-                    textColor, Paint.Align.CENTER, false);
+        java.util.List<String> zones = WorldClockStore.zones(getContext());
+        WorldClockWidgetLayout base = WorldClockWidgetLayout.forSize(getWidth() / d - 4, getHeight() / d - 4, zones.size());
+        WorldClockWidgetLayout layout = base.forPage(0);
+        WorldClockWidgetLayout.TextSizes sizes = layout.textSizes(worldTimePreset, worldNamePreset, worldDatePreset, worldTopPreset, worldBottomPreset);
+        int count = Math.min(zones.size(), base.capacity);
+        java.text.SimpleDateFormat clock = new java.text.SimpleDateFormat("HH:mm", AppString.locale());
+        java.text.SimpleDateFormat date = new java.text.SimpleDateFormat("EEE, MMM d", AppString.locale());
+        for (int i = 0; i < count; i++) {
+            String zone = zones.get(i);
+            java.util.TimeZone tz = java.util.TimeZone.getTimeZone(zone); clock.setTimeZone(tz); date.setTimeZone(tz);
+            int col = i % layout.columns, row = i / layout.columns;
+            float left = (6 + col * (layout.itemWidth + 4)) * d;
+            float top = (2 + row * (layout.itemHeight + 2)) * d;
+            float center = left + layout.itemWidth * d / 2;
+            canvas.save(); canvas.clipRect(left, top, left + layout.itemWidth * d, top + layout.itemHeight * d);
+            android.graphics.Typeface regular = android.graphics.Typeface.DEFAULT;
+            android.graphics.Typeface timeFace = android.graphics.Typeface.create(worldWeight == 0 ? "sans-serif-light" : "sans-serif",
+                    worldWeight == 2 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            float nameHeight = lineHeight(sizes.name * d, regular);
+            float timeHeight = lineHeight(sizes.time * d, timeFace);
+            float dateHeight = lineHeight(sizes.date * d, android.graphics.Typeface.DEFAULT_BOLD);
+            float y = top + (layout.itemHeight * d - nameHeight - timeHeight - dateHeight - (sizes.topGap + sizes.bottomGap) * d) / 2;
+            String city = "Canada/Saskatchewan".equals(zone) ? "Regina" : zone.substring(zone.lastIndexOf('/') + 1).replace('_', ' ');
+            y = worldLine(canvas, WorldClockStore.label(getContext(), zone, city), center, y, sizes.name * d, textColor, regular) + sizes.topGap * d;
+            y = worldLine(canvas, clock.format(new java.util.Date()), center, y, sizes.time * d, timeColor, timeFace) + sizes.bottomGap * d;
+            worldLine(canvas, date.format(new java.util.Date()), center, y, sizes.date * d, textColor, android.graphics.Typeface.DEFAULT_BOLD);
+            canvas.restore();
         }
+    }
+    private float lineHeight(float size, android.graphics.Typeface face) {
+        paint.setTextSize(size); paint.setTypeface(face); Paint.FontMetrics metrics = paint.getFontMetrics();
+        return metrics.descent - metrics.ascent;
+    }
+    private float worldLine(Canvas canvas, String value, float x, float top, float size, int color, android.graphics.Typeface face) {
+        paint.setTextSize(size); paint.setTypeface(face); paint.setColor(color); paint.setTextAlign(Paint.Align.CENTER);
+        Paint.FontMetrics metrics = paint.getFontMetrics(); canvas.drawText(value, x, top - metrics.ascent, paint);
+        return top + metrics.descent - metrics.ascent;
     }
 
     private void drawListWidget(Canvas canvas, float d) {
