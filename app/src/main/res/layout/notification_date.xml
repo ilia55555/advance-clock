@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:orientation="horizontal"
+    android:layoutDirection="ltr"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_date_notification"
+    android:padding="6dp">
+
+    <LinearLayout
+        android:id="@+id/date_notification_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/date_notification_title"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:textDirection="locale"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="18sp"
+            android:autoSizeStepGranularity="1sp" />
+
+        <TextView
+            android:id="@+id/date_notification_other_dates"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="4dp"
+            android:gravity="start|center_vertical"
+            android:textDirection="locale"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeStepGranularity="1sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/date_notification_day"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_date_notification_day"
+        android:gravity="center"
+        android:textColor="@color/date_notification_blue"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:includeFontPadding="false"
+        android:padding="4dp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="16sp"
+        android:autoSizeMaxTextSize="30sp"
+        android:autoSizeStepGranularity="1sp"
+        android:importantForAccessibility="no" />
+</LinearLayout>

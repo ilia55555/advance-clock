@@ -13,12 +13,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.BidiFormatter;
+import android.view.View;
+import android.widget.RemoteViews;
 
 public final class DateNotificationService extends Service {
     public static final String CHANNEL = "advance_clock_date_v1";
@@ -129,7 +130,15 @@ public final class DateNotificationService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT
                         | PendingIntent.FLAG_IMMUTABLE);
 
-        String title = CalendarUtils.formatDate(now, selectedType);
+        int[] weekdays = {
+                R.string.runtime_text_0181, R.string.runtime_text_0182,
+                R.string.runtime_text_0183, R.string.runtime_text_0184,
+                R.string.runtime_text_0185, R.string.runtime_text_0186,
+                R.string.runtime_text_0180
+        };
+        String weekday = AppString.get(weekdays[selected.get(android.icu.util.Calendar.DAY_OF_WEEK) - 1]);
+        String title = weekday + " " + CalendarUtils.formatDate(now, selectedType);
+        BidiFormatter bidi = BidiFormatter.getInstance(AppSettings.layoutDirection(context) == View.LAYOUT_DIRECTION_RTL);
 
         StringBuilder twoOtherDates = new StringBuilder();
         if (AppSettings.persistentDateExtraCalendars(context)) {
@@ -137,10 +146,8 @@ public final class DateNotificationService extends Service {
                  type <= CalendarUtils.HIJRI;
                  type++) {
                 if (type == selectedType) continue;
-                if (twoOtherDates.length() > 0) twoOtherDates.append("\n");
-                twoOtherDates.append(CalendarUtils.calendarName(type))
-                        .append(": ")
-                        .append(CalendarUtils.formatDate(now, type));
+                if (twoOtherDates.length() > 0) twoOtherDates.append("  •  ");
+                twoOtherDates.append(bidi.unicodeWrap(CalendarUtils.formatDate(now, type)));
             }
         }
 
@@ -149,21 +156,19 @@ public final class DateNotificationService extends Service {
                 : new Notification.Builder(context);
 
         builder.setContentTitle(title)
-                .setContentText(twoOtherDates.length() == 0
-                        ? AppString.get(R.string.runtime_text_0414)
-                        : twoOtherDates.toString().replace("\n", "  •  "))
+                .setContentText(twoOtherDates.toString())
                 .setContentIntent(content)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setCategory(Notification.CATEGORY_STATUS)
                 .setVisibility(AppSettings.notificationVisibility(context))
-                .setPriority(Notification.PRIORITY_LOW);
-
-        if (twoOtherDates.length() > 0) {
-            builder.setStyle(new Notification.BigTextStyle()
-                    .bigText(twoOtherDates.toString()));
-        }
+                .setPriority(Notification.PRIORITY_LOW)
+                .setColor(context.getColor(R.color.date_notification_blue))
+                .setColorized(false)
+                .setStyle(new Notification.DecoratedCustomViewStyle())
+                .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day))
+                .setCustomBigContentView(dateView(context, R.layout.notification_date_expanded, title, twoOtherDates.toString(), day));
 
         if (Build.VERSION.SDK_INT >= 23) {
             builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
@@ -173,28 +178,38 @@ public final class DateNotificationService extends Service {
         return builder.build();
     }
 
+    private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), layout);
+        views.setTextViewText(R.id.date_notification_title, title);
+        views.setTextViewText(R.id.date_notification_other_dates, otherDates);
+        views.setTextViewText(R.id.date_notification_day, CalendarUtils.fa(day));
+        views.setViewVisibility(R.id.date_notification_other_dates, otherDates.isEmpty() ? View.GONE : View.VISIBLE);
+        // The badge stays on the right as in the design; only the text direction follows the language.
+        int direction = AppSettings.layoutDirection(context);
+        views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
+        int textDirection = direction == View.LAYOUT_DIRECTION_RTL ? View.TEXT_DIRECTION_RTL : View.TEXT_DIRECTION_LTR;
+        views.setInt(R.id.date_notification_title, "setTextDirection", textDirection);
+        views.setInt(R.id.date_notification_other_dates, "setTextDirection", textDirection);
+        return views;
+    }
+
     private static Bitmap dayIcon(int day) {
         Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         Paint circle = new Paint(Paint.ANTI_ALIAS_FLAG);
         circle.setColor(Color.WHITE);
-        canvas.drawCircle(48f, 48f, 47f, circle);
+        circle.setStyle(Paint.Style.STROKE);
+        circle.setStrokeWidth(10);
+        canvas.drawCircle(48f, 48f, 42f, circle);
 
         Paint digits = new Paint(Paint.ANTI_ALIAS_FLAG);
+        digits.setColor(Color.WHITE);
         digits.setTextAlign(Paint.Align.CENTER);
         digits.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        digits.setTextSize(day >= 10 ? 78f : 88f);
-        digits.setLetterSpacing(-0.06f);
-        digits.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-
-        String value = CalendarUtils.fa(day);
+        digits.setTextSize(day >= 10 ? 50f : 60f);
         Paint.FontMetrics fm = digits.getFontMetrics();
-        float y = 48f - (fm.ascent + fm.descent) / 2f;
-        canvas.drawText(value, 48f, y, digits);
-        digits.setXfermode(null);
-
+        canvas.drawText(CalendarUtils.fa(day), 48f, 48f - (fm.ascent + fm.descent) / 2f, digits);
         return bitmap;
     }
-
 }
