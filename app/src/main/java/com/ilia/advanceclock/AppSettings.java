@@ -76,15 +76,7 @@ public final class AppSettings {
     }
 
     public static String[] paletteNames() {
-        return new String[]{
-                "#D96B43  +  #1E2A38",
-                "#B422AF  +  #5597E2",
-                "#B422A8  +  #3B3847",
-                "#00A89D  +  #B42222",
-                "#6500A8  +  #ECCE36",
-                "#D818F2  +  #22282A",
-                "#005FA8  +  #36BFEC"
-        };
+        return AppString.getArray(R.array.palette_names);
     }
 
     public static int themeMode(Context context) {

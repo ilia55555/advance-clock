@@ -164,7 +164,7 @@ public final class DateNotificationService extends Service {
                 .setCategory(Notification.CATEGORY_STATUS)
                 .setVisibility(AppSettings.notificationVisibility(context))
                 .setPriority(Notification.PRIORITY_LOW)
-                .setColor(context.getColor(R.color.date_notification_blue))
+                .setColor(AppSettings.primaryColor(context))
                 .setColorized(false)
                 .setStyle(new Notification.DecoratedCustomViewStyle())
                 .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day))
@@ -180,6 +180,13 @@ public final class DateNotificationService extends Service {
 
     private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day) {
         RemoteViews views = new RemoteViews(context.getPackageName(), layout);
+        int primary = AppSettings.primaryColor(context);
+        int text = Color.luminance(primary) > 0.179f ? Color.BLACK : Color.WHITE;
+        views.setInt(R.id.date_notification_background, "setColorFilter", primary);
+        views.setInt(R.id.date_notification_day_border, "setColorFilter", primary);
+        views.setTextColor(R.id.date_notification_day, primary);
+        views.setTextColor(R.id.date_notification_title, text);
+        views.setTextColor(R.id.date_notification_other_dates, text);
         views.setTextViewText(R.id.date_notification_title, title);
         views.setTextViewText(R.id.date_notification_other_dates, otherDates);
         views.setTextViewText(R.id.date_notification_day, CalendarUtils.fa(day));
