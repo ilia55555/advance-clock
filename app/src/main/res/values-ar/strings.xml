@@ -1189,4 +1189,18 @@
     <string name="tool_delete_confirm">هل تريد حذف هذا العنصر؟</string>
     <string name="tool_remove_image">هل تريد إزالة هذه الصورة؟</string>
     <string name="tool_image_unavailable">منتقي الصور غير متاح</string>
+    <string name="media_attachments">المرفقات</string>
+    <string name="media_add">إضافة مرفق</string>
+    <string name="media_photo">صورة من المعرض</string>
+    <string name="media_camera">التقاط صورة</string>
+    <string name="media_file">ملف</string>
+    <string name="media_app">تطبيق</string>
+    <string name="media_link">رابط</string>
+    <string name="media_background">استخدام الصور كخلفية للتنبيه</string>
+    <string name="media_top">الصورة العلوية</string>
+    <string name="media_bottom">الصورة السفلية</string>
+    <string name="media_crop">ضبط إطار الصورة</string>
+    <string name="media_open">فتح</string>
+    <string name="media_crop_hint">حرّك الصورة أو كبّر بإصبعين</string>
+    <string name="media_image_error">تعذر فتح الصورة أو حفظها</string>
 </resources>

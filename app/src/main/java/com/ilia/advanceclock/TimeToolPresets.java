@@ -25,8 +25,7 @@ final class TimeToolPresets {
     private final Editor editor;
     private final SharedPreferences prefs;
     private final LinearLayout controls;
-    private final Button[] photoButtons = new Button[2];
-    private final ImageView[] previews = new ImageView[2];
+    private final Button attachments;
     private String editingId = "";
 
     TimeToolPresets(Activity host, android.widget.EditText label, String kind, Editor editor) {
@@ -39,26 +38,8 @@ final class TimeToolPresets {
         controls.setOrientation(LinearLayout.VERTICAL);
         parent.addView(controls, parent.indexOfChild(label) + 1,
                 new LinearLayout.LayoutParams(-1, -2));
-        LinearLayout photos = new LinearLayout(host);
-        controls.addView(photos);
-        for (int i = 0; i < 2; i++) {
-            final int slot = i + 1;
-            LinearLayout column = new LinearLayout(host);
-            column.setOrientation(LinearLayout.VERTICAL);
-            photos.addView(column, new LinearLayout.LayoutParams(0, -2, 1));
-            photoButtons[i] = button(i == 0 ? R.string.runtime_text_0141 : R.string.runtime_text_0142);
-            column.addView(photoButtons[i]);
-            photoButtons[i].setOnClickListener(v -> ToolImagePickerFragment.pick(host, kind, slot));
-            previews[i] = new ImageView(host);
-            previews[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
-            previews[i].setContentDescription(host.getString(R.string.tool_remove_image));
-            column.addView(previews[i], new LinearLayout.LayoutParams(-1, dp(96)));
-            previews[i].setOnClickListener(v -> new AlertDialog.Builder(host)
-                    .setMessage(R.string.tool_remove_image)
-                    .setPositiveButton(android.R.string.ok, (d, w) -> {
-                        prefs.edit().remove(kind + "_image" + slot).apply(); refresh();
-                    }).setNegativeButton(android.R.string.cancel, null).show());
-        }
+        attachments = AlarmAttachments.button(host, kind);
+        controls.addView(attachments);
         LinearLayout actions = new LinearLayout(host);
         controls.addView(actions);
         Button save = button(R.string.tool_save);
@@ -81,15 +62,7 @@ final class TimeToolPresets {
 
     void refresh() {
         boolean busy = editor.busy();
-        for (int i = 0; i < 2; i++) {
-            String uri = prefs.getString(kind + "_image" + (i + 1), "");
-            photoButtons[i].setEnabled(!busy);
-            previews[i].setEnabled(!busy);
-            previews[i].setImageDrawable(null);
-            previews[i].setVisibility(uri.isEmpty() ? View.GONE : View.VISIBLE);
-            if (!uri.isEmpty()) try { previews[i].setImageURI(Uri.parse(uri)); }
-            catch (Exception ignored) {}
-        }
+        attachments.setEnabled(!busy);
     }
 
     private JSONArray read() {
@@ -101,6 +74,9 @@ final class TimeToolPresets {
             JSONObject config = editor.capture();
             if (config == null) return;
             for (int i = 1; i <= 2; i++) config.put("image" + i, prefs.getString(kind + "_image" + i, ""));
+            config.put("attachments", prefs.getString(kind + "_attachments", "[]"));
+            config.put("background", prefs.getBoolean(kind + "_background", false));
+            for (int i = 1; i <= 2; i++) config.put("source" + i, prefs.getString(kind + "_source" + i, prefs.getString(kind + "_image" + i, "")));
             if (editingId.isEmpty()) editingId = java.util.UUID.randomUUID().toString();
             config.put("id", editingId);
             prefs.edit().putString(kind + "_presets", TimeToolPresetStore.save(
@@ -151,7 +127,11 @@ final class TimeToolPresets {
     static void restoreImages(Activity host, String kind, JSONObject item) {
         host.getSharedPreferences("time_tools", Activity.MODE_PRIVATE).edit()
                 .putString(kind + "_image1", item.optString("image1"))
-                .putString(kind + "_image2", item.optString("image2")).apply();
+                .putString(kind + "_image2", item.optString("image2"))
+                .putString(kind + "_source1", item.optString("source1", item.optString("image1")))
+                .putString(kind + "_source2", item.optString("source2", item.optString("image2")))
+                .putString(kind + "_attachments", item.optString("attachments", "[]"))
+                .putBoolean(kind + "_background", item.optBoolean("background", false)).apply();
     }
 
     private void showError() { Toast.makeText(host, R.string.tool_invalid, Toast.LENGTH_SHORT).show(); }

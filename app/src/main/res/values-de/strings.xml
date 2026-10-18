@@ -888,4 +888,18 @@ Sperrbildschirm</string>
     <string name="tool_delete_confirm">Delete this saved item?</string>
     <string name="tool_remove_image">Remove this photo?</string>
     <string name="tool_image_unavailable">No photo picker available</string>
+    <string name="media_attachments">Attachments</string>
+    <string name="media_add">Add attachment</string>
+    <string name="media_photo">Photo from gallery</string>
+    <string name="media_camera">Take a photo</string>
+    <string name="media_file">File</string>
+    <string name="media_app">App</string>
+    <string name="media_link">Link</string>
+    <string name="media_background">Use photos as the alarm background</string>
+    <string name="media_top">Top photo</string>
+    <string name="media_bottom">Bottom photo</string>
+    <string name="media_crop">Adjust photo frame</string>
+    <string name="media_open">Open</string>
+    <string name="media_crop_hint">Move the photo or pinch to zoom</string>
+    <string name="media_image_error">Unable to open or save this photo</string>
 </resources>

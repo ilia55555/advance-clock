@@ -15,6 +15,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
+    <queries>
+        <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent>
+        <intent><action android:name="android.media.action.IMAGE_CAPTURE" /></intent>
+    </queries>
+
     <application
         android:name=".AdvanceClockApplication"
         android:allowBackup="false"
@@ -28,6 +33,10 @@
         android:theme="@style/Theme.AdvanceClock"
         android:usesCleartextTraffic="false">
 
+        <provider android:name=".AlarmMediaProvider" android:authorities="${applicationId}.alarmmedia"
+            android:exported="false" android:grantUriPermissions="true" />
+        <activity android:name=".AlarmAttachmentEditorActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".AlarmPhotoCropActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity

@@ -31,7 +31,11 @@ public final class AlarmItem {
     public long lastFiredAtMillis;
     public String imageUri1;
     public String imageUri2;
+    public String imageSource1 = "";
+    public String imageSource2 = "";
     public String soundUri;
+    public String attachmentsJson = "[]";
+    public boolean imagesAsBackground;
 
     public AlarmItem(long id,String label,long triggerAtMillis,int repeatType,boolean enabled){
         this(id,label,triggerAtMillis,repeatType,enabled,true);
@@ -83,7 +87,11 @@ public final class AlarmItem {
         o.put("lastFiredAtMillis",lastFiredAtMillis);
         o.put("imageUri1",imageUri1);
         o.put("imageUri2",imageUri2);
+        o.put("imageSource1",imageSource1);
+        o.put("imageSource2",imageSource2);
         o.put("soundUri",soundUri);
+        o.put("attachmentsJson",attachmentsJson);
+        o.put("imagesAsBackground",imagesAsBackground);
         return o;
     }
 
@@ -107,7 +115,11 @@ public final class AlarmItem {
         item.lastFiredAtMillis = o.optLong("lastFiredAtMillis", 0L);
         item.imageUri1 = o.optString("imageUri1", "");
         item.imageUri2 = o.optString("imageUri2", "");
+        item.imageSource1 = o.optString("imageSource1", item.imageUri1);
+        item.imageSource2 = o.optString("imageSource2", item.imageUri2);
         item.soundUri = o.optString("soundUri", "");
+        item.attachmentsJson = o.optString("attachmentsJson", "[]");
+        item.imagesAsBackground = o.optBoolean("imagesAsBackground", false);
         return item;
     }
 }

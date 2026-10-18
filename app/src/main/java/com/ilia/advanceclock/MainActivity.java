@@ -821,8 +821,7 @@ public final class MainActivity extends Activity {
                     updateAlarmReminderLabel();
                 }));
 
-        quickAlarmImage1.setOnClickListener(v -> pickAlarmImage(REQ_QUICK_ALARM_IMAGE_1));
-        quickAlarmImage2.setOnClickListener(v -> pickAlarmImage(REQ_QUICK_ALARM_IMAGE_2));
+        AlarmAttachments.bindButton(this, quickAlarmImage1, "quick_alarm");
 
         findViewById(R.id.save_quick_alarm).setOnClickListener(v -> saveQuickAlarm());
     }
@@ -1035,6 +1034,7 @@ public final class MainActivity extends Activity {
                 alarmReminderMinutesJson);
         item.imageUri1 = quickAlarmImageUri1;
         item.imageUri2 = quickAlarmImageUri2;
+        AlarmAttachments.read(this, "quick_alarm", item);
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
@@ -1051,7 +1051,8 @@ public final class MainActivity extends Activity {
         alarmReminderMinutesJson = "[]";
         quickAlarmImageUri1 = "";
         quickAlarmImageUri2 = "";
-        quickAlarmImage1.setText(AppString.get(R.string.runtime_text_0141));
+        AlarmAttachments.write(this, "quick_alarm", new AlarmItem(-1, "", 0, 0, true));
+        quickAlarmImage1.setText(R.string.media_attachments);
         quickAlarmImage2.setText(AppString.get(R.string.runtime_text_0142));
         updateAlarmReminderLabel();
 

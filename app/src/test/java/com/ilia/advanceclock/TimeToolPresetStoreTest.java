@@ -39,6 +39,19 @@ public final class TimeToolPresetStoreTest {
         assertEquals("b", restored.getJSONObject(0).getString("id"));
     }
 
+    @Test public void attachmentsAndBackgroundChoiceSurviveSavingAndReplay() throws Exception {
+        String attachments = "[{\"kind\":\"url\",\"value\":\"https://example.com\"},"
+                + "{\"kind\":\"app\",\"value\":\"com.example.app\"},"
+                + "{\"kind\":\"file\",\"value\":\"content://documents/1\"}]";
+        JSONObject config = new JSONObject().put("id", "media").put("attachments", attachments)
+                .put("background", true).put("image1", "content://photos/cropped")
+                .put("source1", "content://photos/original");
+        JSONObject restored = TimeToolPresetStore.read(TimeToolPresetStore.save("[]", config)).getJSONObject(0);
+        assertTrue(restored.getBoolean("background"));
+        assertEquals(3, new JSONArray(restored.getString("attachments")).length());
+        assertEquals("content://photos/original", restored.getString("source1"));
+    }
+
     @Test public void invalidRecordsDoNotBreakTheSavedList() {
         assertEquals(0, TimeToolPresetStore.read("broken").length());
         assertEquals(1, TimeToolPresetStore.read("[null,3,{}, {\"id\":\"valid\"}]").length());

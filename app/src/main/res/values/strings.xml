@@ -1171,4 +1171,18 @@
     <string name="tool_delete_confirm">این مورد ذخیره‌شده حذف شود؟</string>
     <string name="tool_remove_image">این عکس حذف شود؟</string>
     <string name="tool_image_unavailable">انتخاب عکس در دسترس نیست</string>
+    <string name="media_attachments">پیوست‌ها</string>
+    <string name="media_add">افزودن پیوست</string>
+    <string name="media_photo">عکس از گالری</string>
+    <string name="media_camera">گرفتن عکس با دوربین</string>
+    <string name="media_file">فایل</string>
+    <string name="media_app">اپلیکیشن</string>
+    <string name="media_link">لینک</string>
+    <string name="media_background">عکس‌ها پس‌زمینه صفحه هشدار باشند</string>
+    <string name="media_top">عکس بالا</string>
+    <string name="media_bottom">عکس پایین</string>
+    <string name="media_crop">تنظیم قاب عکس</string>
+    <string name="media_open">باز کردن</string>
+    <string name="media_crop_hint">عکس را جابه‌جا کنید یا با دو انگشت بزرگ کنید</string>
+    <string name="media_image_error">امکان دریافت یا ذخیره عکس وجود ندارد</string>
 </resources>

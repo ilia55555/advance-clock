@@ -371,7 +371,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="@string/runtime_text_0143"
+                        android:text="@string/media_attachments"
                         android:textColor="?attr/appTextSecondary"
                         android:textSize="12sp" />
 

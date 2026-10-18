@@ -110,6 +110,7 @@ public final class AlarmRingActivity extends Activity {
     }
 
     private void bind(android.content.Intent intent) {
+        applyStyle(AppSettings.alarmScreenStyle(this));
         alarmId = intent == null ? -1L : intent.getLongExtra("alarmId", -1L);
         String label = intent == null ? "" : intent.getStringExtra("label");
         String toolKind = intent == null ? null : intent.getStringExtra("toolKind");
@@ -142,14 +143,19 @@ public final class AlarmRingActivity extends Activity {
             android.content.SharedPreferences p = getSharedPreferences("time_tools", MODE_PRIVATE);
             item.imageUri1 = p.getString(toolKind + "_active_image1", "");
             item.imageUri2 = p.getString(toolKind + "_active_image2", "");
+            item.attachmentsJson = p.getString(toolKind + "_active_attachments", "[]");
+            item.imagesAsBackground = p.getBoolean(toolKind + "_active_background", false);
         }
         renderAlarmImages(item);
+        renderAttachments(item);
     }
 
     private void renderAlarmImages(AlarmItem item) {
         LinearLayout container = findViewById(R.id.ring_images);
         View spacer = findViewById(R.id.ring_spacer);
         container.removeAllViews();
+        LinearLayout background = findViewById(R.id.ring_photo_background);
+        background.removeAllViews();
 
         java.util.ArrayList<String> uris = new java.util.ArrayList<>();
         if (item != null) {
@@ -163,37 +169,40 @@ public final class AlarmRingActivity extends Activity {
             return;
         }
 
-        container.setVisibility(View.VISIBLE);
-        spacer.setVisibility(View.GONE);
-
-        for (int i = 0; i < uris.size(); i++) {
-            ImageView image = new ImageView(this);
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setAdjustViewBounds(true);
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    1f);
-            if (uris.size() == 2) {
-                if (i == 0) lp.setMarginEnd(dp(4));
-                else lp.setMarginStart(dp(4));
-            }
-
-            image.setLayoutParams(lp);
-            image.setClipToOutline(true);
-
-            GradientDrawable bg = new GradientDrawable();
-            bg.setColor(0x11000000);
-            bg.setCornerRadius(dp(18));
-            image.setBackground(bg);
-
-            try {
-                image.setImageURI(Uri.parse(uris.get(i)));
-            } catch (Exception ignored) {}
-
-            container.addView(image);
+        boolean asBackground = item != null && item.imagesAsBackground;
+        container.setVisibility(asBackground ? View.GONE : View.VISIBLE);
+        spacer.setVisibility(asBackground ? View.VISIBLE : View.GONE);
+        container.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout destination = asBackground ? background : container;
+        for (String uri : uris) {
+            AlarmPhotoView image = new AlarmPhotoView(this, false);
+            image.load(uri);
+            destination.addView(image, new LinearLayout.LayoutParams(-1, 0, 1f));
         }
+        if (asBackground) {
+            findViewById(R.id.ring_root).setBackgroundColor(0x66000000);
+            int[] labels = {R.id.ring_time, R.id.ring_title, R.id.ring_date, R.id.ring_subtitle, R.id.snooze_label};
+            for (int id : labels) ((TextView) findViewById(id)).setTextColor(Color.WHITE);
+        }
+    }
+
+    private View attachmentList;
+    private void renderAttachments(AlarmItem item) {
+        LinearLayout root = findViewById(R.id.ring_root);
+        if (attachmentList != null) root.removeView(attachmentList);
+        if (item == null) return;
+        java.util.List<NoteAttachment> attachments = NoteAttachment.parse(item.attachmentsJson);
+        if (attachments.isEmpty()) return;
+        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+        LinearLayout list = new LinearLayout(this); list.setOrientation(LinearLayout.VERTICAL); scroll.addView(list);
+        for (NoteAttachment attachment : attachments) {
+            Button open = new Button(this); open.setText(attachment.name); open.setAllCaps(false);
+            open.setOnClickListener(v -> attachment.open(this));
+            list.addView(open, new LinearLayout.LayoutParams(-1, dp(48)));
+        }
+        attachmentList = scroll;
+        root.addView(scroll, root.indexOfChild(findViewById(R.id.snooze_label)),
+                new LinearLayout.LayoutParams(-1, dp(Math.min(144, attachments.size() * 48))));
     }
 
     private void applyStyle(int style) {

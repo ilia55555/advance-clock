@@ -17,6 +17,8 @@ public final class ToolAlarmScheduler {
         prefs.edit()
                 .putString(kind + "_active_image1", prefs.getString(kind + "_image1", ""))
                 .putString(kind + "_active_image2", prefs.getString(kind + "_image2", ""))
+                .putString(kind + "_active_attachments", prefs.getString(kind + "_attachments", "[]"))
+                .putBoolean(kind + "_active_background", prefs.getBoolean(kind + "_background", false))
                 .putLong(kind + "_deadline", deadline)
                 .putString(kind + "_label", label)
                 .apply();

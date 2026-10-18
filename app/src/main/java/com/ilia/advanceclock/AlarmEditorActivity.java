@@ -55,6 +55,7 @@ public final class AlarmEditorActivity extends Activity {
     private String imageUri2 = "";
     private String soundUri = "";
     private boolean createMode;
+    private String attachmentKey;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -153,14 +154,25 @@ public final class AlarmEditorActivity extends Activity {
                     updateReminderButton();
                 }));
 
-        image1Button.setOnClickListener(v -> pickImage(REQ_IMAGE_1));
-        image2Button.setOnClickListener(v -> pickImage(REQ_IMAGE_2));
+        attachmentKey = savedInstanceState == null ? "alarm_editor_" + java.util.UUID.randomUUID()
+                : savedInstanceState.getString("attachmentKey");
+        if (savedInstanceState == null) {
+            AlarmItem existing = alarmId >= 0 ? new AlarmStore(this).find(alarmId) : null;
+            if (existing == null) existing = new AlarmItem(-1, "", 0, 0, true);
+            AlarmAttachments.write(this, attachmentKey, existing);
+        }
+        AlarmAttachments.bindButton(this, image1Button, attachmentKey);
+        imagePreviewRow.setVisibility(View.GONE);
         findViewById(R.id.alarm_sound_button).setOnClickListener(v ->
                 startActivityForResult(new Intent(this, SoundPickerActivity.class), REQ_SOUND));
 
         findViewById(R.id.save_alarm).setOnClickListener(v -> save());
         deleteButton.setOnClickListener(v -> delete());
         findViewById(R.id.cancel).setOnClickListener(v -> finish());
+    }
+
+    @Override protected void onSaveInstanceState(Bundle out) {
+        out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
     }
 
     private void applySystemBarInsets(View root) {
@@ -275,6 +287,7 @@ public final class AlarmEditorActivity extends Activity {
         item.lastFiredAtMillis = lastFiredAtMillis;
         item.imageUri1 = imageUri1;
         item.imageUri2 = imageUri2;
+        AlarmAttachments.read(this, attachmentKey, item);
         item.soundUri = soundUri;
 
         new AlarmStore(this).save(item);
