@@ -1207,4 +1207,60 @@
     <string name="settings_section_general">إعدادات عامة</string>
     <string name="settings_section_calendar">التقويم والمناسبات</string>
     <string name="settings_section_alarms">التنبيهات</string>
+
+    <!-- About, privacy, terms and permissions. -->
+    <string name="about_title" formatted="false">من نحن</string>
+    <string name="about_developer_label">المطوّر: %1$s</string>
+    <string name="about_version_value">الإصدار %1$s (%2$d)</string>
+    <string name="about_version_unknown" formatted="false">الإصدار غير متاح</string>
+    <string name="about_summary" formatted="false">تطبيق لإدارة الوقت الشخصي يضم المنبّهات والتقويم الفارسي والميلادي والقمري والملاحظات والتذكيرات والساعات العالمية والمؤقّت وساعة الإيقاف ومواقيت الصلاة وأدوات القبلة.</string>
+    <string name="about_privacy_title" formatted="false">سياسة الخصوصية</string>
+    <string name="about_terms_title" formatted="false">شروط الاستخدام</string>
+    <string name="about_permissions_title" formatted="false">الأذونات وخياراتك</string>
+    <string name="about_credits_title" formatted="false">المصادر والتراخيص</string>
+    <string name="about_support" formatted="false">دعم المشروع</string>
+    <string name="about_public_policy" formatted="false">سياسة الخصوصية العامة</string>
+    <string name="about_app_settings" formatted="false">إدارة الأذونات وبيانات التطبيق</string>
+    <string name="about_updated">آخر تحديث: %1$s</string>
+    <string name="about_link_error" formatted="false">لا يوجد تطبيق متاح لفتح هذا الرابط.</string>
+    <string name="about_license_error" formatted="false">تعذّر فتح نص الترخيص.</string>
+    <string name="about_privacy_intro_title" formatted="false">التطبيق والمطوّر</string>
+    <string name="about_privacy_intro_body" formatted="false">تنطبق هذه السياسة على InfiniTime بالمعرّف com.ilia.advanceclock، من تطوير ایلیا بکتاش. لا يتضمن الإصدار الحالي تسجيل دخول أو حسابًا سحابيًا لدى المطوّر أو حزمة إعلانات أو أدوات لتحليل سلوك المستخدم. تعمل وظائف الساعة والتقويم والتذكيرات وأدوات الوقت الأساسية دون إنترنت.</string>
+    <string name="about_privacy_local_title" formatted="false">المعلومات المخزنة على جهازك</string>
+    <string name="about_privacy_local_body" formatted="false">تُحفظ المنبّهات والملاحظات والرسومات وإعدادات وسجلات المؤقّت وساعة الإيقاف والتفضيلات والمدن المختارة ومواقع الصلاة المحفوظة ومراجع المرفقات على جهازك. قد تُنسخ الصور المختارة أو الملتقطة إلى مساحة التطبيق الخاصة. لا يرفع التطبيق تلقائيًا نصوص ملاحظاتك أو رسوماتك أو صورك أو محتوى ملفاتك أو قائمة اختصارات تطبيقاتك إلى المطوّر.</string>
+    <string name="about_privacy_location_title" formatted="false">الموقع والطلبات عبر الإنترنت</string>
+    <string name="about_privacy_location_body" formatted="false">الوصول إلى الموقع اختياري ويُستخدم لمواقيت الصلاة واتجاه القبلة واختيار المكان عند استخدام الأدوات ذات الصلة. يمكنك اختيار الموقع يدويًا. لا يطلب التطبيق إذن الموقع في الخلفية ولا يتتبع تحركاتك باستمرار. قد تبقى الإحداثيات المحفوظة في الإعدادات.\n\nيرسل البحث عبر الإنترنت عن المدن عبارة البحث إلى OpenStreetMap/Nominatim. لتحديد المنطقة الزمنية، قد تُرسل الإحداثيات المختارة أو المحفوظة إلى TimeAPI على timeapi.io، ثم إلى Open-Meteo على api.open-meteo.com عند الحاجة. قد يجري إصلاح منطقة زمنية لموقع قديم هذا الطلب عند بدء التطبيق إذا تعذّر الحل دون اتصال. قد يرسل Geocoder في أندرويد أسماء الأماكن أو الإحداثيات إلى مزوّد الموقع في جهازك. يمكن أن تكشف هذه الطلبات الموقع الدقيق عند استخدام إحداثيات دقيقة.</string>
+    <string name="about_privacy_providers_title" formatted="false">الجهات الخارجية والمشاركة</string>
+    <string name="about_privacy_providers_body" formatted="false">تُرسل طلبات الشبكة عبر HTTPS. يمكن للخدمة المستقبلة رؤية عنوان IP وعبارة البحث أو الإحداثيات المرسلة وبيانات الطلب المعتادة. تتحكم هذه الجهات بمعالجتها وفترة الاحتفاظ بها وفق سياساتها؛ روابطها في قسم المصادر والتراخيص. لا يشغّل المطوّر خادمًا يستقبل هذه الطلبات ولا يبيع محتواك المحلي.\n\nفتح تطبيق أو رابط أو ملف مرفق، واستخدام تطبيق الكاميرا، واختيار ملفات سحابية، وزيارة مواقع الدعم والسياسات، يتضمن التطبيق أو المزوّد الذي تختاره وشروطه الخاصة. يحصل عارض الملفات الخارجي على إذن الوصول إلى الملف الذي تختار فتحه.</string>
+    <string name="about_privacy_media_title" formatted="false">الصور والملفات واختصارات التطبيقات</string>
+    <string name="about_privacy_media_body" formatted="false">يمنح منتقي أندرويد الوصول إلى الصور والملفات التي تختارها. يُستخدم تطبيق الكاميرا المثبّت لديك لالتقاط الصور، مع إذن مؤقت لحفظ الصورة. قد تُحفظ الصور الأصلية والنسخ المقصوصة محليًا لإعادة ضبط الإطار. لإنشاء اختصار، تُقرأ أسماء وأيقونات ومعرّفات التطبيقات القابلة للتشغيل، وتُحفظ اختصاراتك المختارة محليًا فقط؛ لا تُرفع قائمة التطبيقات المثبّتة.</string>
+    <string name="about_privacy_security_title" formatted="false">التخزين والأمان</string>
+    <string name="about_privacy_security_body" formatted="false">تُحفظ الملفات والتفضيلات التي يديرها التطبيق في مساحة أندرويد الخاصة بالتطبيق. تستخدم سجلات المنبّهات والملاحظات تشفيرًا يعتمد على Android Keystore؛ لا تُشفّر جميع الصور وذاكرات التخزين المؤقت والتفضيلات العادية بشكل منفصل. النسخ الاحتياطي السحابي ونقل بيانات التطبيق في أندرويد معطّلان في هذا الإصدار. احمِ جهازك؛ لا يتحكم التطبيق بأمان جهازك أو مزوّدي الملفات أو الخدمات التي تفتحها. قد تُظهر الإشعارات والودجات وتنبيهات شاشة القفل المحتوى الذي تختاره. استخدم إعدادات خصوصية الإشعارات والتنبيهات للتحكم بما يراه الآخرون على جهازك.</string>
+    <string name="about_privacy_delete_title" formatted="false">الاحتفاظ بالمعلومات وحذفها</string>
+    <string name="about_privacy_delete_body" formatted="false">تبقى المعلومات المحلية حتى تحذفها أو تمسح مساحة التطبيق. احذف المنبّهات والملاحظات من عناصر التحكم الخاصة بها. قد تبقى صور منسوخة ومسودات وذاكرة البحث بعد إزالة عنصر أو مرفق. لإزالة جميع البيانات التي يديرها التطبيق، انتقل إلى إعدادات أندرويد ← التطبيقات ← InfiniTime ← التخزين ← مسح مساحة التخزين، أو أزل التطبيق. تُحذف أيضًا التذكيرات والإعدادات المحفوظة. لا تُحذف الملفات الأصلية في المعرض أو السحابة ولا بيانات الخدمات الخارجية؛ تُدار هذه لدى مزوّدها.\n\nيمكنك سحب أذونات الموقع والإشعارات والملفات من إعدادات أندرويد، وإيقاف تنبيهات ملء الشاشة أو المنبّهات الدقيقة وتجنّب البحث الاختياري عبر الإنترنت. قد تتعطل بعض الوظائف أو تتأخر حينئذٍ. لا يلزم طلب حذف حساب لأن التطبيق لا ينشئ حسابات مستخدمين.</string>
+    <string name="about_privacy_contact_title" formatted="false">الأسئلة وتغييرات السياسة</string>
+    <string name="about_privacy_contact_body" formatted="false">يمكن تقديم أسئلة الخصوصية ومشاكل التطبيق عبر صفحة دعم المشروع. بلاغات GitHub عامة؛ لا تنشر ملاحظات خاصة أو إحداثيات دقيقة أو ملفات شخصية أو تفاصيل حسابات. لم يُضبط بريد دعم خاص في هذا الإصدار. يحدد التاريخ أعلاه نسخة السياسة. يجب أن تنعكس تغييرات معالجة البيانات المهمة هنا وأن تُطلب الأذونات أو الموافقة اللازمة للميزات الجديدة.</string>
+    <string name="about_terms_use_title" formatted="false">استخدام التطبيق</string>
+    <string name="about_terms_use_body" formatted="false">استخدم InfiniTime بصورة قانونية ومع محتوى وملفات يحق لك استخدامها. تظل ملاحظاتك ووسائطك ملكك. لا تستخدم الروابط أو التذكيرات لانتهاك حقوق الآخرين. تحتفظ مكوّنات وبيانات الجهات الخارجية بتراخيصها؛ لا يمنح إدراج إشعاراتها ترخيصًا مستقلاً للتطبيق بكامله.</string>
+    <string name="about_terms_reliability_title" formatted="false">التذكيرات والمعلومات المحسوبة</string>
+    <string name="about_terms_reliability_body" formatted="false">يعتمد وصول التذكير على وقت الجهاز والأذونات والصوت وقيود البطارية وسلوك أندرويد. اختبر المنبّهات المهمة واستخدم وسائل احتياطية للتذكيرات الضرورية. قد يمنع الإيقاف الإجباري أو رفض الأذونات التنبيهات. التطبيق ليس نظام إنذار للطوارئ أو للأغراض الطبية.\n\nقد تختلف المناسبات والتواريخ القمرية المستقبلية ومواقيت الصلاة واتجاه القبلة باختلاف الإعلانات المحلية والموقع وطريقة الحساب والحساسات وبيانات المنطقة الزمنية. تحقّق من المعلومات المهمة من مرجع محلي مناسب. لا تحد هذه الشروط من الحقوق التي لا يسمح القانون بتقييدها.</string>
+    <string name="about_terms_external_title" formatted="false">الخدمات والمحتوى الخارجي</string>
+    <string name="about_terms_external_body" formatted="false">لخدمات الموقع والمواقع الخارجية وتطبيقات الكاميرا والملفات والتطبيقات المرفقة شروطها وسياساتها وحدودها الخاصة. لا يضمن التطبيق تشغيلها المتواصل ولا يتحكم بمحتواها. لا ترسل معلومات حساسة إلى صفحات الدعم العامة.</string>
+    <string name="about_terms_changes_title" formatted="false">التحديثات والدعم</string>
+    <string name="about_terms_changes_body" formatted="false">قد تتغير الميزات وهذه الشروط في إصدارات مستقبلية. راجع الشروط وسياسة الخصوصية المحدثة عند التحديث، واستخدم صفحة الدعم للأسئلة أو البلاغات. لا ينشأ عقد شراء أو اشتراك أو حساب بمجرد عرض هذه الصفحة.</string>
+    <string name="about_permissions_alerts_title" formatted="false">الإشعارات والمنبّهات</string>
+    <string name="about_permissions_alerts_body" formatted="false">تعرض الإشعارات التذكيرات وبطاقة التاريخ الدائمة الاختيارية. يحسّن إذن المنبّهات الدقيقة التوقيت، ويسمح إذن ملء الشاشة بظهور التنبيهات المفعّلة فوق شاشة القفل. يدعم الصوت والاهتزاز والتشغيل في المقدمة والوصول بعد إعادة التشغيل تذكيراتك المهيّأة. يمكنك إدارة هذه الأذونات من إعدادات أندرويد.</string>
+    <string name="about_permissions_location_title" formatted="false">الموقع والحساسات</string>
+    <string name="about_permissions_location_body" formatted="false">يدعم الموقع التقريبي أو الدقيق أثناء الاستخدام مواقيت الصلاة وأدوات القبلة عند اختيار استخدام الموقع. يتوفر اختيار المدينة أو المكان يدويًا. تحسب حساسات البوصلة الاتجاه على جهازك. لا يطلب التطبيق إذن الموقع في الخلفية.</string>
+    <string name="about_permissions_media_title" formatted="false">الوسائط المختارة والاختصارات</string>
+    <string name="about_permissions_media_body" formatted="false">يتيح منتقي النظام وأذونات المشاركة المؤقتة استخدام الملفات والوسائط المختارة وصور الكاميرا في التذكيرات. تُقرأ أسماء التطبيقات وأيقوناتها لإنشاء الاختصارات التي تختارها. لا يطلب التطبيق إذنًا غير مقيّد لتخزين الملفات أو إذن عرض جميع الحزم المثبّتة.</string>
+    <string name="about_permissions_network_title" formatted="false">الوصول إلى الإنترنت</string>
+    <string name="about_permissions_network_body" formatted="false">يُستخدم الإنترنت للبحث الاختياري عن المدن والمناطق الزمنية، بما يشمل إصلاح مواقع قديمة عند الحاجة. قد تصل عبارة البحث أو الإحداثيات إلى الجهات المحددة في سياسة الخصوصية. لا تحتاج وظائف الساعة والتذكير المحلية إلى حساب أو اتصال دائم بالإنترنت.</string>
+    <string name="about_credits_body" formatted="false">تتضمن حسابات التقويم كودًا وبيانات مرجعية من Unicode/ICU. تتضمن المراجع القمرية الإيرانية تجميع qamari المنشور وفق CC0. الإشعارات المرفقة متاحة أدناه.\n\nيستخدم البحث عن الأماكن OpenStreetMap/Nominatim: © مساهمو OpenStreetMap، والبيانات متاحة وفق Open Database License. يقدّم TimeAPI وOpen-Meteo عمليات بحث اختيارية عن المنطقة الزمنية. وقد يستخدم Geocoder في أندرويد مزوّد جهازك.</string>
+    <string name="about_unicode_license" formatted="false">إشعارات Unicode / ICU</string>
+    <string name="about_qamari_license" formatted="false">ترخيص qamari — CC0</string>
+    <string name="about_osm_attribution" formatted="false">نسب بيانات OpenStreetMap وترخيصها</string>
+    <string name="about_osm_privacy" formatted="false">سياسة خصوصية OpenStreetMap</string>
+    <string name="about_timeapi_privacy" formatted="false">سياسة خصوصية TimeAPI</string>
+    <string name="about_openmeteo_terms" formatted="false">شروط Open-Meteo وخصوصيته</string>
 </resources>

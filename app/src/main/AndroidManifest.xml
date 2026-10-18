@@ -37,6 +37,7 @@
             android:exported="false" android:grantUriPermissions="true" />
         <activity android:name=".AlarmAttachmentEditorActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:enableOnBackInvokedCallback="true" android:name=".AlarmPhotoCropActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".AboutActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity

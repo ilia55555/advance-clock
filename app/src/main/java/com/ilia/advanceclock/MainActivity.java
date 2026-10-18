@@ -372,6 +372,7 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 6, 4, AppString.get(R.string.runtime_text_0108));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
             menu.getMenu().add(0, 3, 6, AppString.get(R.string.runtime_text_0109));
+            menu.getMenu().add(0, 9, 7, getString(R.string.about_title));
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
@@ -404,6 +405,10 @@ public final class MainActivity extends Activity {
                 }
                 if (item.getItemId() == 3) {
                     startPermissionFlow();
+                    return true;
+                }
+                if (item.getItemId() == 9) {
+                    startActivity(new Intent(this, AboutActivity.class));
                     return true;
                 }
                 return false;
