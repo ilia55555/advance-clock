@@ -19,6 +19,36 @@
         android:gravity="center_vertical"
         android:padding="6dp">
 
+        <FrameLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_date_notification_day">
+
+            <ImageView
+                android:id="@+id/date_notification_day_border"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_date_notification_day_border"
+                android:scaleType="fitXY"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/date_notification_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/app_text"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false"
+                android:padding="4dp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="16sp"
+                android:autoSizeMaxTextSize="30sp"
+                android:autoSizeStepGranularity="1sp"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
+
         <LinearLayout
             android:id="@+id/date_notification_text"
             android:layout_width="0dp"
@@ -65,35 +95,5 @@
                 android:autoSizeMaxTextSize="14sp"
                 android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_date_notification_day">
-
-            <ImageView
-                android:id="@+id/date_notification_day_border"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/bg_date_notification_day_border"
-                android:scaleType="fitXY"
-                android:importantForAccessibility="no" />
-
-            <TextView
-                android:id="@+id/date_notification_day"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@color/app_text"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:includeFontPadding="false"
-                android:padding="4dp"
-                android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="16sp"
-                android:autoSizeMaxTextSize="30sp"
-                android:autoSizeStepGranularity="1sp"
-                android:importantForAccessibility="no" />
-        </FrameLayout>
     </LinearLayout>
 </FrameLayout>

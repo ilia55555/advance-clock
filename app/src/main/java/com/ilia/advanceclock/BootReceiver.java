@@ -62,8 +62,7 @@ public final class BootReceiver extends BroadcastReceiver {
             }
         }
 
-        // The date notification no longer needs a foreground service or a
-        // minute-by-minute ticker. These system broadcasts are sufficient.
+        // Clock changes rebuild the date card and its next local-midnight refresh.
         if (AppSettings.persistentDateNotificationEnabled(context)) {
             DateNotificationService.refreshNow(context);
         } else {

@@ -1,6 +1,7 @@
 package com.ilia.advanceclock;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +14,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -40,6 +44,12 @@ public final class DateNotificationService extends Service {
 
     public static void stop(Context context) {
         stopLegacyService(context);
+        AlarmManager alarms = context.getSystemService(AlarmManager.class);
+        PendingIntent refresh = refreshOperation(context, PendingIntent.FLAG_NO_CREATE);
+        if (refresh != null) {
+            if (alarms != null) alarms.cancel(refresh);
+            refresh.cancel();
+        }
         NotificationManager manager =
                 context.getSystemService(NotificationManager.class);
         if (manager != null) {
@@ -75,6 +85,7 @@ public final class DateNotificationService extends Service {
             manager.notify(
                     ID,
                     buildNotification(context));
+            scheduleNextRefresh(context);
         } catch (SecurityException ignored) {
         }
     }
@@ -170,11 +181,8 @@ public final class DateNotificationService extends Service {
                 .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day))
                 .setCustomBigContentView(dateView(context, R.layout.notification_date_expanded, title, twoOtherDates.toString(), day));
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
-        } else {
-            builder.setSmallIcon(R.drawable.ic_alarm);
-        }
+        // minSdk is 26: the actual status-bar small icon always contains today's day.
+        builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
         return builder.build();
     }
 
@@ -191,7 +199,7 @@ public final class DateNotificationService extends Service {
         views.setTextViewText(R.id.date_notification_other_dates, otherDates);
         views.setTextViewText(R.id.date_notification_day, CalendarUtils.fa(day));
         views.setViewVisibility(R.id.date_notification_other_dates, otherDates.isEmpty() ? View.GONE : View.VISIBLE);
-        // The badge stays on the right as in the design; only the text direction follows the language.
+        // The badge stays on the left in both layout directions; only the text direction follows the language.
         int direction = AppSettings.layoutDirection(context);
         views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
         int textDirection = direction == View.LAYOUT_DIRECTION_RTL ? View.TEXT_DIRECTION_RTL : View.TEXT_DIRECTION_LTR;
@@ -200,23 +208,49 @@ public final class DateNotificationService extends Service {
         return views;
     }
 
+    private static PendingIntent refreshOperation(Context context, int flags) {
+        return PendingIntent.getBroadcast(context, 74,
+                new Intent(context, DateNotificationRefreshReceiver.class)
+                        .setAction("com.ilia.advanceclock.REFRESH_DATE_NOTIFICATION"),
+                flags | PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    private static void scheduleNextRefresh(Context context) {
+        AlarmManager alarms = context.getSystemService(AlarmManager.class);
+        if (alarms == null) return;
+        long midnight = DateNotificationSchedule.nextMidnight(System.currentTimeMillis(), java.time.ZoneId.systemDefault());
+        PendingIntent operation = refreshOperation(context, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (PermissionHelper.exactAlarmsGranted(context)) {
+            try {
+                alarms.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, midnight, operation);
+                return;
+            } catch (SecurityException ignored) { /* Permission may change while scheduling. */ }
+        }
+        // Keep a refresh scheduled even when exact alarms have not been granted.
+        try { alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, midnight, operation); }
+        catch (SecurityException ignored) {}
+    }
+
     private static Bitmap dayIcon(int day) {
         Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-
         Paint circle = new Paint(Paint.ANTI_ALIAS_FLAG);
         circle.setColor(Color.WHITE);
-        circle.setStyle(Paint.Style.STROKE);
-        circle.setStrokeWidth(10);
-        canvas.drawCircle(48f, 48f, 42f, circle);
+        canvas.drawCircle(48f, 48f, 46f, circle);
 
         Paint digits = new Paint(Paint.ANTI_ALIAS_FLAG);
-        digits.setColor(Color.WHITE);
-        digits.setTextAlign(Paint.Align.CENTER);
         digits.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        digits.setTextSize(day >= 10 ? 50f : 60f);
-        Paint.FontMetrics fm = digits.getFontMetrics();
-        canvas.drawText(CalendarUtils.fa(day), 48f, 48f - (fm.ascent + fm.descent) / 2f, digits);
+        digits.setTextSize(day >= 10 ? 74f : 88f);
+        String value = CalendarUtils.fa(day);
+        Rect bounds = new Rect();
+        digits.getTextBounds(value, 0, value.length(), bounds);
+        float fit = Math.min(1f, Math.min(68f / Math.max(1, bounds.width()), 66f / Math.max(1, bounds.height())));
+        digits.setTextSize(digits.getTextSize() * fit);
+        digits.getTextBounds(value, 0, value.length(), bounds);
+        // Small icons are alpha masks: transparent digits remain legible after system tinting.
+        digits.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        canvas.drawText(value, 48f - bounds.exactCenterX(), 48f - bounds.exactCenterY(), digits);
+        digits.setXfermode(null);
         return bitmap;
     }
 }

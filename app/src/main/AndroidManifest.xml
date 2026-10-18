@@ -210,6 +210,8 @@
         <receiver android:name=".NoForgetReminderReceiver" android:exported="false" />
         <receiver android:name=".MediaWidgetActionReceiver" android:exported="false" />
 
+        <receiver android:name=".DateNotificationRefreshReceiver" android:exported="false" />
+
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
