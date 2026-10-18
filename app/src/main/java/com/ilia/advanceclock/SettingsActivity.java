@@ -63,36 +63,32 @@ public final class SettingsActivity extends Activity {
 
         root.addView(top);
 
-        root.addView(label(AppString.get(R.string.runtime_text_0152)));
-        Spinner palette = spinner(AppSettings.paletteNames());
-        palette.setSelection(AppSettings.palette(this));
-        root.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
+        LinearLayout generalSettings = section(root, R.string.settings_section_general);
+        LinearLayout tabSettings = section(root, R.string.runtime_text_0159);
+        LinearLayout calendarSettings = section(root, R.string.settings_section_calendar);
+        LinearLayout alarmSettings = section(root, R.string.settings_section_alarms);
+        LinearLayout prayerSettingsCard = section(root, R.string.runtime_text_0077);
 
-        root.addView(label(getString(R.string.language_label)));
+        generalSettings.addView(label(getString(R.string.language_label)));
         Spinner language = languageSpinner(
                 getResources().getStringArray(R.array.language_options));
         language.setSelection(AppSettings.languagePosition(this));
-        root.addView(language, new LinearLayout.LayoutParams(-1, dp(54)));
+        generalSettings.addView(language, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label(getString(R.string.calendar_label)));
+        generalSettings.addView(label(AppString.get(R.string.runtime_text_0152)));
+        Spinner palette = spinner(AppSettings.paletteNames());
+        palette.setSelection(AppSettings.palette(this));
+        generalSettings.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
+
+        calendarSettings.addView(label(getString(R.string.calendar_label)));
         Spinner calendar = spinner(getResources().getStringArray(R.array.calendar_options));
         calendar.setSelection(AppSettings.defaultCalendar(this));
-        root.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
-
-        root.addView(label(AppString.get(R.string.runtime_text_0153)));
-        LinearLayout eventsCard = settingsCard();
-
-        TextView eventsTitle = new TextView(this);
-        eventsTitle.setText(AppString.get(R.string.runtime_text_0154));
-        eventsTitle.setTextColor(AppSettings.textPrimary(this));
-        eventsTitle.setTextSize(17);
-        eventsTitle.setTypeface(null, android.graphics.Typeface.BOLD);
-        eventsCard.addView(eventsTitle);
+        calendarSettings.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
         Switch showCalendarEvents = settingSwitch(
                 AppString.get(R.string.runtime_text_0155),
                 AppSettings.showCalendarEvents(this));
-        eventsCard.addView(showCalendarEvents);
+        calendarSettings.addView(showCalendarEvents);
 
         int[] initialExtraTypes = extraCalendarTypes(calendar.getSelectedItemPosition());
         Switch extraEventsOne = settingSwitch(
@@ -101,8 +97,8 @@ public final class SettingsActivity extends Activity {
         Switch extraEventsTwo = settingSwitch(
                 eventSourceLabel(initialExtraTypes[1]),
                 AppSettings.additionalCalendarEventsEnabled(this, initialExtraTypes[1]));
-        eventsCard.addView(extraEventsOne);
-        eventsCard.addView(extraEventsTwo);
+        calendarSettings.addView(extraEventsOne);
+        calendarSettings.addView(extraEventsTwo);
 
         boolean[] bindingExtraSources = {false};
         Runnable refreshExtraSources = () -> {
@@ -120,16 +116,13 @@ public final class SettingsActivity extends Activity {
             bindingExtraSources[0] = false;
         };
         refreshExtraSources.run();
-        root.addView(eventsCard, settingsCardParams());
 
-        root.addView(label(AppString.get(R.string.runtime_text_0077)));
-        LinearLayout prayerCard = settingsCard();
         LinearLayout prayerRow = new LinearLayout(this);
         prayerRow.setOrientation(LinearLayout.HORIZONTAL);
         prayerRow.setGravity(Gravity.CENTER_VERTICAL);
         prayerRow.setLayoutDirection(AppSettings.layoutDirection(this));
         Switch adhanEnabled = settingSwitch(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(this));
-        prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, dp(50), 1f));
+        prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, -2, 1f));
 
         Button prayerSettings = new Button(this);
         prayerSettings.setText(AppString.get(R.string.runtime_text_0001));
@@ -139,44 +132,41 @@ public final class SettingsActivity extends Activity {
         prayerSettings.setOnClickListener(v ->
                 startActivity(new Intent(this, PrayerSettingsActivity.class)));
         prayerRow.addView(prayerSettings, new LinearLayout.LayoutParams(dp(100), dp(44)));
-        prayerCard.addView(prayerRow);
-        root.addView(prayerCard, settingsCardParams());
+        prayerSettingsCard.addView(prayerRow);
 
-        root.addView(label(AppString.get(R.string.runtime_text_0156)));
+        generalSettings.addView(label(AppString.get(R.string.runtime_text_0156)));
         Spinner layout = spinner(new String[]{
                 AppString.get(R.string.runtime_text_0157),
                 AppString.get(R.string.runtime_text_0158)
         });
         layout.setSelection(AppSettings.clockLayoutMode(this));
-        root.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
+        generalSettings.addView(layout, new LinearLayout.LayoutParams(-1, dp(54)));
 
         Switch autoDeleteExpiredAlarms = settingSwitch(
                 AppString.get(R.string.runtime_text_0359),
                 AppSettings.autoDeleteExpiredAlarms(this));
-        root.addView(autoDeleteExpiredAlarms);
 
-        root.addView(label(AppString.get(R.string.runtime_text_0159)));
         Switch tabClock = tabSwitch(getString(R.string.tab_clock), "clock");
         Switch tabNotes = tabSwitch(getString(R.string.tab_notes), "noforget");
         Switch tabStopwatch = tabSwitch(getString(R.string.tab_stopwatch), "stopwatch");
         Switch tabTimer = tabSwitch(getString(R.string.tab_timer), "timer");
         Switch tabWorld = tabSwitch(getString(R.string.tab_world), "world");
-        root.addView(tabClock);
-        root.addView(tabNotes);
-        root.addView(tabStopwatch);
-        root.addView(tabTimer);
-        root.addView(tabWorld);
+        tabSettings.addView(tabClock);
+        tabSettings.addView(tabNotes);
+        tabSettings.addView(tabStopwatch);
+        tabSettings.addView(tabTimer);
+        tabSettings.addView(tabWorld);
 
-        root.addView(label(AppString.get(R.string.runtime_text_0160)));
+        alarmSettings.addView(label(AppString.get(R.string.runtime_text_0160)));
         Spinner alarmStyle = spinner(new String[]{
                 AppString.get(R.string.runtime_text_0161),
                 AppString.get(R.string.runtime_text_0162),
                 AppString.get(R.string.runtime_text_0163)
         });
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
-        root.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
+        alarmSettings.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
 
-        root.addView(label(getString(R.string.alarm_auto_stop_title)));
+        alarmSettings.addView(label(getString(R.string.alarm_auto_stop_title)));
         String[] ringOptions = new String[AppSettings.ALARM_RING_MINUTES.length];
         int ringSelection = 2;
         for (int i = 0; i < ringOptions.length; i++) {
@@ -187,7 +177,8 @@ public final class SettingsActivity extends Activity {
         }
         Spinner ringDuration = spinner(ringOptions);
         ringDuration.setSelection(ringSelection);
-        root.addView(ringDuration, new LinearLayout.LayoutParams(-1, dp(54)));
+        alarmSettings.addView(ringDuration, new LinearLayout.LayoutParams(-1, dp(54)));
+        alarmSettings.addView(autoDeleteExpiredAlarms);
         watch(ringDuration, position -> AppSettings.setAlarmRingMinutes(
                 this, AppSettings.ALARM_RING_MINUTES[position]));
 
@@ -342,7 +333,8 @@ public final class SettingsActivity extends Activity {
         control.setTextColor(AppSettings.textPrimary(this));
         control.setChecked(AppSettings.tabEnabled(this, key));
         control.setPadding(0, dp(4), 0, dp(4));
-        control.setLayoutParams(new LinearLayout.LayoutParams(-1, dp(48)));
+        control.setMinHeight(dp(48));
+        control.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
         return control;
     }
 
@@ -353,7 +345,8 @@ public final class SettingsActivity extends Activity {
         control.setTextSize(14);
         control.setChecked(checked);
         control.setPadding(0, dp(3), 0, dp(3));
-        control.setLayoutParams(new LinearLayout.LayoutParams(-1, dp(48)));
+        control.setMinHeight(dp(48));
+        control.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
         return control;
     }
 
@@ -366,10 +359,20 @@ public final class SettingsActivity extends Activity {
         return card;
     }
 
-    private LinearLayout.LayoutParams settingsCardParams() {
+    private LinearLayout section(LinearLayout root, int titleResource) {
+        LinearLayout card = settingsCard();
+        TextView heading = new TextView(this);
+        heading.setText(titleResource);
+        heading.setTextColor(AppSettings.primaryColor(this));
+        heading.setTextSize(17);
+        heading.setTypeface(null, android.graphics.Typeface.BOLD);
+        heading.setPadding(0, 0, 0, dp(8));
+        if (android.os.Build.VERSION.SDK_INT >= 28) heading.setAccessibilityHeading(true);
+        card.addView(heading);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
-        params.bottomMargin = dp(8);
-        return params;
+        params.topMargin = dp(16);
+        root.addView(card, params);
+        return card;
     }
 
     private int[] extraCalendarTypes(int primary) {

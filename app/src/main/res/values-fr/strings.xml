@@ -903,4 +903,7 @@ Sans rappel</string>
     <string name="media_crop_hint">Move the photo or pinch to zoom</string>
     <string name="media_image_error">Unable to open or save this photo</string>
     <string name="note_app_unavailable">This app is unavailable or cannot be opened</string>
+    <string name="settings_section_general">Général</string>
+    <string name="settings_section_calendar">Calendrier et événements</string>
+    <string name="settings_section_alarms">Alertes</string>
 </resources>

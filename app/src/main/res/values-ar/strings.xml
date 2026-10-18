@@ -1204,4 +1204,7 @@
     <string name="media_crop_hint">حرّك الصورة أو كبّر بإصبعين</string>
     <string name="media_image_error">تعذر فتح الصورة أو حفظها</string>
     <string name="note_app_unavailable">هذا التطبيق غير متاح أو يتعذر فتحه</string>
+    <string name="settings_section_general">إعدادات عامة</string>
+    <string name="settings_section_calendar">التقويم والمناسبات</string>
+    <string name="settings_section_alarms">التنبيهات</string>
 </resources>
