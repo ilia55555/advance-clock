@@ -1185,4 +1185,5 @@
     <string name="media_open">باز کردن</string>
     <string name="media_crop_hint">عکس را جابه‌جا کنید یا با دو انگشت بزرگ کنید</string>
     <string name="media_image_error">امکان دریافت یا ذخیره عکس وجود ندارد</string>
+    <string name="note_app_unavailable">این برنامه در دسترس نیست یا امکان باز کردن آن وجود ندارد</string>
 </resources>

@@ -1203,4 +1203,5 @@
     <string name="media_open">فتح</string>
     <string name="media_crop_hint">حرّك الصورة أو كبّر بإصبعين</string>
     <string name="media_image_error">تعذر فتح الصورة أو حفظها</string>
+    <string name="note_app_unavailable">هذا التطبيق غير متاح أو يتعذر فتحه</string>
 </resources>

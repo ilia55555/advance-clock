@@ -11,6 +11,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,6 +69,15 @@ public final class NoteReminderActivity extends Activity {
     }
 
     private void enterImmersiveMode(){
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().setDecorFitsSystemWindows(false);
+            android.view.WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                controller.hide(android.view.WindowInsets.Type.systemBars());
+            }
+            return;
+        }
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         |View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -84,97 +95,163 @@ public final class NoteReminderActivity extends Activity {
             return;
         }
 
-        LinearLayout content=new LinearLayout(this);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setGravity(Gravity.CENTER_HORIZONTAL);
-        content.setPadding(dp(20),dp(42),dp(20),dp(24));
+        FrameLayout screen = new FrameLayout(this);
+        screen.setBackgroundColor(AppSettings.background(this));
+        screen.setLayoutDirection(AppSettings.layoutDirection(this));
+        screen.setPadding(dp(20), 0, dp(20), 0);
+        screen.setMinimumHeight(dp(480));
 
-        TextView heading=text(
-                item.title.trim().isEmpty()?AppString.get(R.string.runtime_text_0311):item.title,
-                28);
+        LinearLayout headingContent = new LinearLayout(this);
+        headingContent.setOrientation(LinearLayout.VERTICAL);
+        headingContent.setPadding(0, dp(36), 0, dp(12));
+        TextView heading = text(item.title.trim().isEmpty()
+                ? AppString.get(R.string.runtime_text_0311) : item.title, 26);
         heading.setGravity(Gravity.CENTER);
-        content.addView(heading,matchWrap());
-
-        if(!item.body.trim().isEmpty()){
-            TextView body=text(item.body,17);
+        headingContent.addView(heading, matchWrap());
+        if (!item.body.trim().isEmpty()) {
+            TextView body = text(item.body, 17);
             body.setGravity(Gravity.CENTER);
-            LinearLayout.LayoutParams bp=matchWrap();
-            bp.topMargin=dp(14);
-            content.addView(body,bp);
+            LinearLayout.LayoutParams params = matchWrap();
+            params.topMargin = dp(14);
+            headingContent.addView(body, params);
         }
+        ScrollView header = new ScrollView(this);
+        header.setFillViewport(false);
+        header.addView(headingContent);
+        screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
 
-        addAttachments(content,NoteAttachment.parse(item.attachmentsJson));
-
-        Button openNote=new Button(this);
+        LinearLayout footer = new LinearLayout(this);
+        footer.setOrientation(LinearLayout.VERTICAL);
+        footer.setPadding(0, dp(12), 0, dp(32));
+        Button openNote = new Button(this);
         openNote.setText(AppString.get(R.string.runtime_text_0308));
         openNote.setAllCaps(false);
-        openNote.setOnClickListener(v->{
-            startActivity(
-                    new Intent(this,NoForgetEditorActivity.class)
-                            .putExtra("noteId",noteId));
+        openNote.setTextColor(AppSettings.primaryColor(this));
+        openNote.setBackgroundResource(R.drawable.bg_soft_button);
+        openNote.setOnClickListener(v -> {
+            startActivity(new Intent(this, NoForgetEditorActivity.class).putExtra("noteId", noteId));
             stopAndClose();
         });
-        LinearLayout.LayoutParams op=matchWrap();
-        op.topMargin=dp(18);
-        content.addView(openNote,op);
-
-        Button dismiss=new Button(this);
+        footer.addView(openNote, new LinearLayout.LayoutParams(-1, dp(56)));
+        Button dismiss = new Button(this);
         dismiss.setText(AppString.get(R.string.runtime_text_0309));
         dismiss.setAllCaps(false);
-        dismiss.setOnClickListener(v->stopAndClose());
-        LinearLayout.LayoutParams dismissParams=matchWrap();
-        dismissParams.topMargin=dp(8);
-        content.addView(dismiss,dismissParams);
+        dismiss.setTextColor(Color.WHITE);
+        dismiss.setBackgroundResource(R.drawable.bg_teal_button);
+        dismiss.setOnClickListener(v -> stopAndClose());
+        LinearLayout.LayoutParams dismissParams = new LinearLayout.LayoutParams(-1, dp(56));
+        dismissParams.topMargin = dp(12);
+        footer.addView(dismiss, dismissParams);
+        screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
 
-        ScrollView root=new ScrollView(this);
+        List<NoteAttachment> attachments = NoteAttachment.parse(item.attachmentsJson);
+        View shortcuts = attachmentStrip(attachments);
+        screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(180), Gravity.CENTER));
+        boolean hasImages = false;
+        for (NoteAttachment attachment : attachments) if (attachment.isImage()) hasImages = true;
+        final int preferredHeight = dp(hasImages ? 220 : 164);
+        // Keep the shortcuts at the screen center whenever header/footer space permits it.
+        // A long note scrolls independently instead of pushing its app shortcut downwards.
+        screen.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob) -> {
+            int height = screen.getHeight();
+            headingContent.measure(View.MeasureSpec.makeMeasureSpec(
+                    Math.max(1, screen.getWidth() - screen.getPaddingLeft() - screen.getPaddingRight()), View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            int headerHeight = Math.min(headingContent.getMeasuredHeight(), height / 3);
+            FrameLayout.LayoutParams hp = (FrameLayout.LayoutParams) header.getLayoutParams();
+            if (hp.height != headerHeight) { hp.height = headerHeight; header.setLayoutParams(hp); }
+            int top = headerHeight + dp(8);
+            int bottom = height - footer.getMeasuredHeight() - dp(8);
+            int shortcutHeight = Math.max(dp(64), Math.min(preferredHeight, bottom - top));
+            int shortcutTop = Math.max(top, Math.min((height - shortcutHeight) / 2, bottom - shortcutHeight));
+            FrameLayout.LayoutParams cp = (FrameLayout.LayoutParams) shortcuts.getLayoutParams();
+            if (cp.height != shortcutHeight || cp.topMargin != shortcutTop || cp.gravity != Gravity.TOP) {
+                cp.height = shortcutHeight; cp.topMargin = shortcutTop; cp.gravity = Gravity.TOP;
+                shortcuts.setLayoutParams(cp);
+            }
+        });
+        screen.setOnApplyWindowInsetsListener((v, insets) -> {
+            int safeTop, safeBottom;
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.graphics.Insets safe = insets.getInsetsIgnoringVisibility(
+                        android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout());
+                safeTop = safe.top; safeBottom = safe.bottom;
+            } else { safeTop = insets.getStableInsetTop(); safeBottom = insets.getStableInsetBottom(); }
+            headingContent.setPadding(0, Math.max(dp(36), safeTop + dp(12)), 0, dp(12));
+            footer.setPadding(0, dp(12), 0, safeBottom + dp(24));
+            return insets;
+        });
+        ScrollView root = new ScrollView(this);
         root.setFillViewport(true);
-        root.addView(content);
+        root.setBackgroundColor(AppSettings.background(this));
+        root.addView(screen, new ScrollView.LayoutParams(-1, -1));
         setContentView(root);
+        screen.requestApplyInsets();
     }
 
-    private void addAttachments(
-            LinearLayout root,
-            List<NoteAttachment> values){
-        if(values.isEmpty())return;
-
-        TextView label=text(AppString.get(R.string.runtime_text_0310),13);
-        label.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams lp=matchWrap();
-        lp.topMargin=dp(20);
-        root.addView(label,lp);
-
-        HorizontalScrollView scroll=new HorizontalScrollView(this);
+    private View attachmentStrip(List<NoteAttachment> values) {
+        HorizontalScrollView scroll = new HorizontalScrollView(this);
         scroll.setHorizontalScrollBarEnabled(false);
-        scroll.setVerticalScrollBarEnabled(false);
         scroll.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        scroll.setFillViewport(true);
         scroll.setBackgroundColor(Color.TRANSPARENT);
-        scroll.setFillViewport(false);
-
-        LinearLayout row=new LinearLayout(this);
+        LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setBackgroundColor(Color.TRANSPARENT);
-
-        for(NoteAttachment value:values){
-            View card=attachmentView(value);
-            card.setOnClickListener(v->value.open(this));
-            LinearLayout.LayoutParams cp=
-                    new LinearLayout.LayoutParams(dp(230),dp(200));
-            cp.setMarginEnd(dp(10));
-            row.addView(card,cp);
+        row.setGravity(Gravity.CENTER);
+        row.setLayoutDirection(AppSettings.layoutDirection(this));
+        for (int i = 0; i < values.size(); i++) {
+            NoteAttachment value = values.get(i);
+            View card = attachmentView(value);
+            card.setOnClickListener(v -> openAttachment(value));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    dp(NoteAttachment.KIND_APP.equals(value.kind) ? 100 : 200), -1);
+            // Symmetric margins keep one app and groups centered without a trailing gap.
+            params.setMarginStart(dp(4)); params.setMarginEnd(dp(4));
+            row.addView(card, params);
         }
+        scroll.addView(row, new HorizontalScrollView.LayoutParams(-2, -1));
+        boolean appsOnly = !values.isEmpty();
+        for (NoteAttachment value : values) if (!NoteAttachment.KIND_APP.equals(value.kind)) appsOnly = false;
+        if (appsOnly) scroll.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob) -> {
+            int width = Math.max(dp(92), Math.min(dp(100),
+                    (scroll.getWidth() - dp(8) * values.size()) / values.size()));
+            for (int i = 0; i < row.getChildCount(); i++) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) row.getChildAt(i).getLayoutParams();
+                if (params.width != width) { params.width = width; row.getChildAt(i).setLayoutParams(params); }
+            }
+        });
+        return scroll;
+    }
 
-        scroll.addView(
-                row,
-                new HorizontalScrollView.LayoutParams(
-                        HorizontalScrollView.LayoutParams.WRAP_CONTENT,
-                        HorizontalScrollView.LayoutParams.MATCH_PARENT));
-        LinearLayout.LayoutParams sp=
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(200));
-        sp.topMargin=dp(8);
-        root.addView(scroll,sp);
+    private String appName(NoteAttachment value) {
+        try {
+            android.content.pm.ApplicationInfo info = getPackageManager().getApplicationInfo(value.value, 0);
+            return getPackageManager().getApplicationLabel(info).toString();
+        } catch (Exception ignored) {
+            return value.name == null || value.name.isEmpty() || value.name.equals(value.value)
+                    ? getString(R.string.media_app) : value.name;
+        }
+    }
+
+    private void openAttachment(NoteAttachment value) {
+        if (!NoteAttachment.KIND_APP.equals(value.kind)) { value.open(this); return; }
+        try {
+            Intent launch = getPackageManager().getLaunchIntentForPackage(value.value);
+            if (launch == null) {
+                // Some launchers expose only the MAIN/LAUNCHER activity, not an INFO activity.
+                Intent query = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER).setPackage(value.value);
+                List<android.content.pm.ResolveInfo> activities = getPackageManager().queryIntentActivities(query, 0);
+                if (!activities.isEmpty()) {
+                    android.content.pm.ActivityInfo info = activities.get(0).activityInfo;
+                    launch = query.setComponent(new android.content.ComponentName(info.packageName, info.name));
+                }
+            }
+            if (launch != null) {
+                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                startActivity(launch); return;
+            }
+        } catch (Exception ignored) {}
+        Toast.makeText(this, R.string.note_app_unavailable, Toast.LENGTH_SHORT).show();
     }
 
     private View attachmentView(NoteAttachment value){
@@ -185,7 +262,11 @@ public final class NoteReminderActivity extends Activity {
         card.setBackgroundColor(Color.TRANSPARENT);
         card.setClickable(true);
         card.setFocusable(true);
-        card.setContentDescription(value.name);
+        String displayName = NoteAttachment.KIND_APP.equals(value.kind) ? appName(value) : value.name;
+        card.setContentDescription(displayName);
+        android.util.TypedValue ripple = new android.util.TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, ripple, true))
+            card.setBackgroundResource(ripple.resourceId);
 
         if(value.isImage()){
             ImageView image=new ImageView(this);
@@ -201,7 +282,9 @@ public final class NoteReminderActivity extends Activity {
                             dp(160)));
         }else if(NoteAttachment.KIND_APP.equals(value.kind)){
             ImageView icon=new ImageView(this);
-            icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            icon.setImageDrawable(getPackageManager().getDefaultActivityIcon());
+            icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             try{
                 Drawable drawable=getPackageManager()
                         .getApplicationIcon(value.value);
@@ -209,7 +292,7 @@ public final class NoteReminderActivity extends Activity {
             }catch(Exception ignored){}
             card.addView(
                     icon,
-                    new LinearLayout.LayoutParams(dp(92),dp(128)));
+                    new LinearLayout.LayoutParams(dp(80),dp(80)));
         }else{
             TextView symbol=text(
                     NoteAttachment.KIND_URL.equals(value.kind)?"🌐":"📎",
@@ -222,11 +305,13 @@ public final class NoteReminderActivity extends Activity {
                             dp(132)));
         }
 
-        TextView name=text(value.name,13);
+        TextView name=text(displayName,15);
         name.setGravity(Gravity.CENTER);
         name.setMaxLines(2);
+        name.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        name.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         LinearLayout.LayoutParams np=matchWrap();
-        np.topMargin=dp(4);
+        np.topMargin=dp(8);
         card.addView(name,np);
         return card;
     }
