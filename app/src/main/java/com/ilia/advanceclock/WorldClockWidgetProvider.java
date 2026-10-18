@@ -24,7 +24,9 @@ public final class WorldClockWidgetProvider extends AppWidgetProvider {
     }
     @Override public void onAppWidgetOptionsChanged(Context context, AppWidgetManager manager, int id, Bundle options) {
         setPage(context, id, 0);
-        update(context, manager, id, options);
+        Bundle merged = new Bundle(manager.getAppWidgetOptions(id));
+        if (options != null) merged.putAll(options);
+        update(context, manager, id, merged);
     }
     @Override public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);

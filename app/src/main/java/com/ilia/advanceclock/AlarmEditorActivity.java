@@ -154,9 +154,9 @@ public final class AlarmEditorActivity extends Activity {
                     updateReminderButton();
                 }));
 
-        attachmentKey = savedInstanceState == null ? "alarm_editor_" + java.util.UUID.randomUUID()
-                : savedInstanceState.getString("attachmentKey");
-        if (savedInstanceState == null) {
+        attachmentKey = savedInstanceState == null ? null : savedInstanceState.getString("attachmentKey");
+        if (attachmentKey == null || attachmentKey.isEmpty()) {
+            attachmentKey = "alarm_editor_" + java.util.UUID.randomUUID();
             AlarmItem existing = alarmId >= 0 ? new AlarmStore(this).find(alarmId) : null;
             if (existing == null) existing = new AlarmItem(-1, "", 0, 0, true);
             AlarmAttachments.write(this, attachmentKey, existing);

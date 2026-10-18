@@ -71,7 +71,9 @@ public final class AlarmAttachmentEditorActivity extends Activity {
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             capture.setClipData(ClipData.newRawUri("photo", output));
             startActivityForResult(capture, CAMERA);
-        } catch (Exception ignored) { error(); }
+        } catch (Exception ignored) {
+            AlarmMediaProvider.discard(this, cameraUri); cameraUri = ""; error();
+        }
     }
 
     private void pick(String mime, int request) {
@@ -130,7 +132,8 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             pendingOriginal = uri.toString();
             launchCrop();
         } else if (request == FILE) {
-            String mime = getContentResolver().getType(uri);
+            String mime = null;
+            try { mime = getContentResolver().getType(uri); } catch (RuntimeException ignored) {}
             add(new NoteAttachment(NoteAttachment.KIND_FILE, uri.toString(), name(uri), mime == null ? "*/*" : mime));
         }
     }

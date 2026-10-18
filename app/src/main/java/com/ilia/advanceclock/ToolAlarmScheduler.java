@@ -13,15 +13,15 @@ public final class ToolAlarmScheduler {
     private ToolAlarmScheduler() {}
 
     public static boolean schedule(Context context, String kind, long deadline, String label) {
-        android.content.SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        prefs.edit()
-                .putString(kind + "_active_image1", prefs.getString(kind + "_image1", ""))
-                .putString(kind + "_active_image2", prefs.getString(kind + "_image2", ""))
-                .putString(kind + "_active_attachments", prefs.getString(kind + "_attachments", "[]"))
-                .putBoolean(kind + "_active_background", prefs.getBoolean(kind + "_background", false))
-                .putLong(kind + "_deadline", deadline)
-                .putString(kind + "_label", label)
-                .apply();
+        return schedule(context, kind, deadline, label, true);
+    }
+
+    /** Reuse the snapshot belonging to the ringing or previously scheduled run. */
+    static boolean reschedule(Context context, String kind, long deadline, String label) {
+        return schedule(context, kind, deadline, label, false);
+    }
+
+    private static boolean schedule(Context context, String kind, long deadline, String label, boolean snapshot) {
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager == null || !PermissionHelper.exactAlarmsGranted(context)) return false;
         PendingIntent operation = pendingIntent(context, kind);
@@ -32,6 +32,15 @@ public final class ToolAlarmScheduler {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         try {
             manager.setAlarmClock(new AlarmManager.AlarmClockInfo(deadline, show), operation);
+            android.content.SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            android.content.SharedPreferences.Editor edit = prefs.edit();
+            if (snapshot) {
+                edit.putString(kind + "_active_image1", prefs.getString(kind + "_image1", ""))
+                        .putString(kind + "_active_image2", prefs.getString(kind + "_image2", ""))
+                        .putString(kind + "_active_attachments", prefs.getString(kind + "_attachments", "[]"))
+                        .putBoolean(kind + "_active_background", prefs.getBoolean(kind + "_background", false));
+            }
+            edit.putLong(kind + "_deadline", deadline).putString(kind + "_label", label).apply();
             return true;
         } catch (SecurityException ignored) {
             return false;
@@ -53,9 +62,9 @@ public final class ToolAlarmScheduler {
             if (deadline > now) {
                 String label = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                         .getString(kind + "_label", defaultLabel(kind));
-                schedule(context, kind, deadline, label);
+                reschedule(context, kind, deadline, label);
             } else if (deadline > 0L) {
-                schedule(context, kind, now + 1_000L,
+                reschedule(context, kind, now + 1_000L,
                         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                                 .getString(kind + "_label", defaultLabel(kind)));
             }

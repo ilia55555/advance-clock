@@ -30,6 +30,8 @@ final class ReminderScreen extends FrameLayout {
     private int textColor, mutedColor, primary, secondary, background;
 
     static void prepareWindow(Activity host) {
+        if (Build.VERSION.SDK_INT >= 33) host.getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, () -> { /* Stop explicitly. */ });
         if (Build.VERSION.SDK_INT >= 27) { host.setShowWhenLocked(true); host.setTurnScreenOn(true); }
         else host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -123,7 +125,7 @@ final class ReminderScreen extends FrameLayout {
         screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(164), Gravity.CENTER));
         boolean hasImages = false; for (NoteAttachment value : values) if (value.isImage()) hasImages = true;
         final int preferredHeight = dp(hasImages ? 220 : 164);
-        screen.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob) -> {
+        screen.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             int height = screen.getHeight();
             headingContent.measure(View.MeasureSpec.makeMeasureSpec(Math.max(1, screen.getWidth() - screen.getPaddingLeft() - screen.getPaddingRight()), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
             int headerHeight = Math.min(headingContent.getMeasuredHeight(), height / 3);
@@ -204,6 +206,17 @@ final class ReminderScreen extends FrameLayout {
     }
 
     private void openAttachment(NoteAttachment value) {
+        android.app.KeyguardManager keyguard = host.getSystemService(android.app.KeyguardManager.class);
+        if (keyguard != null && keyguard.isKeyguardLocked()) {
+            keyguard.requestDismissKeyguard(host, new android.app.KeyguardManager.KeyguardDismissCallback() {
+                @Override public void onDismissSucceeded() {
+                    if (!host.isFinishing() && !host.isDestroyed()) openUnlockedAttachment(value);
+                }
+            });
+        } else openUnlockedAttachment(value);
+    }
+
+    private void openUnlockedAttachment(NoteAttachment value) {
         if (!NoteAttachment.KIND_APP.equals(value.kind)) { value.open(host); return; }
         try {
             Intent launch = host.getPackageManager().getLaunchIntentForPackage(value.value);

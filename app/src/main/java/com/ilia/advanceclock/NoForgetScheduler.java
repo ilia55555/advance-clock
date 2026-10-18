@@ -60,10 +60,10 @@ public final class NoForgetScheduler {
 
     public static void cancel(Context context,long id){
         AlarmManager manager=context.getSystemService(AlarmManager.class);
+        context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
         if(manager==null)return;
         manager.cancel(mainPendingIntent(context,id));
         manager.cancel(snoozePendingIntent(context,id));
-        context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
         for(int i=0;i<AlarmReminderUtils.VALUES.length;i++){
             manager.cancel(preReminderPendingIntent(context,id,i,0));
         }

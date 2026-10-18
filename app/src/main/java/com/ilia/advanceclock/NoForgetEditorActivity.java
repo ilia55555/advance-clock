@@ -119,9 +119,9 @@ public final class NoForgetEditorActivity extends Activity {
         if(noteId>=0)loadExisting();
         else deleteButton.setVisibility(View.GONE);
 
-        attachmentKey = savedInstanceState == null ? "note_editor_" + java.util.UUID.randomUUID()
-                : savedInstanceState.getString("attachmentKey");
-        if (savedInstanceState == null) {
+        attachmentKey = savedInstanceState == null ? null : savedInstanceState.getString("attachmentKey");
+        if (attachmentKey == null || attachmentKey.isEmpty()) {
+            attachmentKey = "note_editor_" + java.util.UUID.randomUUID();
             NoForgetItem existing = noteId >= 0 ? new NoForgetStore(this).find(noteId) : null;
             if (existing != null) AlarmAttachments.write(this, attachmentKey, existing);
         }

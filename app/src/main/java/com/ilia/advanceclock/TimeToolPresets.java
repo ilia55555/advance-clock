@@ -26,7 +26,6 @@ final class TimeToolPresets {
     private final SharedPreferences prefs;
     private final LinearLayout controls;
     private final Button attachments;
-    private String editingId = "";
 
     TimeToolPresets(Activity host, android.widget.EditText label, String kind, Editor editor) {
         this.host = host;
@@ -77,11 +76,11 @@ final class TimeToolPresets {
             config.put("attachments", prefs.getString(kind + "_attachments", "[]"));
             config.put("background", prefs.getBoolean(kind + "_background", false));
             for (int i = 1; i <= 2; i++) config.put("source" + i, prefs.getString(kind + "_source" + i, prefs.getString(kind + "_image" + i, "")));
+            String editingId = prefs.getString(kind + "_editing_id", "");
             if (editingId.isEmpty()) editingId = java.util.UUID.randomUUID().toString();
             config.put("id", editingId);
-            prefs.edit().putString(kind + "_presets", TimeToolPresetStore.save(
+            prefs.edit().remove(kind + "_editing_id").putString(kind + "_presets", TimeToolPresetStore.save(
                     prefs.getString(kind + "_presets", "[]"), config)).apply();
-            editingId = "";
             Toast.makeText(host, R.string.tool_saved_success, Toast.LENGTH_SHORT).show();
         } catch (JSONException ignored) { showError(); }
     }
@@ -104,7 +103,8 @@ final class TimeToolPresets {
                                 // Read again so deleting cannot discard a more recent edit.
                                 prefs.edit().putString(kind + "_presets", TimeToolPresetStore.delete(
                                         prefs.getString(kind + "_presets", "[]"), item.optString("id"))).apply();
-                                if (item.optString("id").equals(editingId)) editingId = "";
+                                if (item.optString("id").equals(prefs.getString(kind + "_editing_id", "")))
+                                    prefs.edit().remove(kind + "_editing_id").apply();
                             }).setNegativeButton(android.R.string.cancel, null).show();
                 } else if (editor.busy()) {
                     new AlertDialog.Builder(host).setMessage(R.string.tool_replace_running)
@@ -119,7 +119,7 @@ final class TimeToolPresets {
         try {
             // The editor validates dates before replacing the active run or its images.
             editor.load(item, run);
-            editingId = run ? "" : item.optString("id");
+            prefs.edit().putString(kind + "_editing_id", run ? "" : item.optString("id")).apply();
             refresh();
         } catch (JSONException ignored) { showError(); }
     }

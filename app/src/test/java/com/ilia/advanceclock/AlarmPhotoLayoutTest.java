@@ -24,4 +24,21 @@ public final class AlarmPhotoLayoutTest {
             assertEquals((double)c[0]/c[1], (c[0]*scale)/(c[1]*scale), 0.00001);
         }
     }
+    @Test public void panningStopsAtTheImageEdges() {
+        assertEquals(0, AlarmPhotoLayout.clampOffset(8, 1000, 1000, 1), 0.00001);
+        assertEquals(0.5, AlarmPhotoLayout.clampOffset(8, 1000, 1000, 2), 0.00001);
+        assertEquals(-0.5, AlarmPhotoLayout.clampOffset(-8, 1000, 1000, 2), 0.00001);
+        assertEquals(0.2, AlarmPhotoLayout.clampOffset(0.2, 1000, 1000, 2), 0.00001);
+    }
+    @Test public void normalizedFramingMatchesPreviewAndFullResolutionExport() {
+        double zoom = 2;
+        double previewScale = AlarmPhotoLayout.fillScale(4000, 3000, 300, 600) * zoom;
+        double exportScale = AlarmPhotoLayout.fillScale(4000, 3000, 1200, 2400) * zoom;
+        for (double offset : new double[]{-10, -0.25, 0, 0.25, 10}) {
+            assertEquals(AlarmPhotoLayout.clampOffset(offset, 4000, 300, previewScale),
+                    AlarmPhotoLayout.clampOffset(offset, 4000, 1200, exportScale), 0.00001);
+            assertEquals(AlarmPhotoLayout.clampOffset(offset, 3000, 600, previewScale),
+                    AlarmPhotoLayout.clampOffset(offset, 3000, 2400, exportScale), 0.00001);
+        }
+    }
 }

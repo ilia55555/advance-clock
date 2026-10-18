@@ -199,6 +199,7 @@ final class TimerPanelController {
 
     void onResume(){
         resumed = true;
+        restoreDraft();
         restore();
         updateControls();
         renderSelection();

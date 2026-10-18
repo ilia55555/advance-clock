@@ -29,6 +29,8 @@ public final class AlarmMediaProvider extends ContentProvider {
         } catch (Exception ignored) {}
     }
     private File file(Uri uri) throws FileNotFoundException {
+        if (uri == null || uri.getLastPathSegment() == null || uri.getPathSegments().size() != 1)
+            throw new FileNotFoundException();
         try {
             File dir = new File(getContext().getFilesDir(), "alarm_media").getCanonicalFile();
             File file = new File(dir, uri.getLastPathSegment()).getCanonicalFile();

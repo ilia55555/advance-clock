@@ -43,7 +43,7 @@ public final class AlarmRingActivity extends Activity {
             startActivity(new Intent(this, AlarmEditorActivity.class).putExtra("alarmId", alarmId)); stopAndClose();
         };
         setContentView(new ReminderScreen(this, data, this::stopAndClose, open, minutes -> {
-            boolean ok = tool ? ToolAlarmScheduler.schedule(this, toolKind, System.currentTimeMillis() + minutes * 60_000L, data.title)
+            boolean ok = tool ? ToolAlarmScheduler.reschedule(this, toolKind, System.currentTimeMillis() + minutes * 60_000L, data.title)
                     : AlarmScheduler.snooze(this, alarmId, minutes * 60_000L);
             if (ok) { ClockWidgetProvider.updateAll(this); stopAndClose(); }
             else Toast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
@@ -58,6 +58,8 @@ public final class AlarmRingActivity extends Activity {
         if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) return true;
         return super.onKeyUp(code, event);
     }
+    // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
+    @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { /* Dismiss explicitly. */ }
     private void stopAndClose() {
         stopService(AlarmSoundService.stopIntent(this));

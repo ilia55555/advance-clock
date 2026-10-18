@@ -48,6 +48,8 @@ public final class NoteReminderActivity extends Activity {
         return super.onKeyUp(code, event);
     }
     private void stopAndClose() { stopService(NoForgetSoundService.stopIntent(this)); finishAndRemoveTask(); }
+    // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
+    @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { /* Dismiss explicitly, consistently with other alerts. */ }
     @Override protected void onDestroy() { if (showing.get() == this) showing.clear(); super.onDestroy(); }
 }

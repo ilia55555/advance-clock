@@ -24,7 +24,7 @@ public final class NoForgetSoundService extends Service {
     private Vibrator vibrator;
     private static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_NOTE";
     private static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_NOTE";
-    private boolean muted;
+    private boolean muted, active;
     private final android.content.BroadcastReceiver muteEvents = new android.content.BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) setMuted(true);
@@ -70,13 +70,16 @@ public final class NoForgetSoundService extends Service {
             return START_NOT_STICKY;
         }
         if (ACTION_MUTE.equals(intent.getAction()) || ACTION_UNMUTE.equals(intent.getAction())) {
-            setMuted(ACTION_MUTE.equals(intent.getAction())); return START_NOT_STICKY;
+            if (active) setMuted(ACTION_MUTE.equals(intent.getAction()));
+            else stopSelf();
+            return START_NOT_STICKY;
         }
         long id = intent.getLongExtra("noteId", -1L);
         NoForgetItem item = new NoForgetStore(this).find(id);
         if (item == null) { stopSelf(); return START_NOT_STICKY; }
         stopReminder();
         startForeground(NotificationHelper.reminderNotificationId(id), buildNotification(item));
+        active = true;
         ringTimeout.start(this, () -> {
             NoteReminderActivity.finishIfShowing(id);
             stopReminder();
@@ -146,6 +149,7 @@ public final class NoForgetSoundService extends Service {
     }
 
     private void stopReminder() {
+        active = false;
         ringTimeout.cancel();
         releasePlayer();
         try { if (vibrator != null) vibrator.cancel(); } catch (Exception ignored) {}

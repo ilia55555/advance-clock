@@ -36,7 +36,7 @@
         <provider android:name=".AlarmMediaProvider" android:authorities="${applicationId}.alarmmedia"
             android:exported="false" android:grantUriPermissions="true" />
         <activity android:name=".AlarmAttachmentEditorActivity" android:screenOrientation="portrait" android:exported="false" />
-        <activity android:name=".AlarmPhotoCropActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:enableOnBackInvokedCallback="true" android:name=".AlarmPhotoCropActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
@@ -111,7 +111,7 @@
         <activity android:name=".AlarmEditorActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".NoForgetEditorActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
-            android:name=".NoteReminderActivity"
+            android:name=".NoteReminderActivity" android:enableOnBackInvokedCallback="true"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="false"
@@ -124,7 +124,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".AlarmRingActivity"
+            android:name=".AlarmRingActivity" android:enableOnBackInvokedCallback="true"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="false"
