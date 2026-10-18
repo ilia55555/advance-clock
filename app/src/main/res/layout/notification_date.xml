@@ -12,10 +12,11 @@
         android:importantForAccessibility="no" />
 
     <LinearLayout
+        android:id="@+id/date_notification_row"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layoutDirection="ltr"
+        android:layoutDirection="locale"
         android:gravity="center_vertical"
         android:padding="6dp">
 

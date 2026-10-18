@@ -199,8 +199,9 @@ public final class DateNotificationService extends Service {
         views.setTextViewText(R.id.date_notification_other_dates, otherDates);
         views.setTextViewText(R.id.date_notification_day, CalendarUtils.fa(day));
         views.setViewVisibility(R.id.date_notification_other_dates, otherDates.isEmpty() ? View.GONE : View.VISIBLE);
-        // The badge stays on the left in both layout directions; only the text direction follows the language.
+        // The first child is the day badge: left in English, right in Persian/Arabic.
         int direction = AppSettings.layoutDirection(context);
+        views.setInt(R.id.date_notification_row, "setLayoutDirection", direction);
         views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
         int textDirection = direction == View.LAYOUT_DIRECTION_RTL ? View.TEXT_DIRECTION_RTL : View.TEXT_DIRECTION_LTR;
         views.setInt(R.id.date_notification_title, "setTextDirection", textDirection);
