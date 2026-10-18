@@ -69,6 +69,8 @@ final class MainNoteTabEnhancer {
         View sketchCard = activity.findViewById(R.id.note_sketch_card);
         if (sketchCard != null) sketchCard.setVisibility(View.GONE);
         importBridgeResults(activity, state);
+        state.attachments.clear();
+        state.attachments.addAll(NoteAttachment.parse(AlarmAttachments.prefs(activity).getString("quick_note_attachments", "[]")));
         overrideSave(activity, state);
         updateActionButtons(activity, state);
         updateSoundButton(activity, state);
@@ -94,8 +96,7 @@ final class MainNoteTabEnhancer {
         addWeighted(row, state.sketchButton, activity);
         addGap(row, activity);
         addWeighted(row, state.filesButton, activity);
-        addGap(row, activity);
-        addWeighted(row, state.targetButton, activity);
+        state.targetButton.setVisibility(View.GONE);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, dp(activity, 54));
@@ -103,7 +104,7 @@ final class MainNoteTabEnhancer {
         parent.addView(row, parent.indexOfChild(priority) + 1, params);
 
         state.sketchButton.setOnClickListener(v -> showSketchDialog(activity, state));
-        state.filesButton.setOnClickListener(v -> showFilesDialog(activity, state));
+        state.filesButton.setOnClickListener(v -> AlarmAttachments.open(activity, "quick_note"));
         state.targetButton.setOnClickListener(v -> showTargetsDialog(activity, state));
     }
 
@@ -444,7 +445,7 @@ final class MainNoteTabEnhancer {
         String titleText = title.getText().toString().trim();
         String bodyText = body.getText().toString().trim();
         String sketchJson = sketch.serialize();
-        if (titleText.isEmpty() && bodyText.isEmpty() && "[]".equals(sketchJson) && state.attachments.isEmpty()) {
+        if (titleText.isEmpty() && bodyText.isEmpty() && "[]".equals(sketchJson) && state.attachments.isEmpty() && !AlarmAttachments.hasPhotos(activity, "quick_note")) {
             LogoToast.makeText(activity,
                     AppString.get(R.string.runtime_text_0135),
                     Toast.LENGTH_SHORT).show();
@@ -479,6 +480,7 @@ final class MainNoteTabEnhancer {
                 interval,
                 dates);
         item.attachmentsJson = NoteAttachment.encode(state.attachments);
+        AlarmAttachments.read(activity, "quick_note", item);
         item.vibrate = state.vibrate == null || state.vibrate.isChecked();
         item.soundUri = state.soundUri == null ? "" : state.soundUri;
         item.fullscreenUnlocked = state.fullscreenUnlocked == null || state.fullscreenUnlocked.isChecked();
@@ -498,6 +500,7 @@ final class MainNoteTabEnhancer {
         alarmSwitch.setChecked(false);
         sketch.clearSketch();
         state.attachments.clear();
+        AlarmAttachments.clear(activity, "quick_note");
         state.reminderMode = AlarmReminderUtils.MODE_NONE;
         state.reminderMinutesJson = "[]";
         state.soundUri = "";
@@ -549,6 +552,7 @@ final class MainNoteTabEnhancer {
                 : AppString.get(R.string.runtime_text_0467) + CalendarUtils.fa(Integer.toString(files)) + ")");
         state.targetButton.setText(targets == 0 ? AppString.get(R.string.runtime_text_0117)
                 : AppString.get(R.string.runtime_text_0468) + CalendarUtils.fa(Integer.toString(targets)) + ")");
+        state.filesButton.setText(R.string.media_attachments);
     }
 
     private static void updateReminderButton(State state) {

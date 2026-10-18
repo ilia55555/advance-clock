@@ -58,6 +58,7 @@ public final class NoForgetEditorActivity extends Activity {
     private Switch fullscreenLocked;
     private Button soundButton;
     private LinearLayout attachmentsView;
+    private String attachmentKey;
 
     private Button sketchAction;
     private Button filesAction;
@@ -118,6 +119,12 @@ public final class NoForgetEditorActivity extends Activity {
         if(noteId>=0)loadExisting();
         else deleteButton.setVisibility(View.GONE);
 
+        attachmentKey = savedInstanceState == null ? "note_editor_" + java.util.UUID.randomUUID()
+                : savedInstanceState.getString("attachmentKey");
+        if (savedInstanceState == null) {
+            NoForgetItem existing = noteId >= 0 ? new NoForgetStore(this).find(noteId) : null;
+            if (existing != null) AlarmAttachments.write(this, attachmentKey, existing);
+        }
         installReminderButton();
         installAttachmentActionButtons();
         setupAlarmControls();
@@ -146,6 +153,17 @@ public final class NoForgetEditorActivity extends Activity {
 
         renderAttachments();
         updateActionButtons();
+    }
+
+    @Override protected void onSaveInstanceState(Bundle out) {
+        out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
+    }
+    @Override protected void onResume() {
+        super.onResume();
+        if (attachmentKey != null) {
+            attachments.clear(); attachments.addAll(NoteAttachment.parse(AlarmAttachments.prefs(this).getString(attachmentKey + "_attachments", "[]")));
+            renderAttachments(); updateActionButtons();
+        }
     }
 
     private void setupPriority(){
@@ -261,7 +279,9 @@ public final class NoForgetEditorActivity extends Activity {
         row.addView(s1,new LinearLayout.LayoutParams(dp(6),1));
         row.addView(filesAction,new LinearLayout.LayoutParams(bp));
         Space s2=new Space(this);
+        s2.setVisibility(View.GONE);
         row.addView(s2,new LinearLayout.LayoutParams(dp(6),1));
+        appSiteAction.setVisibility(View.GONE);
         row.addView(appSiteAction,new LinearLayout.LayoutParams(bp));
 
         LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(
@@ -272,7 +292,7 @@ public final class NoForgetEditorActivity extends Activity {
         parent.addView(row,priorityIndex+1,rp);
 
         sketchAction.setOnClickListener(v->showSketchModal());
-        filesAction.setOnClickListener(v->showFilesModal());
+        filesAction.setOnClickListener(v->AlarmAttachments.open(this, attachmentKey));
         appSiteAction.setOnClickListener(v->showAppSiteModal());
 
         View addFiles=findViewById(R.id.note_add_files);
@@ -719,6 +739,7 @@ public final class NoForgetEditorActivity extends Activity {
                         ?AppString.get(R.string.runtime_text_0117)
                         :AppString.get(R.string.runtime_text_0468)+CalendarUtils.fa(
                                 Integer.toString(targets))+")");
+        filesAction.setText(R.string.media_attachments);
     }
 
     private void applySystemBarInsets(View root){
@@ -818,7 +839,7 @@ public final class NoForgetEditorActivity extends Activity {
         if(titleText.isEmpty()
                 &&bodyText.isEmpty()
                 &&"[]".equals(sketchJson)
-                &&attachments.isEmpty()){
+                &&attachments.isEmpty() && !AlarmAttachments.hasPhotos(this, attachmentKey)){
             LogoToast.makeText(
                     this,
                     AppString.get(R.string.runtime_text_0135),
@@ -853,6 +874,7 @@ public final class NoForgetEditorActivity extends Activity {
                 customDatesJson);
 
         item.attachmentsJson=NoteAttachment.encode(attachments);
+        AlarmAttachments.read(this, attachmentKey, item);
         item.vibrate=vibrate.isChecked();
         item.soundUri=soundUri;
         item.fullscreenUnlocked=fullscreenUnlocked.isChecked();

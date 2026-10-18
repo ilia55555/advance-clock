@@ -22,6 +22,28 @@ public final class NoForgetSoundService extends Service {
     private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
     private MediaPlayer player;
     private Vibrator vibrator;
+    private static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_NOTE";
+    private static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_NOTE";
+    private boolean muted;
+    private final android.content.BroadcastReceiver muteEvents = new android.content.BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) setMuted(true);
+            else {
+                int current = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_VALUE", -1);
+                int previous = intent.getIntExtra("android.media.EXTRA_PREV_VOLUME_STREAM_VALUE", -1);
+                int stream = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", -1);
+                if (current >= 0 && previous >= 0 && current != previous
+                        && (stream == android.media.AudioManager.STREAM_ALARM || stream == android.media.AudioManager.STREAM_MUSIC || stream == android.media.AudioManager.STREAM_RING)) setMuted(current < previous);
+            }
+        }
+    };
+    static Intent volumeIntent(Context context, boolean mute) {
+        return new Intent(context, NoForgetSoundService.class).setAction(mute ? ACTION_MUTE : ACTION_UNMUTE);
+    }
+    private void setMuted(boolean value) {
+        muted = value;
+        try { if (player != null) player.setVolume(value ? 0 : 1, value ? 0 : 1); } catch (Exception ignored) {}
+    }
 
     static Intent startIntent(Context context, long noteId) {
         return new Intent(context, NoForgetSoundService.class).setAction(ACTION_START)
@@ -35,6 +57,10 @@ public final class NoForgetSoundService extends Service {
     @Override public void onCreate() {
         super.onCreate();
         NotificationHelper.ensureChannels(this);
+        android.content.IntentFilter filter = new android.content.IntentFilter(Intent.ACTION_SCREEN_OFF);
+        filter.addAction("android.media.VOLUME_CHANGED_ACTION");
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(muteEvents, filter, RECEIVER_NOT_EXPORTED);
+        else registerReceiver(muteEvents, filter);
     }
 
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
@@ -42,6 +68,9 @@ public final class NoForgetSoundService extends Service {
             stopReminder();
             stopSelf();
             return START_NOT_STICKY;
+        }
+        if (ACTION_MUTE.equals(intent.getAction()) || ACTION_UNMUTE.equals(intent.getAction())) {
+            setMuted(ACTION_MUTE.equals(intent.getAction())); return START_NOT_STICKY;
         }
         long id = intent.getLongExtra("noteId", -1L);
         NoForgetItem item = new NoForgetStore(this).find(id);
@@ -53,6 +82,7 @@ public final class NoForgetSoundService extends Service {
             stopReminder();
             stopSelf();
         });
+        muted = false;
         play(item.soundUri);
         if (item.vibrate) vibrate();
         return START_NOT_STICKY;
@@ -100,7 +130,7 @@ public final class NoForgetSoundService extends Service {
             player = new MediaPlayer();
             player.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
-            player.setDataSource(this, uri); player.setLooping(true); player.prepare(); player.start();
+            player.setDataSource(this, uri); player.setLooping(true); player.prepare(); player.setVolume(muted ? 0 : 1, muted ? 0 : 1); player.start();
         } catch (Exception ignored) { releasePlayer(); }
     }
 
@@ -129,6 +159,9 @@ public final class NoForgetSoundService extends Service {
         player = null;
     }
 
-    @Override public void onDestroy() { stopReminder(); super.onDestroy(); }
+    @Override public void onDestroy() {
+        try { unregisterReceiver(muteEvents); } catch (Exception ignored) {}
+        stopReminder(); super.onDestroy();
+    }
     @Override public IBinder onBind(Intent intent) { return null; }
 }

@@ -2,331 +2,72 @@ package com.ilia.advanceclock;
 
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public final class AlarmRingActivity extends Activity {
-    private static final int[] SNOOZE_VALUES = {5,15,30,60,120,180,360,720,1440};
-    private static final String[] SNOOZE_LABELS = {
-            AppString.get(R.string.runtime_text_0575),AppString.get(R.string.runtime_text_0576),AppString.get(R.string.runtime_text_0577),AppString.get(R.string.runtime_text_0578),AppString.get(R.string.runtime_text_0579),AppString.get(R.string.runtime_text_0580),AppString.get(R.string.runtime_text_0581),AppString.get(R.string.runtime_text_0582),AppString.get(R.string.runtime_text_0583)
-    };
-
     private static WeakReference<AlarmRingActivity> showing = new WeakReference<>(null);
-    private long alarmId = -1L;
-    private Spinner snooze;
-
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (android.os.Build.VERSION.SDK_INT >= 27) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                    | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        }
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_alarm_ring);
-        enableImmersiveMode();
-        View ringRoot = findViewById(R.id.ring_root);
-        final int left = ringRoot.getPaddingLeft(), top = ringRoot.getPaddingTop();
-        final int right = ringRoot.getPaddingRight();
-        ringRoot.setOnApplyWindowInsetsListener((view, insets) -> {
-            int safeTop = 0, safeBottom = 0, safeLeft = 0, safeRight = 0;
-            if (android.os.Build.VERSION.SDK_INT >= 30) {
-                android.graphics.Insets safe = insets.getInsetsIgnoringVisibility(
-                        android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout());
-                safeTop = safe.top; safeBottom = safe.bottom; safeLeft = safe.left; safeRight = safe.right;
-            } else {
-                safeTop = insets.getStableInsetTop(); safeBottom = insets.getStableInsetBottom();
-                if (android.os.Build.VERSION.SDK_INT >= 28 && insets.getDisplayCutout() != null) {
-                    safeLeft = insets.getDisplayCutout().getSafeInsetLeft();
-                    safeRight = insets.getDisplayCutout().getSafeInsetRight();
-                }
-            }
-            view.setPadding(left + safeLeft, Math.max(top, safeTop), right + safeRight,
-                    dp(48) + safeBottom);
-            return insets;
-        });
-        ringRoot.requestApplyInsets();
-        showing = new WeakReference<>(this);
-
-        snooze = findViewById(R.id.ring_snooze);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, SNOOZE_LABELS);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        snooze.setAdapter(adapter);
-
-        applyStyle(AppSettings.alarmScreenStyle(this));
-        bind(getIntent());
-
-        findViewById(R.id.stop_alarm).setOnClickListener(v -> stopAndClose());
-        findViewById(R.id.snooze_alarm).setOnClickListener(v -> snoozeAndClose());
+    private long alarmId = -1;
+    private String toolKind, label;
+    @Override protected void onCreate(Bundle state) {
+        AppSettings.applyTheme(this); super.onCreate(state);
+        showing = new WeakReference<>(this); ReminderScreen.prepareWindow(this); bind(getIntent());
     }
-
-    private void enableImmersiveMode() {
-        if (android.os.Build.VERSION.SDK_INT >= 30) {
-            getWindow().setDecorFitsSystemWindows(false);
-            android.view.WindowInsetsController controller = getWindow().getInsetsController();
-            if (controller != null) {
-                controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                controller.hide(android.view.WindowInsets.Type.systemBars());
-            }
-        } else {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
-    }
-
-    @Override protected void onResume() { super.onResume(); enableImmersiveMode(); }
-    @Override public void onWindowFocusChanged(boolean focused) {
-        super.onWindowFocusChanged(focused);
-        if (focused) enableImmersiveMode();
-    }
-
-    @Override protected void onNewIntent(android.content.Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        bind(intent);
-    }
-
-    private void bind(android.content.Intent intent) {
-        applyStyle(AppSettings.alarmScreenStyle(this));
-        alarmId = intent == null ? -1L : intent.getLongExtra("alarmId", -1L);
-        String label = intent == null ? "" : intent.getStringExtra("label");
-        String toolKind = intent == null ? null : intent.getStringExtra("toolKind");
-
-        TextView title = findViewById(R.id.ring_title);
-        title.setText(label == null || label.trim().isEmpty() ? AppString.get(R.string.runtime_text_0019) : label);
-
-        TextView time = findViewById(R.id.ring_time);
-        time.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-
-        TextView date = findViewById(R.id.ring_date);
-        long now = System.currentTimeMillis();
-        date.setText(CalendarUtils.formatDate(now, AppSettings.defaultCalendar(this)));
-
+    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); }
+    @Override protected void onResume() { super.onResume(); ReminderScreen.hideSystemBars(this); }
+    @Override public void onWindowFocusChanged(boolean focused) { super.onWindowFocusChanged(focused); if (focused) ReminderScreen.hideSystemBars(this); }
+    private void bind(Intent intent) {
+        alarmId = intent == null ? -1 : intent.getLongExtra("alarmId", -1);
+        toolKind = intent == null ? null : intent.getStringExtra("toolKind");
+        label = intent == null ? "" : intent.getStringExtra("label");
+        boolean tool = ToolAlarmScheduler.TIMER.equals(toolKind) || ToolAlarmScheduler.STOPWATCH.equals(toolKind);
         AlarmItem item = new AlarmStore(this).find(alarmId);
-        int minutes = item == null ? 15 : item.snoozeMinutes;
-        setSnoozeSelection(minutes);
-        boolean timeTool = ToolAlarmScheduler.TIMER.equals(toolKind)
-                || ToolAlarmScheduler.STOPWATCH.equals(toolKind);
-        findViewById(R.id.snooze_label).setVisibility(timeTool ? View.GONE : View.VISIBLE);
-        findViewById(R.id.ring_snooze).setVisibility(timeTool ? View.GONE : View.VISIBLE);
-        findViewById(R.id.snooze_alarm).setVisibility(timeTool ? View.GONE : View.VISIBLE);
-        TextView subtitle = findViewById(R.id.ring_subtitle);
-        subtitle.setText(timeTool
-                ? ToolAlarmScheduler.TIMER.equals(toolKind)
-                ? AppString.get(R.string.runtime_text_0584) : AppString.get(R.string.runtime_text_0585)
-                : AppString.get(R.string.runtime_text_0586));
-        if (timeTool) {
-            item = new AlarmItem(alarmId, label, now, 0, false);
-            android.content.SharedPreferences p = getSharedPreferences("time_tools", MODE_PRIVATE);
-            item.imageUri1 = p.getString(toolKind + "_active_image1", "");
-            item.imageUri2 = p.getString(toolKind + "_active_image2", "");
-            item.attachmentsJson = p.getString(toolKind + "_active_attachments", "[]");
-            item.imagesAsBackground = p.getBoolean(toolKind + "_active_background", false);
+        ReminderScreen.Content data = new ReminderScreen.Content();
+        data.title = label == null || label.trim().isEmpty() ? getString(R.string.runtime_text_0019) : label;
+        data.body = getString(tool ? ToolAlarmScheduler.TIMER.equals(toolKind) ? R.string.runtime_text_0584 : R.string.runtime_text_0585 : R.string.runtime_text_0586);
+        if (tool) {
+            android.content.SharedPreferences p = AlarmAttachments.prefs(this);
+            data.image1 = p.getString(toolKind + "_active_image1", ""); data.image2 = p.getString(toolKind + "_active_image2", "");
+            data.background = p.getBoolean(toolKind + "_active_background", false);
+            data.attachments = NoteAttachment.parse(p.getString(toolKind + "_active_attachments", "[]"));
+        } else if (item != null) {
+            data.image1 = item.imageUri1; data.image2 = item.imageUri2; data.background = item.imagesAsBackground;
+            data.attachments = NoteAttachment.parse(item.attachmentsJson); data.snoozeMinutes = item.snoozeMinutes;
         }
-        renderAlarmImages(item);
-        renderAttachments(item);
+        Runnable open = tool ? () -> {
+            startActivity(new Intent(this, MainActivity.class).putExtra("openTab", toolKind).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)); stopAndClose();
+        } : item == null ? null : () -> {
+            startActivity(new Intent(this, AlarmEditorActivity.class).putExtra("alarmId", alarmId)); stopAndClose();
+        };
+        setContentView(new ReminderScreen(this, data, this::stopAndClose, open, minutes -> {
+            boolean ok = tool ? ToolAlarmScheduler.schedule(this, toolKind, System.currentTimeMillis() + minutes * 60_000L, data.title)
+                    : AlarmScheduler.snooze(this, alarmId, minutes * 60_000L);
+            if (ok) { ClockWidgetProvider.updateAll(this); stopAndClose(); }
+            else Toast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
+        }));
     }
-
-    private void renderAlarmImages(AlarmItem item) {
-        LinearLayout container = findViewById(R.id.ring_images);
-        View spacer = findViewById(R.id.ring_spacer);
-        container.removeAllViews();
-        LinearLayout background = findViewById(R.id.ring_photo_background);
-        background.removeAllViews();
-
-        java.util.ArrayList<String> uris = new java.util.ArrayList<>();
-        if (item != null) {
-            if (item.imageUri1 != null && !item.imageUri1.trim().isEmpty()) uris.add(item.imageUri1);
-            if (item.imageUri2 != null && !item.imageUri2.trim().isEmpty()) uris.add(item.imageUri2);
-        }
-
-        if (uris.isEmpty()) {
-            container.setVisibility(View.GONE);
-            spacer.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        boolean asBackground = item != null && item.imagesAsBackground;
-        container.setVisibility(asBackground ? View.GONE : View.VISIBLE);
-        spacer.setVisibility(asBackground ? View.VISIBLE : View.GONE);
-        container.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout destination = asBackground ? background : container;
-        for (String uri : uris) {
-            AlarmPhotoView image = new AlarmPhotoView(this, false);
-            image.load(uri);
-            destination.addView(image, new LinearLayout.LayoutParams(-1, 0, 1f));
-        }
-        if (asBackground) {
-            findViewById(R.id.ring_root).setBackgroundColor(0x66000000);
-            int[] labels = {R.id.ring_time, R.id.ring_title, R.id.ring_date, R.id.ring_subtitle, R.id.snooze_label};
-            for (int id : labels) ((TextView) findViewById(id)).setTextColor(Color.WHITE);
-        }
+    @Override public boolean onKeyDown(int code, KeyEvent event) {
+        if (code == KeyEvent.KEYCODE_VOLUME_DOWN) { startService(AlarmSoundService.muteIntent(this)); return true; }
+        if (code == KeyEvent.KEYCODE_VOLUME_UP) { startService(AlarmSoundService.unmuteIntent(this)); return true; }
+        return super.onKeyDown(code, event);
     }
-
-    private View attachmentList;
-    private void renderAttachments(AlarmItem item) {
-        LinearLayout root = findViewById(R.id.ring_root);
-        if (attachmentList != null) root.removeView(attachmentList);
-        if (item == null) return;
-        java.util.List<NoteAttachment> attachments = NoteAttachment.parse(item.attachmentsJson);
-        if (attachments.isEmpty()) return;
-        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
-        LinearLayout list = new LinearLayout(this); list.setOrientation(LinearLayout.VERTICAL); scroll.addView(list);
-        for (NoteAttachment attachment : attachments) {
-            Button open = new Button(this); open.setText(attachment.name); open.setAllCaps(false);
-            open.setOnClickListener(v -> attachment.open(this));
-            list.addView(open, new LinearLayout.LayoutParams(-1, dp(48)));
-        }
-        attachmentList = scroll;
-        root.addView(scroll, root.indexOfChild(findViewById(R.id.snooze_label)),
-                new LinearLayout.LayoutParams(-1, dp(Math.min(144, attachments.size() * 48))));
+    @Override public boolean onKeyUp(int code, KeyEvent event) {
+        if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) return true;
+        return super.onKeyUp(code, event);
     }
-
-    private void applyStyle(int style) {
-        LinearLayout root = findViewById(R.id.ring_root);
-        TextView time = findViewById(R.id.ring_time);
-        TextView title = findViewById(R.id.ring_title);
-        TextView date = findViewById(R.id.ring_date);
-        TextView subtitle = findViewById(R.id.ring_subtitle);
-        TextView snoozeLabel = findViewById(R.id.snooze_label);
-        Button snoozeButton = findViewById(R.id.snooze_alarm);
-        Button stopButton = findViewById(R.id.stop_alarm);
-
-        int bg, primary, text, muted, secondary;
-        if (style == 1) {
-            // Focus dark
-            bg = 0xFF080B0D;
-            primary = 0xFF53C7C0;
-            text = 0xFFF7FAF9;
-            muted = 0xFF9BAAA6;
-            secondary = 0xFF2A3533;
-        } else if (style == 2) {
-            // Warm sunrise
-            bg = 0xFFFFF5EA;
-            primary = 0xFFB85C00;
-            text = 0xFF4B2A12;
-            muted = 0xFF8B6A50;
-            secondary = 0xFFFFDFC0;
-        } else {
-            // Classic clean
-            bg = 0xFFF5FAF9;
-            primary = AppSettings.primaryColor(this);
-            text = 0xFF173F3B;
-            muted = 0xFF758783;
-            secondary = 0xFFE7F1EF;
-        }
-
-        root.setBackgroundColor(bg);
-        getWindow().setStatusBarColor(bg);
-        getWindow().setNavigationBarColor(bg);
-
-        time.setTextColor(primary);
-        title.setTextColor(text);
-        date.setTextColor(muted);
-        subtitle.setTextColor(muted);
-        snoozeLabel.setTextColor(muted);
-
-        snoozeButton.setTextColor(primary);
-        snoozeButton.setBackground(roundRect(secondary, 18, primary, 1));
-        stopButton.setTextColor(Color.WHITE);
-        stopButton.setBackground(roundRect(primary, 20, primary, 0));
-    }
-
-    private GradientDrawable roundRect(int fill, int radiusDp, int stroke, int strokeDp) {
-        GradientDrawable d = new GradientDrawable();
-        d.setColor(fill);
-        d.setCornerRadius(dp(radiusDp));
-        if (strokeDp > 0) d.setStroke(dp(strokeDp), stroke);
-        return d;
-    }
-
-    private void setSnoozeSelection(int minutes) {
-        int best = 0;
-        int diff = Integer.MAX_VALUE;
-        for (int i = 0; i < SNOOZE_VALUES.length; i++) {
-            int d = Math.abs(SNOOZE_VALUES[i] - minutes);
-            if (d < diff) { diff = d; best = i; }
-        }
-        snooze.setSelection(best);
-    }
-
-    private void snoozeAndClose() {
-        int minutes = SNOOZE_VALUES[snooze.getSelectedItemPosition()];
-        stopService(AlarmSoundService.stopIntent(this));
-        boolean ok = AlarmScheduler.snooze(this, alarmId, minutes * 60_000L);
-        NotificationManager nm = getSystemService(NotificationManager.class);
-        if (nm != null && alarmId != -1L) nm.cancel(NotificationHelper.notificationId(alarmId));
-        ClockWidgetProvider.updateAll(this);
-        if (!ok) LogoToast.makeText(this, AppString.get(R.string.runtime_text_0587), Toast.LENGTH_LONG).show();
-        finishAndRemoveTask();
-    }
-
-    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            startService(AlarmSoundService.muteIntent(this));
-            return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            startService(AlarmSoundService.unmuteIntent(this));
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-                || keyCode == KeyEvent.KEYCODE_VOLUME_UP) return true;
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override public void onBackPressed() {
-        // Alarm must be stopped explicitly.
-    }
-
+    @Override public void onBackPressed() { /* Dismiss explicitly. */ }
     private void stopAndClose() {
         stopService(AlarmSoundService.stopIntent(this));
-        NotificationManager nm = getSystemService(NotificationManager.class);
-        if (nm != null && alarmId != -1L) nm.cancel(NotificationHelper.notificationId(alarmId));
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null && alarmId != -1) manager.cancel(NotificationHelper.notificationId(alarmId));
         finishAndRemoveTask();
     }
-
-    @Override protected void onDestroy() {
-        AlarmRingActivity current = showing.get();
-        if (current == this) showing.clear();
-        super.onDestroy();
-    }
-
+    @Override protected void onDestroy() { if (showing.get() == this) showing.clear(); super.onDestroy(); }
     public static void finishIfShowing(long id) {
         AlarmRingActivity activity = showing.get();
-        if (activity != null && (id < 0 || activity.alarmId == id)) {
-            activity.runOnUiThread(activity::finishAndRemoveTask);
-        }
-    }
-
-    private int dp(int value) {
-        return Math.round(value * getResources().getDisplayMetrics().density);
+        if (activity != null && (id < 0 || activity.alarmId == id)) activity.runOnUiThread(activity::finishAndRemoveTask);
     }
 }

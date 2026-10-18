@@ -39,4 +39,33 @@ final class AlarmAttachments {
                 .putString(key + "_attachments", item.attachmentsJson)
                 .putBoolean(key + "_background", item.imagesAsBackground).apply();
     }
+    static boolean hasPhotos(Context context, String key) {
+        return !prefs(context).getString(key + "_image1", "").isEmpty() || !prefs(context).getString(key + "_image2", "").isEmpty();
+    }
+    static void read(Context context, String key, NoForgetItem item) {
+        SharedPreferences p = prefs(context);
+        item.imageUri1 = p.getString(key + "_image1", ""); item.imageUri2 = p.getString(key + "_image2", "");
+        item.imageSource1 = p.getString(key + "_source1", item.imageUri1); item.imageSource2 = p.getString(key + "_source2", item.imageUri2);
+        item.attachmentsJson = p.getString(key + "_attachments", "[]"); item.imagesAsBackground = p.getBoolean(key + "_background", false);
+    }
+    static void write(Context context, String key, NoForgetItem item) {
+        String first = item.imageUri1, second = item.imageUri2;
+        // Existing note images remain available in the common photo/background editor.
+        for (NoteAttachment attachment : NoteAttachment.parse(item.attachmentsJson)) if (attachment.isImage()) {
+            if (first.isEmpty()) first = attachment.value;
+            else if (second.isEmpty() && !first.equals(attachment.value)) second = attachment.value;
+        }
+        java.util.List<NoteAttachment> remaining = new java.util.ArrayList<>(NoteAttachment.parse(item.attachmentsJson));
+        final String promotedFirst = first, promotedSecond = second;
+        remaining.removeIf(value -> value.isImage() && (value.value.equals(promotedFirst) || value.value.equals(promotedSecond)));
+        prefs(context).edit().putString(key + "_image1", first).putString(key + "_image2", second)
+                .putString(key + "_source1", item.imageSource1.isEmpty() ? first : item.imageSource1)
+                .putString(key + "_source2", item.imageSource2.isEmpty() ? second : item.imageSource2)
+                .putString(key + "_attachments", NoteAttachment.encode(remaining)).putBoolean(key + "_background", item.imagesAsBackground).apply();
+    }
+    static void clear(Context context, String key) {
+        SharedPreferences.Editor edit = prefs(context).edit();
+        for (String suffix : new String[]{"_image1", "_image2", "_source1", "_source2", "_attachments", "_background"}) edit.remove(key + suffix);
+        edit.apply();
+    }
 }

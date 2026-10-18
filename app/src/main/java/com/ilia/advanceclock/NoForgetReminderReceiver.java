@@ -27,6 +27,10 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         if(Build.VERSION.SDK_INT>=26)context.startForegroundService(service);
         else context.startService(service);
 
+        if (intent.getBooleanExtra("snooze", false)) {
+            context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
+            return; // Snoozing never moves the note's normal recurrence schedule.
+        }
         long now=System.currentTimeMillis()+1000L;
         long next=RecurrenceUtils.next(
                 item.dueAtMillis,

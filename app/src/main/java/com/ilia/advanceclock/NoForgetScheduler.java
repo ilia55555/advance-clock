@@ -62,6 +62,8 @@ public final class NoForgetScheduler {
         AlarmManager manager=context.getSystemService(AlarmManager.class);
         if(manager==null)return;
         manager.cancel(mainPendingIntent(context,id));
+        manager.cancel(snoozePendingIntent(context,id));
+        context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
         for(int i=0;i<AlarmReminderUtils.VALUES.length;i++){
             manager.cancel(preReminderPendingIntent(context,id,i,0));
         }
@@ -69,6 +71,7 @@ public final class NoForgetScheduler {
 
     public static void rescheduleAll(Context context){
         NoForgetStore store=new NoForgetStore(context);
+        java.util.Map<String, ?> snoozes = context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).getAll();
         for(NoForgetItem item:store.all()){
             if(!item.reminderEnabled||!item.hasDue)continue;
             if(!schedule(context,item)){
@@ -84,7 +87,33 @@ public final class NoForgetScheduler {
                 }
             }
         }
+        for (java.util.Map.Entry<String, ?> entry : snoozes.entrySet()) try {
+            long id = Long.parseLong(entry.getKey());
+            if (store.find(id) != null && entry.getValue() instanceof Long) {
+                long delay = Math.max(1000L, (Long) entry.getValue() - System.currentTimeMillis());
+                snooze(context, id, delay);
+            }
+        } catch (NumberFormatException ignored) {}
         NoForgetWidgetProvider.updateAll(context);
+    }
+
+    public static boolean snooze(Context context, long id, long delay) {
+        if (delay <= 0 || new NoForgetStore(context).find(id) == null || !PermissionHelper.exactAlarmsGranted(context)) return false;
+        AlarmManager manager = context.getSystemService(AlarmManager.class);
+        if (manager == null) return false;
+        long deadline = System.currentTimeMillis() + delay;
+        try {
+            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, deadline, snoozePendingIntent(context, id));
+            context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().putLong(Long.toString(id), deadline).apply();
+            return true;
+        } catch (SecurityException ignored) { return false; }
+    }
+
+    private static PendingIntent snoozePendingIntent(Context context, long id) {
+        Intent intent = new Intent(context, NoForgetReminderReceiver.class).setAction("com.ilia.advanceclock.NOTE_SNOOZE")
+                .setData(android.net.Uri.parse("advanceclock://note-snooze/" + id))
+                .putExtra("noteId", id).putExtra("snooze", true);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private static PendingIntent mainPendingIntent(Context context,long id){

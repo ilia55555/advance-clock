@@ -953,8 +953,7 @@ public final class MainActivity extends Activity {
             clockContent.addView(alarmList);
             clockContent.addView(alarmComposerCard);
             alarmComposerCard.setVisibility(View.GONE);
-            noteComposerCard.setVisibility(View.VISIBLE);
-            noteSketchCard.setVisibility(View.VISIBLE);
+            applyNoteComposerVisibility();
         } else {
             clockContent.addView(alarmComposerCard);
             clockContent.addView(clockCalendar);
@@ -963,8 +962,7 @@ public final class MainActivity extends Activity {
             clockContent.addView(alertsHeader);
             clockContent.addView(alarmList);
             alarmComposerCard.setVisibility(View.VISIBLE);
-            noteComposerCard.setVisibility(View.VISIBLE);
-            noteSketchCard.setVisibility(View.VISIBLE);
+            applyNoteComposerVisibility();
         }
     }
 
@@ -1601,17 +1599,52 @@ public final class MainActivity extends Activity {
         button.setBackground(background);
     }
 
-    private void renderNoForget() {
-        noForgetList.removeAllViews();
-        List<NoForgetItem> items = new NoForgetStore(this).all();
-        if (items.isEmpty()) {
-            noForgetList.addView(emptyText(AppString.get(R.string.runtime_text_0394)));
-            return;
-        }
+    private void applyNoteComposerVisibility() {
+        boolean compact = AppSettings.clockLayoutMode(this) == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
+        noteComposerCard.setVisibility(compact ? View.GONE : View.VISIBLE);
+        noteSketchCard.setVisibility(View.GONE); // Sketch editing is provided by its dialog.
+    }
 
-        for (NoForgetItem item : items) {
-            noForgetList.addView(noteCard(item));
+    private void renderNoForget() {
+        Object previous = noForgetList.getTag();
+        int previousCount = previous instanceof Integer ? (Integer) previous : 0;
+        List<NoForgetItem> items = new NoForgetStore(this).all();
+        applyNoteComposerVisibility();
+        noForgetList.removeAllViews();
+        if (items.isEmpty()) noForgetList.addView(emptyText(AppString.get(R.string.runtime_text_0394)));
+        else for (NoForgetItem item : items) noForgetList.addView(noteCard(item));
+        noForgetList.setTag(items.size());
+        if (previousCount != items.size()) {
+            // Empty -> first card must receive the same fresh layout as switching tabs.
+            View focus = getCurrentFocus();
+            if (focus != null && isInside(focus, noForgetPanel)) {
+                focus.clearFocus();
+                android.view.inputmethod.InputMethodManager keyboard = getSystemService(android.view.inputmethod.InputMethodManager.class);
+                if (keyboard != null) keyboard.hideSoftInputFromWindow(focus.getWindowToken(), 0);
+            }
+            android.widget.ScrollView panel = (android.widget.ScrollView) noForgetPanel;
+            int scrollY = panel.getScrollY();
+            View content = panel.getChildAt(0);
+            content.setMinimumHeight(0);
+            content.setFocusableInTouchMode(true);
+            content.requestFocus();
+            content.requestLayout(); noteCalendar.requestLayout(); panel.requestLayout();
+            panel.getViewTreeObserver().addOnPreDrawListener(new android.view.ViewTreeObserver.OnPreDrawListener() {
+                @Override public boolean onPreDraw() {
+                    panel.getViewTreeObserver().removeOnPreDrawListener(this);
+                    int available = panel.getHeight() - panel.getPaddingTop() - panel.getPaddingBottom();
+                    int maximum = Math.max(0, content.getHeight() - available);
+                    panel.scrollTo(0, Math.min(scrollY, maximum));
+                    return true;
+                }
+            });
         }
+    }
+
+    private boolean isInside(View view, View parent) {
+        for (android.view.ViewParent current = view.getParent(); current != null; current = current.getParent())
+            if (current == parent) return true;
+        return view == parent;
     }
 
     private LinearLayout noteCard(NoForgetItem item) {

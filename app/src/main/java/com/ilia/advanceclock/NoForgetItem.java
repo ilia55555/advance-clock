@@ -25,6 +25,8 @@ public final class NoForgetItem {
     public int intervalDays;
     public String customDatesJson;
     public String attachmentsJson = "[]";
+    public String imageUri1 = "", imageUri2 = "", imageSource1 = "", imageSource2 = "";
+    public boolean imagesAsBackground;
     public boolean vibrate = true;
     public String soundUri = "";
     public boolean fullscreenUnlocked = true;
@@ -69,6 +71,9 @@ public final class NoForgetItem {
         o.put("hasDue",hasDue);o.put("dueAtMillis",dueAtMillis);
         o.put("reminderEnabled",reminderEnabled);o.put("createdAt",createdAt);
         o.put("recurrenceMode",recurrenceMode);o.put("intervalDays",intervalDays);o.put("customDatesJson",customDatesJson);
+        o.put("imageUri1", imageUri1); o.put("imageUri2", imageUri2);
+        o.put("imageSource1", imageSource1); o.put("imageSource2", imageSource2);
+        o.put("imagesAsBackground", imagesAsBackground);
         o.put("attachmentsJson",attachmentsJson);o.put("vibrate",vibrate);o.put("soundUri",soundUri);
         o.put("fullscreenUnlocked",fullscreenUnlocked);o.put("fullscreenLocked",fullscreenLocked);
         o.put("reminderMode",reminderMode);o.put("reminderMinutesJson",reminderMinutesJson);
@@ -87,6 +92,9 @@ public final class NoForgetItem {
                 o.optInt("recurrenceMode",RecurrenceUtils.NONE),o.optInt("intervalDays",1),o.optString("customDatesJson","[]")
         );
         item.attachmentsJson=o.optString("attachmentsJson","[]");
+        item.imageUri1=o.optString("imageUri1", ""); item.imageUri2=o.optString("imageUri2", "");
+        item.imageSource1=o.optString("imageSource1", item.imageUri1); item.imageSource2=o.optString("imageSource2", item.imageUri2);
+        item.imagesAsBackground=o.optBoolean("imagesAsBackground", false);
         item.vibrate=o.optBoolean("vibrate",true); item.soundUri=o.optString("soundUri","");
         item.fullscreenUnlocked=o.optBoolean("fullscreenUnlocked",true);
         item.fullscreenLocked=o.optBoolean("fullscreenLocked",true);
