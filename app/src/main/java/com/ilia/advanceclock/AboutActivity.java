@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -12,7 +16,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +52,8 @@ public final class AboutActivity extends Activity {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setLayoutDirection(AppSettings.layoutDirection(this));
-        root.setPadding(dp(18), dp(12), dp(18), dp(24));
+        int side = 18 + Math.max(0, (getResources().getConfiguration().screenWidthDp - 680) / 2);
+        root.setPadding(dp(side), dp(12), dp(side), dp(32));
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
         header(root, title);
         switch (document) {
@@ -116,32 +120,93 @@ public final class AboutActivity extends Activity {
     }
 
     private void showAbout(LinearLayout root) {
+        int accent = AppSettings.primaryColor(this);
         LinearLayout brand = card(root);
         brand.setGravity(Gravity.CENTER_HORIZONTAL);
+        brand.setPadding(dp(24), dp(28), dp(24), dp(24));
+        GradientDrawable hero = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
+                new int[]{blend(AppSettings.surface(this), accent, .16f),
+                        blend(AppSettings.surface(this), AppSettings.secondaryColor(this), .07f)});
+        hero.setCornerRadius(dp(28));
+        hero.setStroke(dp(1), blend(AppSettings.surface(this), accent, .22f));
+        brand.setBackground(hero);
         ImageView icon = new ImageView(this);
         icon.setImageResource(R.mipmap.ic_launcher);
         icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-        brand.addView(icon, new LinearLayout.LayoutParams(dp(88), dp(88)));
-        TextView name = text(getString(R.string.app_name), 25, true);
-        name.setPadding(0, dp(10), 0, dp(4));
+        icon.setPadding(dp(10), dp(10), dp(10), dp(10));
+        icon.setBackground(shape(AppSettings.surface(this), 28));
+        icon.setElevation(dp(3));
+        brand.addView(icon, new LinearLayout.LayoutParams(dp(100), dp(100)));
+        TextView name = text(getString(R.string.app_name), 27, true);
+        name.setPadding(0, dp(18), 0, dp(10));
         name.setGravity(Gravity.CENTER);
-        brand.addView(name);
-        TextView version = text(versionLabel(), 13, false);
-        version.setTextColor(AppSettings.textSecondary(this));
+        brand.addView(name, new LinearLayout.LayoutParams(-1, -2));
+        TextView version = text(versionLabel(), 13, true);
+        version.setTextColor(AppSettings.textPrimary(this));
         version.setGravity(Gravity.CENTER);
-        brand.addView(version);
-        TextView developer = text(getString(R.string.about_developer_label,
-                getString(R.string.about_developer_name)), 16, false);
-        developer.setPadding(0, dp(12), 0, 0);
-        developer.setGravity(Gravity.CENTER);
-        brand.addView(developer);
-        body(card(root), getString(R.string.about_summary));
+        version.setPadding(dp(14), dp(6), dp(14), dp(6));
+        version.setBackground(shape(blend(AppSettings.surface(this), accent, .12f), 40));
+        brand.addView(version, new LinearLayout.LayoutParams(-2, -2));
+        TextView summary = text(getString(R.string.about_summary), 15, false);
+        summary.setTextColor(AppSettings.textSecondary(this));
+        summary.setGravity(Gravity.CENTER);
+        summary.setLineSpacing(dp(5), 1f);
+        summary.setPadding(0, dp(18), 0, 0);
+        brand.addView(summary, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout developer = card(root);
+        developer.setOrientation(LinearLayout.HORIZONTAL);
+        developer.setGravity(Gravity.CENTER_VERTICAL);
+        developer.addView(symbol(R.drawable.ic_about_person), new LinearLayout.LayoutParams(dp(44), dp(44)));
+        TextView author = text(getString(R.string.about_developer_label,
+                getString(R.string.about_developer_name)), 16, true);
+        author.setPaddingRelative(dp(14), dp(4), 0, dp(4));
+        developer.addView(author, new LinearLayout.LayoutParams(0, -2, 1));
+
         LinearLayout links = card(root);
+        links.setPadding(dp(8), dp(6), dp(8), dp(6));
         action(links, R.string.about_privacy_title, () -> openDocument("privacy"));
+        divider(links);
         action(links, R.string.about_terms_title, () -> openDocument("terms"));
+        divider(links);
         action(links, R.string.about_permissions_title, () -> openDocument("permissions"));
+        divider(links);
         action(links, R.string.about_credits_title, () -> openDocument("credits"));
-        action(links, R.string.about_support, () -> openLink(getString(R.string.about_support_url)));
+        LinearLayout support = card(root);
+        support.setPadding(dp(8), dp(6), dp(8), dp(6));
+        action(support, R.string.about_support, () -> openLink(getString(R.string.about_support_url)));
+    }
+
+    private GradientDrawable shape(int color, int radius) {
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(color);
+        drawable.setCornerRadius(dp(radius));
+        return drawable;
+    }
+
+    private static int blend(int base, int accent, float amount) {
+        return Color.rgb(Math.round(Color.red(base) * (1 - amount) + Color.red(accent) * amount),
+                Math.round(Color.green(base) * (1 - amount) + Color.green(accent) * amount),
+                Math.round(Color.blue(base) * (1 - amount) + Color.blue(accent) * amount));
+    }
+
+    private ImageView symbol(int resource) {
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(resource);
+        icon.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
+        icon.setPadding(dp(10), dp(10), dp(10), dp(10));
+        icon.setBackground(shape(blend(AppSettings.surface(this), AppSettings.primaryColor(this), .10f), 14));
+        icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        return icon;
+    }
+
+    private void divider(LinearLayout root) {
+        View line = new View(this);
+        line.setBackgroundColor(blend(AppSettings.surface(this), AppSettings.textSecondary(this), .16f));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, dp(1));
+        lp.setMarginStart(dp(70));
+        lp.setMarginEnd(dp(12));
+        root.addView(line, lp);
     }
 
     private void header(LinearLayout root, int titleResource) {
@@ -202,17 +267,38 @@ public final class AboutActivity extends Activity {
     }
 
     private void action(LinearLayout root, int label, Runnable action) {
-        Button button = new Button(this);
-        button.setText(label);
-        button.setAllCaps(false);
-        button.setTextColor(AppSettings.primaryColor(this));
-        button.setBackgroundResource(R.drawable.bg_soft_button);
-        button.setMinHeight(dp(52));
-        button.setPadding(dp(12), dp(10), dp(12), dp(10));
-        button.setOnClickListener(v -> action.run());
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setMinimumHeight(dp(68));
+        row.setPadding(dp(12), dp(10), dp(12), dp(10));
+        row.setBackground(new RippleDrawable(ColorStateList.valueOf(
+                blend(AppSettings.surface(this), AppSettings.primaryColor(this), .18f)),
+                shape(AppSettings.surface(this), 16), null));
+        row.setFocusable(true);
+        row.setContentDescription(getString(label));
+        row.setOnClickListener(v -> action.run());
+        int icon = R.drawable.ic_about_document;
+        if (label == R.string.about_privacy_title || label == R.string.about_public_policy)
+            icon = R.drawable.ic_about_shield;
+        else if (label == R.string.about_permissions_title || label == R.string.about_app_settings)
+            icon = R.drawable.ic_md_settings;
+        else if (label == R.string.about_support) icon = R.drawable.ic_about_support;
+        else if (label == R.string.about_credits_title) icon = R.drawable.ic_about_sources;
+        row.addView(symbol(icon), new LinearLayout.LayoutParams(dp(42), dp(42)));
+        TextView caption = text(getString(label), 15, true);
+        caption.setPaddingRelative(dp(14), 0, dp(10), 0);
+        caption.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        row.addView(caption, new LinearLayout.LayoutParams(0, -2, 1));
+        ImageView arrow = new ImageView(this);
+        arrow.setImageResource(R.drawable.ic_about_chevron);
+        arrow.setColorFilter(AppSettings.textSecondary(this), PorterDuff.Mode.SRC_IN);
+        if (AppSettings.layoutDirection(this) == View.LAYOUT_DIRECTION_RTL) arrow.setScaleX(-1);
+        arrow.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        row.addView(arrow, new LinearLayout.LayoutParams(dp(20), dp(20)));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
-        lp.topMargin = dp(8);
-        root.addView(button, lp);
+        if (root == scroll.getChildAt(0)) lp.topMargin = dp(10);
+        root.addView(row, lp);
     }
 
     private String versionLabel() {
