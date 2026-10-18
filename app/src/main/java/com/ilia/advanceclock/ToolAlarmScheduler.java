@@ -13,7 +13,10 @@ public final class ToolAlarmScheduler {
     private ToolAlarmScheduler() {}
 
     public static boolean schedule(Context context, String kind, long deadline, String label) {
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+        android.content.SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString(kind + "_active_image1", prefs.getString(kind + "_image1", ""))
+                .putString(kind + "_active_image2", prefs.getString(kind + "_image2", ""))
                 .putLong(kind + "_deadline", deadline)
                 .putString(kind + "_label", label)
                 .apply();

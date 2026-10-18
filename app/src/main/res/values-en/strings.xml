@@ -1159,4 +1159,16 @@ Lock screen</string>
     <string name="alarm_auto_stop_title">Alarm auto-stop</string>
     <string name="alarm_auto_stop_minutes">%1$d minutes</string>
     <string name="alarm_auto_stop_never">Do not stop</string>
+    <string name="tool_save">Save</string>
+    <string name="tool_saved">Saved items</string>
+    <string name="tool_run">Start again</string>
+    <string name="tool_edit">Edit</string>
+    <string name="tool_delete">Delete</string>
+    <string name="tool_saved_success">Saved</string>
+    <string name="tool_no_saved">No saved items</string>
+    <string name="tool_invalid">Enter a valid duration or future date</string>
+    <string name="tool_replace_running">Replace the current run?</string>
+    <string name="tool_delete_confirm">Delete this saved item?</string>
+    <string name="tool_remove_image">Remove this photo?</string>
+    <string name="tool_image_unavailable">No photo picker available</string>
 </resources>

@@ -19,6 +19,7 @@ import java.util.Locale;
 final class StopwatchPanelController {
     private final Activity host;
     private final View root;
+    private TimeToolPresets presets;
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ArrayList<Long> laps = new ArrayList<>();
@@ -69,8 +70,15 @@ final class StopwatchPanelController {
         minutesInput = root.findViewById(R.id.stopwatch_limit_minutes);
         secondsInput = root.findViewById(R.id.stopwatch_limit_seconds);
         labelInput = root.findViewById(R.id.stopwatch_label);
+        restoreDraft();
+        presets = new TimeToolPresets(host, labelInput, ToolAlarmScheduler.STOPWATCH,
+                new TimeToolPresets.Editor() {
+                    public org.json.JSONObject capture() throws org.json.JSONException { return capturePreset(); }
+                    public void load(org.json.JSONObject config, boolean run) throws org.json.JSONException { loadPreset(config, run); }
+                    public boolean busy() { return running || accumulatedMillis > 0; }
+                });
         restore();
-        populateLimitInputs();
+        if (!host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).contains("stopwatch_draft_minutes")) populateLimitInputs();
         View back = root.findViewById(R.id.back_button);
         ((View) back.getParent()).setVisibility(View.GONE);
         startButton.setOnClickListener(v -> toggleRunning());
@@ -174,12 +182,13 @@ final class StopwatchPanelController {
 
     private void updateControls() {
         boolean configurable = !running && accumulatedMillis == 0L;
+        if (presets != null) presets.refresh();
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : accumulatedMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
         lapButton.setEnabled(running);
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);
         limitInputs.setVisibility(configurable && mode == 1 ? View.VISIBLE : View.GONE);
         dateTimeInputs.setVisibility(configurable && mode == 2 ? View.VISIBLE : View.GONE);
-        labelInput.setVisibility(configurable && mode != 0 ? View.VISIBLE : View.GONE);
+        labelInput.setVisibility(configurable ? View.VISIBLE : View.GONE);
         styleMode(unlimitedModeButton, mode == 0);
         styleMode(durationModeButton, mode == 1);
         styleMode(dateTimeModeButton, mode == 2);
@@ -219,6 +228,55 @@ final class StopwatchPanelController {
     void onPause(){
         resumed = false;
         handler.removeCallbacks(ticker);
+        saveDraft();
         save();
+    }
+
+    private void saveDraft() {
+        host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
+                .putString("stopwatch_draft_label", labelInput.getText().toString())
+                .putString("stopwatch_draft_hours", hoursInput.getText().toString())
+                .putString("stopwatch_draft_minutes", minutesInput.getText().toString())
+                .putString("stopwatch_draft_seconds", secondsInput.getText().toString()).apply();
+    }
+
+    private void restoreDraft() {
+        SharedPreferences p = host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
+        labelInput.setText(p.getString("stopwatch_draft_label", ""));
+        hoursInput.setText(p.getString("stopwatch_draft_hours", ""));
+        minutesInput.setText(p.getString("stopwatch_draft_minutes", ""));
+        secondsInput.setText(p.getString("stopwatch_draft_seconds", ""));
+    }
+
+    private org.json.JSONObject capturePreset() throws org.json.JSONException {
+        saveDraft();
+        long duration = readLimit();
+        if ((mode == 1 && duration <= 0) || (mode == 2 && selectedTarget <= System.currentTimeMillis())) {
+            LogoToast.makeText(host, AppString.get(R.string.tool_invalid), Toast.LENGTH_SHORT).show(); return null;
+        }
+        String label = labelInput.getText().toString().trim();
+        return new org.json.JSONObject().put("label", label.isEmpty() ? ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH) : label)
+                .put("mode", mode).put("duration", duration).put("target", selectedTarget).put("calendar", calendarType);
+    }
+
+    private void loadPreset(org.json.JSONObject config, boolean run) throws org.json.JSONException {
+        int savedMode = config.getInt("mode");
+        long duration = config.getLong("duration");
+        long target = config.getLong("target");
+        if (savedMode < 0 || savedMode > 2 || (savedMode == 1 && duration <= 0)
+                || (run && savedMode == 2 && target <= System.currentTimeMillis()))
+            throw new org.json.JSONException("Expired or invalid stopwatch");
+        int savedCalendar = config.getInt("calendar");
+        String savedLabel = config.getString("label");
+        reset();
+        mode = savedMode; selectedTarget = target; calendarType = savedCalendar;
+        labelInput.setText(savedLabel);
+        long seconds = duration / 1000;
+        hoursInput.setText(String.valueOf(seconds / 3600));
+        minutesInput.setText(String.valueOf(seconds / 60 % 60));
+        secondsInput.setText(String.valueOf(seconds % 60));
+        TimeToolPresets.restoreImages(host, ToolAlarmScheduler.STOPWATCH, config);
+        saveDraft(); save(); updateControls(); renderTarget(); renderTime(0);
+        if (run) toggleRunning();
     }
 }

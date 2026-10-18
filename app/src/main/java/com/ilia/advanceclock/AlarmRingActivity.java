@@ -44,6 +44,28 @@ public final class AlarmRingActivity extends Activity {
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_alarm_ring);
+        enableImmersiveMode();
+        View ringRoot = findViewById(R.id.ring_root);
+        final int left = ringRoot.getPaddingLeft(), top = ringRoot.getPaddingTop();
+        final int right = ringRoot.getPaddingRight();
+        ringRoot.setOnApplyWindowInsetsListener((view, insets) -> {
+            int safeTop = 0, safeBottom = 0, safeLeft = 0, safeRight = 0;
+            if (android.os.Build.VERSION.SDK_INT >= 30) {
+                android.graphics.Insets safe = insets.getInsetsIgnoringVisibility(
+                        android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout());
+                safeTop = safe.top; safeBottom = safe.bottom; safeLeft = safe.left; safeRight = safe.right;
+            } else {
+                safeTop = insets.getStableInsetTop(); safeBottom = insets.getStableInsetBottom();
+                if (android.os.Build.VERSION.SDK_INT >= 28 && insets.getDisplayCutout() != null) {
+                    safeLeft = insets.getDisplayCutout().getSafeInsetLeft();
+                    safeRight = insets.getDisplayCutout().getSafeInsetRight();
+                }
+            }
+            view.setPadding(left + safeLeft, Math.max(top, safeTop), right + safeRight,
+                    dp(48) + safeBottom);
+            return insets;
+        });
+        ringRoot.requestApplyInsets();
         showing = new WeakReference<>(this);
 
         snooze = findViewById(R.id.ring_snooze);
@@ -57,6 +79,28 @@ public final class AlarmRingActivity extends Activity {
 
         findViewById(R.id.stop_alarm).setOnClickListener(v -> stopAndClose());
         findViewById(R.id.snooze_alarm).setOnClickListener(v -> snoozeAndClose());
+    }
+
+    private void enableImmersiveMode() {
+        if (android.os.Build.VERSION.SDK_INT >= 30) {
+            getWindow().setDecorFitsSystemWindows(false);
+            android.view.WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                controller.hide(android.view.WindowInsets.Type.systemBars());
+            }
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+    }
+
+    @Override protected void onResume() { super.onResume(); enableImmersiveMode(); }
+    @Override public void onWindowFocusChanged(boolean focused) {
+        super.onWindowFocusChanged(focused);
+        if (focused) enableImmersiveMode();
     }
 
     @Override protected void onNewIntent(android.content.Intent intent) {
@@ -93,6 +137,12 @@ public final class AlarmRingActivity extends Activity {
                 ? ToolAlarmScheduler.TIMER.equals(toolKind)
                 ? AppString.get(R.string.runtime_text_0584) : AppString.get(R.string.runtime_text_0585)
                 : AppString.get(R.string.runtime_text_0586));
+        if (timeTool) {
+            item = new AlarmItem(alarmId, label, now, 0, false);
+            android.content.SharedPreferences p = getSharedPreferences("time_tools", MODE_PRIVATE);
+            item.imageUri1 = p.getString(toolKind + "_active_image1", "");
+            item.imageUri2 = p.getString(toolKind + "_active_image2", "");
+        }
         renderAlarmImages(item);
     }
 

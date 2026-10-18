@@ -1159,4 +1159,16 @@
     <string name="alarm_auto_stop_title">Alarm auto-stop</string>
     <string name="alarm_auto_stop_minutes">%1$d minutes</string>
     <string name="alarm_auto_stop_never">Do not stop</string>
+    <string name="tool_save">ذخیره</string>
+    <string name="tool_saved">ذخیره‌شده‌ها</string>
+    <string name="tool_run">اجرای دوباره</string>
+    <string name="tool_edit">ویرایش</string>
+    <string name="tool_delete">حذف</string>
+    <string name="tool_saved_success">ذخیره شد</string>
+    <string name="tool_no_saved">مورد ذخیره‌شده‌ای وجود ندارد</string>
+    <string name="tool_invalid">مدت معتبر یا تاریخ آینده را وارد کنید</string>
+    <string name="tool_replace_running">اجرای فعلی جایگزین شود؟</string>
+    <string name="tool_delete_confirm">این مورد ذخیره‌شده حذف شود؟</string>
+    <string name="tool_remove_image">این عکس حذف شود؟</string>
+    <string name="tool_image_unavailable">انتخاب عکس در دسترس نیست</string>
 </resources>

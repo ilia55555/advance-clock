@@ -1177,4 +1177,16 @@
     <string name="alarm_auto_stop_title">الإيقاف التلقائي للتنبيهات</string>
     <string name="alarm_auto_stop_minutes">%1$d دقيقة</string>
     <string name="alarm_auto_stop_never">عدم الإيقاف</string>
+    <string name="tool_save">حفظ</string>
+    <string name="tool_saved">العناصر المحفوظة</string>
+    <string name="tool_run">تشغيل مجددًا</string>
+    <string name="tool_edit">تعديل</string>
+    <string name="tool_delete">حذف</string>
+    <string name="tool_saved_success">تم الحفظ</string>
+    <string name="tool_no_saved">لا توجد عناصر محفوظة</string>
+    <string name="tool_invalid">أدخل مدة صالحة أو تاريخًا مستقبليًا</string>
+    <string name="tool_replace_running">هل تريد استبدال التشغيل الحالي؟</string>
+    <string name="tool_delete_confirm">هل تريد حذف هذا العنصر؟</string>
+    <string name="tool_remove_image">هل تريد إزالة هذه الصورة؟</string>
+    <string name="tool_image_unavailable">منتقي الصور غير متاح</string>
 </resources>

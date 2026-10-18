@@ -17,6 +17,7 @@ import java.util.Locale;
 final class TimerPanelController {
     private final Activity host;
     private final View root;
+    private TimeToolPresets presets;
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView timeView, summary;
@@ -64,6 +65,13 @@ final class TimerPanelController {
         timeButton = root.findViewById(R.id.timer_clock);
         durationModeButton = root.findViewById(R.id.timer_mode_duration);
         dateTimeModeButton = root.findViewById(R.id.timer_mode_datetime);
+        restoreDraft();
+        presets = new TimeToolPresets(host, labelInput, ToolAlarmScheduler.TIMER,
+                new TimeToolPresets.Editor() {
+                    public org.json.JSONObject capture() throws org.json.JSONException { return capturePreset(); }
+                    public void load(org.json.JSONObject config, boolean run) throws org.json.JSONException { loadPreset(config, run); }
+                    public boolean busy() { return running || remainingMillis > 0; }
+                });
         restore();
         if (selectedTarget <= 0L) {
             selectedTarget = System.currentTimeMillis() + 5 * 60_000L;
@@ -148,6 +156,7 @@ final class TimerPanelController {
 
     private void updateControls() {
         boolean configured = !running && remainingMillis == 0L;
+        if (presets != null) presets.refresh();
         modeButtons.setVisibility(configured ? View.VISIBLE : View.GONE);
         durationInputs.setVisibility(configured && !dateTimeMode ? View.VISIBLE : View.GONE);
         dateTimeInputs.setVisibility(configured && dateTimeMode ? View.VISIBLE : View.GONE);
@@ -201,6 +210,59 @@ final class TimerPanelController {
     void onPause(){
         resumed = false;
         handler.removeCallbacks(ticker);
+        saveDraft();
         save();
+    }
+
+    private void saveDraft() {
+        host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
+                .putString("timer_draft_label", labelInput.getText().toString())
+                .putString("timer_draft_hours", hoursInput.getText().toString())
+                .putString("timer_draft_minutes", minutesInput.getText().toString())
+                .putString("timer_draft_seconds", secondsInput.getText().toString()).apply();
+    }
+
+    private void restoreDraft() {
+        SharedPreferences p = host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
+        labelInput.setText(p.getString("timer_draft_label", ""));
+        hoursInput.setText(p.getString("timer_draft_hours", ""));
+        minutesInput.setText(p.getString("timer_draft_minutes", "5"));
+        secondsInput.setText(p.getString("timer_draft_seconds", ""));
+    }
+
+    private org.json.JSONObject capturePreset() throws org.json.JSONException {
+        saveDraft();
+        long duration = readDuration();
+        if ((!dateTimeMode && duration <= 0) || (dateTimeMode && selectedTarget <= System.currentTimeMillis())) {
+            LogoToast.makeText(host, AppString.get(R.string.tool_invalid), Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        String label = labelInput.getText().toString().trim();
+        return new org.json.JSONObject().put("label", label.isEmpty() ? ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER) : label)
+                .put("dateMode", dateTimeMode).put("duration", duration)
+                .put("target", selectedTarget).put("calendar", calendarType);
+    }
+
+    private void loadPreset(org.json.JSONObject config, boolean run) throws org.json.JSONException {
+        boolean dateMode = config.getBoolean("dateMode");
+        long duration = config.getLong("duration");
+        long target = config.getLong("target");
+        if ((run && dateMode && target <= System.currentTimeMillis()) || (!dateMode && duration <= 0))
+            throw new org.json.JSONException("Expired or invalid timer");
+        int savedCalendar = config.getInt("calendar");
+        String savedLabel = config.getString("label");
+        reset();
+        dateTimeMode = dateMode;
+        selectedTarget = target;
+        calendarType = savedCalendar;
+        labelInput.setText(savedLabel);
+        long seconds = duration / 1000;
+        hoursInput.setText(String.valueOf(seconds / 3600));
+        minutesInput.setText(String.valueOf(seconds / 60 % 60));
+        secondsInput.setText(String.valueOf(seconds % 60));
+        TimeToolPresets.restoreImages(host, ToolAlarmScheduler.TIMER, config);
+        saveDraft(); save(); updateControls(); renderSelection();
+        renderTime(dateTimeMode ? Math.max(0L, target - System.currentTimeMillis()) : duration);
+        if (run) toggleTimer();
     }
 }

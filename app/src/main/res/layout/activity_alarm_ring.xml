@@ -8,7 +8,7 @@
     android:paddingStart="28dp"
     android:paddingTop="54dp"
     android:paddingEnd="28dp"
-    android:paddingBottom="28dp">
+    android:paddingBottom="48dp">
 
     <TextView
         android:id="@+id/ring_date"
