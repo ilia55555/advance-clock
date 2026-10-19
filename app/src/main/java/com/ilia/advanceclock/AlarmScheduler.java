@@ -63,9 +63,11 @@ public final class AlarmScheduler {
      * the reminders that still belong to the occurrence that just rang.
      */
     public static void schedulePostReminders(Context context, AlarmItem item, long firedAtMillis) {
-        if (!PermissionHelper.exactAlarmsGranted(context)) return;
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager == null) return;
+        // Editing the selection must also remove old alarms from the system's next-alarm display.
+        cancelPostReminders(context, item.id, firedAtMillis);
+        if (!PermissionHelper.exactAlarmsGranted(context)) return;
 
         List<Integer> reminders = AlarmReminderUtils.effective(
                 item.reminderMode, item.reminderMinutesJson);
