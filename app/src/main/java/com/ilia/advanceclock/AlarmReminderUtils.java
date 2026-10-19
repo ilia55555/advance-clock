@@ -75,8 +75,14 @@ public final class AlarmReminderUtils {
         if (mode == MODE_SMART) return AppString.get(R.string.runtime_text_0036);
         List<Integer> values = effective(mode, customJson);
         if (values.isEmpty()) return AppString.get(R.string.runtime_text_0035);
-        if (values.size() == 1) return labelForMinutes(values.get(0));
-        return values.size() + AppString.get(R.string.runtime_text_0671);
+        return AppString.get(values.size() == 1 ? R.string.reminder_count_single
+                : R.string.reminder_count_summary, CalendarUtils.fa(values.size()));
+    }
+
+    /** Completed one-shot alarms remain eligible; explicit cancellation clears lastFiredAtMillis. */
+    public static boolean isScheduledReminder(AlarmItem item, long occurrence, int minutes) {
+        return item != null && occurrence > 0L && item.lastFiredAtMillis >= occurrence
+                && effective(item.reminderMode, item.reminderMinutesJson).contains(minutes);
     }
 
     private static boolean isAllowed(int value) {

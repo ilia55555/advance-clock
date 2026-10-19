@@ -3,7 +3,6 @@ package com.ilia.advanceclock;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 public final class AlarmReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context context, Intent intent) {
@@ -14,17 +13,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
 
         long firedAt = item.triggerAtMillis;
 
-        Intent service = AlarmSoundService.startIntent(
-                context,
-                item.id,
-                item.label,
-                item.vibrate,
-                item.soundUri);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(service);
-        } else {
-            context.startService(service);
-        }
+        AlarmSoundService.ring(context, item);
 
         item.lastFiredAtMillis = firedAt;
         AlarmScheduler.schedulePostReminders(context, item, firedAt);

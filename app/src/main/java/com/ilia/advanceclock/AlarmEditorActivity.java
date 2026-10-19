@@ -234,8 +234,7 @@ public final class AlarmEditorActivity extends Activity {
 
     private void updateReminderButton() {
         remindersButton.setText(
-                AppString.get(R.string.runtime_text_0419)
-                        + AlarmReminderUtils.summary(
+                AlarmReminderUtils.summary(
                         reminderMode,
                         reminderMinutesJson));
     }

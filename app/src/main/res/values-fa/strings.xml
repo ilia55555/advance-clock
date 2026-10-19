@@ -119,7 +119,7 @@
     <string formatted="false" name="runtime_text_0033">هر سال</string>
     <string formatted="false" name="runtime_text_0034">امروز</string>
     <string formatted="false" name="runtime_text_0035">بدون یادآوری</string>
-    <string formatted="false" name="runtime_text_0036">خودکار (هوشمند)</string>
+    <string formatted="false" name="runtime_text_0036">یادآوری هوشمند</string>
     <string formatted="false" name="runtime_text_0037">دقیقه</string>
     <string formatted="false" name="runtime_text_0038">ثانیه</string>
     <string formatted="false" name="runtime_text_0039">ساعت جهانی</string>
@@ -1206,4 +1206,6 @@
     <string name="about_osm_privacy" formatted="false">حریم خصوصی OpenStreetMap</string>
     <string name="about_timeapi_privacy" formatted="false">حریم خصوصی TimeAPI</string>
     <string name="about_openmeteo_terms" formatted="false">شرایط و حریم خصوصی Open-Meteo</string>
+    <string name="reminder_count_summary">%1$s یادآوری</string>
+    <string name="reminder_count_single">%1$s یادآوری</string>
 </resources>

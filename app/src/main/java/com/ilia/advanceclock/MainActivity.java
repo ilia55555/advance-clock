@@ -833,8 +833,7 @@ public final class MainActivity extends Activity {
 
     private void updateAlarmReminderLabel() {
         quickAlarmReminders.setText(
-                AppString.get(R.string.runtime_text_0419)
-                        + AlarmReminderUtils.summary(
+                AlarmReminderUtils.summary(
                         alarmReminderMode, alarmReminderMinutesJson));
     }
 
@@ -1549,7 +1548,7 @@ public final class MainActivity extends Activity {
                         + AppString.get(R.string.runtime_text_0429)
                         + PriorityUtils.label(item.priority)
                         + (item.reminderMode != AlarmReminderUtils.MODE_NONE
-                        ? AppString.get(R.string.runtime_text_0430) + reminder
+                        ? "  •  " + reminder
                         : "")
                         + (item.vibrate ? AppString.get(R.string.runtime_text_0431) : ""));
         time.setPadding(0, dp(6), 0, dp(4));

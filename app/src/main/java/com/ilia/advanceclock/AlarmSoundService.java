@@ -70,6 +70,12 @@ public final class AlarmSoundService extends Service {
         }
     };
 
+    static void ring(Context context, AlarmItem item) {
+        Intent service = startIntent(context, item.id, item.label, item.vibrate, item.soundUri);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(service);
+        else context.startService(service);
+    }
+
     public static Intent startIntent(Context context, long id, String label) {
         return startIntent(context, id, label, true, "");
     }

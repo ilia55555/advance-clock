@@ -73,7 +73,7 @@
     <string formatted="false" name="runtime_text_0033">كل سنة</string>
     <string formatted="false" name="runtime_text_0034">اليوم</string>
     <string formatted="false" name="runtime_text_0035">بدون تذكير</string>
-    <string formatted="false" name="runtime_text_0036">تلقائي (ذكي)</string>
+    <string formatted="false" name="runtime_text_0036">تذكير ذكي</string>
     <string formatted="false" name="runtime_text_0037">دقيقة</string>
     <string formatted="false" name="runtime_text_0038">ثانية</string>
     <string formatted="false" name="runtime_text_0039">الساعة العالمية</string>
@@ -1263,4 +1263,6 @@
     <string name="about_osm_privacy" formatted="false">سياسة خصوصية OpenStreetMap</string>
     <string name="about_timeapi_privacy" formatted="false">سياسة خصوصية TimeAPI</string>
     <string name="about_openmeteo_terms" formatted="false">شروط Open-Meteo وخصوصيته</string>
+    <string name="reminder_count_summary">%1$s تذكير</string>
+    <string name="reminder_count_single">%1$s تذكير</string>
 </resources>

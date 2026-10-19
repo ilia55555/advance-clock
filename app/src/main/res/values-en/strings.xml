@@ -118,7 +118,7 @@
     <string formatted="false" name="runtime_text_0033">Every year</string>
     <string formatted="false" name="runtime_text_0034">Today</string>
     <string formatted="false" name="runtime_text_0035">No reminder</string>
-    <string formatted="false" name="runtime_text_0036">Automatic (smart)</string>
+    <string formatted="false" name="runtime_text_0036">Smart reminder</string>
     <string formatted="false" name="runtime_text_0037">minute</string>
     <string formatted="false" name="runtime_text_0038">second</string>
     <string formatted="false" name="runtime_text_0039">World Clock</string>
@@ -1245,4 +1245,6 @@ Lock screen</string>
     <string name="about_osm_privacy" formatted="false">OpenStreetMap privacy policy</string>
     <string name="about_timeapi_privacy" formatted="false">TimeAPI privacy policy</string>
     <string name="about_openmeteo_terms" formatted="false">Open-Meteo terms and privacy</string>
+    <string name="reminder_count_summary">%1$s reminders</string>
+    <string name="reminder_count_single">%1$s reminder</string>
 </resources>

@@ -825,8 +825,7 @@ public final class NoForgetEditorActivity extends Activity {
     private void updateReminderButton(){
         if(remindersButton==null)return;
         remindersButton.setText(
-                AppString.get(R.string.runtime_text_0469)
-                        +AlarmReminderUtils.summary(
+                AlarmReminderUtils.summary(
                                 reminderMode,
                                 reminderMinutesJson));
     }

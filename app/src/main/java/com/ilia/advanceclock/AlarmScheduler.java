@@ -87,7 +87,10 @@ public final class AlarmScheduler {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             try {
-                manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, when, pi);
+                PendingIntent show = PendingIntent.getActivity(context, requestCode(item.id) + 1,
+                        new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                manager.setAlarmClock(new AlarmManager.AlarmClockInfo(when, show), pi);
             } catch (SecurityException ignored) {
             }
         }
