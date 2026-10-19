@@ -7,24 +7,29 @@ public final class PriorityUtils {
     public static final int HIGH = 3;
     public static final int VERY_HIGH = 4;
 
-    private static final String[] LABELS = {
-            AppString.get(R.string.runtime_text_0024), AppString.get(R.string.runtime_text_0025), AppString.get(R.string.runtime_text_0026), AppString.get(R.string.runtime_text_0027), AppString.get(R.string.runtime_text_0028)
+    private static final int[] LABEL_IDS = {
+            R.string.runtime_text_0024, R.string.runtime_text_0025, R.string.runtime_text_0026,
+            R.string.runtime_text_0027, R.string.runtime_text_0028
     };
 
     private PriorityUtils() {}
 
-    public static String[] labels() { return LABELS.clone(); }
+    public static String[] labels() {
+        String[] out = new String[LABEL_IDS.length];
+        for (int i = 0; i < out.length; i++) out[i] = AppString.get(LABEL_IDS[i]);
+        return out;
+    }
 
     public static String[] displayLabels() {
-        String[] out = new String[LABELS.length];
-        for (int i = 0; i < LABELS.length; i++) {
+        String[] out = new String[LABEL_IDS.length];
+        for (int i = 0; i < LABEL_IDS.length; i++) {
             out[i] = displayLabel(i);
         }
         return out;
     }
 
     public static String label(int value) {
-        return LABELS[Math.max(0, Math.min(LABELS.length - 1, value))];
+        return AppString.get(LABEL_IDS[Math.max(0, Math.min(LABEL_IDS.length - 1, value))]);
     }
 
     public static String displayLabel(int value) {
