@@ -66,7 +66,7 @@
     <string formatted="false" name="runtime_text_0026">Moyenne</string>
     <string formatted="false" name="runtime_text_0027">Élevée</string>
     <string formatted="false" name="runtime_text_0028">Très élevée</string>
-    <string formatted="false" name="runtime_text_0029">Sans répétition</string>
+    <string formatted="false" name="runtime_text_0029">Une seule fois</string>
     <string formatted="false" name="runtime_text_0030">Tous les jours</string>
     <string formatted="false" name="runtime_text_0031">Chaque semaine</string>
     <string formatted="false" name="runtime_text_0032">Chaque mois</string>
@@ -906,4 +906,5 @@ Sans rappel</string>
     <string name="settings_section_general">Général</string>
     <string name="settings_section_calendar">Calendrier et événements</string>
     <string name="settings_section_alarms">Alertes</string>
+    <string name="apply_alarm_date">Appliquer la date</string>
 </resources>

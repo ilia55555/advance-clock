@@ -12,6 +12,7 @@ public final class NoForgetItem {
     public static final int PRIORITY_VERY_HIGH = PriorityUtils.VERY_HIGH;
 
     public long id;
+    public boolean applyDate;
     public String title;
     public String body;
     public String sketchJson;
@@ -66,6 +67,7 @@ public final class NoForgetItem {
 
     public JSONObject toJson() throws JSONException{
         JSONObject o=new JSONObject();
+        o.put("applyDate", applyDate);
         o.put("id",id);o.put("title",title);o.put("body",body);o.put("sketchJson",sketchJson);
         o.put("priority",priority);o.put("priorityVersion",2);
         o.put("hasDue",hasDue);o.put("dueAtMillis",dueAtMillis);
@@ -91,6 +93,7 @@ public final class NoForgetItem {
                 o.optBoolean("reminderEnabled",false),o.optLong("createdAt",System.currentTimeMillis()),
                 o.optInt("recurrenceMode",RecurrenceUtils.NONE),o.optInt("intervalDays",1),o.optString("customDatesJson","[]")
         );
+        item.applyDate = o.optBoolean("applyDate", true); // Preserve explicit dates in existing records.
         item.attachmentsJson=o.optString("attachmentsJson","[]");
         item.imageUri1=o.optString("imageUri1", ""); item.imageUri2=o.optString("imageUri2", "");
         item.imageSource1=o.optString("imageSource1", item.imageUri1); item.imageSource2=o.optString("imageSource2", item.imageUri2);

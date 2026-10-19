@@ -46,6 +46,7 @@ public final class NoForgetEditorActivity extends Activity {
     private Switch alarmEnabled;
     private LinearLayout alarmControls;
     private Button dateButton;
+    private DateOption dateOption;
     private Button timeButton;
     private Button repeatButton;
     private Button remindersButton;
@@ -95,9 +96,11 @@ public final class NoForgetEditorActivity extends Activity {
         alarmEnabled=findViewById(R.id.note_alarm_enabled);
         alarmControls=findViewById(R.id.note_alarm_controls);
         dateButton=findViewById(R.id.note_date);
+        dateOption = new DateOption(this, dateButton, R.id.date_option_note_editor);
         timeButton=findViewById(R.id.note_time);
         repeatButton=findViewById(R.id.note_repeat);
         deleteButton=findViewById(R.id.delete_note);
+        ButtonStyles.destructive(deleteButton);
         sketch=findViewById(R.id.note_sketch);
         penSize=findViewById(R.id.editor_pen_size);
         gridToggle=findViewById(R.id.editor_grid_toggle);
@@ -138,6 +141,8 @@ public final class NoForgetEditorActivity extends Activity {
         deleteButton.setOnClickListener(v->delete());
         findViewById(R.id.cancel_note).setOnClickListener(v->finish());
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("selectedTime"))
+            due.setTimeInMillis(savedInstanceState.getLong("selectedTime"));
         updateDueButtons();
         updateReminderButton();
         alarmControls.setVisibility(
@@ -156,6 +161,7 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
+        out.putLong("selectedTime", due.getTimeInMillis());
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
     }
     @Override protected void onResume() {
@@ -687,8 +693,7 @@ public final class NoForgetEditorActivity extends Activity {
         Button remove=new Button(this);
         remove.setText(AppString.get(R.string.runtime_text_0006));
         remove.setAllCaps(false);
-        remove.setTextColor(0xFFC44C4C);
-        remove.setBackgroundResource(R.drawable.bg_soft_button);
+        ButtonStyles.destructive(remove);
         remove.setOnClickListener(v->{
             attachments.remove(item);
             renderFileModalList();
@@ -774,6 +779,7 @@ public final class NoForgetEditorActivity extends Activity {
             return;
         }
 
+        dateOption.setApplied(item.applyDate);
         title.setText(item.title);
         body.setText(item.body);
         priority.setSelection(PriorityUtils.clamp(item.priority));
@@ -847,7 +853,8 @@ public final class NoForgetEditorActivity extends Activity {
         }
 
         boolean enabled=alarmEnabled.isChecked();
-        long dueAt=enabled?due.getTimeInMillis():0L;
+        long dueAt=enabled ? AlarmTimePolicy.next(due.getTimeInMillis(), dateOption.isApplied(),
+                recurrenceMode, intervalDays, customDatesJson, System.currentTimeMillis()) : 0L;
 
         if(enabled&&dueAt<=System.currentTimeMillis()){
             LogoToast.makeText(
@@ -872,6 +879,7 @@ public final class NoForgetEditorActivity extends Activity {
                 intervalDays,
                 customDatesJson);
 
+        item.applyDate = dateOption.isApplied();
         item.attachmentsJson=NoteAttachment.encode(attachments);
         AlarmAttachments.read(this, attachmentKey, item);
         item.vibrate=vibrate.isChecked();

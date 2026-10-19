@@ -1136,6 +1136,8 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
                 long target = p.getLong(
                         "stopwatch_target",
                         0L);
+                target = AlarmTimePolicy.next(target, p.getBoolean("stopwatch_apply_date", true),
+                        RecurrenceUtils.NONE, 1, "[]", now);
                 limit = target - now;
                 if (limit <= 0L) return;
             } else if (limit <= 0L) {
@@ -1152,7 +1154,10 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
             long target = p.getLong(
                     "stopwatch_target",
                     0L);
+            target = AlarmTimePolicy.next(target, p.getBoolean("stopwatch_apply_date", true),
+                    RecurrenceUtils.NONE, 1, "[]", now);
             if (target <= now) return;
+            p.edit().putLong("stopwatch_target", target).apply();
             limit = accumulated
                     + target
                     - now;
@@ -1255,20 +1260,14 @@ public final class TimeToolsWidgetProvider extends AppWidgetProvider {
         }
 
         long value = remaining;
-        if (value <= 0L) {
-            boolean dateMode = p.getBoolean(
-                    "timer_date_mode",
-                    false);
-            if (dateMode) {
-                value = p.getLong(
-                        "timer_target",
-                        0L)
-                        - System.currentTimeMillis();
-            } else {
-                value = TimeToolsWidgetPrefs.timerDefaultMillis(
-                        context,
-                        widgetId);
-            }
+        if (p.getBoolean("timer_date_mode", false)) {
+            long target = AlarmTimePolicy.next(p.getLong("timer_target", 0L),
+                    p.getBoolean("timer_apply_date", true), RecurrenceUtils.NONE, 1, "[]",
+                    System.currentTimeMillis());
+            value = target - System.currentTimeMillis();
+            if (value > 0L) p.edit().putLong("timer_target", target).apply();
+        } else if (value <= 0L) {
+            value = TimeToolsWidgetPrefs.timerDefaultMillis(context, widgetId);
         }
 
         if (value <= 0L) return;

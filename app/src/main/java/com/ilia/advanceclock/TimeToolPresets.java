@@ -94,18 +94,30 @@ final class TimeToolPresets {
         for (int i = 0; i < names.length; i++) names[i] = items.optJSONObject(i).optString("label", "");
         new AlertDialog.Builder(host).setTitle(R.string.tool_saved).setItems(names, (d, index) -> {
             JSONObject item = items.optJSONObject(index);
-            new AlertDialog.Builder(host).setTitle(names[index]).setItems(new String[]{
-                    host.getString(R.string.tool_run), host.getString(R.string.tool_edit),
-                    host.getString(R.string.tool_delete)}, (dialog, action) -> {
+            String[] choices = {host.getString(R.string.tool_run), host.getString(R.string.tool_edit),
+                    host.getString(R.string.tool_delete)};
+            android.widget.ArrayAdapter<String> options = new android.widget.ArrayAdapter<String>(
+                    host, android.R.layout.simple_list_item_1, choices) {
+                @Override public View getView(int position, View recycled, android.view.ViewGroup parent) {
+                    android.widget.TextView row = (android.widget.TextView) super.getView(position, recycled, parent);
+                    if (position == 2) ButtonStyles.destructive(row);
+                    else { row.setBackgroundColor(0); row.setTextColor(AppSettings.textPrimary(host)); }
+                    return row;
+                }
+            };
+            new AlertDialog.Builder(host).setTitle(names[index]).setAdapter(options, (dialog, action) -> {
                 if (action == 2) {
-                    new AlertDialog.Builder(host).setMessage(R.string.tool_delete_confirm)
+                    AlertDialog confirmation = new AlertDialog.Builder(host).setMessage(R.string.tool_delete_confirm)
                             .setPositiveButton(android.R.string.ok, (confirm, which) -> {
                                 // Read again so deleting cannot discard a more recent edit.
                                 prefs.edit().putString(kind + "_presets", TimeToolPresetStore.delete(
                                         prefs.getString(kind + "_presets", "[]"), item.optString("id"))).apply();
                                 if (item.optString("id").equals(prefs.getString(kind + "_editing_id", "")))
                                     prefs.edit().remove(kind + "_editing_id").apply();
-                            }).setNegativeButton(android.R.string.cancel, null).show();
+                            }).setNegativeButton(android.R.string.cancel, null).create();
+                    confirmation.setOnShowListener(ignored -> ButtonStyles.destructive(
+                            confirmation.getButton(AlertDialog.BUTTON_POSITIVE)));
+                    confirmation.show();
                 } else if (editor.busy()) {
                     new AlertDialog.Builder(host).setMessage(R.string.tool_replace_running)
                             .setPositiveButton(android.R.string.ok, (confirm, which) -> load(item, action == 0))

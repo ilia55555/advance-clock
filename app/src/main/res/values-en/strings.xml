@@ -111,7 +111,7 @@
     <string formatted="false" name="runtime_text_0026">Medium</string>
     <string formatted="false" name="runtime_text_0027">High</string>
     <string formatted="false" name="runtime_text_0028">Very high</string>
-    <string formatted="false" name="runtime_text_0029">No repeat</string>
+    <string formatted="false" name="runtime_text_0029">Only once</string>
     <string formatted="false" name="runtime_text_0030">Every day</string>
     <string formatted="false" name="runtime_text_0031">Every week</string>
     <string formatted="false" name="runtime_text_0032">Every month</string>
@@ -1247,4 +1247,5 @@ Lock screen</string>
     <string name="about_openmeteo_terms" formatted="false">Open-Meteo terms and privacy</string>
     <string name="reminder_count_summary">%1$s reminders</string>
     <string name="reminder_count_single">%1$s reminder</string>
+    <string name="apply_alarm_date">Apply date</string>
 </resources>

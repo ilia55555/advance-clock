@@ -66,7 +66,7 @@
     <string formatted="false" name="runtime_text_0026">Orta</string>
     <string formatted="false" name="runtime_text_0027">Yüksek</string>
     <string formatted="false" name="runtime_text_0028">Çok yüksek</string>
-    <string formatted="false" name="runtime_text_0029">Tekrar yok</string>
+    <string formatted="false" name="runtime_text_0029">Yalnızca bir kez</string>
     <string formatted="false" name="runtime_text_0030">Her gün</string>
     <string formatted="false" name="runtime_text_0031">Her hafta</string>
     <string formatted="false" name="runtime_text_0032">Her ay</string>
@@ -906,4 +906,5 @@ Kilit ekranı</string>
     <string name="settings_section_general">Genel</string>
     <string name="settings_section_calendar">Takvim ve etkinlikler</string>
     <string name="settings_section_alarms">Uyarılar</string>
+    <string name="apply_alarm_date">Tarihi uygula</string>
 </resources>

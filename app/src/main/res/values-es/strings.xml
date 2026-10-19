@@ -66,7 +66,7 @@
     <string formatted="false" name="runtime_text_0026">Media</string>
     <string formatted="false" name="runtime_text_0027">Alta</string>
     <string formatted="false" name="runtime_text_0028">Muy alta</string>
-    <string formatted="false" name="runtime_text_0029">Sin repetición</string>
+    <string formatted="false" name="runtime_text_0029">Solo una vez</string>
     <string formatted="false" name="runtime_text_0030">Todos los días</string>
     <string formatted="false" name="runtime_text_0031">Cada semana</string>
     <string formatted="false" name="runtime_text_0032">Cada mes</string>
@@ -906,4 +906,5 @@ Pantalla de bloqueo</string>
     <string name="settings_section_general">General</string>
     <string name="settings_section_calendar">Calendario y eventos</string>
     <string name="settings_section_alarms">Alertas</string>
+    <string name="apply_alarm_date">Aplicar fecha</string>
 </resources>

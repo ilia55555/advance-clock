@@ -29,6 +29,7 @@ public final class AlarmEditorActivity extends Activity {
     private long alarmId = -1L;
     private EditText label;
     private Button dateButton;
+    private DateOption dateOption;
     private Button timeButton;
     private Button repeatButton;
     private Button remindersButton;
@@ -66,11 +67,13 @@ public final class AlarmEditorActivity extends Activity {
 
         label = findViewById(R.id.alarm_label);
         dateButton = findViewById(R.id.pick_date);
+        dateOption = new DateOption(this, dateButton, R.id.date_option_alarm_editor);
         timeButton = findViewById(R.id.pick_time);
         repeatButton = findViewById(R.id.alarm_repeat);
         remindersButton = findViewById(R.id.alarm_reminders);
         priority = findViewById(R.id.alarm_priority);
         deleteButton = findViewById(R.id.delete_alarm);
+        ButtonStyles.destructive(deleteButton);
         vibrate = findViewById(R.id.alarm_vibrate);
         image1Button = findViewById(R.id.alarm_image1_button);
         image2Button = findViewById(R.id.alarm_image2_button);
@@ -103,6 +106,10 @@ public final class AlarmEditorActivity extends Activity {
             updateReminderButton();
         }
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("selectedTime")) {
+            selected.setTimeInMillis(savedInstanceState.getLong("selectedTime"));
+            updateButtons();
+        }
         dateButton.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
                 selected.getTimeInMillis(),
@@ -172,6 +179,7 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
+        out.putLong("selectedTime", selected.getTimeInMillis());
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
     }
 
@@ -205,6 +213,7 @@ public final class AlarmEditorActivity extends Activity {
             return;
         }
 
+        dateOption.setApplied(item.applyDate);
         label.setText(item.label);
         selected.setTimeInMillis(item.triggerAtMillis);
         priority.setSelection(item.priority);
@@ -254,7 +263,8 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     private void save() {
-        long trigger = selected.getTimeInMillis();
+        long trigger = AlarmTimePolicy.next(selected.getTimeInMillis(), dateOption.isApplied(),
+                recurrenceMode, intervalDays, customDatesJson, System.currentTimeMillis());
 
         if (trigger <= System.currentTimeMillis()) {
             LogoToast.makeText(
@@ -283,6 +293,7 @@ public final class AlarmEditorActivity extends Activity {
                 snoozeMinutes,
                 reminderMode,
                 reminderMinutesJson);
+        item.applyDate = dateOption.isApplied();
         item.lastFiredAtMillis = lastFiredAtMillis;
         item.imageUri1 = imageUri1;
         item.imageUri2 = imageUri2;

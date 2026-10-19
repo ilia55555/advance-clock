@@ -184,7 +184,8 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             list.addView(preview, new LinearLayout.LayoutParams(-1, dp(200)));
             Button frame = new Button(this); frame.setText(R.string.media_crop); list.addView(frame);
             frame.setOnClickListener(v -> crop(slot));
-            Button remove = new Button(this); remove.setText(R.string.tool_remove_image); list.addView(remove);
+            Button remove = new Button(this); remove.setText(R.string.tool_remove_image);
+            ButtonStyles.destructive(remove); list.addView(remove);
             remove.setOnClickListener(v -> {
                 SharedPreferences.Editor edit = prefs.edit();
                 if (slot == 1) {

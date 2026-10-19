@@ -66,7 +66,7 @@
     <string formatted="false" name="runtime_text_0026">中</string>
     <string formatted="false" name="runtime_text_0027">高</string>
     <string formatted="false" name="runtime_text_0028">非常に高い</string>
-    <string formatted="false" name="runtime_text_0029">繰り返しなし</string>
+    <string formatted="false" name="runtime_text_0029">一度だけ</string>
     <string formatted="false" name="runtime_text_0030">毎日</string>
     <string formatted="false" name="runtime_text_0031">毎週</string>
     <string formatted="false" name="runtime_text_0032">毎月</string>
@@ -906,4 +906,5 @@
     <string name="settings_section_general">一般設定</string>
     <string name="settings_section_calendar">カレンダーと予定</string>
     <string name="settings_section_alarms">アラート</string>
+    <string name="apply_alarm_date">日付を適用</string>
 </resources>

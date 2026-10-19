@@ -113,7 +113,7 @@
     <string formatted="false" name="runtime_text_0026">متوسط</string>
     <string formatted="false" name="runtime_text_0027">زیاد</string>
     <string formatted="false" name="runtime_text_0028">خیلی زیاد</string>
-    <string formatted="false" name="runtime_text_0029">بدون تکرار</string>
+    <string formatted="false" name="runtime_text_0029">فقط یک بار</string>
     <string formatted="false" name="runtime_text_0030">هر روز</string>
     <string formatted="false" name="runtime_text_0031">هر هفته</string>
     <string formatted="false" name="runtime_text_0032">هر ماه</string>
@@ -1251,4 +1251,5 @@
     <string name="about_policy_date" translatable="false">2026-10-18</string>
     <string name="reminder_count_summary">%1$s یادآوری</string>
     <string name="reminder_count_single">%1$s یادآوری</string>
+    <string name="apply_alarm_date">اعمال تاریخ</string>
 </resources>

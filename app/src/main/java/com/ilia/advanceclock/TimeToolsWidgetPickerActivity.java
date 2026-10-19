@@ -398,12 +398,14 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
                 p.edit()
                         .putInt("stopwatch_mode", 2)
                         .putLong("stopwatch_target", value)
+                        .putBoolean("stopwatch_apply_date", true)
                         .putInt("stopwatch_calendar", type)
                         .apply();
             } else {
                 p.edit()
                         .putBoolean("timer_date_mode", true)
                         .putLong("timer_target", value)
+                        .putBoolean("timer_apply_date", true)
                         .putInt("timer_calendar", type)
                         .apply();
             }

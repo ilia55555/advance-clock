@@ -28,7 +28,12 @@ public final class AlarmScheduler {
                     item.intervalDays,
                     item.customDatesJson,
                     now);
-            if (normalized <= now) return false;
+            if (normalized <= now) {
+                cancelPrimary(context, item.id);
+                item.enabled = false;
+                new AlarmStore(context).save(item);
+                return false;
+            }
             if (normalized != item.triggerAtMillis) {
                 item.triggerAtMillis = normalized;
                 new AlarmStore(context).save(item);

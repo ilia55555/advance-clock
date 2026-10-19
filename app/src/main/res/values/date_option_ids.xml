@@ -1,0 +1,8 @@
+<resources>
+    <item type="id" name="date_option_alarm_editor" />
+    <item type="id" name="date_option_note_editor" />
+    <item type="id" name="date_option_quick_alarm" />
+    <item type="id" name="date_option_quick_note" />
+    <item type="id" name="date_option_timer" />
+    <item type="id" name="date_option_stopwatch" />
+</resources>

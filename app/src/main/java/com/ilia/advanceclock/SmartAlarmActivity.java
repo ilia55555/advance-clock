@@ -303,6 +303,7 @@ public final class SmartAlarmActivity extends Activity {
         header.addView(previewTitle, new LinearLayout.LayoutParams(0, dp(44), 1f));
 
         Button removeAll = softButton(AppString.get(R.string.runtime_text_0273));
+        ButtonStyles.destructive(removeAll);
         removeAll.setOnClickListener(v -> {
             candidates.clear();
             refreshPreview();
@@ -493,7 +494,8 @@ public final class SmartAlarmActivity extends Activity {
         actions.addView(duplicate, weightedButtonParams());
 
         Button delete = softButton(AppString.get(R.string.runtime_text_0006));
-        delete.setTextColor(0xFFC44C4C);
+        ButtonStyles.destructive(delete);
+
         delete.setOnClickListener(v -> {
             candidates.remove(index);
             refreshPreview();
@@ -673,6 +675,7 @@ public final class SmartAlarmActivity extends Activity {
                     AlarmReminderUtils.MODE_NONE,
                     "[]");
 
+            item.applyDate = true;
             try {
                 store.save(item);
             } catch (RuntimeException error) {

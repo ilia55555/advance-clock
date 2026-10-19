@@ -365,8 +365,7 @@ final class MainNoteTabEnhancer {
             Button remove = new Button(activity);
             remove.setText(AppString.get(R.string.runtime_text_0006));
             remove.setAllCaps(false);
-            remove.setTextColor(0xFFC44C4C);
-            remove.setBackgroundResource(R.drawable.bg_soft_button);
+            ButtonStyles.destructive(remove);
             remove.setOnClickListener(v -> {
                 state.attachments.remove(item);
                 renderAttachmentList(activity, state, list, filter);
@@ -454,17 +453,18 @@ final class MainNoteTabEnhancer {
 
         boolean enabled = alarmSwitch.isChecked();
         Calendar due = (Calendar) readField(activity, "quickNoteDue", Calendar.getInstance());
-        long dueAt = enabled ? due.getTimeInMillis() : 0L;
-        if (enabled && dueAt <= System.currentTimeMillis()) {
-            LogoToast.makeText(activity,
-                    AppString.get(R.string.runtime_text_0148),
-                    Toast.LENGTH_LONG).show();
-            return;
-        }
-
         int recurrence = (Integer) readField(activity, "noteRecurrenceMode", RecurrenceUtils.NONE);
         int interval = (Integer) readField(activity, "noteIntervalDays", 1);
         String dates = (String) readField(activity, "noteCustomDates", "[]");
+        android.widget.CheckBox dateOption = activity.findViewById(R.id.date_option_quick_note);
+        boolean applyDate = dateOption != null && dateOption.isChecked();
+        long dueAt = enabled ? AlarmTimePolicy.next(due.getTimeInMillis(), applyDate,
+                recurrence, interval, dates, System.currentTimeMillis()) : 0L;
+        if (enabled && dueAt <= System.currentTimeMillis()) {
+            LogoToast.makeText(activity, AppString.get(R.string.runtime_text_0148), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         long now = System.currentTimeMillis();
         NoForgetItem item = new NoForgetItem(
                 now,
@@ -479,6 +479,7 @@ final class MainNoteTabEnhancer {
                 recurrence,
                 interval,
                 dates);
+        item.applyDate = applyDate;
         item.attachmentsJson = NoteAttachment.encode(state.attachments);
         AlarmAttachments.read(activity, "quick_note", item);
         item.vibrate = state.vibrate == null || state.vibrate.isChecked();
@@ -494,6 +495,7 @@ final class MainNoteTabEnhancer {
         else NoForgetScheduler.cancel(activity, item.id);
         NoForgetWidgetProvider.updateAll(activity);
 
+        if (dateOption != null) dateOption.setChecked(false);
         title.setText("");
         body.setText("");
         priority.setSelection(PriorityUtils.MEDIUM);
@@ -557,8 +559,7 @@ final class MainNoteTabEnhancer {
 
     private static void updateReminderButton(State state) {
         if (state.remindersButton == null) return;
-        state.remindersButton.setText(AppString.get(R.string.runtime_text_0469)
-                + AlarmReminderUtils.summary(state.reminderMode, state.reminderMinutesJson));
+        state.remindersButton.setText(AlarmReminderUtils.summary(state.reminderMode, state.reminderMinutesJson));
     }
 
     private static void updateSoundButton(Activity activity, State state) {

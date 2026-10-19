@@ -66,7 +66,7 @@
     <string formatted="false" name="runtime_text_0026">متوسط</string>
     <string formatted="false" name="runtime_text_0027">مرتفع</string>
     <string formatted="false" name="runtime_text_0028">مرتفع جدًا</string>
-    <string formatted="false" name="runtime_text_0029">بدون تكرار</string>
+    <string formatted="false" name="runtime_text_0029">مرة واحدة فقط</string>
     <string formatted="false" name="runtime_text_0030">كل يوم</string>
     <string formatted="false" name="runtime_text_0031">كل أسبوع</string>
     <string formatted="false" name="runtime_text_0032">كل شهر</string>
@@ -1265,4 +1265,5 @@
     <string name="about_openmeteo_terms" formatted="false">شروط Open-Meteo وخصوصيته</string>
     <string name="reminder_count_summary">%1$s تذكير</string>
     <string name="reminder_count_single">%1$s تذكير</string>
+    <string name="apply_alarm_date">تطبيق التاريخ</string>
 </resources>

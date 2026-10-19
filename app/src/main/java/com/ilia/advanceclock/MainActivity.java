@@ -118,6 +118,7 @@ public final class MainActivity extends Activity {
             new java.util.HashSet<>();
 
     private Button quickAlarmDate;
+    private DateOption quickAlarmDateOption, quickNoteDateOption;
     private Button quickAlarmTime;
     private Button quickAlarmRepeat;
     private Button quickAlarmReminders;
@@ -270,6 +271,7 @@ public final class MainActivity extends Activity {
         noteFab = findViewById(R.id.note_fab);
 
         quickAlarmDate = findViewById(R.id.quick_alarm_date);
+        quickAlarmDateOption = new DateOption(this, quickAlarmDate, R.id.date_option_quick_alarm);
         quickAlarmTime = findViewById(R.id.quick_alarm_time);
         quickAlarmRepeat = findViewById(R.id.quick_alarm_repeat);
         quickAlarmReminders = findViewById(R.id.quick_alarm_reminders);
@@ -287,6 +289,7 @@ public final class MainActivity extends Activity {
         quickNoteAlarmSwitch = findViewById(R.id.quick_note_alarm_switch);
         quickNoteAlarmControls = findViewById(R.id.quick_note_alarm_controls);
         quickNoteDate = findViewById(R.id.quick_note_date);
+        quickNoteDateOption = new DateOption(this, quickNoteDate, R.id.date_option_quick_note);
         quickNoteTime = findViewById(R.id.quick_note_time);
         quickNoteRepeat = findViewById(R.id.quick_note_repeat);
         quickNoteSketch = findViewById(R.id.quick_note_sketch);
@@ -1006,7 +1009,8 @@ public final class MainActivity extends Activity {
     }
 
     private void saveQuickAlarm() {
-        long trigger = quickAlarm.getTimeInMillis();
+        long trigger = AlarmTimePolicy.next(quickAlarm.getTimeInMillis(), quickAlarmDateOption.isApplied(),
+                alarmRecurrenceMode, alarmIntervalDays, alarmCustomDates, System.currentTimeMillis());
         if (trigger <= System.currentTimeMillis()) {
             LogoToast.makeText(
                     this,
@@ -1034,6 +1038,7 @@ public final class MainActivity extends Activity {
                 15,
                 alarmReminderMode,
                 alarmReminderMinutesJson);
+        item.applyDate = quickAlarmDateOption.isApplied();
         item.imageUri1 = quickAlarmImageUri1;
         item.imageUri2 = quickAlarmImageUri2;
         AlarmAttachments.read(this, "quick_alarm", item);
@@ -1043,6 +1048,7 @@ public final class MainActivity extends Activity {
         ClockWidgetProvider.updateAll(this);
         renderAlarms();
 
+        quickAlarmDateOption.setApplied(false);
         quickAlarmLabel.setText("");
         quickAlarmPriority.setSelection(PriorityUtils.MEDIUM);
         alarmRecurrenceMode = RecurrenceUtils.NONE;
@@ -1096,7 +1102,9 @@ public final class MainActivity extends Activity {
         }
 
         boolean alarmEnabled = quickNoteAlarmSwitch.isChecked();
-        long due = alarmEnabled ? quickNoteDue.getTimeInMillis() : 0L;
+        long due = alarmEnabled ? AlarmTimePolicy.next(quickNoteDue.getTimeInMillis(),
+                quickNoteDateOption.isApplied(), noteRecurrenceMode, noteIntervalDays,
+                noteCustomDates, System.currentTimeMillis()) : 0L;
 
         if (alarmEnabled && due <= System.currentTimeMillis()) {
             LogoToast.makeText(
@@ -1121,10 +1129,12 @@ public final class MainActivity extends Activity {
                 noteIntervalDays,
                 noteCustomDates);
 
+        item.applyDate = quickNoteDateOption.isApplied();
         new NoForgetStore(this).save(item);
         if (alarmEnabled) NoForgetScheduler.schedule(this, item);
         NoForgetWidgetProvider.updateAll(this);
 
+        quickNoteDateOption.setApplied(false);
         quickNoteTitle.setText("");
         quickNoteBody.setText("");
         quickNotePriority.setSelection(PriorityUtils.MEDIUM);
@@ -1566,7 +1576,20 @@ public final class MainActivity extends Activity {
 
         Button enabled = actionButton(item.enabled ? AppString.get(R.string.runtime_text_0212) : AppString.get(R.string.runtime_text_0213));
         applyAlarmStateStyle(enabled, item.enabled);
+        long activation = AlarmTimePolicy.next(item.triggerAtMillis, item.applyDate,
+                item.recurrenceMode, item.intervalDays, item.customDatesJson, System.currentTimeMillis());
+        enabled.setEnabled(item.enabled || activation > System.currentTimeMillis());
+        enabled.setAlpha(enabled.isEnabled() ? 1f : .45f);
         enabled.setOnClickListener(v -> {
+            if (!item.enabled) {
+                long next = AlarmTimePolicy.next(item.triggerAtMillis, item.applyDate, item.recurrenceMode,
+                        item.intervalDays, item.customDatesJson, System.currentTimeMillis());
+                if (next <= System.currentTimeMillis()) {
+                    LogoToast.makeText(this, AppString.get(R.string.runtime_text_0147), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                item.triggerAtMillis = next;
+            }
             item.enabled = !item.enabled;
             new AlarmStore(this).save(item);
             if (item.enabled) AlarmScheduler.schedule(this, item);
@@ -1581,6 +1604,7 @@ public final class MainActivity extends Activity {
                         .putExtra("alarmId", item.id)));
 
         Button delete = actionButton(AppString.get(R.string.runtime_text_0006));
+        ButtonStyles.destructive(delete);
         delete.setOnClickListener(v -> {
             AlarmScheduler.cancel(this, item.id);
             new AlarmStore(this).delete(item.id);
@@ -1694,6 +1718,7 @@ public final class MainActivity extends Activity {
                         .putExtra("noteId", item.id)));
 
         Button delete = actionButton(AppString.get(R.string.runtime_text_0006));
+        ButtonStyles.destructive(delete);
         delete.setOnClickListener(v -> {
             NoForgetScheduler.cancel(this, item.id);
             new NoForgetStore(this).delete(item.id);
