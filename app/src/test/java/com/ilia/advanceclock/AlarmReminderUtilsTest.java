@@ -13,8 +13,8 @@ public final class AlarmReminderUtilsTest {
     }
 
     @Test public void smartUsesFixedOffsetsFromThePrimaryOccurrence() {
-        assertEquals(Arrays.asList(15, 60, 180, 720, 1440),
-                AlarmReminderUtils.effective(AlarmReminderUtils.MODE_SMART, "[5]"));
+        assertEquals(Arrays.asList(5, 15, 30, 60),
+                AlarmReminderUtils.effective(AlarmReminderUtils.MODE_SMART, "[1440]"));
     }
 
     @Test public void customOffsetsAreSortedUniqueAndRestrictedToAvailableChoices() {
@@ -28,8 +28,8 @@ public final class AlarmReminderUtilsTest {
         AlarmItem item = alarm();
         item.enabled = false; // The primary receiver disables a completed one-shot.
         assertTrue(AlarmReminderUtils.isScheduledReminder(item, item.lastFiredAtMillis, 15));
-        assertTrue(AlarmReminderUtils.isScheduledReminder(item, item.lastFiredAtMillis, 1440));
-        assertFalse(AlarmReminderUtils.isScheduledReminder(item, item.lastFiredAtMillis, 5));
+        assertTrue(AlarmReminderUtils.isScheduledReminder(item, item.lastFiredAtMillis, 60));
+        assertFalse(AlarmReminderUtils.isScheduledReminder(item, item.lastFiredAtMillis, 120));
     }
 
     @Test public void deletionCancellationAndRemovedSelectionsCannotReplayAnAlarm() {
@@ -49,7 +49,7 @@ public final class AlarmReminderUtilsTest {
     @Test public void recurringAlarmDoesNotInvalidateRemindersOfThePreviousOccurrence() {
         AlarmItem item = alarm();
         item.lastFiredAtMillis = 2_000_000L;
-        assertTrue(AlarmReminderUtils.isScheduledReminder(item, 1_000_000L, 1440));
+        assertTrue(AlarmReminderUtils.isScheduledReminder(item, 1_000_000L, 60));
         assertFalse(AlarmReminderUtils.isScheduledReminder(item, 0L, 15));
         assertFalse(AlarmReminderUtils.isScheduledReminder(item, 3_000_000L, 15));
     }

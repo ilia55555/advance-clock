@@ -12,7 +12,7 @@ public final class AlarmReminderUtils {
     public static final int MODE_CUSTOM = 2;
 
     public static final int[] VALUES = {5, 15, 30, 60, 120, 180, 360, 720, 1440};
-    public static final int[] SMART_VALUES = {15, 60, 180, 720, 1440};
+    public static final int[] SMART_VALUES = {5, 15, 30, 60};
 
     private AlarmReminderUtils() {}
 
