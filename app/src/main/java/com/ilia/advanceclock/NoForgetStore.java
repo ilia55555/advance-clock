@@ -4,7 +4,6 @@ import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public final class NoForgetStore {
@@ -26,14 +25,7 @@ public final class NoForgetStore {
             }
         } catch (Exception ignored) {}
 
-        long now = System.currentTimeMillis();
-        out.sort((a, b) -> {
-            int urgency = Integer.compare(b.urgency(now), a.urgency(now));
-            if (urgency != 0) return urgency;
-            if (a.hasDue && b.hasDue) return Long.compare(a.dueAtMillis, b.dueAtMillis);
-            if (a.hasDue != b.hasDue) return a.hasDue ? -1 : 1;
-            return Long.compare(b.createdAt, a.createdAt);
-        });
+        ScheduleOrder.notes(out, System.currentTimeMillis());
         return out;
     }
 

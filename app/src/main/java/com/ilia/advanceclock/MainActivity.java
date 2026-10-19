@@ -290,6 +290,7 @@ public final class MainActivity extends Activity {
         quickNoteAlarmControls = findViewById(R.id.quick_note_alarm_controls);
         quickNoteDate = findViewById(R.id.quick_note_date);
         quickNoteDateOption = new DateOption(this, quickNoteDate, R.id.date_option_quick_note);
+        quickNoteDateOption.setApplied(true);
         quickNoteTime = findViewById(R.id.quick_note_time);
         quickNoteRepeat = findViewById(R.id.quick_note_repeat);
         quickNoteSketch = findViewById(R.id.quick_note_sketch);
@@ -1134,7 +1135,7 @@ public final class MainActivity extends Activity {
         if (alarmEnabled) NoForgetScheduler.schedule(this, item);
         NoForgetWidgetProvider.updateAll(this);
 
-        quickNoteDateOption.setApplied(false);
+        quickNoteDateOption.setApplied(true);
         quickNoteTitle.setText("");
         quickNoteBody.setText("");
         quickNotePriority.setSelection(PriorityUtils.MEDIUM);

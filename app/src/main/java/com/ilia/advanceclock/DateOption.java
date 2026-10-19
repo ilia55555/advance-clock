@@ -6,7 +6,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
-/** Shared optional-date control for all four tabs and both editors. */
+/** Shared optional-date control for alarm/note composers and editors. */
 final class DateOption {
     private final CheckBox checkbox;
     private Runnable changed;

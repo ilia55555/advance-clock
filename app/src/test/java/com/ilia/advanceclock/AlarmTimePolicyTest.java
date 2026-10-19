@@ -58,7 +58,8 @@ public final class AlarmTimePolicyTest {
         alarm.applyDate = true;
         assertTrue(AlarmItem.fromJson(alarm.toJson()).applyDate);
         NoForgetItem note = new NoForgetItem(1, "", "", "[]", 2, true, 1234, true, 1);
-        assertFalse(note.applyDate);
+        assertTrue(note.applyDate);
+        note.applyDate = false;
         assertFalse(NoForgetItem.fromJson(note.toJson()).applyDate);
         legacy = note.toJson(); legacy.remove("applyDate");
         assertTrue(NoForgetItem.fromJson(legacy).applyDate);

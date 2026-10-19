@@ -12,7 +12,7 @@ public final class NoForgetItem {
     public static final int PRIORITY_VERY_HIGH = PriorityUtils.VERY_HIGH;
 
     public long id;
-    public boolean applyDate;
+    public boolean applyDate = true;
     public String title;
     public String body;
     public String sketchJson;

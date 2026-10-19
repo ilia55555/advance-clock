@@ -18,7 +18,6 @@ final class TimerPanelController {
     private final Activity host;
     private final View root;
     private TimeToolPresets presets;
-    private DateOption dateOption;
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView timeView, summary;
@@ -63,7 +62,6 @@ final class TimerPanelController {
         labelInput = root.findViewById(R.id.timer_label);
         startButton = root.findViewById(R.id.timer_start);
         dateButton = root.findViewById(R.id.timer_date);
-        dateOption = new DateOption(host, dateButton, R.id.date_option_timer);
         timeButton = root.findViewById(R.id.timer_clock);
         durationModeButton = root.findViewById(R.id.timer_mode_duration);
         dateTimeModeButton = root.findViewById(R.id.timer_mode_datetime);
@@ -75,7 +73,6 @@ final class TimerPanelController {
                     public boolean busy() { return running || remainingMillis > 0; }
                 });
         restore();
-        dateOption.onChanged(() -> { save(); updateControls(); renderSelection(); });
         if (selectedTarget <= 0L) {
             selectedTarget = System.currentTimeMillis() + 5 * 60_000L;
         }
@@ -126,16 +123,14 @@ final class TimerPanelController {
             ToolAlarmScheduler.cancel(host, ToolAlarmScheduler.TIMER);
             handler.removeCallbacks(ticker); save(); updateControls(); return;
         }
-        long now = System.currentTimeMillis();
-        long target = AlarmTimePolicy.next(selectedTarget, dateOption.isApplied(),
-                RecurrenceUtils.NONE, 1, "[]", now);
-        long value = dateTimeMode ? target - now
-                : remainingMillis > 0 ? remainingMillis : readDuration();
-        if (dateTimeMode && target > now) selectedTarget = target;
+        long value = remainingMillis > 0 ? remainingMillis
+                : dateTimeMode ? selectedTarget - System.currentTimeMillis() : readDuration();
         if (value <= 0L) {
             LogoToast.makeText(host, dateTimeMode ? AppString.get(R.string.runtime_text_0165) : AppString.get(R.string.runtime_text_0166), Toast.LENGTH_SHORT).show();
             return;
         }
+        if (remainingMillis == 0L) host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
+                .remove("timer_active_preset_id").apply();
         deadline = System.currentTimeMillis() + value;
         remainingMillis = value; running = true;
         String label = labelInput.getText().toString().trim();
@@ -149,18 +144,12 @@ final class TimerPanelController {
         running = false; remainingMillis = 0L; deadline = 0L;
         ToolAlarmScheduler.cancel(host, ToolAlarmScheduler.TIMER);
         handler.removeCallbacks(ticker); save(); updateControls();
-        renderTime(dateTimeMode ? selectedRemaining() : readDuration());
+        renderTime(dateTimeMode ? Math.max(0L, selectedTarget - System.currentTimeMillis()) : readDuration());
     }
 
     private void completeLocally() {
         running = false; remainingMillis = 0L; deadline = 0L;
         handler.removeCallbacks(ticker); save(); updateControls(); renderTime(0L);
-    }
-
-    private long selectedRemaining() {
-        long now = System.currentTimeMillis();
-        return Math.max(0L, AlarmTimePolicy.next(selectedTarget, dateOption.isApplied(),
-                RecurrenceUtils.NONE, 1, "[]", now) - now);
     }
 
     private long currentRemaining() { return running ? Math.max(0L, deadline - System.currentTimeMillis()) : remainingMillis; }
@@ -173,7 +162,6 @@ final class TimerPanelController {
         modeButtons.setVisibility(configured ? View.VISIBLE : View.GONE);
         durationInputs.setVisibility(configured && !dateTimeMode ? View.VISIBLE : View.GONE);
         dateTimeInputs.setVisibility(configured && dateTimeMode ? View.VISIBLE : View.GONE);
-        dateOption.setVisible(configured && dateTimeMode);
         labelInput.setVisibility(configured ? View.VISIBLE : View.GONE);
         durationModeButton.setBackgroundResource(
                 dateTimeMode ? R.drawable.bg_field : R.drawable.bg_teal_button);
@@ -195,9 +183,9 @@ final class TimerPanelController {
     }
 
     private void renderTime(long millis) { long total=(millis+999)/1000; timeView.setText(String.format(Locale.US,"%02d:%02d:%02d",total/3600,(total/60)%60,total%60)); }
-    private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putBoolean("timer_apply_date",dateOption.isApplied()).putLong("timer_remaining",remainingMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
+    private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
     }
-    private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if (selectedTarget <= 0L) selectedTarget = System.currentTimeMillis() + 5 * 60_000L; dateOption.setApplied(p.getBoolean("timer_apply_date", p.getLong("timer_target", 0L) > 0L)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
+    private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
     void setActive(boolean value) {
         active = value;
         handler.removeCallbacks(ticker);
@@ -205,7 +193,7 @@ final class TimerPanelController {
             renderTime(running || remainingMillis > 0
                     ? currentRemaining()
                     : dateTimeMode
-                    ? selectedRemaining()
+                    ? Math.max(0, selectedTarget - System.currentTimeMillis())
                     : readDuration());
             if (running) handler.post(ticker);
         }
@@ -217,7 +205,7 @@ final class TimerPanelController {
         restore();
         updateControls();
         renderSelection();
-        renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?selectedRemaining():readDuration());
+        renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?Math.max(0,selectedTarget-System.currentTimeMillis()):readDuration());
         handler.removeCallbacks(ticker);
         if(active && running) handler.post(ticker);
     }
@@ -248,13 +236,13 @@ final class TimerPanelController {
     private org.json.JSONObject capturePreset() throws org.json.JSONException {
         saveDraft();
         long duration = readDuration();
-        if ((!dateTimeMode && duration <= 0) || (dateTimeMode && AlarmTimePolicy.next(selectedTarget, dateOption.isApplied(), RecurrenceUtils.NONE, 1, "[]", System.currentTimeMillis()) <= 0L)) {
+        if ((!dateTimeMode && duration <= 0) || (dateTimeMode && selectedTarget <= System.currentTimeMillis())) {
             LogoToast.makeText(host, AppString.get(R.string.tool_invalid), Toast.LENGTH_SHORT).show();
             return null;
         }
         String label = labelInput.getText().toString().trim();
         return new org.json.JSONObject().put("label", label.isEmpty() ? ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER) : label)
-                .put("applyDate", dateOption.isApplied()).put("dateMode", dateTimeMode).put("duration", duration)
+                .put("dateMode", dateTimeMode).put("duration", duration)
                 .put("target", selectedTarget).put("calendar", calendarType);
     }
 
@@ -262,13 +250,11 @@ final class TimerPanelController {
         boolean dateMode = config.getBoolean("dateMode");
         long duration = config.getLong("duration");
         long target = config.getLong("target");
-        boolean applyDate = config.optBoolean("applyDate", true);
-        if ((run && dateMode && AlarmTimePolicy.next(target, applyDate, RecurrenceUtils.NONE, 1, "[]", System.currentTimeMillis()) <= 0L) || (!dateMode && duration <= 0))
+        if ((run && dateMode && target <= System.currentTimeMillis()) || (!dateMode && duration <= 0))
             throw new org.json.JSONException("Expired or invalid timer");
         int savedCalendar = config.getInt("calendar");
         String savedLabel = config.getString("label");
         reset();
-        dateOption.setApplied(applyDate);
         dateTimeMode = dateMode;
         selectedTarget = target;
         calendarType = savedCalendar;
@@ -279,7 +265,7 @@ final class TimerPanelController {
         secondsInput.setText(String.valueOf(seconds % 60));
         TimeToolPresets.restoreImages(host, ToolAlarmScheduler.TIMER, config);
         saveDraft(); save(); updateControls(); renderSelection();
-        renderTime(dateTimeMode ? selectedRemaining() : duration);
+        renderTime(dateTimeMode ? Math.max(0L, target - System.currentTimeMillis()) : duration);
         if (run) toggleTimer();
     }
 }

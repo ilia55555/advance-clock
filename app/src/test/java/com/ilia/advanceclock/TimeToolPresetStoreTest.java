@@ -56,4 +56,27 @@ public final class TimeToolPresetStoreTest {
         assertEquals(0, TimeToolPresetStore.read("broken").length());
         assertEquals(1, TimeToolPresetStore.read("[null,3,{}, {\"id\":\"valid\"}]").length());
     }
+    @Test public void displayShowsRunningThenClosestThenExpiredConfigurations() throws Exception {
+        String saved = "[]";
+        saved = TimeToolPresetStore.save(saved, new JSONObject().put("id", "expired").put("dateMode", true).put("target", 500));
+        saved = TimeToolPresetStore.save(saved, new JSONObject().put("id", "later").put("dateMode", true).put("target", 5000));
+        saved = TimeToolPresetStore.save(saved, new JSONObject().put("id", "soon").put("duration", 1000));
+        saved = TimeToolPresetStore.save(saved, new JSONObject().put("id", "running").put("duration", 9000));
+        JSONArray items = TimeToolPresetStore.ordered(saved, false, 1000, "running");
+        assertEquals("running", items.getJSONObject(0).getString("id"));
+        assertEquals("soon", items.getJSONObject(1).getString("id"));
+        assertEquals("later", items.getJSONObject(2).getString("id"));
+        assertEquals("expired", items.getJSONObject(3).getString("id"));
+    }
+
+    @Test public void matchingDurationsPreferNewestAndStopwatchDatesRemainFixed() throws Exception {
+        String saved = TimeToolPresetStore.save("[]", new JSONObject().put("id", "old").put("mode", 1).put("duration", 1000).put("savedAt", 10));
+        saved = TimeToolPresetStore.save(saved, new JSONObject().put("id", "new").put("mode", 1).put("duration", 1000).put("savedAt", 20));
+        saved = TimeToolPresetStore.save(saved, new JSONObject().put("id", "past").put("mode", 2).put("target", 500).put("applyDate", false));
+        JSONArray items = TimeToolPresetStore.ordered(saved, true, 1000, "");
+        assertEquals("new", items.getJSONObject(0).getString("id"));
+        assertEquals("old", items.getJSONObject(1).getString("id"));
+        assertEquals("past", items.getJSONObject(2).getString("id"));
+    }
+
 }

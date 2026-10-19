@@ -65,7 +65,10 @@ final class TimeToolPresets {
     }
 
     private JSONArray read() {
-        return TimeToolPresetStore.read(prefs.getString(kind + "_presets", "[]"));
+        return TimeToolPresetStore.ordered(prefs.getString(kind + "_presets", "[]"),
+                ToolAlarmScheduler.STOPWATCH.equals(kind), System.currentTimeMillis(),
+                prefs.getBoolean(kind + "_running", false)
+                        ? prefs.getString(kind + "_active_preset_id", "") : "");
     }
 
     private void savePreset() {
@@ -79,6 +82,7 @@ final class TimeToolPresets {
             String editingId = prefs.getString(kind + "_editing_id", "");
             if (editingId.isEmpty()) editingId = java.util.UUID.randomUUID().toString();
             config.put("id", editingId);
+            config.put("savedAt", System.currentTimeMillis());
             prefs.edit().remove(kind + "_editing_id").putString(kind + "_presets", TimeToolPresetStore.save(
                     prefs.getString(kind + "_presets", "[]"), config)).apply();
             Toast.makeText(host, R.string.tool_saved_success, Toast.LENGTH_SHORT).show();
@@ -131,6 +135,8 @@ final class TimeToolPresets {
         try {
             // The editor validates dates before replacing the active run or its images.
             editor.load(item, run);
+            if (run && prefs.getBoolean(kind + "_running", false))
+                prefs.edit().putString(kind + "_active_preset_id", item.optString("id")).apply();
             prefs.edit().putString(kind + "_editing_id", run ? "" : item.optString("id")).apply();
             refresh();
         } catch (JSONException ignored) { showError(); }

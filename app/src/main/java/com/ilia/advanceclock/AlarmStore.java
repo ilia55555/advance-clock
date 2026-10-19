@@ -4,8 +4,6 @@ import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public final class AlarmStore {
@@ -27,7 +25,7 @@ public final class AlarmStore {
                 if (o != null) out.add(AlarmItem.fromJson(o));
             }
         } catch (Exception ignored) {}
-        Collections.sort(out, Comparator.comparingLong(a -> a.triggerAtMillis));
+        ScheduleOrder.alarms(out, System.currentTimeMillis());
         return out;
     }
 

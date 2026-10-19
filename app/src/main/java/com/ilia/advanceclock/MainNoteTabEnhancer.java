@@ -457,7 +457,7 @@ final class MainNoteTabEnhancer {
         int interval = (Integer) readField(activity, "noteIntervalDays", 1);
         String dates = (String) readField(activity, "noteCustomDates", "[]");
         android.widget.CheckBox dateOption = activity.findViewById(R.id.date_option_quick_note);
-        boolean applyDate = dateOption != null && dateOption.isChecked();
+        boolean applyDate = dateOption == null || dateOption.isChecked();
         long dueAt = enabled ? AlarmTimePolicy.next(due.getTimeInMillis(), applyDate,
                 recurrence, interval, dates, System.currentTimeMillis()) : 0L;
         if (enabled && dueAt <= System.currentTimeMillis()) {
@@ -495,7 +495,7 @@ final class MainNoteTabEnhancer {
         else NoForgetScheduler.cancel(activity, item.id);
         NoForgetWidgetProvider.updateAll(activity);
 
-        if (dateOption != null) dateOption.setChecked(false);
+        if (dateOption != null) dateOption.setChecked(true);
         title.setText("");
         body.setText("");
         priority.setSelection(PriorityUtils.MEDIUM);

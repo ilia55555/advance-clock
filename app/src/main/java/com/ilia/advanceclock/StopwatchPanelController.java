@@ -20,7 +20,6 @@ final class StopwatchPanelController {
     private final Activity host;
     private final View root;
     private TimeToolPresets presets;
-    private DateOption dateOption;
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ArrayList<Long> laps = new ArrayList<>();
@@ -66,7 +65,6 @@ final class StopwatchPanelController {
         limitInputs = root.findViewById(R.id.stopwatch_limit_inputs);
         dateTimeInputs = root.findViewById(R.id.stopwatch_datetime_inputs);
         dateButton = root.findViewById(R.id.stopwatch_date);
-        dateOption = new DateOption(host, dateButton, R.id.date_option_stopwatch);
         timeButton = root.findViewById(R.id.stopwatch_clock);
         hoursInput = root.findViewById(R.id.stopwatch_limit_hours);
         minutesInput = root.findViewById(R.id.stopwatch_limit_minutes);
@@ -80,7 +78,6 @@ final class StopwatchPanelController {
                     public boolean busy() { return running || accumulatedMillis > 0; }
                 });
         restore();
-        dateOption.onChanged(() -> { save(); updateControls(); });
         if (!host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).contains("stopwatch_draft_minutes")) populateLimitInputs();
         View back = root.findViewById(R.id.back_button);
         ((View) back.getParent()).setVisibility(View.GONE);
@@ -128,15 +125,6 @@ final class StopwatchPanelController {
             accumulatedMillis=currentElapsed(); running=false; startedAtWall=0L;
             ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH); handler.removeCallbacks(ticker);
         } else {
-            if (mode == 2) {
-                long target = AlarmTimePolicy.next(selectedTarget, dateOption.isApplied(),
-                        RecurrenceUtils.NONE, 1, "[]", System.currentTimeMillis());
-                if (target <= 0L) {
-                    LogoToast.makeText(host, AppString.get(R.string.runtime_text_0300), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                selectedTarget = target;
-            }
             if (accumulatedMillis == 0L) {
                 if (mode == 0) {
                     limitMillis = 0L;
@@ -153,6 +141,8 @@ final class StopwatchPanelController {
                 }
             }
             if(limitMillis>0L&&accumulatedMillis>=limitMillis){LogoToast.makeText(host,AppString.get(R.string.runtime_text_0299),Toast.LENGTH_SHORT).show();return;}
+            if (accumulatedMillis == 0L) host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
+                    .remove("stopwatch_active_preset_id").apply();
             startedAtWall=System.currentTimeMillis();
             if (mode == 2 && selectedTarget <= startedAtWall) {
                 LogoToast.makeText(host, AppString.get(R.string.runtime_text_0300), Toast.LENGTH_SHORT).show();
@@ -200,7 +190,6 @@ final class StopwatchPanelController {
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);
         limitInputs.setVisibility(configurable && mode == 1 ? View.VISIBLE : View.GONE);
         dateTimeInputs.setVisibility(configurable && mode == 2 ? View.VISIBLE : View.GONE);
-        dateOption.setVisible(configurable && mode == 2);
         labelInput.setVisibility(configurable ? View.VISIBLE : View.GONE);
         styleMode(unlimitedModeButton, mode == 0);
         styleMode(durationModeButton, mode == 1);
@@ -216,8 +205,8 @@ final class StopwatchPanelController {
     private void renderTime(long millis){timeView.setText(format(millis));}
     private void renderLaps(){lapList.removeAllViews();for(int i=0;i<laps.size();i++){TextView row=new TextView(host);row.setText(String.format(Locale.US,AppString.get(R.string.runtime_text_0437),laps.size()-i,format(laps.get(i))));row.setTextColor(AppSettings.textPrimary(host));row.setTextSize(17);row.setGravity(android.view.Gravity.CENTER);row.setPadding(12,18,12,18);lapList.addView(row);}}
     private static String format(long millis){long cs=millis/10;return String.format(Locale.US,"%02d:%02d:%02d.%02d",cs/360000,(cs/6000)%60,(cs/100)%60,cs%100);}
-    private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(encoded.length() > 0)encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putBoolean("stopwatch_apply_date",dateOption.isApplied()).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();TimeToolsWidgetProvider.updateAll(host);}
-    private void restore(){SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);running=p.getBoolean("stopwatch_running",false);mode=p.getInt("stopwatch_mode",0);calendarType=p.getInt("stopwatch_calendar",AppSettings.defaultCalendar(host));selectedTarget=p.getLong("stopwatch_target",0);accumulatedMillis=p.getLong("stopwatch_accumulated",0);startedAtWall=p.getLong("stopwatch_started",0);limitMillis=p.getLong("stopwatch_limit",0);laps.clear();String encoded=p.getString("stopwatch_laps","");if(encoded.length() > 0)for(String value:encoded.split(","))try{laps.add(Long.parseLong(value));}catch(NumberFormatException ignored){}if (selectedTarget <= 0L) selectedTarget = System.currentTimeMillis() + 60 * 60_000L; dateOption.setApplied(p.getBoolean("stopwatch_apply_date", p.getLong("stopwatch_target", 0L) > 0L));if(running&&limitMillis>0&&currentElapsed()>=limitMillis){running=false;accumulatedMillis=limitMillis;startedAtWall=0;save();}}
+    private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(encoded.length() > 0)encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();TimeToolsWidgetProvider.updateAll(host);}
+    private void restore(){SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);running=p.getBoolean("stopwatch_running",false);mode=p.getInt("stopwatch_mode",0);calendarType=p.getInt("stopwatch_calendar",AppSettings.defaultCalendar(host));selectedTarget=p.getLong("stopwatch_target",0);accumulatedMillis=p.getLong("stopwatch_accumulated",0);startedAtWall=p.getLong("stopwatch_started",0);limitMillis=p.getLong("stopwatch_limit",0);laps.clear();String encoded=p.getString("stopwatch_laps","");if(encoded.length() > 0)for(String value:encoded.split(","))try{laps.add(Long.parseLong(value));}catch(NumberFormatException ignored){}if(running&&limitMillis>0&&currentElapsed()>=limitMillis){running=false;accumulatedMillis=limitMillis;startedAtWall=0;save();}}
     void setActive(boolean value) {
         active = value;
         handler.removeCallbacks(ticker);
@@ -266,26 +255,24 @@ final class StopwatchPanelController {
     private org.json.JSONObject capturePreset() throws org.json.JSONException {
         saveDraft();
         long duration = readLimit();
-        if ((mode == 1 && duration <= 0) || (mode == 2 && AlarmTimePolicy.next(selectedTarget, dateOption.isApplied(), RecurrenceUtils.NONE, 1, "[]", System.currentTimeMillis()) <= 0L)) {
+        if ((mode == 1 && duration <= 0) || (mode == 2 && selectedTarget <= System.currentTimeMillis())) {
             LogoToast.makeText(host, AppString.get(R.string.tool_invalid), Toast.LENGTH_SHORT).show(); return null;
         }
         String label = labelInput.getText().toString().trim();
         return new org.json.JSONObject().put("label", label.isEmpty() ? ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH) : label)
-                .put("applyDate", dateOption.isApplied()).put("mode", mode).put("duration", duration).put("target", selectedTarget).put("calendar", calendarType);
+                .put("mode", mode).put("duration", duration).put("target", selectedTarget).put("calendar", calendarType);
     }
 
     private void loadPreset(org.json.JSONObject config, boolean run) throws org.json.JSONException {
         int savedMode = config.getInt("mode");
         long duration = config.getLong("duration");
         long target = config.getLong("target");
-        boolean applyDate = config.optBoolean("applyDate", true);
         if (savedMode < 0 || savedMode > 2 || (savedMode == 1 && duration <= 0)
-                || (run && savedMode == 2 && AlarmTimePolicy.next(target, applyDate, RecurrenceUtils.NONE, 1, "[]", System.currentTimeMillis()) <= 0L))
+                || (run && savedMode == 2 && target <= System.currentTimeMillis()))
             throw new org.json.JSONException("Expired or invalid stopwatch");
         int savedCalendar = config.getInt("calendar");
         String savedLabel = config.getString("label");
         reset();
-        dateOption.setApplied(applyDate);
         mode = savedMode; selectedTarget = target; calendarType = savedCalendar;
         labelInput.setText(savedLabel);
         long seconds = duration / 1000;
