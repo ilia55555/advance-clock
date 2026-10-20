@@ -10,7 +10,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(application = Application.class, sdk = {28, 33, 35}, shadows = ReminderScreenFrameworkTest.PlainStore.class)
+@Config(application = Application.class, sdk = {28, 30, 33, 35}, shadows = ReminderScreenFrameworkTest.PlainStore.class)
 public final class ReminderScreenFrameworkTest {
     @Test public void sharedAlertSurfaceOpensAndLaysOutWithoutAttachments() {
         Activity host = Robolectric.buildActivity(Activity.class).setup().get();

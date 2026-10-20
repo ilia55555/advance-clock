@@ -13,6 +13,13 @@ final class TabMotion {
     private final Set<String> warmed = new HashSet<>();
     private String selected;
     private int generation;
+    private View blocker;
+
+    private void unblock() {
+        if (blocker != null && blocker.getParent() instanceof android.view.ViewGroup)
+            ((android.view.ViewGroup) blocker.getParent()).removeView(blocker);
+        blocker = null;
+    }
 
     TabMotion(Map<String, View> panels) { this.panels = panels; }
 
@@ -20,6 +27,7 @@ final class TabMotion {
         String previous = selected;
         selected = tab;
         int token = ++generation;
+        unblock();
         for (View panel : panels.values()) {
             panel.animate().cancel();
             panel.setTranslationX(0); panel.setAlpha(1);
@@ -39,6 +47,13 @@ final class TabMotion {
                     ? View.IMPORTANT_FOR_ACCESSIBILITY_AUTO : View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
         if (!moving) return;
+        if (incoming.getParent() instanceof android.view.ViewGroup) {
+            blocker = new View(incoming.getContext());
+            blocker.setClickable(true);
+            blocker.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            ((android.view.ViewGroup) incoming.getParent()).addView(blocker,
+                    new android.view.ViewGroup.LayoutParams(-1, -1));
+        }
         float distance = Math.signum(direction) * width;
         incoming.setTranslationX(distance);
         incoming.postOnAnimation(() -> {
@@ -52,6 +67,7 @@ final class TabMotion {
 
     void finish() {
         ++generation;
+        unblock();
         for (Map.Entry<String, View> entry : panels.entrySet()) {
             View panel = entry.getValue();
             panel.animate().cancel(); panel.setTranslationX(0); panel.setAlpha(1);
