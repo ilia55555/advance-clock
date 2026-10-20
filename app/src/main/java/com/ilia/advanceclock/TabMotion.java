@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/** A button-driven horizontal page transition; deliberately has no swipe/scroll handling. */
+/** Shared horizontal page animation for tab buttons and swipe navigation. */
 final class TabMotion {
     private final Map<String, View> panels;
     private final Set<String> warmed = new HashSet<>();

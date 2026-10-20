@@ -114,6 +114,8 @@ public final class MainActivity extends Activity {
     private Button noteFab;
     private String currentTab;
     private TabMotion tabMotion;
+    private float tabSwipeX, tabSwipeY;
+    private boolean tabSwipeAllowed;
     private int lastPrayerAutoIndex = -1;
 
     private Button quickAlarmDate;
@@ -1318,6 +1320,70 @@ public final class MainActivity extends Activity {
                 == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
         clockFab.setVisibility(clock && compact ? View.VISIBLE : View.GONE);
         noteFab.setVisibility(notes && compact ? View.VISIBLE : View.GONE);
+    }
+
+    @Override public boolean dispatchTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
+        if (action == MotionEvent.ACTION_DOWN) {
+            tabSwipeX = event.getRawX();
+            tabSwipeY = event.getRawY();
+            tabSwipeAllowed = !blocksTabSwipe(getWindow().getDecorView(), tabSwipeX, tabSwipeY);
+        } else if (action == MotionEvent.ACTION_POINTER_DOWN || action == MotionEvent.ACTION_CANCEL) {
+            tabSwipeAllowed = false;
+        } else if (action == MotionEvent.ACTION_MOVE && tabSwipeAllowed) {
+            float dx = event.getRawX() - tabSwipeX;
+            float dy = event.getRawY() - tabSwipeY;
+            int slop = android.view.ViewConfiguration.get(this).getScaledTouchSlop();
+            if (Math.abs(dy) > slop && Math.abs(dy) >= Math.abs(dx)) {
+                tabSwipeAllowed = false;
+            } else if (Math.abs(dx) >= dp(72) && Math.abs(dx) > Math.abs(dy) * 1.4f) {
+                tabSwipeAllowed = false;
+                MotionEvent cancel = MotionEvent.obtain(event);
+                cancel.setAction(MotionEvent.ACTION_CANCEL);
+                super.dispatchTouchEvent(cancel);
+                cancel.recycle();
+                moveToAdjacentTab(dx);
+                return true;
+            }
+        } else if (action == MotionEvent.ACTION_UP) {
+            tabSwipeAllowed = false;
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    private boolean blocksTabSwipe(View view, float x, float y) {
+        if (view == null || !view.isShown()) return false;
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        if (x < location[0] || x >= location[0] + view.getWidth()
+                || y < location[1] || y >= location[1] + view.getHeight()) return false;
+        if (view == clockCalendar || view == noteCalendar || view == prayerTimesCard
+                || view instanceof android.widget.EditText
+                || view instanceof android.widget.SeekBar
+                || view.canScrollHorizontally(-1) || view.canScrollHorizontally(1)) return true;
+        if (view instanceof android.view.ViewGroup) {
+            android.view.ViewGroup group = (android.view.ViewGroup) view;
+            for (int i = group.getChildCount() - 1; i >= 0; i--)
+                if (blocksTabSwipe(group.getChildAt(i), x, y)) return true;
+        }
+        return false;
+    }
+
+    private void moveToAdjacentTab(float deltaX) {
+        String[] order = AppSettings.tabOrder(this);
+        boolean rtl = findViewById(R.id.tab_bar).getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        int step = deltaX < 0 ? 1 : -1;
+        if (rtl) step *= -1;
+        for (int i = 0; i < order.length; i++) {
+            if (!order[i].equals(currentTab)) continue;
+            for (int next = i + step; next >= 0 && next < order.length; next += step) {
+                if (AppSettings.tabEnabled(this, order[next])) {
+                    showTab(order[next]);
+                    return;
+                }
+            }
+            return;
+        }
     }
 
     private void applyTabOrder() {
