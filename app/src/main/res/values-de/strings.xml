@@ -916,4 +916,5 @@ Sperrbildschirm</string>
     <string name="alert_sound_hint_understood">Verstanden</string>
     <string name="timer_clear_fields">Leeren</string>
     <string name="tool_reset_label">Zurücksetzen</string>
+    <string name="attachment_open_blocked">Installationspakete und Nicht-Web-Links können nicht geöffnet werden.</string>
 </resources>

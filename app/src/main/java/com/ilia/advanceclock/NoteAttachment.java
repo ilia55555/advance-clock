@@ -79,14 +79,24 @@ final class NoteAttachment {
         return KIND_FILE.equals(kind) && mime != null && mime.startsWith("image/");
     }
 
+    static void blocked(Context context) {
+        android.widget.Toast.makeText(context, R.string.attachment_open_blocked, android.widget.Toast.LENGTH_LONG).show();
+    }
+
     void open(Context context) {
         try {
             Intent intent;
             if(KIND_APP.equals(kind)) {
                 intent=context.getPackageManager().getLaunchIntentForPackage(value);
             } else if(KIND_URL.equals(kind)) {
+                if (!AttachmentSafety.webLink(Uri.parse(value))) { blocked(context); return; }
                 intent=new Intent(Intent.ACTION_VIEW,Uri.parse(value));
             } else {
+                Uri uri = Uri.parse(value);
+                if (!KIND_FILE.equals(kind) || !AttachmentSafety.document(uri, mime, name)
+                        || !AttachmentSafety.document(uri, context.getContentResolver().getType(uri), name)) {
+                    blocked(context); return;
+                }
                 intent=new Intent(Intent.ACTION_VIEW)
                         .setDataAndType(Uri.parse(value),mime==null||mime.isEmpty()?"*/*":mime)
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

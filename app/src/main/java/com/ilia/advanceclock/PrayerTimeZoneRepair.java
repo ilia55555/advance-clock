@@ -114,6 +114,7 @@ final class PrayerTimeZoneRepair {
 
     private static HttpURLConnection open(String url) throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setInstanceFollowRedirects(false);
         connection.setConnectTimeout(8_000);
         connection.setReadTimeout(8_000);
         connection.setRequestProperty("Accept", "application/json");
@@ -140,13 +141,7 @@ final class PrayerTimeZoneRepair {
     }
 
     private static String readFully(InputStream stream) throws Exception {
-        StringBuilder value = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) value.append(line);
-        }
-        return value.toString();
+        return NetworkResponse.read(stream);
     }
 
     private static void repairSavedHorizon(

@@ -916,4 +916,5 @@
     <string name="alert_sound_hint_understood">知道了</string>
     <string name="timer_clear_fields">清零</string>
     <string name="tool_reset_label">重置</string>
+    <string name="attachment_open_blocked">不允许打开安装包或非网页链接。</string>
 </resources>

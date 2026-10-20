@@ -916,4 +916,5 @@ Tela de bloqueio</string>
     <string name="alert_sound_hint_understood">Entendi</string>
     <string name="timer_clear_fields">Limpar</string>
     <string name="tool_reset_label">Redefinir</string>
+    <string name="attachment_open_blocked">Não é permitido abrir pacotes de instalação ou links que não sejam da Web.</string>
 </resources>

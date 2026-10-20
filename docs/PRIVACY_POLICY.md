@@ -46,9 +46,7 @@ You can revoke location, notification and file access in Android settings, turn 
 
 ### Questions and policy changes
 
-Privacy questions and app issues can be submitted through the project’s support page. GitHub issues are public: do not include private notes, precise coordinates, personal files or account details. There is no private support email configured in this version. The date above identifies this policy version. Future material data-handling changes must be reflected here and require any permissions or consent applicable to the new feature.
-
-[Project support / پشتیبانی / الدعم](https://github.com/ilia55555/advance-clock/issues)
+Privacy information is available inside the app. No external support page or private support email is configured in this version. Do not share private notes, precise coordinates, personal files or account details publicly.
 
 - [OpenStreetMap privacy](https://osmfoundation.org/wiki/Privacy_Policy)
 - [OpenStreetMap attribution / ODbL](https://www.openstreetmap.org/copyright)
@@ -95,9 +93,7 @@ Privacy questions and app issues can be submitted through the project’s suppor
 
 ### پرسش‌ها و تغییر سیاست
 
-پرسش‌های حریم خصوصی و مشکلات برنامه را می‌توانید از صفحهٔ پشتیبانی پروژه مطرح کنید. گزارش‌های گیت‌هاب عمومی‌اند؛ یادداشت خصوصی، مختصات دقیق، فایل شخصی یا اطلاعات حساب را در آن‌ها قرار ندهید. در این نسخه ایمیل خصوصی پشتیبانی تنظیم نشده است. تاریخ بالای صفحه نسخهٔ این سیاست را مشخص می‌کند. تغییر مهم در پردازش داده‌ها در نسخه‌های آینده باید در این صفحه منعکس شود و هر مجوز یا رضایت لازم برای قابلیت جدید دریافت شود.
-
-[Project support / پشتیبانی / الدعم](https://github.com/ilia55555/advance-clock/issues)
+اطلاعات حریم خصوصی داخل برنامه در دسترس است. در این نسخه صفحهٔ پشتیبانی خارجی یا ایمیل خصوصی پشتیبانی تنظیم نشده است. یادداشت‌های خصوصی، موقعیت دقیق، فایل‌های شخصی یا اطلاعات حساب را به‌صورت عمومی منتشر نکنید.
 
 - [OpenStreetMap privacy](https://osmfoundation.org/wiki/Privacy_Policy)
 - [OpenStreetMap attribution / ODbL](https://www.openstreetmap.org/copyright)
@@ -144,9 +140,7 @@ Privacy questions and app issues can be submitted through the project’s suppor
 
 ### الأسئلة وتغييرات السياسة
 
-يمكن تقديم أسئلة الخصوصية ومشاكل التطبيق عبر صفحة دعم المشروع. بلاغات GitHub عامة؛ لا تنشر ملاحظات خاصة أو إحداثيات دقيقة أو ملفات شخصية أو تفاصيل حسابات. لم يُضبط بريد دعم خاص في هذا الإصدار. يحدد التاريخ أعلاه نسخة السياسة. يجب أن تنعكس تغييرات معالجة البيانات المهمة هنا وأن تُطلب الأذونات أو الموافقة اللازمة للميزات الجديدة.
-
-[Project support / پشتیبانی / الدعم](https://github.com/ilia55555/advance-clock/issues)
+معلومات الخصوصية متاحة داخل التطبيق. لا تتوفر في هذا الإصدار صفحة دعم خارجية أو بريد دعم خاص. لا تنشر الملاحظات الخاصة أو الموقع الدقيق أو الملفات الشخصية أو بيانات الحساب علنًا.
 
 - [OpenStreetMap privacy](https://osmfoundation.org/wiki/Privacy_Policy)
 - [OpenStreetMap attribution / ODbL](https://www.openstreetmap.org/copyright)

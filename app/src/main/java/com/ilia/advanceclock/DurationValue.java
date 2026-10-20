@@ -20,7 +20,8 @@ final class DurationValue {
     }
 
     long schedulableMillis(long now) {
-        long value = millis.longValueExact();
+        if (millis.bitLength() > 63) throw new ArithmeticException("Duration exceeds long range");
+        long value = millis.longValue();
         Math.addExact(now, value);
         return value;
     }

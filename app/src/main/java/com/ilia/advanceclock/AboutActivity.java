@@ -67,10 +67,10 @@ public final class AboutActivity extends Activity {
                         {R.string.about_privacy_security_title, R.string.about_privacy_security_body},
                         {R.string.about_privacy_delete_title, R.string.about_privacy_delete_body},
                         {R.string.about_privacy_contact_title, R.string.about_privacy_contact_body}});
-                action(root, R.string.about_public_policy, () -> openPublicPolicy());
+
                 action(root, R.string.about_credits_title, () -> openDocument("credits"));
                 action(root, R.string.about_app_settings, this::openAppSettings);
-                action(root, R.string.about_support, () -> openLink(getString(R.string.about_support_url)));
+
                 break;
             case "terms":
                 sections(root, new int[][]{
@@ -79,7 +79,7 @@ public final class AboutActivity extends Activity {
                         {R.string.about_terms_external_title, R.string.about_terms_external_body},
                         {R.string.about_terms_changes_title, R.string.about_terms_changes_body}});
                 action(root, R.string.about_privacy_title, () -> openDocument("privacy"));
-                action(root, R.string.about_support, () -> openLink(getString(R.string.about_support_url)));
+
                 break;
             case "permissions":
                 sections(root, new int[][]{
@@ -172,9 +172,7 @@ public final class AboutActivity extends Activity {
         action(links, R.string.about_permissions_title, () -> openDocument("permissions"));
         divider(links);
         action(links, R.string.about_credits_title, () -> openDocument("credits"));
-        LinearLayout support = card(root);
-        support.setPadding(dp(8), dp(6), dp(8), dp(6));
-        action(support, R.string.about_support, () -> openLink(getString(R.string.about_support_url)));
+
     }
 
     private GradientDrawable shape(int color, int radius) {
@@ -313,12 +311,6 @@ public final class AboutActivity extends Activity {
 
     private void openDocument(String document) {
         startActivity(new Intent(this, AboutActivity.class).putExtra("document", document));
-    }
-
-    private void openPublicPolicy() {
-        String language = AppSettings.language(this);
-        String anchor = "fa".equals(language) ? "persian" : "ar".equals(language) ? "arabic" : "english";
-        openLink(getString(R.string.about_privacy_url) + "#" + anchor);
     }
 
     private void openLink(String url) {

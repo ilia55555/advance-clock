@@ -1221,7 +1221,7 @@ Lock screen</string>
     <string name="about_privacy_delete_title" formatted="false">Retention and deletion</string>
     <string name="about_privacy_delete_body" formatted="false">Local information is retained until you remove it or clear app storage. Delete alarms and notes using their delete controls. Removing an attachment or entry may leave copied photos, drafts or search caches in app storage. To remove all app-managed data, use Android Settings → Apps → InfiniTime → Storage → Clear storage, or uninstall the app. This also removes saved reminders and settings. Original files in your gallery or cloud provider and data held by external services are not deleted by clearing this app. Manage those with the relevant provider.\n\nYou can revoke location, notification and file access in Android settings, turn off full-screen alerts or exact alarms, and avoid optional online searches. Some functions will then be unavailable or delayed. No account-deletion request is needed because the app does not create user accounts.</string>
     <string name="about_privacy_contact_title" formatted="false">Questions and policy changes</string>
-    <string name="about_privacy_contact_body" formatted="false">Privacy questions and app issues can be submitted through the project’s support page. GitHub issues are public: do not include private notes, precise coordinates, personal files or account details. There is no private support email configured in this version. The date above identifies this policy version. Future material data-handling changes must be reflected here and require any permissions or consent applicable to the new feature.</string>
+    <string name="about_privacy_contact_body" formatted="false">Privacy information is available inside the app. No external support page or private support email is configured in this version. Do not share private notes, precise coordinates, personal files or account details publicly.</string>
     <string name="about_terms_use_title" formatted="false">Using the app</string>
     <string name="about_terms_use_body" formatted="false">Use InfiniTime lawfully and only with content and files you are authorized to use. Your own notes and media remain yours. Do not use app links or reminders to infringe other people’s rights. Third-party components and data retain their own licenses; listing their notices does not grant a separate license to the entire app.</string>
     <string name="about_terms_reliability_title" formatted="false">Reminders and calculated information</string>
@@ -1263,4 +1263,5 @@ Lock screen</string>
     <string name="alert_sound_hint_understood">Got it</string>
     <string name="timer_clear_fields">Clear</string>
     <string name="tool_reset_label">Reset</string>
+    <string name="attachment_open_blocked">Opening installation packages or non-web links is not allowed.</string>
 </resources>

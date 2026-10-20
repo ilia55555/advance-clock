@@ -139,6 +139,15 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
             String uriValue,
             String mime,
             String name) {
+        try {
+            Uri selected = Uri.parse(uriValue);
+            if (!AttachmentSafety.document(selected, mime, name)
+                    || !AttachmentSafety.document(selected, context.getContentResolver().getType(selected), name)) {
+                NoteAttachment.blocked(context); return;
+            }
+        } catch (RuntimeException unavailable) {
+            NoteAttachment.blocked(context); return;
+        }
         String normalizedMime = mime == null
                 ? ""
                 : mime.toLowerCase(Locale.ROOT);
@@ -180,6 +189,15 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
             String uriValue,
             String mime,
             String name) {
+        try {
+            Uri selected = Uri.parse(uriValue);
+            if (!AttachmentSafety.document(selected, mime, name)
+                    || !AttachmentSafety.document(selected, context.getContentResolver().getType(selected), name)) {
+                NoteAttachment.blocked(context); return;
+            }
+        } catch (RuntimeException unavailable) {
+            NoteAttachment.blocked(context); return;
+        }
         String normalizedMime = mime == null
                 ? ""
                 : mime.toLowerCase(Locale.ROOT);

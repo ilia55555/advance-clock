@@ -28,8 +28,6 @@ Online location services, external websites, camera/file providers and attached 
 
 Features and these terms may change in future versions. Review the updated terms and privacy policy when you update. Use the support page for questions or problem reports. No purchase, subscription or account agreement is created by viewing this page.
 
-[Project support / پشتیبانی / الدعم](https://github.com/ilia55555/advance-clock/issues)
-
 <a id="persian"></a>
 
 ## فارسی
@@ -52,8 +50,6 @@ Features and these terms may change in future versions. Review the updated terms
 
 قابلیت‌ها و این شرایط ممکن است در نسخه‌های آینده تغییر کنند. هنگام به‌روزرسانی، شرایط و سیاست حریم خصوصی جدید را مرور کنید. برای پرسش یا گزارش مشکل از صفحهٔ پشتیبانی استفاده کنید. دیدن این صفحه به‌تنهایی قرارداد خرید، اشتراک یا حساب کاربری ایجاد نمی‌کند.
 
-[Project support / پشتیبانی / الدعم](https://github.com/ilia55555/advance-clock/issues)
-
 <a id="arabic"></a>
 
 ## العربية
@@ -75,6 +71,4 @@ Features and these terms may change in future versions. Review the updated terms
 ### التحديثات والدعم
 
 قد تتغير الميزات وهذه الشروط في إصدارات مستقبلية. راجع الشروط وسياسة الخصوصية المحدثة عند التحديث، واستخدم صفحة الدعم للأسئلة أو البلاغات. لا ينشأ عقد شراء أو اشتراك أو حساب بمجرد عرض هذه الصفحة.
-
-[Project support / پشتیبانی / الدعم](https://github.com/ilia55555/advance-clock/issues)
 

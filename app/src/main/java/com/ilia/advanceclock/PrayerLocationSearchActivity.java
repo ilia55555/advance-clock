@@ -274,6 +274,7 @@ public final class PrayerLocationSearchActivity extends Activity {
                         AppSettings.language(this) + ",en")
                 .build();
         HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+        connection.setInstanceFollowRedirects(false);
         connection.setConnectTimeout(10_000);
         connection.setReadTimeout(10_000);
         connection.setRequestProperty(
@@ -305,13 +306,7 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private String readFully(InputStream stream) throws IOException {
-        StringBuilder value = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) value.append(line);
-        }
-        return value.toString();
+        return NetworkResponse.read(stream);
     }
 
     private List<LocationResult> parseNominatim(String json) throws JSONException {
@@ -564,6 +559,7 @@ public final class PrayerLocationSearchActivity extends Activity {
 
     private HttpURLConnection openJsonConnection(String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setInstanceFollowRedirects(false);
         connection.setConnectTimeout(8_000);
         connection.setReadTimeout(8_000);
         connection.setRequestProperty("Accept", "application/json");

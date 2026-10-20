@@ -38,7 +38,6 @@ def documents():
             result += f'<a id="{anchor}"></a>\n\n## {language}\n\n'
             for section in sections:
                 result += f"### {values[prefix + section + '_title']}\n\n{values[prefix + section + '_body']}\n\n"
-            result += f"[Project support / پشتیبانی / الدعم]({base['about_support_url']})\n\n"
             if filename == 'PRIVACY_POLICY.md':
                 result += links + '\n'
         yield ROOT / 'docs' / filename, result

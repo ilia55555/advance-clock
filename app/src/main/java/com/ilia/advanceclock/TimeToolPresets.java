@@ -51,7 +51,9 @@ final class TimeToolPresets {
         Button save = button(R.string.tool_save);
         Button saved = button(R.string.tool_saved);
         actions.addView(save, new LinearLayout.LayoutParams(0, -2, 1));
-        actions.addView(saved, new LinearLayout.LayoutParams(0, -2, 1));
+        LinearLayout.LayoutParams savedLayout = new LinearLayout.LayoutParams(0, -2, 1);
+        savedLayout.setMarginStart(Math.round(10 * host.getResources().getDisplayMetrics().density));
+        actions.addView(saved, savedLayout);
         save.setOnClickListener(v -> savePreset());
         saved.setOnClickListener(v -> showSaved());
         refresh();
