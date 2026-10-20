@@ -934,10 +934,10 @@ final class WorldClockPanelController {
                             R.string.runtime_text_0509)
                             + displayCity);
             remove.setPadding(
-                    dp(5),
-                    dp(5),
-                    dp(5),
-                    dp(5));
+                    dp(6),
+                    dp(6),
+                    dp(6),
+                    dp(6));
 
             boolean[] deleteArmed = {false};
             remove.setOnClickListener(v -> {

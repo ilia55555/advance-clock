@@ -693,10 +693,13 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             for (int index = 0; index < labels.length; index++) {
                 double radians = Math.toRadians(index * 45 - 90);
                 paint.setColor(index == 0 ? 0xFF9D2017 : 0xFF3F2A1B);
-                canvas.drawText(labels[index],
-                        cx + (float) Math.cos(radians) * radius * .79f,
-                        cy + (float) Math.sin(radians) * radius * .79f
-                                + paint.getTextSize() * .35f, paint);
+                float labelX = cx + (float) Math.cos(radians) * radius * .79f;
+                float labelY = cy + (float) Math.sin(radians) * radius * .79f;
+                canvas.save();
+                canvas.rotate(QiblaAdhanBackgroundView.directionLabelRotation(index), labelX, labelY);
+                canvas.drawText(labels[index], labelX,
+                        labelY + paint.getTextSize() * .35f, paint);
+                canvas.restore();
             }
             canvas.restore();
 

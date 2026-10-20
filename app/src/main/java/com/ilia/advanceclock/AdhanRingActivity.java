@@ -151,7 +151,8 @@ public final class AdhanRingActivity
                 findViewById(
                         R.id.adhan_qibla_background_container);
 
-        qiblaButton.setVisibility(View.VISIBLE);
+        qiblaButton.setVisibility(mode == AppSettings.ADHAN_QIBLA_BACKGROUND
+                ? View.GONE : View.VISIBLE);
         new QiblaMarker(this).bindTo(findViewById(R.id.adhan_qibla_button_image));
         qiblaButton.setOnClickListener(v ->
                 startActivity(new Intent(this, CompassToolActivity.class)
