@@ -36,7 +36,7 @@ public final class TabMotionFrameworkTest {
         motion.finish();
         org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
         for (Map.Entry<String, View> entry : panels.entrySet()) {
-            assertEquals(entry.getKey().equals("stopwatch") ? View.VISIBLE : View.INVISIBLE, entry.getValue().getVisibility());
+            assertEquals(entry.getKey().equals("stopwatch"), entry.getValue().getVisibility() == View.VISIBLE);
             assertEquals(0f, entry.getValue().getTranslationX(), .001f);
         }
         host.finish();

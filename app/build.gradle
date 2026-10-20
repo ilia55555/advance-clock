@@ -43,7 +43,10 @@ android {
 
     testOptions {
         unitTests.includeAndroidResources = true
-        unitTests.all { maxHeapSize = "2g" }
+        unitTests.all {
+            maxHeapSize = "2g"
+            testLogging { exceptionFormat = "full" }
+        }
     }
 
     compileOptions {
