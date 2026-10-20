@@ -747,7 +747,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
 
         private void drawQiblaNeedle(
                 Canvas canvas, float cx, float cy, float radius, float relativeAngle) {
-            marker.draw(canvas, cx, cy, radius, relativeAngle, 0xFFC18A19);
+            marker.draw(canvas, cx, cy, radius, relativeAngle);
         }
     }
 }

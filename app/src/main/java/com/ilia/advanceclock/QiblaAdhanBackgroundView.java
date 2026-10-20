@@ -208,7 +208,7 @@ public final class QiblaAdhanBackgroundView extends View {
             float cy,
             float radius,
             float relativeAngle) {
-        marker.draw(canvas, cx, cy, radius, relativeAngle, 0xFFECC75A);
+        marker.draw(canvas, cx, cy, radius, relativeAngle);
     }
 
     private float signedAngle(float angle) {
