@@ -13,7 +13,7 @@ final class AlarmAttachments {
         host.startActivity(new Intent(host, AlarmAttachmentEditorActivity.class).putExtra("key", key));
     }
     static Button button(Activity host, String key) {
-        Button button = new Button(host); button.setText(R.string.media_attachments);
+        Button button = new Button(host); button.setText(R.string.media_show_items);
         button.setAllCaps(false); button.setTextColor(AppSettings.primaryColor(host));
         button.setBackgroundResource(R.drawable.bg_soft_button);
         button.setOnClickListener(v -> open(host, key)); return button;
@@ -21,7 +21,7 @@ final class AlarmAttachments {
     static void bindButton(Activity host, Button first, String key) {
         android.view.ViewGroup row = (android.view.ViewGroup) first.getParent();
         for (int i = 0; i < row.getChildCount(); i++) if (row.getChildAt(i) != first) row.getChildAt(i).setVisibility(View.GONE);
-        first.setText(R.string.media_attachments);
+        first.setText(R.string.media_show_items);
         first.setOnClickListener(v -> open(host, key));
     }
     static void read(Context context, String key, AlarmItem item) {

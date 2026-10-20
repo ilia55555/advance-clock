@@ -1266,4 +1266,9 @@
     <string name="reminder_count_summary">%1$s تذكير</string>
     <string name="reminder_count_single">%1$s تذكير</string>
     <string name="apply_alarm_date">تطبيق التاريخ</string>
+    <string name="media_show_items">عرض الصور والملفات والتطبيقات والروابط</string>
+    <string name="media_items_title">الصور والملفات والتطبيقات والروابط</string>
+    <string name="alarm_auto_delete_finished">الحذف التلقائي بعد الانتهاء</string>
+    <string name="media_fullscreen_photo">صورة بملء الشاشة</string>
+    <string name="media_empty">لم تتم إضافة صور أو ملفات أو تطبيقات أو روابط بعد</string>
 </resources>

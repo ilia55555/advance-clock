@@ -1248,4 +1248,9 @@ Lock screen</string>
     <string name="reminder_count_summary">%1$s reminders</string>
     <string name="reminder_count_single">%1$s reminder</string>
     <string name="apply_alarm_date">Apply date</string>
+    <string name="media_show_items">Show photos, files, apps and links</string>
+    <string name="media_items_title">Photos, files, apps and links</string>
+    <string name="alarm_auto_delete_finished">Auto-delete after completion</string>
+    <string name="media_fullscreen_photo">Full-screen photo</string>
+    <string name="media_empty">No photos, files, apps or links added yet</string>
 </resources>

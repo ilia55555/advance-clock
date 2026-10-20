@@ -21,6 +21,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public final class AlarmEditorActivity extends Activity {
+    private static volatile long editingAlarmId = Long.MIN_VALUE;
+    static void protect(long id) { editingAlarmId = id; }
+    static boolean isEditing(long id) { return editingAlarmId == id; }
     private static final int REQ_IMAGE_1 = 410;
     private static final int REQ_IMAGE_2 = 411;
     private static final int REQ_SOUND = 412;
@@ -36,6 +39,7 @@ public final class AlarmEditorActivity extends Activity {
     private Spinner priority;
     private Button deleteButton;
     private Switch vibrate;
+    private Switch autoDelete;
     private Button image1Button;
     private Button image2Button;
     private ImageView image1Preview;
@@ -68,6 +72,7 @@ public final class AlarmEditorActivity extends Activity {
         label = findViewById(R.id.alarm_label);
         dateButton = findViewById(R.id.pick_date);
         dateOption = new DateOption(this, dateButton, R.id.date_option_alarm_editor);
+        autoDelete = dateOption.addAutoDelete(R.id.auto_delete_alarm_editor);
         timeButton = findViewById(R.id.pick_time);
         repeatButton = findViewById(R.id.alarm_repeat);
         remindersButton = findViewById(R.id.alarm_reminders);
@@ -95,6 +100,7 @@ public final class AlarmEditorActivity extends Activity {
         priority.setSelection(PriorityUtils.MEDIUM);
 
         alarmId = getIntent().getLongExtra("alarmId", -1L);
+        if (alarmId >= 0L) protect(alarmId);
         if (alarmId >= 0) {
             loadExisting();
         } else {
@@ -183,6 +189,15 @@ public final class AlarmEditorActivity extends Activity {
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
     }
 
+    @Override protected void onDestroy() {
+        if (!isChangingConfigurations() && editingAlarmId == alarmId) {
+            editingAlarmId = Long.MIN_VALUE;
+            if (new AlarmStore(this).deleteExpired(System.currentTimeMillis()) > 0)
+                ClockWidgetProvider.updateAll(this);
+        }
+        super.onDestroy();
+    }
+
     private void applySystemBarInsets(View root) {
         int start = root.getPaddingStart();
         int top = root.getPaddingTop();
@@ -214,6 +229,7 @@ public final class AlarmEditorActivity extends Activity {
         }
 
         dateOption.setApplied(item.applyDate);
+        autoDelete.setChecked(item.autoDeleteAfterCompletion);
         label.setText(item.label);
         selected.setTimeInMillis(item.triggerAtMillis);
         priority.setSelection(item.priority);
@@ -294,6 +310,9 @@ public final class AlarmEditorActivity extends Activity {
                 reminderMode,
                 reminderMinutesJson);
         item.applyDate = dateOption.isApplied();
+        item.autoDeleteAfterCompletion = autoDelete.isChecked();
+        AlarmItem previous = alarmId >= 0 ? new AlarmStore(this).find(alarmId) : null;
+        if (previous != null) item.pendingSnoozeAtMillis = previous.pendingSnoozeAtMillis;
         item.lastFiredAtMillis = lastFiredAtMillis;
         item.imageUri1 = imageUri1;
         item.imageUri2 = imageUri2;

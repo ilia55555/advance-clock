@@ -10,6 +10,8 @@ public final class AlarmSnoozeReceiver extends BroadcastReceiver {
         AlarmItem item = new AlarmStore(context).find(alarmId);
         if (item == null) return;
 
+        item.pendingSnoozeAtMillis = 0L;
+        new AlarmStore(context).save(item);
         AlarmSoundService.ring(context, item);
     }
 }

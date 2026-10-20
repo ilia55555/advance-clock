@@ -7,6 +7,10 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.graphics.Typeface;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
+import android.view.Gravity;
 import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.*;
@@ -18,6 +22,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
     private int pendingSlot = 1;
     private SharedPreferences prefs;
     private LinearLayout list;
+    private ScrollView pageScroll;
     private static final int IMAGE = 1, FILE = 2, CAMERA = 3, CROP = 4;
 
     @Override protected void onCreate(Bundle state) {
@@ -27,28 +32,112 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         prefs = AlarmAttachments.prefs(this);
         if (state != null) { cameraUri = state.getString("camera", ""); pendingSlot = state.getInt("slot", 1); pendingOriginal = state.getString("original", ""); }
         ScrollView scroll = new ScrollView(this);
-        LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(AppSettings.layoutDirection(this)); root.setPadding(dp(24), dp(28), dp(24), dp(36));
-        root.setBackgroundColor(AppSettings.background(this)); scroll.addView(root);
-        TextView title = new TextView(this); title.setText(R.string.media_attachments); title.setTextSize(23);
-        title.setTextColor(AppSettings.textPrimary(this)); root.addView(title);
-        Button add = new Button(this); add.setText(R.string.media_add); root.addView(add);
-        add.setOnClickListener(v -> new AlertDialog.Builder(this).setItems(new String[]{
-                getString(R.string.media_photo), getString(R.string.media_camera), getString(R.string.media_file),
-                getString(R.string.media_app), getString(R.string.media_link)}, (d, which) -> {
-            if (which == 0 || which == 1) chooseImage(which == 1);
-            else if (which == 2) pick("*/*", FILE);
-            else if (which == 3) chooseApp();
-            else addLink();
-        }).show());
-        Switch background = new Switch(this); background.setText(R.string.media_background);
-        background.setTextColor(AppSettings.textPrimary(this)); background.setChecked(prefs.getBoolean(key + "_background", false));
-        background.setOnCheckedChangeListener((v, checked) -> prefs.edit().putBoolean(key + "_background", checked).apply());
-        root.addView(background);
-        list = new LinearLayout(this); list.setOrientation(LinearLayout.VERTICAL); root.addView(list);
-        Button close = new Button(this); close.setText(R.string.runtime_text_0002); root.addView(close);
+        pageScroll = scroll;
+        scroll.setFillViewport(true);
+        scroll.setBackgroundColor(AppSettings.background(this));
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setLayoutDirection(AppSettings.layoutDirection(this));
+        int side = 18 + Math.max(0, (getResources().getConfiguration().screenWidthDp - 680) / 2);
+        root.setPadding(dp(side), dp(12), dp(side), dp(28));
+        scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
+        LinearLayout header = new LinearLayout(this);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        ImageButton close = new ImageButton(this);
+        close.setImageResource(R.drawable.ic_md_close);
+        close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
+        close.setBackgroundColor(0);
+        close.setContentDescription(getString(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
-        setContentView(scroll); AppSettings.applyFullscreenInsets(scroll); render();
+        header.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        TextView title = text(getString(R.string.media_items_title), 21, true);
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        header.addView(title, new LinearLayout.LayoutParams(0, -2, 1));
+        root.addView(header, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout add = card(root);
+        LinearLayout photos = horizontal(add);
+        source(photos, R.string.media_photo, R.drawable.ic_media_photo, () -> chooseImage(false));
+        source(photos, R.string.media_camera, R.drawable.ic_media_camera, () -> chooseImage(true));
+        LinearLayout shortcuts = horizontal(add);
+        source(shortcuts, R.string.media_file, R.drawable.ic_about_document, () -> pick("*/*", FILE));
+        source(shortcuts, R.string.media_app, R.drawable.ic_app, this::chooseApp);
+        source(shortcuts, R.string.media_link, R.drawable.ic_media_link, this::addLink);
+
+        LinearLayout options = card(root);
+        Switch background = new Switch(this);
+        background.setText(R.string.media_background);
+        background.setTextSize(14);
+        background.setTextColor(AppSettings.textPrimary(this));
+        background.setMinHeight(dp(48));
+        background.setPadding(dp(4), dp(8), dp(4), dp(8));
+        background.setChecked(prefs.getBoolean(key + "_background", false));
+        background.setOnCheckedChangeListener((v, checked) -> prefs.edit().putBoolean(key + "_background", checked).apply());
+        options.addView(background, new LinearLayout.LayoutParams(-1, -2));
+        list = new LinearLayout(this);
+        list.setOrientation(LinearLayout.VERTICAL);
+        root.addView(list, new LinearLayout.LayoutParams(-1, -2));
+        setContentView(scroll);
+        AppSettings.applyFullscreenInsets(scroll);
+        AppSettings.playFullscreenEnter(this);
+        render();
+        if (state != null) scroll.post(() -> scroll.scrollTo(0, state.getInt("scroll", 0)));
+    }
+
+    private TextView text(String label, int size, boolean bold) {
+        TextView view = new TextView(this);
+        view.setText(label);
+        view.setTextSize(size);
+        view.setTextColor(AppSettings.textPrimary(this));
+        view.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        if (bold) view.setTypeface(null, Typeface.BOLD);
+        return view;
+    }
+
+    private LinearLayout card(LinearLayout parent) {
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(dp(14), dp(14), dp(14), dp(14));
+        card.setBackgroundResource(R.drawable.bg_card);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(14);
+        parent.addView(card, lp);
+        return card;
+    }
+
+    private LinearLayout horizontal(LinearLayout parent) {
+        LinearLayout row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBaselineAligned(false);
+        parent.addView(row, new LinearLayout.LayoutParams(-1, -2));
+        return row;
+    }
+
+    private Button button(int label, boolean primary) {
+        Button button = new Button(this);
+        button.setText(label);
+        button.setAllCaps(false);
+        button.setTextSize(14);
+        button.setTextColor(primary ? 0xFFFFFFFF : AppSettings.primaryColor(this));
+        button.setBackgroundTintList(null);
+        button.setBackgroundResource(primary ? R.drawable.bg_teal_button : R.drawable.bg_soft_button);
+        button.setMinHeight(dp(52));
+        button.setPadding(dp(10), dp(10), dp(10), dp(10));
+        return button;
+    }
+
+    private void source(LinearLayout parent, int label, int icon, Runnable action) {
+        Button button = button(label, false);
+        android.graphics.drawable.Drawable drawable = getDrawable(icon).mutate();
+        drawable.setTint(AppSettings.primaryColor(this));
+        drawable.setBounds(0, 0, dp(26), dp(26));
+        button.setCompoundDrawables(null, drawable, null, null);
+        button.setCompoundDrawablePadding(dp(8));
+        button.setOnClickListener(v -> action.run());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, -1, 1);
+        lp.setMargins(dp(4), dp(4), dp(4), dp(4));
+        parent.addView(button, lp);
     }
 
     private void chooseImage(boolean camera) {
@@ -96,7 +185,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
-        out.putString("original", pendingOriginal); out.putString("camera", cameraUri); out.putInt("slot", pendingSlot); super.onSaveInstanceState(out);
+        out.putInt("scroll", pageScroll == null ? 0 : pageScroll.getScrollY()); out.putString("original", pendingOriginal); out.putString("camera", cameraUri); out.putInt("slot", pendingSlot); super.onSaveInstanceState(out);
     }
 
     @Override protected void onActivityResult(int request, int result, Intent data) {
@@ -164,7 +253,13 @@ public final class AlarmAttachmentEditorActivity extends Activity {
     private void addLink() {
         EditText input = new EditText(this); input.setSingleLine(true);
         input.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_URI);
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.media_link).setView(input)
+        input.setTextColor(AppSettings.textPrimary(this));
+        input.setBackgroundResource(R.drawable.bg_field);
+        input.setPadding(dp(14), dp(12), dp(14), dp(12));
+        LinearLayout holder = new LinearLayout(this);
+        holder.setPadding(dp(20), dp(12), dp(20), 0);
+        holder.addView(input, new LinearLayout.LayoutParams(-1, -2));
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.media_link).setView(holder)
                 .setPositiveButton(R.string.media_add, null).setNegativeButton(android.R.string.cancel, null).create();
         dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(b -> {
             String value = input.getText().toString().trim();
@@ -177,15 +272,38 @@ public final class AlarmAttachmentEditorActivity extends Activity {
 
     private void render() {
         list.removeAllViews();
+        boolean two = !prefs.getString(key + "_image2", "").isEmpty();
         for (int i = 1; i <= 2; i++) {
-            final int slot = i; String image = prefs.getString(key + "_image" + i, "");
+            final int slot = i;
+            String image = prefs.getString(key + "_image" + i, "");
             if (image.isEmpty()) continue;
-            AlarmPhotoView preview = new AlarmPhotoView(this, false); preview.load(image);
-            list.addView(preview, new LinearLayout.LayoutParams(-1, dp(200)));
-            Button frame = new Button(this); frame.setText(R.string.media_crop); list.addView(frame);
+            LinearLayout photo = card(list);
+            TextView position = text(getString(two ? (slot == 1 ? R.string.media_top : R.string.media_bottom)
+                    : R.string.media_fullscreen_photo), 15, true);
+            position.setTextColor(AppSettings.primaryColor(this));
+            position.setPadding(0, 0, 0, dp(10));
+            photo.addView(position, new LinearLayout.LayoutParams(-1, -2));
+            AlarmPhotoView preview = new AlarmPhotoView(this, false);
+            GradientDrawable frameBackground = new GradientDrawable();
+            frameBackground.setColor(AppSettings.field(this));
+            frameBackground.setCornerRadius(dp(16));
+            preview.setBackground(frameBackground);
+            preview.setClipToOutline(true);
+            preview.setContentDescription(position.getText());
+            preview.load(image);
+            photo.addView(preview, new LinearLayout.LayoutParams(-1, dp(220)));
+            LinearLayout actions = horizontal(photo);
+            Button frame = button(R.string.media_crop, false);
+            LinearLayout.LayoutParams first = new LinearLayout.LayoutParams(0, -2, 1);
+            first.topMargin = dp(12);
+            first.setMarginEnd(dp(8));
+            actions.addView(frame, first);
             frame.setOnClickListener(v -> crop(slot));
-            Button remove = new Button(this); remove.setText(R.string.tool_remove_image);
-            ButtonStyles.destructive(remove); list.addView(remove);
+            Button remove = button(R.string.tool_remove_image, false);
+            ButtonStyles.destructive(remove);
+            LinearLayout.LayoutParams second = new LinearLayout.LayoutParams(0, -2, 1);
+            second.topMargin = dp(12);
+            actions.addView(remove, second);
             remove.setOnClickListener(v -> {
                 SharedPreferences.Editor edit = prefs.edit();
                 if (slot == 1) {
@@ -199,15 +317,61 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             });
         }
         List<NoteAttachment> items = NoteAttachment.parse(prefs.getString(key + "_attachments", "[]"));
-        for (int i = 0; i < items.size(); i++) {
-            final int index = i; NoteAttachment item = items.get(i);
-            Button row = new Button(this); row.setText(item.name); list.addView(row);
-            row.setOnClickListener(v -> new AlertDialog.Builder(this).setItems(new String[]{getString(R.string.media_open), getString(R.string.tool_delete)}, (d, action) -> {
-                if (action == 0) item.open(this);
-                else { items.remove(index); prefs.edit().putString(key + "_attachments", NoteAttachment.encode(items)).apply(); render(); }
-            }).show());
+        for (NoteAttachment item : items) {
+            LinearLayout entry = card(list);
+            LinearLayout details = horizontal(entry);
+            ImageView icon = new ImageView(this);
+            boolean app = NoteAttachment.KIND_APP.equals(item.kind);
+            icon.setImageResource(app ? R.drawable.ic_app : NoteAttachment.KIND_URL.equals(item.kind)
+                    ? R.drawable.ic_media_link : R.drawable.ic_about_document);
+            String displayName = item.name == null || item.name.trim().isEmpty() ? item.value : item.name;
+            if (app) {
+                try {
+                    android.content.pm.ApplicationInfo info = getPackageManager().getApplicationInfo(item.value, 0);
+                    icon.setImageDrawable(getPackageManager().getApplicationIcon(info));
+                    displayName = getPackageManager().getApplicationLabel(info).toString();
+                } catch (android.content.pm.PackageManager.NameNotFoundException ignored) {
+                    icon.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
+                }
+            } else icon.setColorFilter(AppSettings.primaryColor(this), PorterDuff.Mode.SRC_IN);
+            icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            details.addView(icon, new LinearLayout.LayoutParams(dp(44), dp(44)));
+            TextView label = text(displayName, 16, true);
+            label.setPaddingRelative(dp(14), dp(4), 0, dp(4));
+            details.addView(label, new LinearLayout.LayoutParams(0, -2, 1));
+            LinearLayout actions = horizontal(entry);
+            Button open = button(R.string.media_open, false);
+            open.setOnClickListener(v -> item.open(this));
+            LinearLayout.LayoutParams openParams = new LinearLayout.LayoutParams(0, -2, 1);
+            openParams.topMargin = dp(12);
+            openParams.setMarginEnd(dp(8));
+            actions.addView(open, openParams);
+            Button remove = button(R.string.tool_delete, false);
+            ButtonStyles.destructive(remove);
+            remove.setOnClickListener(v -> {
+                List<NoteAttachment> current = NoteAttachment.parse(prefs.getString(key + "_attachments", "[]"));
+                for (int index = 0; index < current.size(); index++) {
+                    NoteAttachment candidate = current.get(index);
+                    if (candidate.kind.equals(item.kind) && candidate.value.equals(item.value)) { current.remove(index); break; }
+                }
+                prefs.edit().putString(key + "_attachments", NoteAttachment.encode(current)).apply();
+                render();
+            });
+            LinearLayout.LayoutParams removeParams = new LinearLayout.LayoutParams(0, -2, 1);
+            removeParams.topMargin = dp(12);
+            actions.addView(remove, removeParams);
+        }
+        if (list.getChildCount() == 0) {
+            LinearLayout empty = card(list);
+            TextView hint = text(getString(R.string.media_empty), 15, false);
+            hint.setGravity(Gravity.CENTER);
+            hint.setTextColor(AppSettings.textSecondary(this));
+            hint.setPadding(dp(8), dp(22), dp(8), dp(22));
+            empty.addView(hint, new LinearLayout.LayoutParams(-1, -2));
         }
     }
+
+    @Override public void finish() { super.finish(); AppSettings.playFullscreenExit(this); }
     private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
     private void error() { Toast.makeText(this, R.string.media_image_error, Toast.LENGTH_SHORT).show(); }
 }

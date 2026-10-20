@@ -40,6 +40,7 @@ public final class AlarmRingActivity extends Activity {
         Runnable open = tool ? () -> {
             startActivity(new Intent(this, MainActivity.class).putExtra("openTab", toolKind).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)); stopAndClose();
         } : item == null ? null : () -> {
+            AlarmEditorActivity.protect(alarmId);
             startActivity(new Intent(this, AlarmEditorActivity.class).putExtra("alarmId", alarmId)); stopAndClose();
         };
         setContentView(new ReminderScreen(this, data, this::stopAndClose, open, minutes -> {

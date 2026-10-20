@@ -1252,4 +1252,9 @@
     <string name="reminder_count_summary">%1$s یادآوری</string>
     <string name="reminder_count_single">%1$s یادآوری</string>
     <string name="apply_alarm_date">اعمال تاریخ</string>
+    <string name="media_show_items">نمایش عکس، فایل، اپ و لینک</string>
+    <string name="media_items_title">عکس، فایل، اپ و لینک</string>
+    <string name="alarm_auto_delete_finished">حذف خودکار پس از اتمام</string>
+    <string name="media_fullscreen_photo">عکس تمام‌صفحه</string>
+    <string name="media_empty">هنوز عکس، فایل، اپ یا لینکی اضافه نشده است</string>
 </resources>

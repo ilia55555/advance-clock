@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class AlarmStore {
+    static final String ACTION_CHANGED = "com.ilia.advanceclock.ALARMS_CHANGED";
     private static final String PREFS = "advance_clock_alarms";
     private static final String KEY = "items_v1";
     private final Context context;
@@ -65,30 +66,18 @@ public final class AlarmStore {
     }
 
     public synchronized int deleteExpired(long now) {
-        if (!AppSettings.autoDeleteExpiredAlarms(context)) return 0;
+        boolean deleteAllExpired = AppSettings.autoDeleteExpiredAlarms(context);
         List<AlarmItem> items = all();
         int before = items.size();
-        items.removeIf(item -> isFinished(item, now));
-        if (items.size() != before) write(items);
-        return before - items.size();
-    }
-
-    private boolean isFinished(AlarmItem item, long now) {
-        long next = RecurrenceUtils.next(
-                item.triggerAtMillis,
-                item.recurrenceMode,
-                item.intervalDays,
-                item.customDatesJson,
-                now);
-        if (next > now) return false;
-
-        int lastReminderMinutes = 0;
-        for (int minutes : AlarmReminderUtils.effective(
-                item.reminderMode, item.reminderMinutesJson)) {
-            lastReminderMinutes = Math.max(lastReminderMinutes, minutes);
+        items.removeIf(item -> !AlarmSoundService.isRinging(item.id)
+                && !AlarmEditorActivity.isEditing(item.id)
+                && (deleteAllExpired || (item.autoDeleteAfterCompletion && item.lastFiredAtMillis > 0L))
+                && AlarmCompletion.finished(item, now));
+        if (items.size() != before) {
+            write(items);
+            context.sendBroadcast(new android.content.Intent(ACTION_CHANGED).setPackage(context.getPackageName()));
         }
-        return item.lastFiredAtMillis <= 0L
-                || item.lastFiredAtMillis + lastReminderMinutes * 60_000L <= now;
+        return before - items.size();
     }
 
     private void write(List<AlarmItem> items) {

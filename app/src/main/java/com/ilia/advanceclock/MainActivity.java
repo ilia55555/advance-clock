@@ -54,6 +54,10 @@ public final class MainActivity extends Activity {
     private final Handler headerHandler = new Handler(Looper.getMainLooper());
     private final android.content.BroadcastReceiver calendarTimeChanges = new android.content.BroadcastReceiver() {
         @Override public void onReceive(android.content.Context context, Intent intent) {
+            if (intent != null && AlarmStore.ACTION_CHANGED.equals(intent.getAction())) {
+                renderAlarms();
+                return;
+            }
             updateHeaderClock();
             applyPrayerTimesUi();
             applyCalendarEventsUi();
@@ -119,6 +123,7 @@ public final class MainActivity extends Activity {
 
     private Button quickAlarmDate;
     private DateOption quickAlarmDateOption, quickNoteDateOption;
+    private Switch quickAlarmAutoDelete;
     private Button quickAlarmTime;
     private Button quickAlarmRepeat;
     private Button quickAlarmReminders;
@@ -272,6 +277,7 @@ public final class MainActivity extends Activity {
 
         quickAlarmDate = findViewById(R.id.quick_alarm_date);
         quickAlarmDateOption = new DateOption(this, quickAlarmDate, R.id.date_option_quick_alarm);
+        quickAlarmAutoDelete = quickAlarmDateOption.addAutoDelete(R.id.auto_delete_quick_alarm);
         quickAlarmTime = findViewById(R.id.quick_alarm_time);
         quickAlarmRepeat = findViewById(R.id.quick_alarm_repeat);
         quickAlarmReminders = findViewById(R.id.quick_alarm_reminders);
@@ -1040,6 +1046,7 @@ public final class MainActivity extends Activity {
                 alarmReminderMode,
                 alarmReminderMinutesJson);
         item.applyDate = quickAlarmDateOption.isApplied();
+        item.autoDeleteAfterCompletion = quickAlarmAutoDelete.isChecked();
         item.imageUri1 = quickAlarmImageUri1;
         item.imageUri2 = quickAlarmImageUri2;
         AlarmAttachments.read(this, "quick_alarm", item);
@@ -1050,6 +1057,7 @@ public final class MainActivity extends Activity {
         renderAlarms();
 
         quickAlarmDateOption.setApplied(false);
+        quickAlarmAutoDelete.setChecked(false);
         quickAlarmLabel.setText("");
         quickAlarmPriority.setSelection(PriorityUtils.MEDIUM);
         alarmRecurrenceMode = RecurrenceUtils.NONE;
@@ -1061,7 +1069,7 @@ public final class MainActivity extends Activity {
         quickAlarmImageUri1 = "";
         quickAlarmImageUri2 = "";
         AlarmAttachments.write(this, "quick_alarm", new AlarmItem(-1, "", 0, 0, true));
-        quickAlarmImage1.setText(R.string.media_attachments);
+        quickAlarmImage1.setText(R.string.media_show_items);
         quickAlarmImage2.setText(AppString.get(R.string.runtime_text_0142));
         updateAlarmReminderLabel();
 
@@ -1157,6 +1165,7 @@ public final class MainActivity extends Activity {
         clockCalendar.refreshCalendar();
         noteCalendar.refreshCalendar();
         android.content.IntentFilter calendarChanges = new android.content.IntentFilter();
+        calendarChanges.addAction(AlarmStore.ACTION_CHANGED);
         calendarChanges.addAction(Intent.ACTION_DATE_CHANGED);
         calendarChanges.addAction(Intent.ACTION_TIME_CHANGED);
         calendarChanges.addAction(Intent.ACTION_TIMEZONE_CHANGED);

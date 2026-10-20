@@ -3,4 +3,6 @@
     <item type="id" name="date_option_note_editor" />
     <item type="id" name="date_option_quick_alarm" />
     <item type="id" name="date_option_quick_note" />
+    <item type="id" name="auto_delete_alarm_editor" />
+    <item type="id" name="auto_delete_quick_alarm" />
 </resources>

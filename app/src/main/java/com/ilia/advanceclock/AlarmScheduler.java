@@ -106,34 +106,37 @@ public final class AlarmScheduler {
     public static boolean snooze(Context context, long id, long delayMillis) {
         AlarmItem item = new AlarmStore(context).find(id);
         if (item == null) return false;
+        return scheduleSnoozeAt(context, item, System.currentTimeMillis() + Math.max(60_000L, delayMillis));
+    }
 
+    private static boolean scheduleSnoozeAt(Context context, AlarmItem item, long when) {
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager == null || !PermissionHelper.exactAlarmsGranted(context)) return false;
-
-        long when = System.currentTimeMillis() + Math.max(60_000L, delayMillis);
-        Intent intent = new Intent(context, AlarmSnoozeReceiver.class)
-                .putExtra("alarmId", id);
-        PendingIntent operation = PendingIntent.getBroadcast(
-                context,
-                2_050_000 + (int) Math.abs(id % 800_000L),
-                intent,
+        Intent intent = new Intent(context, AlarmSnoozeReceiver.class).putExtra("alarmId", item.id);
+        PendingIntent operation = PendingIntent.getBroadcast(context,
+                2_050_000 + (int) Math.abs(item.id % 800_000L), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
         try {
             manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, when, operation);
+            item.pendingSnoozeAtMillis = when;
+            new AlarmStore(context).save(item);
             return true;
-        } catch (SecurityException error) {
-            return false;
-        }
+        } catch (SecurityException error) { return false; }
     }
 
     public static void cancel(Context context, long id) {
         AlarmStore store = new AlarmStore(context);
         AlarmItem item = store.find(id);
         cancelPrimary(context, id);
-        if (item != null && item.lastFiredAtMillis > 0L) {
-            cancelPostReminders(context, item.id, item.lastFiredAtMillis);
+        if (item != null) {
+            if (item.lastFiredAtMillis > 0L) cancelPostReminders(context, item.id, item.lastFiredAtMillis);
+            AlarmManager manager = context.getSystemService(AlarmManager.class);
+            if (manager != null) manager.cancel(PendingIntent.getBroadcast(context,
+                    2_050_000 + (int) Math.abs(id % 800_000L),
+                    new Intent(context, AlarmSnoozeReceiver.class).putExtra("alarmId", id),
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
             item.lastFiredAtMillis = 0L;
+            item.pendingSnoozeAtMillis = 0L;
             store.save(item);
         }
     }
@@ -165,6 +168,8 @@ public final class AlarmScheduler {
         store.deleteExpired(now);
 
         for (AlarmItem item : store.all()) {
+            if (item.pendingSnoozeAtMillis > 0L)
+                scheduleSnoozeAt(context, item, Math.max(now + 1000L, item.pendingSnoozeAtMillis));
             if (item.lastFiredAtMillis > 0L) {
                 schedulePostReminders(context, item, item.lastFiredAtMillis);
             }

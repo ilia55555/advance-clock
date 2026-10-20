@@ -31,6 +31,8 @@ public final class AlarmSoundService extends Service {
     private Vibrator vibrator;
     private PowerManager.WakeLock wakeLock;
     private long currentAlarmId = -1L;
+    private static volatile long ringingAlarmId = Long.MIN_VALUE;
+    static boolean isRinging(long id) { return ringingAlarmId == id; }
     private boolean currentVibrate = true;
     private String currentSoundUri = "";
     private boolean muted;
@@ -72,8 +74,15 @@ public final class AlarmSoundService extends Service {
 
     static void ring(Context context, AlarmItem item) {
         Intent service = startIntent(context, item.id, item.label, item.vibrate, item.soundUri);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(service);
-        else context.startService(service);
+        long previous = ringingAlarmId;
+        ringingAlarmId = item.id;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(service);
+            else context.startService(service);
+        } catch (RuntimeException error) {
+            ringingAlarmId = previous;
+            throw error;
+        }
     }
 
     public static Intent startIntent(Context context, long id, String label) {
@@ -137,6 +146,7 @@ public final class AlarmSoundService extends Service {
         }
 
         currentAlarmId = intent.getLongExtra("alarmId", -1L);
+        ringingAlarmId = currentAlarmId;
         currentVibrate = intent.getBooleanExtra("vibrate", true);
         currentSoundUri = intent.getStringExtra("soundUri");
         String label = intent.getStringExtra("label");
@@ -310,6 +320,12 @@ public final class AlarmSoundService extends Service {
         }
         wakeLock = null;
         stopForeground(STOP_FOREGROUND_REMOVE);
+        if (ringingAlarmId == currentAlarmId) ringingAlarmId = Long.MIN_VALUE;
+        if (currentAlarmId >= 0L) {
+            currentAlarmId = -1L;
+            if (new AlarmStore(this).deleteExpired(System.currentTimeMillis()) > 0)
+                ClockWidgetProvider.updateAll(this);
+        }
     }
 
     private void stopPlayer() {

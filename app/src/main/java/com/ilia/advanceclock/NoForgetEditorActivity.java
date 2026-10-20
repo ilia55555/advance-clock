@@ -745,7 +745,7 @@ public final class NoForgetEditorActivity extends Activity {
                         ?AppString.get(R.string.runtime_text_0117)
                         :AppString.get(R.string.runtime_text_0468)+CalendarUtils.fa(
                                 Integer.toString(targets))+")");
-        filesAction.setText(R.string.media_attachments);
+        filesAction.setText(R.string.media_show_items);
     }
 
     private void applySystemBarInsets(View root){

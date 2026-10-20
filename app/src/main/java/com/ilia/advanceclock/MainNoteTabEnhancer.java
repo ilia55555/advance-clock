@@ -456,7 +456,7 @@ final class MainNoteTabEnhancer {
         int recurrence = (Integer) readField(activity, "noteRecurrenceMode", RecurrenceUtils.NONE);
         int interval = (Integer) readField(activity, "noteIntervalDays", 1);
         String dates = (String) readField(activity, "noteCustomDates", "[]");
-        android.widget.CheckBox dateOption = activity.findViewById(R.id.date_option_quick_note);
+        android.widget.CompoundButton dateOption = activity.findViewById(R.id.date_option_quick_note);
         boolean applyDate = dateOption == null || dateOption.isChecked();
         long dueAt = enabled ? AlarmTimePolicy.next(due.getTimeInMillis(), applyDate,
                 recurrence, interval, dates, System.currentTimeMillis()) : 0L;
@@ -554,7 +554,7 @@ final class MainNoteTabEnhancer {
                 : AppString.get(R.string.runtime_text_0467) + CalendarUtils.fa(Integer.toString(files)) + ")");
         state.targetButton.setText(targets == 0 ? AppString.get(R.string.runtime_text_0117)
                 : AppString.get(R.string.runtime_text_0468) + CalendarUtils.fa(Integer.toString(targets)) + ")");
-        state.filesButton.setText(R.string.media_attachments);
+        state.filesButton.setText(R.string.media_show_items);
     }
 
     private static void updateReminderButton(State state) {

@@ -15,6 +15,8 @@ public final class AlarmItem {
 
     public long id;
     public boolean applyDate;
+    public boolean autoDeleteAfterCompletion;
+    public long pendingSnoozeAtMillis;
     public String label;
     public long triggerAtMillis;
     public int repeatType;
@@ -80,6 +82,8 @@ public final class AlarmItem {
     public JSONObject toJson() throws JSONException{
         JSONObject o=new JSONObject();
         o.put("applyDate", applyDate);
+        o.put("autoDeleteAfterCompletion", autoDeleteAfterCompletion);
+        o.put("pendingSnoozeAtMillis", pendingSnoozeAtMillis);
         o.put("id",id);o.put("label",label);o.put("triggerAtMillis",triggerAtMillis);
         o.put("repeatType",repeatType);o.put("enabled",enabled);o.put("vibrate",vibrate);
         o.put("priority",priority);o.put("priorityVersion",2);
@@ -114,6 +118,8 @@ public final class AlarmItem {
                 o.optInt("reminderMode",AlarmReminderUtils.MODE_NONE),
                 o.optString("reminderMinutesJson","[]")
         );
+        item.autoDeleteAfterCompletion = o.optBoolean("autoDeleteAfterCompletion", false);
+        item.pendingSnoozeAtMillis = o.optLong("pendingSnoozeAtMillis", 0L);
         item.applyDate = o.optBoolean("applyDate", true); // Preserve explicit dates in existing records.
         item.lastFiredAtMillis = o.optLong("lastFiredAtMillis", 0L);
         item.imageUri1 = o.optString("imageUri1", "");
