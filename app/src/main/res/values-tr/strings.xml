@@ -912,4 +912,6 @@ Kilit ekranı</string>
     <string name="grant_exact_alarms">Kesin alarmlara izin ver</string>
     <string name="grant_fullscreen">Tam ekran uyarılara izin ver</string>
     <string name="reminder_open_destination">%1$s aç</string>
+    <string name="alert_sound_hint">Sesi kapatmak için ses kısma düğmesine veya telefonun açma/kapama düğmesine basın. Sesi yeniden açmak için ses açma düğmesine basın.</string>
+    <string name="alert_sound_hint_understood">Anladım</string>
 </resources>

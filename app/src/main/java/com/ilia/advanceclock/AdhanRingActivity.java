@@ -136,6 +136,7 @@ public final class AdhanRingActivity
                 R.id.adhan_stop)
                 .setOnClickListener(
                         view -> stopAndClose());
+        AlertSoundHint.show(this, "adhan");
     }
 
     private void configureQiblaDisplay() {

@@ -60,6 +60,7 @@ public final class AlarmRingActivity extends Activity {
             if (ok) { ClockWidgetProvider.updateAll(this); stopAndClose(); }
             else Toast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
         }));
+        AlertSoundHint.show(this, "alarm");
     }
     @Override public boolean onKeyDown(int code, KeyEvent event) {
         if (code == KeyEvent.KEYCODE_VOLUME_DOWN) { startService(AlarmSoundService.muteIntent(this)); return true; }

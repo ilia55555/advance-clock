@@ -1259,4 +1259,6 @@ Lock screen</string>
     <string name="grant_exact_alarms">Allow exact alarms</string>
     <string name="grant_fullscreen">Allow full-screen alerts</string>
     <string name="reminder_open_destination">Open %1$s</string>
+    <string name="alert_sound_hint">To mute the sound, press the volume down button or the phone’s on/off button. To play the sound again, press the volume up button.</string>
+    <string name="alert_sound_hint_understood">Got it</string>
 </resources>

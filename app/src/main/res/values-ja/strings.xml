@@ -912,4 +912,6 @@
     <string name="grant_exact_alarms">正確なアラームを許可</string>
     <string name="grant_fullscreen">全画面アラートを許可</string>
     <string name="reminder_open_destination">%1$sを開く</string>
+    <string name="alert_sound_hint">音を消すには、音量を下げるボタン、またはスマートフォンの電源ボタンを押してください。音を再び鳴らすには、音量を上げるボタンを押してください。</string>
+    <string name="alert_sound_hint_understood">わかりました</string>
 </resources>

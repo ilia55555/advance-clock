@@ -912,4 +912,6 @@ Sans rappel</string>
     <string name="grant_exact_alarms">Autoriser les alarmes exactes</string>
     <string name="grant_fullscreen">Autoriser les alertes plein écran</string>
     <string name="reminder_open_destination">Ouvrir %1$s</string>
+    <string name="alert_sound_hint">Pour couper le son, appuyez sur le bouton de diminution du volume ou sur le bouton marche/arrêt du téléphone. Pour réactiver le son, appuyez sur le bouton d’augmentation du volume.</string>
+    <string name="alert_sound_hint_understood">Compris</string>
 </resources>

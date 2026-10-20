@@ -912,4 +912,6 @@ Sperrbildschirm</string>
     <string name="grant_exact_alarms">Genaue Alarme erlauben</string>
     <string name="grant_fullscreen">Vollbildalarme erlauben</string>
     <string name="reminder_open_destination">%1$s öffnen</string>
+    <string name="alert_sound_hint">Zum Stummschalten die Leiser-Taste oder die Ein-/Aus-Taste des Telefons drücken. Zum erneuten Abspielen die Lauter-Taste drücken.</string>
+    <string name="alert_sound_hint_understood">Verstanden</string>
 </resources>

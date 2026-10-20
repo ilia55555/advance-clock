@@ -1671,6 +1671,12 @@ public final class MainActivity extends Activity {
         });
 
         Button edit = actionButton(AppString.get(R.string.runtime_text_0007));
+        edit.setTextColor(0xFFFFFFFF);
+        GradientDrawable editBackground = new GradientDrawable();
+        editBackground.setColor(0xFF1976D2);
+        editBackground.setCornerRadius(dp(11));
+        edit.setBackgroundTintList(null);
+        edit.setBackground(editBackground);
         edit.setOnClickListener(v ->
                 startActivity(new Intent(this, AlarmEditorActivity.class)
                         .putExtra("alarmId", item.id)));

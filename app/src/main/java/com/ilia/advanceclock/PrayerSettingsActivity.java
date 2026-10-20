@@ -111,16 +111,12 @@ public final class PrayerSettingsActivity extends Activity {
         root.addView(top);
 
         LinearLayout masterCard = card();
-        TextView masterTitle = text(
-                AppString.get(R.string.runtime_text_0086),
-                18,
-                AppSettings.textPrimary(this));
-        masterTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        masterCard.addView(masterTitle);
-
         masterAdhanSwitch = toggle(
                 AppString.get(R.string.runtime_text_0351),
                 AppSettings.showPrayerTimes(this));
+        masterAdhanSwitch.setTextSize(18);
+        masterAdhanSwitch.setTextColor(AppSettings.textPrimary(this));
+        masterAdhanSwitch.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         masterAdhanSwitch.setOnCheckedChangeListener((button, checked) -> {
             if (syncingAdhanSwitches) return;
             AppSettings.setShowPrayerTimes(this, checked);
