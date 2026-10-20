@@ -20,15 +20,16 @@
         <intent><action android:name="android.media.action.IMAGE_CAPTURE" /></intent>
     </queries>
 
-    <!-- ممنوع: آیکون و خروجی Image Asset فقط توسط مالک مدیریت می‌شوند.
-         حق تغییر، حذف، جایگزینی تصاویر یا دستکاری اتصال icon/roundIcon را ندارید.
-         رفع خطای بیلد و پاک‌سازی نیز مجوز تغییر این بخش نیست. به AGENTS.md رجوع کنید.
-         OWNER RULE: Do not modify icon assets, Image Asset output, or icon wiring.
-         Report problems only. Explicit new owner authorization is required. -->
+    <!-- آیکون لانچر فقط در Android Studio و به صورت دستی توسط مالک وارد می‌شود.
+         هیچ تصویر لوگو یا خروجی Image Asset نباید در GitHub ذخیره شود.
+         Gradle منابع محلی ic_launcher را (در صورت وجود) انتخاب می‌کند و در
+         کلون بدون لوگو از آیکون پیش‌فرض اندروید استفاده می‌کند.
+         LOCAL-ONLY launcher art; never commit launcher/Image Asset files.
+         See AGENTS.md and .gitignore. -->
     <application
         android:name=".AdvanceClockApplication"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="${launcherIconResource}"
+        android:roundIcon="${launcherRoundIconResource}"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"

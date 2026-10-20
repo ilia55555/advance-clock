@@ -10,3 +10,13 @@ captures/
 
 # Obsolete localization generator output; localization_full.xml is the canonical resource.
 app/src/main/res/values*/ui_text_values.xml
+
+# Owner-managed app launcher icons: created manually in Android Studio, never on GitHub.
+# Image Asset outputs and source artwork remain local/untracked.
+/app/src/main/res/mipmap*/
+/app/src/main/res/drawable*/ic_launcher*
+/app/src/main/res/drawable*/infinitime_launcher*
+**/ic_launcher*
+**/ic_launcher-playstore.png
+**/infinitime.png
+**/infinitime_launcher*

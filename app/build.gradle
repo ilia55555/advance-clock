@@ -24,6 +24,19 @@ tasks.register('generateLocalizations') {
     }
 }
 
+// The owner imports app icons manually via Android Studio > New > Image Asset.
+// Do not generate or commit those images: use them only when present locally.
+// A clean GitHub checkout falls back to the built-in Android application icon.
+def hasLocalLauncherIcon = { String iconName ->
+    fileTree(dir: 'src/main/res', includes: [
+            "mipmap*/${iconName}.xml",
+            "mipmap*/${iconName}.png",
+            "mipmap*/${iconName}.webp"
+    ]).files.any { it.isFile() }
+}
+def hasLocalLauncher = hasLocalLauncherIcon('ic_launcher')
+def hasLocalRoundLauncher = hasLocalLauncherIcon('ic_launcher_round')
+
 android {
     namespace 'com.ilia.advanceclock'
 
@@ -39,6 +52,15 @@ android {
         targetSdk 36
         versionCode 1
         versionName '1.0.0'
+
+        // All launcher artwork is untracked and owner-managed on this computer.
+        manifestPlaceholders = [
+                launcherIconResource: hasLocalLauncher
+                        ? '@mipmap/ic_launcher' : '@android:drawable/sym_def_app_icon',
+                launcherRoundIconResource: hasLocalRoundLauncher
+                        ? '@mipmap/ic_launcher_round'
+                        : (hasLocalLauncher ? '@mipmap/ic_launcher' : '@android:drawable/sym_def_app_icon')
+        ]
     }
 
     testOptions {
