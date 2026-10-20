@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- IMPORTANT: The owner creates the launcher icon with Android Studio Image Asset.
-     Only wire its standard resources here. Do not edit, replace, or generate artwork.
-     Image Asset supplies mipmap/ic_launcher_foreground and color/ic_launcher_background.
-     Preserve the owner's generated resources and configuration on future changes. -->
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@color/ic_launcher_background" />
-    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
-</adaptive-icon>
