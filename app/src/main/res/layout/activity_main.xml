@@ -1071,7 +1071,10 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <include layout="@layout/activity_stopwatch" />
+            <ViewStub
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/activity_stopwatch" />
         </FrameLayout>
 
         <FrameLayout
@@ -1080,7 +1083,10 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <include layout="@layout/activity_timer" />
+            <ViewStub
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/activity_timer" />
         </FrameLayout>
 
         <FrameLayout
@@ -1089,7 +1095,10 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <include layout="@layout/panel_world_clock" />
+            <ViewStub
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/panel_world_clock" />
         </FrameLayout>
 
         <Button

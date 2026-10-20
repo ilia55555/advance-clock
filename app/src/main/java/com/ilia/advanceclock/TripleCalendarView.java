@@ -64,6 +64,17 @@ public final class TripleCalendarView extends View {
     private OnDateSelectedListener dateListener;
     private OnMonthYearClickListener monthYearListener;
 
+    private static final android.util.LruCache<String, MonthRenderData> MONTHS =
+            new android.util.LruCache<>(8);
+
+    private static final class MonthRenderData {
+        final DayRenderData[] days;
+        final int leading, rows;
+        MonthRenderData(DayRenderData[] days, int leading, int rows) {
+            this.days = days; this.leading = leading; this.rows = rows;
+        }
+    }
+
     private DayRenderData[] cachedDays = new DayRenderData[0];
     private int cachedCalendarType = -1;
     private int cachedDisplayYear = Integer.MIN_VALUE;
@@ -89,7 +100,7 @@ public final class TripleCalendarView extends View {
         stroke.setStrokeCap(Paint.Cap.ROUND);
         stroke.setStrokeJoin(Paint.Join.ROUND);
         setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        rebuildCalendarCache();
+        ensureCalendarCache();
     }
 
     public void setOnDateSelectedListener(OnDateSelectedListener l) { dateListener = l; }
@@ -97,7 +108,7 @@ public final class TripleCalendarView extends View {
     public int getCalendarType() { return calendarType; }
 
     public void refreshCalendar() {
-        rebuildCalendarCache();
+        ensureCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -124,7 +135,7 @@ public final class TripleCalendarView extends View {
     public void setCalendarType(int type) {
         calendarType = Math.max(0, Math.min(2, type));
         syncVisibleFrom(selectedMillis);
-        rebuildCalendarCache();
+        ensureCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -134,7 +145,7 @@ public final class TripleCalendarView extends View {
     public void setSelectedMillis(long millis) {
         selectedMillis = millis;
         syncVisibleFrom(millis);
-        rebuildCalendarCache();
+        ensureCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -144,7 +155,7 @@ public final class TripleCalendarView extends View {
         android.icu.util.Calendar visible = CalendarUtils.fromMillis(calendarType, millis);
         displayYear = visible.get(android.icu.util.Calendar.YEAR);
         displayMonth = visible.get(android.icu.util.Calendar.MONTH);
-        rebuildCalendarCache();
+        ensureCalendarCache();
         requestLayout();
         invalidate();
     }
@@ -433,6 +444,19 @@ public final class TripleCalendarView extends View {
     }
 
     private void rebuildCalendarCache() {
+        String configuration = configurationKey();
+        String key = calendarType + "|" + displayYear + "|" + displayMonth + "|" + configuration;
+        MonthRenderData shared = MONTHS.get(key);
+        if (shared != null) {
+            cachedDays = shared.days;
+            cachedLeading = shared.leading;
+            cachedRowCount = shared.rows;
+            cachedConfiguration = configuration;
+            cachedCalendarType = calendarType;
+            cachedDisplayYear = displayYear;
+            cachedDisplayMonth = displayMonth;
+            return;
+        }
         android.icu.util.Calendar first = first();
         int leading = leadingDays(first);
         int days = first.getActualMaximum(
@@ -496,10 +520,11 @@ public final class TripleCalendarView extends View {
                             holiday);
         }
 
+        MONTHS.put(key, new MonthRenderData(data, leading, rows));
         cachedDays = data;
         cachedLeading = leading;
         cachedRowCount = rows;
-        cachedConfiguration = configurationKey();
+        cachedConfiguration = configuration;
         cachedCalendarType = calendarType;
         cachedDisplayYear = displayYear;
         cachedDisplayMonth = displayMonth;
@@ -645,7 +670,7 @@ public final class TripleCalendarView extends View {
                 || y > CalendarUtils.maximumYear(calendarType)) return;
         displayMonth = m;
         displayYear = y;
-        rebuildCalendarCache();
+        ensureCalendarCache();
         requestLayout();
         invalidate();
     }

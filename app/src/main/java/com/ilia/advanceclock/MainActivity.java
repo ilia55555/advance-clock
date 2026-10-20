@@ -196,8 +196,6 @@ public final class MainActivity extends Activity {
                 startActivity(new Intent(this, SmartAlarmActivity.class)));
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
-        findViewById(R.id.world_add_widget).setOnClickListener(v ->
-                pinWidgetAndExit(WorldClockWidgetProvider.class));
 
         clockFab.setOnClickListener(v ->
                 launchCreateEditor(this, AlarmEditorActivity.class));
@@ -1267,15 +1265,28 @@ public final class MainActivity extends Activity {
 
     private boolean panelsResumed;
 
+    private void inflateToolPanel(View panel) {
+        ViewGroup group = (ViewGroup) panel;
+        if (group.getChildCount() == 1 && group.getChildAt(0) instanceof android.view.ViewStub) {
+            ((android.view.ViewStub) group.getChildAt(0)).inflate();
+            panel.requestApplyInsets();
+        }
+    }
+
     private void prepareTab(String tab) {
         if ("stopwatch".equals(tab) && stopwatchController == null) {
+            inflateToolPanel(stopwatchPanel);
             stopwatchController = new StopwatchPanelController(this, stopwatchPanel);
             if (panelsResumed) stopwatchController.onResume();
         } else if ("timer".equals(tab) && timerController == null) {
+            inflateToolPanel(timerPanel);
             timerController = new TimerPanelController(this, timerPanel);
             if (panelsResumed) timerController.onResume();
         } else if ("world".equals(tab) && worldController == null) {
+            inflateToolPanel(worldPanel);
             worldController = new WorldClockPanelController(this, worldPanel);
+            findViewById(R.id.world_add_widget).setOnClickListener(v ->
+                    pinWidgetAndExit(WorldClockWidgetProvider.class));
             if (panelsResumed) worldController.onResume();
         }
     }
