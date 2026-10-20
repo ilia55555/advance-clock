@@ -41,6 +41,11 @@ android {
         versionName '1.0.0'
     }
 
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all { maxHeapSize = "2g" }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -72,6 +77,7 @@ tasks.configureEach {
 }
 dependencies {
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.17'
     testImplementation 'org.json:json:20250517'
     testImplementation 'com.ibm.icu:icu4j:78.1'
 }
