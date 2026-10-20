@@ -59,7 +59,7 @@
                     android:maxLines="1"
                     android:text="@string/runtime_text_0414"
                     android:textColor="#D9EFED"
-                    android:textSize="12sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <ImageButton

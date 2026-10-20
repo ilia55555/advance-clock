@@ -45,7 +45,9 @@ final class TimeToolPresets {
         attachments = AlarmAttachments.button(host, kind);
         controls.addView(attachments);
         LinearLayout actions = new LinearLayout(host);
-        controls.addView(actions);
+        LinearLayout.LayoutParams actionsLayout = new LinearLayout.LayoutParams(-1, -2);
+        actionsLayout.topMargin = Math.round(12 * host.getResources().getDisplayMetrics().density);
+        controls.addView(actions, actionsLayout);
         Button save = button(R.string.tool_save);
         Button saved = button(R.string.tool_saved);
         actions.addView(save, new LinearLayout.LayoutParams(0, -2, 1));
