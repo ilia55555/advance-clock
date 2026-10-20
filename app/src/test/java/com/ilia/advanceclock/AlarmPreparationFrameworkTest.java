@@ -158,6 +158,24 @@ public final class AlarmPreparationFrameworkTest {
         assertTrue(Shadows.shadowOf(manager).getScheduledAlarms().isEmpty());
     }
 
+    @Test public void concurrentStoreInstancesCannotLoseAlarmUpdates() throws Exception {
+        Context c = init();
+        java.util.concurrent.ExecutorService threads = java.util.concurrent.Executors.newFixedThreadPool(2);
+        try {
+            java.util.concurrent.Future<?> first = threads.submit(() -> {
+                for (int i = 0; i < 20; i++)
+                    new AlarmStore(c).save(new AlarmItem(100 + i, "First", System.currentTimeMillis() + 60000, 0, true));
+            });
+            java.util.concurrent.Future<?> second = threads.submit(() -> {
+                for (int i = 0; i < 20; i++)
+                    new AlarmStore(c).save(new AlarmItem(200 + i, "Second", System.currentTimeMillis() + 60000, 0, true));
+            });
+            first.get(15, java.util.concurrent.TimeUnit.SECONDS);
+            second.get(15, java.util.concurrent.TimeUnit.SECONDS);
+            assertEquals(40, new AlarmStore(c).all().size());
+        } finally { threads.shutdownNow(); }
+    }
+
     @Test public void obsoletePreparationDoesNotCreateAnyPlayer() {
         Context c = init();
         Intent stale = new Intent().putExtra("kind", AlarmPreparationReceiver.CLOCK)
