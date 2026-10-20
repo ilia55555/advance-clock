@@ -84,7 +84,7 @@ public final class RequestedBehaviorFrameworkTest {
         return false;
     }
 
-    @Test public void alarmActionsKeepStateSeparateFromRightHandEditAndDelete() throws Exception {
+    @Test public void alarmActionsKeepStateOnRightAndRequireTwoDeletionTaps() throws Exception {
         Context c = RuntimeEnvironment.getApplication();
         AppString.init(c);
         c.getSharedPreferences("advance_clock_app", 0).edit()
@@ -94,15 +94,32 @@ public final class RequestedBehaviorFrameworkTest {
         Method card = MainActivity.class.getDeclaredMethod("alarmCard", AlarmItem.class);
         card.setAccessible(true);
         AlarmItem item = new AlarmItem(99, "Test", System.currentTimeMillis() + 60000, 0, true);
+        new AlarmStore(c).save(item);
         LinearLayout content = (LinearLayout) card.invoke(controller.get(), item);
         LinearLayout actions = (LinearLayout) content.getChildAt(content.getChildCount() - 1);
         assertEquals(View.LAYOUT_DIRECTION_LTR, actions.getLayoutDirection());
         assertEquals(4, actions.getChildCount());
-        assertEquals(1f, ((LinearLayout.LayoutParams) actions.getChildAt(1).getLayoutParams()).weight, 0f);
-        assertTrue(actions.getChildAt(3) instanceof ImageButton);
-        ImageButton delete = (ImageButton) actions.getChildAt(3);
+        assertEquals(1f, ((LinearLayout.LayoutParams) actions.getChildAt(2).getLayoutParams()).weight, 0f);
+        assertTrue(actions.getChildAt(0) instanceof ImageButton);
+        ImageButton delete = (ImageButton) actions.getChildAt(0);
         assertNotNull(delete.getDrawable());
         assertEquals(AppString.get(R.string.runtime_text_0006), delete.getContentDescription());
+        content.measure(View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST));
+        content.layout(0, 0, 1080, content.getMeasuredHeight());
+        assertTrue(delete.getRight() <= actions.getChildAt(1).getLeft());
+        assertTrue(actions.getChildAt(1).getRight() <= actions.getChildAt(3).getLeft());
+
+        assertEquals(actions.getChildAt(3).getLayoutParams().height, delete.getLayoutParams().height);
+        assertEquals(delete.getLayoutParams().height, delete.getLayoutParams().width);
+        assertFalse(delete.isSelected());
+        assertTrue(delete.getBackground() instanceof android.graphics.drawable.GradientDrawable);
+        assertNotNull(delete.getColorFilter());
+        delete.performClick();
+        assertTrue(delete.isSelected());
+        assertNotNull(new AlarmStore(c).find(item.id));
+        delete.performClick();
+        assertNull(new AlarmStore(c).find(item.id));
         controller.pause().stop().destroy();
     }
 }

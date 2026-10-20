@@ -1195,6 +1195,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        clearAlarmDeleteConfirmation();
         panelsResumed = false;
         if (tabMotion != null) tabMotion.finish();
         unregisterReceiver(calendarTimeChanges);
@@ -1300,6 +1301,7 @@ public final class MainActivity extends Activity {
         if (!AppSettings.tabEnabled(this, tab)) tab = firstEnabledTab();
         prepareTab(tab);
         String previousTab = currentTab;
+        if (!tab.equals(previousTab)) clearAlarmDeleteConfirmation();
         currentTab = tab;
         if (tabMotion == null) {
             java.util.Map<String, View> panels = new java.util.LinkedHashMap<>();
@@ -1585,6 +1587,7 @@ public final class MainActivity extends Activity {
     }
 
     private void renderAlarms() {
+        clearAlarmDeleteConfirmation();
         alarmList.removeAllViews();
         List<AlarmItem> items = new AlarmStore(this).all();
         if (items.isEmpty()) {
@@ -1672,19 +1675,55 @@ public final class MainActivity extends Activity {
                         .putExtra("alarmId", item.id)));
 
         ImageButton delete = deleteIconButton();
+        LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(dp(40), dp(40));
+        deleteParams.rightMargin = dp(6);
+        delete.setLayoutParams(deleteParams);
+        delete.setPadding(dp(8), dp(8), dp(8), dp(8));
+        styleAlarmDelete(delete, false);
         delete.setOnClickListener(v -> {
+            if (!delete.isSelected()) {
+                clearAlarmDeleteConfirmation();
+                pendingAlarmDelete = delete;
+                styleAlarmDelete(delete, true);
+                return;
+            }
+            pendingAlarmDelete = null;
             AlarmScheduler.cancel(this, item.id);
             new AlarmStore(this).delete(item.id);
             ClockWidgetProvider.updateAll(this);
             renderAlarms();
         });
 
-        actions.addView(enabled);
-        actions.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
-        actions.addView(edit);
         actions.addView(delete);
+        actions.addView(edit);
+        actions.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
+        actions.addView(enabled);
         card.addView(actions);
         return card;
+    }
+
+    private ImageButton pendingAlarmDelete;
+
+    private void styleAlarmDelete(ImageButton button, boolean armed) {
+        button.setSelected(armed);
+        button.setBackgroundTintList(null);
+        if (armed) {
+            button.setBackgroundResource(R.drawable.bg_delete_button);
+            button.setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            GradientDrawable background = new GradientDrawable();
+            background.setColor(0x1AB3261E);
+            background.setCornerRadius(dp(12));
+            background.setStroke(dp(1), 0xFFB3261E);
+            button.setBackground(background);
+            button.setColorFilter(0xFFB3261E, android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+    }
+
+    private void clearAlarmDeleteConfirmation() {
+        if (pendingAlarmDelete == null) return;
+        styleAlarmDelete(pendingAlarmDelete, false);
+        pendingAlarmDelete = null;
     }
 
     private void applyAlarmStateStyle(Button button, boolean enabled) {
