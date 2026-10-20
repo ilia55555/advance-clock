@@ -199,7 +199,7 @@ final class TimerPanelController {
         dateTimeModeButton.setTextColor(
                 dateTimeMode ? 0xFFFFFFFF : AppSettings.primaryColor(host));
         ((Button) root.findViewById(R.id.timer_reset)).setText(
-                configured ? R.string.timer_clear_fields : R.string.runtime_text_0171);
+                configured ? R.string.timer_clear_fields : R.string.tool_reset_label);
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : remainingMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
     }
 

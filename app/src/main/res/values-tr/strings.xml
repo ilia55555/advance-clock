@@ -915,4 +915,5 @@ Kilit ekranı</string>
     <string name="alert_sound_hint">Sesi kapatmak için ses kısma düğmesine veya telefonun açma/kapama düğmesine basın. Sesi yeniden açmak için ses açma düğmesine basın.</string>
     <string name="alert_sound_hint_understood">Anladım</string>
     <string name="timer_clear_fields">Temizle</string>
+    <string name="tool_reset_label">Sıfırla</string>
 </resources>

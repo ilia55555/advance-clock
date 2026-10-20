@@ -30,6 +30,13 @@ final class DurationInputs {
                     return false;
                 }
             });
+            field.setOnClickListener(v -> {
+                String value = field.getText().toString();
+                if (value.isEmpty()) return;
+                for (int i = 0; i < value.length(); i++)
+                    if (Character.digit(value.charAt(i), 10) != 0) return;
+                field.setText("");
+            });
             field.setOnEditorActionListener((v, action, event) -> {
                 if (action != EditorInfo.IME_ACTION_DONE) return false;
                 field.clearFocus();

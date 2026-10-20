@@ -915,4 +915,5 @@ Sans rappel</string>
     <string name="alert_sound_hint">Pour couper le son, appuyez sur le bouton de diminution du volume ou sur le bouton marche/arrêt du téléphone. Pour réactiver le son, appuyez sur le bouton d’augmentation du volume.</string>
     <string name="alert_sound_hint_understood">Compris</string>
     <string name="timer_clear_fields">Effacer</string>
+    <string name="tool_reset_label">Réinitialiser</string>
 </resources>

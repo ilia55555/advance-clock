@@ -1266,4 +1266,5 @@
     <string name="alert_sound_hint">برای بی‌صدا کردن، دکمهٔ کم‌کردن صدا یا دکمهٔ روشن/خاموش گوشی را فشار دهید. برای پخش دوبارهٔ صدا، دکمهٔ افزایش صدا را فشار دهید.</string>
     <string name="alert_sound_hint_understood">متوجه شدم</string>
     <string name="timer_clear_fields">صفر کردن</string>
+    <string name="tool_reset_label">بازنشانی</string>
 </resources>

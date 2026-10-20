@@ -915,4 +915,5 @@
     <string name="alert_sound_hint">音を消すには、音量を下げるボタン、またはスマートフォンの電源ボタンを押してください。音を再び鳴らすには、音量を上げるボタンを押してください。</string>
     <string name="alert_sound_hint_understood">わかりました</string>
     <string name="timer_clear_fields">クリア</string>
+    <string name="tool_reset_label">リセット</string>
 </resources>

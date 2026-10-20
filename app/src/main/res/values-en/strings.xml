@@ -1262,4 +1262,5 @@ Lock screen</string>
     <string name="alert_sound_hint">To mute the sound, press the volume down button or the phone’s on/off button. To play the sound again, press the volume up button.</string>
     <string name="alert_sound_hint_understood">Got it</string>
     <string name="timer_clear_fields">Clear</string>
+    <string name="tool_reset_label">Reset</string>
 </resources>

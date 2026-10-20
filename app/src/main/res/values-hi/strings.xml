@@ -915,4 +915,5 @@
     <string name="alert_sound_hint">आवाज़ बंद करने के लिए वॉल्यूम कम करने वाला बटन या फ़ोन का चालू/बंद बटन दबाएँ। आवाज़ फिर से चलाने के लिए वॉल्यूम बढ़ाने वाला बटन दबाएँ।</string>
     <string name="alert_sound_hint_understood">समझ गया</string>
     <string name="timer_clear_fields">साफ़ करें</string>
+    <string name="tool_reset_label">रीसेट करें</string>
 </resources>

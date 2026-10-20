@@ -915,4 +915,5 @@ Sperrbildschirm</string>
     <string name="alert_sound_hint">Zum Stummschalten die Leiser-Taste oder die Ein-/Aus-Taste des Telefons drücken. Zum erneuten Abspielen die Lauter-Taste drücken.</string>
     <string name="alert_sound_hint_understood">Verstanden</string>
     <string name="timer_clear_fields">Leeren</string>
+    <string name="tool_reset_label">Zurücksetzen</string>
 </resources>
