@@ -40,7 +40,15 @@ final class QiblaMarker {
         paint.setStrokeWidth(Math.max(2f, radius * .018f));
         paint.setStrokeCap(Paint.Cap.ROUND);
         canvas.drawLine(cx, cy, x, y, paint);
-        if (image == null) return;
+        drawImage(canvas, x, y, radius);
+    }
+
+    void drawPending(Canvas canvas, float cx, float cy, float radius) {
+        drawImage(canvas, cx, cy, radius);
+    }
+
+    private void drawImage(Canvas canvas, float x, float y, float radius) {
+        if (image == null || radius <= 0f) return;
         // Fit both wide and tall replacements without distortion or leaving the dial.
         float scale = radius * .32f / Math.max(image.getWidth(), image.getHeight());
         float width = image.getWidth() * scale;

@@ -200,6 +200,9 @@ public final class QiblaAdhanBackgroundView extends View {
 
         paint.setAlpha(255);
         paint.setFakeBoldText(false);
+        if (!hasQiblaBearing) {
+            marker.drawPending(canvas, cx, cy, radius);
+        }
     }
 
     private void drawQiblaNeedle(

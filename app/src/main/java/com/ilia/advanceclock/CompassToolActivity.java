@@ -115,11 +115,11 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                     PREFS,
                     0).getInt(
                     KEY_MODE,
-                    MODE_COMPASS);
+                    MODE_QIBLA);
         }
         if (selectedMode < MODE_COMPASS
                 || selectedMode > MODE_DIRECTIONS) {
-            selectedMode = MODE_COMPASS;
+            selectedMode = MODE_QIBLA;
         }
         selector.setSelection(selectedMode);
         selectorCard.addView(selector, new LinearLayout.LayoutParams(-1, dp(52)));
@@ -224,9 +224,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                 selectedMode = position;
                 getSharedPreferences(PREFS, 0).edit().putInt(KEY_MODE, position).apply();
                 refreshLocationAccessUi();
-                if (selectedMode == MODE_QIBLA) {
-                    ensureQiblaLocation();
-                }
+                ensureQiblaLocation();
                 compassView.invalidate();
                 updateStatus();
             }
@@ -253,9 +251,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         } else if (status != null) {
             status.setText(AppString.get(R.string.runtime_text_0324));
         }
-        if (selectedMode == MODE_QIBLA) {
-            ensureQiblaLocation();
-        }
+        ensureQiblaLocation();
     }
 
     @Override protected void onPause() {
@@ -411,7 +407,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         if (locationAccessCard == null) return;
 
         boolean qiblaMode =
-                selectedMode == MODE_QIBLA;
+                selectedMode == MODE_QIBLA || qiblaLocation == null;
         locationAccessCard.setVisibility(
                 qiblaMode
                         ? View.VISIBLE
@@ -702,29 +698,22 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             }
             canvas.restore();
 
-            if (selectedMode == MODE_QIBLA) {
-                if (qiblaLocation != null) {
-                    drawQiblaNeedle(
-                            canvas,
-                            cx,
-                            cy,
-                            radius,
-                            signedAngle(
-                                    (float) qiblaBearing()
-                                            - azimuth));
-                }
-            } else {
-                drawNorthNeedle(
-                        canvas,
-                        cx,
-                        cy,
-                        radius);
+            if (selectedMode != MODE_QIBLA) {
+                drawNorthNeedle(canvas, cx, cy, radius);
+            }
+            if (qiblaLocation != null) {
+                drawQiblaNeedle(canvas, cx, cy, radius,
+                        signedAngle((float) qiblaBearing() - azimuth));
             }
             paint.setColor(0xFF6A4326);
             paint.setStyle(Paint.Style.FILL);
             canvas.drawCircle(cx, cy, dp(10), paint);
             paint.setColor(0xFFD8B15B);
             canvas.drawCircle(cx, cy, dp(5), paint);
+            if (qiblaLocation == null) {
+                // Artwork is visible while location is pending; never invent a bearing.
+                marker.drawPending(canvas, cx, cy, radius);
+            }
         }
 
         private void drawNorthNeedle(Canvas canvas, float cx, float cy, float radius) {
