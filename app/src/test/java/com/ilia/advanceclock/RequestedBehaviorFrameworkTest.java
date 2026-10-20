@@ -52,6 +52,7 @@ public final class RequestedBehaviorFrameworkTest {
     @Test public void blockedNotificationsDisableSettingsAndExposePermissionButton() {
         Context c = RuntimeEnvironment.getApplication();
         AppString.init(c);
+        Shadows.shadowOf((Application) c).grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS);
         NotificationManager manager = c.getSystemService(NotificationManager.class);
         Shadows.shadowOf(manager).setNotificationsEnabled(false);
         org.robolectric.android.controller.ActivityController<NotificationSettingsActivity> controller =

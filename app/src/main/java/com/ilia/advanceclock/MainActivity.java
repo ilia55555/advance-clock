@@ -163,12 +163,14 @@ public final class MainActivity extends Activity {
     private int noteIntervalDays = 1;
     private String noteCustomDates = "[]";
 
+    private boolean previousExactPermission;
     private int permissionStage = -1;
     private boolean waitingForSettings;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         super.onCreate(savedInstanceState);
+        previousExactPermission = PermissionHelper.exactAlarmsGranted(this);
         setContentView(R.layout.activity_main);
         NotificationHelper.ensureChannels(this);
 
@@ -1145,6 +1147,13 @@ public final class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         panelsResumed = true;
+        boolean exactPermission = PermissionHelper.exactAlarmsGranted(this);
+        if (!previousExactPermission && exactPermission) {
+            AlarmScheduler.rescheduleAll(this);
+            NoForgetScheduler.rescheduleAll(this);
+            AdhanScheduler.rescheduleAll(this);
+        }
+        previousExactPermission = exactPermission;
         if (stopwatchController != null) stopwatchController.onResume();
         if (timerController != null) timerController.onResume();
         if (worldController != null) worldController.onResume();
@@ -1858,6 +1867,7 @@ public final class MainActivity extends Activity {
         ImageButton button = new ImageButton(this);
         button.setImageResource(R.drawable.ic_delete_alarm);
         button.setContentDescription(AppString.get(R.string.runtime_text_0006));
+        button.setBackgroundTintList(null);
         button.setBackgroundResource(R.drawable.bg_delete_button);
         button.setPadding(dp(12), dp(12), dp(12), dp(12));
         button.setLayoutParams(new LinearLayout.LayoutParams(dp(48), dp(48)));
