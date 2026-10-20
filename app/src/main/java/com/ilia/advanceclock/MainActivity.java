@@ -214,6 +214,7 @@ public final class MainActivity extends Activity {
 
         android.content.SharedPreferences appPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         boolean setupDone = appPrefs.getBoolean(INITIAL_SETUP, false);
+        boolean onboardingDone = appPrefs.getBoolean(PERMISSION_ONBOARDING, false);
         if (!setupDone) {
             getWindow().getDecorView().postDelayed(() ->
                     FirstRunSetupDialog.show(this, languageChanged -> {
@@ -221,7 +222,10 @@ public final class MainActivity extends Activity {
                         if (languageChanged) {
                             AdvanceClockApplication.restartForLanguage(this);
                         }
+                        else if (!onboardingDone) startPermissionFlow();
                     }), 300);
+        } else if (!onboardingDone) {
+            getWindow().getDecorView().postDelayed(this::startPermissionFlow, 450);
         }
 
     }

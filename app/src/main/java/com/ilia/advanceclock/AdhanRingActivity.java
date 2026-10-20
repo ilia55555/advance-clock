@@ -31,6 +31,14 @@ public final class AdhanRingActivity
     private static java.lang.ref.WeakReference<AdhanRingActivity> showing =
             new java.lang.ref.WeakReference<>(null);
 
+    private boolean screenVisible;
+
+    static boolean isVisible(int type) {
+        AdhanRingActivity activity = showing.get();
+        return activity != null && activity.screenVisible
+                && activity.getIntent().getIntExtra("adhanType", AdhanScheduler.FAJR) == type;
+    }
+
     static void finishIfShowing(int type) {
         AdhanRingActivity activity = showing.get();
         if (activity != null && activity.getIntent().getIntExtra(
@@ -197,6 +205,8 @@ public final class AdhanRingActivity
     @Override
     protected void onResume() {
         super.onResume();
+        screenVisible = true;
+        AdhanSoundService.onRingVisibilityChanged();
 
         if (liveQiblaEnabled
                 && sensorManager != null
@@ -210,6 +220,13 @@ public final class AdhanRingActivity
         if (liveQiblaEnabled) {
             refreshCurrentQiblaLocation();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        screenVisible = false;
+        AdhanSoundService.onRingVisibilityChanged();
+        super.onStop();
     }
 
     @Override

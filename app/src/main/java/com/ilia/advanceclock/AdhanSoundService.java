@@ -30,6 +30,30 @@ public final class AdhanSoundService extends Service {
     public static final String ACTION_LOWER = "com.ilia.advanceclock.ADHAN_LOWER";
     public static final String ACTION_RAISE = "com.ilia.advanceclock.ADHAN_RAISE";
 
+    private static java.lang.ref.WeakReference<AdhanSoundService> running =
+            new java.lang.ref.WeakReference<>(null);
+    private boolean playing;
+    private boolean foreground;
+
+    static void onRingVisibilityChanged() {
+        AdhanSoundService service = running.get();
+        if (service != null) service.updateNotificationVisibility();
+    }
+
+    private void updateNotificationVisibility() {
+        if (!playing) return;
+        if (AdhanRingActivity.isVisible(type)) {
+            if (foreground) {
+                stopForeground(STOP_FOREGROUND_REMOVE);
+                foreground = false;
+            }
+        } else if (!foreground) {
+            // Restore background playback protection without opening the screen again.
+            startForeground(3_300_000 + type, notification(false));
+            foreground = true;
+        }
+    }
+
     private MediaPlayer player;
     private Vibrator vibrator;
     private float volume = 1f;
@@ -83,6 +107,7 @@ public final class AdhanSoundService extends Service {
 
     @Override public void onCreate() {
         super.onCreate();
+        running = new java.lang.ref.WeakReference<>(this);
         NotificationHelper.ensureChannels(this);
         IntentFilter screenFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         IntentFilter volumeFilter = new IntentFilter(ACTION_VOLUME_CHANGED);
@@ -99,6 +124,7 @@ public final class AdhanSoundService extends Service {
         if (intent == null) return START_NOT_STICKY;
         String action = intent.getAction();
         if (ACTION_STOP.equals(action)) {
+            playing = false;
             stopSelf();
             return START_NOT_STICKY;
         }
@@ -109,14 +135,17 @@ public final class AdhanSoundService extends Service {
         else if (ACTION_START.equals(action)) {
             type = intent.getIntExtra("adhanType", AdhanScheduler.FAJR);
             boolean openWhileUnlocked = shouldOpenFullscreenWhileUnlocked();
-            startForeground(3_300_000 + type, notification());
+            playing = true;
+            startForeground(3_300_000 + type, notification(true));
+            foreground = true;
             startPlayback();
             if (openWhileUnlocked) openRingActivity();
+            updateNotificationVisibility();
         }
         return START_NOT_STICKY;
     }
 
-    private Notification notification() {
+    private Notification notification(boolean allowFullscreen) {
         Intent ring = new Intent(this, AdhanRingActivity.class)
                 .putExtra("adhanType", type)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -135,11 +164,22 @@ public final class AdhanSoundService extends Service {
                         : AppString.get(R.string.runtime_text_0407))
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
                 .setContentIntent(open)
-                .addAction(new Notification.Action.Builder(
-                        null, AppString.get(R.string.runtime_text_0307), stop).build());
-        if (shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
+                .setStyle(new Notification.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationControls(R.layout.notification_adhan, open, stop))
+                .setCustomBigContentView(notificationControls(R.layout.notification_adhan_expanded, open, stop));
+        if (allowFullscreen && shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
         return builder.build();
+    }
+
+    private android.widget.RemoteViews notificationControls(int layout, PendingIntent open, PendingIntent stop) {
+        android.widget.RemoteViews views = new android.widget.RemoteViews(getPackageName(), layout);
+        views.setTextViewText(R.id.adhan_notification_title, CalendarUtils.fa(AdhanScheduler.title(type)));
+        views.setTextViewText(R.id.adhan_notification_stop, AppString.get(R.string.runtime_text_0307));
+        views.setOnClickPendingIntent(R.id.adhan_notification_title, open);
+        views.setOnClickPendingIntent(R.id.adhan_notification_stop, stop);
+        return views;
     }
 
     private boolean shouldOpenFullscreen() {
@@ -244,6 +284,9 @@ public final class AdhanSoundService extends Service {
     }
 
     @Override public void onDestroy() {
+        playing = false;
+        foreground = false;
+        if (running.get() == this) running.clear();
         stopHandler.removeCallbacks(maximumDuration);
         stopPlayback();
         AdhanRingActivity.finishIfShowing(type);
