@@ -20,9 +20,11 @@
         <intent><action android:name="android.media.action.IMAGE_CAPTURE" /></intent>
     </queries>
 
-    <!-- IMPORTANT: Only the owner's Android Studio Image Asset resources may define
-         the launcher logo. Keep ic_launcher/ic_launcher_round as the entry points;
-         do not redirect these attributes to another image or override generated assets. -->
+    <!-- ممنوع: آیکون و خروجی Image Asset فقط توسط مالک مدیریت می‌شوند.
+         حق تغییر، حذف، جایگزینی تصاویر یا دستکاری اتصال icon/roundIcon را ندارید.
+         رفع خطای بیلد و پاک‌سازی نیز مجوز تغییر این بخش نیست. به AGENTS.md رجوع کنید.
+         OWNER RULE: Do not modify icon assets, Image Asset output, or icon wiring.
+         Report problems only. Explicit new owner authorization is required. -->
     <application
         android:name=".AdvanceClockApplication"
         android:allowBackup="false"
