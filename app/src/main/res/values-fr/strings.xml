@@ -917,4 +917,5 @@ Sans rappel</string>
     <string name="timer_clear_fields">Effacer</string>
     <string name="tool_reset_label">Réinitialiser</string>
     <string name="attachment_open_blocked">L’ouverture de paquets d’installation ou de liens non Web est interdite.</string>
+    <string name="media_search_apps">Rechercher des applications</string>
 </resources>

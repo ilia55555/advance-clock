@@ -244,10 +244,76 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         List<ResolveInfo> apps = getPackageManager().queryIntentActivities(launcher, 0);
         apps.sort((a,b) -> String.CASE_INSENSITIVE_ORDER.compare(a.loadLabel(getPackageManager()).toString(), b.loadLabel(getPackageManager()).toString()));
         if (apps.isEmpty()) { error(); return; }
-        String[] names = new String[apps.size()];
-        for (int i = 0; i < names.length; i++) names[i] = apps.get(i).loadLabel(getPackageManager()).toString();
-        new AlertDialog.Builder(this).setTitle(R.string.media_app).setItems(names,
-                (d,i) -> add(NoteAttachment.app(this, apps.get(i).activityInfo.packageName))).show();
+        List<String> labels = new ArrayList<>();
+        for (ResolveInfo app : apps) labels.add(app.loadLabel(getPackageManager()).toString());
+        List<Integer> visible = new ArrayList<>();
+        for (int i = 0; i < apps.size(); i++) visible.add(i);
+
+        LinearLayout picker = new LinearLayout(this);
+        picker.setOrientation(LinearLayout.VERTICAL);
+        picker.setLayoutDirection(AppSettings.layoutDirection(this));
+        picker.setPadding(dp(12), dp(4), dp(12), dp(8));
+        SearchView search = new SearchView(this);
+        search.setIconifiedByDefault(false);
+        search.setQueryHint(getString(R.string.media_search_apps));
+        picker.addView(search, new LinearLayout.LayoutParams(-1, -2));
+        ListView appList = new ListView(this);
+        appList.setTextFilterEnabled(false);
+        BaseAdapter adapter = new BaseAdapter() {
+            @Override public int getCount() { return visible.size(); }
+            @Override public Object getItem(int position) { return apps.get(visible.get(position)); }
+            @Override public long getItemId(int position) { return visible.get(position); }
+            @Override public View getView(int position, View recycled, android.view.ViewGroup parent) {
+                LinearLayout row;
+                if (recycled instanceof LinearLayout) row = (LinearLayout) recycled;
+                else {
+                    row = new LinearLayout(AlarmAttachmentEditorActivity.this);
+                    row.setGravity(Gravity.CENTER_VERTICAL);
+                    row.setPadding(dp(8), dp(8), dp(8), dp(8));
+                    ImageView logo = new ImageView(AlarmAttachmentEditorActivity.this);
+                    logo.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                    row.addView(logo, new LinearLayout.LayoutParams(dp(36), dp(36)));
+                    TextView name = text("", 16, false);
+                    name.setSingleLine(true);
+                    name.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                    name.setPaddingRelative(dp(12), 0, dp(4), 0);
+                    row.addView(name, new LinearLayout.LayoutParams(0, -2, 1));
+                }
+                int index = visible.get(position);
+                ((TextView) row.getChildAt(1)).setText(labels.get(index));
+                ((ImageView) row.getChildAt(0)).setImageDrawable(apps.get(index).loadIcon(getPackageManager()));
+                return row;
+            }
+        };
+        appList.setAdapter(adapter);
+        int height = Math.min(420, Math.max(160, getResources().getConfiguration().screenHeightDp / 2));
+        picker.addView(appList, new LinearLayout.LayoutParams(-1, dp(height)));
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.media_app)
+                .setView(picker).setNegativeButton(android.R.string.cancel, null).create();
+        appList.setOnItemClickListener((parent, view, position, id) -> {
+            add(NoteAttachment.app(this, apps.get(visible.get(position)).activityInfo.packageName));
+            dialog.dismiss();
+        });
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override public boolean onQueryTextSubmit(String query) { search.clearFocus(); return true; }
+            @Override public boolean onQueryTextChange(String query) {
+                String needle = query.trim().toLowerCase(Locale.ROOT);
+                visible.clear();
+                for (int i = 0; i < apps.size(); i++) {
+                    if (labels.get(i).toLowerCase(Locale.ROOT).contains(needle)
+                            || apps.get(i).activityInfo.packageName.toLowerCase(Locale.ROOT).contains(needle))
+                        visible.add(i);
+                }
+                adapter.notifyDataSetChanged();
+                appList.setSelection(0);
+                return true;
+            }
+        });
+        dialog.setOnShowListener(v -> dialog.getWindow().setSoftInputMode(
+                android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                        | android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE));
+        dialog.show();
+        search.clearFocus();
     }
 
     private void addLink() {
@@ -337,13 +403,20 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             details.addView(icon, new LinearLayout.LayoutParams(dp(44), dp(44)));
             TextView label = text(displayName, 16, true);
-            label.setPaddingRelative(dp(14), dp(4), 0, dp(4));
+            label.setPaddingRelative(dp(app ? 8 : 14), dp(4), dp(app ? 6 : 0), dp(4));
+            if (app) {
+                label.setSingleLine(true);
+                label.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            }
             details.addView(label, new LinearLayout.LayoutParams(0, -2, 1));
-            LinearLayout actions = horizontal(entry);
+            LinearLayout actions = app ? details : horizontal(entry);
             Button open = button(R.string.media_open, false);
             open.setOnClickListener(v -> item.open(this));
             LinearLayout.LayoutParams openParams = new LinearLayout.LayoutParams(0, -2, 1);
-            openParams.topMargin = dp(12);
+            if (app) {
+                compactAction(open);
+                openParams = new LinearLayout.LayoutParams(-2, dp(48));
+            } else openParams.topMargin = dp(12);
             openParams.setMarginEnd(dp(8));
             actions.addView(open, openParams);
             Button remove = button(R.string.tool_delete, false);
@@ -358,7 +431,10 @@ public final class AlarmAttachmentEditorActivity extends Activity {
                 render();
             });
             LinearLayout.LayoutParams removeParams = new LinearLayout.LayoutParams(0, -2, 1);
-            removeParams.topMargin = dp(12);
+            if (app) {
+                compactAction(remove);
+                removeParams = new LinearLayout.LayoutParams(-2, dp(48));
+            } else removeParams.topMargin = dp(12);
             actions.addView(remove, removeParams);
         }
         if (list.getChildCount() == 0) {
@@ -369,6 +445,16 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             hint.setPadding(dp(8), dp(22), dp(8), dp(22));
             empty.addView(hint, new LinearLayout.LayoutParams(-1, -2));
         }
+    }
+
+    private void compactAction(Button action) {
+        action.setMinWidth(0);
+        action.setMinimumWidth(0);
+        action.setMinHeight(0);
+        action.setMinimumHeight(0);
+        action.setTextSize(13);
+        action.setSingleLine(true);
+        action.setPadding(dp(8), 0, dp(8), 0);
     }
 
     @Override public void finish() { super.finish(); AppSettings.playFullscreenExit(this); }

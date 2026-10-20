@@ -1264,4 +1264,5 @@ Lock screen</string>
     <string name="timer_clear_fields">Clear</string>
     <string name="tool_reset_label">Reset</string>
     <string name="attachment_open_blocked">Opening installation packages or non-web links is not allowed.</string>
+    <string name="media_search_apps">Search apps</string>
 </resources>

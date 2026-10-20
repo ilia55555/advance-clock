@@ -1225,4 +1225,5 @@
     <string name="timer_clear_fields">صفر کردن</string>
     <string name="tool_reset_label">بازنشانی</string>
     <string name="attachment_open_blocked">باز کردن بسته‌های نصب برنامه یا پیوندهای غیر وب مجاز نیست.</string>
+    <string name="media_search_apps">جست‌وجوی اپ‌ها</string>
 </resources>

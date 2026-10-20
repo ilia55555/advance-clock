@@ -917,4 +917,5 @@ Kilit ekranı</string>
     <string name="timer_clear_fields">Temizle</string>
     <string name="tool_reset_label">Sıfırla</string>
     <string name="attachment_open_blocked">Kurulum paketlerinin veya web dışı bağlantıların açılmasına izin verilmez.</string>
+    <string name="media_search_apps">Uygulama ara</string>
 </resources>

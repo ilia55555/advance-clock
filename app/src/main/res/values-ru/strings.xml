@@ -917,4 +917,5 @@
     <string name="timer_clear_fields">Очистить</string>
     <string name="tool_reset_label">Сбросить</string>
     <string name="attachment_open_blocked">Открытие установочных пакетов и ссылок, не относящихся к веб-сайтам, запрещено.</string>
+    <string name="media_search_apps">Поиск приложений</string>
 </resources>

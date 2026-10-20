@@ -917,4 +917,5 @@
     <string name="timer_clear_fields">クリア</string>
     <string name="tool_reset_label">リセット</string>
     <string name="attachment_open_blocked">インストールパッケージやウェブ以外のリンクは開けません。</string>
+    <string name="media_search_apps">アプリを検索</string>
 </resources>

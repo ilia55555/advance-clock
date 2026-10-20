@@ -917,4 +917,5 @@ Pantalla de bloqueo</string>
     <string name="timer_clear_fields">Borrar</string>
     <string name="tool_reset_label">Restablecer</string>
     <string name="attachment_open_blocked">No se permite abrir paquetes de instalación ni enlaces que no sean web.</string>
+    <string name="media_search_apps">Buscar aplicaciones</string>
 </resources>
