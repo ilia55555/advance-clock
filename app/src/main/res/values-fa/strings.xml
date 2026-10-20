@@ -1214,4 +1214,5 @@
     <string name="alarm_auto_delete_finished">حذف خودکار پس از اتمام</string>
     <string name="media_fullscreen_photo">عکس تمام‌صفحه</string>
     <string name="media_empty">هنوز عکس، فایل، اپ یا لینکی اضافه نشده است</string>
+    <string name="duration_too_large">این مدت‌زمان برای زمان‌بندی دستگاه بیش از حد بزرگ است</string>
 </resources>

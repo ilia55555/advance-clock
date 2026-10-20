@@ -1271,4 +1271,5 @@
     <string name="alarm_auto_delete_finished">الحذف التلقائي بعد الانتهاء</string>
     <string name="media_fullscreen_photo">صورة بملء الشاشة</string>
     <string name="media_empty">لم تتم إضافة صور أو ملفات أو تطبيقات أو روابط بعد</string>
+    <string name="duration_too_large">هذه المدة أكبر من قدرة الجهاز على الجدولة</string>
 </resources>

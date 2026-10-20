@@ -20,6 +20,7 @@ final class StopwatchPanelController {
     private final Activity host;
     private final View root;
     private TimeToolPresets presets;
+    private DurationInputs durationFields;
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ArrayList<Long> laps = new ArrayList<>();
@@ -69,6 +70,7 @@ final class StopwatchPanelController {
         hoursInput = root.findViewById(R.id.stopwatch_limit_hours);
         minutesInput = root.findViewById(R.id.stopwatch_limit_minutes);
         secondsInput = root.findViewById(R.id.stopwatch_limit_seconds);
+        durationFields = new DurationInputs(hoursInput, minutesInput, secondsInput);
         labelInput = root.findViewById(R.id.stopwatch_label);
         restoreDraft();
         presets = new TimeToolPresets(host, labelInput, ToolAlarmScheduler.STOPWATCH,
@@ -179,8 +181,7 @@ final class StopwatchPanelController {
     private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
     private void addLap(){long elapsed=currentElapsed();if(!running||elapsed==0)return;laps.add(0,elapsed);save();renderLaps();}
     private long currentElapsed(){return running?accumulatedMillis+Math.max(0,System.currentTimeMillis()-startedAtWall):accumulatedMillis;}
-    private long readLimit(){return(number(hoursInput)*3600L+number(minutesInput)*60L+number(secondsInput))*1000L;}
-    private static long number(EditText input){try{String s=input.getText().toString().trim();return s.isEmpty()?0:Long.parseLong(s);}catch(NumberFormatException e){return 0;}}
+    private long readLimit() { return durationFields.readMillis(); }
 
     private void updateControls() {
         boolean configurable = !running && accumulatedMillis == 0L;

@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -114,12 +113,8 @@ public final class MainActivity extends Activity {
     private Button clockFab;
     private Button noteFab;
     private String currentTab;
-    private float swipeDownX;
-    private float swipeDownY;
-    private boolean swipeStartedOnCalendar;
+    private TabMotion tabMotion;
     private int lastPrayerAutoIndex = -1;
-    private final java.util.HashSet<String> warmedTabs =
-            new java.util.HashSet<>();
 
     private Button quickAlarmDate;
     private DateOption quickAlarmDateOption, quickNoteDateOption;
@@ -1196,6 +1191,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        if (tabMotion != null) tabMotion.finish();
         unregisterReceiver(calendarTimeChanges);
         headerHandler.removeCallbacks(headerTicker);
         stopwatchController.onPause();
@@ -1269,18 +1265,37 @@ public final class MainActivity extends Activity {
 
     private void showTab(String tab) {
         if (!AppSettings.tabEnabled(this, tab)) tab = firstEnabledTab();
+        String previousTab = currentTab;
         currentTab = tab;
+        if (tabMotion == null) {
+            java.util.Map<String, View> panels = new java.util.LinkedHashMap<>();
+            panels.put("clock", clockPanel); panels.put("noforget", noForgetPanel);
+            panels.put("stopwatch", stopwatchPanel); panels.put("timer", timerPanel); panels.put("world", worldPanel);
+            tabMotion = new TabMotion(panels);
+        }
+        int oldIndex = -1, newIndex = -1;
+        String[] order = AppSettings.tabOrder(this);
+        for (int i = 0; i < order.length; i++) {
+            if (order[i].equals(previousTab)) oldIndex = i;
+            if (order[i].equals(tab)) newIndex = i;
+        }
+        int direction = newIndex >= oldIndex ? 1 : -1;
+        if (findViewById(R.id.tab_bar).getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) direction *= -1;
+        if (previousTab != null && !previousTab.equals(tab)) {
+            View focus = getCurrentFocus();
+            if (focus != null) {
+                focus.clearFocus();
+                android.view.inputmethod.InputMethodManager keyboard = getSystemService(android.view.inputmethod.InputMethodManager.class);
+                if (keyboard != null) keyboard.hideSoftInputFromWindow(focus.getWindowToken(), 0);
+            }
+        }
+        tabMotion.show(tab, direction, previousTab != null);
         boolean clock = "clock".equals(tab);
         boolean notes = "noforget".equals(tab);
         boolean stopwatch = "stopwatch".equals(tab);
         boolean timer = "timer".equals(tab);
         boolean world = "world".equals(tab);
 
-        setTabPanelVisibility("clock", clockPanel, clock);
-        setTabPanelVisibility("noforget", noForgetPanel, notes);
-        setTabPanelVisibility("stopwatch", stopwatchPanel, stopwatch);
-        setTabPanelVisibility("timer", timerPanel, timer);
-        setTabPanelVisibility("world", worldPanel, world);
 
         stopwatchController.setActive(stopwatch);
         timerController.setActive(timer);
@@ -1303,77 +1318,6 @@ public final class MainActivity extends Activity {
                 == AppSettings.CLOCK_LAYOUT_CALENDAR_FIRST;
         clockFab.setVisibility(clock && compact ? View.VISIBLE : View.GONE);
         noteFab.setVisibility(notes && compact ? View.VISIBLE : View.GONE);
-    }
-
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
-        boolean switchTabs = false;
-        boolean towardRight = false;
-        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            swipeDownX = event.getRawX();
-            swipeDownY = event.getRawY();
-            swipeStartedOnCalendar = pointInside(clockCalendar, swipeDownX, swipeDownY)
-                    || pointInside(noteCalendar, swipeDownX, swipeDownY)
-                    || pointInside(prayerTimesCard, swipeDownX, swipeDownY);
-        } else if (event.getActionMasked() == MotionEvent.ACTION_UP
-                && !swipeStartedOnCalendar) {
-            float deltaX = event.getRawX() - swipeDownX;
-            float deltaY = event.getRawY() - swipeDownY;
-            if (Math.abs(deltaX) >= dp(72)
-                    && Math.abs(deltaX) > Math.abs(deltaY) * 1.4f) {
-                switchTabs = true;
-                towardRight = deltaX < 0f;
-            }
-        }
-        boolean handled = super.dispatchTouchEvent(event);
-        if (switchTabs) moveToAdjacentTab(towardRight);
-        return handled;
-    }
-
-    private boolean pointInside(View view, float rawX, float rawY) {
-        if (view == null || !view.isShown()) return false;
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        return rawX >= location[0] && rawX < location[0] + view.getWidth()
-                && rawY >= location[1] && rawY < location[1] + view.getHeight();
-    }
-
-    private void setTabPanelVisibility(
-            String tab,
-            View panel,
-            boolean active) {
-        if (active) {
-            warmedTabs.add(tab);
-            if (panel.getVisibility() != View.VISIBLE) {
-                panel.setVisibility(View.VISIBLE);
-            }
-            return;
-        }
-
-        int target = warmedTabs.contains(tab)
-                ? View.INVISIBLE
-                : View.GONE;
-        if (panel.getVisibility() != target) {
-            panel.setVisibility(target);
-        }
-    }
-
-    private void moveToAdjacentTab(boolean towardRight) {
-        String[] order = AppSettings.tabOrder(this);
-        int currentIndex = -1;
-        for (int i = 0; i < order.length; i++) {
-            if (order[i].equals(currentTab)) {
-                currentIndex = i;
-                break;
-            }
-        }
-        if (currentIndex < 0) return;
-        int step = towardRight ? -1 : 1;
-        for (int i = currentIndex + step; i >= 0 && i < order.length; i += step) {
-            if (AppSettings.tabEnabled(this, order[i])) {
-                showTab(order[i]);
-                return;
-            }
-        }
     }
 
     private void applyTabOrder() {

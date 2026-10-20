@@ -18,6 +18,7 @@ final class TimerPanelController {
     private final Activity host;
     private final View root;
     private TimeToolPresets presets;
+    private DurationInputs durationFields;
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView timeView, summary;
@@ -59,6 +60,7 @@ final class TimerPanelController {
         hoursInput = root.findViewById(R.id.timer_hours);
         minutesInput = root.findViewById(R.id.timer_minutes);
         secondsInput = root.findViewById(R.id.timer_seconds);
+        durationFields = new DurationInputs(hoursInput, minutesInput, secondsInput);
         labelInput = root.findViewById(R.id.timer_label);
         startButton = root.findViewById(R.id.timer_start);
         dateButton = root.findViewById(R.id.timer_date);
@@ -153,8 +155,7 @@ final class TimerPanelController {
     }
 
     private long currentRemaining() { return running ? Math.max(0L, deadline - System.currentTimeMillis()) : remainingMillis; }
-    private long readDuration() { return (number(hoursInput) * 3600L + number(minutesInput) * 60L + number(secondsInput)) * 1000L; }
-    private static long number(EditText input) { try { String s=input.getText().toString().trim(); return s.isEmpty()?0:Long.parseLong(s); } catch (NumberFormatException e) { return 0; } }
+    private long readDuration() { return durationFields.readMillis(); }
 
     private void updateControls() {
         boolean configured = !running && remainingMillis == 0L;

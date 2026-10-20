@@ -1253,4 +1253,5 @@ Lock screen</string>
     <string name="alarm_auto_delete_finished">Auto-delete after completion</string>
     <string name="media_fullscreen_photo">Full-screen photo</string>
     <string name="media_empty">No photos, files, apps or links added yet</string>
+    <string name="duration_too_large">This duration is too large to schedule on this device</string>
 </resources>
