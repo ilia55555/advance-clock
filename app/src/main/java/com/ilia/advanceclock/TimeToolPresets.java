@@ -35,8 +35,13 @@ final class TimeToolPresets {
         LinearLayout parent = (LinearLayout) label.getParent();
         controls = new LinearLayout(host);
         controls.setOrientation(LinearLayout.VERTICAL);
-        parent.addView(controls, parent.indexOfChild(label) + 1,
-                new LinearLayout.LayoutParams(-1, -2));
+        boolean stopwatch = ToolAlarmScheduler.STOPWATCH.equals(kind);
+        View anchor = parent.findViewById(stopwatch ? R.id.stopwatch_lap : R.id.timer_start);
+        if (!stopwatch && anchor != null) anchor = (View) anchor.getParent();
+        LinearLayout.LayoutParams extrasLayout = new LinearLayout.LayoutParams(-1, -2);
+        extrasLayout.topMargin = Math.round(16 * host.getResources().getDisplayMetrics().density);
+        parent.addView(controls, anchor == null ? parent.getChildCount()
+                : parent.indexOfChild(anchor) + 1, extrasLayout);
         attachments = AlarmAttachments.button(host, kind);
         controls.addView(attachments);
         LinearLayout actions = new LinearLayout(host);

@@ -3,13 +3,11 @@ package com.ilia.advanceclock;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
 import android.view.View;
 
 public final class QiblaAdhanBackgroundView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Path path = new Path();
+    private final QiblaMarker marker;
     private final String[] directionLabels;
 
     private float azimuth;
@@ -18,6 +16,7 @@ public final class QiblaAdhanBackgroundView extends View {
 
     public QiblaAdhanBackgroundView(Context context) {
         super(context);
+        marker = new QiblaMarker(context);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         directionLabels = new String[]{
                 AppString.get(R.string.runtime_text_0328),
@@ -209,66 +208,7 @@ public final class QiblaAdhanBackgroundView extends View {
             float cy,
             float radius,
             float relativeAngle) {
-        canvas.save();
-        canvas.rotate(
-                relativeAngle,
-                cx,
-                cy);
-
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(0xFFECC75A);
-        paint.setAlpha(190);
-
-        path.reset();
-        path.moveTo(
-                cx,
-                cy - radius * 0.69f);
-        path.lineTo(
-                cx - dp(12),
-                cy - radius * 0.48f);
-        path.lineTo(
-                cx - dp(4),
-                cy - radius * 0.51f);
-        path.lineTo(
-                cx - dp(4),
-                cy + radius * 0.20f);
-        path.lineTo(
-                cx + dp(4),
-                cy + radius * 0.20f);
-        path.lineTo(
-                cx + dp(4),
-                cy - radius * 0.51f);
-        path.lineTo(
-                cx + dp(12),
-                cy - radius * 0.48f);
-        path.close();
-        canvas.drawPath(path, paint);
-
-        paint.setColor(0xFF12110E);
-        paint.setAlpha(210);
-        RectF kaaba =
-                new RectF(
-                        cx - dp(14),
-                        cy - radius * 0.80f,
-                        cx + dp(14),
-                        cy - radius * 0.65f);
-        canvas.drawRoundRect(
-                kaaba,
-                dp(2),
-                dp(2),
-                paint);
-
-        paint.setColor(0xFFE3BE4E);
-        paint.setAlpha(230);
-        canvas.drawRect(
-                kaaba.left,
-                kaaba.top + dp(5),
-                kaaba.right,
-                kaaba.top + dp(8),
-                paint);
-
-        canvas.restore();
-        paint.setAlpha(255);
+        marker.draw(canvas, cx, cy, radius, relativeAngle, 0xFFECC75A);
     }
 
     private float signedAngle(float angle) {

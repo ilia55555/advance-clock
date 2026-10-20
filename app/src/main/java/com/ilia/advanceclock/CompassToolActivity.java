@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.content.pm.PackageManager;
@@ -631,6 +630,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     }
 
     private final class CompassView extends View {
+        private final QiblaMarker marker = new QiblaMarker(CompassToolActivity.this);
         private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final Path path = new Path();
         private float azimuth;
@@ -747,28 +747,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
 
         private void drawQiblaNeedle(
                 Canvas canvas, float cx, float cy, float radius, float relativeAngle) {
-            canvas.save();
-            canvas.rotate(relativeAngle, cx, cy);
-            paint.setColor(0xFFC18A19);
-            paint.setStyle(Paint.Style.FILL);
-            path.reset();
-            path.moveTo(cx, cy - radius * .67f);
-            path.lineTo(cx - dp(13), cy - radius * .48f);
-            path.lineTo(cx - dp(4), cy - radius * .51f);
-            path.lineTo(cx - dp(4), cy + radius * .18f);
-            path.lineTo(cx + dp(4), cy + radius * .18f);
-            path.lineTo(cx + dp(4), cy - radius * .51f);
-            path.lineTo(cx + dp(13), cy - radius * .48f);
-            path.close();
-            canvas.drawPath(path, paint);
-            paint.setColor(0xFF17120E);
-            RectF kaaba = new RectF(cx - dp(13), cy - radius * .78f,
-                    cx + dp(13), cy - radius * .64f);
-            canvas.drawRoundRect(kaaba, dp(2), dp(2), paint);
-            paint.setColor(0xFFD6AD4D);
-            canvas.drawRect(kaaba.left, kaaba.top + dp(5), kaaba.right,
-                    kaaba.top + dp(8), paint);
-            canvas.restore();
+            marker.draw(canvas, cx, cy, radius, relativeAngle, 0xFFC18A19);
         }
     }
 }
