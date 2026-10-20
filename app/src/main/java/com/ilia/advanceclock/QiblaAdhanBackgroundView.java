@@ -170,17 +170,13 @@ public final class QiblaAdhanBackgroundView extends View {
                     index == 0
                             ? 0xFFFF8C7A
                             : 0xFFD7F3EF);
-            canvas.drawText(
-                    directionLabels[index],
-                    cx
-                            + (float) Math.cos(radians)
-                            * radius * 0.79f,
-                    cy
-                            + (float) Math.sin(radians)
-                            * radius * 0.79f
-                            + paint.getTextSize()
-                            * 0.35f,
-                    paint);
+            float labelX = cx + (float) Math.cos(radians) * radius * 0.79f;
+            float labelY = cy + (float) Math.sin(radians) * radius * 0.79f;
+            canvas.save();
+            canvas.rotate(directionLabelRotation(index), labelX, labelY);
+            canvas.drawText(directionLabels[index], labelX,
+                    labelY + paint.getTextSize() * 0.35f, paint);
+            canvas.restore();
         }
 
         canvas.restore();
@@ -228,6 +224,11 @@ public final class QiblaAdhanBackgroundView extends View {
             float radius,
             float relativeAngle) {
         marker.draw(canvas, cx, cy, radius, relativeAngle);
+    }
+
+    // The north and south labels keep their original orientation.
+    static float directionLabelRotation(int index) {
+        return index == 0 || index == 4 ? 0f : index * 45f;
     }
 
     private float signedAngle(float angle) {

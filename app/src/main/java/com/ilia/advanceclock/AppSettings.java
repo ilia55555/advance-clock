@@ -743,7 +743,7 @@ public final class AppSettings {
     public static int adhanQiblaDisplayMode(Context context) {
         int value = prefs(context).getInt(
                 "adhan_qibla_display_mode",
-                ADHAN_QIBLA_NONE);
+                ADHAN_QIBLA_BACKGROUND);
         return Math.max(
                 ADHAN_QIBLA_NONE,
                 Math.min(

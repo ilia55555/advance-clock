@@ -30,6 +30,10 @@ final class QiblaMarker {
         image = BitmapFactory.decodeResource(context.getResources(), R.drawable.al_kaaba, options);
     }
 
+    void bindTo(android.widget.ImageView view) {
+        view.setImageBitmap(image);
+    }
+
     void draw(Canvas canvas, float cx, float cy, float radius, float angle) {
         if (radius <= 0f) return;
         float distance = radius * .69f;

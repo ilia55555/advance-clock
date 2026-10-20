@@ -143,31 +143,20 @@ public final class AdhanRingActivity
                 AppSettings.adhanQiblaDisplayMode(
                         this);
 
-        Button qiblaButton =
+        View qiblaButton =
                 findViewById(
                         R.id.adhan_qibla_button);
         FrameLayout background =
                 findViewById(
                         R.id.adhan_qibla_background_container);
 
-        qiblaButton.setVisibility(View.GONE);
+        qiblaButton.setVisibility(View.VISIBLE);
+        new QiblaMarker(this).bindTo(findViewById(R.id.adhan_qibla_button_image));
+        qiblaButton.setOnClickListener(v ->
+                startActivity(new Intent(this, CompassToolActivity.class)
+                        .putExtra(CompassToolActivity.EXTRA_START_MODE, CompassToolActivity.MODE_QIBLA)));
         background.setVisibility(View.GONE);
         liveQiblaEnabled = false;
-
-        if (mode
-                == AppSettings.ADHAN_QIBLA_BUTTON) {
-            qiblaButton.setVisibility(
-                    View.VISIBLE);
-            qiblaButton.setOnClickListener(v ->
-                    startActivity(
-                            new Intent(
-                                    this,
-                                    CompassToolActivity.class)
-                                    .putExtra(
-                                            CompassToolActivity.EXTRA_START_MODE,
-                                            CompassToolActivity.MODE_QIBLA)));
-            return;
-        }
 
         if (mode
                 != AppSettings.ADHAN_QIBLA_BACKGROUND) {

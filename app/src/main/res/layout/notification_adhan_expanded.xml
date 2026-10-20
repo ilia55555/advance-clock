@@ -14,7 +14,8 @@
         android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
     <Button
         android:id="@+id/adhan_notification_stop"
-        android:layout_width="match_parent"
+        android:layout_width="132dp"
+        android:layout_gravity="end"
         android:layout_height="48dp"
         android:background="@drawable/bg_teal_button"
         android:paddingStart="16dp"

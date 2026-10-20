@@ -29,6 +29,29 @@ public final class AdhanPresentationFrameworkTest {
         return c;
     }
 
+    @Test public void freshSettingsDefaultToBackgroundAndRespectExplicitChoice() {
+        Context c = init();
+        c.getSharedPreferences("advance_clock_settings", 0).edit().remove("adhan_qibla_display_mode").commit();
+        assertEquals(AppSettings.ADHAN_QIBLA_BACKGROUND, AppSettings.adhanQiblaDisplayMode(c));
+        AppSettings.setAdhanQiblaDisplayMode(c, AppSettings.ADHAN_QIBLA_NONE);
+        assertEquals(AppSettings.ADHAN_QIBLA_NONE, AppSettings.adhanQiblaDisplayMode(c));
+    }
+
+    @Test public void directionLabelsAlignWithTheirOwnRaysExceptUnchangedNorthAndSouth() {
+        assertEquals(0f, QiblaAdhanBackgroundView.directionLabelRotation(0), 0f);
+        assertEquals(0f, QiblaAdhanBackgroundView.directionLabelRotation(4), 0f);
+        for (int index : new int[]{1, 2, 3, 5, 6, 7}) {
+            android.graphics.Matrix matrix = new android.graphics.Matrix();
+            matrix.setRotate(QiblaAdhanBackgroundView.directionLabelRotation(index));
+            float[] textUp = {0f, -1f};
+            matrix.mapVectors(textUp);
+            double bearing = Math.atan2(textUp[0], -textUp[1]);
+            double expected = Math.toRadians(index * 45);
+            assertEquals(Math.sin(expected), Math.sin(bearing), .00001);
+            assertEquals(Math.cos(expected), Math.cos(bearing), .00001);
+        }
+    }
+
     @Test public void controlsSitBelowReservedCompassSpaceInEveryMode() {
         Context c = init();
         for (int mode = 0; mode <= 2; mode++) {
@@ -48,7 +71,18 @@ public final class AdhanPresentationFrameworkTest {
             assertTrue(title.getBottom() <= time.getTop());
             assertTrue(time.getBottom() <= slot.getTop());
             assertTrue(slot.getHeight() > 0);
-            assertTrue(slot.getBottom() <= sound.getTop());
+            View qibla = activity.findViewById(R.id.adhan_qibla_button);
+            assertSame(root, qibla.getParent());
+            assertEquals(View.VISIBLE, qibla.getVisibility());
+            assertEquals(qibla.getWidth(), qibla.getHeight());
+            assertEquals(root.getWidth() / 2f, (qibla.getLeft() + qibla.getRight()) / 2f, 1f);
+            assertTrue(slot.getBottom() <= qibla.getTop());
+            assertTrue(qibla.getBottom() <= sound.getTop());
+            assertNotNull(((android.widget.ImageView) activity.findViewById(R.id.adhan_qibla_button_image)).getDrawable());
+            qibla.performClick();
+            Intent launched = Shadows.shadowOf(activity).getNextStartedActivity();
+            assertEquals(CompassToolActivity.class.getName(), launched.getComponent().getClassName());
+            assertEquals(CompassToolActivity.MODE_QIBLA, launched.getIntExtra(CompassToolActivity.EXTRA_START_MODE, -1));
             assertTrue(sound.getBottom() <= stop.getTop());
             assertTrue(stop.getBottom() <= root.getHeight());
             controller.pause().stop().destroy();
@@ -78,7 +112,7 @@ public final class AdhanPresentationFrameworkTest {
 
         View expanded = restored.bigContentView.apply(c, new android.widget.FrameLayout(c));
         View stop = expanded.findViewById(R.id.adhan_notification_stop);
-        assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, stop.getLayoutParams().width);
+        assertEquals(Math.round(132 * c.getResources().getDisplayMetrics().density), stop.getLayoutParams().width);
         assertTrue(stop.hasOnClickListeners());
         screen.start().resume();
         assertNull(Shadows.shadowOf(manager).getNotification(id));
