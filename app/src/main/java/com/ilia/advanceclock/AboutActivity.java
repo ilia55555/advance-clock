@@ -131,7 +131,7 @@ public final class AboutActivity extends Activity {
         hero.setStroke(dp(1), blend(AppSettings.surface(this), accent, .22f));
         brand.setBackground(hero);
         ImageView icon = new ImageView(this);
-        icon.setImageResource(R.mipmap.ic_launcher);
+        icon.setImageDrawable(getApplicationInfo().loadIcon(getPackageManager()));
         icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         icon.setPadding(dp(10), dp(10), dp(10), dp(10));
         icon.setBackground(shape(AppSettings.surface(this), 28));
