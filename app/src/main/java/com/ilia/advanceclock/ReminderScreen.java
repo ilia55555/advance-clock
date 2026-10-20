@@ -21,7 +21,7 @@ final class ReminderScreen extends FrameLayout {
             R.string.runtime_text_0577,R.string.runtime_text_0578,R.string.runtime_text_0579,
             R.string.runtime_text_0580,R.string.runtime_text_0581,R.string.runtime_text_0582,R.string.runtime_text_0583};
     static final class Content {
-        String title = "", body = "", image1 = "", image2 = "";
+        String title = "", body = "", image1 = "", image2 = "", openLabel = "";
         boolean background;
         List<NoteAttachment> attachments = new ArrayList<>();
         int snoozeMinutes = 15;
@@ -98,7 +98,7 @@ final class ReminderScreen extends FrameLayout {
         LinearLayout footer = new LinearLayout(host); footer.setOrientation(LinearLayout.VERTICAL);
         footer.setPadding(0, dp(8), 0, dp(32));
         if (open != null) {
-            Button edit = button(host.getString(R.string.media_open), false);
+            Button edit = button(data.openLabel.isEmpty() ? host.getString(R.string.media_open) : data.openLabel, false);
             edit.setOnClickListener(v -> open.run()); footer.addView(edit, new LinearLayout.LayoutParams(-1, dp(44)));
         }
         LinearLayout snoozeRow = new LinearLayout(host); snoozeRow.setGravity(Gravity.CENTER_VERTICAL);

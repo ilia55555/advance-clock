@@ -35,6 +35,9 @@ public final class AlarmRingActivity extends Activity {
         }
         ReminderScreen.Content data = new ReminderScreen.Content();
         data.title = label == null || label.trim().isEmpty() ? getString(R.string.runtime_text_0019) : label;
+        data.openLabel = getString(R.string.reminder_open_destination, getString(tool
+                ? ToolAlarmScheduler.TIMER.equals(toolKind) ? R.string.tab_timer : R.string.tab_stopwatch
+                : R.string.ui_alarm));
         data.body = getString(tool ? ToolAlarmScheduler.TIMER.equals(toolKind) ? R.string.runtime_text_0584 : R.string.runtime_text_0585 : R.string.runtime_text_0586);
         if (tool) {
             android.content.SharedPreferences p = AlarmAttachments.prefs(this);

@@ -27,6 +27,7 @@ public final class NoteReminderActivity extends Activity {
         if (item == null) { finish(); return; }
         ReminderScreen.Content data = new ReminderScreen.Content();
         data.title = item.title.trim().isEmpty() ? getString(R.string.runtime_text_0311) : item.title;
+        data.openLabel = getString(R.string.runtime_text_0308);
         data.body = item.body; data.attachments = NoteAttachment.parse(item.attachmentsJson);
         data.image1 = item.imageUri1; data.image2 = item.imageUri2; data.background = item.imagesAsBackground;
         setContentView(new ReminderScreen(this, data, this::stopAndClose, () -> {
