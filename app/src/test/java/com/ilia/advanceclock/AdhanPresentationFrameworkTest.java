@@ -54,6 +54,7 @@ public final class AdhanPresentationFrameworkTest {
 
     @Test public void controlsSitBelowReservedCompassSpaceInEveryMode() {
         Context c = init();
+        int backgroundHeight = 0, shortcutHeight = 0;
         for (int mode = 0; mode <= 2; mode++) {
             AppSettings.setAdhanQiblaDisplayMode(c, mode);
             org.robolectric.android.controller.ActivityController<AdhanRingActivity> controller =
@@ -73,7 +74,13 @@ public final class AdhanPresentationFrameworkTest {
             assertTrue(slot.getHeight() > 0);
             View qibla = activity.findViewById(R.id.adhan_qibla_button);
             assertSame(root, qibla.getParent());
-            assertEquals(View.VISIBLE, qibla.getVisibility());
+            if (mode == AppSettings.ADHAN_QIBLA_BACKGROUND) {
+                assertEquals(View.GONE, qibla.getVisibility());
+                assertEquals(slot.getBottom(), sound.getTop());
+                backgroundHeight = slot.getHeight();
+            } else {
+                shortcutHeight = slot.getHeight();
+                assertEquals(View.VISIBLE, qibla.getVisibility());
             assertEquals(qibla.getWidth(), qibla.getHeight());
             assertEquals(root.getWidth() / 2f, (qibla.getLeft() + qibla.getRight()) / 2f, 1f);
             assertTrue(slot.getBottom() <= qibla.getTop());
@@ -83,10 +90,12 @@ public final class AdhanPresentationFrameworkTest {
             Intent launched = Shadows.shadowOf(activity).getNextStartedActivity();
             assertEquals(CompassToolActivity.class.getName(), launched.getComponent().getClassName());
             assertEquals(CompassToolActivity.MODE_QIBLA, launched.getIntExtra(CompassToolActivity.EXTRA_START_MODE, -1));
+            }
             assertTrue(sound.getBottom() <= stop.getTop());
             assertTrue(stop.getBottom() <= root.getHeight());
             controller.pause().stop().destroy();
         }
+        assertTrue(backgroundHeight > shortcutHeight);
     }
 
     @Test public void notificationDisappearsOnScreenAndReturnsWithoutFullscreenIntent() {
