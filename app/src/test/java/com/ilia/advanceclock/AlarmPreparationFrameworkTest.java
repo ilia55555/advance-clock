@@ -26,7 +26,9 @@ public final class AlarmPreparationFrameworkTest {
     public static class FakePlayer {
         @RealObject private MediaPlayer real;
         static int created, started, released;
-        static boolean dataSourceOnMain;
+        static boolean dataSourceOnMain, deferPreparation;
+        static MediaPlayer.OnPreparedListener lastListener;
+        static MediaPlayer lastPlayer;
         private MediaPlayer.OnPreparedListener listener;
         @Implementation protected void __constructor__() { created++; }
         @Implementation protected void setAudioAttributes(AudioAttributes attributes) {}
@@ -34,12 +36,29 @@ public final class AlarmPreparationFrameworkTest {
         @Implementation protected void setDataSource(Context c, Uri uri) {
             dataSourceOnMain |= android.os.Looper.myLooper() == android.os.Looper.getMainLooper();
         }
-        @Implementation protected void setOnPreparedListener(MediaPlayer.OnPreparedListener value) { listener = value; }
+        @Implementation protected void setOnPreparedListener(MediaPlayer.OnPreparedListener value) {
+            listener = value;
+            if (value != null) { lastListener = value; lastPlayer = real; }
+        }
         @Implementation protected void setOnErrorListener(MediaPlayer.OnErrorListener value) {}
-        @Implementation protected void prepareAsync() { if (listener != null) listener.onPrepared(real); }
+        @Implementation protected void prepareAsync() { if (!deferPreparation && listener != null) listener.onPrepared(real); }
         @Implementation protected void setVolume(float left, float right) {}
         @Implementation protected void start() { started++; }
         @Implementation protected void release() { released++; }
+    }
+
+    @org.junit.Before public void resetAudioFixture() {
+        AlarmAudioEngine.stop();
+        drain();
+        FakePlayer.created = FakePlayer.started = FakePlayer.released = 0;
+        FakePlayer.dataSourceOnMain = FakePlayer.deferPreparation = false;
+        FakePlayer.lastListener = null;
+        FakePlayer.lastPlayer = null;
+    }
+
+    @org.junit.After public void releaseAudioFixture() {
+        AlarmAudioEngine.stop();
+        drain();
     }
 
     private Context init() {
@@ -49,6 +68,31 @@ public final class AlarmPreparationFrameworkTest {
         return c;
     }
     private void drain() { Shadows.shadowOf(AlarmAudioEngine.handler().getLooper()).idle(); }
+
+    @Test public void unusedWarmPlayerExpiresWithoutPlayback() {
+        Context c = init();
+        AlarmAudioEngine.prime(c, "clock:expire", "content://sounds/local", System.currentTimeMillis() + 5000);
+        drain();
+        assertEquals(1, FakePlayer.created);
+        Shadows.shadowOf(AlarmAudioEngine.handler().getLooper()).idleFor(java.time.Duration.ofSeconds(11));
+        assertEquals(1, FakePlayer.released);
+        assertEquals(0, FakePlayer.started);
+    }
+
+    @Test public void stoppingWhilePreparingRejectsLatePreparedCallback() {
+        Context c = init();
+        FakePlayer.deferPreparation = true;
+        AlarmAudioEngine.play(c, "clock:late", "content://sounds/local");
+        drain();
+        MediaPlayer.OnPreparedListener late = FakePlayer.lastListener;
+        MediaPlayer player = FakePlayer.lastPlayer;
+        assertNotNull(late);
+        AlarmAudioEngine.stop(); drain();
+        AlarmAudioEngine.handler().post(() -> late.onPrepared(player));
+        drain();
+        assertEquals(0, FakePlayer.started);
+        assertEquals(1, FakePlayer.released);
+    }
 
     @Test public void preparationIsSilentAndPreparedPlayerIsReusedOnlyWhenAlarmFires() {
         Context c = init();
