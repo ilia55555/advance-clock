@@ -12,6 +12,7 @@ public final class AlarmStore {
     private static final String KEY = "items_v1";
     // UI edits and asynchronous alarm receivers must share one read-modify-write lock.
     private static final Object LOCK = new Object();
+    static Object transactionLock() { return LOCK; }
     private final Context context;
 
     public AlarmStore(Context context) {
@@ -31,14 +32,14 @@ public final class AlarmStore {
             } catch (Exception ignored) {}
             ScheduleOrder.alarms(out, System.currentTimeMillis());
             return out;
-                }
+        }
     }
 
     public AlarmItem find(long id) {
         synchronized (LOCK) {
             for (AlarmItem item : all()) if (item.id == id) return item;
             return null;
-                }
+        }
     }
 
     public void save(AlarmItem item) {
@@ -54,7 +55,7 @@ public final class AlarmStore {
             }
             if (!replaced) items.add(item);
             write(items);
-                }
+        }
     }
 
     public void delete(long id) {
@@ -62,7 +63,7 @@ public final class AlarmStore {
             List<AlarmItem> items = all();
             items.removeIf(item -> item.id == id);
             write(items);
-                }
+        }
     }
 
     public List<AlarmItem> upcoming(int limit) {
@@ -74,7 +75,7 @@ public final class AlarmStore {
                 if (out.size() >= limit) break;
             }
             return out;
-                }
+        }
     }
 
     public int deleteExpired(long now) {
@@ -91,7 +92,7 @@ public final class AlarmStore {
                 context.sendBroadcast(new android.content.Intent(ACTION_CHANGED).setPackage(context.getPackageName()));
             }
             return before - items.size();
-                }
+        }
     }
 
     private void write(List<AlarmItem> items) {

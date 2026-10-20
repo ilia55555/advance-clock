@@ -14,16 +14,18 @@ public final class AlarmReminderReceiver extends BroadcastReceiver {
     }
 
     private void dispatch(Context context, Intent intent) {
-        if (intent == null) return;
-        long alarmId = intent.getLongExtra("alarmId", -1L);
-        int minutes = intent.getIntExtra("delayMinutes", 0);
-        long occurrence = intent.getLongExtra("firedAtMillis", 0L);
-        AlarmItem item = new AlarmStore(context).find(alarmId);
-        if (!AppSettings.alarmReminderNotificationsEnabled(context)
-                || !AlarmReminderUtils.isScheduledReminder(item, occurrence, minutes)) return;
+        synchronized (AlarmStore.transactionLock()) {
+            if (intent == null) return;
+            long alarmId = intent.getLongExtra("alarmId", -1L);
+            int minutes = intent.getIntExtra("delayMinutes", 0);
+            long occurrence = intent.getLongExtra("firedAtMillis", 0L);
+            AlarmItem item = new AlarmStore(context).find(alarmId);
+            if (!AppSettings.alarmReminderNotificationsEnabled(context)
+                    || !AlarmReminderUtils.isScheduledReminder(item, occurrence, minutes)) return;
 
-        // Use exactly the same sound, vibration, fullscreen UI and attachments as the primary alarm.
-        // POST_NOTIFICATIONS controls notification visibility, not alarm audio playback.
-        AlarmSoundService.ring(context, item);
+            // Use exactly the same sound, vibration, fullscreen UI and attachments as the primary alarm.
+            // POST_NOTIFICATIONS controls notification visibility, not alarm audio playback.
+            AlarmSoundService.ring(context, item);
+        }
     }
 }

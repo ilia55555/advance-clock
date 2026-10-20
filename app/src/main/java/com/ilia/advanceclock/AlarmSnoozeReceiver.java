@@ -13,12 +13,14 @@ public final class AlarmSnoozeReceiver extends BroadcastReceiver {
     }
 
     private void dispatch(Context context, Intent intent) {
-        long alarmId = intent.getLongExtra("alarmId", -1L);
-        AlarmItem item = new AlarmStore(context).find(alarmId);
-        if (item == null) return;
+        synchronized (AlarmStore.transactionLock()) {
+            long alarmId = intent.getLongExtra("alarmId", -1L);
+            AlarmItem item = new AlarmStore(context).find(alarmId);
+            if (item == null) return;
 
-        AlarmSoundService.ring(context, item);
-        item.pendingSnoozeAtMillis = 0L;
-        new AlarmStore(context).save(item);
+            AlarmSoundService.ring(context, item);
+            item.pendingSnoozeAtMillis = 0L;
+            new AlarmStore(context).save(item);
+        }
     }
 }
