@@ -56,6 +56,7 @@ public final class AlarmScheduler {
             manager.setAlarmClock(
                     new AlarmManager.AlarmClockInfo(item.triggerAtMillis, show),
                     operation);
+            AlarmPreparationReceiver.schedule(context, AlarmPreparationReceiver.CLOCK, item.id, item.triggerAtMillis);
             return true;
         } catch (SecurityException e) {
             return false;
@@ -120,6 +121,7 @@ public final class AlarmScheduler {
             manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, when, operation);
             item.pendingSnoozeAtMillis = when;
             new AlarmStore(context).save(item);
+            AlarmPreparationReceiver.schedule(context, AlarmPreparationReceiver.CLOCK, item.id, when);
             return true;
         } catch (SecurityException error) { return false; }
     }
@@ -158,6 +160,7 @@ public final class AlarmScheduler {
     }
 
     private static void cancelPrimary(Context context, long id) {
+        AlarmPreparationReceiver.cancel(context, AlarmPreparationReceiver.CLOCK, id);
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager != null) manager.cancel(alarmPendingIntent(context, id));
     }

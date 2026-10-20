@@ -24,7 +24,15 @@ public final class AlarmRingActivity extends Activity {
         toolKind = intent == null ? null : intent.getStringExtra("toolKind");
         label = intent == null ? "" : intent.getStringExtra("label");
         boolean tool = ToolAlarmScheduler.TIMER.equals(toolKind) || ToolAlarmScheduler.STOPWATCH.equals(toolKind);
-        AlarmItem item = new AlarmStore(this).find(alarmId);
+        AlarmItem item = null;
+        if (!tool) {
+            String payload = intent == null ? null : intent.getStringExtra("alarmPayload");
+            if (payload != null) try {
+                AlarmItem snapshot = AlarmItem.fromJson(new org.json.JSONObject(payload));
+                if (snapshot.id == alarmId) item = snapshot;
+            } catch (org.json.JSONException ignored) {}
+            if (item == null) item = new AlarmStore(this).find(alarmId);
+        }
         ReminderScreen.Content data = new ReminderScreen.Content();
         data.title = label == null || label.trim().isEmpty() ? getString(R.string.runtime_text_0019) : label;
         data.body = getString(tool ? ToolAlarmScheduler.TIMER.equals(toolKind) ? R.string.runtime_text_0584 : R.string.runtime_text_0585 : R.string.runtime_text_0586);

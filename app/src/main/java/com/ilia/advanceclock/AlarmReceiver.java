@@ -6,6 +6,13 @@ import android.content.Intent;
 
 public final class AlarmReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context context, Intent intent) {
+        if (intent == null) return;
+        Context application = context.getApplicationContext();
+        PendingResult pending = goAsync();
+        AlarmReceiverWork.execute(pending, () -> dispatch(application, intent));
+    }
+
+    private void dispatch(Context context, Intent intent) {
         long id = intent.getLongExtra("alarmId", -1L);
         AlarmStore store = new AlarmStore(context);
         AlarmItem item = store.find(id);

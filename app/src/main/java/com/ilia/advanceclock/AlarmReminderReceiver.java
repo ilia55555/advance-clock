@@ -8,6 +8,13 @@ import android.content.Intent;
 public final class AlarmReminderReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context context, Intent intent) {
         if (intent == null) return;
+        Context application = context.getApplicationContext();
+        PendingResult pending = goAsync();
+        AlarmReceiverWork.execute(pending, () -> dispatch(application, intent));
+    }
+
+    private void dispatch(Context context, Intent intent) {
+        if (intent == null) return;
         long alarmId = intent.getLongExtra("alarmId", -1L);
         int minutes = intent.getIntExtra("delayMinutes", 0);
         long occurrence = intent.getLongExtra("firedAtMillis", 0L);

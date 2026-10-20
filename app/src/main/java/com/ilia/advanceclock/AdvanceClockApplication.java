@@ -17,6 +17,12 @@ import java.util.WeakHashMap;
 public final class AdvanceClockApplication extends Application {
     private static final WeakHashMap<Activity, Boolean> OPEN_ACTIVITIES = new WeakHashMap<>();
     private static boolean refreshScheduled;
+    private static java.lang.ref.WeakReference<Activity> resumedActivity = new java.lang.ref.WeakReference<>(null);
+
+    static boolean hasResumedActivity() {
+        Activity activity = resumedActivity.get();
+        return activity != null && !activity.isFinishing() && !activity.isDestroyed();
+    }
 
     @Override protected void attachBaseContext(Context base) {
         super.attachBaseContext(AppSettings.localizedContext(base));
@@ -37,12 +43,15 @@ public final class AdvanceClockApplication extends Application {
             }
 
             @Override public void onActivityResumed(Activity activity) {
+                resumedActivity = new java.lang.ref.WeakReference<>(activity);
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
             }
 
             @Override public void onActivityStarted(Activity activity) {}
-            @Override public void onActivityPaused(Activity activity) {}
+            @Override public void onActivityPaused(Activity activity) {
+                if (resumedActivity.get() == activity) resumedActivity.clear();
+            }
             @Override public void onActivityStopped(Activity activity) {}
             @Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
             @Override public void onActivityDestroyed(Activity activity) {

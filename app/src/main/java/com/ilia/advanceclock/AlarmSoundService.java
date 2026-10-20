@@ -27,7 +27,7 @@ public final class AlarmSoundService extends Service {
     public static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_ALARM";
 
     private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
-    private MediaPlayer player;
+    private String currentToolKind, currentAlarmPayload;
     private Vibrator vibrator;
     private PowerManager.WakeLock wakeLock;
     private long currentAlarmId = -1L;
@@ -74,6 +74,10 @@ public final class AlarmSoundService extends Service {
 
     static void ring(Context context, AlarmItem item) {
         Intent service = startIntent(context, item.id, item.label, item.vibrate, item.soundUri);
+        try {
+            String payload = item.toJson().toString();
+            if (payload.length() <= 64_000) service.putExtra("alarmPayload", payload);
+        } catch (org.json.JSONException ignored) {}
         long previous = ringingAlarmId;
         ringingAlarmId = item.id;
         try {
@@ -151,11 +155,14 @@ public final class AlarmSoundService extends Service {
         currentSoundUri = intent.getStringExtra("soundUri");
         String label = intent.getStringExtra("label");
         String toolKind = intent.getStringExtra("toolKind");
+        currentToolKind = toolKind;
+        currentAlarmPayload = intent.getStringExtra("alarmPayload");
 
         startForeground(
                 NotificationHelper.notificationId(currentAlarmId),
                 buildNotification(currentAlarmId, label, toolKind)
         );
+        openScreenIfAppVisible(currentAlarmId, label, toolKind);
         ringTimeout.start(this, () -> {
             AlarmRingActivity.finishIfShowing(currentAlarmId);
             stopAlarm();
@@ -176,6 +183,7 @@ public final class AlarmSoundService extends Service {
                 .putExtra("alarmId", id)
                 .putExtra("label", label)
                 .putExtra("toolKind", toolKind)
+                .putExtra("alarmPayload", currentAlarmPayload)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -211,13 +219,29 @@ public final class AlarmSoundService extends Service {
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(AppSettings.notificationVisibility(this))
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentIntent(fullScreen)
                 .addAction(new Notification.Action.Builder(
                         null, AppString.get(R.string.runtime_text_0406), stopAction).build());
+        if (Build.VERSION.SDK_INT >= 31)
+            builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         if (shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
         return builder.build();
+    }
+
+    private void openScreenIfAppVisible(long id, String label, String toolKind) {
+        if (!AdvanceClockApplication.hasResumedActivity() || !shouldOpenFullscreen()) return;
+        try {
+            startActivity(new Intent(this, AlarmRingActivity.class)
+                    .putExtra("alarmId", id).putExtra("label", label).putExtra("toolKind", toolKind)
+                    .putExtra("alarmPayload", currentAlarmPayload)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        } catch (RuntimeException ignored) {
+            // Keep the full-screen notification as the system-controlled fallback.
+        }
     }
 
     private boolean shouldOpenFullscreen() {
@@ -228,45 +252,21 @@ public final class AlarmSoundService extends Service {
     }
 
     private void startSound() {
-        stopPlayer();
         muted = false;
-        try {
-            Uri uri = currentSoundUri == null || currentSoundUri.isEmpty()
-                    ? Uri.parse(AppSettings.defaultAlarmSoundUri(this))
-                    : Uri.parse(currentSoundUri);
-            if (uri == null || uri.toString().isEmpty())
-                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            if (uri == null) uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-
-            player = new MediaPlayer();
-            player.setAudioAttributes(new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build());
-            player.setDataSource(this, uri);
-            player.setLooping(true);
-            player.prepare();
-            player.setVolume(muted ? 0f : 1f, muted ? 0f : 1f);
-            player.start();
-        } catch (Exception ignored) {
-            stopPlayer();
-        }
+        String kind = ToolAlarmScheduler.TIMER.equals(currentToolKind)
+                || ToolAlarmScheduler.STOPWATCH.equals(currentToolKind)
+                ? currentToolKind : AlarmPreparationReceiver.CLOCK;
+        AlarmAudioEngine.play(this, AlarmPreparationReceiver.key(kind, currentAlarmId), currentSoundUri);
     }
 
     private void muteCurrentAlarm() {
         muted = true;
-        try {
-            if (player != null) player.setVolume(0f, 0f);
-        } catch (Exception ignored) {
-        }
+        AlarmAudioEngine.mute(true);
     }
 
     private void unmuteCurrentAlarm() {
         muted = false;
-        try {
-            if (player != null) player.setVolume(1f, 1f);
-        } catch (Exception ignored) {
-        }
+        AlarmAudioEngine.mute(false);
     }
 
     private void startVibration() {
@@ -329,15 +329,7 @@ public final class AlarmSoundService extends Service {
     }
 
     private void stopPlayer() {
-        try {
-            if (player != null) player.stop();
-        } catch (Exception ignored) {
-        }
-        try {
-            if (player != null) player.release();
-        } catch (Exception ignored) {
-        }
-        player = null;
+        AlarmAudioEngine.stop();
     }
 
     @Override public void onDestroy() {

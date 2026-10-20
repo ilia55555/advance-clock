@@ -207,6 +207,7 @@
             android:name=".DateNotificationService"
             android:exported="false" />
 
+        <receiver android:name=".AlarmPreparationReceiver" android:exported="false" />
         <receiver android:name=".AlarmReceiver" android:exported="false" />
         <receiver android:name=".WidgetPinnedReceiver" android:exported="false" />
         <receiver android:name=".ToolAlarmReceiver" android:exported="false" />

@@ -41,6 +41,7 @@ public final class ToolAlarmScheduler {
                         .putBoolean(kind + "_active_background", prefs.getBoolean(kind + "_background", false));
             }
             edit.putLong(kind + "_deadline", deadline).putString(kind + "_label", label).apply();
+            AlarmPreparationReceiver.schedule(context, kind, alarmId(kind), deadline);
             return true;
         } catch (SecurityException ignored) {
             return false;
@@ -48,6 +49,7 @@ public final class ToolAlarmScheduler {
     }
 
     public static void cancel(Context context, String kind) {
+        AlarmPreparationReceiver.cancel(context, kind, alarmId(kind));
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager != null) manager.cancel(pendingIntent(context, kind));
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
