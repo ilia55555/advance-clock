@@ -301,7 +301,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void updateStatus() {
-        if (status == null || compassView == null || rotationSensor == null) return;
+        if (status == null || compassView == null) return;
         float heading = compassView.azimuth;
         if (selectedMode == MODE_QIBLA) {
             if (qiblaLocation == null) {
@@ -320,6 +320,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             status.setText(AppString.get(R.string.runtime_text_0327)
                     + Math.round(heading) + "°");
         }
+        String source = QiblaUtils.sourceLabel(qiblaLocation);
+        if (!source.isEmpty()) status.setText(source + "\n" + status.getText());
     }
 
     private double qiblaBearing() {

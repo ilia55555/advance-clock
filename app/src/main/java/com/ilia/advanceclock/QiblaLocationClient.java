@@ -182,7 +182,8 @@ public final class QiblaLocationClient {
     }
 
     private boolean isUsable(Location location) {
-        if (location == null) return false;
+        if (location == null || (!"prayer-horizon".equals(location.getProvider())
+                && !QiblaUtils.isRecent(location))) return false;
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         return !Double.isNaN(latitude)

@@ -179,9 +179,7 @@ public final class AdhanRingActivity
         qiblaLocation =
                 QiblaUtils.bestKnownLocation(this);
         if (qiblaLocation != null) {
-            qiblaBackgroundView.setLocation(
-                    qiblaLocation.getLatitude(),
-                    qiblaLocation.getLongitude());
+            qiblaBackgroundView.setLocation(qiblaLocation);
         }
 
         liveQiblaEnabled = true;
@@ -383,9 +381,7 @@ public final class AdhanRingActivity
                 location.getLongitude());
 
         if (qiblaBackgroundView != null) {
-            qiblaBackgroundView.setLocation(
-                    location.getLatitude(),
-                    location.getLongitude());
+            qiblaBackgroundView.setLocation(location);
         }
     }
 

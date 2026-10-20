@@ -1272,4 +1272,8 @@
     <string name="media_fullscreen_photo">صورة بملء الشاشة</string>
     <string name="media_empty">لم تتم إضافة صور أو ملفات أو تطبيقات أو روابط بعد</string>
     <string name="duration_too_large">هذه المدة أكبر من قدرة الجهاز على الجدولة</string>
+    <string name="qibla_city_source">قبلة مدينة %1$s</string>
+    <string name="grant_notifications">السماح بالإشعارات</string>
+    <string name="grant_exact_alarms">السماح بالمنبهات الدقيقة</string>
+    <string name="grant_fullscreen">السماح بالتنبيهات بملء الشاشة</string>
 </resources>

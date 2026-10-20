@@ -907,4 +907,8 @@ Sperrbildschirm</string>
     <string name="settings_section_calendar">Kalender und Ereignisse</string>
     <string name="settings_section_alarms">Alarme</string>
     <string name="apply_alarm_date">Datum berücksichtigen</string>
+    <string name="qibla_city_source">Gebetsrichtung für %1$s</string>
+    <string name="grant_notifications">Benachrichtigungen erlauben</string>
+    <string name="grant_exact_alarms">Genaue Alarme erlauben</string>
+    <string name="grant_fullscreen">Vollbildalarme erlauben</string>
 </resources>

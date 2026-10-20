@@ -907,4 +907,8 @@ Kilit ekranı</string>
     <string name="settings_section_calendar">Takvim ve etkinlikler</string>
     <string name="settings_section_alarms">Uyarılar</string>
     <string name="apply_alarm_date">Tarihi uygula</string>
+    <string name="qibla_city_source">%1$s için kıble</string>
+    <string name="grant_notifications">Bildirimlere izin ver</string>
+    <string name="grant_exact_alarms">Kesin alarmlara izin ver</string>
+    <string name="grant_fullscreen">Tam ekran uyarılara izin ver</string>
 </resources>

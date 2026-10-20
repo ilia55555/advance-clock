@@ -27,6 +27,8 @@ public final class NotificationSettingsActivity extends Activity {
     private Switch alarmFullscreenUnlocked;
     private Switch alarmFullscreenLocked;
     private boolean permissionRequestInFlight;
+    private Button notificationPermissionButton, exactPermissionButton, fullscreenPermissionButton;
+    private boolean hadExactPermission;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -81,6 +83,30 @@ public final class NotificationSettingsActivity extends Activity {
         label.setPadding(0, dp(14), 0, dp(8));
         root.addView(label);
 
+        notificationPermissionButton = permissionButton(root, R.string.grant_notifications, () -> {
+            if (Build.VERSION.SDK_INT >= 33
+                    && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                    && !getSharedPreferences("feature_permissions", 0).getBoolean("notifications_requested", false)) {
+                getSharedPreferences("feature_permissions", 0).edit().putBoolean("notifications_requested", true).apply();
+                permissionRequestInFlight = true;
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQ_POST_NOTIFICATIONS);
+            } else {
+                startActivity(new android.content.Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, getPackageName()));
+            }
+        });
+        exactPermissionButton = permissionButton(root, R.string.grant_exact_alarms, () -> {
+            if (Build.VERSION.SDK_INT >= 31) startActivity(new android.content.Intent(
+                    android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                    android.net.Uri.parse("package:" + getPackageName())));
+        });
+        fullscreenPermissionButton = permissionButton(root, R.string.grant_fullscreen, () -> {
+            if (Build.VERSION.SDK_INT >= 34) startActivity(new android.content.Intent(
+                    android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                    android.net.Uri.parse("package:" + getPackageName())));
+        });
+        hadExactPermission = PermissionHelper.exactAlarmsGranted(this);
+
         persistentDate = addSwitch(
                 root,
                 AppString.get(R.string.runtime_text_0071),
@@ -127,7 +153,7 @@ public final class NotificationSettingsActivity extends Activity {
 
         persistentDate.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
-                    persistentExtraCalendars.setEnabled(isChecked);
+                    persistentExtraCalendars.setEnabled(isChecked && PermissionHelper.notificationsGranted(this));
                     persistentExtraCalendars.setAlpha(
                             isChecked ? 1f : 0.5f);
                     saveSettings();
@@ -151,6 +177,52 @@ public final class NotificationSettingsActivity extends Activity {
         setContentView(scroll);
         AppSettings.applyFullscreenInsets(scroll);
         AppSettings.playFullscreenEnter(this);
+    }
+
+    private Button permissionButton(LinearLayout root, int label, Runnable action) {
+        Button button = new Button(this);
+        button.setText(AppString.get(label));
+        button.setAllCaps(false);
+        button.setOnClickListener(v -> {
+            try { action.run(); } catch (RuntimeException ignored) {
+                startActivity(new android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        android.net.Uri.parse("package:" + getPackageName())));
+            }
+        });
+        root.addView(button, new LinearLayout.LayoutParams(-1, -2));
+        return button;
+    }
+
+    private void refreshPermissionState() {
+        boolean notifications = PermissionHelper.notificationsGranted(this);
+        notificationPermissionButton.setVisibility(notifications ? View.GONE : View.VISIBLE);
+        boolean exact = PermissionHelper.exactAlarmsGranted(this);
+        exactPermissionButton.setVisibility(exact ? View.GONE : View.VISIBLE);
+        boolean fullscreen = notifications && PermissionHelper.fullScreenGranted(this);
+        fullscreenPermissionButton.setVisibility(notifications && !fullscreen ? View.VISIBLE : View.GONE);
+        Switch[] notificationControls = {persistentDate, alarmReminders, noteReminders, lockscreenDetails};
+        for (Switch control : notificationControls) {
+            control.setEnabled(notifications);
+            control.setAlpha(notifications ? 1f : .5f);
+        }
+        persistentExtraCalendars.setEnabled(notifications && persistentDate.isChecked());
+        persistentExtraCalendars.setAlpha(persistentExtraCalendars.isEnabled() ? 1f : .5f);
+        for (Switch control : new Switch[]{alarmFullscreenUnlocked, alarmFullscreenLocked}) {
+            control.setEnabled(fullscreen);
+            control.setAlpha(fullscreen ? 1f : .5f);
+        }
+        if (!hadExactPermission && exact) {
+            AlarmScheduler.rescheduleAll(this);
+            NoForgetScheduler.rescheduleAll(this);
+            AdhanScheduler.rescheduleAll(this);
+        }
+        hadExactPermission = exact;
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        refreshPermissionState();
+        applyPersistentNotificationState();
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
@@ -275,6 +347,7 @@ public final class NotificationSettingsActivity extends Activity {
         }
 
         permissionRequestInFlight = false;
+        refreshPermissionState();
         applyPersistentNotificationState();
         setResult(RESULT_OK);
     }

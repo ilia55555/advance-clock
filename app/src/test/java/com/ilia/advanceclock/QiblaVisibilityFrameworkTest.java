@@ -41,7 +41,8 @@ public final class QiblaVisibilityFrameworkTest {
     @Test public void everyCompassModeDrawsQiblaWhenLocationIsKnown() throws Exception {
         Context context = RuntimeEnvironment.getApplication();
         AppString.init(context);
-        QiblaUtils.remember(context, 35.6892, 51.3890);
+        context.getSharedPreferences("advance_clock_settings", 0).edit()
+                .putString("prayer_horizons", "[{\"label\":\"Tehran\",\"lat\":35.6892,\"lon\":51.3890,\"zone\":\"Asia/Tehran\"}]").commit();
         for (int mode = 0; mode <= 2; mode++) {
             Intent intent = new Intent(context, CompassToolActivity.class)
                     .putExtra(CompassToolActivity.EXTRA_START_MODE, mode);

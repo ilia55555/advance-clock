@@ -104,37 +104,20 @@ public final class QiblaUtils {
             return live;
         }
 
-        SharedPreferences prefs =
-                context.getSharedPreferences(
-                        PREFS,
-                        Context.MODE_PRIVATE);
-        if (prefs.getBoolean(KEY_HAS, false)) {
-            try {
-                Location stored =
-                        new Location("qibla-cache");
-                stored.setLatitude(
-                        Double.parseDouble(
-                                prefs.getString(
-                                        KEY_LAT,
-                                        "0")));
-                stored.setLongitude(
-                        Double.parseDouble(
-                                prefs.getString(
-                                        KEY_LON,
-                                        "0")));
-                return stored;
-            } catch (Exception ignored) {
+        // A saved city is the fallback, never an old device fix from another trip.
+        java.util.List<AppSettings.PrayerHorizon> horizons = AppSettings.prayerHorizons(context);
+        if (!horizons.isEmpty()) {
+            AppSettings.PrayerHorizon first = horizons.get(0);
+            if (Double.isFinite(first.latitude) && Double.isFinite(first.longitude)
+                    && Math.abs(first.latitude) <= 90 && Math.abs(first.longitude) <= 180) {
+                Location city = new Location("prayer-horizon");
+                city.setLatitude(first.latitude);
+                city.setLongitude(first.longitude);
+                android.os.Bundle source = new android.os.Bundle();
+                source.putString("qibla_city", first.label);
+                city.setExtras(source);
+                return city;
             }
-        }
-
-        if (AppSettings.prayerLocationSet(context)) {
-            Location prayer =
-                    new Location("prayer-location");
-            prayer.setLatitude(
-                    AppSettings.prayerLatitude(context));
-            prayer.setLongitude(
-                    AppSettings.prayerLongitude(context));
-            return prayer;
         }
 
         return null;
@@ -210,6 +193,18 @@ public final class QiblaUtils {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
+    static boolean isRecent(Location value) {
+        if (value == null) return false;
+        long age = android.os.SystemClock.elapsedRealtimeNanos() - value.getElapsedRealtimeNanos();
+        return value.getElapsedRealtimeNanos() > 0 && age >= 0 && age <= 120_000_000_000L;
+    }
+
+    static String sourceLabel(Location location) {
+        if (location == null || location.getExtras() == null) return "";
+        String city = location.getExtras().getString("qibla_city", "");
+        return city.isEmpty() ? "" : AppString.get(R.string.qibla_city_source, city);
+    }
+
     @SuppressWarnings("MissingPermission")
     private static Location lastKnownLocation(
             Context context) {
@@ -233,7 +228,7 @@ public final class QiblaUtils {
             try {
                 Location value =
                         manager.getLastKnownLocation(provider);
-                if (value == null) continue;
+                if (!isRecent(value)) continue;
                 if (best == null
                         || value.getTime() > best.getTime()
                         || value.getAccuracy()

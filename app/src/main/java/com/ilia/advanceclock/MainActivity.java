@@ -212,7 +212,6 @@ public final class MainActivity extends Activity {
 
         android.content.SharedPreferences appPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         boolean setupDone = appPrefs.getBoolean(INITIAL_SETUP, false);
-        boolean onboardingDone = appPrefs.getBoolean(PERMISSION_ONBOARDING, false);
         if (!setupDone) {
             getWindow().getDecorView().postDelayed(() ->
                     FirstRunSetupDialog.show(this, languageChanged -> {
@@ -220,10 +219,7 @@ public final class MainActivity extends Activity {
                         if (languageChanged) {
                             AdvanceClockApplication.restartForLanguage(this);
                         }
-                        else if (!onboardingDone) startPermissionFlow();
                     }), 300);
-        } else if (!onboardingDone) {
-            getWindow().getDecorView().postDelayed(this::startPermissionFlow, 450);
         }
 
     }
@@ -375,7 +371,6 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
             menu.getMenu().add(0, 6, 4, AppString.get(R.string.runtime_text_0108));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
-            menu.getMenu().add(0, 3, 6, AppString.get(R.string.runtime_text_0109));
             menu.getMenu().add(0, 9, 7, getString(R.string.about_title));
             menu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == 1) {
@@ -405,10 +400,6 @@ public final class MainActivity extends Activity {
                 }
                 if (item.getItemId() == 8) {
                     ToolsDialog.show(this);
-                    return true;
-                }
-                if (item.getItemId() == 3) {
-                    startPermissionFlow();
                     return true;
                 }
                 if (item.getItemId() == 9) {
@@ -1667,8 +1658,7 @@ public final class MainActivity extends Activity {
                 startActivity(new Intent(this, AlarmEditorActivity.class)
                         .putExtra("alarmId", item.id)));
 
-        Button delete = actionButton(AppString.get(R.string.runtime_text_0006));
-        ButtonStyles.destructive(delete);
+        ImageButton delete = deleteIconButton();
         delete.setOnClickListener(v -> {
             AlarmScheduler.cancel(this, item.id);
             new AlarmStore(this).delete(item.id);
@@ -1677,6 +1667,7 @@ public final class MainActivity extends Activity {
         });
 
         actions.addView(enabled);
+        actions.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
         actions.addView(edit);
         actions.addView(delete);
         card.addView(actions);
@@ -1781,8 +1772,7 @@ public final class MainActivity extends Activity {
                 startActivity(new Intent(this, NoForgetEditorActivity.class)
                         .putExtra("noteId", item.id)));
 
-        Button delete = actionButton(AppString.get(R.string.runtime_text_0006));
-        ButtonStyles.destructive(delete);
+        ImageButton delete = deleteIconButton();
         delete.setOnClickListener(v -> {
             NoForgetScheduler.cancel(this, item.id);
             new NoForgetStore(this).delete(item.id);
@@ -1790,6 +1780,7 @@ public final class MainActivity extends Activity {
             renderNoForget();
         });
 
+        actions.addView(new View(this), 0, new LinearLayout.LayoutParams(0, 1, 1f));
         actions.addView(edit);
         actions.addView(delete);
         card.addView(actions);
@@ -1857,9 +1848,20 @@ public final class MainActivity extends Activity {
     private LinearLayout actionRow() {
         LinearLayout actions = new LinearLayout(this);
         actions.setOrientation(LinearLayout.HORIZONTAL);
-        actions.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        actions.setGravity(Gravity.START);
+        actions.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        actions.setGravity(Gravity.CENTER_VERTICAL);
+        actions.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
         return actions;
+    }
+
+    private ImageButton deleteIconButton() {
+        ImageButton button = new ImageButton(this);
+        button.setImageResource(R.drawable.ic_delete_alarm);
+        button.setContentDescription(AppString.get(R.string.runtime_text_0006));
+        button.setBackgroundResource(R.drawable.bg_delete_button);
+        button.setPadding(dp(12), dp(12), dp(12), dp(12));
+        button.setLayoutParams(new LinearLayout.LayoutParams(dp(48), dp(48)));
+        return button;
     }
 
     private Button actionButton(String text) {

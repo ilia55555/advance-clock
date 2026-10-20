@@ -10,6 +10,7 @@ public final class QiblaAdhanBackgroundView extends View {
     private final QiblaMarker marker;
     private final String[] directionLabels;
 
+    private String sourceLabel = "";
     private float azimuth;
     private float qiblaBearing;
     private boolean hasQiblaBearing;
@@ -31,15 +32,20 @@ public final class QiblaAdhanBackgroundView extends View {
         android.location.Location location =
                 QiblaUtils.bestKnownLocation(context);
         if (location != null) {
-            setLocation(
-                    location.getLatitude(),
-                    location.getLongitude());
+            setLocation(location);
         }
+    }
+
+    public void setLocation(android.location.Location location) {
+        setLocation(location.getLatitude(), location.getLongitude());
+        sourceLabel = QiblaUtils.sourceLabel(location);
+        invalidate();
     }
 
     public void setLocation(
             double latitude,
             double longitude) {
+        sourceLabel = "";
         qiblaBearing =
                 (float) QiblaUtils.bearing(
                         latitude,
@@ -200,6 +206,16 @@ public final class QiblaAdhanBackgroundView extends View {
 
         paint.setAlpha(255);
         paint.setFakeBoldText(false);
+        if (!sourceLabel.isEmpty()) {
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(QiblaMarker.GOLD);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(dp(14));
+            float textWidth = paint.measureText(sourceLabel);
+            float available = Math.max(1f, getWidth() - dp(24));
+            if (textWidth > available) paint.setTextSize(paint.getTextSize() * available / textWidth);
+            canvas.drawText(sourceLabel, cx, Math.min(getHeight() - dp(8), cy + radius + dp(28)), paint);
+        }
         if (!hasQiblaBearing) {
             marker.drawPending(canvas, cx, cy, radius);
         }

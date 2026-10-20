@@ -907,4 +907,8 @@
     <string name="settings_section_calendar">Календарь и события</string>
     <string name="settings_section_alarms">Оповещения</string>
     <string name="apply_alarm_date">Учитывать дату</string>
+    <string name="qibla_city_source">Кибла для %1$s</string>
+    <string name="grant_notifications">Разрешить уведомления</string>
+    <string name="grant_exact_alarms">Разрешить точные будильники</string>
+    <string name="grant_fullscreen">Разрешить полноэкранные оповещения</string>
 </resources>

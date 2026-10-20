@@ -11,8 +11,10 @@ public final class PermissionHelper {
     private PermissionHelper() {}
 
     public static boolean notificationsGranted(Context context) {
-        return Build.VERSION.SDK_INT < 33
+        boolean runtime = Build.VERSION.SDK_INT < 33
                 || context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        return runtime && (manager == null || manager.areNotificationsEnabled());
     }
 
     public static boolean exactAlarmsGranted(Context context) {
