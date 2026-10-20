@@ -14,6 +14,43 @@ final class TabMotion {
     private String selected;
     private int generation;
     private View blocker;
+    private ValueAnimator animator;
+    interface ProgressListener { void update(String from, String to, float progress); }
+    private ProgressListener progressListener;
+
+    void setProgressListener(ProgressListener listener) { progressListener = listener; }
+
+    private void progress(String from, String to, float fraction) {
+        if (progressListener != null) progressListener.update(from, to, fraction);
+    }
+
+    private void cancelAnimation() {
+        if (animator != null) {
+            animator.removeAllListeners();
+            animator.cancel();
+            animator = null;
+        }
+    }
+
+    private void animatePages(String from, String to, View outgoing, View incoming,
+            float distance, float start, float end, long duration, Runnable complete) {
+        animator = ValueAnimator.ofFloat(start, end);
+        animator.setDuration(duration);
+        animator.setInterpolator(new PathInterpolator(.22f, .61f, .36f, 1f));
+        animator.addUpdateListener(animation -> {
+            float offset = (float) animation.getAnimatedValue();
+            outgoing.setTranslationX(offset);
+            incoming.setTranslationX(distance + offset);
+            progress(from, to, -offset / distance);
+        });
+        animator.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(android.animation.Animator animation) {
+                animator = null;
+                complete.run();
+            }
+        });
+        animator.start();
+    }
 
     private void unblock() {
         if (blocker != null && blocker.getParent() instanceof android.view.ViewGroup)
@@ -28,6 +65,7 @@ final class TabMotion {
         selected = tab;
         int token = ++generation;
         unblock();
+        cancelAnimation();
         for (View panel : panels.values()) {
             panel.animate().cancel();
             panel.setTranslationX(0); panel.setAlpha(1);
@@ -46,7 +84,8 @@ final class TabMotion {
             panel.setImportantForAccessibility(panel == incoming
                     ? View.IMPORTANT_FOR_ACCESSIBILITY_AUTO : View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
-        if (!moving) return;
+        if (!moving) { progress(tab, tab, 1); return; }
+        progress(previous, tab, 0);
         if (incoming.getParent() instanceof android.view.ViewGroup) {
             blocker = new View(incoming.getContext());
             blocker.setClickable(true);
@@ -58,10 +97,8 @@ final class TabMotion {
         incoming.setTranslationX(distance);
         incoming.postOnAnimation(() -> {
             if (token != generation) return;
-            PathInterpolator curve = new PathInterpolator(.22f, .61f, .36f, 1f);
-            outgoing.animate().translationX(-distance).setDuration(300).setInterpolator(curve).start();
-            incoming.animate().translationX(0).setDuration(300).setInterpolator(curve)
-                    .withEndAction(() -> { if (token == generation) finish(); }).start();
+            animatePages(previous, tab, outgoing, incoming, distance, 0, -distance, 300,
+                    () -> { if (token == generation) finish(); });
         });
     }
 
@@ -75,6 +112,7 @@ final class TabMotion {
         if (incoming == null || outgoing == null || incoming == outgoing) return false;
         int width = ((View) outgoing.getParent()).getWidth();
         if (width <= 0) return false;
+        dragOffset = 0;
         dragTarget = target;
         dragDistance = deltaX < 0 ? width : -width;
         warmed.add(target);
@@ -89,6 +127,7 @@ final class TabMotion {
                 : Math.min(-dragDistance, Math.max(0, deltaX));
         panels.get(selected).setTranslationX(dragOffset);
         panels.get(dragTarget).setTranslationX(dragDistance + dragOffset);
+        progress(selected, dragTarget, -dragOffset / dragDistance);
     }
 
     void release(boolean cancel, float velocity, Runnable committed) {
@@ -102,22 +141,27 @@ final class TabMotion {
         int token = ++generation;
         float end = commit ? -dragDistance : 0;
         long duration = (long) (180 + 140 * Math.abs(end - dragOffset) / Math.abs(dragDistance));
-        PathInterpolator curve = new PathInterpolator(.22f, .61f, .36f, 1f);
-        outgoing.animate().translationX(end).setDuration(duration).setInterpolator(curve).start();
-        incoming.animate().translationX(dragDistance + end).setDuration(duration).setInterpolator(curve)
-                .withEndAction(() -> {
-                    if (token != generation) return;
-                    if (commit) selected = target;
-                    finish();
-                    if (commit) committed.run();
-                }).start();
         dragTarget = null;
+        Runnable complete = () -> {
+            if (token != generation) return;
+            if (commit) selected = target;
+            finish();
+            if (commit) committed.run();
+        };
+        if (!ValueAnimator.areAnimatorsEnabled()) {
+            complete.run();
+            return;
+        }
+        animatePages(selected, target, outgoing, incoming, dragDistance, dragOffset, end,
+                duration, complete);
     }
 
     void finish() {
         dragTarget = null;
         ++generation;
+        cancelAnimation();
         unblock();
+        progress(selected, selected, 1);
         for (Map.Entry<String, View> entry : panels.entrySet()) {
             View panel = entry.getValue();
             panel.animate().cancel(); panel.setTranslationX(0); panel.setAlpha(1);

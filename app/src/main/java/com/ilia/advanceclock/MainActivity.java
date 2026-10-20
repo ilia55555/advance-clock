@@ -1308,6 +1308,12 @@ public final class MainActivity extends Activity {
             panels.put("clock", clockPanel); panels.put("noforget", noForgetPanel);
             panels.put("stopwatch", stopwatchPanel); panels.put("timer", timerPanel); panels.put("world", worldPanel);
             tabMotion = new TabMotion(panels);
+            java.util.Map<String, View> indicators = new java.util.LinkedHashMap<>();
+            indicators.put("clock", clockIndicator); indicators.put("noforget", noForgetIndicator);
+            indicators.put("stopwatch", stopwatchIndicator); indicators.put("timer", timerIndicator);
+            indicators.put("world", worldIndicator);
+            TabIndicator indicator = new TabIndicator(findViewById(R.id.tab_bar), indicators);
+            tabMotion.setProgressListener(indicator::update);
         }
         int oldIndex = -1, newIndex = -1;
         String[] order = AppSettings.tabOrder(this);
@@ -1337,11 +1343,6 @@ public final class MainActivity extends Activity {
         if (timerController != null) timerController.setActive(timer);
         if (worldController != null) worldController.setActive(world);
 
-        clockIndicator.setVisibility(clock ? View.VISIBLE : View.INVISIBLE);
-        noForgetIndicator.setVisibility(notes ? View.VISIBLE : View.INVISIBLE);
-        stopwatchIndicator.setVisibility(stopwatch ? View.VISIBLE : View.INVISIBLE);
-        timerIndicator.setVisibility(timer ? View.VISIBLE : View.INVISIBLE);
-        worldIndicator.setVisibility(world ? View.VISIBLE : View.INVISIBLE);
         clockTab.setTextColor(clock ? 0xFFFFFFFF : 0xFFD6EFED);
         noForgetTab.setTextColor(notes ? 0xFFFFFFFF : 0xFFD6EFED);
         ((TextView) findViewById(R.id.tab_stopwatch)).setTextColor(
