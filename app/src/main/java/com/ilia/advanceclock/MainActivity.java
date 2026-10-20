@@ -340,6 +340,7 @@ public final class MainActivity extends Activity {
     }
 
     private void applyFabBottomMargin(View fab, int bottomInset) {
+        if (fab == null) return; // The world-clock button is inflated on first use.
         ViewGroup.MarginLayoutParams params =
                 (ViewGroup.MarginLayoutParams) fab.getLayoutParams();
         int requiredMargin = dp(18) + bottomInset;
