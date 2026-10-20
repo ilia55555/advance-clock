@@ -65,7 +65,57 @@ final class TabMotion {
         });
     }
 
+    private String dragTarget;
+    private float dragDistance;
+    private float dragOffset;
+
+    boolean beginDrag(String target, float deltaX) {
+        finish();
+        View incoming = panels.get(target), outgoing = panels.get(selected);
+        if (incoming == null || outgoing == null || incoming == outgoing) return false;
+        int width = ((View) outgoing.getParent()).getWidth();
+        if (width <= 0) return false;
+        dragTarget = target;
+        dragDistance = deltaX < 0 ? width : -width;
+        warmed.add(target);
+        incoming.setVisibility(View.VISIBLE);
+        incoming.setTranslationX(dragDistance);
+        return true;
+    }
+
+    void drag(float deltaX) {
+        if (dragTarget == null) return;
+        dragOffset = dragDistance > 0 ? Math.max(-dragDistance, Math.min(0, deltaX))
+                : Math.min(-dragDistance, Math.max(0, deltaX));
+        panels.get(selected).setTranslationX(dragOffset);
+        panels.get(dragTarget).setTranslationX(dragDistance + dragOffset);
+    }
+
+    void release(boolean cancel, float velocity, Runnable committed) {
+        if (dragTarget == null) return;
+        final String target = dragTarget;
+        boolean forwardFling = velocity * dragDistance < 0 && Math.abs(velocity) > 650;
+        boolean backwardFling = velocity * dragDistance > 0 && Math.abs(velocity) > 650;
+        boolean commit = !cancel && !backwardFling
+                && (Math.abs(dragOffset) > Math.abs(dragDistance) * .35f || forwardFling);
+        View outgoing = panels.get(selected), incoming = panels.get(target);
+        int token = ++generation;
+        float end = commit ? -dragDistance : 0;
+        long duration = (long) (180 + 140 * Math.abs(end - dragOffset) / Math.abs(dragDistance));
+        PathInterpolator curve = new PathInterpolator(.22f, .61f, .36f, 1f);
+        outgoing.animate().translationX(end).setDuration(duration).setInterpolator(curve).start();
+        incoming.animate().translationX(dragDistance + end).setDuration(duration).setInterpolator(curve)
+                .withEndAction(() -> {
+                    if (token != generation) return;
+                    if (commit) selected = target;
+                    finish();
+                    if (commit) committed.run();
+                }).start();
+        dragTarget = null;
+    }
+
     void finish() {
+        dragTarget = null;
         ++generation;
         unblock();
         for (Map.Entry<String, View> entry : panels.entrySet()) {

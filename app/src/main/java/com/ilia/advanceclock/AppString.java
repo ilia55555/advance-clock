@@ -12,11 +12,17 @@ import java.util.Locale;
  */
 public final class AppString {
     private static volatile Context appContext;
+    private static volatile Context localized;
+    private static volatile String language;
 
     private AppString() {}
 
     public static void init(Context context) {
-        if (context != null) appContext = context.getApplicationContext();
+        if (context != null) {
+            appContext = context.getApplicationContext();
+            language = AppSettings.language(appContext);
+            localized = AppSettings.localizedContext(appContext);
+        }
     }
 
     public static String get(int resId) {
@@ -24,7 +30,7 @@ public final class AppString {
         if (context == null) {
             throw new IllegalStateException("AppString is not initialized");
         }
-        return AppSettings.localizedContext(context).getString(resId);
+        return resourcesContext(context).getString(resId);
     }
 
     public static String get(int resId, Object... formatArgs) {
@@ -32,7 +38,7 @@ public final class AppString {
         if (context == null) {
             throw new IllegalStateException("AppString is not initialized");
         }
-        return AppSettings.localizedContext(context).getString(resId, formatArgs);
+        return resourcesContext(context).getString(resId, formatArgs);
     }
 
     public static String[] getArray(int resId) {
@@ -40,7 +46,18 @@ public final class AppString {
         if (context == null) {
             throw new IllegalStateException("AppString is not initialized");
         }
-        return AppSettings.localizedContext(context).getResources().getStringArray(resId);
+        return resourcesContext(context).getResources().getStringArray(resId);
+    }
+
+    private static Context resourcesContext(Context context) {
+        String current = AppSettings.language(context);
+        if (localized == null || !current.equals(language)) {
+            synchronized (AppString.class) {
+                localized = AppSettings.localizedContext(context);
+                language = current;
+            }
+        }
+        return localized;
     }
 
     public static Locale locale() {

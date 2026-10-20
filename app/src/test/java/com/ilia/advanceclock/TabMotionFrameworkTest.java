@@ -16,6 +16,32 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application = Application.class, sdk = 35)
 public final class TabMotionFrameworkTest {
+    @Test public void dragFollowsFingerAndCanReverseWithoutChangingSelection() {
+        Activity host = Robolectric.buildActivity(Activity.class).setup().get();
+        FrameLayout parent = new FrameLayout(host);
+        Map<String, View> panels = new LinkedHashMap<>();
+        panels.put("clock", new View(host)); panels.put("world", new View(host));
+        for (View panel : panels.values()) parent.addView(panel, new FrameLayout.LayoutParams(-1, -1));
+        host.setContentView(parent);
+        parent.measure(View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(1600, View.MeasureSpec.EXACTLY));
+        parent.layout(0, 0, 1000, 1600);
+        TabMotion motion = new TabMotion(panels);
+        motion.show("clock", 1, false);
+        assertTrue(motion.beginDrag("world", -20));
+        motion.drag(-400);
+        assertEquals(-400f, panels.get("clock").getTranslationX(), .001f);
+        assertEquals(600f, panels.get("world").getTranslationX(), .001f);
+        org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+        assertEquals(-400f, panels.get("clock").getTranslationX(), .001f);
+        motion.drag(-120);
+        assertEquals(-120f, panels.get("clock").getTranslationX(), .001f);
+        motion.finish();
+        assertEquals(View.VISIBLE, panels.get("clock").getVisibility());
+        assertNotEquals(View.VISIBLE, panels.get("world").getVisibility());
+        host.finish();
+    }
+
     @Test public void rapidTabChangesLeaveOnlyTheLatestPanelInteractiveAndVisible() {
         Activity host = Robolectric.buildActivity(Activity.class).setup().get();
         FrameLayout parent = new FrameLayout(host);

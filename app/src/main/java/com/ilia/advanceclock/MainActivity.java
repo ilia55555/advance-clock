@@ -117,6 +117,9 @@ public final class MainActivity extends Activity {
     private TabMotion tabMotion;
     private float tabSwipeX, tabSwipeY;
     private boolean tabSwipeAllowed;
+    private boolean tabDragging;
+    private String dragTab;
+    private android.view.VelocityTracker tabVelocity;
     private int lastPrayerAutoIndex = -1;
 
     private Button quickAlarmDate;
@@ -170,9 +173,6 @@ public final class MainActivity extends Activity {
         NotificationHelper.ensureChannels(this);
 
         bindViews();
-        stopwatchController = new StopwatchPanelController(this, stopwatchPanel);
-        timerController = new TimerPanelController(this, timerPanel);
-        worldController = new WorldClockPanelController(this, worldPanel);
         configureHeaderForDisplayCutout();
         configureFabNavigationInset();
         quickAlarmCalendarType = AppSettings.defaultCalendar(this);
@@ -182,9 +182,6 @@ public final class MainActivity extends Activity {
         setupNoteComposer();
         setupCalendars();
         applyClockLayoutMode();
-        applyPrayerTimesUi();
-        applyCalendarEventsUi();
-
         clockTab.setOnClickListener(v -> showTab("clock"));
         noForgetTab.setOnClickListener(v -> showTab("noforget"));
         findViewById(R.id.tab_stopwatch).setOnClickListener(v -> showTab("stopwatch"));
@@ -1157,9 +1154,10 @@ public final class MainActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
-        stopwatchController.onResume();
-        timerController.onResume();
-        worldController.onResume();
+        panelsResumed = true;
+        if (stopwatchController != null) stopwatchController.onResume();
+        if (timerController != null) timerController.onResume();
+        if (worldController != null) worldController.onResume();
         clockCalendar.refreshCalendar();
         noteCalendar.refreshCalendar();
         android.content.IntentFilter calendarChanges = new android.content.IntentFilter();
@@ -1194,12 +1192,13 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        panelsResumed = false;
         if (tabMotion != null) tabMotion.finish();
         unregisterReceiver(calendarTimeChanges);
         headerHandler.removeCallbacks(headerTicker);
-        stopwatchController.onPause();
-        timerController.onPause();
-        worldController.onPause();
+        if (stopwatchController != null) stopwatchController.onPause();
+        if (timerController != null) timerController.onPause();
+        if (worldController != null) worldController.onPause();
         super.onPause();
     }
 
@@ -1266,8 +1265,24 @@ public final class MainActivity extends Activity {
                 ? requestedTab : firstEnabledTab());
     }
 
+    private boolean panelsResumed;
+
+    private void prepareTab(String tab) {
+        if ("stopwatch".equals(tab) && stopwatchController == null) {
+            stopwatchController = new StopwatchPanelController(this, stopwatchPanel);
+            if (panelsResumed) stopwatchController.onResume();
+        } else if ("timer".equals(tab) && timerController == null) {
+            timerController = new TimerPanelController(this, timerPanel);
+            if (panelsResumed) timerController.onResume();
+        } else if ("world".equals(tab) && worldController == null) {
+            worldController = new WorldClockPanelController(this, worldPanel);
+            if (panelsResumed) worldController.onResume();
+        }
+    }
+
     private void showTab(String tab) {
         if (!AppSettings.tabEnabled(this, tab)) tab = firstEnabledTab();
+        prepareTab(tab);
         String previousTab = currentTab;
         currentTab = tab;
         if (tabMotion == null) {
@@ -1300,9 +1315,9 @@ public final class MainActivity extends Activity {
         boolean world = "world".equals(tab);
 
 
-        stopwatchController.setActive(stopwatch);
-        timerController.setActive(timer);
-        worldController.setActive(world);
+        if (stopwatchController != null) stopwatchController.setActive(stopwatch);
+        if (timerController != null) timerController.setActive(timer);
+        if (worldController != null) worldController.setActive(world);
 
         clockIndicator.setVisibility(clock ? View.VISIBLE : View.INVISIBLE);
         noForgetIndicator.setVisibility(notes ? View.VISIBLE : View.INVISIBLE);
@@ -1326,28 +1341,44 @@ public final class MainActivity extends Activity {
     @Override public boolean dispatchTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
-            tabSwipeX = event.getRawX();
-            tabSwipeY = event.getRawY();
+            if (tabMotion != null) tabMotion.finish();
+            tabSwipeX = event.getRawX(); tabSwipeY = event.getRawY();
+            tabDragging = false;
             tabSwipeAllowed = !blocksTabSwipe(getWindow().getDecorView(), tabSwipeX, tabSwipeY);
-        } else if (action == MotionEvent.ACTION_POINTER_DOWN || action == MotionEvent.ACTION_CANCEL) {
-            tabSwipeAllowed = false;
-        } else if (action == MotionEvent.ACTION_MOVE && tabSwipeAllowed) {
-            float dx = event.getRawX() - tabSwipeX;
-            float dy = event.getRawY() - tabSwipeY;
+            if (tabVelocity != null) tabVelocity.recycle();
+            tabVelocity = android.view.VelocityTracker.obtain();
+        }
+        if (tabVelocity != null) tabVelocity.addMovement(event);
+        float dx = event.getRawX() - tabSwipeX;
+        float dy = event.getRawY() - tabSwipeY;
+        if (action == MotionEvent.ACTION_MOVE && tabSwipeAllowed) {
             int slop = android.view.ViewConfiguration.get(this).getScaledTouchSlop();
-            if (Math.abs(dy) > slop && Math.abs(dy) >= Math.abs(dx)) {
+            if (!tabDragging && Math.abs(dy) > slop && Math.abs(dy) >= Math.abs(dx)) {
                 tabSwipeAllowed = false;
-            } else if (Math.abs(dx) >= dp(72) && Math.abs(dx) > Math.abs(dy) * 1.4f) {
-                tabSwipeAllowed = false;
-                MotionEvent cancel = MotionEvent.obtain(event);
-                cancel.setAction(MotionEvent.ACTION_CANCEL);
-                super.dispatchTouchEvent(cancel);
-                cancel.recycle();
-                moveToAdjacentTab(dx);
-                return true;
+            } else if (!tabDragging && Math.abs(dx) > slop && Math.abs(dx) > Math.abs(dy) * 1.4f) {
+                dragTab = adjacentTab(dx);
+                if (dragTab != null) prepareTab(dragTab);
+                if (dragTab != null && tabMotion.beginDrag(dragTab, dx)) {
+                    tabDragging = true;
+                    MotionEvent cancel = MotionEvent.obtain(event);
+                    cancel.setAction(MotionEvent.ACTION_CANCEL);
+                    super.dispatchTouchEvent(cancel); cancel.recycle();
+                }
             }
-        } else if (action == MotionEvent.ACTION_UP) {
-            tabSwipeAllowed = false;
+            if (tabDragging) { tabMotion.drag(dx); return true; }
+        }
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
+                || action == MotionEvent.ACTION_POINTER_DOWN) {
+            boolean consumed = tabDragging;
+            if (tabDragging) {
+                tabVelocity.computeCurrentVelocity(1000);
+                final String target = dragTab;
+                tabMotion.release(action != MotionEvent.ACTION_UP, tabVelocity.getXVelocity(),
+                        () -> showTab(target));
+            }
+            tabDragging = false; tabSwipeAllowed = false;
+            if (tabVelocity != null) { tabVelocity.recycle(); tabVelocity = null; }
+            if (consumed) return true;
         }
         return super.dispatchTouchEvent(event);
     }
@@ -1370,7 +1401,7 @@ public final class MainActivity extends Activity {
         return false;
     }
 
-    private void moveToAdjacentTab(float deltaX) {
+    private String adjacentTab(float deltaX) {
         String[] order = AppSettings.tabOrder(this);
         boolean rtl = findViewById(R.id.tab_bar).getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         int step = deltaX < 0 ? 1 : -1;
@@ -1379,12 +1410,12 @@ public final class MainActivity extends Activity {
             if (!order[i].equals(currentTab)) continue;
             for (int next = i + step; next >= 0 && next < order.length; next += step) {
                 if (AppSettings.tabEnabled(this, order[next])) {
-                    showTab(order[next]);
-                    return;
+                    return order[next];
                 }
             }
-            return;
+            return null;
         }
+        return null;
     }
 
     private void applyTabOrder() {

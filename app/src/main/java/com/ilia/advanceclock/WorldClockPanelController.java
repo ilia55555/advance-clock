@@ -96,7 +96,7 @@ final class WorldClockPanelController {
         list = root.findViewById(R.id.world_clock_list);
         referenceSummary = root.findViewById(R.id.world_reference_summary);
         nowButton = root.findViewById(R.id.world_reference_now);
-        buildZoneIndex();
+
 
         root.findViewById(R.id.world_fab).setOnClickListener(v -> showAddDialog());
         root.findViewById(R.id.world_pick_reference).setOnClickListener(v -> pickReferenceDate());
@@ -110,7 +110,8 @@ final class WorldClockPanelController {
         renderClocks();
     }
 
-    private void buildZoneIndex() {
+    private ArrayList<ZoneOption> buildZoneIndex() {
+        ArrayList<ZoneOption> allZones = new ArrayList<>();
         Map<String, LinkedHashSet<String>> aliases = new HashMap<>();
         for (String id : TimeZone.getAvailableIDs()) {
             String canonical = android.icu.util.TimeZone.getCanonicalID(id);
@@ -153,9 +154,27 @@ final class WorldClockPanelController {
                 "CN",
                 ""));
         Collections.sort(allZones, (a, b) -> a.label.compareToIgnoreCase(b.label));
+        return allZones;
     }
 
+    private boolean indexLoading;
+    private boolean indexReady;
+
     private void showAddDialog() {
+        if (!indexReady) {
+            if (indexLoading) return;
+            indexLoading = true;
+            new Thread(() -> {
+                ArrayList<ZoneOption> zones = buildZoneIndex();
+                handler.post(() -> {
+                    allZones.addAll(zones);
+                    indexReady = true;
+                    indexLoading = false;
+                    if (!host.isFinishing() && !host.isDestroyed()) showAddDialog();
+                });
+            }, "WorldClockIndex").start();
+            return;
+        }
         LinearLayout content = new LinearLayout(host);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(dp(16), dp(16), dp(16), dp(16));
