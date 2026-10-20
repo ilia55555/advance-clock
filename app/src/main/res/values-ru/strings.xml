@@ -914,4 +914,5 @@
     <string name="reminder_open_destination">Открыть %1$s</string>
     <string name="alert_sound_hint">Чтобы выключить звук, нажмите кнопку уменьшения громкости или кнопку включения/выключения телефона. Чтобы снова включить звук, нажмите кнопку увеличения громкости.</string>
     <string name="alert_sound_hint_understood">Понятно</string>
+    <string name="timer_clear_fields">Очистить</string>
 </resources>

@@ -28,7 +28,7 @@ final class TimerPanelController {
     private boolean running, dateTimeMode;
     private boolean resumed;
     private boolean active;
-    private long remainingMillis, deadline, selectedTarget;
+    private long remainingMillis, deadline, selectedTarget, initialDurationMillis;
     private int calendarType;
 
     private final Runnable ticker = new Runnable() {
@@ -108,6 +108,15 @@ final class TimerPanelController {
         });
         startButton.setOnClickListener(v -> toggleTimer());
         root.findViewById(R.id.timer_reset).setOnClickListener(v -> reset());
+        android.text.TextWatcher durationWatcher = new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!running && remainingMillis == 0 && !dateTimeMode) renderTime(readDuration());
+            }
+            public void afterTextChanged(android.text.Editable s) {}
+        };
+        for (EditText field : new EditText[]{hoursInput, minutesInput, secondsInput})
+            field.addTextChangedListener(durationWatcher);
         updateControls();
         renderTime(running || remainingMillis > 0 ? currentRemaining() : readDuration());
         renderSelection();
@@ -117,6 +126,7 @@ final class TimerPanelController {
         if (running || remainingMillis > 0) return;
         dateTimeMode = dateMode;
         updateControls(); renderSelection(); save();
+        renderTime(dateTimeMode ? Math.max(0L, selectedTarget - System.currentTimeMillis()) : readDuration());
     }
 
     private void toggleTimer() {
@@ -133,6 +143,7 @@ final class TimerPanelController {
         }
         if (remainingMillis == 0L) host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
                 .remove("timer_active_preset_id").apply();
+        if (remainingMillis == 0L) initialDurationMillis = value;
         deadline = System.currentTimeMillis() + value;
         remainingMillis = value; running = true;
         String label = labelInput.getText().toString().trim();
@@ -142,10 +153,25 @@ final class TimerPanelController {
         save(); updateControls(); handler.post(ticker);
     }
 
-    private void reset() {
+    private void stopTimer() {
         running = false; remainingMillis = 0L; deadline = 0L;
         ToolAlarmScheduler.cancel(host, ToolAlarmScheduler.TIMER);
-        handler.removeCallbacks(ticker); save(); updateControls();
+        handler.removeCallbacks(ticker);
+        host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
+                .remove("timer_active_preset_id").apply();
+    }
+
+    private void reset() {
+        boolean started = running || remainingMillis > 0;
+        stopTimer();
+        if (!started) {
+            dateTimeMode = false;
+            initialDurationMillis = 0L;
+            hoursInput.setText("0"); minutesInput.setText("0"); secondsInput.setText("0");
+        } else if (dateTimeMode && initialDurationMillis > 0) {
+            selectedTarget = System.currentTimeMillis() + initialDurationMillis;
+        }
+        saveDraft(); save(); updateControls(); renderSelection();
         renderTime(dateTimeMode ? Math.max(0L, selectedTarget - System.currentTimeMillis()) : readDuration());
     }
 
@@ -172,6 +198,8 @@ final class TimerPanelController {
                 dateTimeMode ? AppSettings.primaryColor(host) : 0xFFFFFFFF);
         dateTimeModeButton.setTextColor(
                 dateTimeMode ? 0xFFFFFFFF : AppSettings.primaryColor(host));
+        ((Button) root.findViewById(R.id.timer_reset)).setText(
+                configured ? R.string.timer_clear_fields : R.string.runtime_text_0171);
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : remainingMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
     }
 
@@ -184,9 +212,9 @@ final class TimerPanelController {
     }
 
     private void renderTime(long millis) { long total=(millis+999)/1000; timeView.setText(String.format(Locale.US,"%02d:%02d:%02d",total/3600,(total/60)%60,total%60)); }
-    private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
+    private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_initial_duration",initialDurationMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
     }
-    private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
+    private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); initialDurationMillis=p.getLong("timer_initial_duration",remainingMillis); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
     void setActive(boolean value) {
         active = value;
         handler.removeCallbacks(ticker);
@@ -242,7 +270,13 @@ final class TimerPanelController {
             return null;
         }
         String label = labelInput.getText().toString().trim();
-        return new org.json.JSONObject().put("label", label.isEmpty() ? ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER) : label)
+        String defaultTitle = dateTimeMode
+                ? CalendarUtils.formatDate(selectedTarget, calendarType) + " " + String.format(Locale.US, "%tR", selectedTarget)
+                : String.format(Locale.US, "%02d:%02d:%02d", duration / 3600000, duration / 60000 % 60, duration / 1000 % 60);
+        return new org.json.JSONObject().put("label", label.isEmpty() ? defaultTitle : label)
+                .put("inputHours", hoursInput.getText().toString())
+                .put("inputMinutes", minutesInput.getText().toString())
+                .put("inputSeconds", secondsInput.getText().toString())
                 .put("dateMode", dateTimeMode).put("duration", duration)
                 .put("target", selectedTarget).put("calendar", calendarType);
     }
@@ -255,15 +289,15 @@ final class TimerPanelController {
             throw new org.json.JSONException("Expired or invalid timer");
         int savedCalendar = config.getInt("calendar");
         String savedLabel = config.getString("label");
-        reset();
+        stopTimer();
         dateTimeMode = dateMode;
         selectedTarget = target;
         calendarType = savedCalendar;
         labelInput.setText(savedLabel);
         long seconds = duration / 1000;
-        hoursInput.setText(String.valueOf(seconds / 3600));
-        minutesInput.setText(String.valueOf(seconds / 60 % 60));
-        secondsInput.setText(String.valueOf(seconds % 60));
+        hoursInput.setText(config.optString("inputHours", String.valueOf(seconds / 3600)));
+        minutesInput.setText(config.optString("inputMinutes", String.valueOf(seconds / 60 % 60)));
+        secondsInput.setText(config.optString("inputSeconds", String.valueOf(seconds % 60)));
         TimeToolPresets.restoreImages(host, ToolAlarmScheduler.TIMER, config);
         saveDraft(); save(); updateControls(); renderSelection();
         renderTime(dateTimeMode ? Math.max(0L, target - System.currentTimeMillis()) : duration);

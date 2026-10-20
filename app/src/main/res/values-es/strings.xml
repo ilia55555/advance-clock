@@ -914,4 +914,5 @@ Pantalla de bloqueo</string>
     <string name="reminder_open_destination">Abrir %1$s</string>
     <string name="alert_sound_hint">Para silenciar el sonido, pulsa el botón de bajar el volumen o el botón de encendido del teléfono. Para volver a escucharlo, pulsa el botón de subir el volumen.</string>
     <string name="alert_sound_hint_understood">Entendido</string>
+    <string name="timer_clear_fields">Borrar</string>
 </resources>

@@ -914,4 +914,5 @@
     <string name="reminder_open_destination">打开%1$s</string>
     <string name="alert_sound_hint">要静音，请按音量减小键或手机的开关键。要恢复声音，请按音量增大键。</string>
     <string name="alert_sound_hint_understood">知道了</string>
+    <string name="timer_clear_fields">清零</string>
 </resources>

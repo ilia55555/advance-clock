@@ -914,4 +914,5 @@ Tela de bloqueio</string>
     <string name="reminder_open_destination">Abrir %1$s</string>
     <string name="alert_sound_hint">Para silenciar o som, pressione o botão de diminuir o volume ou o botão de ligar/desligar do telefone. Para voltar a ouvir o som, pressione o botão de aumentar o volume.</string>
     <string name="alert_sound_hint_understood">Entendi</string>
+    <string name="timer_clear_fields">Limpar</string>
 </resources>

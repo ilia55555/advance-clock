@@ -261,6 +261,9 @@ final class StopwatchPanelController {
         }
         String label = labelInput.getText().toString().trim();
         return new org.json.JSONObject().put("label", label.isEmpty() ? ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH) : label)
+                .put("inputHours", hoursInput.getText().toString())
+                .put("inputMinutes", minutesInput.getText().toString())
+                .put("inputSeconds", secondsInput.getText().toString())
                 .put("mode", mode).put("duration", duration).put("target", selectedTarget).put("calendar", calendarType);
     }
 
@@ -277,9 +280,9 @@ final class StopwatchPanelController {
         mode = savedMode; selectedTarget = target; calendarType = savedCalendar;
         labelInput.setText(savedLabel);
         long seconds = duration / 1000;
-        hoursInput.setText(String.valueOf(seconds / 3600));
-        minutesInput.setText(String.valueOf(seconds / 60 % 60));
-        secondsInput.setText(String.valueOf(seconds % 60));
+        hoursInput.setText(config.optString("inputHours", String.valueOf(seconds / 3600)));
+        minutesInput.setText(config.optString("inputMinutes", String.valueOf(seconds / 60 % 60)));
+        secondsInput.setText(config.optString("inputSeconds", String.valueOf(seconds % 60)));
         TimeToolPresets.restoreImages(host, ToolAlarmScheduler.STOPWATCH, config);
         saveDraft(); save(); updateControls(); renderTarget(); renderTime(0);
         if (run) toggleRunning();

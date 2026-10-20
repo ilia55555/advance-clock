@@ -12,7 +12,6 @@ import android.widget.EditText;
 /** Places the first keyboard-opening tap at the end, without constraining later caret movement. */
 final class DurationInputs {
     private final EditText hours, minutes, seconds;
-    private boolean imeVisible, updating;
 
     DurationInputs(EditText hours, EditText minutes, EditText seconds) {
         this.hours = hours; this.minutes = minutes; this.seconds = seconds;
@@ -31,26 +30,14 @@ final class DurationInputs {
                     return false;
                 }
             });
-            field.setOnFocusChangeListener((v, focused) -> {
-                if (!focused) field.post(() -> {
-                    if (!hours.hasFocus() && !minutes.hasFocus() && !seconds.hasFocus()) normalize();
-                });
-            });
             field.setOnEditorActionListener((v, action, event) -> {
                 if (action != EditorInfo.IME_ACTION_DONE) return false;
-                normalize();
                 field.clearFocus();
                 InputMethodManager keyboard = field.getContext().getSystemService(InputMethodManager.class);
                 if (keyboard != null) keyboard.hideSoftInputFromWindow(field.getWindowToken(), 0);
                 return true;
             });
         }
-        View group = (View) hours.getParent();
-        group.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            boolean visible = keyboardVisible();
-            if (imeVisible && !visible) normalize();
-            imeVisible = visible;
-        });
     }
 
     private boolean keyboardVisible() {
@@ -65,31 +52,22 @@ final class DurationInputs {
     }
 
     long readMillis() {
-        DurationValue value = normalize();
+        DurationValue value = read();
         if (value == null) return 0L;
-        try { return value.schedulableMillis(System.currentTimeMillis()); }
+        try {
+            long millis = value.schedulableMillis(System.currentTimeMillis());
+            hours.setError(null);
+            return millis;
+        }
         catch (ArithmeticException error) {
             hours.setError(hours.getContext().getString(R.string.duration_too_large));
             return 0L;
         }
     }
 
-    private DurationValue normalize() {
-        if (updating) return null;
+    private DurationValue read() {
         try {
-            DurationValue value = new DurationValue(hours.getText().toString(), minutes.getText().toString(), seconds.getText().toString());
-            updating = true;
-            update(hours, value.hours.toString()); update(minutes, Integer.toString(value.minutes));
-            update(seconds, Integer.toString(value.seconds));
-            return value;
+            return new DurationValue(hours.getText().toString(), minutes.getText().toString(), seconds.getText().toString());
         } catch (NumberFormatException invalid) { return null; }
-        finally { updating = false; }
-    }
-
-    private void update(EditText field, String value) {
-        if (field.getText().toString().equals(value)) return;
-        int start = Math.max(0, field.getSelectionStart()), end = Math.max(0, field.getSelectionEnd());
-        field.setText(value);
-        if (field.hasFocus()) field.setSelection(Math.min(start, field.length()), Math.min(end, field.length()));
     }
 }
