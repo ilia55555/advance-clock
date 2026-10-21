@@ -33,10 +33,30 @@ public class DateNotificationDisplayTest {
         View expanded=recovered.createBigContentView().apply(app,new FrameLayout(app));
         assertNotNull(collapsed);
         assertNotNull(expanded);
+        assertNotNull(collapsed.findViewById(R.id.date_notification_title));
+        assertNotNull(expanded.findViewById(R.id.date_notification_day));
+        assertEquals(android.graphics.Color.BLACK,
+                ((android.widget.TextView) collapsed.findViewById(R.id.date_notification_day)).getCurrentTextColor());
         AppSettings.setPersistentDateNotificationEnabled(app,false);
         DateNotificationService.start(app);
         assertNull(Shadows.shadowOf(manager).getNotification(73));
     }
+    @Test public void dayDigitsFollowCalendarAndLanguageAndAllIconsLoad() {
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        for (String language : new String[]{"fa", "en"}) {
+            AppSettings.setLanguage(app, language);
+            for (int calendar : new int[]{CalendarUtils.PERSIAN, CalendarUtils.GREGORIAN, CalendarUtils.HIJRI}) {
+                AppSettings.setDefaultCalendar(app,calendar);
+                boolean english=language.equals("en") || calendar==CalendarUtils.GREGORIAN;
+                assertEquals(english ? "21" : "۲۱",
+                        DateNotificationService.dayLabel(app,21));
+                for (int day=1;day<=31;day++) {
+                    assertNotNull(app.getDrawable(DateNotificationService.dayIconResource(app,day)));
+                }
+            }
+        }
+    }
+
     @Test public void blockedChannelButtonOpensTheDateChannelSettings() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);

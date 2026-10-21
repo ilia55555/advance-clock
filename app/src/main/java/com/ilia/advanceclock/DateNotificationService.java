@@ -10,6 +10,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.widget.RemoteViews;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.BidiFormatter;
@@ -178,11 +180,52 @@ public final class DateNotificationService extends Service {
                 .setPriority(Notification.PRIORITY_LOW)
                 .setColor(AppSettings.primaryColor(context))
                 .setColorized(false)
-                .setStyle(new Notification.BigTextStyle().bigText(twoOtherDates.toString()));
+                .setStyle(new Notification.DecoratedCustomViewStyle())
+                .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day))
+                .setCustomBigContentView(dateView(context, R.layout.notification_date_expanded, title, twoOtherDates.toString(), day));
 
         // Use resource-backed monochrome icons for System UI/OEM compatibility; keep the day number.
-        builder.setSmallIcon(DAY_ICONS[Math.max(1, Math.min(31, day)) - 1]);
+        builder.setSmallIcon(dayIconResource(context, day));
         return builder.build();
+    }
+
+    private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), layout);
+        int primary = AppSettings.primaryColor(context);
+        int text = Color.luminance(primary) > 0.179f ? Color.BLACK : Color.WHITE;
+        views.setInt(R.id.date_notification_background, "setColorFilter", primary);
+        views.setInt(R.id.date_notification_day_border, "setColorFilter", primary);
+        views.setTextColor(R.id.date_notification_day, Color.BLACK);
+        views.setTextColor(R.id.date_notification_title, text);
+        views.setTextColor(R.id.date_notification_other_dates, text);
+        views.setTextViewText(R.id.date_notification_title, title);
+        views.setTextViewText(R.id.date_notification_other_dates, otherDates);
+        views.setTextViewText(R.id.date_notification_day, dayLabel(context, day));
+        views.setViewVisibility(R.id.date_notification_other_dates, otherDates.isEmpty() ? View.GONE : View.VISIBLE);
+        // The first child is the day badge: left in English, right in Persian/Arabic.
+        int direction = AppSettings.layoutDirection(context);
+        views.setInt(R.id.date_notification_row, "setLayoutDirection", direction);
+        views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
+        // Text direction comes from XML: setTextDirection is not permitted by RemoteViews.
+        // Calling it through setInt causes System UI to reject the whole notification.
+        return views;
+    }
+
+    static boolean useEnglishDay(Context context) {
+        return AppSettings.defaultCalendar(context) == CalendarUtils.GREGORIAN
+                || AppSettings.LANGUAGE_ENGLISH.equals(AppSettings.language(context));
+    }
+
+    static String dayLabel(Context context, int day) {
+        String value = Integer.toString(day);
+        if (useEnglishDay(context)) return value;
+        StringBuilder localized = new StringBuilder();
+        for (char digit : value.toCharArray()) localized.append((char) ('۰' + digit - '0'));
+        return localized.toString();
+    }
+
+    static int dayIconResource(Context context, int day) {
+        return (useEnglishDay(context) ? DAY_ICONS : PERSIAN_DAY_ICONS)[Math.max(1, Math.min(31, day)) - 1];
     }
 
     private static PendingIntent refreshOperation(Context context, int flags) {
@@ -240,5 +283,38 @@ public final class DateNotificationService extends Service {
         R.drawable.ic_status_day_29,
         R.drawable.ic_status_day_30,
         R.drawable.ic_status_day_31
+    };
+    private static final int[] PERSIAN_DAY_ICONS = {
+        R.drawable.ic_status_day_fa_01,
+        R.drawable.ic_status_day_fa_02,
+        R.drawable.ic_status_day_fa_03,
+        R.drawable.ic_status_day_fa_04,
+        R.drawable.ic_status_day_fa_05,
+        R.drawable.ic_status_day_fa_06,
+        R.drawable.ic_status_day_fa_07,
+        R.drawable.ic_status_day_fa_08,
+        R.drawable.ic_status_day_fa_09,
+        R.drawable.ic_status_day_fa_10,
+        R.drawable.ic_status_day_fa_11,
+        R.drawable.ic_status_day_fa_12,
+        R.drawable.ic_status_day_fa_13,
+        R.drawable.ic_status_day_fa_14,
+        R.drawable.ic_status_day_fa_15,
+        R.drawable.ic_status_day_fa_16,
+        R.drawable.ic_status_day_fa_17,
+        R.drawable.ic_status_day_fa_18,
+        R.drawable.ic_status_day_fa_19,
+        R.drawable.ic_status_day_fa_20,
+        R.drawable.ic_status_day_fa_21,
+        R.drawable.ic_status_day_fa_22,
+        R.drawable.ic_status_day_fa_23,
+        R.drawable.ic_status_day_fa_24,
+        R.drawable.ic_status_day_fa_25,
+        R.drawable.ic_status_day_fa_26,
+        R.drawable.ic_status_day_fa_27,
+        R.drawable.ic_status_day_fa_28,
+        R.drawable.ic_status_day_fa_29,
+        R.drawable.ic_status_day_fa_30,
+        R.drawable.ic_status_day_fa_31
     };
 }
