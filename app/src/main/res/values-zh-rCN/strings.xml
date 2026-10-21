@@ -916,6 +916,6 @@
     <string name="alert_sound_hint_understood">知道了</string>
     <string name="timer_clear_fields">清零</string>
     <string name="tool_reset_label">重置</string>
-    <string name="attachment_open_blocked">不允许打开安装包或非网页链接。</string>
+    <string name="attachment_open_blocked">无法打开此文件。可执行文件和安装包已被阻止；外部应用可打开的文件上限为64 MiB。</string>
     <string name="media_search_apps">搜索应用</string>
 </resources>

@@ -1265,6 +1265,6 @@
     <string name="alert_sound_hint_understood">متوجه شدم</string>
     <string name="timer_clear_fields">صفر کردن</string>
     <string name="tool_reset_label">بازنشانی</string>
-    <string name="attachment_open_blocked">Opening installation packages or non-web links is not allowed.</string>
+    <string name="attachment_open_blocked">این فایل قابل باز کردن نیست. فایل‌های اجرایی و بسته‌های نصب مجاز نیستند؛ سقف ارسال فایل به برنامه‌های دیگر ۶۴ مگابایت است.</string>
     <string name="media_search_apps">جست‌وجوی اپ‌ها</string>
 </resources>

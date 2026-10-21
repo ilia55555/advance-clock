@@ -40,9 +40,14 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
 
-        if (uriValue == null || uriValue.trim().isEmpty()) {
-            return;
-        }
+        MediaWidgetPrefs.Item selected = MediaWidgetPrefs.authorizedItem(context, widgetId, uriValue);
+        if (selected == null) return;
+        uriValue = selected.uri;
+        mime = selected.mime;
+        name = selected.name;
+        boolean playback = ACTION_TOGGLE.equals(action) || ACTION_SEEK_BACK.equals(action)
+                || ACTION_SEEK_FORWARD.equals(action);
+        if (playback && !mime.startsWith("audio/") && !mime.startsWith("video/")) return;
 
         if (ACTION_TOGGLE.equals(action)) {
             startPlaybackService(
@@ -211,19 +216,8 @@ public final class MediaWidgetActionReceiver extends BroadcastReceiver {
             return;
         }
 
-        try {
-            Uri uri = Uri.parse(uriValue);
-            Intent open = new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(
-                            uri,
-                            mime == null || mime.trim().isEmpty()
-                                    ? "*/*"
-                                    : mime)
-                    .addFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK
-                                    | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            context.startActivity(open);
-        } catch (Exception ignored) {
-        }
+        PendingResult pending = goAsync();
+        SafeDocumentOpener.open(context, Uri.parse(uriValue), mime, name,
+                () -> { if (pending != null) pending.finish(); });
     }
 }

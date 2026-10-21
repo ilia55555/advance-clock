@@ -93,13 +93,11 @@ final class NoteAttachment {
                 intent=new Intent(Intent.ACTION_VIEW,Uri.parse(value));
             } else {
                 Uri uri = Uri.parse(value);
-                if (!KIND_FILE.equals(kind) || !AttachmentSafety.document(uri, mime, name)
-                        || !AttachmentSafety.document(uri, context.getContentResolver().getType(uri), name)) {
+                if (!KIND_FILE.equals(kind) || !AttachmentSafety.document(uri, mime, name)) {
                     blocked(context); return;
                 }
-                intent=new Intent(Intent.ACTION_VIEW)
-                        .setDataAndType(Uri.parse(value),mime==null||mime.isEmpty()?"*/*":mime)
-                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                SafeDocumentOpener.open(context, uri, mime, name, () -> {});
+                return;
             }
             if(intent!=null){
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

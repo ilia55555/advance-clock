@@ -916,6 +916,6 @@ Kilit ekranı</string>
     <string name="alert_sound_hint_understood">Anladım</string>
     <string name="timer_clear_fields">Temizle</string>
     <string name="tool_reset_label">Sıfırla</string>
-    <string name="attachment_open_blocked">Kurulum paketlerinin veya web dışı bağlantıların açılmasına izin verilmez.</string>
+    <string name="attachment_open_blocked">Dosya açılamıyor. Çalıştırılabilir dosyalar ve kurulum paketleri engellenir. Harici uygulamalar için sınır 64 MiB.</string>
     <string name="media_search_apps">Uygulama ara</string>
 </resources>

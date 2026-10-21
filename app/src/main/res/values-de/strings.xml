@@ -916,6 +916,6 @@ Sperrbildschirm</string>
     <string name="alert_sound_hint_understood">Verstanden</string>
     <string name="timer_clear_fields">Leeren</string>
     <string name="tool_reset_label">Zurücksetzen</string>
-    <string name="attachment_open_blocked">Installationspakete und Nicht-Web-Links können nicht geöffnet werden.</string>
+    <string name="attachment_open_blocked">Datei kann nicht geöffnet werden. Ausführbare Dateien und Installationspakete sind gesperrt. Für externe Apps gilt ein Limit von 64 MiB.</string>
     <string name="media_search_apps">Apps suchen</string>
 </resources>

@@ -916,6 +916,6 @@
     <string name="alert_sound_hint_understood">Понятно</string>
     <string name="timer_clear_fields">Очистить</string>
     <string name="tool_reset_label">Сбросить</string>
-    <string name="attachment_open_blocked">Открытие установочных пакетов и ссылок, не относящихся к веб-сайтам, запрещено.</string>
+    <string name="attachment_open_blocked">Не удалось открыть файл. Исполняемые и установочные файлы запрещены. Лимит для внешних приложений — 64 МиБ.</string>
     <string name="media_search_apps">Поиск приложений</string>
 </resources>

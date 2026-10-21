@@ -1281,6 +1281,6 @@
     <string name="alert_sound_hint_understood">فهمت</string>
     <string name="timer_clear_fields">تصفير</string>
     <string name="tool_reset_label">إعادة ضبط</string>
-    <string name="attachment_open_blocked">لا يُسمح بفتح حزم تثبيت التطبيقات أو الروابط غير الخاصة بالويب.</string>
+    <string name="attachment_open_blocked">يتعذر فتح الملف. الملفات التنفيذية وحزم التثبيت محظورة؛ الحد الأقصى للفتح في تطبيق خارجي هو 64 ميبيبايت.</string>
     <string name="media_search_apps">البحث عن التطبيقات</string>
 </resources>

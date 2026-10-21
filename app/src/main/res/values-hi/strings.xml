@@ -916,6 +916,6 @@
     <string name="alert_sound_hint_understood">समझ गया</string>
     <string name="timer_clear_fields">साफ़ करें</string>
     <string name="tool_reset_label">रीसेट करें</string>
-    <string name="attachment_open_blocked">ऐप इंस्टॉलेशन पैकेज या गैर-वेब लिंक खोलने की अनुमति नहीं है।</string>
+    <string name="attachment_open_blocked">यह फ़ाइल नहीं खोली जा सकती। निष्पादन और इंस्टॉलेशन फ़ाइलें अवरुद्ध हैं। बाहरी ऐप के लिए सीमा 64 MiB है।</string>
     <string name="media_search_apps">ऐप खोजें</string>
 </resources>

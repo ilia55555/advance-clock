@@ -84,9 +84,12 @@ public final class MediaWidgetPlaybackService extends Service {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
 
-        if (uriValue == null || uriValue.trim().isEmpty()) {
+        MediaWidgetPrefs.Item selected = MediaWidgetPrefs.authorizedItem(this, widgetId, uriValue);
+        if (selected == null || (!selected.mime.startsWith("audio/") && !selected.mime.startsWith("video/")))
             return START_NOT_STICKY;
-        }
+        uriValue = selected.uri;
+        mime = selected.mime;
+        name = selected.name;
 
         if (ACTION_TOGGLE.equals(action)) {
             toggle(uriValue, name, mime, widgetId);

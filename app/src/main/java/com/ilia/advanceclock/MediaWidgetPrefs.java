@@ -60,6 +60,19 @@ public final class MediaWidgetPrefs {
         return prefs(context).contains(key(widgetId));
     }
 
+    static Item authorizedItem(Context context, int widgetId, String uri) {
+        if (widgetId <= 0 || uri == null || !hasSavedConfig(context, widgetId)) return null;
+        android.appwidget.AppWidgetProviderInfo info = android.appwidget.AppWidgetManager
+                .getInstance(context).getAppWidgetInfo(widgetId);
+        android.content.ComponentName expected = new android.content.ComponentName(context, MediaWidgetProvider.class);
+        if (info == null || !expected.equals(info.provider)) return null;
+        for (Item item : load(context, widgetId)) {
+            if (item.uri.equals(uri) && AttachmentSafety.document(android.net.Uri.parse(item.uri), item.mime, item.name))
+                return item;
+        }
+        return null;
+    }
+
     public static List<Item> load(Context context, int widgetId) {
         ArrayList<Item> out = new ArrayList<>();
         String raw = prefs(context).getString(key(widgetId), "[]");

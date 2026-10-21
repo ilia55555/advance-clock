@@ -39,6 +39,8 @@
         android:theme="@style/Theme.AdvanceClock"
         android:usesCleartextTraffic="false">
 
+        <provider android:name=".SafeDocumentProvider" android:authorities="${applicationId}.checkeddocuments"
+            android:exported="false" android:grantUriPermissions="true" />
         <provider android:name=".AlarmMediaProvider" android:authorities="${applicationId}.alarmmedia"
             android:exported="false" android:grantUriPermissions="true" />
         <activity android:name=".AlarmAttachmentEditorActivity" android:screenOrientation="portrait" android:exported="false" />

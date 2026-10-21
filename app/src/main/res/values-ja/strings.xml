@@ -916,6 +916,6 @@
     <string name="alert_sound_hint_understood">わかりました</string>
     <string name="timer_clear_fields">クリア</string>
     <string name="tool_reset_label">リセット</string>
-    <string name="attachment_open_blocked">インストールパッケージやウェブ以外のリンクは開けません。</string>
+    <string name="attachment_open_blocked">このファイルは開けません。実行ファイルやインストールパッケージは禁止されています。外部アプリで開くファイルの上限は64 MiBです。</string>
     <string name="media_search_apps">アプリを検索</string>
 </resources>
