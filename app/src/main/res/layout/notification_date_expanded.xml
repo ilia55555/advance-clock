@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="96dp">
+    android:layout_height="64dp">
 
     <ImageView
         android:id="@+id/date_notification_background"
@@ -18,11 +18,11 @@
         android:orientation="horizontal"
         android:layoutDirection="locale"
         android:gravity="center_vertical"
-        android:padding="6dp">
+        android:padding="4dp">
 
         <FrameLayout
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/bg_date_notification_day">
 
             <ImageView
@@ -38,14 +38,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textColor="@color/app_text"
-                android:textSize="36sp"
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:includeFontPadding="false"
                 android:padding="4dp"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="16sp"
-                android:autoSizeMaxTextSize="36sp"
+                android:autoSizeMaxTextSize="28sp"
                 android:autoSizeStepGranularity="1sp"
                 android:importantForAccessibility="no" />
         </FrameLayout>
@@ -68,14 +68,14 @@
                 android:gravity="start|center_vertical"
                 android:textDirection="firstStrong"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="12sp"
-                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeMaxTextSize="16sp"
                 android:autoSizeStepGranularity="1sp" />
 
             <TextView
@@ -83,17 +83,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.6"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:gravity="start|center_vertical"
                 android:textDirection="firstStrong"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="13sp"
                 android:includeFontPadding="false"
                 android:maxLines="2"
                 android:ellipsize="end"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="12sp"
-                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMaxTextSize="13sp"
                 android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </LinearLayout>

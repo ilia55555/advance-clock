@@ -194,8 +194,8 @@ public final class DateNotificationService extends Service {
         int primary = AppSettings.primaryColor(context);
         int text = Color.luminance(primary) > 0.179f ? Color.BLACK : Color.WHITE;
         views.setInt(R.id.date_notification_background, "setColorFilter", primary);
-        views.setInt(R.id.date_notification_day_border, "setColorFilter", primary);
-        views.setTextColor(R.id.date_notification_day, Color.BLACK);
+        views.setInt(R.id.date_notification_day_border, "setColorFilter", Color.WHITE);
+        views.setTextColor(R.id.date_notification_day, Color.WHITE);
         views.setTextColor(R.id.date_notification_title, text);
         views.setTextColor(R.id.date_notification_other_dates, text);
         views.setTextViewText(R.id.date_notification_title, title);
