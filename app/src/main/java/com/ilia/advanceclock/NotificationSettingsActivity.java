@@ -28,6 +28,7 @@ public final class NotificationSettingsActivity extends Activity {
     private Switch alarmFullscreenLocked;
     private boolean permissionRequestInFlight;
     private Button notificationPermissionButton, exactPermissionButton, fullscreenPermissionButton;
+    private Button dateChannelButton;
     private boolean hadExactPermission;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +112,11 @@ public final class NotificationSettingsActivity extends Activity {
                 root,
                 AppString.get(R.string.runtime_text_0071),
                 AppSettings.persistentDateNotificationEnabled(this));
+
+        dateChannelButton = permissionButton(root, R.string.date_channel_settings, () ->
+                startActivity(new android.content.Intent(android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                        .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, getPackageName())
+                        .putExtra(android.provider.Settings.EXTRA_CHANNEL_ID, DateNotificationService.CHANNEL)));
 
         persistentExtraCalendars = addSwitch(
                 root,
@@ -196,6 +202,8 @@ public final class NotificationSettingsActivity extends Activity {
     private void refreshPermissionState() {
         boolean notifications = PermissionHelper.notificationsGranted(this);
         notificationPermissionButton.setVisibility(notifications ? View.GONE : View.VISIBLE);
+        dateChannelButton.setVisibility(notifications && persistentDate.isChecked()
+                && DateNotificationService.isChannelBlocked(this) ? View.VISIBLE : View.GONE);
         boolean exact = PermissionHelper.exactAlarmsGranted(this);
         exactPermissionButton.setVisibility(exact ? View.GONE : View.VISIBLE);
         boolean fullscreen = notifications && PermissionHelper.fullScreenGranted(this);
@@ -287,6 +295,7 @@ public final class NotificationSettingsActivity extends Activity {
         }
 
         applyPersistentNotificationState();
+        refreshPermissionState();
         setResult(RESULT_OK);
     }
 
@@ -325,7 +334,6 @@ public final class NotificationSettingsActivity extends Activity {
                 && notificationPermissionGranted()) {
             try {
                 DateNotificationService.start(this);
-                DateNotificationService.refreshNow(this);
             } catch (Exception ignored) {
             }
         } else {

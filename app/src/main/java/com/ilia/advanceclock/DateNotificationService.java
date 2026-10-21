@@ -10,20 +10,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.BidiFormatter;
 import android.view.View;
-import android.widget.RemoteViews;
 
 public final class DateNotificationService extends Service {
     public static final String CHANNEL = "advance_clock_date_v1";
@@ -80,14 +70,25 @@ public final class DateNotificationService extends Service {
         NotificationManager manager =
                 context.getSystemService(NotificationManager.class);
         if (manager == null) return;
+        if (!manager.areNotificationsEnabled() || isChannelBlocked(context)) {
+            stop(context);
+            return;
+        }
 
         try {
             manager.notify(
                     ID,
                     buildNotification(context));
             scheduleNextRefresh(context);
-        } catch (SecurityException ignored) {
+        } catch (RuntimeException error) {
+            android.util.Log.e("DateNotification", "Unable to post date notification", error);
         }
+    }
+
+    static boolean isChannelBlocked(Context context) {
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        NotificationChannel channel = manager == null ? null : manager.getNotificationChannel(CHANNEL);
+        return channel != null && channel.getImportance() == NotificationManager.IMPORTANCE_NONE;
     }
 
     @Override
@@ -177,35 +178,11 @@ public final class DateNotificationService extends Service {
                 .setPriority(Notification.PRIORITY_LOW)
                 .setColor(AppSettings.primaryColor(context))
                 .setColorized(false)
-                .setStyle(new Notification.DecoratedCustomViewStyle())
-                .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day))
-                .setCustomBigContentView(dateView(context, R.layout.notification_date_expanded, title, twoOtherDates.toString(), day));
+                .setStyle(new Notification.BigTextStyle().bigText(twoOtherDates.toString()));
 
-        // minSdk is 26: the actual status-bar small icon always contains today's day.
-        builder.setSmallIcon(Icon.createWithBitmap(dayIcon(day)));
+        // Use resource-backed monochrome icons for System UI/OEM compatibility; keep the day number.
+        builder.setSmallIcon(DAY_ICONS[Math.max(1, Math.min(31, day)) - 1]);
         return builder.build();
-    }
-
-    private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), layout);
-        int primary = AppSettings.primaryColor(context);
-        int text = Color.luminance(primary) > 0.179f ? Color.BLACK : Color.WHITE;
-        views.setInt(R.id.date_notification_background, "setColorFilter", primary);
-        views.setInt(R.id.date_notification_day_border, "setColorFilter", primary);
-        views.setTextColor(R.id.date_notification_day, primary);
-        views.setTextColor(R.id.date_notification_title, text);
-        views.setTextColor(R.id.date_notification_other_dates, text);
-        views.setTextViewText(R.id.date_notification_title, title);
-        views.setTextViewText(R.id.date_notification_other_dates, otherDates);
-        views.setTextViewText(R.id.date_notification_day, CalendarUtils.fa(day));
-        views.setViewVisibility(R.id.date_notification_other_dates, otherDates.isEmpty() ? View.GONE : View.VISIBLE);
-        // The first child is the day badge: left in English, right in Persian/Arabic.
-        int direction = AppSettings.layoutDirection(context);
-        views.setInt(R.id.date_notification_row, "setLayoutDirection", direction);
-        views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
-        // Text direction comes from XML: setTextDirection is not permitted by RemoteViews.
-        // Calling it through setInt causes System UI to reject the whole notification.
-        return views;
     }
 
     private static PendingIntent refreshOperation(Context context, int flags) {
@@ -231,26 +208,37 @@ public final class DateNotificationService extends Service {
         catch (SecurityException ignored) {}
     }
 
-    private static Bitmap dayIcon(int day) {
-        Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        Paint circle = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circle.setColor(Color.WHITE);
-        canvas.drawCircle(48f, 48f, 46f, circle);
-
-        Paint digits = new Paint(Paint.ANTI_ALIAS_FLAG);
-        digits.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        digits.setTextSize(day >= 10 ? 74f : 88f);
-        String value = CalendarUtils.fa(day);
-        Rect bounds = new Rect();
-        digits.getTextBounds(value, 0, value.length(), bounds);
-        float fit = Math.min(1f, Math.min(68f / Math.max(1, bounds.width()), 66f / Math.max(1, bounds.height())));
-        digits.setTextSize(digits.getTextSize() * fit);
-        digits.getTextBounds(value, 0, value.length(), bounds);
-        // Small icons are alpha masks: transparent digits remain legible after system tinting.
-        digits.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        canvas.drawText(value, 48f - bounds.exactCenterX(), 48f - bounds.exactCenterY(), digits);
-        digits.setXfermode(null);
-        return bitmap;
-    }
+    private static final int[] DAY_ICONS = {
+        R.drawable.ic_status_day_01,
+        R.drawable.ic_status_day_02,
+        R.drawable.ic_status_day_03,
+        R.drawable.ic_status_day_04,
+        R.drawable.ic_status_day_05,
+        R.drawable.ic_status_day_06,
+        R.drawable.ic_status_day_07,
+        R.drawable.ic_status_day_08,
+        R.drawable.ic_status_day_09,
+        R.drawable.ic_status_day_10,
+        R.drawable.ic_status_day_11,
+        R.drawable.ic_status_day_12,
+        R.drawable.ic_status_day_13,
+        R.drawable.ic_status_day_14,
+        R.drawable.ic_status_day_15,
+        R.drawable.ic_status_day_16,
+        R.drawable.ic_status_day_17,
+        R.drawable.ic_status_day_18,
+        R.drawable.ic_status_day_19,
+        R.drawable.ic_status_day_20,
+        R.drawable.ic_status_day_21,
+        R.drawable.ic_status_day_22,
+        R.drawable.ic_status_day_23,
+        R.drawable.ic_status_day_24,
+        R.drawable.ic_status_day_25,
+        R.drawable.ic_status_day_26,
+        R.drawable.ic_status_day_27,
+        R.drawable.ic_status_day_28,
+        R.drawable.ic_status_day_29,
+        R.drawable.ic_status_day_30,
+        R.drawable.ic_status_day_31
+    };
 }
