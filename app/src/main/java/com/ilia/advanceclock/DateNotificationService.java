@@ -203,9 +203,8 @@ public final class DateNotificationService extends Service {
         int direction = AppSettings.layoutDirection(context);
         views.setInt(R.id.date_notification_row, "setLayoutDirection", direction);
         views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
-        int textDirection = direction == View.LAYOUT_DIRECTION_RTL ? View.TEXT_DIRECTION_RTL : View.TEXT_DIRECTION_LTR;
-        views.setInt(R.id.date_notification_title, "setTextDirection", textDirection);
-        views.setInt(R.id.date_notification_other_dates, "setTextDirection", textDirection);
+        // Text direction comes from XML: setTextDirection is not permitted by RemoteViews.
+        // Calling it through setInt causes System UI to reject the whole notification.
         return views;
     }
 
