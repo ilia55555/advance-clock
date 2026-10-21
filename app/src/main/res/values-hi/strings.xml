@@ -918,4 +918,18 @@
     <string name="tool_reset_label">रीसेट करें</string>
     <string name="attachment_open_blocked">यह फ़ाइल नहीं खोली जा सकती। निष्पादन और इंस्टॉलेशन फ़ाइलें अवरुद्ध हैं। बाहरी ऐप के लिए सीमा 64 MiB है।</string>
     <string name="media_search_apps">ऐप खोजें</string>
+    <string name="smart_note_title">Smart note</string>
+    <string name="smart_note_hint">Type or dictate a reminder. Review its date, time and repetition in the preview before saving.</string>
+    <string name="smart_insert_time">Insert time</string>
+    <string name="smart_voice_input">Dictate</string>
+    <string name="smart_voice_unavailable">Speech input is unavailable on this device. Use the keyboard instead.</string>
+    <string name="smart_missing_time">No time specified. Use Insert time to add one.</string>
+    <string name="smart_invalid_schedule">Invalid time or repeat interval. Review your text.</string>
+    <string name="smart_saved_count">Saved: %1$d; failed: %2$d</string>
+    <string name="smart_save_notes">Save notes</string>
+    <string name="smart_notes_preview">Notes preview • </string>
+    <string name="smart_notes_empty">No reminder has been detected yet.</string>
+    <string name="smart_edit_note">Edit note</string>
+    <string name="smart_voice_privacy">Dictation uses the device speech service; offline availability depends on your device and settings.</string>
+    <string name="recurrence_interval_minutes">Repeat interval in minutes</string>
 </resources>

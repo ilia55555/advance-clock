@@ -53,7 +53,7 @@ public final class NoForgetItem {
         this.dueAtMillis=dueAtMillis;
         this.reminderEnabled=reminderEnabled;
         this.createdAt=createdAt;
-        this.recurrenceMode=Math.max(0,Math.min(7,recurrenceMode));
+        this.recurrenceMode=Math.max(0,Math.min(RecurrenceUtils.INTERVAL_MINUTES,recurrenceMode));
         this.intervalDays=Math.max(1,intervalDays);
         this.customDatesJson=customDatesJson==null?"[]":customDatesJson;
     }

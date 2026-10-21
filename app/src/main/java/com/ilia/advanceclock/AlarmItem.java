@@ -67,7 +67,7 @@ public final class AlarmItem {
         this.enabled=enabled;
         this.vibrate=vibrate;
         this.priority=PriorityUtils.clamp(priority);
-        this.recurrenceMode=Math.max(0,Math.min(7,recurrenceMode));
+        this.recurrenceMode=Math.max(0,Math.min(RecurrenceUtils.INTERVAL_MINUTES,recurrenceMode));
         this.intervalDays=Math.max(1,intervalDays);
         this.customDatesJson=customDatesJson==null?"[]":customDatesJson;
         this.snoozeMinutes=Math.max(5,snoozeMinutes);

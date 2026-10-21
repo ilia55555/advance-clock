@@ -1231,7 +1231,7 @@
     <string name="about_privacy_location_title" formatted="false">الموقع والطلبات عبر الإنترنت</string>
     <string name="about_privacy_location_body" formatted="false">الوصول إلى الموقع اختياري ويُستخدم لمواقيت الصلاة واتجاه القبلة واختيار المكان عند استخدام الأدوات ذات الصلة. يمكنك اختيار الموقع يدويًا. لا يطلب التطبيق إذن الموقع في الخلفية ولا يتتبع تحركاتك باستمرار. قد تبقى الإحداثيات المحفوظة في الإعدادات.\n\nيرسل البحث عبر الإنترنت عن المدن عبارة البحث إلى OpenStreetMap/Nominatim. لتحديد المنطقة الزمنية، قد تُرسل الإحداثيات المختارة أو المحفوظة إلى TimeAPI على timeapi.io، ثم إلى Open-Meteo على api.open-meteo.com عند الحاجة. قد يجري إصلاح منطقة زمنية لموقع قديم هذا الطلب عند بدء التطبيق إذا تعذّر الحل دون اتصال. قد يرسل Geocoder في أندرويد أسماء الأماكن أو الإحداثيات إلى مزوّد الموقع في جهازك. يمكن أن تكشف هذه الطلبات الموقع الدقيق عند استخدام إحداثيات دقيقة.</string>
     <string name="about_privacy_providers_title" formatted="false">الجهات الخارجية والمشاركة</string>
-    <string name="about_privacy_providers_body" formatted="false">تُرسل طلبات الشبكة عبر HTTPS. يمكن للخدمة المستقبلة رؤية عنوان IP وعبارة البحث أو الإحداثيات المرسلة وبيانات الطلب المعتادة. تتحكم هذه الجهات بمعالجتها وفترة الاحتفاظ بها وفق سياساتها؛ روابطها في قسم المصادر والتراخيص. لا يشغّل المطوّر خادمًا يستقبل هذه الطلبات ولا يبيع محتواك المحلي.\n\nفتح تطبيق أو رابط أو ملف مرفق، واستخدام تطبيق الكاميرا، واختيار ملفات سحابية، وزيارة مواقع الدعم والسياسات، يتضمن التطبيق أو المزوّد الذي تختاره وشروطه الخاصة. يحصل عارض الملفات الخارجي على إذن الوصول إلى الملف الذي تختار فتحه.</string>
+    <string name="about_privacy_providers_body" formatted="false">تُرسل طلبات الشبكة عبر HTTPS. يمكن للخدمة المستقبلة رؤية عنوان IP وعبارة البحث أو الإحداثيات المرسلة وبيانات الطلب المعتادة. تتحكم هذه الجهات بمعالجتها وفترة الاحتفاظ بها وفق سياساتها؛ روابطها في قسم المصادر والتراخيص. لا يشغّل المطوّر خادمًا يستقبل هذه الطلبات ولا يبيع محتواك المحلي.\n\nفتح تطبيق أو رابط أو ملف مرفق، واستخدام تطبيق الكاميرا، واختيار ملفات سحابية، وزيارة مواقع الدعم والسياسات، يتضمن التطبيق أو المزوّد الذي تختاره وشروطه الخاصة. يحصل عارض الملفات الخارجي على إذن الوصول إلى الملف الذي تختار فتحه.\n\nيستخدم الإدخال الصوتي خدمة التعرف على الكلام في الجهاز ويطلب المعالجة دون اتصال. يعتمد توفرها والعمل دون اتصال على الجهاز والمزود والإعدادات؛ وقد تعالج الخدمة الكلام عبر الإنترنت. لا تتطلب الكتابة وتحليل المواعيد التعرف على الكلام.</string>
     <string name="about_privacy_media_title" formatted="false">الصور والملفات واختصارات التطبيقات</string>
     <string name="about_privacy_media_body" formatted="false">يمنح منتقي أندرويد الوصول إلى الصور والملفات التي تختارها. يُستخدم تطبيق الكاميرا المثبّت لديك لالتقاط الصور، مع إذن مؤقت لحفظ الصورة. قد تُحفظ الصور الأصلية والنسخ المقصوصة محليًا لإعادة ضبط الإطار. لإنشاء اختصار، تُقرأ أسماء وأيقونات ومعرّفات التطبيقات القابلة للتشغيل، وتُحفظ اختصاراتك المختارة محليًا فقط؛ لا تُرفع قائمة التطبيقات المثبّتة.</string>
     <string name="about_privacy_security_title" formatted="false">التخزين والأمان</string>
@@ -1283,4 +1283,18 @@
     <string name="tool_reset_label">إعادة ضبط</string>
     <string name="attachment_open_blocked">يتعذر فتح الملف. الملفات التنفيذية وحزم التثبيت محظورة؛ الحد الأقصى للفتح في تطبيق خارجي هو 64 ميبيبايت.</string>
     <string name="media_search_apps">البحث عن التطبيقات</string>
+    <string name="smart_note_title">Smart note</string>
+    <string name="smart_note_hint">Type or dictate a reminder. Review its date, time and repetition in the preview before saving.</string>
+    <string name="smart_insert_time">Insert time</string>
+    <string name="smart_voice_input">Dictate</string>
+    <string name="smart_voice_unavailable">Speech input is unavailable on this device. Use the keyboard instead.</string>
+    <string name="smart_missing_time">No time specified. Use Insert time to add one.</string>
+    <string name="smart_invalid_schedule">Invalid time or repeat interval. Review your text.</string>
+    <string name="smart_saved_count">Saved: %1$d; failed: %2$d</string>
+    <string name="smart_save_notes">Save notes</string>
+    <string name="smart_notes_preview">Notes preview • </string>
+    <string name="smart_notes_empty">No reminder has been detected yet.</string>
+    <string name="smart_edit_note">Edit note</string>
+    <string name="smart_voice_privacy">Dictation uses the device speech service; offline availability depends on your device and settings.</string>
+    <string name="recurrence_interval_minutes">Repeat interval in minutes</string>
 </resources>

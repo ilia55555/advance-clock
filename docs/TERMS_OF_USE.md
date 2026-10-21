@@ -4,7 +4,7 @@
 
 Developer / سازنده / المطوّر: **ایلیا بکتاش**
 
-Last updated: **2026-10-18**
+Last updated: **2026-10-21**
 
 <a id="english"></a>
 

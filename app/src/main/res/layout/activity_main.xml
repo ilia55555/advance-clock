@@ -792,6 +792,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <Button
+                    android:id="@+id/smart_note_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_soft_button"
+                    android:text="@string/smart_note_title"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/appPrimary" />
+
                 <LinearLayout
                     android:id="@+id/note_composer_card"
                     android:layout_width="match_parent"

@@ -34,6 +34,9 @@ public final class SmartAlarmParser {
         public int offsetMode = OFFSET_EXACT;
         public int offsetMinutes = 0;
         public String source = "";
+        public int recurrenceMode = RecurrenceUtils.NONE;
+        public int intervalDays = 1;
+        public String customDatesJson = "[]";
 
         public long baseMillis() {
             return CalendarUtils.toMillis(
@@ -135,6 +138,27 @@ public final class SmartAlarmParser {
         }
 
         parseNatural(context, text, result);
+        Iterator<Candidate> schedules = result.candidates.iterator();
+        while (schedules.hasNext()) {
+            Candidate candidate = schedules.next();
+            try {
+                NaturalScheduleParser.recurrence(candidate, candidate.source);
+                if (candidate.recurrenceMode != RecurrenceUtils.NONE && candidate.triggerMillis() <= System.currentTimeMillis()) {
+                    long trigger = RecurrenceUtils.next(candidate.triggerMillis(), candidate.recurrenceMode,
+                            candidate.intervalDays, candidate.customDatesJson, System.currentTimeMillis());
+                    if (trigger <= 0) throw new IllegalArgumentException("No future occurrence");
+                    long base = trigger + (candidate.baseMillis() - candidate.triggerMillis());
+                    android.icu.util.Calendar date = CalendarUtils.fromMillis(candidate.calendarType, base);
+                    candidate.year = date.get(android.icu.util.Calendar.YEAR);
+                    candidate.month = date.get(android.icu.util.Calendar.MONTH) + 1;
+                    candidate.day = date.get(android.icu.util.Calendar.DAY_OF_MONTH);
+                    candidate.hour = date.get(android.icu.util.Calendar.HOUR_OF_DAY);
+                    candidate.minute = date.get(android.icu.util.Calendar.MINUTE);
+                }
+            } catch (RuntimeException invalid) {
+                schedules.remove(); result.warnings.add(context.getString(R.string.smart_invalid_schedule));
+            }
+        }
         dedupe(result);
         if (result.candidates.isEmpty()) {
             result.warnings.add(AppString.get(R.string.smart_alarm_no_datetime));
@@ -266,9 +290,11 @@ public final class SmartAlarmParser {
 
         String[] lines = text.split("[\\n\\r]+");
         for (String line : lines) {
+            if (line.trim().isEmpty()) continue;
             // Numeric dates are paired with the nearest times across the complete text above.
             // Processing their individual lines again would lose multiline start/end times.
             if (DATE.matcher(line).find()) continue;
+            if (NaturalScheduleParser.parse(context, line, result)) continue;
             ArrayList<DateMatch> dates = new ArrayList<>();
             Matcher anchors = RELATIVE_DATE_ANCHOR.matcher(line);
             while (anchors.find()) {
@@ -559,6 +585,10 @@ public final class SmartAlarmParser {
 
         Matcher colon = TIME_COLON.matcher(text);
         while (colon.find()) {
+            Matcher dateWithin = DATE.matcher(text);
+            boolean insideDate = false;
+            while (dateWithin.find()) if (colon.start() < dateWithin.end() && colon.end() > dateWithin.start()) insideDate = true;
+            if (insideDate) continue;
             if (overlaps(out, colon.start(), colon.end())) continue;
             TimeParts t = new TimeParts(
                     safeInt(colon.group(1), -1),
@@ -744,6 +774,12 @@ public final class SmartAlarmParser {
         return null;
     }
 
+    static void applyNaturalDetails(Candidate candidate, String text) {
+        OffsetParts offset = offsetFromText(text);
+        candidate.offsetMode = offset.mode;
+        candidate.offsetMinutes = offset.minutes;
+    }
+
     private static OffsetParts offsetFromText(String text) {
         String s = normalize(text).toLowerCase(Locale.ROOT);
         Matcher m = Pattern.compile(
@@ -847,7 +883,7 @@ public final class SmartAlarmParser {
                     + ":" + c.hour + ":" + c.minute
                     + ":" + c.endHour + ":" + c.endMinute
                     + ":" + c.offsetMode + ":" + c.offsetMinutes
-                    + ":" + c.label;
+                    + ":" + c.recurrenceMode + ":" + c.intervalDays + ":" + c.customDatesJson + ":" + c.label;
             if (seen.add(key)) unique.add(c);
         }
         result.candidates.clear();
@@ -898,7 +934,7 @@ public final class SmartAlarmParser {
                 .replace('٩','9')
                 .replace('ي','ی').replace('ك','ک')
                 .replace("\u200f", "").replace("\u200e", "");
-        return out;
+        return NaturalScheduleParser.normalizeSpeech(out);
     }
 
     private static int safeInt(String value, int fallback) {

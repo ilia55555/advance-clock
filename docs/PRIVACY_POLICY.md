@@ -4,7 +4,7 @@
 
 Developer / سازنده / المطوّر: **ایلیا بکتاش**
 
-Last updated: **2026-10-18**
+Last updated: **2026-10-21**
 
 <a id="english"></a>
 
@@ -29,6 +29,8 @@ Online city searches send the search text to OpenStreetMap/Nominatim. To determi
 Network requests use HTTPS. The receiving service can see your IP address, the search or coordinates included in the request, and ordinary request metadata. Those providers control their own processing and retention; their policy links are listed under Sources and licenses. The developer does not operate a server that receives these requests and does not sell your local app content.
 
 Opening an attached app, link or file, using a camera app, selecting cloud-hosted files, or visiting a support/policy website involves the app or provider you choose and its own terms. An external file viewer receives access to the file you choose to open.
+
+Speech input uses the installed device speech recognizer and requests offline recognition. Availability and offline processing depend on the device, provider and settings; the provider may process speech online. Typing and schedule parsing do not require speech recognition.
 
 ### Photos, files and app shortcuts
 
@@ -77,6 +79,8 @@ Privacy information is available inside the app. No external support page or pri
 
 باز کردن برنامه، لینک یا فایل پیوست‌شده، استفاده از برنامهٔ دوربین، انتخاب فایل ابری یا رفتن به سایت پشتیبانی و سیاست‌ها، شامل برنامه یا ارائه‌دهندهٔ انتخابی شما و شرایط خودش است. نمایشگر فایل بیرونی، برای فایلی که خودتان باز می‌کنید اجازهٔ دسترسی می‌گیرد.
 
+ورودی گفتاری از سرویس تشخیص گفتار دستگاه استفاده می‌کند و پردازش آفلاین را درخواست می‌کند. در دسترس بودن و آفلاین بودن آن به دستگاه، ارائه‌دهنده و تنظیمات بستگی دارد؛ ممکن است سرویس، گفتار را آنلاین پردازش کند. تایپ و تحلیل زمان‌بندی به تشخیص گفتار نیاز ندارند.
+
 ### عکس، فایل و میان‌بر برنامه‌ها
 
 انتخاب‌گر اندروید اجازهٔ دسترسی به عکس‌ها و فایل‌هایی را می‌دهد که انتخاب می‌کنید. گرفتن عکس از برنامهٔ دوربین نصب‌شده، با اجازهٔ موقت برای ذخیرهٔ عکس، استفاده می‌کند. اصل عکس گرفته‌شده و نسخهٔ برش‌خورده ممکن است برای تنظیم دوبارهٔ قاب، محلی نگهداری شوند. برای ساخت میان‌بر، نام و آیکون و شناسهٔ برنامه‌های قابل اجرا خوانده می‌شود و فقط میان‌برهای انتخابی شما محلی ذخیره می‌شوند؛ فهرست برنامه‌های نصب‌شده ارسال نمی‌شود.
@@ -123,6 +127,8 @@ Privacy information is available inside the app. No external support page or pri
 تُرسل طلبات الشبكة عبر HTTPS. يمكن للخدمة المستقبلة رؤية عنوان IP وعبارة البحث أو الإحداثيات المرسلة وبيانات الطلب المعتادة. تتحكم هذه الجهات بمعالجتها وفترة الاحتفاظ بها وفق سياساتها؛ روابطها في قسم المصادر والتراخيص. لا يشغّل المطوّر خادمًا يستقبل هذه الطلبات ولا يبيع محتواك المحلي.
 
 فتح تطبيق أو رابط أو ملف مرفق، واستخدام تطبيق الكاميرا، واختيار ملفات سحابية، وزيارة مواقع الدعم والسياسات، يتضمن التطبيق أو المزوّد الذي تختاره وشروطه الخاصة. يحصل عارض الملفات الخارجي على إذن الوصول إلى الملف الذي تختار فتحه.
+
+يستخدم الإدخال الصوتي خدمة التعرف على الكلام في الجهاز ويطلب المعالجة دون اتصال. يعتمد توفرها والعمل دون اتصال على الجهاز والمزود والإعدادات؛ وقد تعالج الخدمة الكلام عبر الإنترنت. لا تتطلب الكتابة وتحليل المواعيد التعرف على الكلام.
 
 ### الصور والملفات واختصارات التطبيقات
 

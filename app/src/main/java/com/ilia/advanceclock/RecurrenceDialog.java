@@ -35,7 +35,7 @@ public final class RecurrenceDialog {
                 android.R.layout.simple_spinner_item, RecurrenceUtils.labels());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modeSpinner.setAdapter(adapter);
-        modeSpinner.setSelection(Math.max(0, Math.min(7, mode)));
+        modeSpinner.setSelection(Math.max(0, Math.min(RecurrenceUtils.INTERVAL_MINUTES, mode)));
         root.addView(modeSpinner, new LinearLayout.LayoutParams(-1, dp(context,54)));
 
         TextView intervalLabel = new TextView(context);
@@ -46,7 +46,7 @@ public final class RecurrenceDialog {
 
         NumberPicker interval = new NumberPicker(context);
         interval.setMinValue(1);
-        interval.setMaxValue(365);
+        interval.setMaxValue(mode == RecurrenceUtils.INTERVAL_MINUTES ? 525600 : Math.max(365, intervalDays));
         interval.setValue(Math.max(1, intervalDays));
         root.addView(interval, new LinearLayout.LayoutParams(-1, dp(context,110)));
 
@@ -104,7 +104,10 @@ public final class RecurrenceDialog {
 
         Runnable refresh = () -> {
             int selectedMode = modeSpinner.getSelectedItemPosition();
-            boolean intervalVisible = selectedMode == RecurrenceUtils.INTERVAL_DAYS;
+            interval.setMaxValue(selectedMode == RecurrenceUtils.INTERVAL_MINUTES ? 525600 : Math.max(365, intervalDays));
+            boolean intervalVisible = selectedMode == RecurrenceUtils.INTERVAL_DAYS || selectedMode == RecurrenceUtils.INTERVAL_MINUTES;
+            intervalLabel.setText(selectedMode == RecurrenceUtils.INTERVAL_MINUTES
+                    ? R.string.recurrence_interval_minutes : R.string.runtime_text_0288);
             boolean datesVisible = selectedMode == RecurrenceUtils.CUSTOM_DATES;
             boolean weekdaysVisible = selectedMode == RecurrenceUtils.WEEKDAYS;
             intervalLabel.setVisibility(intervalVisible ? View.VISIBLE : View.GONE);

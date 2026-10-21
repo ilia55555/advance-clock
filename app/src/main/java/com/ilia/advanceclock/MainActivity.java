@@ -196,6 +196,8 @@ public final class MainActivity extends Activity {
                 pinWidgetAndExit(ClockWidgetProvider.class));
         findViewById(R.id.smart_alarm_button).setOnClickListener(v ->
                 startActivity(new Intent(this, SmartAlarmActivity.class)));
+        findViewById(R.id.smart_note_button).setOnClickListener(v ->
+                startActivity(new Intent(this, SmartAlarmActivity.class).putExtra("smartNote", true)));
         findViewById(R.id.add_noforget_widget).setOnClickListener(v ->
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
 

@@ -1213,7 +1213,7 @@
     <string name="about_privacy_location_title" formatted="false">Location and online requests</string>
     <string name="about_privacy_location_body" formatted="false">Location is optional and is used for prayer times, Qibla direction and location selection when you use those tools. You may select a location manually instead. The app does not request background-location permission or continuously track your movements. Saved coordinates can remain in settings.\n\nOnline city searches send the search text to OpenStreetMap/Nominatim. To determine a time zone, selected or saved coordinates may be sent to TimeAPI (timeapi.io) and, as a fallback, Open-Meteo (api.open-meteo.com). Repairing an older saved prayer location can also perform this lookup on app startup if offline resolution fails. Android’s Geocoder may send place names or coordinates to the location service configured by your device. These requests can reveal precise location when exact coordinates are used.</string>
     <string name="about_privacy_providers_title" formatted="false">Third parties and sharing</string>
-    <string name="about_privacy_providers_body" formatted="false">Network requests use HTTPS. The receiving service can see your IP address, the search or coordinates included in the request, and ordinary request metadata. Those providers control their own processing and retention; their policy links are listed under Sources and licenses. The developer does not operate a server that receives these requests and does not sell your local app content.\n\nOpening an attached app, link or file, using a camera app, selecting cloud-hosted files, or visiting a support/policy website involves the app or provider you choose and its own terms. An external file viewer receives access to the file you choose to open.</string>
+    <string name="about_privacy_providers_body" formatted="false">Network requests use HTTPS. The receiving service can see your IP address, the search or coordinates included in the request, and ordinary request metadata. Those providers control their own processing and retention; their policy links are listed under Sources and licenses. The developer does not operate a server that receives these requests and does not sell your local app content.\n\nOpening an attached app, link or file, using a camera app, selecting cloud-hosted files, or visiting a support/policy website involves the app or provider you choose and its own terms. An external file viewer receives access to the file you choose to open.\n\nSpeech input uses the installed device speech recognizer and requests offline recognition. Availability and offline processing depend on the device, provider and settings; the provider may process speech online. Typing and schedule parsing do not require speech recognition.</string>
     <string name="about_privacy_media_title" formatted="false">Photos, files and app shortcuts</string>
     <string name="about_privacy_media_body" formatted="false">Android’s system picker grants access to the photos and files you select. Taking a photo uses your installed camera app with a temporary grant to save the captured image. Captured originals and cropped images can be kept locally for reframing. To offer app shortcuts, the app reads names, icons and identifiers of launchable apps and stores only your chosen shortcuts locally; it does not upload an installed-app inventory.</string>
     <string name="about_privacy_security_title" formatted="false">Storage and security</string>
@@ -1246,7 +1246,7 @@
     <string name="about_timeapi_privacy" formatted="false">TimeAPI privacy policy</string>
     <string name="about_openmeteo_terms" formatted="false">Open-Meteo terms and privacy</string>
     <string name="about_developer_name" translatable="false">ایلیا بکتاش</string>
-    <string name="about_policy_date" translatable="false">2026-10-18</string>
+    <string name="about_policy_date" translatable="false">2026-10-21</string>
     <string name="reminder_count_summary">%1$s یادآوری</string>
     <string name="reminder_count_single">%1$s یادآوری</string>
     <string name="apply_alarm_date">اعمال تاریخ</string>
@@ -1267,4 +1267,18 @@
     <string name="tool_reset_label">بازنشانی</string>
     <string name="attachment_open_blocked">این فایل قابل باز کردن نیست. فایل‌های اجرایی و بسته‌های نصب مجاز نیستند؛ سقف ارسال فایل به برنامه‌های دیگر ۶۴ مگابایت است.</string>
     <string name="media_search_apps">جست‌وجوی اپ‌ها</string>
+    <string name="smart_note_title">یادداشت هوشمند</string>
+    <string name="smart_note_hint">متن را بنویسید یا بگویید؛ تاریخ، ساعت و تکرار یادآوری در پیش‌نمایش نمایش داده می‌شود. پس از بررسی، ذخیره کنید.</string>
+    <string name="smart_insert_time">درج ساعت</string>
+    <string name="smart_voice_input">ورودی گفتاری</string>
+    <string name="smart_voice_unavailable">ورودی گفتاری روی این دستگاه در دسترس نیست؛ از صفحه‌کلید استفاده کنید.</string>
+    <string name="smart_missing_time">ساعت مشخص نشده است؛ با دکمهٔ درج ساعت، زمان را اضافه کنید.</string>
+    <string name="smart_invalid_schedule">زمان یا فاصلهٔ تکرار معتبر نیست؛ متن را بررسی کنید.</string>
+    <string name="smart_saved_count">ذخیره‌شده: %1$d؛ ناموفق: %2$d</string>
+    <string name="smart_save_notes">ذخیرهٔ یادداشت‌ها</string>
+    <string name="smart_notes_preview">پیش‌نمایش یادداشت‌ها • </string>
+    <string name="smart_notes_empty">هنوز یادآوری‌ای شناسایی نشده است.</string>
+    <string name="smart_edit_note">ویرایش یادداشت</string>
+    <string name="smart_voice_privacy">ورودی گفتاری با سرویس دستگاه انجام می‌شود؛ آفلاین بودن آن به دستگاه و تنظیماتش بستگی دارد.</string>
+    <string name="recurrence_interval_minutes">فاصلهٔ تکرار بر حسب دقیقه</string>
 </resources>

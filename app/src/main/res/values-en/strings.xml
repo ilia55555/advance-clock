@@ -1213,7 +1213,7 @@ Lock screen</string>
     <string name="about_privacy_location_title" formatted="false">Location and online requests</string>
     <string name="about_privacy_location_body" formatted="false">Location is optional and is used for prayer times, Qibla direction and location selection when you use those tools. You may select a location manually instead. The app does not request background-location permission or continuously track your movements. Saved coordinates can remain in settings.\n\nOnline city searches send the search text to OpenStreetMap/Nominatim. To determine a time zone, selected or saved coordinates may be sent to TimeAPI (timeapi.io) and, as a fallback, Open-Meteo (api.open-meteo.com). Repairing an older saved prayer location can also perform this lookup on app startup if offline resolution fails. Android’s Geocoder may send place names or coordinates to the location service configured by your device. These requests can reveal precise location when exact coordinates are used.</string>
     <string name="about_privacy_providers_title" formatted="false">Third parties and sharing</string>
-    <string name="about_privacy_providers_body" formatted="false">Network requests use HTTPS. The receiving service can see your IP address, the search or coordinates included in the request, and ordinary request metadata. Those providers control their own processing and retention; their policy links are listed under Sources and licenses. The developer does not operate a server that receives these requests and does not sell your local app content.\n\nOpening an attached app, link or file, using a camera app, selecting cloud-hosted files, or visiting a support/policy website involves the app or provider you choose and its own terms. An external file viewer receives access to the file you choose to open.</string>
+    <string name="about_privacy_providers_body" formatted="false">Network requests use HTTPS. The receiving service can see your IP address, the search or coordinates included in the request, and ordinary request metadata. Those providers control their own processing and retention; their policy links are listed under Sources and licenses. The developer does not operate a server that receives these requests and does not sell your local app content.\n\nOpening an attached app, link or file, using a camera app, selecting cloud-hosted files, or visiting a support/policy website involves the app or provider you choose and its own terms. An external file viewer receives access to the file you choose to open.\n\nSpeech input uses the installed device speech recognizer and requests offline recognition. Availability and offline processing depend on the device, provider and settings; the provider may process speech online. Typing and schedule parsing do not require speech recognition.</string>
     <string name="about_privacy_media_title" formatted="false">Photos, files and app shortcuts</string>
     <string name="about_privacy_media_body" formatted="false">Android’s system picker grants access to the photos and files you select. Taking a photo uses your installed camera app with a temporary grant to save the captured image. Captured originals and cropped images can be kept locally for reframing. To offer app shortcuts, the app reads names, icons and identifiers of launchable apps and stores only your chosen shortcuts locally; it does not upload an installed-app inventory.</string>
     <string name="about_privacy_security_title" formatted="false">Storage and security</string>
@@ -1265,4 +1265,18 @@ Lock screen</string>
     <string name="tool_reset_label">Reset</string>
     <string name="attachment_open_blocked">Cannot open this file. Executables and installation packages are blocked; external viewers accept files up to 64 MiB.</string>
     <string name="media_search_apps">Search apps</string>
+    <string name="smart_note_title">Smart note</string>
+    <string name="smart_note_hint">Type or dictate a reminder. Review its date, time and repetition in the preview before saving.</string>
+    <string name="smart_insert_time">Insert time</string>
+    <string name="smart_voice_input">Dictate</string>
+    <string name="smart_voice_unavailable">Speech input is unavailable on this device. Use the keyboard instead.</string>
+    <string name="smart_missing_time">No time specified. Use Insert time to add one.</string>
+    <string name="smart_invalid_schedule">Invalid time or repeat interval. Review your text.</string>
+    <string name="smart_saved_count">Saved: %1$d; failed: %2$d</string>
+    <string name="smart_save_notes">Save notes</string>
+    <string name="smart_notes_preview">Notes preview • </string>
+    <string name="smart_notes_empty">No reminder has been detected yet.</string>
+    <string name="smart_edit_note">Edit note</string>
+    <string name="smart_voice_privacy">Dictation uses the device speech service; offline availability depends on your device and settings.</string>
+    <string name="recurrence_interval_minutes">Repeat interval in minutes</string>
 </resources>

@@ -37,6 +37,10 @@ import java.util.Locale;
 public final class SmartAlarmActivity extends Activity {
     private final ArrayList<SmartAlarmParser.Candidate> candidates = new ArrayList<>();
 
+    private boolean noteMode;
+    private final android.os.Handler liveHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable liveAnalysis = () -> analyzeInput(false);
+    private static final int VOICE_REQUEST = 7101;
     private EditText input;
     private TextView detection;
     private TextView warning;
@@ -51,6 +55,7 @@ public final class SmartAlarmActivity extends Activity {
         AppSettings.applyTheme(this);
         AppSettings.applyModalOverlay(this);
         super.onCreate(savedInstanceState);
+        noteMode = getIntent().getBooleanExtra("smartNote", false);
 
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
@@ -73,6 +78,12 @@ public final class SmartAlarmActivity extends Activity {
         AppSettings.applyFullscreenInsets(scroll);
         AppSettings.playFullscreenEnter(this);
         refreshPreview();
+        if (savedInstanceState != null) input.setText(savedInstanceState.getString("smartInput", ""));
+    }
+
+    @Override protected void onSaveInstanceState(Bundle out) {
+        out.putString("smartInput", input.getText().toString());
+        super.onSaveInstanceState(out);
     }
 
     private View buildTopBar() {
@@ -90,7 +101,7 @@ public final class SmartAlarmActivity extends Activity {
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
 
-        TextView title = text(AppString.get(R.string.runtime_text_0263), 25, AppSettings.textPrimary(this));
+        TextView title = text(getString(noteMode ? R.string.smart_note_title : R.string.runtime_text_0263), 25, AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
@@ -101,7 +112,7 @@ public final class SmartAlarmActivity extends Activity {
 
     private View buildIntro() {
         TextView intro = text(
-                AppString.get(R.string.runtime_text_0632)
+                noteMode ? getString(R.string.smart_note_hint) : AppString.get(R.string.runtime_text_0632)
                         + AppString.get(R.string.runtime_text_0633)
                         + AppString.get(R.string.runtime_text_0634),
                 12,
@@ -145,6 +156,7 @@ public final class SmartAlarmActivity extends Activity {
         card.addView(detection, detectionParams);
 
         input = new EditText(this);
+        input.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(10000)});
         input.setMinHeight(dp(230));
         input.setGravity(Gravity.TOP | Gravity.START);
         input.setBackgroundResource(R.drawable.bg_field);
@@ -165,6 +177,34 @@ public final class SmartAlarmActivity extends Activity {
         LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(-1, dp(240));
         inputParams.topMargin = dp(8);
         card.addView(input, inputParams);
+        LinearLayout helpers = new LinearLayout(this);
+        Button insertTime = softButton(getString(R.string.smart_insert_time));
+        insertTime.setTag("smart_insert_time");
+        insertTime.setOnClickListener(v -> {
+            Calendar now = Calendar.getInstance();
+            new TimePickerDialog(this, (view, hour, minute) -> insertText(
+                    String.format(Locale.US, "%02d:%02d", hour, minute)),
+                    now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show();
+        });
+        helpers.addView(insertTime, new LinearLayout.LayoutParams(0, dp(48), 1));
+        Button voice = softButton(getString(R.string.smart_voice_input));
+        voice.setOnClickListener(v -> {
+            Intent intent = new Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                    .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                    .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, AppString.locale().toLanguageTag())
+                    .putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+            try { startActivityForResult(intent, VOICE_REQUEST); }
+            catch (android.content.ActivityNotFoundException unavailable) {
+                Toast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+            }
+        });
+        LinearLayout.LayoutParams voiceParams = new LinearLayout.LayoutParams(0, dp(48), 1);
+        voiceParams.setMarginStart(dp(8)); helpers.addView(voice, voiceParams);
+        card.addView(helpers);
+        TextView speechPrivacy = text(getString(R.string.smart_voice_privacy), 11, AppSettings.textSecondary(this));
+        speechPrivacy.setPadding(0, dp(5), 0, dp(5));
+        card.addView(speechPrivacy);
+
 
         Button simplify = softButton(AppString.get(R.string.runtime_text_0640));
         simplify.setOnClickListener(v -> simplifyInput());
@@ -200,6 +240,9 @@ public final class SmartAlarmActivity extends Activity {
                 boolean enabled = s != null && !s.toString().trim().isEmpty();
                 analyze.setEnabled(enabled);
                 analyze.setAlpha(enabled ? 1f : 0.55f);
+                if (saveAll != null) saveAll.setEnabled(false);
+                liveHandler.removeCallbacks(liveAnalysis);
+                liveHandler.postDelayed(liveAnalysis, 350);
             }
 
             @Override public void afterTextChanged(Editable s) {}
@@ -323,7 +366,7 @@ public final class SmartAlarmActivity extends Activity {
         previewList.setLayoutDirection(AppSettings.layoutDirection(this));
         card.addView(previewList, new LinearLayout.LayoutParams(-1, -2));
 
-        saveAll = primaryButton(AppString.get(R.string.runtime_text_0274));
+        saveAll = primaryButton(noteMode ? getString(R.string.smart_save_notes) : AppString.get(R.string.runtime_text_0274));
         saveAll.setEnabled(false);
         saveAll.setAlpha(0.55f);
         LinearLayout.LayoutParams saveParams = new LinearLayout.LayoutParams(-1, dp(56));
@@ -358,12 +401,39 @@ public final class SmartAlarmActivity extends Activity {
         input.setSelection(input.length());
     }
 
-    private void analyzeInput() {
+    private void insertText(String value) {
+        int start = Math.max(0, input.getSelectionStart());
+        int end = Math.max(start, input.getSelectionEnd());
+        String inserted = " " + value + " ";
+        input.getText().replace(start, end, inserted);
+        input.setSelection(Math.min(input.length(), start + inserted.length()));
+        analyzeInput(false);
+    }
+
+    @Override protected void onActivityResult(int request, int result, Intent data) {
+        super.onActivityResult(request, result, data);
+        if (request == VOICE_REQUEST && result == RESULT_OK && data != null) {
+            ArrayList<String> speech = data.getStringArrayListExtra(android.speech.RecognizerIntent.EXTRA_RESULTS);
+            if (speech != null && !speech.isEmpty()) insertText(speech.get(0));
+        }
+    }
+
+    @Override protected void onDestroy() {
+        liveHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    private void analyzeInput() { analyzeInput(true); }
+
+    private void analyzeInput(boolean notify) {
+        liveHandler.removeCallbacks(liveAnalysis);
         SmartAlarmParser.Result result =
                 SmartAlarmParser.parse(this, input.getText().toString());
 
         candidates.clear();
         candidates.addAll(result.candidates);
+        if (noteMode) for (SmartAlarmParser.Candidate candidate : candidates)
+            if (getString(R.string.runtime_text_0263).equals(candidate.label)) candidate.label = getString(R.string.smart_note_title);
         detection.setText(result.jsonDetected
                 ? AppString.get(R.string.runtime_text_0651)
                 : AppString.get(R.string.runtime_text_0652));
@@ -380,7 +450,7 @@ public final class SmartAlarmActivity extends Activity {
         }
 
         refreshPreview();
-        if (!candidates.isEmpty()) {
+        if (notify && !candidates.isEmpty()) {
             LogoToast.makeText(
                     this,
                     CalendarUtils.fa(candidates.size()) + AppString.get(R.string.runtime_text_0653),
@@ -410,13 +480,13 @@ public final class SmartAlarmActivity extends Activity {
         previewList.removeAllViews();
 
         previewTitle.setText(
-                AppString.get(R.string.runtime_text_0654)
+                (noteMode ? getString(R.string.smart_notes_preview) : AppString.get(R.string.runtime_text_0654))
                         + CalendarUtils.fa(candidates.size())
                         + AppString.get(R.string.runtime_text_0655));
 
         if (candidates.isEmpty()) {
             TextView empty = text(
-                    AppString.get(R.string.runtime_text_0284),
+                    noteMode ? getString(R.string.smart_notes_empty) : AppString.get(R.string.runtime_text_0284),
                     12,
                     AppSettings.textSecondary(this));
             empty.setGravity(Gravity.CENTER);
@@ -466,6 +536,7 @@ public final class SmartAlarmActivity extends Activity {
         }
         detail.append(AppString.get(R.string.runtime_text_0658)).append(candidate.triggerTimeText());
         detail.append("  •  ").append(candidate.offsetText());
+        detail.append("\n").append(RecurrenceUtils.summary(candidate.recurrenceMode, candidate.intervalDays, candidate.customDatesJson));
         detail.append("  •  ").append(CalendarUtils.calendarName(candidate.calendarType));
         if (past) detail.append(AppString.get(R.string.runtime_text_0659));
 
@@ -603,7 +674,7 @@ public final class SmartAlarmActivity extends Activity {
                 true).show());
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(AppString.get(R.string.runtime_text_0280))
+                .setTitle(noteMode ? getString(R.string.smart_edit_note) : AppString.get(R.string.runtime_text_0280))
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
                 .setPositiveButton(AppString.get(R.string.runtime_text_0005), null)
@@ -632,6 +703,7 @@ public final class SmartAlarmActivity extends Activity {
     }
 
     private void saveAllAlarms() {
+        if (noteMode) { saveAllNotes(); return; }
         if (candidates.isEmpty()) return;
 
         AlarmStore store = new AlarmStore(this);
@@ -652,7 +724,7 @@ public final class SmartAlarmActivity extends Activity {
                 continue;
             }
 
-            if (isDuplicate(existing, candidate.label, trigger)) {
+            if (isDuplicate(existing, candidate, trigger)) {
                 skippedDuplicate++;
                 continue;
             }
@@ -668,9 +740,9 @@ public final class SmartAlarmActivity extends Activity {
                     true,
                     state.vibrate,
                     state.priority,
-                    RecurrenceUtils.NONE,
-                    1,
-                    "[]",
+                    candidate.recurrenceMode,
+                    candidate.intervalDays,
+                    candidate.customDatesJson,
                     15,
                     AlarmReminderUtils.MODE_NONE,
                     "[]");
@@ -735,14 +807,47 @@ public final class SmartAlarmActivity extends Activity {
         finish();
     }
 
+    private void saveAllNotes() {
+        NoForgetStore store = new NoForgetStore(this);
+        long now = System.currentTimeMillis();
+        int saved = 0, failed = 0;
+        for (SmartAlarmParser.Candidate candidate : candidates) {
+            long trigger = candidate.triggerMillis();
+            if (trigger <= now) continue;
+            boolean duplicate = false;
+            for (NoForgetItem existing : store.all())
+                if (existing.title.equals(candidate.label) && existing.dueAtMillis == trigger
+                        && existing.recurrenceMode == candidate.recurrenceMode && existing.intervalDays == candidate.intervalDays
+                        && existing.customDatesJson.equals(candidate.customDatesJson)) duplicate = true;
+            if (duplicate) continue;
+            long id = Math.max(now + saved + failed, 1_000_000L);
+            while (store.find(id) != null) id++;
+            CandidateUiState state = CandidateUiState.get(candidate);
+            NoForgetItem item = new NoForgetItem(id, candidate.label, candidate.source, "[]", state.priority,
+                    true, trigger, true, now, candidate.recurrenceMode, candidate.intervalDays, candidate.customDatesJson);
+            item.vibrate = state.vibrate;
+            try {
+                store.save(item);
+                if (!NoForgetScheduler.schedule(this, item)) { store.delete(id); failed++; continue; }
+                saved++;
+            } catch (RuntimeException error) { store.delete(id); failed++; }
+        }
+        NoForgetWidgetProvider.updateAll(this);
+        Toast.makeText(this, getString(R.string.smart_saved_count, saved, failed), Toast.LENGTH_LONG).show();
+        if (saved > 0) { setResult(RESULT_OK); finish(); }
+    }
+
     private boolean isDuplicate(
             List<AlarmItem> existing,
-            String label,
+            SmartAlarmParser.Candidate candidate,
             long trigger) {
-        String normalizedLabel = label == null ? "" : label.trim();
+        String normalizedLabel = candidate.label == null ? "" : candidate.label.trim();
         for (AlarmItem item : existing) {
             if (Math.abs(item.triggerAtMillis - trigger) < 60_000L
-                    && item.label.trim().equalsIgnoreCase(normalizedLabel)) {
+                    && item.label.trim().equalsIgnoreCase(normalizedLabel)
+                    && item.recurrenceMode == candidate.recurrenceMode
+                    && item.intervalDays == candidate.intervalDays
+                    && item.customDatesJson.equals(candidate.customDatesJson)) {
                 return true;
             }
         }
@@ -770,6 +875,9 @@ public final class SmartAlarmActivity extends Activity {
         target.offsetMode = source.offsetMode;
         target.offsetMinutes = source.offsetMinutes;
         target.source = source.source;
+        target.recurrenceMode = source.recurrenceMode;
+        target.intervalDays = source.intervalDays;
+        target.customDatesJson = source.customDatesJson;
     }
 
     private SmartAlarmParser.Candidate copyCandidate(
@@ -787,6 +895,9 @@ public final class SmartAlarmActivity extends Activity {
         c.offsetMode = source.offsetMode;
         c.offsetMinutes = source.offsetMinutes;
         c.source = source.source;
+        c.recurrenceMode = source.recurrenceMode;
+        c.intervalDays = source.intervalDays;
+        c.customDatesJson = source.customDatesJson;
         CandidateUiState old = CandidateUiState.get(source);
         CandidateUiState.put(c, old.vibrate, old.priority);
         return c;
