@@ -35,7 +35,7 @@ public class DateNotificationDisplayTest {
         assertNotNull(expanded);
         assertNotNull(collapsed.findViewById(R.id.date_notification_title));
         assertNotNull(expanded.findViewById(R.id.date_notification_day));
-        assertEquals(android.graphics.Color.WHITE,
+        assertEquals(AppSettings.primaryColor(app),
                 ((android.widget.TextView) collapsed.findViewById(R.id.date_notification_day)).getCurrentTextColor());
         AppSettings.setPersistentDateNotificationEnabled(app,false);
         DateNotificationService.start(app);

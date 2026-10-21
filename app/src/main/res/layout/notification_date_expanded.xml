@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp">
+    android:layout_height="48dp">
 
     <ImageView
         android:id="@+id/date_notification_background"
@@ -21,8 +21,8 @@
         android:padding="4dp">
 
         <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/bg_date_notification_day">
 
             <ImageView
@@ -39,13 +39,13 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="28sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 android:includeFontPadding="false"
                 android:padding="4dp"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="16sp"
-                android:autoSizeMaxTextSize="28sp"
+                android:autoSizeMaxTextSize="30sp"
                 android:autoSizeStepGranularity="1sp"
                 android:importantForAccessibility="no" />
         </FrameLayout>
@@ -68,32 +68,32 @@
                 android:gravity="start|center_vertical"
                 android:textDirection="firstStrong"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeMaxTextSize="18sp"
                 android:autoSizeStepGranularity="1sp" />
 
             <TextView
                 android:id="@+id/date_notification_other_dates"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1.6"
+                android:layout_weight="1"
                 android:layout_marginTop="2dp"
                 android:gravity="start|center_vertical"
                 android:textDirection="firstStrong"
                 android:textColor="@android:color/white"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:includeFontPadding="false"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:ellipsize="end"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeMaxTextSize="14sp"
                 android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </LinearLayout>
