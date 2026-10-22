@@ -158,8 +158,9 @@ final class ReminderScreen extends FrameLayout {
         } else footer.addView(snoozeRow,rowParams);
         Button dismiss = button(host.getString(R.string.ui_stop_alarm), true); dismiss.setOnClickListener(v -> stop.run());
         LinearLayout.LayoutParams dismissParams = new LinearLayout.LayoutParams(-1, dp(60)); dismissParams.topMargin = dp(10);
+        TextView swipeHint = null;
         if (modern) {
-            TextView swipeHint = text(host.getString(R.string.alarm_swipe_stop),18);
+            swipeHint = text(host.getString(R.string.alarm_swipe_stop),18);
             swipeHint.setGravity(Gravity.CENTER);
             swipeHint.setPadding(0,dp(18),0,dp(8));
             footer.addView(swipeHint, new LinearLayout.LayoutParams(-1,-2));
@@ -196,6 +197,7 @@ final class ReminderScreen extends FrameLayout {
         if (modern) {
             SwipeAlarmSurface swipe = new SwipeAlarmSurface(host,stop);
             swipe.addView(root,new FrameLayout.LayoutParams(-1,-1));
+            swipe.addView(new SwipeHintArrow(host,swipeHint,mutedColor),new FrameLayout.LayoutParams(-1,-1));
             addView(swipe,new FrameLayout.LayoutParams(-1,-1));
         } else addView(root,new FrameLayout.LayoutParams(-1,-1));
         if (style == 4 && Build.VERSION.SDK_INT>=31) {
