@@ -1826,11 +1826,20 @@ public final class MainActivity extends Activity {
         LinearLayout actions = actionRow();
 
         Button edit = actionButton(AppString.get(R.string.runtime_text_0007));
+        edit.setMinHeight(0);
+        edit.setMinimumHeight(0);
+        edit.setTextSize(11);
+        edit.setPadding(dp(10), 0, dp(10), 0);
+        LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(-2, dp(36));
+        editParams.leftMargin = dp(6);
+        edit.setLayoutParams(editParams);
         edit.setOnClickListener(v ->
                 startActivity(new Intent(this, NoForgetEditorActivity.class)
                         .putExtra("noteId", item.id)));
 
         ImageButton delete = deleteIconButton();
+        delete.setLayoutParams(new LinearLayout.LayoutParams(dp(36), dp(36)));
+        delete.setPadding(dp(8), dp(8), dp(8), dp(8));
         delete.setOnClickListener(v -> {
             NoForgetScheduler.cancel(this, item.id);
             new NoForgetStore(this).delete(item.id);
@@ -1838,9 +1847,8 @@ public final class MainActivity extends Activity {
             renderNoForget();
         });
 
-        actions.addView(new View(this), 0, new LinearLayout.LayoutParams(0, 1, 1f));
-        actions.addView(edit);
         actions.addView(delete);
+        actions.addView(edit);
         card.addView(actions);
         return card;
     }

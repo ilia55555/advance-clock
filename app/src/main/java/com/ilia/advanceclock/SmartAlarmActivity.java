@@ -309,6 +309,7 @@ public final class SmartAlarmActivity extends Activity {
         minParams.setMarginStart(dp(8));
         row.addView(bulkMinutes, minParams);
         card.addView(row);
+        bindTimingMinutes(bulkMode, bulkMinutes);
 
         LinearLayout presets = new LinearLayout(this);
         presets.setOrientation(LinearLayout.HORIZONTAL);
@@ -317,7 +318,11 @@ public final class SmartAlarmActivity extends Activity {
         presets.setPadding(0, dp(8), 0, 0);
         for (int value : new int[]{5, 10, 15, 30}) {
             Button b = softButton(CalendarUtils.fa(value) + AppString.get(R.string.runtime_text_0647));
-            b.setOnClickListener(v -> bulkMinutes.setText(String.valueOf(value)));
+            b.setOnClickListener(v -> {
+                if (bulkMode.getSelectedItemPosition() == SmartAlarmParser.OFFSET_EXACT)
+                    bulkMode.setSelection(SmartAlarmParser.OFFSET_BEFORE);
+                bulkMinutes.setText(String.valueOf(value));
+            });
             presets.addView(b, weightedButtonParams());
         }
         card.addView(presets);
@@ -632,6 +637,7 @@ public final class SmartAlarmActivity extends Activity {
         mp.setMarginStart(dp(8));
         ringRow.addView(minutes, mp);
         root.addView(ringRow);
+        bindTimingMinutes(mode, minutes);
 
         TextView priorityTitle = dialogLabel(AppString.get(R.string.runtime_text_0278));
         root.addView(priorityTitle);
@@ -952,6 +958,28 @@ public final class SmartAlarmActivity extends Activity {
         button.setGravity(Gravity.CENTER);
         button.setBackgroundResource(R.drawable.bg_field);
         return button;
+    }
+
+    private void bindTimingMinutes(Spinner mode, EditText minutes) {
+        int initialMinutes = readPositiveInt(minutes, 5);
+        final int[] previousMinutes = {initialMinutes > 0 ? initialMinutes : 5};
+        android.widget.AdapterView.OnItemSelectedListener listener = new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                boolean exact = position == SmartAlarmParser.OFFSET_EXACT;
+                int current = readPositiveInt(minutes, 0);
+                if (exact) {
+                    if (current > 0) previousMinutes[0] = current;
+                    minutes.setText("0");
+                } else if (current <= 0) {
+                    minutes.setText(String.valueOf(previousMinutes[0]));
+                }
+                minutes.setEnabled(!exact);
+                minutes.setAlpha(exact ? .5f : 1f);
+            }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        };
+        mode.setOnItemSelectedListener(listener);
+        listener.onItemSelected(null, null, mode.getSelectedItemPosition(), 0);
     }
 
     private Spinner spinner(String[] values) {
