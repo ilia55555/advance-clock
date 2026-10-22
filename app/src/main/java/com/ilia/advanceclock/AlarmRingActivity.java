@@ -10,14 +10,19 @@ import java.lang.ref.WeakReference;
 
 public final class AlarmRingActivity extends Activity {
     private static WeakReference<AlarmRingActivity> showing = new WeakReference<>(null);
+    private boolean screenVisible;
+    static boolean isVisible(long id) {
+        AlarmRingActivity activity=showing.get();
+        return activity!=null && !activity.isFinishing() && !activity.isDestroyed() && activity.screenVisible && activity.alarmId==id;
+    }
     private long alarmId = -1;
     private String toolKind, label;
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); ReminderScreen.applyWindowTheme(this); super.onCreate(state);
         showing = new WeakReference<>(this); ReminderScreen.prepareWindow(this); bind(getIntent());
     }
-    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); }
-    @Override protected void onResume() { super.onResume(); ReminderScreen.hideSystemBars(this); }
+    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); AlarmSoundService.onRingVisibilityChanged(); }
+    @Override protected void onResume() { super.onResume(); screenVisible=true; AlarmSoundService.onRingVisibilityChanged(); ReminderScreen.hideSystemBars(this); }
     @Override public void onWindowFocusChanged(boolean focused) { super.onWindowFocusChanged(focused); if (focused) ReminderScreen.hideSystemBars(this); }
     private void bind(Intent intent) {
         alarmId = intent == null ? -1 : intent.getLongExtra("alarmId", -1);
@@ -80,7 +85,8 @@ public final class AlarmRingActivity extends Activity {
         if (manager != null && alarmId != -1) manager.cancel(NotificationHelper.notificationId(alarmId));
         finishAndRemoveTask();
     }
-    @Override protected void onDestroy() { if (showing.get() == this) showing.clear(); super.onDestroy(); }
+    @Override protected void onStop() { screenVisible=false; AlarmSoundService.onRingVisibilityChanged(); super.onStop(); }
+    @Override protected void onDestroy() { screenVisible=false; if (showing.get() == this) showing.clear(); AlarmSoundService.onRingVisibilityChanged(); super.onDestroy(); }
     public static void finishIfShowing(long id) {
         AlarmRingActivity activity = showing.get();
         if (activity != null && (id < 0 || activity.alarmId == id)) activity.runOnUiThread(activity::finishAndRemoveTask);

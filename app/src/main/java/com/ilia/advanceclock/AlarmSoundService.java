@@ -26,6 +26,23 @@ public final class AlarmSoundService extends Service {
     public static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_ALARM";
     public static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_ALARM";
 
+    private static java.lang.ref.WeakReference<AlarmSoundService> runningService = new java.lang.ref.WeakReference<>(null);
+    private boolean playing, foreground;
+    private String currentLabel;
+    static void onRingVisibilityChanged() {
+        AlarmSoundService service=runningService.get();
+        if(service!=null) service.updateNotificationVisibility();
+    }
+    private void updateNotificationVisibility() {
+        if(!playing) return;
+        if(AlarmRingActivity.isVisible(currentAlarmId)) {
+            if(foreground) { stopForeground(STOP_FOREGROUND_REMOVE);foreground=false; }
+        } else if(!foreground) {
+            startForeground(NotificationHelper.notificationId(currentAlarmId),
+                    buildNotification(currentAlarmId,currentLabel,currentToolKind,false));
+            foreground=true;
+        }
+    }
     private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
     private String currentToolKind, currentAlarmPayload;
     private Vibrator vibrator;
@@ -121,6 +138,7 @@ public final class AlarmSoundService extends Service {
 
     @Override public void onCreate() {
         super.onCreate();
+        runningService=new java.lang.ref.WeakReference<>(this);
         NotificationHelper.ensureChannel(this);
         IntentFilter screenFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         IntentFilter volumeFilter = new IntentFilter(ACTION_VOLUME_CHANGED);
@@ -154,14 +172,17 @@ public final class AlarmSoundService extends Service {
         currentVibrate = intent.getBooleanExtra("vibrate", true);
         currentSoundUri = intent.getStringExtra("soundUri");
         String label = intent.getStringExtra("label");
+        currentLabel=label;
         String toolKind = intent.getStringExtra("toolKind");
         currentToolKind = toolKind;
         currentAlarmPayload = intent.getStringExtra("alarmPayload");
 
         startForeground(
                 NotificationHelper.notificationId(currentAlarmId),
-                buildNotification(currentAlarmId, label, toolKind)
+                buildNotification(currentAlarmId, label, toolKind, !AlarmRingActivity.isVisible(currentAlarmId))
         );
+        playing=true; foreground=true;
+        updateNotificationVisibility();
         openScreenIfAppVisible(currentAlarmId, label, toolKind);
         ringTimeout.start(this, () -> {
             AlarmRingActivity.finishIfShowing(currentAlarmId);
@@ -179,6 +200,9 @@ public final class AlarmSoundService extends Service {
     }
 
     private Notification buildNotification(long id, String label, String toolKind) {
+        return buildNotification(id,label,toolKind,true);
+    }
+    private Notification buildNotification(long id, String label, String toolKind, boolean allowFullscreen) {
         Intent ring = new Intent(this, AlarmRingActivity.class)
                 .putExtra("alarmId", id)
                 .putExtra("label", label)
@@ -227,11 +251,12 @@ public final class AlarmSoundService extends Service {
                         null, AppString.get(R.string.runtime_text_0406), stopAction).build());
         if (Build.VERSION.SDK_INT >= 31)
             builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
-        if (shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
+        if (allowFullscreen && shouldOpenFullscreen()) builder.setFullScreenIntent(fullScreen, true);
         return builder.build();
     }
 
     private void openScreenIfAppVisible(long id, String label, String toolKind) {
+        if (AlarmRingActivity.isVisible(id)) return;
         if (!AdvanceClockApplication.hasResumedActivity() || !shouldOpenFullscreen()) return;
         try {
             startActivity(new Intent(this, AlarmRingActivity.class)
@@ -311,6 +336,7 @@ public final class AlarmSoundService extends Service {
     }
 
     private void stopAlarm() {
+        playing=false; foreground=false;
         ringTimeout.cancel();
         stopPlayer();
         stopVibration();
@@ -333,6 +359,7 @@ public final class AlarmSoundService extends Service {
     }
 
     @Override public void onDestroy() {
+        if(runningService.get()==this) runningService.clear();
         stopAlarm();
         try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
         try { unregisterReceiver(volumeReceiver); } catch (Exception ignored) {}

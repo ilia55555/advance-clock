@@ -136,10 +136,10 @@ public final class AdhanSoundService extends Service {
             type = intent.getIntExtra("adhanType", AdhanScheduler.FAJR);
             boolean openWhileUnlocked = shouldOpenFullscreenWhileUnlocked();
             playing = true;
-            startForeground(3_300_000 + type, notification(true));
+            startForeground(3_300_000 + type, notification(!AdhanRingActivity.isVisible(type)));
             foreground = true;
             startPlayback();
-            if (openWhileUnlocked) openRingActivity();
+            if (openWhileUnlocked && !AdhanRingActivity.isVisible(type)) openRingActivity();
             updateNotificationVisibility();
         }
         return START_NOT_STICKY;

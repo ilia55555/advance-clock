@@ -19,6 +19,22 @@ import android.os.VibratorManager;
 public final class NoForgetSoundService extends Service {
     private static final String ACTION_START = "com.ilia.advanceclock.START_NOTE_REMINDER";
     static final String ACTION_STOP = "com.ilia.advanceclock.STOP_NOTE_REMINDER";
+    private static java.lang.ref.WeakReference<NoForgetSoundService> runningService = new java.lang.ref.WeakReference<>(null);
+    private boolean foreground;
+    private NoForgetItem currentItem;
+    static void onRingVisibilityChanged() {
+        NoForgetSoundService service=runningService.get();
+        if(service!=null) service.updateNotificationVisibility();
+    }
+    private void updateNotificationVisibility() {
+        if(!active || currentItem==null) return;
+        if(NoteReminderActivity.isVisible(currentItem.id)) {
+            if(foreground) { stopForeground(STOP_FOREGROUND_REMOVE);foreground=false; }
+        } else if(!foreground) {
+            startForeground(NotificationHelper.reminderNotificationId(currentItem.id),buildNotification(currentItem,false));
+            foreground=true;
+        }
+    }
     private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
     private MediaPlayer player;
     private Vibrator vibrator;
@@ -56,6 +72,7 @@ public final class NoForgetSoundService extends Service {
 
     @Override public void onCreate() {
         super.onCreate();
+        runningService=new java.lang.ref.WeakReference<>(this);
         NotificationHelper.ensureChannels(this);
         android.content.IntentFilter filter = new android.content.IntentFilter(Intent.ACTION_SCREEN_OFF);
         filter.addAction("android.media.VOLUME_CHANGED_ACTION");
@@ -78,8 +95,10 @@ public final class NoForgetSoundService extends Service {
         NoForgetItem item = new NoForgetStore(this).find(id);
         if (item == null) { stopSelf(); return START_NOT_STICKY; }
         stopReminder();
-        startForeground(NotificationHelper.reminderNotificationId(id), buildNotification(item));
-        active = true;
+        currentItem=item;
+        startForeground(NotificationHelper.reminderNotificationId(id), buildNotification(item,!NoteReminderActivity.isVisible(id)));
+        active = true; foreground=true;
+        updateNotificationVisibility();
         ringTimeout.start(this, () -> {
             NoteReminderActivity.finishIfShowing(id);
             stopReminder();
@@ -91,7 +110,8 @@ public final class NoForgetSoundService extends Service {
         return START_NOT_STICKY;
     }
 
-    private Notification buildNotification(NoForgetItem item) {
+    private Notification buildNotification(NoForgetItem item) { return buildNotification(item,true); }
+    private Notification buildNotification(NoForgetItem item, boolean allowFullscreen) {
         Intent show = new Intent(this, NoteReminderActivity.class).putExtra("noteId", item.id)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -114,12 +134,12 @@ public final class NoForgetSoundService extends Service {
                 .setStyle(new Notification.BigTextStyle().bigText(notificationBody))
                 .setCategory(Notification.CATEGORY_REMINDER)
                 .setVisibility(AppSettings.notificationVisibility(this)).setPriority(Notification.PRIORITY_MAX)
-                .setOngoing(true).setContentIntent(open)
+                .setOngoing(true).setOnlyAlertOnce(true).setContentIntent(open)
                 .addAction(new Notification.Action.Builder(
                         null, AppString.get(R.string.runtime_text_0406), stop).build());
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
-        if (locked ? item.fullscreenLocked : item.fullscreenUnlocked)
+        if (allowFullscreen && (locked ? item.fullscreenLocked : item.fullscreenUnlocked))
             builder.setFullScreenIntent(open, true);
         return builder.build();
     }
@@ -149,7 +169,7 @@ public final class NoForgetSoundService extends Service {
     }
 
     private void stopReminder() {
-        active = false;
+        active = false; foreground=false;
         ringTimeout.cancel();
         releasePlayer();
         try { if (vibrator != null) vibrator.cancel(); } catch (Exception ignored) {}
@@ -164,6 +184,7 @@ public final class NoForgetSoundService extends Service {
     }
 
     @Override public void onDestroy() {
+        if(runningService.get()==this) runningService.clear();
         try { unregisterReceiver(muteEvents); } catch (Exception ignored) {}
         stopReminder(); super.onDestroy();
     }

@@ -35,7 +35,7 @@ public final class AdhanRingActivity
 
     static boolean isVisible(int type) {
         AdhanRingActivity activity = showing.get();
-        return activity != null && activity.screenVisible
+        return activity != null && !activity.isFinishing() && !activity.isDestroyed() && activity.screenVisible
                 && activity.getIntent().getIntExtra("adhanType", AdhanScheduler.FAJR) == type;
     }
 
@@ -47,8 +47,21 @@ public final class AdhanRingActivity
         }
     }
 
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int previous=getIntent().getIntExtra("adhanType",AdhanScheduler.FAJR);
+        setIntent(intent);
+        if(previous!=intent.getIntExtra("adhanType",AdhanScheduler.FAJR)) {
+            screenVisible=false;
+            AdhanSoundService.onRingVisibilityChanged();
+            recreate();
+        }
+    }
+
     @Override protected void onDestroy() {
+        screenVisible=false;
         if (showing.get() == this) showing.clear();
+        AdhanSoundService.onRingVisibilityChanged();
         super.onDestroy();
     }
 

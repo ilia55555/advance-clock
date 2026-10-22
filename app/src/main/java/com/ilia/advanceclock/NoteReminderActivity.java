@@ -8,6 +8,11 @@ import android.widget.Toast;
 
 public final class NoteReminderActivity extends Activity {
     private static java.lang.ref.WeakReference<NoteReminderActivity> showing = new java.lang.ref.WeakReference<>(null);
+    private boolean screenVisible;
+    static boolean isVisible(long id) {
+        NoteReminderActivity activity=showing.get();
+        return activity!=null && !activity.isFinishing() && !activity.isDestroyed() && activity.screenVisible && activity.noteId==id;
+    }
     private long noteId = -1;
     static void finishIfShowing(long id) {
         NoteReminderActivity activity = showing.get();
@@ -18,8 +23,8 @@ public final class NoteReminderActivity extends Activity {
         showing = new java.lang.ref.WeakReference<>(this);
         ReminderScreen.prepareWindow(this); bind(getIntent());
     }
-    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); }
-    @Override protected void onResume() { super.onResume(); ReminderScreen.hideSystemBars(this); }
+    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); NoForgetSoundService.onRingVisibilityChanged(); }
+    @Override protected void onResume() { super.onResume(); screenVisible=true; NoForgetSoundService.onRingVisibilityChanged(); ReminderScreen.hideSystemBars(this); }
     @Override public void onWindowFocusChanged(boolean focused) { super.onWindowFocusChanged(focused); if (focused) ReminderScreen.hideSystemBars(this); }
     private void bind(Intent intent) {
         noteId = intent == null ? -1 : intent.getLongExtra("noteId", -1);
@@ -52,5 +57,6 @@ public final class NoteReminderActivity extends Activity {
     // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
     @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { /* Dismiss explicitly, consistently with other alerts. */ }
-    @Override protected void onDestroy() { if (showing.get() == this) showing.clear(); super.onDestroy(); }
+    @Override protected void onStop() { screenVisible=false; NoForgetSoundService.onRingVisibilityChanged(); super.onStop(); }
+    @Override protected void onDestroy() { screenVisible=false; if (showing.get() == this) showing.clear(); NoForgetSoundService.onRingVisibilityChanged(); super.onDestroy(); }
 }
