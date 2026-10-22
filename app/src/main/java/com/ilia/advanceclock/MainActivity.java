@@ -1357,6 +1357,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override public boolean dispatchTouchEvent(MotionEvent event) {
+        KeyboardDismiss.onTouch(this, event);
         int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             if (tabMotion != null) tabMotion.finish();

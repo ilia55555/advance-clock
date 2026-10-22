@@ -24,7 +24,7 @@ final class StopwatchPanelController {
     private static final String PREFS = "time_tools";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ArrayList<Long> laps = new ArrayList<>();
-    private TextView timeView;
+    private TextView timeView, summary;
     private Button startButton, lapButton;
     private LinearLayout lapList;
     private View limitInputs, dateTimeInputs, modeButtons;
@@ -56,6 +56,7 @@ final class StopwatchPanelController {
         this.host = host;
         this.root = root;
         timeView = root.findViewById(R.id.stopwatch_time);
+        summary = root.findViewById(R.id.stopwatch_target_summary);
         startButton = root.findViewById(R.id.stopwatch_start);
         lapButton = root.findViewById(R.id.stopwatch_lap);
         lapList = root.findViewById(R.id.lap_list);
@@ -118,6 +119,12 @@ final class StopwatchPanelController {
         if (selectedTarget <= 0L) selectedTarget = System.currentTimeMillis() + 60 * 60_000L;
         renderTarget();
         renderLaps();
+        android.text.TextWatcher watcher = new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s,int start,int count,int after) {}
+            public void onTextChanged(CharSequence s,int start,int before,int count) { renderEndTime(); }
+            public void afterTextChanged(android.text.Editable s) {}
+        };
+        for (EditText field : new EditText[]{hoursInput,minutesInput,secondsInput}) field.addTextChangedListener(watcher);
         updateControls();
         renderTime(currentElapsed());
     }
@@ -176,6 +183,18 @@ final class StopwatchPanelController {
         c.setTimeInMillis(selectedTarget);
         timeButton.setText(String.format(Locale.US, "%02d:%02d",
                 c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE)));
+        renderEndTime();
+    }
+
+    private void renderEndTime() {
+        summary.setVisibility(mode == 0 ? View.GONE : View.VISIBLE);
+        if (mode == 0) { summary.setText(""); return; }
+        long remaining = Math.max(0, limitMillis - accumulatedMillis);
+        long target = mode == 2 ? selectedTarget : running ? startedAtWall + remaining
+                : accumulatedMillis > 0 ? System.currentTimeMillis() + remaining
+                : System.currentTimeMillis() + readLimit();
+        summary.setText(CalendarUtils.fa(String.format(Locale.US,"%tR",target))
+                + "   " + CalendarUtils.formatNumeric(target,calendarType));
     }
 
     private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
@@ -188,6 +207,8 @@ final class StopwatchPanelController {
         if (presets != null) presets.refresh();
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : accumulatedMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
         lapButton.setEnabled(running);
+        lapButton.setVisibility(configurable ? View.GONE : View.VISIBLE);
+        renderEndTime();
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);
         limitInputs.setVisibility(configurable && mode == 1 ? View.VISIBLE : View.GONE);
         dateTimeInputs.setVisibility(configurable && mode == 2 ? View.VISIBLE : View.GONE);
@@ -209,6 +230,7 @@ final class StopwatchPanelController {
     private void save(){StringBuilder encoded=new StringBuilder();for(long lap:laps){if(encoded.length() > 0)encoded.append(',');encoded.append(lap);}host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("stopwatch_running",running).putInt("stopwatch_mode",mode).putInt("stopwatch_calendar",calendarType).putLong("stopwatch_target",selectedTarget).putLong("stopwatch_accumulated",accumulatedMillis).putLong("stopwatch_started",startedAtWall).putLong("stopwatch_limit",limitMillis).putString("stopwatch_laps",encoded.toString()).apply();TimeToolsWidgetProvider.updateAll(host);}
     private void restore(){SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);running=p.getBoolean("stopwatch_running",false);mode=p.getInt("stopwatch_mode",0);calendarType=p.getInt("stopwatch_calendar",AppSettings.defaultCalendar(host));selectedTarget=p.getLong("stopwatch_target",0);accumulatedMillis=p.getLong("stopwatch_accumulated",0);startedAtWall=p.getLong("stopwatch_started",0);limitMillis=p.getLong("stopwatch_limit",0);laps.clear();String encoded=p.getString("stopwatch_laps","");if(encoded.length() > 0)for(String value:encoded.split(","))try{laps.add(Long.parseLong(value));}catch(NumberFormatException ignored){}if(running&&limitMillis>0&&currentElapsed()>=limitMillis){running=false;accumulatedMillis=limitMillis;startedAtWall=0;save();}}
     void setActive(boolean value) {
+        if (active && !value) KeyboardDismiss.hide(host);
         active = value;
         handler.removeCallbacks(ticker);
         if (active && resumed) {

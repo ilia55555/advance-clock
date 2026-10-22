@@ -70,6 +70,7 @@ final class TimeToolPresets {
 
     void refresh() {
         boolean busy = editor.busy();
+        controls.setVisibility(busy ? View.GONE : View.VISIBLE);
         attachments.setEnabled(!busy);
     }
 

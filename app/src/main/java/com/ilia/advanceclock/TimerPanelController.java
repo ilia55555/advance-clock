@@ -229,6 +229,7 @@ final class TimerPanelController {
     }
     private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); initialDurationMillis=p.getLong("timer_initial_duration",remainingMillis); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
     void setActive(boolean value) {
+        if (active && !value) KeyboardDismiss.hide(host);
         active = value;
         handler.removeCallbacks(ticker);
         if (active && resumed) {

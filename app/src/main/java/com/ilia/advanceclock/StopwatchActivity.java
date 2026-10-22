@@ -17,6 +17,10 @@ public final class StopwatchActivity extends Activity {
         back.setOnClickListener(v -> finish());
         controller.setActive(true);
     }
+    @Override public boolean dispatchTouchEvent(android.view.MotionEvent event) {
+        KeyboardDismiss.onTouch(this, event);
+        return super.dispatchTouchEvent(event);
+    }
     @Override protected void onResume() { super.onResume(); controller.onResume(); }
     @Override protected void onPause() { controller.onPause(); super.onPause(); }
 }
