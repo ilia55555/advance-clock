@@ -303,29 +303,26 @@ public final class MainActivity extends Activity {
 
     private void configureHeaderForDisplayCutout() {
         View header = findViewById(R.id.header_root);
-        int baseHeight = dp(132);
-        int basePaddingTop = dp(8);
+        int basePaddingTop = dp(2);
         int paddingStart = header.getPaddingStart();
         int paddingEnd = header.getPaddingEnd();
         int paddingBottom = header.getPaddingBottom();
 
         header.setOnApplyWindowInsetsListener((view, insets) -> {
-            int cutoutInsetTop = 0;
-            if (Build.VERSION.SDK_INT >= 35 && insets.getDisplayCutout() != null) {
-                cutoutInsetTop = insets.getDisplayCutout().getSafeInsetTop();
-            }
-
-            view.setPaddingRelative(
-                    paddingStart,
-                    basePaddingTop + cutoutInsetTop,
-                    paddingEnd,
-                    paddingBottom);
-            ViewGroup.LayoutParams params = view.getLayoutParams();
-            int requiredHeight = baseHeight + cutoutInsetTop;
-            if (params.height != requiredHeight) {
-                params.height = requiredHeight;
-                view.setLayoutParams(params);
-            }
+            // Measure after layout: some versions already place content below the status bar.
+            // Only add the part of the safe area that actually overlaps this header.
+            view.post(() -> {
+                int safeTop = insets.getSystemWindowInsetTop();
+                if (Build.VERSION.SDK_INT >= 28 && insets.getDisplayCutout() != null) {
+                    safeTop = Math.max(safeTop, insets.getDisplayCutout().getSafeInsetTop());
+                }
+                int[] location = new int[2];
+                view.getLocationInWindow(location);
+                int top = basePaddingTop + Math.max(0, safeTop - location[1]);
+                if (view.getPaddingTop() != top) {
+                    view.setPaddingRelative(paddingStart, top, paddingEnd, paddingBottom);
+                }
+            });
             return insets;
         });
         header.requestApplyInsets();
