@@ -161,10 +161,15 @@ public final class SettingsActivity extends Activity {
         Spinner alarmStyle = spinner(new String[]{
                 AppString.get(R.string.runtime_text_0161),
                 AppString.get(R.string.runtime_text_0162),
-                AppString.get(R.string.runtime_text_0163)
+                AppString.get(R.string.runtime_text_0163),
+                AppString.get(R.string.alarm_style_analog),
+                AppString.get(R.string.alarm_style_glass)
         });
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
         alarmSettings.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
+        TextView blurSupport = label(AppString.get(R.string.alarm_blur_support));
+        blurSupport.setVisibility(AppSettings.alarmScreenStyle(this)==4 ? View.VISIBLE : View.GONE);
+        alarmSettings.addView(blurSupport);
 
         alarmSettings.addView(label(getString(R.string.alarm_auto_stop_title)));
         String[] ringOptions = new String[AppSettings.ALARM_RING_MINUTES.length];
@@ -276,6 +281,7 @@ public final class SettingsActivity extends Activity {
         });
 
         watch(alarmStyle, position -> {
+            blurSupport.setVisibility(position==4 ? View.VISIBLE : View.GONE);
             if (AppSettings.alarmScreenStyle(this) == position) return;
             AppSettings.setAlarmScreenStyle(this, position);
             runtimeChanged();

@@ -1241,4 +1241,8 @@
     <string name="smart_voice_privacy">ورودی گفتاری با سرویس دستگاه انجام می‌شود؛ آفلاین بودن آن به دستگاه و تنظیماتش بستگی دارد.</string>
     <string name="recurrence_interval_minutes">فاصلهٔ تکرار بر حسب دقیقه</string>
     <string name="date_channel_settings">کانال اعلان تاریخ بسته است؛ باز کردن تنظیمات</string>
+    <string name="alarm_style_analog">ساعت عقربه‌ای</string>
+    <string name="alarm_style_glass">ساعت شیشه‌ای</string>
+    <string name="alarm_swipe_stop">برای قطع هشدار، رو به بالا بکشید</string>
+    <string name="alarm_blur_support">تاری پس‌زمینه به پشتیبانی گوشی بستگی دارد.</string>
 </resources>

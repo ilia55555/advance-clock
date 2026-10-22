@@ -1008,11 +1008,11 @@ public final class AppSettings {
     }
 
     public static int alarmScreenStyle(Context context) {
-        return prefs(context).getInt("alarm_screen_style", 0);
+        return Math.max(0, Math.min(4, prefs(context).getInt("alarm_screen_style", 0)));
     }
 
     public static void setAlarmScreenStyle(Context context, int value) {
-        prefs(context).edit().putInt("alarm_screen_style", value).apply();
+        prefs(context).edit().putInt("alarm_screen_style", Math.max(0, Math.min(4, value))).apply();
     }
 
     public static int clockLayoutMode(Context context) {

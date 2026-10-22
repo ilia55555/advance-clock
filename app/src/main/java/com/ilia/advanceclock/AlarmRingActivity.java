@@ -13,7 +13,7 @@ public final class AlarmRingActivity extends Activity {
     private long alarmId = -1;
     private String toolKind, label;
     @Override protected void onCreate(Bundle state) {
-        AppSettings.applyTheme(this); super.onCreate(state);
+        AppSettings.applyTheme(this); ReminderScreen.applyWindowTheme(this); super.onCreate(state);
         showing = new WeakReference<>(this); ReminderScreen.prepareWindow(this); bind(getIntent());
     }
     @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); }

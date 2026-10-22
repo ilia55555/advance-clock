@@ -40,12 +40,14 @@ public final class AdvanceClockApplication extends Application {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override public void onActivityCreated(Activity activity, Bundle state) {
                 synchronized (OPEN_ACTIVITIES) { OPEN_ACTIVITIES.put(activity, true); }
+                activity.setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
             }
 
             @Override public void onActivityResumed(Activity activity) {
                 resumedActivity = new java.lang.ref.WeakReference<>(activity);
+                activity.setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
             }

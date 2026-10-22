@@ -27,6 +27,18 @@ final class ReminderScreen extends FrameLayout {
         int snoozeMinutes = 15;
     }
     private final Activity host;
+    private final android.os.Handler clockHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private TextView timeLabel, dateLabel;
+    private AlarmAnalogView analogClock;
+    private java.util.function.Consumer<Boolean> blurListener;
+    private final Runnable clockTick = new Runnable() {
+        @Override public void run() { updateClock(); clockHandler.postDelayed(this, 1000 - System.currentTimeMillis()%1000); }
+    };
+    static void applyWindowTheme(Activity host) {
+        if (AppSettings.alarmScreenStyle(host)==4 && Build.VERSION.SDK_INT>=31)
+            host.getTheme().applyStyle(R.style.OverlayAdvanceClockBlur,true);
+    }
+
     private int textColor, mutedColor, primary, secondary, background;
 
     static void prepareWindow(Activity host) {
@@ -55,14 +67,16 @@ final class ReminderScreen extends FrameLayout {
 
     ReminderScreen(Activity host, Content data, Runnable stop, Runnable open, IntConsumer snooze) {
         super(host); this.host = host;
-        palette(AppSettings.alarmScreenStyle(host));
+        int style = AppSettings.alarmScreenStyle(host);
+        boolean modern = style >= 3;
+        palette(style);
         setBackgroundColor(background);
         host.getWindow().setStatusBarColor(background); host.getWindow().setNavigationBarColor(background);
         List<String> photos = new ArrayList<>();
         if (data.image1 != null && !data.image1.isEmpty()) photos.add(data.image1);
         if (data.image2 != null && !data.image2.isEmpty()) photos.add(data.image2);
         List<NoteAttachment> values = new ArrayList<>(data.attachments);
-        boolean photoBackground = data.background && !photos.isEmpty();
+        boolean photoBackground = style != 4 && data.background && !photos.isEmpty();
         if (photoBackground) {
             LinearLayout images = new LinearLayout(host); images.setOrientation(LinearLayout.VERTICAL);
             addView(images, new FrameLayout.LayoutParams(-1, -1));
@@ -83,11 +97,26 @@ final class ReminderScreen extends FrameLayout {
         screen.setPadding(dp(20), 0, dp(20), 0); screen.setMinimumHeight(dp(560));
         LinearLayout headingContent = new LinearLayout(host); headingContent.setOrientation(LinearLayout.VERTICAL);
         headingContent.setPadding(0, dp(30), 0, dp(12));
-        TextView date = text(CalendarUtils.formatDate(System.currentTimeMillis(), AppSettings.defaultCalendar(host)), 14);
-        date.setTextColor(mutedColor); date.setGravity(Gravity.CENTER); headingContent.addView(date, matchWrap());
-        TextView time = text(new java.text.SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()), 52);
-        time.setTextColor(photoBackground ? Color.WHITE : primary); time.setGravity(Gravity.CENTER);
-        time.setTypeface(null, android.graphics.Typeface.BOLD); headingContent.addView(time, matchWrap());
+        if (style == 3) {
+            analogClock = new AlarmAnalogView(host);
+            int clockSize = Math.min(dp(270), Math.min(host.getResources().getDisplayMetrics().widthPixels-dp(64),
+                    Math.round(host.getResources().getDisplayMetrics().heightPixels*.28f)));
+            LinearLayout.LayoutParams clockParams = new LinearLayout.LayoutParams(clockSize,clockSize);
+            clockParams.gravity=Gravity.CENTER_HORIZONTAL;
+            headingContent.addView(analogClock,clockParams);
+        }
+        dateLabel = text("", modern ? 18 : 14);
+        dateLabel.setTextColor(mutedColor); dateLabel.setGravity(Gravity.CENTER);
+        timeLabel = text("", style == 4 ? 80 : 48);
+        timeLabel.setTextColor(modern ? textColor : photoBackground ? Color.WHITE : primary);
+        timeLabel.setGravity(Gravity.CENTER);timeLabel.setTextDirection(View.TEXT_DIRECTION_LTR);
+        timeLabel.setTypeface(null, android.graphics.Typeface.BOLD);
+        timeLabel.setMaxLines(1);
+        timeLabel.setHorizontallyScrolling(false);
+        timeLabel.setAutoSizeTextTypeUniformWithConfiguration(28,style == 4 ? 80 : 48,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+        if (modern) { headingContent.addView(timeLabel,matchWrap()); headingContent.addView(dateLabel,matchWrap()); }
+        else { headingContent.addView(dateLabel,matchWrap()); headingContent.addView(timeLabel,matchWrap()); }
+        updateClock();
         TextView title = text(data.title, 24); title.setGravity(Gravity.CENTER); headingContent.addView(title, matchWrap());
         if (data.body != null && !data.body.isEmpty()) {
             TextView body = text(data.body, 16); body.setGravity(Gravity.CENTER); body.setTextColor(mutedColor);
@@ -109,7 +138,8 @@ final class ReminderScreen extends FrameLayout {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(host, android.R.layout.simple_spinner_item, labels) {
             @Override public View getView(int position, View reuse, android.view.ViewGroup parent) {
                 TextView label = (TextView) super.getView(position, reuse, parent);
-                label.setTextColor(textColor); return label;
+                label.setTextColor(textColor); label.setHorizontallyScrolling(false);
+                label.setMaxLines(1); return label;
             }
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -119,19 +149,31 @@ final class ReminderScreen extends FrameLayout {
         Button later = button(host.getString(R.string.ui_snooze), false);
         later.setOnClickListener(v -> snooze.accept(SNOOZE_MINUTES[durations.getSelectedItemPosition()]));
         snoozeRow.addView(later, new LinearLayout.LayoutParams(0, dp(48), 1));
-        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(48)); rowParams.topMargin = dp(8); footer.addView(snoozeRow, rowParams);
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(48)); rowParams.topMargin = dp(8);
+        boolean centeredSnooze = style == 4 && values.isEmpty();
+        if (centeredSnooze) {
+            FrameLayout.LayoutParams centered = new FrameLayout.LayoutParams(-1,dp(56),Gravity.CENTER);
+            centered.leftMargin=dp(24); centered.rightMargin=dp(24);
+            screen.addView(snoozeRow,centered);
+        } else footer.addView(snoozeRow,rowParams);
         Button dismiss = button(host.getString(R.string.ui_stop_alarm), true); dismiss.setOnClickListener(v -> stop.run());
         LinearLayout.LayoutParams dismissParams = new LinearLayout.LayoutParams(-1, dp(60)); dismissParams.topMargin = dp(10);
-        footer.addView(dismiss, dismissParams);
+        if (modern) {
+            TextView swipeHint = text(host.getString(R.string.alarm_swipe_stop),18);
+            swipeHint.setGravity(Gravity.CENTER);
+            swipeHint.setPadding(0,dp(18),0,dp(8));
+            footer.addView(swipeHint, new LinearLayout.LayoutParams(-1,-2));
+        } else footer.addView(dismiss, dismissParams);
         screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
         View shortcuts = attachmentStrip(values);
         screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(164), Gravity.CENTER));
+        if (values.isEmpty()) shortcuts.setVisibility(View.GONE);
         boolean hasImages = false; for (NoteAttachment value : values) if (value.isImage()) hasImages = true;
         final int preferredHeight = dp(hasImages ? 220 : 164);
         screen.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             int height = screen.getHeight();
             headingContent.measure(View.MeasureSpec.makeMeasureSpec(Math.max(1, screen.getWidth() - screen.getPaddingLeft() - screen.getPaddingRight()), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            int headerHeight = Math.min(headingContent.getMeasuredHeight(), height / 3);
+            int headerHeight = Math.min(headingContent.getMeasuredHeight(), modern ? height * 3 / 5 : height / 3);
             FrameLayout.LayoutParams hp = (FrameLayout.LayoutParams) header.getLayoutParams();
             if (hp.height != headerHeight) { hp.height = headerHeight; header.setLayoutParams(hp); }
             int top = headerHeight + dp(8), bottom = height - footer.getMeasuredHeight() - dp(8);
@@ -151,10 +193,56 @@ final class ReminderScreen extends FrameLayout {
             footer.setPadding(0, dp(8), 0, bottom + dp(24)); return insets;
         });
         ScrollView root = new ScrollView(host); root.setFillViewport(true); root.addView(screen, new ScrollView.LayoutParams(-1, -1));
-        addView(root, new FrameLayout.LayoutParams(-1, -1)); screen.requestApplyInsets();
+        if (modern) {
+            SwipeAlarmSurface swipe = new SwipeAlarmSurface(host,stop);
+            swipe.addView(root,new FrameLayout.LayoutParams(-1,-1));
+            addView(swipe,new FrameLayout.LayoutParams(-1,-1));
+        } else addView(root,new FrameLayout.LayoutParams(-1,-1));
+        if (style == 4 && Build.VERSION.SDK_INT>=31) {
+            screen.setBackgroundColor(Color.TRANSPARENT);
+            blurListener = enabled -> {
+                if (enabled) {
+                    setBackgroundColor(0x55000000);
+                    host.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+                    WindowManager.LayoutParams attributes=host.getWindow().getAttributes();
+                    attributes.setBlurBehindRadius(dp(75));
+                    host.getWindow().setAttributes(attributes);
+                    host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                } else {
+                    setBackgroundColor(background);
+                    host.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                }
+            };
+        }
+        screen.requestApplyInsets();
     }
+    private void updateClock() {
+        long now=System.currentTimeMillis();
+        String pattern=android.text.format.DateFormat.is24HourFormat(host)?"HH:mm":"hh:mm a";
+        if (AppSettings.alarmScreenStyle(host)==3)
+            pattern=android.text.format.DateFormat.is24HourFormat(host)?"HH:mm:ss":"hh:mm:ss a";
+        if(timeLabel!=null) timeLabel.setText(CalendarUtils.fa(new java.text.SimpleDateFormat(pattern,AppString.locale()).format(new Date(now))));
+        if(dateLabel!=null) dateLabel.setText(CalendarUtils.formatDate(now,AppSettings.defaultCalendar(host)));
+        if(analogClock!=null) analogClock.invalidate();
+    }
+    @Override protected void onAttachedToWindow() {
+        super.onAttachedToWindow();clockHandler.post(clockTick);
+        if(Build.VERSION.SDK_INT>=31 && blurListener!=null) {
+            host.getWindowManager().addCrossWindowBlurEnabledListener(host.getMainExecutor(),blurListener);
+            blurListener.accept(host.getWindowManager().isCrossWindowBlurEnabled());
+        }
+    }
+    @Override protected void onDetachedFromWindow() {
+        clockHandler.removeCallbacks(clockTick);
+        if(Build.VERSION.SDK_INT>=31 && blurListener!=null)
+            host.getWindowManager().removeCrossWindowBlurEnabledListener(blurListener);
+        super.onDetachedFromWindow();
+    }
+
     private void palette(int style) {
-        if (style == 1) { background = 0xFF080B0D; primary = 0xFF53C7C0; textColor = 0xFFF7FAF9; mutedColor = 0xFF9BAAA6; secondary = 0xFF2A3533; }
+        if (style == 3) { background = AppSettings.background(host); primary = AppSettings.primaryColor(host); textColor = AppSettings.textPrimary(host); mutedColor = AppSettings.textSecondary(host); secondary = AppSettings.field(host); }
+        else if (style == 4) { background = 0xFF17212B; primary = Color.WHITE; textColor = Color.WHITE; mutedColor = 0xFFE1E5EB; secondary = 0x554E5B69; }
+        else if (style == 1) { background = 0xFF080B0D; primary = 0xFF53C7C0; textColor = 0xFFF7FAF9; mutedColor = 0xFF9BAAA6; secondary = 0xFF2A3533; }
         else if (style == 2) { background = 0xFFFFF5EA; primary = 0xFFB85C00; textColor = 0xFF4B2A12; mutedColor = 0xFF8B6A50; secondary = 0xFFFFDFC0; }
         else { background = 0xFFF5FAF9; primary = AppSettings.primaryColor(host); textColor = 0xFF173F3B; mutedColor = 0xFF758783; secondary = 0xFFE7F1EF; }
     }

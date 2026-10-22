@@ -933,4 +933,8 @@ Kilit ekranı</string>
     <string name="smart_voice_privacy">Dictation uses the device speech service; offline availability depends on your device and settings.</string>
     <string name="recurrence_interval_minutes">Repeat interval in minutes</string>
     <string name="date_channel_settings">Date notification channel is blocked — open settings</string>
+    <string name="alarm_style_analog">Analog clock</string>
+    <string name="alarm_style_glass">Glass clock</string>
+    <string name="alarm_swipe_stop">Swipe up to stop</string>
+    <string name="alarm_blur_support">Background blur depends on device support.</string>
 </resources>

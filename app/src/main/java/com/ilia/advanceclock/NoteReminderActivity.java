@@ -14,7 +14,7 @@ public final class NoteReminderActivity extends Activity {
         if (activity != null && activity.noteId == id) activity.runOnUiThread(activity::finishAndRemoveTask);
     }
     @Override protected void onCreate(Bundle state) {
-        AppSettings.applyTheme(this); super.onCreate(state);
+        AppSettings.applyTheme(this); ReminderScreen.applyWindowTheme(this); super.onCreate(state);
         showing = new java.lang.ref.WeakReference<>(this);
         ReminderScreen.prepareWindow(this); bind(getIntent());
     }
