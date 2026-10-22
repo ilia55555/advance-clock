@@ -78,7 +78,7 @@ public final class AlarmPhotoCropActivity extends Activity {
     // Legacy devices use this path; Android 13+ uses the callback registered above.
     @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { if (job == null) super.onBackPressed(); }
-    private void error() { Toast.makeText(this, R.string.media_image_error, Toast.LENGTH_SHORT).show(); }
+    private void error() { LogoToast.makeText(this, R.string.media_image_error, Toast.LENGTH_SHORT).show(); }
     private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
 
     /** Retains only the save operation across rotation; the worker uses application context. */

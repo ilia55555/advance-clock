@@ -459,5 +459,5 @@ public final class AlarmAttachmentEditorActivity extends Activity {
 
     @Override public void finish() { super.finish(); AppSettings.playFullscreenExit(this); }
     private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
-    private void error() { Toast.makeText(this, R.string.media_image_error, Toast.LENGTH_SHORT).show(); }
+    private void error() { LogoToast.makeText(this, R.string.media_image_error, Toast.LENGTH_SHORT).show(); }
 }

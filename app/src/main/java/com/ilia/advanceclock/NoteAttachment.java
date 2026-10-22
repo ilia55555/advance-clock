@@ -80,7 +80,7 @@ final class NoteAttachment {
     }
 
     static void blocked(Context context) {
-        android.widget.Toast.makeText(context, R.string.attachment_open_blocked, android.widget.Toast.LENGTH_LONG).show();
+        LogoToast.makeText(context, R.string.attachment_open_blocked, android.widget.Toast.LENGTH_LONG).show();
     }
 
     void open(Context context) {

@@ -58,7 +58,7 @@ public final class AlarmRingActivity extends Activity {
             boolean ok = tool ? ToolAlarmScheduler.reschedule(this, toolKind, System.currentTimeMillis() + minutes * 60_000L, data.title)
                     : AlarmScheduler.snooze(this, alarmId, minutes * 60_000L);
             if (ok) { ClockWidgetProvider.updateAll(this); stopAndClose(); }
-            else Toast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
+            else LogoToast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
         }));
         AlertSoundHint.show(this, "alarm");
     }

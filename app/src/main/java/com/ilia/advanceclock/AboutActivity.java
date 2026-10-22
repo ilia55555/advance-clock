@@ -316,7 +316,7 @@ public final class AboutActivity extends Activity {
     private void openLink(String url) {
         try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
         catch (ActivityNotFoundException | SecurityException ignored) {
-            Toast.makeText(this, R.string.about_link_error, Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, R.string.about_link_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -324,7 +324,7 @@ public final class AboutActivity extends Activity {
         try { startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", getPackageName(), null))); }
         catch (ActivityNotFoundException | SecurityException ignored) {
-            Toast.makeText(this, R.string.about_link_error, Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(this, R.string.about_link_error, Toast.LENGTH_SHORT).show();
         }
     }
 

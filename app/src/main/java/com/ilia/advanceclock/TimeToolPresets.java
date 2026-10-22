@@ -94,14 +94,14 @@ final class TimeToolPresets {
             config.put("savedAt", System.currentTimeMillis());
             prefs.edit().remove(kind + "_editing_id").putString(kind + "_presets", TimeToolPresetStore.save(
                     prefs.getString(kind + "_presets", "[]"), config)).apply();
-            Toast.makeText(host, R.string.tool_saved_success, Toast.LENGTH_SHORT).show();
+            LogoToast.makeText(host, R.string.tool_saved_success, Toast.LENGTH_SHORT).show();
         } catch (JSONException ignored) { showError(); }
     }
 
     private void showSaved() {
         JSONArray items = read();
         if (items.length() == 0) {
-            Toast.makeText(host, R.string.tool_no_saved, Toast.LENGTH_SHORT).show(); return;
+            LogoToast.makeText(host, R.string.tool_no_saved, Toast.LENGTH_SHORT).show(); return;
         }
         String[] names = new String[items.length()];
         for (int i = 0; i < names.length; i++) names[i] = items.optJSONObject(i).optString("label", "");
@@ -161,6 +161,6 @@ final class TimeToolPresets {
                 .putBoolean(kind + "_background", item.optBoolean("background", false)).apply();
     }
 
-    private void showError() { Toast.makeText(host, R.string.tool_invalid, Toast.LENGTH_SHORT).show(); }
+    private void showError() { LogoToast.makeText(host, R.string.tool_invalid, Toast.LENGTH_SHORT).show(); }
     private int dp(int value) { return Math.round(value * host.getResources().getDisplayMetrics().density); }
 }

@@ -200,6 +200,7 @@ final class TimerPanelController {
                 dateTimeMode ? 0xFFFFFFFF : AppSettings.primaryColor(host));
         ((Button) root.findViewById(R.id.timer_reset)).setText(
                 configured ? R.string.timer_clear_fields : R.string.tool_reset_label);
+        renderEndTime();
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : remainingMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
     }
 
@@ -207,11 +208,23 @@ final class TimerPanelController {
         dateButton.setText(CalendarUtils.formatDate(selectedTarget, calendarType));
         Calendar c=Calendar.getInstance(); c.setTimeInMillis(selectedTarget);
         timeButton.setText(String.format(Locale.US,"%02d:%02d",c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)));
-        summary.setText(running ? AppString.get(R.string.runtime_text_0479) + CalendarUtils.formatDate(deadline, calendarType) + AppString.get(R.string.runtime_text_0456) + String.format(Locale.US,"%tR",deadline)
-                : dateTimeMode ? AppString.get(R.string.runtime_text_0480) : AppString.get(R.string.runtime_text_0481));
+        renderEndTime();
     }
 
-    private void renderTime(long millis) { long total=(millis+999)/1000; timeView.setText(String.format(Locale.US,"%02d:%02d:%02d",total/3600,(total/60)%60,total%60)); }
+    private void renderEndTime() {
+        long remaining = running ? currentRemaining() : remainingMillis > 0 ? remainingMillis : readDuration();
+        long target = running ? deadline : remainingMillis > 0 ? System.currentTimeMillis() + remaining
+                : dateTimeMode ? selectedTarget : remaining > 0 ? System.currentTimeMillis() + remaining : 0;
+        summary.setText(target <= 0 ? "" : CalendarUtils.fa(String.format(Locale.US, "%tR", target))
+                + "   " + CalendarUtils.formatNumeric(target, calendarType));
+    }
+
+    private void renderTime(long millis) {
+        long total=(millis+999)/1000;
+        timeView.setText(String.format(Locale.US,"%02d:%02d:%02d",total/3600,(total/60)%60,total%60));
+        renderEndTime();
+    }
+
     private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_initial_duration",initialDurationMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
     }
     private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); initialDurationMillis=p.getLong("timer_initial_duration",remainingMillis); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }

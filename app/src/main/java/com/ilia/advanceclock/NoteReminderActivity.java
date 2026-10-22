@@ -35,7 +35,7 @@ public final class NoteReminderActivity extends Activity {
             stopAndClose();
         }, minutes -> {
             if (NoForgetScheduler.snooze(this, noteId, minutes * 60_000L)) stopAndClose();
-            else Toast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
+            else LogoToast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
         }));
     }
     @Override public boolean onKeyDown(int code, KeyEvent event) {

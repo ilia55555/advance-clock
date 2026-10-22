@@ -237,7 +237,7 @@ final class ReminderScreen extends FrameLayout {
                 host.startActivity(launch); return;
             }
         } catch (Exception ignored) {}
-        Toast.makeText(host, R.string.note_app_unavailable, Toast.LENGTH_SHORT).show();
+        LogoToast.makeText(host, R.string.note_app_unavailable, Toast.LENGTH_SHORT).show();
     }
 
     private View attachmentView(NoteAttachment value){

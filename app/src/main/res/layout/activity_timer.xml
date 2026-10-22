@@ -10,7 +10,7 @@
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:padding="24dp">
             <TextView android:id="@+id/timer_time" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="28dp" android:gravity="center" android:text="00:05:00" android:textColor="?attr/appTextPrimary" android:textDirection="ltr" android:textSize="52sp" android:textStyle="bold" />
-            <TextView android:id="@+id/timer_target_summary" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:text="@string/layout_text_0014" android:textColor="?attr/appTextSecondary" android:textSize="14sp" />
+            <TextView android:id="@+id/timer_target_summary" android:textDirection="ltr" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:text="" android:textColor="?attr/appTextSecondary" android:textSize="20sp" />
             <LinearLayout android:id="@+id/timer_mode_buttons" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="28dp" android:orientation="horizontal">
                 <Button android:id="@+id/timer_mode_duration" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_teal_button" android:text="@string/runtime_text_0172" android:textAllCaps="false" android:textColor="#FFFFFF" />
                 <Space android:layout_width="8dp" android:layout_height="1dp" />

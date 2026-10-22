@@ -195,7 +195,7 @@ public final class SmartAlarmActivity extends Activity {
                     .putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
             try { startActivityForResult(intent, VOICE_REQUEST); }
             catch (android.content.ActivityNotFoundException unavailable) {
-                Toast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+                LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
             }
         });
         LinearLayout.LayoutParams voiceParams = new LinearLayout.LayoutParams(0, dp(48), 1);
@@ -839,7 +839,7 @@ public final class SmartAlarmActivity extends Activity {
             } catch (RuntimeException error) { store.delete(id); failed++; }
         }
         NoForgetWidgetProvider.updateAll(this);
-        Toast.makeText(this, getString(R.string.smart_saved_count, saved, failed), Toast.LENGTH_LONG).show();
+        LogoToast.makeText(this, getString(R.string.smart_saved_count, saved, failed), Toast.LENGTH_LONG).show();
         if (saved > 0) { setResult(RESULT_OK); finish(); }
     }
 

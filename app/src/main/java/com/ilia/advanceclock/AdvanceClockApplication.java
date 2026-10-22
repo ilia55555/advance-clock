@@ -19,6 +19,8 @@ public final class AdvanceClockApplication extends Application {
     private static boolean refreshScheduled;
     private static java.lang.ref.WeakReference<Activity> resumedActivity = new java.lang.ref.WeakReference<>(null);
 
+    static Activity resumedActivity() { return resumedActivity.get(); }
+
     static boolean hasResumedActivity() {
         Activity activity = resumedActivity.get();
         return activity != null && !activity.isFinishing() && !activity.isDestroyed();
