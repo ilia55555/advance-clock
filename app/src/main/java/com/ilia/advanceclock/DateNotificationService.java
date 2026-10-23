@@ -174,7 +174,7 @@ public final class DateNotificationService extends Service {
                 R.string.runtime_text_0180
         };
         String weekday = AppString.get(weekdays[selected.get(android.icu.util.Calendar.DAY_OF_WEEK) - 1]);
-        String title = weekday + " " + CalendarUtils.formatDate(now, selectedType);
+        String title = weekday + " " + notificationDigits(context, CalendarUtils.formatDate(now, selectedType));
         BidiFormatter bidi = BidiFormatter.getInstance(AppSettings.layoutDirection(context) == View.LAYOUT_DIRECTION_RTL);
 
         StringBuilder twoOtherDates = new StringBuilder();
@@ -184,7 +184,7 @@ public final class DateNotificationService extends Service {
                  type++) {
                 if (type == selectedType) continue;
                 if (twoOtherDates.length() > 0) twoOtherDates.append("  •  ");
-                twoOtherDates.append(bidi.unicodeWrap(CalendarUtils.formatDate(now, type)));
+                twoOtherDates.append(bidi.unicodeWrap(notificationDigits(context, CalendarUtils.formatDate(now, type))));
             }
         }
 
@@ -260,16 +260,24 @@ public final class DateNotificationService extends Service {
     }
 
     static boolean useEnglishDay(Context context) {
-        return AppSettings.defaultCalendar(context) == CalendarUtils.GREGORIAN
-                || AppSettings.LANGUAGE_ENGLISH.equals(AppSettings.language(context));
+        return !("fa".equals(AppSettings.language(context)) || "ar".equals(AppSettings.language(context)));
     }
 
     static String dayLabel(Context context, int day) {
-        String value = Integer.toString(day);
-        if (useEnglishDay(context)) return value;
-        StringBuilder localized = new StringBuilder();
-        for (char digit : value.toCharArray()) localized.append((char) ('۰' + digit - '0'));
-        return localized.toString();
+        return notificationDigits(context, Integer.toString(day));
+    }
+
+    static String notificationDigits(Context context, String value) {
+        boolean english = useEnglishDay(context);
+        StringBuilder result = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char digit = value.charAt(i);
+            int number = digit >= '0' && digit <= '9' ? digit - '0'
+                    : digit >= '۰' && digit <= '۹' ? digit - '۰'
+                    : digit >= '٠' && digit <= '٩' ? digit - '٠' : -1;
+            result.append(number < 0 ? digit : (char)((english ? '0' : '۰') + number));
+        }
+        return result.toString();
     }
 
     static int dayIconResource(Context context, int day) {

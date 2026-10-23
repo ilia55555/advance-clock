@@ -90,15 +90,17 @@ public class DateNotificationDisplayTest {
         DateNotificationService.start(app);
         assertNull(Shadows.shadowOf(manager).getNotification(73));
     }
-    @Test public void dayDigitsFollowCalendarAndLanguageAndAllIconsLoad() {
+    @Test public void dayDigitsFollowOnlyLanguageAndAllIconsLoad() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
-        for (String language : new String[]{"fa", "en"}) {
+        for (String language : new String[]{"fa", "ar", "en"}) {
             AppSettings.setLanguage(app, language);
             for (int calendar : new int[]{CalendarUtils.PERSIAN, CalendarUtils.GREGORIAN, CalendarUtils.HIJRI}) {
                 AppSettings.setDefaultCalendar(app,calendar);
-                boolean english=language.equals("en") || calendar==CalendarUtils.GREGORIAN;
+                boolean english=language.equals("en");
                 assertEquals(english ? "21" : "۲۱",
                         DateNotificationService.dayLabel(app,21));
+                assertEquals(english ? "2026/10/24" : "۲۰۲۶/۱۰/۲۴",
+                        DateNotificationService.notificationDigits(app,"۲۰۲۶/10/٢٤"));
                 for (int day=1;day<=31;day++) {
                     assertNotNull(app.getDrawable(DateNotificationService.dayIconResource(app,day)));
                 }
