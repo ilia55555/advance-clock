@@ -26,6 +26,20 @@ public class NoteAndWorldHeaderTest {
         assertEquals(0,header.getTop());assertEquals(0,header.getLeft());assertEquals(root.getWidth(),header.getWidth());
         assertTrue(header.getPaddingTop()>=30);assertTrue(header.getHeight()>header.getPaddingTop()+header.getPaddingBottom());
     }
+    @Test @org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
+    public void themedHeaderPaintsSquareTopAndRoundedBottomCorners(){
+        try(var controller=Robolectric.buildActivity(NoForgetEditorActivity.class).setup()){
+            NoForgetEditorActivity host=controller.get();
+            android.graphics.drawable.Drawable shape=host.findViewById(R.id.note_editor_header).getBackground();
+            android.graphics.Bitmap bitmap=android.graphics.Bitmap.createBitmap(200,100,android.graphics.Bitmap.Config.ARGB_8888);
+            shape.setBounds(0,0,200,100);shape.draw(new android.graphics.Canvas(bitmap));
+            int theme=AppSettings.primaryColor(host);
+            assertEquals(theme,bitmap.getPixel(1,1));assertEquals(theme,bitmap.getPixel(198,1));
+            assertEquals(0,android.graphics.Color.alpha(bitmap.getPixel(1,98)));
+            assertEquals(0,android.graphics.Color.alpha(bitmap.getPixel(198,98)));
+            assertEquals(theme,bitmap.getPixel(100,98));
+        }
+    }
     @Test public void noteHeaderStartsAtSheetEdgeAndKeepsTitleBelowSystemBar(){
         Application app=RuntimeEnvironment.getApplication();
         try(var controller=Robolectric.buildActivity(NoForgetEditorActivity.class,new Intent(app,NoForgetEditorActivity.class).putExtra("modalCreate",true)).setup().visible()){
@@ -41,6 +55,7 @@ public class NoteAndWorldHeaderTest {
             AlertDialog dialog=org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog();
             View content=dialog.getWindow().getDecorView().findViewWithTag("world_add_content");
             assertNotNull(content);checkHeader(content,content.findViewWithTag("world_add_header"));
+            assertEquals(android.R.id.content,((View)content.getParent()).getId());
             assertEquals(0,((View)content.getParent()).getPaddingTop());
             assertEquals(0,dialog.getWindow().getDecorView().getPaddingTop());dialog.dismiss();
         }

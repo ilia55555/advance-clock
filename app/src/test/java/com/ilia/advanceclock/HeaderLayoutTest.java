@@ -43,6 +43,7 @@ public class HeaderLayoutTest {
             for (int tabId : new int[]{R.id.tab_clock,R.id.tab_noforget,R.id.tab_stopwatch,R.id.tab_timer,R.id.tab_world}) {
                 TextView tab=root.findViewById(tabId);
                 assertEquals("tab wrapped at font scale "+scale,1,tab.getLineCount());
+                assertEquals(16f*context.getResources().getDisplayMetrics().density,tab.getTextSize(),.1f);
             }
             View clockRow=(View)time.getParent();
             View tabs=root.findViewById(R.id.tab_bar);

@@ -95,7 +95,7 @@
                     android:singleLine="true"
                     android:text="@string/tab_clock"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <View
@@ -121,7 +121,7 @@
                     android:singleLine="true"
                     android:text="@string/tab_notes"
                     android:textColor="#D6EFED"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <View
@@ -147,7 +147,7 @@
                     android:singleLine="true"
                     android:text="@string/tab_stopwatch"
                     android:textColor="#D6EFED"
-                    android:textSize="13sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
                 <View
                     android:id="@+id/stopwatch_indicator"
@@ -172,7 +172,7 @@
                     android:singleLine="true"
                     android:text="@string/tab_timer"
                     android:textColor="#D6EFED"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
                 <View
                     android:id="@+id/timer_indicator"
@@ -197,7 +197,7 @@
                     android:singleLine="true"
                     android:text="@string/tab_world"
                     android:textColor="#D6EFED"
-                    android:textSize="13sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
                 <View
                     android:id="@+id/world_indicator"

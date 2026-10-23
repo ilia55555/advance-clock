@@ -8,6 +8,16 @@ final class EditorHeaderInsets {
     static void apply(Window window,View root,View header){
         int headerTop=header.getPaddingTop(),headerBottom=header.getPaddingBottom();
         int bottom=root.getPaddingBottom();
+        window.getDecorView().setPadding(0,0,0,0);
+        View content=window.findViewById(android.R.id.content);
+        if(content!=null)content.setPadding(0,0,0,0);
+        if(header.getParent() instanceof View){
+            View parent=(View)header.getParent();parent.setPadding(0,0,0,parent.getPaddingBottom());
+        }
+        if(header.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){
+            ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)header.getLayoutParams();
+            params.leftMargin=0;params.rightMargin=0;params.topMargin=0;header.setLayoutParams(params);
+        }
         if(Build.VERSION.SDK_INT>=30)window.setDecorFitsSystemWindows(false);
         else window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         window.setStatusBarColor(AppSettings.primaryColor(root.getContext()));

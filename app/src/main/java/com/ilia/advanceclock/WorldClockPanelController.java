@@ -268,7 +268,6 @@ final class WorldClockPanelController {
             params.leftMargin=dp(16);params.rightMargin=dp(16);
         }
         AlertDialog dialog = new AlertDialog.Builder(host).create();
-        dialog.setView(content,0,0,0,0);
 
         dialogSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -296,7 +295,11 @@ final class WorldClockPanelController {
             window.setBackgroundDrawable(new ColorDrawable(AppSettings.background(host)));
         }
         dialog.show();
+        // Install directly in the window: OEM AlertDialog panels can inset a custom view.
+        dialog.setContentView(content);
         if (window != null) {
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             window.getDecorView().setPadding(0,0,0,0);
             EditorHeaderInsets.apply(window,content,header);
             window.setLayout(
@@ -309,13 +312,11 @@ final class WorldClockPanelController {
             contentParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
             content.setLayoutParams(contentParams);
         }
-        content.setAlpha(0f);
-        content.setTranslationY(dp(16));
-        content.animate()
-                .alpha(1f)
-                .translationY(0f)
-                .setDuration(240L)
-                .start();
+        // Keep the header flush and opaque from the first frame.
+        for(int i=1;i<content.getChildCount();i++){
+            View field=content.getChildAt(i);field.setAlpha(0f);
+            field.animate().alpha(1f).setDuration(240L).start();
+        }
     }
 
     private void scheduleZoneSearch(
