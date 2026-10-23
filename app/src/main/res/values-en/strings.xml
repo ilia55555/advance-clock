@@ -1321,4 +1321,5 @@ Lock screen</string>
     <string name="world_alarms_title">Alarms</string>
     <string name="app_reference_time_zone">Time zone</string>
     <string name="app_reference_system">Follow phone settings</string>
+    <string name="alarm_auto_delete_short">Auto-delete</string>
 </resources>

@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-/** Native switch cards matching the existing vibration control. */
+/** A single strip of inline labels and switches. */
 final class DateOption {
     private final Activity host;
     private final Switch dateSwitch;
@@ -20,9 +20,11 @@ final class DateOption {
         this.host = host;
         controls = new LinearLayout(host);
         controls.setOrientation(LinearLayout.HORIZONTAL);
-        controls.setLayoutDirection(View.LAYOUT_DIRECTION_LTR); // Date stays physically above the left field.
+        controls.setLayoutDirection(AppSettings.layoutDirection(host));
         controls.setBaselineAligned(false);
-        controls.setGravity(Gravity.TOP);
+        controls.setGravity(Gravity.CENTER_VERTICAL);
+        controls.setBackgroundResource(R.drawable.bg_field);
+        controls.setPadding(dp(10),dp(6),dp(10),dp(6));
         dateSwitch = card(R.string.apply_alarm_date, id);
         View row = (View) date.getParent();
         LinearLayout parent = (LinearLayout) row.getParent();
@@ -47,22 +49,26 @@ final class DateOption {
     private Switch card(int label, int id) {
         LinearLayout card = new LinearLayout(host);
         card.setLayoutDirection(AppSettings.layoutDirection(host));
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setGravity(Gravity.CENTER);
-        card.setBackgroundResource(R.drawable.bg_field);
-        card.setPadding(dp(4), dp(6), dp(4), dp(6));
-        card.setMinimumHeight(dp(78));
+        card.setOrientation(LinearLayout.HORIZONTAL);
+        card.setBaselineAligned(false);
+        card.setGravity(Gravity.CENTER_VERTICAL);
+        card.setMinimumHeight(dp(48));
         TextView caption = new TextView(host);
-        caption.setText(label);
+        caption.setText(label==R.string.alarm_auto_delete_finished?R.string.alarm_auto_delete_short:label);
         caption.setTextColor(AppSettings.textSecondary(host));
         caption.setTextSize(12);
         caption.setGravity(Gravity.CENTER);
-        caption.setMinLines(2);
-        card.addView(caption, new LinearLayout.LayoutParams(-1, -2));
+        caption.setMaxLines(1);caption.setEllipsize(null);caption.setHorizontallyScrolling(false);
+        caption.setIncludeFontPadding(false);
+        caption.setAutoSizeTextTypeUniformWithConfiguration(8,12,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+        card.addView(caption,new LinearLayout.LayoutParams(0,-2,1));
         Switch toggle = new Switch(host);
         toggle.setId(id);
         toggle.setContentDescription(host.getString(label));
-        card.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
+        toggle.setMinimumHeight(dp(48));
+        LinearLayout.LayoutParams toggleParams=new LinearLayout.LayoutParams(-2,-2);toggleParams.setMarginStart(dp(4));
+        card.addView(toggle,toggleParams);
+        card.setOnClickListener(view->toggle.toggle());
         controls.addView(card, new LinearLayout.LayoutParams(0, -2, 1));
         return toggle;
     }

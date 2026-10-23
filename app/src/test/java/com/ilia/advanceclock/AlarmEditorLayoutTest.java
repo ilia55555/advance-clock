@@ -34,7 +34,10 @@ public class AlarmEditorLayoutTest {
             Switch date=host.findViewById(R.id.date_option_alarm_editor),automatic=host.findViewById(R.id.auto_delete_alarm_editor);
             for(Switch toggle:new Switch[]{date,automatic}){
                 LinearLayout card=(LinearLayout)toggle.getParent();LinearLayout controls=(LinearLayout)card.getParent();
-                assertTrue(controls.getHeight()>60);assertTrue(toggle.getHeight()>0);assertTrue(toggle.isShown());
+                assertTrue(controls.getHeight()>=48);
+                assertEquals(LinearLayout.HORIZONTAL,card.getOrientation());
+                assertEquals(1,((TextView)card.getChildAt(0)).getMaxLines());
+                assertTrue(Math.abs((toggle.getTop()+toggle.getBottom())/2-(card.getChildAt(0).getTop()+card.getChildAt(0).getBottom())/2)<=1);assertTrue(toggle.getHeight()>0);assertTrue(toggle.isShown());
                 assertTrue(toggle.getBottom()<=card.getHeight());assertTrue(card.getBottom()<=controls.getHeight());
             }
             LinearLayout controls=(LinearLayout)date.getParent().getParent();

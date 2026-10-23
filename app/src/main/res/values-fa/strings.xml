@@ -1278,4 +1278,5 @@
     <string name="world_alarms_title">هشدارها</string>
     <string name="app_reference_time_zone">منطقه زمانی</string>
     <string name="app_reference_system">مطابق تنظیمات گوشی</string>
+    <string name="alarm_auto_delete_short">حذف خودکار</string>
 </resources>
