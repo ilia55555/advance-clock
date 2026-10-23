@@ -1330,4 +1330,5 @@
     <string name="smart_voice_stop">توقف گفتار</string>
     <string name="smart_voice_network_error">سرویس گفتار برای این درخواست به اینترنت نیاز دارد؛ اتصال اینترنت خود را بررسی کنید.</string>
     <string name="smart_voice_retry">دریافت گفتار موقتاً متوقف شد؛ دوباره تلاش می‌شود.</string>
+    <string name="smart_speech_language">زبان گفتار</string>
 </resources>

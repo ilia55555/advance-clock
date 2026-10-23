@@ -52,6 +52,7 @@ public final class SmartAlarmActivity extends Activity {
     private EditText bulkMinutes;
     private android.speech.SpeechRecognizer speechRecognizer;
     private Button voiceButton;
+    private SmartSpeechLanguages speechLanguages;
     private boolean listening;
     private int speechSession;
     private int lastSpeechError = -1;
@@ -134,7 +135,10 @@ public final class SmartAlarmActivity extends Activity {
                     queueSpeechRestart(350);
                 }
             });
-            speechRecognizer.startListening(speechIntent(this));
+            Intent request = speechIntent(this);
+            if (speechLanguages != null) request.putExtra(
+                    android.speech.RecognizerIntent.EXTRA_LANGUAGE, speechLanguages.language());
+            speechRecognizer.startListening(request);
         } catch (RuntimeException error) {
             stopVoiceInput();
             LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
@@ -272,6 +276,13 @@ public final class SmartAlarmActivity extends Activity {
         inputParams.topMargin = dp(8);
         card.addView(input, inputParams);
         LinearLayout helpers = new LinearLayout(this);
+        helpers.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        speechLanguages = new SmartSpeechLanguages(this, () -> {
+            if (listening) queueSpeechRestart(0);
+        });
+        LinearLayout.LayoutParams languageParams = new LinearLayout.LayoutParams(0, dp(48), 0.9f);
+        languageParams.setMarginEnd(dp(6));
+        helpers.addView(speechLanguages.view(), languageParams);
         Button insertTime = softButton(getString(R.string.smart_insert_time));
         insertTime.setTag("smart_insert_time");
         insertTime.setOnClickListener(v -> {
@@ -283,6 +294,8 @@ public final class SmartAlarmActivity extends Activity {
         setHelperIcon(insertTime, R.drawable.ic_smart_time);
         Button voice = softButton(getString(R.string.smart_voice_input));
         voiceButton = voice;
+        voice.setSingleLine(true);
+        insertTime.setSingleLine(true);
         voice.setTag("smart_voice_input");
         setHelperIcon(voice, R.drawable.ic_smart_speech);
         voice.setOnClickListener(v -> startVoiceInput());
@@ -290,7 +303,21 @@ public final class SmartAlarmActivity extends Activity {
         LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(0, dp(48), 1);
         timeParams.setMarginStart(dp(8));
         helpers.addView(insertTime, timeParams);
+        helpers.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            if (voice.getWidth() == 0 || insertTime.getWidth() == 0) return;
+            boolean showIcons = helperIconFits(voice) && helperIconFits(insertTime);
+            boolean iconsVisible = voice.getCompoundDrawablesRelative()[0] != null;
+            if (showIcons == iconsVisible) return;
+            if (showIcons) {
+                setHelperIcon(voice, R.drawable.ic_smart_speech);
+                setHelperIcon(insertTime, R.drawable.ic_smart_time);
+            } else {
+                voice.setCompoundDrawablesRelative(null, null, null, null);
+                insertTime.setCompoundDrawablesRelative(null, null, null, null);
+            }
+        });
         card.addView(helpers);
+        speechLanguages.requestSupportedLanguages();
         Button simplify = softButton(AppString.get(R.string.runtime_text_0640));
         simplify.setOnClickListener(v -> simplifyInput());
         LinearLayout.LayoutParams simplifyParams = new LinearLayout.LayoutParams(-1, dp(46));
@@ -327,6 +354,11 @@ public final class SmartAlarmActivity extends Activity {
 
         analyze.setOnClickListener(v -> analyzeInput());
         return card;
+    }
+
+    private boolean helperIconFits(Button button) {
+        return button.getPaint().measureText(button.getText().toString()) + dp(30)
+                + button.getPaddingLeft() + button.getPaddingRight() <= button.getWidth();
     }
 
     private void simplifyInput() {

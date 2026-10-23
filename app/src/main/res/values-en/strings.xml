@@ -1328,4 +1328,5 @@ Lock screen</string>
     <string name="smart_voice_stop">Stop dictation</string>
     <string name="smart_voice_network_error">The speech service needs internet for this request. Check your internet connection.</string>
     <string name="smart_voice_retry">Speech recognition was interrupted. Retrying…</string>
+    <string name="smart_speech_language">Speech language</string>
 </resources>

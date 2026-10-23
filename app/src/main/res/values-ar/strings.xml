@@ -1346,4 +1346,5 @@
     <string name="smart_voice_stop">إيقاف الإملاء</string>
     <string name="smart_voice_network_error">تحتاج خدمة التعرف على الكلام إلى الإنترنت لهذا الطلب. تحقق من اتصالك بالإنترنت.</string>
     <string name="smart_voice_retry">توقف التعرف على الكلام مؤقتًا. جارٍ إعادة المحاولة…</string>
+    <string name="smart_speech_language">لغة الإملاء</string>
 </resources>

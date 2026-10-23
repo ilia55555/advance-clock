@@ -14,6 +14,41 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk=35,shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class SmartScheduleActivityTest {
+    @Test public void selectorUsesAllReportedLanguagesAndPreservesChoiceIndependentlyOfAppLanguage() {
+        SmartAlarmActivity host=activity(false);
+        SmartSpeechLanguages languages=ReflectionHelpers.getField(host,"speechLanguages");
+        android.os.Bundle details=new android.os.Bundle();
+        details.putStringArrayList(android.speech.RecognizerIntent.EXTRA_SUPPORTED_LANGUAGES,
+                new ArrayList<>(Arrays.asList("fa-IR","de-DE","ja-JP","en-US","de-DE")));
+        languages.acceptDetails(details);
+        assertEquals(4,languages.view().getCount());
+        String appLanguage=AppSettings.language(host);
+        languages.view().setSelection(1);
+        Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+        assertEquals("de-DE",languages.language());
+        assertEquals(appLanguage,AppSettings.language(host));
+        assertEquals("de-DE",host.getSharedPreferences("smart_speech",0).getString("language",""));
+        host.finish();
+    }
+
+    @Test
+    @org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
+    public void helperIconsHideWhenRowIsNarrowAndReturnWhenSpaceIsAvailable() {
+        SmartAlarmActivity host=activity(false);
+        Button voice=host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input");
+        Button time=host.findViewById(android.R.id.content).findViewWithTag("smart_insert_time");
+        LinearLayout row=(LinearLayout)voice.getParent();
+        for(int width:new int[]{200,700}) {
+            int pixels=Math.round(width*host.getResources().getDisplayMetrics().density);
+            row.measure(android.view.View.MeasureSpec.makeMeasureSpec(pixels,android.view.View.MeasureSpec.EXACTLY),
+                    android.view.View.MeasureSpec.makeMeasureSpec(1000,android.view.View.MeasureSpec.AT_MOST));
+            row.layout(0,0,pixels,row.getMeasuredHeight());
+            row.getViewTreeObserver().dispatchOnGlobalLayout();
+            assertEquals(width==700,voice.getCompoundDrawablesRelative()[0]!=null);
+            assertEquals(width==700,time.getCompoundDrawablesRelative()[0]!=null);
+        }
+        host.finish();
+    }
     @Test public void directSpeechInsertsResultsAndReleasesMicrophoneSession() {
         Application app=RuntimeEnvironment.getApplication();
         AppSettings.setLanguage(app,"fa");
@@ -75,7 +110,8 @@ public class SmartScheduleActivityTest {
             android.view.View time=host.findViewById(android.R.id.content).findViewWithTag("smart_insert_time");
             android.view.View voice=host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input");
             LinearLayout helpers=(LinearLayout)time.getParent();
-            assertEquals(0,helpers.indexOfChild(voice)); assertEquals(1,helpers.indexOfChild(time));
+            assertEquals(0,helpers.indexOfChild(host.findViewById(android.R.id.content).findViewWithTag("smart_speech_language")));
+            assertEquals(1,helpers.indexOfChild(voice)); assertEquals(2,helpers.indexOfChild(time));
             assertNotNull(((Button)voice).getCompoundDrawablesRelative()[0]);
             assertNotNull(((Button)time).getCompoundDrawablesRelative()[0]);
             host.finish();
