@@ -394,36 +394,10 @@ public final class TripleCalendarView extends View {
                 Math.max(0, cachedRowCount - 5)
                         * EXTRA_ROW_H;
 
-        centered(
-                c,
-                CalendarUtils.formatDate(footerMillis, CalendarUtils.otherTypeOne(calendarType)),
-                340,
-                620 + shift,
-                20,
-                primary(),
-                regular);
-        stroke.setColor(primary());
-        stroke.setStrokeWidth(1);
-        c.drawLine(
-                46,
-                642 + shift,
-                163,
-                642 + shift,
-                stroke);
-        c.drawLine(
-                516,
-                642 + shift,
-                634,
-                642 + shift,
-                stroke);
-        centered(
-                c,
-                CalendarUtils.formatDate(footerMillis, CalendarUtils.otherTypeTwo(calendarType)),
-                340,
-                662 + shift,
-                16,
-                primary(),
-                regular);
+        String dates = CalendarUtils.formatDate(footerMillis, CalendarUtils.PERSIAN)
+                + " - " + CalendarUtils.formatDate(footerMillis, CalendarUtils.GREGORIAN)
+                + " - " + CalendarUtils.formatDate(footerMillis, CalendarUtils.HIJRI);
+        centered(c, dates, 340, 630 + shift, 26, primary(), regular);
     }
 
     private String configurationKey() {
