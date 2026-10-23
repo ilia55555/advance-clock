@@ -184,10 +184,12 @@ final class WorldClockPanelController {
         }
         LinearLayout content = new LinearLayout(host);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(dp(16), dp(16), dp(16), dp(16));
+        content.setTag("world_add_content");
+        content.setPadding(0,0,0,dp(16));
         content.setBackgroundColor(AppSettings.background(host));
 
         LinearLayout header = new LinearLayout(host);
+        header.setTag("world_add_header");
         header.setOrientation(LinearLayout.VERTICAL);
         header.setGravity(Gravity.CENTER);
         header.setPadding(dp(16), dp(12), dp(16), dp(12));
@@ -205,7 +207,8 @@ final class WorldClockPanelController {
         LinearLayout.LayoutParams hintParams = new LinearLayout.LayoutParams(-1, -2);
         hintParams.topMargin = dp(3);
         header.addView(hint, hintParams);
-        content.addView(header, new LinearLayout.LayoutParams(-1, dp(86)));
+        header.setMinimumHeight(dp(86));
+        content.addView(header,new LinearLayout.LayoutParams(-1,-2));
 
         EditText dialogSearch = new EditText(host);
         dialogSearch.setSingleLine(true);
@@ -260,9 +263,12 @@ final class WorldClockPanelController {
         cancelParams.topMargin = dp(8);
         content.addView(cancelButton, cancelParams);
 
-        AlertDialog dialog = new AlertDialog.Builder(host)
-                .setView(content)
-                .create();
+        for(int i=1;i<content.getChildCount();i++){
+            LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)content.getChildAt(i).getLayoutParams();
+            params.leftMargin=dp(16);params.rightMargin=dp(16);
+        }
+        AlertDialog dialog = new AlertDialog.Builder(host).create();
+        dialog.setView(content,0,0,0,0);
 
         dialogSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -291,6 +297,8 @@ final class WorldClockPanelController {
         }
         dialog.show();
         if (window != null) {
+            window.getDecorView().setPadding(0,0,0,0);
+            EditorHeaderInsets.apply(window,content,header);
             window.setLayout(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);

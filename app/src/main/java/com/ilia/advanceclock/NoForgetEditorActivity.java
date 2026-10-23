@@ -754,19 +754,7 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     private void applySystemBarInsets(View root){
-        int start=root.getPaddingStart();
-        int top=root.getPaddingTop();
-        int end=root.getPaddingEnd();
-        int bottom=root.getPaddingBottom();
-        root.setOnApplyWindowInsetsListener((view,insets)->{
-            view.setPaddingRelative(
-                    start,
-                    top+insets.getSystemWindowInsetTop(),
-                    end,
-                    bottom+insets.getSystemWindowInsetBottom());
-            return insets;
-        });
-        root.requestApplyInsets();
+        EditorHeaderInsets.apply(getWindow(),root,findViewById(R.id.note_editor_header));
     }
 
     @Override public void finish(){

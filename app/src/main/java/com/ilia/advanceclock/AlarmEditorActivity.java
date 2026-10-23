@@ -205,23 +205,7 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     private void applySystemBarInsets(View root) {
-        View header=findViewById(R.id.alarm_editor_header);
-        int headerTop=header.getPaddingTop(),headerBottom=header.getPaddingBottom();
-        int bottom=root.getPaddingBottom();
-        if(Build.VERSION.SDK_INT>=30)getWindow().setDecorFitsSystemWindows(false);
-        else getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(AppSettings.primaryColor(this));
-        root.setOnApplyWindowInsetsListener((view,insets)->{
-            int topInset,bottomInset;
-            if(Build.VERSION.SDK_INT>=30){
-                android.graphics.Insets safe=insets.getInsets(android.view.WindowInsets.Type.systemBars()|android.view.WindowInsets.Type.displayCutout());
-                topInset=safe.top;bottomInset=safe.bottom;
-            }else{topInset=insets.getSystemWindowInsetTop();bottomInset=insets.getSystemWindowInsetBottom();}
-            header.setPadding(header.getPaddingLeft(),headerTop+topInset,header.getPaddingRight(),headerBottom);
-            view.setPaddingRelative(0,0,0,bottom+bottomInset);
-            return insets;
-        });
-        root.requestApplyInsets();
+        EditorHeaderInsets.apply(getWindow(),root,findViewById(R.id.alarm_editor_header));
     }
 
     @Override public void finish() {

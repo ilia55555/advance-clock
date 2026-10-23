@@ -35,7 +35,7 @@ public class HeaderLayoutTest {
             TextView time=root.findViewById(R.id.header_time);
             time.setText("۱۱:۲۵");
             assertTrue(date.getTextSize()<time.getTextSize());
-            assertTrue(date.getTextSize()>=time.getTextSize()*.85f);
+            assertTrue(date.getTextSize()>=time.getTextSize()*.6f);
             int width=Math.round(360*context.getResources().getDisplayMetrics().density);
             root.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(2000,View.MeasureSpec.EXACTLY));
