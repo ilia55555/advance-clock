@@ -42,6 +42,26 @@ public class TimeToolSessionUiTest {
    assertEquals(View.VISIBLE,extras.getVisibility());
   }
  }
+ @Test public void recordedLapsHaveNumberedLabelsAndSeparators() {
+  AppString.init(RuntimeEnvironment.getApplication());
+  AppSettings.setLanguage(RuntimeEnvironment.getApplication(),"fa");
+  try(var controller=Robolectric.buildActivity(StopwatchActivity.class).setup()) {
+   StopwatchActivity host=controller.get();
+   host.findViewById(R.id.stopwatch_start).performClick();
+   for(int i=0;i<3;i++) {
+    org.robolectric.shadows.ShadowSystemClock.advanceBy(java.time.Duration.ofSeconds(1));
+    host.findViewById(R.id.stopwatch_lap).performClick();
+   }
+   LinearLayout list=host.findViewById(R.id.lap_list);
+   assertEquals(6,list.getChildCount());
+   for(int i=0;i<3;i++) {
+    TextView row=(TextView)list.getChildAt(i*2);
+    assertTrue(row.getText().toString().startsWith("دور "+CalendarUtils.fa(3-i)+") "));
+    assertFalse(list.getChildAt(i*2+1) instanceof TextView);
+    assertTrue(list.getChildAt(i*2+1).getLayoutParams().height>0);
+   }
+  }
+ }
  @Test public void touchingOutsideInputClearsFocusWithoutConsumingTheTap() {
   AppString.init(RuntimeEnvironment.getApplication());
   try(var controller=Robolectric.buildActivity(TimerActivity.class).setup().visible()) {

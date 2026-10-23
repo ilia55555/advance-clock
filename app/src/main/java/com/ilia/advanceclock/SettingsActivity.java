@@ -21,7 +21,7 @@ import android.widget.Toast;
 public final class SettingsActivity extends Activity {
     public static final String EXTRA_SECTION = "settings_section";
     private final java.util.List<SettingsSection> sections = new java.util.ArrayList<>();
-    private String expandedSection = "general";
+    private String expandedSection = "";
     private NotificationSettingsPanel notificationPanel;
     private PrayerSettingsPanel prayerPanel;
 
@@ -31,9 +31,9 @@ public final class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         expandedSection = savedInstanceState != null
-                ? savedInstanceState.getString(EXTRA_SECTION, "general")
+                ? savedInstanceState.getString(EXTRA_SECTION, "")
                 : getIntent().getStringExtra(EXTRA_SECTION);
-        if (expandedSection == null) expandedSection = "general";
+        if (expandedSection == null) expandedSection = "";
         int pad = dp(18);
 
         ScrollView scroll = new ScrollView(this);

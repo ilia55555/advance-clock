@@ -17,6 +17,19 @@ final class TimeFormat {
         else if("en".equals(locale.getLanguage())) symbols.setAmPmStrings(new String[]{"AM","PM"});
         format.setDateFormatSymbols(symbols);format.setTimeZone(zone);return format;
     }
+    /** Keep the clock and date in separate directional runs inside an LTR summary. */
+    static String endTime(Context context, long millis, int calendarType) {
+        String time = clock(context, millis);
+        String date = CalendarUtils.formatDate(millis, calendarType);
+        boolean rtlDate = android.text.TextDirectionHeuristics.FIRSTSTRONG_LTR.isRtl(date, 0, date.length());
+        boolean rtlTime = android.text.TextDirectionHeuristics.FIRSTSTRONG_LTR.isRtl(time, 0, time.length());
+        if (!rtlDate && !rtlTime) return time + "   " + date;
+        android.text.BidiFormatter bidi = android.text.BidiFormatter.getInstance(false);
+        return bidi.unicodeWrap(time, android.text.TextDirectionHeuristics.LTR) + "   "
+                + bidi.unicodeWrap(rtlDate ? "\u200F" + date + "\u200F" : date,
+                        rtlDate ? android.text.TextDirectionHeuristics.RTL : android.text.TextDirectionHeuristics.LTR);
+    }
+
     static String clock(Context context,long millis) {
         return CalendarUtils.fa(formatter(context,false,TimeZone.getDefault()).format(new java.util.Date(millis)));
     }

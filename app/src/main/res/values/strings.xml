@@ -529,7 +529,7 @@
     <string formatted="false" name="layout_text_0012">نامحدود</string>
     <string formatted="false" name="layout_text_0013">عنوان هشدار حد نهایی (اختیاری)</string>
     <string formatted="false" name="layout_text_0014">مدت‌زمان ۵ دقیقه</string>
-    <string formatted="false" name="layout_text_0015">تاریخ و ساعت پایان</string>
+    <string formatted="false" name="layout_text_0015">ساعت و تاریخ</string>
     <string formatted="false" name="layout_text_0016">عنوان هشدار تایمر (اختیاری)</string>
     <string formatted="false" name="layout_text_0017">متن، نقاشی، اهمیت و آلارم</string>
     <string formatted="false" name="layout_text_0018">فایل‌ها، تصاویر و برنامه‌ها</string>
@@ -559,7 +559,7 @@
     <string formatted="false" name="runtime_text_0434">صبح</string>
     <string formatted="false" name="runtime_text_0435">ظهر</string>
     <string formatted="false" name="runtime_text_0436">مغرب</string>
-    <string formatted="false" name="runtime_text_0437">دور %d     %s</string>
+    <string formatted="false" name="runtime_text_0437">دور %d) %s</string>
     <string formatted="false" name="runtime_text_0438">حد نهایی بیشتر از صفر وارد کنید</string>
     <string formatted="false" name="runtime_text_0439">✓ اعلان‌ها</string>
     <string formatted="false" name="runtime_text_0440">✕ اعلان‌ها</string>
@@ -1193,7 +1193,7 @@
     <!-- About, privacy, terms and permissions. -->
     <string name="about_title" formatted="false">About us</string>
     <string name="about_developer_label">Developer: %1$s</string>
-    <string name="about_version_value">Version %1$s (%2$d)</string>
+    <string name="about_version_value">%1$s</string>
     <string name="about_version_unknown" formatted="false">Version unavailable</string>
     <string name="about_summary" formatted="false">A personal time-management app with alarms, a Persian/Gregorian/lunar calendar, notes and reminders, world clocks, timers, stopwatches, prayer times and Qibla tools.</string>
     <string name="about_privacy_title" formatted="false">Privacy policy</string>

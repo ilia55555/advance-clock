@@ -33,7 +33,7 @@ final class SettingsSection extends LinearLayout {
         background.setCornerRadius(dp(20));
         setBackground(background);
         setClipToOutline(true);
-        setElevation(dp(2));
+        setElevation(0f);
 
         header = new LinearLayout(context);
         header.setTag("settings_header_" + key);

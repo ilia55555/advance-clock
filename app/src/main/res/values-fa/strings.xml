@@ -528,7 +528,7 @@
     <string formatted="false" name="layout_text_0012">نامحدود</string>
     <string formatted="false" name="layout_text_0013">عنوان هشدار حد نهایی (اختیاری)</string>
     <string formatted="false" name="layout_text_0014">مدت‌زمان ۵ دقیقه</string>
-    <string formatted="false" name="layout_text_0015">تاریخ و ساعت پایان</string>
+    <string formatted="false" name="layout_text_0015">ساعت و تاریخ</string>
     <string formatted="false" name="layout_text_0016">عنوان هشدار تایمر (اختیاری)</string>
     <string formatted="false" name="layout_text_0017">متن، نقاشی، اهمیت و آلارم</string>
     <string formatted="false" name="layout_text_0018">فایل‌ها، تصاویر و برنامه‌ها</string>
@@ -558,7 +558,7 @@
     <string formatted="false" name="runtime_text_0434">صبح</string>
     <string formatted="false" name="runtime_text_0435">ظهر</string>
     <string formatted="false" name="runtime_text_0436">مغرب</string>
-    <string formatted="false" name="runtime_text_0437">دور %d     %s</string>
+    <string formatted="false" name="runtime_text_0437">دور %d) %s</string>
     <string formatted="false" name="runtime_text_0438">حد نهایی بیشتر از صفر وارد کنید</string>
     <string formatted="false" name="runtime_text_0439">✓ اعلان‌ها</string>
     <string formatted="false" name="runtime_text_0440">✕ اعلان‌ها</string>
@@ -1154,7 +1154,7 @@
     <!-- About, privacy, terms and permissions. -->
     <string name="about_title" formatted="false">درباره ما</string>
     <string name="about_developer_label">سازنده: %1$s</string>
-    <string name="about_version_value">نسخهٔ %1$s (%2$d)</string>
+    <string name="about_version_value">%1$s</string>
     <string name="about_version_unknown" formatted="false">نسخه در دسترس نیست</string>
     <string name="about_summary" formatted="false">برنامه‌ای برای مدیریت زمان شخصی؛ شامل ساعت و هشدار، تقویم شمسی و میلادی و قمری، یادداشت و یادآوری، ساعت جهانی، تایمر، کرنومتر، اوقات شرعی و ابزار قبله.</string>
     <string name="about_privacy_title" formatted="false">سیاست حریم خصوصی</string>

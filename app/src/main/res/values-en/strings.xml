@@ -527,7 +527,7 @@ No reminder</string>
     <string formatted="false" name="layout_text_0012">Unlimited</string>
     <string formatted="false" name="layout_text_0013">Stopwatch limit alarm title (optional)</string>
     <string formatted="false" name="layout_text_0014">5-minute duration</string>
-    <string formatted="false" name="layout_text_0015">End date and time</string>
+    <string formatted="false" name="layout_text_0015">Time and date</string>
     <string formatted="false" name="layout_text_0016">Timer alarm title (optional)</string>
     <string formatted="false" name="layout_text_0017">Text, drawing, priority, and alarm</string>
     <string formatted="false" name="layout_text_0018">Files, images, and apps</string>
@@ -557,7 +557,7 @@ No reminder</string>
     <string formatted="false" name="runtime_text_0434">Fajr</string>
     <string formatted="false" name="runtime_text_0435">Dhuhr</string>
     <string formatted="false" name="runtime_text_0436">Maghrib</string>
-    <string formatted="false" name="runtime_text_0437">Lap %d     %s</string>
+    <string formatted="false" name="runtime_text_0437">Lap %d) %s</string>
     <string formatted="false" name="runtime_text_0438">Enter a limit greater than zero.</string>
     <string formatted="false" name="runtime_text_0439">✓ Notifications</string>
     <string formatted="false" name="runtime_text_0440">✕ Notifications</string>
@@ -1193,7 +1193,7 @@ Lock screen</string>
     <!-- About, privacy, terms and permissions. -->
     <string name="about_title" formatted="false">About us</string>
     <string name="about_developer_label">Developer: %1$s</string>
-    <string name="about_version_value">Version %1$s (%2$d)</string>
+    <string name="about_version_value">%1$s</string>
     <string name="about_version_unknown" formatted="false">Version unavailable</string>
     <string name="about_summary" formatted="false">A personal time-management app with alarms, a Persian/Gregorian/lunar calendar, notes and reminders, world clocks, timers, stopwatches, prayer times and Qibla tools.</string>
     <string name="about_privacy_title" formatted="false">Privacy policy</string>

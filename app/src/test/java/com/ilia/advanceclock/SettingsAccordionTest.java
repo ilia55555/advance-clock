@@ -36,10 +36,12 @@ public class SettingsAccordionTest {
             String[] keys={"general","tabs","notification","calendar","alarm","prayer"};
             LinearLayout root=(LinearLayout)section(host,"general").getParent();
             for(int i=0;i<keys.length;i++) assertEquals("settings_section_"+keys[i],root.getChildAt(i+1).getTag());
-            assertTrue(section(host,"general").isExpanded());
+            for(String key:keys) {
+                assertFalse(section(host,key).isExpanded());
+                assertEquals(0f, section(host,key).getElevation(), 0f);
+            }
             for(String key:keys) {
                 section(host,key).header.performClick();
-                // General initially closes on a second tap; all others open exclusively.
                 for(String other:keys) if(!other.equals(key)) assertFalse(section(host,other).isExpanded());
             }
             assertTrue(section(host,"prayer").isExpanded());

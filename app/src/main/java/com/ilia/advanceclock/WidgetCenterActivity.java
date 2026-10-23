@@ -62,14 +62,6 @@ public final class WidgetCenterActivity extends Activity {
 
         root.addView(top);
 
-        TextView intro = text(
-                AppString.get(R.string.runtime_text_0482)
-                        + AppString.get(R.string.runtime_text_0483),
-                12,
-                AppSettings.textSecondary(this));
-        intro.setPadding(0, 0, 0, dp(10));
-        root.addView(intro);
-
         list = new LinearLayout(this);
         list.setOrientation(LinearLayout.VERTICAL);
         root.addView(list, new LinearLayout.LayoutParams(-1, -2));
@@ -146,15 +138,27 @@ public final class WidgetCenterActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setLayoutDirection(AppSettings.layoutDirection(this));
-        card.setPadding(dp(15), dp(14), dp(15), dp(14));
-        card.setBackgroundResource(R.drawable.bg_card);
+        card.setPadding(dp(16), dp(16), dp(16), dp(16));
+        android.graphics.drawable.GradientDrawable border = new android.graphics.drawable.GradientDrawable();
+        border.setColor(AppSettings.surface(this));
+        border.setCornerRadius(dp(20));
+        border.setStroke(dp(1), AppSettings.field(this));
+        card.setBackground(border);
+        card.setElevation(0f);
 
         LinearLayout header = new LinearLayout(this);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        header.setLayoutDirection(AppSettings.layoutDirection(this));
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(widgetIcon(kind));
+        icon.setColorFilter(AppSettings.primaryColor(this));
+        icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(26), dp(26));
+        iconParams.setMarginEnd(dp(14));
+        header.addView(icon, iconParams);
 
-        TextView title = text(titleText, 18, AppSettings.textPrimary(this));
+        TextView title = text(titleText, 17, AppSettings.textPrimary(this));
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         header.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
 
@@ -180,7 +184,13 @@ public final class WidgetCenterActivity extends Activity {
         add.setText(AppString.get(R.string.runtime_text_0113));
         add.setAllCaps(false);
         add.setTextColor(0xFFFFFFFF);
-        add.setBackgroundColor(AppSettings.primaryColor(this));
+        android.graphics.drawable.GradientDrawable buttonShape = new android.graphics.drawable.GradientDrawable();
+        buttonShape.setColor(AppSettings.primaryColor(this));
+        buttonShape.setCornerRadius(dp(14));
+        add.setBackground(new android.graphics.drawable.RippleDrawable(
+                android.content.res.ColorStateList.valueOf(0x33FFFFFF), buttonShape, null));
+        add.setStateListAnimator(null);
+        add.setElevation(0f);
         add.setOnClickListener(v -> pin(provider));
         card.addView(add, new LinearLayout.LayoutParams(-1, dp(52)));
 
@@ -203,6 +213,8 @@ public final class WidgetCenterActivity extends Activity {
                 Button edit = new Button(this);
                 edit.setText(AppString.get(R.string.runtime_text_0493) + (i + 1));
                 edit.setAllCaps(false);
+                edit.setStateListAnimator(null);
+                edit.setElevation(0f);
                 edit.setTextSize(11);
                 edit.setTextColor(AppSettings.primaryColor(this));
                 edit.setBackgroundResource(R.drawable.bg_soft_button);
@@ -218,8 +230,16 @@ public final class WidgetCenterActivity extends Activity {
         }
 
         LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(-1, -2);
-        cardLp.bottomMargin = dp(12);
+        cardLp.topMargin = dp(14);
         list.addView(card, cardLp);
+    }
+
+    private int widgetIcon(String kind) {
+        if ("calendar".equals(kind)) return R.drawable.ic_settings_calendar;
+        if ("prayer".equals(kind)) return R.drawable.ic_settings_adhan;
+        if ("time_tools".equals(kind)) return R.drawable.ic_settings_tools;
+        if ("clock".equals(kind) || "world".equals(kind)) return R.drawable.ic_settings_alarm;
+        return R.drawable.ic_settings_widgets;
     }
 
     private int previewResource(String kind) {

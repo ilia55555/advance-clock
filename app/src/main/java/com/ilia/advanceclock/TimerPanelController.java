@@ -215,8 +215,7 @@ final class TimerPanelController {
         long remaining = running ? currentRemaining() : remainingMillis > 0 ? remainingMillis : readDuration();
         long target = running ? deadline : remainingMillis > 0 ? System.currentTimeMillis() + remaining
                 : dateTimeMode ? selectedTarget : remaining > 0 ? System.currentTimeMillis() + remaining : 0;
-        summary.setText(target <= 0 ? "" : TimeFormat.clock(host,target)
-                + "   " + CalendarUtils.formatDate(target, calendarType));
+        summary.setText(target <= 0 ? "" : TimeFormat.endTime(host, target, calendarType));
     }
 
     private void renderTime(long millis) {

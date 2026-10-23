@@ -482,7 +482,7 @@
     <string formatted="false" name="layout_text_0012">بلا حد</string>
     <string formatted="false" name="layout_text_0013">عنوان منبّه الحد الأقصى لساعة الإيقاف (اختياري)</string>
     <string formatted="false" name="layout_text_0014">مدة 5 دقائق</string>
-    <string formatted="false" name="layout_text_0015">تاريخ ووقت الانتهاء</string>
+    <string formatted="false" name="layout_text_0015">الوقت والتاريخ</string>
     <string formatted="false" name="layout_text_0016">عنوان منبّه المؤقت (اختياري)</string>
     <string formatted="false" name="layout_text_0017">النص والرسم والأهمية والمنبّه</string>
     <string formatted="false" name="layout_text_0018">الملفات والصور والتطبيقات</string>
@@ -512,7 +512,7 @@
     <string formatted="false" name="runtime_text_0434">الفجر</string>
     <string formatted="false" name="runtime_text_0435">الظهر</string>
     <string formatted="false" name="runtime_text_0436">المغرب</string>
-    <string formatted="false" name="runtime_text_0437">الدورة %d     %s</string>
+    <string formatted="false" name="runtime_text_0437">الدورة %d) %s</string>
     <string formatted="false" name="runtime_text_0438">أدخل حدًا أكبر من صفر.</string>
     <string formatted="false" name="runtime_text_0439">✓ الإشعارات</string>
     <string formatted="false" name="runtime_text_0440">✕ الإشعارات</string>
@@ -1211,7 +1211,7 @@
     <!-- About, privacy, terms and permissions. -->
     <string name="about_title" formatted="false">من نحن</string>
     <string name="about_developer_label">المطوّر: %1$s</string>
-    <string name="about_version_value">الإصدار %1$s (%2$d)</string>
+    <string name="about_version_value">%1$s</string>
     <string name="about_version_unknown" formatted="false">الإصدار غير متاح</string>
     <string name="about_summary" formatted="false">تطبيق لإدارة الوقت الشخصي يضم المنبّهات والتقويم الفارسي والميلادي والقمري والملاحظات والتذكيرات والساعات العالمية والمؤقّت وساعة الإيقاف ومواقيت الصلاة وأدوات القبلة.</string>
     <string name="about_privacy_title" formatted="false">سياسة الخصوصية</string>

@@ -302,8 +302,7 @@ public final class AboutActivity extends Activity {
     private String versionLabel() {
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-            long code = Build.VERSION.SDK_INT >= 28 ? info.getLongVersionCode() : info.versionCode;
-            return getString(R.string.about_version_value, info.versionName, code);
+            return info.versionName;
         } catch (android.content.pm.PackageManager.NameNotFoundException ignored) {
             return getString(R.string.about_version_unknown);
         }
