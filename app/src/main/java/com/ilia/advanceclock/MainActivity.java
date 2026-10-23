@@ -261,6 +261,17 @@ public final class MainActivity extends Activity {
         worldPanel = findViewById(R.id.world_panel);
         clockTab = findViewById(R.id.tab_clock);
         noForgetTab = findViewById(R.id.tab_noforget);
+        // Single-line TextView can enable END ellipsis during inflation; explicitly clip instead.
+        for (int tabId : new int[]{R.id.tab_clock, R.id.tab_noforget, R.id.tab_stopwatch, R.id.tab_timer, R.id.tab_world}) {
+            TextView tab = findViewById(tabId);
+            tab.setEllipsize(null);
+            tab.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                int available = tab.getWidth() - tab.getCompoundPaddingLeft() - tab.getCompoundPaddingRight();
+                int gravity = tab.getPaint().measureText(tab.getText().toString()) > available
+                        ? Gravity.CENTER_VERTICAL | Gravity.START : Gravity.CENTER;
+                if (tab.getGravity() != gravity) tab.setGravity(gravity);
+            });
+        }
         clockIndicator = findViewById(R.id.clock_indicator);
         noForgetIndicator = findViewById(R.id.noforget_indicator);
         stopwatchIndicator = findViewById(R.id.stopwatch_indicator);
