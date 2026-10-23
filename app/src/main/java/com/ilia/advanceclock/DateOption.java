@@ -22,6 +22,7 @@ final class DateOption {
         controls.setOrientation(LinearLayout.HORIZONTAL);
         controls.setLayoutDirection(View.LAYOUT_DIRECTION_LTR); // Date stays physically above the left field.
         controls.setBaselineAligned(false);
+        controls.setGravity(Gravity.TOP);
         dateSwitch = card(R.string.apply_alarm_date, id);
         View row = (View) date.getParent();
         LinearLayout parent = (LinearLayout) row.getParent();
@@ -50,6 +51,7 @@ final class DateOption {
         card.setGravity(Gravity.CENTER);
         card.setBackgroundResource(R.drawable.bg_field);
         card.setPadding(dp(4), dp(6), dp(4), dp(6));
+        card.setMinimumHeight(dp(78));
         TextView caption = new TextView(host);
         caption.setText(label);
         caption.setTextColor(AppSettings.textSecondary(host));
@@ -61,7 +63,7 @@ final class DateOption {
         toggle.setId(id);
         toggle.setContentDescription(host.getString(label));
         card.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
-        controls.addView(card, new LinearLayout.LayoutParams(0, -1, 1));
+        controls.addView(card, new LinearLayout.LayoutParams(0, -2, 1));
         return toggle;
     }
 

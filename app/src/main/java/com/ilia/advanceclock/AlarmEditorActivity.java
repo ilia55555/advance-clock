@@ -37,7 +37,7 @@ public final class AlarmEditorActivity extends Activity {
     private Button repeatButton;
     private Button remindersButton;
     private Spinner priority;
-    private boolean worldReference;
+    private boolean worldReference,createdFromWorld;
     private int storedPriority=PriorityUtils.MEDIUM;
     private java.util.List<String> referenceZones=java.util.Collections.emptyList();
     private String referenceZone="";
@@ -205,16 +205,20 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     private void applySystemBarInsets(View root) {
-        int start = root.getPaddingStart();
-        int top = root.getPaddingTop();
-        int end = root.getPaddingEnd();
-        int bottom = root.getPaddingBottom();
-        root.setOnApplyWindowInsetsListener((view, insets) -> {
-            view.setPaddingRelative(
-                    start,
-                    top + insets.getSystemWindowInsetTop(),
-                    end,
-                    bottom + insets.getSystemWindowInsetBottom());
+        View header=findViewById(R.id.alarm_editor_header);
+        int headerTop=header.getPaddingTop(),headerBottom=header.getPaddingBottom();
+        int bottom=root.getPaddingBottom();
+        if(Build.VERSION.SDK_INT>=30)getWindow().setDecorFitsSystemWindows(false);
+        else getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(AppSettings.primaryColor(this));
+        root.setOnApplyWindowInsetsListener((view,insets)->{
+            int topInset,bottomInset;
+            if(Build.VERSION.SDK_INT>=30){
+                android.graphics.Insets safe=insets.getInsets(android.view.WindowInsets.Type.systemBars()|android.view.WindowInsets.Type.displayCutout());
+                topInset=safe.top;bottomInset=safe.bottom;
+            }else{topInset=insets.getSystemWindowInsetTop();bottomInset=insets.getSystemWindowInsetBottom();}
+            header.setPadding(header.getPaddingLeft(),headerTop+topInset,header.getPaddingRight(),headerBottom);
+            view.setPaddingRelative(0,0,0,bottom+bottomInset);
             return insets;
         });
         root.requestApplyInsets();
@@ -266,6 +270,7 @@ public final class AlarmEditorActivity extends Activity {
 
     private void configureReference(Bundle state){
         AlarmItem existing=alarmId>=0?new AlarmStore(this).find(alarmId):null;
+        createdFromWorld=existing==null?getIntent().getBooleanExtra("worldTimeReference",false):existing.createdFromWorld;
         worldReference=getIntent().getBooleanExtra("worldTimeReference",false)
                 || (existing!=null&&!existing.referenceZoneId.isEmpty());
         if(!worldReference)return;
@@ -277,11 +282,6 @@ public final class AlarmEditorActivity extends Activity {
         priority.setAdapter(referenceAdapter());priority.setSelection(index);
         priority.setPrompt(AppString.get(R.string.world_alarm_reference));
         priority.setContentDescription(AppString.get(R.string.world_alarm_reference));
-        android.widget.LinearLayout row=(android.widget.LinearLayout)priority.getParent();
-        android.widget.LinearLayout parent=(android.widget.LinearLayout)row.getParent();
-        TextView title=new TextView(this);title.setText(AppString.get(R.string.world_alarm_reference));
-        title.setTextColor(AppSettings.textSecondary(this));title.setTextSize(14);
-        parent.addView(title,parent.indexOfChild(row));
         priority.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){
             public void onItemSelected(android.widget.AdapterView<?> p,View view,int position,long id){
                 String zone=referenceZones.get(position);
@@ -358,6 +358,7 @@ public final class AlarmEditorActivity extends Activity {
                 reminderMode,
                 reminderMinutesJson);
         item.referenceZoneId=worldReference?referenceZone:"";
+        item.createdFromWorld=createdFromWorld;
         item.applyDate = dateOption.isApplied();
         item.autoDeleteAfterCompletion = autoDelete.isChecked();
         AlarmItem previous = alarmId >= 0 ? new AlarmStore(this).find(alarmId) : null;

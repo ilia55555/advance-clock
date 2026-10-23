@@ -15,6 +15,7 @@ public final class AlarmItem {
 
     public long id;
     public String referenceZoneId="";
+    public boolean createdFromWorld;
     public java.util.TimeZone timeZone(){return referenceZoneId.isEmpty()?AppTime.zone():java.util.TimeZone.getTimeZone(referenceZoneId); }
     public boolean applyDate;
     public boolean autoDeleteAfterCompletion;
@@ -83,6 +84,7 @@ public final class AlarmItem {
 
     public JSONObject toJson() throws JSONException{
         JSONObject o=new JSONObject();
+        o.put("createdFromWorld",createdFromWorld);
         o.put("referenceZoneId",referenceZoneId);
         o.put("applyDate", applyDate);
         o.put("autoDeleteAfterCompletion", autoDeleteAfterCompletion);
@@ -122,6 +124,7 @@ public final class AlarmItem {
                 o.optString("reminderMinutesJson","[]")
         );
         item.referenceZoneId=o.optString("referenceZoneId", "");
+        item.createdFromWorld=o.optBoolean("createdFromWorld",!item.referenceZoneId.isEmpty());
         item.autoDeleteAfterCompletion = o.optBoolean("autoDeleteAfterCompletion", false);
         item.pendingSnoozeAtMillis = o.optLong("pendingSnoozeAtMillis", 0L);
         item.applyDate = o.optBoolean("applyDate", true); // Preserve explicit dates in existing records.

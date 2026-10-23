@@ -1578,9 +1578,12 @@ public final class MainActivity extends Activity {
         if(worldController!=null)worldController.refreshAlarms();
     }
 
-    void renderAlarmList(LinearLayout target){
+    void renderAlarmList(LinearLayout target){renderAlarmList(target,false);}
+
+    void renderAlarmList(LinearLayout target,boolean worldOnly){
         target.removeAllViews();
-        List<AlarmItem> items = new AlarmStore(this).all();
+        List<AlarmItem> items = new java.util.ArrayList<>(new AlarmStore(this).all());
+        if(worldOnly)items.removeIf(item->!item.createdFromWorld);
         if (items.isEmpty()) {
             target.addView(emptyText(AppString.get(R.string.runtime_text_0393)));
             return;

@@ -19,11 +19,15 @@ public class WorldAlarmListTest {
         AppSettings.setLanguage(app,"fa");AppString.init(app);
         WorldClockStore.save(app,Collections.singletonList("Asia/Tehran"));WorldClockStore.saveLabel(app,"Asia/Tehran","اصفهان");
         AlarmItem alarm=new AlarmItem(7,"Test",System.currentTimeMillis()+86_400_000L,0,true);
-        alarm.referenceZoneId="Asia/Tehran";new AlarmStore(app).save(alarm);
+        alarm.referenceZoneId="Asia/Tehran";alarm.createdFromWorld=true;new AlarmStore(app).save(alarm);
+        new AlarmStore(app).save(new AlarmItem(8,"Phone",System.currentTimeMillis()+86_400_000L,0,true));
+        AlarmItem independent=new AlarmItem(9,"Other source",System.currentTimeMillis()+86_400_000L,0,true);
+        independent.referenceZoneId="Asia/Tehran";new AlarmStore(app).save(independent);
         try(var controller=Robolectric.buildActivity(MainActivity.class).setup().visible()){
             MainActivity host=controller.get();host.findViewById(R.id.tab_world).performClick();
             LinearLayout world=host.findViewById(R.id.world_alarm_list),clock=host.findViewById(R.id.alarm_list);
-            assertNotNull(world);
+            assertNotNull(world);assertEquals(1,world.getChildCount());assertEquals(3,clock.getChildCount());
+            assertNull(world.findViewWithTag("alarm_summary_8"));assertNull(world.findViewWithTag("alarm_summary_9"));
             LinearLayout parent=(LinearLayout)world.getParent();
             assertTrue(parent.indexOfChild(host.findViewById(R.id.world_clock_list))<parent.indexOfChild(host.findViewById(R.id.world_alarms_divider)));
             assertTrue(parent.indexOfChild(host.findViewById(R.id.world_alarms_divider))<parent.indexOfChild(world));

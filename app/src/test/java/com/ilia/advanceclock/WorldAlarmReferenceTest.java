@@ -17,6 +17,13 @@ import static org.junit.Assert.*;
 public class WorldAlarmReferenceTest {
     @Before public void init(){AppString.init(RuntimeEnvironment.getApplication());}
     private static long at(String utc){return Instant.parse(utc).toEpochMilli();}
+    @Test public void legacyWorldAlarmsAreRecognizedButNewExplicitNonWorldOriginsArePreserved() throws Exception{
+        AlarmItem legacy=new AlarmItem(4,"Old",1000,0,true);legacy.referenceZoneId="Asia/Tehran";
+        org.json.JSONObject old=legacy.toJson();old.remove("createdFromWorld");
+        assertTrue(AlarmItem.fromJson(old).createdFromWorld);
+        assertFalse(AlarmItem.fromJson(legacy.toJson()).createdFromWorld);
+        legacy.createdFromWorld=true;assertTrue(AlarmItem.fromJson(legacy.toJson()).createdFromWorld);
+    }
     @Test public void offsetsIncludeFractionalHoursAndSeasonalDaylightSaving(){
         assertEquals("GMT +3:30",WorldAlarmReference.offset(TimeZone.getTimeZone("Asia/Tehran"),at("2026-06-01T00:00:00Z")));
         assertEquals("GMT +5:45",WorldAlarmReference.offset(TimeZone.getTimeZone("Asia/Kathmandu"),at("2026-06-01T00:00:00Z")));
@@ -49,6 +56,7 @@ public class WorldAlarmReferenceTest {
             DateOption date=ReflectionHelpers.getField(host,"dateOption");date.setApplied(true);
             host.findViewById(R.id.save_alarm).performClick();
             AlarmItem saved=new AlarmStore(app).all().get(0);id=saved.id;
+            assertTrue(saved.createdFromWorld);
             assertEquals("America/New_York",saved.referenceZoneId);assertEquals(selected.getTimeInMillis(),saved.triggerAtMillis);
             assertEquals(PriorityUtils.MEDIUM,saved.priority);
         }

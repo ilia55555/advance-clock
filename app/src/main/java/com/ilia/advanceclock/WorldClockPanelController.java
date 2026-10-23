@@ -1123,7 +1123,7 @@ final class WorldClockPanelController {
     }
 
     void refreshAlarms(){
-        if(host instanceof MainActivity && alarms!=null)((MainActivity)host).renderAlarmList(alarms);
+        if(host instanceof MainActivity && alarms!=null)((MainActivity)host).renderAlarmList(alarms,true);
     }
 
     void setActive(boolean value) {
