@@ -37,6 +37,10 @@ public class HeaderLayoutTest {
             root.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(2000,View.MeasureSpec.EXACTLY));
             root.layout(0,0,width,2000);
+            for (int tabId : new int[]{R.id.tab_clock,R.id.tab_noforget,R.id.tab_stopwatch,R.id.tab_timer,R.id.tab_world}) {
+                TextView tab=root.findViewById(tabId);
+                assertEquals("tab wrapped at font scale "+scale,1,tab.getLineCount());
+            }
             View clockRow=(View)time.getParent();
             View tabs=root.findViewById(R.id.tab_bar);
             assertTrue("date clipped at font scale "+scale,

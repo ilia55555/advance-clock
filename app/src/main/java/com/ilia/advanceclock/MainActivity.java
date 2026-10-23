@@ -377,7 +377,7 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 6, 4, AppString.get(R.string.runtime_text_0108));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
             menu.getMenu().add(0, 9, 7, getString(R.string.about_title));
-            menu.setOnMenuItemClickListener(item -> {
+            HeaderMenu.show(this, anchor, menu.getMenu(), item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
                     return true;
@@ -413,7 +413,6 @@ public final class MainActivity extends Activity {
                 }
                 return false;
             });
-            menu.show();
         });
     }
 
