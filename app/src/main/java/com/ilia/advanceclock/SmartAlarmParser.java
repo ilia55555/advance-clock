@@ -63,7 +63,7 @@ public final class SmartAlarmParser {
         }
 
         public String triggerTimeText() {
-            Calendar c = Calendar.getInstance();
+            Calendar c = Calendar.getInstance(AppTime.zone());
             c.setTimeInMillis(triggerMillis());
             return faTime(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
         }
@@ -675,7 +675,7 @@ public final class SmartAlarmParser {
         else if (s.contains("فردا")) addDays = 1;
         else if (s.contains("امروز") || s.contains("امشب")) addDays = 0;
 
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(AppTime.zone());
         if (addDays != Integer.MIN_VALUE) {
             c.add(Calendar.DAY_OF_YEAR, addDays);
             return fromMillis(context, c.getTimeInMillis());

@@ -181,7 +181,7 @@ public final class SmartAlarmActivity extends Activity {
         Button insertTime = softButton(getString(R.string.smart_insert_time));
         insertTime.setTag("smart_insert_time");
         insertTime.setOnClickListener(v -> {
-            Calendar now = Calendar.getInstance();
+            Calendar now = Calendar.getInstance(AppTime.zone());
             new TimePickerDialog(this, (view, hour, minute) -> insertText(
                     String.format(Locale.US, "%02d:%02d", hour, minute)),
                     now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show();

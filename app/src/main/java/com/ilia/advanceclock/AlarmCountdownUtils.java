@@ -37,7 +37,7 @@ public final class AlarmCountdownUtils {
                     R.string.alarm_remaining_expired);
         }
 
-        ZoneId zone = ZoneId.systemDefault();
+        ZoneId zone = item.timeZone().toZoneId();
         ZonedDateTime cursor = Instant.ofEpochMilli(nowMillis)
                 .atZone(zone);
         ZonedDateTime target = Instant.ofEpochMilli(next)

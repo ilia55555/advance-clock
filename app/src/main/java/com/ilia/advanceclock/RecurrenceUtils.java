@@ -28,7 +28,7 @@ public final class RecurrenceUtils {
     }
 
     public static long next(long base, int mode, int intervalDays, String customDatesJson, long now) {
-        return next(base,mode,intervalDays,customDatesJson,now,java.util.TimeZone.getDefault());
+        return next(base,mode,intervalDays,customDatesJson,now,AppTime.zone());
     }
 
     public static long next(long base,int mode,int intervalDays,String customDatesJson,long now,java.util.TimeZone zone){

@@ -452,7 +452,7 @@ final class MainNoteTabEnhancer {
         }
 
         boolean enabled = alarmSwitch.isChecked();
-        Calendar due = (Calendar) readField(activity, "quickNoteDue", Calendar.getInstance());
+        Calendar due = (Calendar) readField(activity, "quickNoteDue", Calendar.getInstance(AppTime.zone()));
         int recurrence = (Integer) readField(activity, "noteRecurrenceMode", RecurrenceUtils.NONE);
         int interval = (Integer) readField(activity, "noteIntervalDays", 1);
         String dates = (String) readField(activity, "noteCustomDates", "[]");

@@ -1321,4 +1321,6 @@
     <string name="world_alarm_reference">مرجع زمان</string>
     <string name="note_confirm_delete">تأیید حذف</string>
     <string name="world_alarms_title">هشدارها</string>
+    <string name="app_reference_time_zone">ساعت مرجع اپ</string>
+    <string name="app_reference_system">مطابق تنظیمات گوشی</string>
 </resources>

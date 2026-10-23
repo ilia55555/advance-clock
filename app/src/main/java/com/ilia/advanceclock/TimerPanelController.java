@@ -84,9 +84,9 @@ final class TimerPanelController {
         dateTimeModeButton.setOnClickListener(v -> setMode(true));
         dateButton.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 host, selectedTarget, calendarType, (millis, type) -> {
-                    Calendar picked = Calendar.getInstance();
+                    Calendar picked = Calendar.getInstance(AppTime.zone());
                     picked.setTimeInMillis(millis);
-                    Calendar old = Calendar.getInstance();
+                    Calendar old = Calendar.getInstance(AppTime.zone());
                     old.setTimeInMillis(selectedTarget);
                     picked.set(Calendar.HOUR_OF_DAY, old.get(Calendar.HOUR_OF_DAY));
                     picked.set(Calendar.MINUTE, old.get(Calendar.MINUTE));
@@ -96,7 +96,7 @@ final class TimerPanelController {
                     renderSelection();
                 }));
         timeButton.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
+            Calendar c = Calendar.getInstance(AppTime.zone());
             c.setTimeInMillis(selectedTarget);
             new TimePickerDialog(host, (view, hour, minute) -> {
                 c.set(Calendar.HOUR_OF_DAY, hour);
@@ -206,7 +206,7 @@ final class TimerPanelController {
 
     private void renderSelection() {
         dateButton.setText(CalendarUtils.formatDate(selectedTarget, calendarType));
-        Calendar c=Calendar.getInstance(); c.setTimeInMillis(selectedTarget);
+        Calendar c=Calendar.getInstance(AppTime.zone()); c.setTimeInMillis(selectedTarget);
         timeButton.setText(String.format(Locale.US,"%02d:%02d",c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)));
         renderEndTime();
     }

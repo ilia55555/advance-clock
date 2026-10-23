@@ -47,8 +47,8 @@ public final class MainActivity extends Activity {
     private static final String PERMISSION_ONBOARDING = "permission_onboarding_v2";
     private static final String INITIAL_SETUP = "language_calendar_setup_v1";
 
-    private final Calendar quickAlarm = Calendar.getInstance();
-    private final Calendar quickNoteDue = Calendar.getInstance();
+    private final Calendar quickAlarm = Calendar.getInstance(AppTime.zone());
+    private final Calendar quickNoteDue = Calendar.getInstance(AppTime.zone());
 
     private final Handler headerHandler = new Handler(Looper.getMainLooper());
     private final android.content.BroadcastReceiver calendarTimeChanges = new android.content.BroadcastReceiver() {
@@ -958,7 +958,7 @@ public final class MainActivity extends Activity {
     }
 
     private void applyDate(Calendar target, long sourceMillis) {
-        Calendar source = Calendar.getInstance();
+        Calendar source = Calendar.getInstance(AppTime.zone());
         source.setTimeInMillis(sourceMillis);
         target.set(Calendar.YEAR, source.get(Calendar.YEAR));
         target.set(Calendar.MONTH, source.get(Calendar.MONTH));
@@ -1965,7 +1965,7 @@ public final class MainActivity extends Activity {
     }
 
     private static long startOfToday() {
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(AppTime.zone());
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);

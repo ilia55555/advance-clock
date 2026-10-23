@@ -1020,6 +1020,15 @@ public final class AppSettings {
         }
     }
 
+    public static String referenceTimeZoneId(Context context){
+        String id=prefs(context).getString("reference_time_zone","");
+        return AppTime.valid(id)?id:"";
+    }
+    public static void setReferenceTimeZoneId(Context context,String id){
+        String selected=AppTime.valid(id)?id:"";
+        prefs(context).edit().putString("reference_time_zone",selected).apply();AppTime.configure(selected);
+    }
+
     public static int alarmDismissMode(Context context) {
         return Math.max(0, Math.min(3, prefs(context).getInt("alarm_dismiss_mode", AlarmDismissal.SWIPE)));
     }

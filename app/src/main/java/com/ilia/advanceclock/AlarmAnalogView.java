@@ -23,7 +23,7 @@ final class AlarmAnalogView extends View {
     }
     static Palette paletteAt(Context context,long millis){
         boolean solar=AppSettings.prayerLocationSet(context);
-        TimeZone zone=solar?AppSettings.prayerTimeZone(context):TimeZone.getDefault();
+        TimeZone zone=solar?AppSettings.prayerTimeZone(context):AppTime.zone();
         Calendar date=Calendar.getInstance(zone);date.setTimeInMillis(millis);
         int minute=date.get(Calendar.HOUR_OF_DAY)*60+date.get(Calendar.MINUTE);
         int rise=360,set=1080;
@@ -72,7 +72,7 @@ final class AlarmAnalogView extends View {
             float x=(float)Math.cos(angle)*radius*.70f,y=(float)Math.sin(angle)*radius*.70f;
             canvas.drawText(CalendarUtils.fa(i),x,y-(paint.ascent()+paint.descent())/2,paint);
         }
-        Calendar now=Calendar.getInstance();
+        Calendar now=Calendar.getInstance(AppTime.zone());
         float seconds=now.get(Calendar.SECOND), minutes=now.get(Calendar.MINUTE)+seconds/60f;
         hand(canvas,(now.get(Calendar.HOUR)+minutes/60f)*30,radius*.49f,size*.022f,ink);
         hand(canvas,minutes*6,radius*.77f,size*.016f,ink);

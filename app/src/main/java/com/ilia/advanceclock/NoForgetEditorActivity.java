@@ -35,7 +35,7 @@ public final class NoForgetEditorActivity extends Activity {
     private static final int REQ_APP=521;
     private static final int REQ_SOUND=522;
 
-    private final Calendar due=Calendar.getInstance();
+    private final Calendar due=Calendar.getInstance(AppTime.zone());
 
     private long noteId=-1L;
     private long createdAt;
@@ -201,7 +201,7 @@ public final class NoForgetEditorActivity extends Activity {
                 dateCalendarType,
                 (picked,type)->{
                     dateCalendarType=type;
-                    Calendar source=Calendar.getInstance();
+                    Calendar source=Calendar.getInstance(AppTime.zone());
                     source.setTimeInMillis(picked);
                     due.set(Calendar.YEAR,source.get(Calendar.YEAR));
                     due.set(Calendar.MONTH,source.get(Calendar.MONTH));

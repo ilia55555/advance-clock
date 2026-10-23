@@ -279,7 +279,7 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
                     c.get(
                             android.icu.util.Calendar.DAY_OF_MONTH));
 
-            Calendar normal = Calendar.getInstance();
+            Calendar normal = Calendar.getInstance(AppTime.zone());
             normal.setTimeInMillis(initialTarget);
             clockHour.setValue(
                     normal.get(Calendar.HOUR_OF_DAY));

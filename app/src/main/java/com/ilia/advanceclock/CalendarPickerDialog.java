@@ -128,7 +128,7 @@ public final class CalendarPickerDialog {
             int calType = type.getSelectedItemPosition();
             int d = monthYearOnly ? 1 : day.getValue();
             d = Math.min(d, CalendarUtils.daysInMonth(calType, year.getValue(), month.getValue()));
-            Calendar time = Calendar.getInstance();
+            Calendar time = Calendar.getInstance(AppTime.zone());
             time.setTimeInMillis(initialMillis);
             currentMillis[0] = CalendarUtils.toMillis(
                     calType, year.getValue(), month.getValue(), d,
@@ -154,7 +154,7 @@ public final class CalendarPickerDialog {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 int calType = type.getSelectedItemPosition();
                 int selectedDay = monthYearOnly ? 1 : day.getValue();
-                Calendar time = Calendar.getInstance();
+                Calendar time = Calendar.getInstance(AppTime.zone());
                 time.setTimeInMillis(initialMillis);
                 long millis = CalendarUtils.toMillis(
                         calType,
@@ -189,7 +189,7 @@ public final class CalendarPickerDialog {
     }
 
     private static long startOfToday() {
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(AppTime.zone());
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);

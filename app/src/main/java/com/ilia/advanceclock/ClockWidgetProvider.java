@@ -281,19 +281,14 @@ public final class ClockWidgetProvider extends AppWidgetProvider {
                             ? AppString.get(R.string.runtime_text_0017)
                             : item.label);
 
-            String clock =
-                    new java.text.SimpleDateFormat(
-                            "HH:mm",
-                            java.util.Locale.getDefault())
-                            .format(new java.util.Date(
-                                    displayAt));
+            String clock=CalendarUtils.fa(TimeFormat.formatter(context,false,item.timeZone()).format(new java.util.Date(displayAt)));
 
             row.setTextViewText(
                     R.id.widget_row_time,
                     CalendarUtils.formatDate(
                             displayAt,
                             AppSettings.defaultCalendar(
-                                    context))
+                                    context),item.timeZone())
                             + "  "
                             + clock);
 

@@ -409,7 +409,7 @@ public final class TripleCalendarView extends View {
     }
 
     private String configurationKey() {
-        return java.util.TimeZone.getDefault().getID() + "|" + AppString.locale().toLanguageTag()
+        return AppTime.zone().getID() + "|" + AppString.locale().toLanguageTag()
                 + "|" + CalendarUtils.hijriReference()
                 + "|" + AppSettings.additionalCalendarEventsEnabled(getContext(), CalendarUtils.PERSIAN)
                 + "|" + AppSettings.additionalCalendarEventsEnabled(getContext(), CalendarUtils.HIJRI)

@@ -114,7 +114,7 @@ final class NaturalScheduleParser {
             }
             return true;
         }
-        Calendar base=Calendar.getInstance();long now=System.currentTimeMillis();
+        Calendar base=Calendar.getInstance(AppTime.zone());long now=System.currentTimeMillis();
         boolean explicit=false, relativeClock=false;Matcher relative=RELATIVE.matcher(text);Matcher delay=DELAY.matcher(text);
         if(text.contains("پس فردا")||text.contains("پس‌فردا")){base.add(Calendar.DAY_OF_YEAR,2);explicit=true;}
         else if(text.contains("فردا")){base.add(Calendar.DAY_OF_YEAR,1);explicit=true;}

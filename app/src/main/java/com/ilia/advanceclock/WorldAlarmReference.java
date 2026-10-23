@@ -19,7 +19,7 @@ final class WorldAlarmReference {
         if(zone.equals("Asia/Tehran"))name=language.equals("fa")?"تهران":language.equals("ar")?"طهران":"Tehran";
         if(zone.equals("UTC")||zone.equals("GMT")||zone.equals("Etc/UTC")||zone.equals("Etc/GMT"))
             name=language.equals("fa")?"گرینویچ":language.equals("ar")?"غرينتش":"Greenwich";
-        return item.referenceZoneId.isEmpty()?name:WorldClockStore.label(context,zone,name);
+        return item.referenceZoneId.isEmpty() && AppTime.referenceId().isEmpty()?name:WorldClockStore.label(context,zone,name);
     }
     static String summary(Context context,AlarmItem item,long when){
         String clock=CalendarUtils.fa(TimeFormat.formatter(context,false,item.timeZone()).format(new Date(when)));
@@ -33,7 +33,7 @@ final class WorldAlarmReference {
     }
     static long pickerDate(long millis,TimeZone zone){
         Calendar source=Calendar.getInstance(zone);source.setTimeInMillis(millis);
-        Calendar target=Calendar.getInstance();target.clear();
+        Calendar target=Calendar.getInstance(AppTime.zone());target.clear();
         target.set(source.get(Calendar.YEAR),source.get(Calendar.MONTH),source.get(Calendar.DAY_OF_MONTH),12,0);
         return target.getTimeInMillis();
     }

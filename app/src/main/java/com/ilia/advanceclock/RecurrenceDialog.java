@@ -25,7 +25,7 @@ public final class RecurrenceDialog {
 
     public static void show(Context context, long baseMillis, int mode, int intervalDays,
                             String customDatesJson, Callback callback) {
-        show(context,baseMillis,mode,intervalDays,customDatesJson,java.util.TimeZone.getDefault(),callback);
+        show(context,baseMillis,mode,intervalDays,customDatesJson,AppTime.zone(),callback);
     }
     public static void show(Context context,long baseMillis,int mode,int intervalDays,String customDatesJson,
                             java.util.TimeZone zone,Callback callback){
@@ -154,7 +154,7 @@ public final class RecurrenceDialog {
                 (picked, type) -> {
                     Calendar base = Calendar.getInstance(zone);
                     base.setTimeInMillis(baseMillis);
-                    Calendar chosen = Calendar.getInstance();
+                    Calendar chosen = Calendar.getInstance(AppTime.zone());
                     chosen.setTimeInMillis(picked);
                     WorldAlarmReference.changeZone(chosen,zone.getID());
 

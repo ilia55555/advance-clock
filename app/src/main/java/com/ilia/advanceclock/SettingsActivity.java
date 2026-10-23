@@ -103,6 +103,25 @@ public final class SettingsActivity extends Activity {
         palette.setSelection(AppSettings.palette(this));
         generalSettings.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        generalSettings.addView(label(AppString.get(R.string.app_reference_time_zone)));
+        java.util.ArrayList<String> referenceIds=new java.util.ArrayList<>();referenceIds.add("");
+        for(String id:WorldClockStore.zones(this))if(!referenceIds.contains(id))referenceIds.add(id);
+        String selectedReference=AppSettings.referenceTimeZoneId(this);
+        if(!referenceIds.contains(selectedReference))referenceIds.add(selectedReference);
+        java.util.ArrayList<String> referenceLabels=new java.util.ArrayList<>();
+        referenceLabels.add(AppString.get(R.string.app_reference_system)+"  (\u2066"+
+                WorldAlarmReference.offset(java.util.TimeZone.getDefault(),System.currentTimeMillis())+"\u2069)");
+        referenceLabels.addAll(java.util.Arrays.asList(WorldAlarmReference.labels(this,referenceIds.subList(1,referenceIds.size()),System.currentTimeMillis())));
+        Spinner referenceTime=spinner(referenceLabels.toArray(new String[0]));referenceTime.setTag("app_reference_time_zone");
+        referenceTime.setSelection(referenceIds.indexOf(selectedReference));
+        generalSettings.addView(referenceTime,new LinearLayout.LayoutParams(-1,dp(54)));
+        watch(referenceTime,position->{
+            String id=referenceIds.get(position);
+            if(id.equals(AppSettings.referenceTimeZoneId(this)))return;
+            AppSettings.setReferenceTimeZoneId(this,id);runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this,false);
+        });
+
         generalSettings.addView(label(AppString.get(R.string.clock_format_label)));
         Spinner clockFormat=spinner(new String[]{AppString.get(R.string.clock_format_24),AppString.get(R.string.clock_format_12)});
         clockFormat.setSelection(AppSettings.clock24Hour(this)?0:1);

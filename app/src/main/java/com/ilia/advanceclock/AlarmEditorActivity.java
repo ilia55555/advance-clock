@@ -27,7 +27,7 @@ public final class AlarmEditorActivity extends Activity {
     private static final int REQ_IMAGE_1 = 410;
     private static final int REQ_IMAGE_2 = 411;
     private static final int REQ_SOUND = 412;
-    private final Calendar selected = Calendar.getInstance();
+    private final Calendar selected = Calendar.getInstance(AppTime.zone());
 
     private long alarmId = -1L;
     private EditText label;
@@ -127,7 +127,7 @@ public final class AlarmEditorActivity extends Activity {
                 dateCalendarType,
                 (picked, type) -> {
                     dateCalendarType = type;
-                    Calendar source = Calendar.getInstance();
+                    Calendar source = Calendar.getInstance(AppTime.zone());
                     source.setTimeInMillis(picked);
                     selected.set(Calendar.YEAR, source.get(Calendar.YEAR));
                     selected.set(Calendar.MONTH, source.get(Calendar.MONTH));

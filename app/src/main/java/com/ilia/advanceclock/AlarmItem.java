@@ -15,7 +15,7 @@ public final class AlarmItem {
 
     public long id;
     public String referenceZoneId="";
-    public java.util.TimeZone timeZone(){return referenceZoneId.isEmpty()?java.util.TimeZone.getDefault():java.util.TimeZone.getTimeZone(referenceZoneId); }
+    public java.util.TimeZone timeZone(){return referenceZoneId.isEmpty()?AppTime.zone():java.util.TimeZone.getTimeZone(referenceZoneId); }
     public boolean applyDate;
     public boolean autoDeleteAfterCompletion;
     public long pendingSnoozeAtMillis;

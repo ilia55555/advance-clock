@@ -50,7 +50,7 @@ public final class CalendarUtils {
     public static android.icu.util.Calendar create(int type) {
         if (type == GREGORIAN) {
             android.icu.util.Calendar calendar = android.icu.util.Calendar.getInstance(
-                    android.icu.util.TimeZone.getTimeZone(java.util.TimeZone.getDefault().getID()),
+                    android.icu.util.TimeZone.getTimeZone(AppTime.zone().getID()),
                     new ULocale("en_US@calendar=gregorian"));
             calendar.setLenient(false);
             return calendar;

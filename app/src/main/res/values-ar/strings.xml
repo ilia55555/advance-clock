@@ -1337,4 +1337,6 @@
     <string name="world_alarm_reference">مرجع الوقت</string>
     <string name="note_confirm_delete">تأكيد الحذف</string>
     <string name="world_alarms_title">التنبيهات</string>
+    <string name="app_reference_time_zone">مرجع وقت التطبيق</string>
+    <string name="app_reference_system">حسب إعدادات الهاتف</string>
 </resources>

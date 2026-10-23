@@ -17,7 +17,7 @@ public final class TimeUtils {
     }
 
     public static long nextOccurrence(long fromMillis, int repeatType) {
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(AppTime.zone());
         c.setTimeInMillis(fromMillis);
         switch (repeatType) {
             case AlarmItem.REPEAT_DAILY: c.add(Calendar.DAY_OF_YEAR, 1); break;
@@ -30,7 +30,8 @@ public final class TimeUtils {
     }
 
     public static String formatDateTime(long millis) {
-        return new SimpleDateFormat("yyyy/MM/dd  HH:mm", new Locale("fa", "IR")).format(new Date(millis));
+        SimpleDateFormat format=new SimpleDateFormat("yyyy/MM/dd  HH:mm",new Locale("fa","IR"));
+        format.setTimeZone(AppTime.zone());return format.format(new Date(millis));
     }
 
     public static String repeatLabel(int repeatType) {

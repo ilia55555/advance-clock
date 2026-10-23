@@ -238,7 +238,7 @@ public final class DateNotificationService extends Service {
     private static void scheduleNextRefresh(Context context) {
         AlarmManager alarms = context.getSystemService(AlarmManager.class);
         if (alarms == null) return;
-        long midnight = DateNotificationSchedule.nextMidnight(System.currentTimeMillis(), java.time.ZoneId.systemDefault());
+        long midnight = DateNotificationSchedule.nextMidnight(System.currentTimeMillis(), AppTime.zone().toZoneId());
         PendingIntent operation = refreshOperation(context, PendingIntent.FLAG_UPDATE_CURRENT);
         if (PermissionHelper.exactAlarmsGranted(context)) {
             try {

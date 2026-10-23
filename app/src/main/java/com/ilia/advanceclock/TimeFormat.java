@@ -31,6 +31,6 @@ final class TimeFormat {
     }
 
     static String clock(Context context,long millis) {
-        return CalendarUtils.fa(formatter(context,false,TimeZone.getDefault()).format(new java.util.Date(millis)));
+        return CalendarUtils.fa(formatter(context,false,AppTime.zone()).format(new java.util.Date(millis)));
     }
 }

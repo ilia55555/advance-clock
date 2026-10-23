@@ -825,9 +825,9 @@ final class WorldClockPanelController {
         long initial = referenceMode ? referenceMillis : System.currentTimeMillis();
         CalendarPickerDialog.showDateAny(host, initial, AppSettings.defaultCalendar(host),
                 (picked, calendarType) -> {
-                    Calendar selected = Calendar.getInstance();
+                    Calendar selected = Calendar.getInstance(AppTime.zone());
                     selected.setTimeInMillis(picked);
-                    Calendar initialTime = Calendar.getInstance();
+                    Calendar initialTime = Calendar.getInstance(AppTime.zone());
                     initialTime.setTimeInMillis(initial);
                     selected.set(Calendar.HOUR_OF_DAY, initialTime.get(Calendar.HOUR_OF_DAY));
                     selected.set(Calendar.MINUTE, initialTime.get(Calendar.MINUTE));
@@ -1110,8 +1110,8 @@ final class WorldClockPanelController {
     }
 
     private String localDateTime(long millis) {
-        return new SimpleDateFormat("yyyy/MM/dd  HH:mm", Locale.getDefault())
-                .format(new Date(millis));
+        SimpleDateFormat format=new SimpleDateFormat("yyyy/MM/dd  HH:mm",Locale.getDefault());
+        format.setTimeZone(AppTime.zone());return format.format(new Date(millis));
     }
 
     private TextView text(String value, int size, int color) {

@@ -1319,4 +1319,6 @@ Lock screen</string>
     <string name="world_alarm_reference">Time reference</string>
     <string name="note_confirm_delete">Confirm deletion</string>
     <string name="world_alarms_title">Alarms</string>
+    <string name="app_reference_time_zone">App time reference</string>
+    <string name="app_reference_system">Follow phone settings</string>
 </resources>

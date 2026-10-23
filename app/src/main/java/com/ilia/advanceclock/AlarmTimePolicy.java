@@ -8,7 +8,7 @@ public final class AlarmTimePolicy {
 
     public static long next(long selected, boolean applyDate, int recurrence, int interval,
                             String customDates, long now) {
-        return next(selected,applyDate,recurrence,interval,customDates,now,java.util.TimeZone.getDefault());
+        return next(selected,applyDate,recurrence,interval,customDates,now,AppTime.zone());
     }
     public static long next(long selected,boolean applyDate,int recurrence,int interval,String customDates,long now,java.util.TimeZone zone){
         long base = selected;

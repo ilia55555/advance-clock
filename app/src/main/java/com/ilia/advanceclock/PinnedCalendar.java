@@ -11,7 +11,7 @@ final class PinnedCalendar extends Calendar {
     private final int lunarReference;
 
     PinnedCalendar(int type, int reference) {
-        super(TimeZone.getTimeZone(java.util.TimeZone.getDefault().getID()),
+        super(TimeZone.getTimeZone(AppTime.zone().getID()),
                 new ULocale(type == OfflineCalendarMath.PERSIAN ? "fa_IR" : "ar_SA"));
         calendarType = type;
         lunarReference = reference;
