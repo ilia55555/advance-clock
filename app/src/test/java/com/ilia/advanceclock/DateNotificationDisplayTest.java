@@ -15,6 +15,51 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk={28,35})
 public class DateNotificationDisplayTest {
+    @Test public void openingSettingsDoesNotRepostDateButSwitchStillControlsIt() {
+        Application app=RuntimeEnvironment.getApplication(); AppString.init(app);
+        Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);
+        NotificationManager manager=app.getSystemService(NotificationManager.class);
+        AppSettings.setPersistentDateNotificationEnabled(app,true);
+        DateNotificationService.start(app);
+        manager.cancel(73); // User dismissed it; reading settings must not restore it.
+        try (var controller=Robolectric.buildActivity(SettingsActivity.class).setup()) {
+            SettingsActivity activity=controller.get();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            assertNull(Shadows.shadowOf(manager).getNotification(73));
+            assertTrue(AppSettings.persistentDateNotificationEnabled(app));
+            controller.pause().resume();
+            assertNull(Shadows.shadowOf(manager).getNotification(73));
+            Object panel=org.robolectric.util.ReflectionHelpers.getField(activity,"notificationPanel");
+            android.widget.Switch toggle=org.robolectric.util.ReflectionHelpers.getField(panel,"persistentDate");
+            toggle.setChecked(false);
+            assertFalse(AppSettings.persistentDateNotificationEnabled(app));
+            toggle.setChecked(true);
+            assertNotNull(Shadows.shadowOf(manager).getNotification(73));
+            toggle.setChecked(false);
+            assertNull(Shadows.shadowOf(manager).getNotification(73));
+            controller.recreate();
+            assertFalse(AppSettings.persistentDateNotificationEnabled(app));
+            assertNull(Shadows.shadowOf(manager).getNotification(73));
+        }
+    }
+
+    @Test public void returningFromNotificationPermissionChangeReconcilesDate() {
+        Application app=RuntimeEnvironment.getApplication(); AppString.init(app);
+        Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);
+        AppSettings.setPersistentDateNotificationEnabled(app,true);
+        NotificationManager manager=app.getSystemService(NotificationManager.class);
+        try (var controller=Robolectric.buildActivity(SettingsActivity.class).setup()) {
+            controller.pause();
+            Shadows.shadowOf(manager).setNotificationsEnabled(false);
+            controller.resume();
+            assertNull(Shadows.shadowOf(manager).getNotification(73));
+            controller.pause();
+            Shadows.shadowOf(manager).setNotificationsEnabled(true);
+            controller.resume();
+            assertNotNull(Shadows.shadowOf(manager).getNotification(73));
+        }
+    }
+
     @Test public void enabledNotificationCanActuallyInflateInSystemUi() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);

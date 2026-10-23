@@ -25,11 +25,15 @@ final class NotificationSettingsPanel {
     private Button notificationPermissionButton, exactPermissionButton, fullscreenPermissionButton;
     private Button dateChannelButton;
     private boolean hadExactPermission;
+    private boolean hadNotificationPermission;
+    private boolean hadDateChannelBlocked;
 
     private final Activity host;
 
     NotificationSettingsPanel(Activity host, LinearLayout root, LinearLayout alarmRoot) {
         this.host = host;
+        hadNotificationPermission = notificationPermissionGranted();
+        hadDateChannelBlocked = DateNotificationService.isChannelBlocked(host);
         notificationPermissionButton = permissionButton(root, R.string.grant_notifications, () -> {
             if (Build.VERSION.SDK_INT >= 33
                     && host.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
@@ -174,7 +178,13 @@ final class NotificationSettingsPanel {
 
     void onResume() {
         refreshPermissionState();
-        applyPersistentNotificationState();
+        // Opening settings is read-only. Reconcile only when returning from a
+        // permission change; otherwise this reposts even a dismissed notification.
+        boolean granted = notificationPermissionGranted();
+        if (hadNotificationPermission != granted
+                || hadDateChannelBlocked != DateNotificationService.isChannelBlocked(host)) {
+            applyPersistentNotificationState();
+        }
     }
 
     void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
@@ -270,8 +280,10 @@ final class NotificationSettingsPanel {
     }
 
     private void applyPersistentNotificationState() {
+        hadNotificationPermission = notificationPermissionGranted();
+        hadDateChannelBlocked = DateNotificationService.isChannelBlocked(host);
         if (persistentDate.isChecked()
-                && notificationPermissionGranted()) {
+                && hadNotificationPermission) {
             try {
                 DateNotificationService.start(host);
             } catch (Exception ignored) {
