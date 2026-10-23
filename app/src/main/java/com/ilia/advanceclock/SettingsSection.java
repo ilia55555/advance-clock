@@ -1,10 +1,9 @@
 package com.ilia.advanceclock;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RippleDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
@@ -40,8 +39,20 @@ final class SettingsSection extends LinearLayout {
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setPadding(dp(16), dp(14), dp(16), dp(14));
         header.setMinimumHeight(dp(68));
-        header.setBackground(new RippleDrawable(ColorStateList.valueOf(
-                (AppSettings.primaryColor(context) & 0x00ffffff) | 0x20000000), null, null));
+        // A gentle tint across the header avoids the clipped circle of a borderless ripple.
+        StateListDrawable feedback = new StateListDrawable();
+        GradientDrawable pressed = new GradientDrawable();
+        pressed.setColor((AppSettings.primaryColor(context) & 0x00ffffff) | 0x10000000);
+        pressed.setCornerRadius(dp(20));
+        GradientDrawable focused = new GradientDrawable();
+        focused.setColor((AppSettings.primaryColor(context) & 0x00ffffff) | 0x0c000000);
+        focused.setCornerRadius(dp(20));
+        feedback.addState(new int[]{android.R.attr.state_pressed}, pressed);
+        feedback.addState(new int[]{android.R.attr.state_focused}, focused);
+        feedback.addState(new int[]{}, new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        feedback.setEnterFadeDuration(80);
+        feedback.setExitFadeDuration(180);
+        header.setBackground(feedback);
         header.setFocusable(true);
         header.setOnClickListener(v -> onClick.run());
         ImageView image = new ImageView(context);
