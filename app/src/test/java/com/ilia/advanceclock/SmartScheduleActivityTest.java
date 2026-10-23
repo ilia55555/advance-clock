@@ -14,6 +14,58 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk=35,shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class SmartScheduleActivityTest {
+    @Test public void directSpeechInsertsResultsAndReleasesMicrophoneSession() {
+        Application app=RuntimeEnvironment.getApplication();
+        AppSettings.setLanguage(app,"fa");
+        Shadows.shadowOf(app).grantPermissions(android.Manifest.permission.RECORD_AUDIO);
+        android.content.pm.ResolveInfo engine=new android.content.pm.ResolveInfo();
+        engine.serviceInfo=new android.content.pm.ServiceInfo();
+        engine.serviceInfo.packageName="test.speech";engine.serviceInfo.name="test.speech.Engine";
+        Shadows.shadowOf(app.getPackageManager()).addResolveInfoForIntent(
+                new Intent("android.speech.RecognitionService"),engine);
+        SmartAlarmActivity host=activity(false);
+        host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input").performClick();
+        android.speech.SpeechRecognizer recognizer=org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer();
+        assertNotNull(recognizer);
+        org.robolectric.shadows.ShadowSpeechRecognizer shadow=Shadows.shadowOf(recognizer);
+        assertEquals("fa-IR",shadow.getLastRecognizerIntent().getStringExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE));
+        android.os.Bundle results=new android.os.Bundle();
+        results.putStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION,
+                new ArrayList<>(Collections.singletonList("فردا ساعت 08:30 جلسه")));
+        shadow.triggerOnResults(results);
+        EditText field=ReflectionHelpers.getField(host,"input");
+        assertTrue(field.getText().toString().contains("08:30"));
+        assertTrue(shadow.isDestroyed());
+        assertNull(Shadows.shadowOf(host).getNextStartedActivity());
+        host.finish();
+    }
+    @Test public void speechUsesAppLanguageWithoutRequiringOfflineLanguagePack() {
+        Application app=RuntimeEnvironment.getApplication();
+        for(String[] pair:new String[][]{{"fa","fa-IR"},{"en","en-US"},{"ar","ar-SA"}}) {
+            AppSettings.setLanguage(app,pair[0]);
+            Intent intent=SmartAlarmActivity.speechIntent(app);
+            assertEquals(pair[1],intent.getStringExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE));
+            assertFalse(intent.getBooleanExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE,false));
+        }
+    }
+
+    @Test public void bothModesHaveTwoExamplesAndSpeechBeforeTimeWithIcons() throws Exception {
+        for(boolean note:new boolean[]{false,true}) {
+            SmartAlarmActivity host=activity(note);
+            EditText field=ReflectionHelpers.getField(host,"input");
+            String hint=field.getHint().toString();
+            assertTrue(hint.contains("09:30"));
+            String json=hint.substring(hint.indexOf('{'));
+            assertEquals("09:30",new org.json.JSONObject(json).getString("time"));
+            android.view.View time=host.findViewById(android.R.id.content).findViewWithTag("smart_insert_time");
+            android.view.View voice=host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input");
+            LinearLayout helpers=(LinearLayout)time.getParent();
+            assertEquals(0,helpers.indexOfChild(voice)); assertEquals(1,helpers.indexOfChild(time));
+            assertNotNull(((Button)voice).getCompoundDrawablesRelative()[0]);
+            assertNotNull(((Button)time).getCompoundDrawablesRelative()[0]);
+            host.finish();
+        }
+    }
     private SmartAlarmActivity activity(boolean note) {
         AppString.init(RuntimeEnvironment.getApplication());
         Shadows.shadowOf((AlarmManager)RuntimeEnvironment.getApplication().getSystemService("alarm")).setCanScheduleExactAlarms(true);

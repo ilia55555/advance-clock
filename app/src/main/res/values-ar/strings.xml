@@ -1342,4 +1342,6 @@
     <string name="alarm_auto_delete_short">حذف تلقائي</string>
     <string name="date_notification_settings">الإعدادات</string>
     <string name="date_notification_calendar">التقويم</string>
+    <string name="smart_input_examples">لدي اجتماع غدًا الساعة 09:30\n\n{\&quot;date\&quot;:\&quot;2027/01/15\&quot;,\&quot;time\&quot;:\&quot;09:30\&quot;,\&quot;title\&quot;:\&quot;Meeting\&quot;}</string>
+    <string name="smart_voice_stop">إيقاف الإملاء</string>
 </resources>

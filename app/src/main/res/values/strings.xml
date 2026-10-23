@@ -1326,4 +1326,6 @@
     <string name="alarm_auto_delete_short">حذف خودکار</string>
     <string name="date_notification_settings">تنظیمات</string>
     <string name="date_notification_calendar">تقویم</string>
+    <string name="smart_input_examples">فردا ساعت 09:30 جلسه دارم\n\n{\&quot;date\&quot;:\&quot;2027/01/15\&quot;,\&quot;time\&quot;:\&quot;09:30\&quot;,\&quot;title\&quot;:\&quot;Meeting\&quot;}</string>
+    <string name="smart_voice_stop">توقف گفتار</string>
 </resources>

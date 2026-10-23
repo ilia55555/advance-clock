@@ -50,6 +50,95 @@ public final class SmartAlarmActivity extends Activity {
     private Button saveAll;
     private Spinner bulkMode;
     private EditText bulkMinutes;
+    private android.speech.SpeechRecognizer speechRecognizer;
+    private Button voiceButton;
+    private boolean listening;
+    private int speechSession;
+
+    private void setHelperIcon(Button button, int resource) {
+        android.graphics.drawable.Drawable icon = getDrawable(resource).mutate();
+        icon.setTint(AppSettings.primaryColor(this));
+        icon.setBounds(0, 0, dp(24), dp(24));
+        button.setCompoundDrawablesRelative(icon, null, null, null);
+        button.setCompoundDrawablePadding(dp(6));
+    }
+
+    static Intent speechIntent(Context context) {
+        String language = AppSettings.language(context);
+        String tag = "fa".equals(language) ? "fa-IR" : "ar".equals(language) ? "ar-SA"
+                : "en".equals(language) ? "en-US" : language;
+        return new Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, tag)
+                .putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+    }
+
+    private void startVoiceInput() {
+        if (listening) { stopVoiceInput(); return; }
+        if (!android.speech.SpeechRecognizer.isRecognitionAvailable(this)) {
+            LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, VOICE_REQUEST);
+            return;
+        }
+        stopVoiceInput();
+        final int session = speechSession;
+        try {
+            speechRecognizer = android.speech.SpeechRecognizer.createSpeechRecognizer(this);
+            speechRecognizer.setRecognitionListener(new android.speech.RecognitionListener() {
+                public void onReadyForSpeech(Bundle b) {}
+                public void onBeginningOfSpeech() {}
+                public void onRmsChanged(float rms) {}
+                public void onBufferReceived(byte[] buffer) {}
+                public void onEndOfSpeech() {}
+                public void onPartialResults(Bundle b) {}
+                public void onEvent(int type, Bundle b) {}
+                public void onError(int error) {
+                    if (session != speechSession) return;
+                    stopVoiceInput();
+                    LogoToast.makeText(SmartAlarmActivity.this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+                }
+                public void onResults(Bundle results) {
+                    if (session != speechSession) return;
+                    ArrayList<String> values=results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
+                    stopVoiceInput();
+                    if (values!=null && !values.isEmpty()) insertText(values.get(0));
+                }
+            });
+            listening=true;
+            voiceButton.setText(R.string.smart_voice_stop);
+            speechRecognizer.startListening(speechIntent(this));
+        } catch (RuntimeException error) {
+            stopVoiceInput();
+            LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void stopVoiceInput() {
+        speechSession++;
+        listening=false;
+        if (voiceButton!=null) voiceButton.setText(R.string.smart_voice_input);
+        if (speechRecognizer!=null) {
+            android.speech.SpeechRecognizer old=speechRecognizer;
+            speechRecognizer=null;
+            old.cancel(); old.destroy();
+        }
+    }
+
+    @Override public void onRequestPermissionsResult(int request, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(request, permissions, results);
+        if (request==VOICE_REQUEST && results.length>0
+                && results[0]==android.content.pm.PackageManager.PERMISSION_GRANTED) startVoiceInput();
+    }
+
+    @Override protected void onStop() {
+        stopVoiceInput();
+        super.onStop();
+    }
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -69,7 +158,6 @@ public final class SmartAlarmActivity extends Activity {
         scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
 
         root.addView(buildTopBar());
-        root.addView(buildIntro());
         root.addView(buildInputCard(), cardParams());
         root.addView(buildTimingCard(), cardParams());
         root.addView(buildPreviewCard(), cardParams());
@@ -101,24 +189,7 @@ public final class SmartAlarmActivity extends Activity {
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
 
-        TextView title = text(getString(noteMode ? R.string.smart_note_title : R.string.runtime_text_0263), 25, AppSettings.textPrimary(this));
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-        title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
-        top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1f));
-
         return top;
-    }
-
-    private View buildIntro() {
-        TextView intro = text(
-                noteMode ? getString(R.string.smart_note_hint) : AppString.get(R.string.runtime_text_0632)
-                        + AppString.get(R.string.runtime_text_0633)
-                        + AppString.get(R.string.runtime_text_0634),
-                12,
-                AppSettings.textSecondary(this));
-        intro.setPadding(0, 0, 0, dp(10));
-        return intro;
     }
 
     private View buildInputCard() {
@@ -128,10 +199,6 @@ public final class SmartAlarmActivity extends Activity {
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-        TextView title = text(AppString.get(R.string.runtime_text_0264), 18, AppSettings.textPrimary(this));
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        header.addView(title, new LinearLayout.LayoutParams(0, dp(44), 1f));
 
         Button paste = softButton(AppString.get(R.string.runtime_text_0265));
         paste.setOnClickListener(v -> pasteClipboard());
@@ -151,9 +218,7 @@ public final class SmartAlarmActivity extends Activity {
         card.addView(header);
 
         detection = chip(AppString.get(R.string.runtime_text_0266));
-        LinearLayout.LayoutParams detectionParams = chipParams();
-        detectionParams.topMargin = dp(4);
-        card.addView(detection, detectionParams);
+
 
         input = new EditText(this);
         input.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(10000)});
@@ -168,12 +233,7 @@ public final class SmartAlarmActivity extends Activity {
                 InputType.TYPE_CLASS_TEXT
                         | InputType.TYPE_TEXT_FLAG_MULTI_LINE
                         | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        input.setHint(
-                AppString.get(R.string.runtime_text_0635)
-                        + AppString.get(R.string.runtime_text_0636)
-                        + AppString.get(R.string.runtime_text_0637)
-                        + AppString.get(R.string.runtime_text_0638)
-                        + AppString.get(R.string.runtime_text_0639));
+        input.setHint(getString(R.string.smart_input_examples));
         LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(-1, dp(240));
         inputParams.topMargin = dp(8);
         card.addView(input, inputParams);
@@ -186,39 +246,22 @@ public final class SmartAlarmActivity extends Activity {
                     String.format(Locale.US, "%02d:%02d", hour, minute)),
                     now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show();
         });
-        helpers.addView(insertTime, new LinearLayout.LayoutParams(0, dp(48), 1));
+        setHelperIcon(insertTime, R.drawable.ic_smart_time);
         Button voice = softButton(getString(R.string.smart_voice_input));
-        voice.setOnClickListener(v -> {
-            Intent intent = new Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                    .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                    .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, AppString.locale().toLanguageTag())
-                    .putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
-            try { startActivityForResult(intent, VOICE_REQUEST); }
-            catch (android.content.ActivityNotFoundException unavailable) {
-                LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
-            }
-        });
-        LinearLayout.LayoutParams voiceParams = new LinearLayout.LayoutParams(0, dp(48), 1);
-        voiceParams.setMarginStart(dp(8)); helpers.addView(voice, voiceParams);
+        voiceButton = voice;
+        voice.setTag("smart_voice_input");
+        setHelperIcon(voice, R.drawable.ic_smart_speech);
+        voice.setOnClickListener(v -> startVoiceInput());
+        helpers.addView(voice, new LinearLayout.LayoutParams(0, dp(48), 1));
+        LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(0, dp(48), 1);
+        timeParams.setMarginStart(dp(8));
+        helpers.addView(insertTime, timeParams);
         card.addView(helpers);
-        TextView speechPrivacy = text(getString(R.string.smart_voice_privacy), 11, AppSettings.textSecondary(this));
-        speechPrivacy.setPadding(0, dp(5), 0, dp(5));
-        card.addView(speechPrivacy);
-
-
         Button simplify = softButton(AppString.get(R.string.runtime_text_0640));
         simplify.setOnClickListener(v -> simplifyInput());
         LinearLayout.LayoutParams simplifyParams = new LinearLayout.LayoutParams(-1, dp(46));
         simplifyParams.topMargin = dp(8);
         card.addView(simplify, simplifyParams);
-
-        TextView simplifyHint = text(
-                AppString.get(R.string.runtime_text_0641)
-                        + AppString.get(R.string.runtime_text_0642),
-                11,
-                AppSettings.textSecondary(this));
-        simplifyHint.setPadding(0, dp(4), 0, 0);
-        card.addView(simplifyHint);
 
         analyze = primaryButton(AppString.get(R.string.runtime_text_0267));
         analyze.setEnabled(false);
@@ -229,7 +272,7 @@ public final class SmartAlarmActivity extends Activity {
 
         warning = text("", 11, 0xFFC05A3B);
         warning.setPadding(0, dp(7), 0, 0);
-        card.addView(warning);
+
 
         input.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(
@@ -271,21 +314,6 @@ public final class SmartAlarmActivity extends Activity {
 
     private View buildTimingCard() {
         LinearLayout card = card();
-
-        TextView title = text(
-                AppString.get(R.string.runtime_text_0268),
-                17,
-                AppSettings.textPrimary(this));
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        card.addView(title);
-
-        TextView hint = text(
-                AppString.get(R.string.runtime_text_0645)
-                        + AppString.get(R.string.runtime_text_0646),
-                11,
-                AppSettings.textSecondary(this));
-        hint.setPadding(0, dp(3), 0, dp(8));
-        card.addView(hint);
 
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -348,7 +376,7 @@ public final class SmartAlarmActivity extends Activity {
                 17,
                 AppSettings.textPrimary(this));
         previewTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        header.addView(previewTitle, new LinearLayout.LayoutParams(0, dp(44), 1f));
+
 
         Button removeAll = softButton(AppString.get(R.string.runtime_text_0273));
         ButtonStyles.destructive(removeAll);
@@ -358,13 +386,6 @@ public final class SmartAlarmActivity extends Activity {
         });
         header.addView(removeAll, new LinearLayout.LayoutParams(dp(92), dp(40)));
         card.addView(header);
-
-        TextView hint = text(
-                AppString.get(R.string.runtime_text_0649),
-                11,
-                AppSettings.textSecondary(this));
-        hint.setPadding(0, 0, 0, dp(8));
-        card.addView(hint);
 
         previewList = new LinearLayout(this);
         previewList.setOrientation(LinearLayout.VERTICAL);
@@ -489,15 +510,7 @@ public final class SmartAlarmActivity extends Activity {
                         + CalendarUtils.fa(candidates.size())
                         + AppString.get(R.string.runtime_text_0655));
 
-        if (candidates.isEmpty()) {
-            TextView empty = text(
-                    noteMode ? getString(R.string.smart_notes_empty) : AppString.get(R.string.runtime_text_0284),
-                    12,
-                    AppSettings.textSecondary(this));
-            empty.setGravity(Gravity.CENTER);
-            empty.setPadding(0, dp(16), 0, dp(16));
-            previewList.addView(empty);
-        } else {
+        if (!candidates.isEmpty()) {
             for (int i = 0; i < candidates.size(); i++) {
                 previewList.addView(buildPreviewRow(i, candidates.get(i)));
             }
