@@ -19,7 +19,10 @@ python tools/verify_release_apk.py
 
 The verification reads the compiled APK manifest and the R8 mapping; it checks
 the actual output rather than just the Gradle source. CI builds and verifies
-Release on both Linux and Windows. No production signing key is used by CI.
+Release on both Linux and Windows, and runs the full JVM test suite for Debug
+and Release. It also checks packaged manifest components and their constructors,
+custom views/constructors in compiled layouts, reflection members, and named
+audio/prayer-image resources after shrinking. No production signing key is used by CI.
 
 The local output is **unsigned** at
 `app/build/outputs/apk/release/app-release-unsigned.apk`. For distribution, use
@@ -45,3 +48,22 @@ No root-blocking or fragile anti-debug timer has been added.
 Before shipping, exercise the signed, minified build on actual devices: alarm and
 adhan playback, full-screen/lock-screen alerts, notification RemoteViews, all
 widgets, and note create/edit/save. JVM tests do not execute the optimized DEX.
+
+## Compatibility verification — 2026-10-24, version 1.0.0.4
+
+- Full Debug JVM suite: 59 suites, 341 tests, no failures/errors/skips.
+- Full Release JVM suite: 59 suites, 341 tests, no failures/errors/skips.
+- Minified Release build and release-vital lint passed.
+- Actual APK/DEX: 325 app classes renamed; all 63 manifest components and their
+  public constructors retained; all 35 packaged layouts have available custom
+  views and the constructors required for XML inflation.
+- Reflected note fields/methods retained with their required names.
+- Both named adhan sound resources and all eight named prayer image resources
+  present and nonempty after shrinking.
+- Both source asset files match the packaged Release bytes exactly.
+- Compiled APK security flags verified. The verifier also rejects a debug APK.
+
+No production behavior change was needed during this follow-up check. CI now
+runs both complete JVM variants and the expanded packaged-output checks. This
+does not substitute for executing the signed, optimized DEX on a physical device;
+no emulator or physical Android device was available for this verification.
