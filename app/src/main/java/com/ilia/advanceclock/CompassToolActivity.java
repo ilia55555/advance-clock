@@ -44,6 +44,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     private Sensor rotationSensor;
     private CompassView compassView;
     private TextView status;
+    private TextView axisAngles;
     private int selectedMode;
     private Location qiblaLocation;
     private QiblaLocationClient qiblaLocationClient;
@@ -212,6 +213,15 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         compassCard.setBackground(antiqueCardBackground());
         compassView = new CompassView();
         compassCard.addView(compassView, new LinearLayout.LayoutParams(-1, 0, 1f));
+        axisAngles = text("X: —°    Y: —°    Z: —°", 14, 0xFF5D4028);
+        axisAngles.setTag("compass_axis_angles");
+        axisAngles.setGravity(Gravity.CENTER);
+        axisAngles.setTextDirection(View.TEXT_DIRECTION_LTR);
+        axisAngles.setSingleLine(true);
+        axisAngles.setAutoSizeTextTypeUniformWithConfiguration(10, 14, 1,
+                android.util.TypedValue.COMPLEX_UNIT_SP);
+        axisAngles.setPadding(dp(4), dp(4), dp(4), 0);
+        compassCard.addView(axisAngles, new LinearLayout.LayoutParams(-1, dp(32)));
         status = text(AppString.get(R.string.runtime_text_0323), 13, 0xFF5D4028);
         status.setGravity(Gravity.CENTER);
         status.setPadding(dp(8), dp(6), dp(8), 0);
@@ -293,6 +303,10 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                 QiblaUtils.trueHeading(
                         azimuth,
                         qiblaLocation);
+        // Android orientation order is Z (azimuth), X (pitch), Y (roll).
+        axisAngles.setText(String.format(AppString.locale(),
+                "X: %.1f°    Y: %.1f°    Z: %.1f°",
+                Math.toDegrees(orientation[1]), Math.toDegrees(orientation[2]), trueAzimuth));
         compassView.setAzimuth(
                 trueAzimuth);
         updateStatus();
