@@ -109,6 +109,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical" />
+
+            <View
+                android:id="@+id/world_alarms_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="14dp"
+                android:background="?attr/appPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/world_alarms_title"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/appTextPrimary" />
+
+            <LinearLayout
+                android:id="@+id/world_alarm_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 

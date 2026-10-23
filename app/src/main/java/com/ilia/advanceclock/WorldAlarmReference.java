@@ -12,10 +12,20 @@ final class WorldAlarmReference {
         }
         return labels;
     }
+    static String referenceName(Context context,AlarmItem item){
+        String zone=item.timeZone().getID();
+        String name=zone.substring(zone.lastIndexOf('/')+1).replace('_',' ');
+        String language=AppString.locale().getLanguage();
+        if(zone.equals("Asia/Tehran"))name=language.equals("fa")?"تهران":language.equals("ar")?"طهران":"Tehran";
+        if(zone.equals("UTC")||zone.equals("GMT")||zone.equals("Etc/UTC")||zone.equals("Etc/GMT"))
+            name=language.equals("fa")?"گرینویچ":language.equals("ar")?"غرينتش":"Greenwich";
+        return item.referenceZoneId.isEmpty()?name:WorldClockStore.label(context,zone,name);
+    }
     static String summary(Context context,AlarmItem item,long when){
+        String clock=CalendarUtils.fa(TimeFormat.formatter(context,false,item.timeZone()).format(new Date(when)));
         return CalendarUtils.formatDate(when,AppSettings.defaultCalendar(context),item.timeZone())+"  "
-                +CalendarUtils.fa(TimeFormat.formatter(context,false,item.timeZone()).format(new Date(when)))
-                +"  •  "+labels(context,Collections.singletonList(item.referenceZoneId),when)[0];
+                +android.text.BidiFormatter.getInstance().unicodeWrap(clock,android.text.TextDirectionHeuristics.LTR)
+                +"  "+referenceName(context,item);
     }
     static String offset(TimeZone zone,long when){
         int minutes=zone.getOffset(when)/60_000;

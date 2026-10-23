@@ -1574,15 +1574,20 @@ public final class MainActivity extends Activity {
 
     private void renderAlarms() {
         clearAlarmDeleteConfirmation();
-        alarmList.removeAllViews();
+        renderAlarmList(alarmList);
+        if(worldController!=null)worldController.refreshAlarms();
+    }
+
+    void renderAlarmList(LinearLayout target){
+        target.removeAllViews();
         List<AlarmItem> items = new AlarmStore(this).all();
         if (items.isEmpty()) {
-            alarmList.addView(emptyText(AppString.get(R.string.runtime_text_0393)));
+            target.addView(emptyText(AppString.get(R.string.runtime_text_0393)));
             return;
         }
 
         for (AlarmItem item : items) {
-            alarmList.addView(alarmCard(item));
+            target.addView(alarmCard(item));
         }
     }
 
@@ -1606,7 +1611,7 @@ public final class MainActivity extends Activity {
                 : item.triggerAtMillis;
 
         TextView time = smallText(
-                (item.referenceZoneId.isEmpty()?formatAppDateTime(displayAt):WorldAlarmReference.summary(this,item,displayAt))
+                WorldAlarmReference.summary(this,item,displayAt)
                         + "  •  "
                         + RecurrenceUtils.summary(
                         item.recurrenceMode,
@@ -1617,6 +1622,7 @@ public final class MainActivity extends Activity {
                         ? "  •  " + reminder
                         : "")
                         + (item.vibrate ? AppString.get(R.string.runtime_text_0431) : ""));
+        time.setTag("alarm_summary_"+item.id);
         time.setPadding(0, dp(6), 0, dp(4));
         card.addView(time);
 

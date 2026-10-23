@@ -1318,4 +1318,5 @@ Lock screen</string>
     <string name="alarm_dismiss_hold_seconds">Hold for %1$s seconds to dismiss</string>
     <string name="world_alarm_reference">Time reference</string>
     <string name="note_confirm_delete">Confirm deletion</string>
+    <string name="world_alarms_title">Alarms</string>
 </resources>

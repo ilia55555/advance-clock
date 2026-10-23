@@ -68,6 +68,7 @@ final class WorldClockPanelController {
 
     private final Activity host;
     private final LinearLayout list;
+    private final LinearLayout alarms;
     private final TextView referenceSummary;
     private final Button nowButton;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -83,7 +84,7 @@ final class WorldClockPanelController {
 
     private final Runnable ticker = new Runnable() {
         @Override public void run() {
-            updateClockTimes();
+            updateClockTimes();refreshAlarms();
             if (resumed && active) {
                 long now = System.currentTimeMillis();
                 handler.postDelayed(this, 60_000L - now % 60_000L + 50L);
@@ -94,6 +95,8 @@ final class WorldClockPanelController {
     WorldClockPanelController(Activity host, View root) {
         this.host = host;
         list = root.findViewById(R.id.world_clock_list);
+        alarms=root.findViewById(R.id.world_alarm_list);
+        refreshAlarms();
         referenceSummary = root.findViewById(R.id.world_reference_summary);
         nowButton = root.findViewById(R.id.world_reference_now);
 
@@ -1119,11 +1122,15 @@ final class WorldClockPanelController {
         return view;
     }
 
+    void refreshAlarms(){
+        if(host instanceof MainActivity && alarms!=null)((MainActivity)host).renderAlarmList(alarms);
+    }
+
     void setActive(boolean value) {
         active = value;
         handler.removeCallbacks(ticker);
         if (active && resumed) {
-            updateClockTimes();
+            updateClockTimes();refreshAlarms();
             long now = System.currentTimeMillis();
             handler.postDelayed(
                     ticker,
