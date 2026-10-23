@@ -20,6 +20,7 @@ public final class AppString {
     public static void init(Context context) {
         if (context != null) {
             appContext = context.getApplicationContext();
+            CalendarUtils.setDateDisplayFormat(AppSettings.dateDisplayFormat(appContext));
             language = AppSettings.language(appContext);
             localized = AppSettings.localizedContext(appContext);
         }

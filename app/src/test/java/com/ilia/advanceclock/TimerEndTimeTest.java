@@ -15,6 +15,7 @@ public class TimerEndTimeTest {
   Application app=RuntimeEnvironment.getApplication();AppString.init(app);
   java.util.TimeZone previous=java.util.TimeZone.getDefault();
   java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("UTC"));
+  AppSettings.setDateDisplayFormat(app,1);
   AppSettings.setLanguage(app,"en");AppSettings.setDefaultCalendar(app,CalendarUtils.GREGORIAN);
   long now=System.currentTimeMillis();
   long target=java.time.Instant.ofEpochMilli(now).atZone(java.time.ZoneOffset.UTC)

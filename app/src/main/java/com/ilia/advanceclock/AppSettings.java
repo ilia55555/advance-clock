@@ -95,6 +95,16 @@ public final class AppSettings {
         prefs(context).edit().putInt("palette", clampPalette(value)).apply();
     }
 
+    public static int dateDisplayFormat(Context context) {
+        return prefs(context).getInt("date_display_format", 0) == 1 ? 1 : 0;
+    }
+
+    public static void setDateDisplayFormat(Context context, int value) {
+        int selected = value == 1 ? 1 : 0;
+        prefs(context).edit().putInt("date_display_format", selected).apply();
+        CalendarUtils.setDateDisplayFormat(selected);
+    }
+
     public static int defaultCalendar(Context context) {
         return prefs(context).getInt("default_calendar", CalendarUtils.PERSIAN);
     }

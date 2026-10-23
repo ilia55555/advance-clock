@@ -397,7 +397,15 @@ public final class TripleCalendarView extends View {
         String dates = CalendarUtils.formatDate(footerMillis, CalendarUtils.PERSIAN)
                 + " - " + CalendarUtils.formatDate(footerMillis, CalendarUtils.GREGORIAN)
                 + " - " + CalendarUtils.formatDate(footerMillis, CalendarUtils.HIJRI);
-        centered(c, dates, 340, 630 + shift, 26, primary(), regular);
+        paint.setTypeface(regular);
+        paint.setTextSize(26);
+        float labelSize = 26 * Math.min(1f, 480f / Math.max(1f, paint.measureText(dates)));
+        centered(c, dates, 340, 630 + shift, labelSize, primary(), regular);
+        float halfWidth = paint.measureText(dates) / 2f;
+        stroke.setColor(primary());
+        stroke.setStrokeWidth(1.5f);
+        c.drawLine(46, 630 + shift, 340 - halfWidth - 12, 630 + shift, stroke);
+        c.drawLine(340 + halfWidth + 12, 630 + shift, 634, 630 + shift, stroke);
     }
 
     private String configurationKey() {

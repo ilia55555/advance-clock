@@ -11,6 +11,8 @@ public final class CalendarUtils {
     public static final int HIJRI_IRAN = OfflineCalendarMath.IRAN;
     public static final int HIJRI_UMALQURA = OfflineCalendarMath.UMALQURA;
     private static volatile int hijriReference = HIJRI_IRAN;
+    private static volatile int dateDisplayFormat;
+    static void setDateDisplayFormat(int value) { dateDisplayFormat = value == 1 ? 1 : 0; }
 
     private static final int[] PERSIAN_MONTH_IDS = {
             R.string.runtime_text_0187, R.string.runtime_text_0188,
@@ -129,7 +131,8 @@ public final class CalendarUtils {
     private static String formatDate(android.icu.util.Calendar c, int type) {
         String day = fa(c.get(android.icu.util.Calendar.DAY_OF_MONTH));
         String year = fa(c.get(android.icu.util.Calendar.YEAR));
-        String date = day + " " + monthName(type, c.get(android.icu.util.Calendar.MONTH)) + " " + year;
+        String date = dateDisplayFormat == 1 ? formatNumeric(c)
+                : day + " " + monthName(type, c.get(android.icu.util.Calendar.MONTH)) + " " + year;
         if (type == HIJRI && hijriReference == HIJRI_IRAN
                 && !OfflineCalendarMath.hasIranReference(c.get(android.icu.util.Calendar.JULIAN_DAY) - 2440588L)) {
             date += " " + AppString.get(R.string.hijri_calculated_short);

@@ -1286,4 +1286,7 @@
     <string name="alarm_style_glass">ساعت شیشه‌ای</string>
     <string name="alarm_swipe_stop">برای قطع هشدار، رو به بالا بکشید</string>
     <string name="alarm_blur_support">تاری پس‌زمینه به پشتیبانی گوشی بستگی دارد.</string>
+    <string name="date_display_format_label">قالب نمایش تاریخ</string>
+    <string name="date_display_format_written">نوشتاری — ۱ مهر ۱۴۰۵</string>
+    <string name="date_display_format_numeric">عددی — ۱۴۰۵/۰۷/۰۱</string>
 </resources>

@@ -23,7 +23,7 @@ public class TimeToolSessionUiTest {
    assertEquals(View.GONE,summary.getVisibility());assertEquals(View.GONE,lap.getVisibility());
    host.findViewById(R.id.stopwatch_mode_duration).performClick();
    ((EditText)host.findViewById(R.id.stopwatch_limit_hours)).setText("2");
-   assertEquals(View.VISIBLE,summary.getVisibility());assertTrue(summary.getText().toString().contains("/"));
+   assertEquals(View.VISIBLE,summary.getVisibility());assertFalse(summary.getText().toString().isEmpty());
    host.findViewById(R.id.stopwatch_start).performClick();
    assertEquals(View.GONE,extras.getVisibility());assertEquals(View.VISIBLE,lap.getVisibility());assertTrue(lap.isEnabled());
    host.findViewById(R.id.stopwatch_reset).performClick();

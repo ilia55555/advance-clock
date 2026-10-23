@@ -194,7 +194,7 @@ final class StopwatchPanelController {
                 : accumulatedMillis > 0 ? System.currentTimeMillis() + remaining
                 : System.currentTimeMillis() + readLimit();
         summary.setText(CalendarUtils.fa(String.format(Locale.US,"%tR",target))
-                + "   " + CalendarUtils.formatNumeric(target,calendarType));
+                + "   " + CalendarUtils.formatDate(target,calendarType));
     }
 
     private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}

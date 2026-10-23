@@ -85,6 +85,12 @@ public final class SettingsActivity extends Activity {
         calendar.setSelection(AppSettings.defaultCalendar(this));
         calendarSettings.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        calendarSettings.addView(label(AppString.get(R.string.date_display_format_label)));
+        Spinner dateFormat = spinner(new String[]{AppString.get(R.string.date_display_format_written),
+                AppString.get(R.string.date_display_format_numeric)});
+        dateFormat.setSelection(AppSettings.dateDisplayFormat(this));
+        calendarSettings.addView(dateFormat, new LinearLayout.LayoutParams(-1, dp(54)));
+
         Switch showCalendarEvents = settingSwitch(
                 AppString.get(R.string.runtime_text_0155),
                 AppSettings.showCalendarEvents(this));
@@ -229,6 +235,13 @@ public final class SettingsActivity extends Activity {
             }
 
             @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        watch(dateFormat, position -> {
+            if (AppSettings.dateDisplayFormat(this) == position) return;
+            AppSettings.setDateDisplayFormat(this, position);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
         });
 
         showCalendarEvents.setOnCheckedChangeListener((button, checked) -> {

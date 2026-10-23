@@ -216,7 +216,7 @@ final class TimerPanelController {
         long target = running ? deadline : remainingMillis > 0 ? System.currentTimeMillis() + remaining
                 : dateTimeMode ? selectedTarget : remaining > 0 ? System.currentTimeMillis() + remaining : 0;
         summary.setText(target <= 0 ? "" : CalendarUtils.fa(String.format(Locale.US, "%tR", target))
-                + "   " + CalendarUtils.formatNumeric(target, calendarType));
+                + "   " + CalendarUtils.formatDate(target, calendarType));
     }
 
     private void renderTime(long millis) {
