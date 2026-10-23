@@ -23,6 +23,10 @@ public final class BootReceiver extends BroadcastReceiver {
         boolean dateChanged =
                 Intent.ACTION_DATE_CHANGED.equals(action);
 
+        // Update the visible date before recurrence/widget work, which can be slow
+        // or fail independently after the system clock changes.
+        DateNotificationService.refreshNow(context);
+
         if (bootOrUpgrade || clockChanged || action == null) {
             AlarmScheduler.rescheduleAll(context);
             ToolAlarmScheduler.rescheduleAll(context);
@@ -63,11 +67,5 @@ public final class BootReceiver extends BroadcastReceiver {
             }
         }
 
-        // Clock changes rebuild the date card and its next local-midnight refresh.
-        if (AppSettings.persistentDateNotificationEnabled(context)) {
-            DateNotificationService.refreshNow(context);
-        } else {
-            DateNotificationService.stop(context);
-        }
     }
 }

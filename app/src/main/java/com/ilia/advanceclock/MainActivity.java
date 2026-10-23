@@ -58,6 +58,7 @@ public final class MainActivity extends Activity {
                 return;
             }
             updateHeaderClock();
+            DateNotificationService.ensureVisible(context);
             applyPrayerTimesUi();
             applyCalendarEventsUi();
         }

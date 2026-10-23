@@ -13,6 +13,23 @@ import static org.junit.Assert.*;
 @Config(application=Application.class, sdk={28,35},
         shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class DateNotificationStartupTest {
+    @Test public void existingCardWithPreviousDateRefreshesWithoutTogglingSetting() {
+        Application app=RuntimeEnvironment.getApplication(); AppString.init(app);
+        Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);
+        AppSettings.setPersistentDateNotificationEnabled(app,true);
+        NotificationManager manager=app.getSystemService(NotificationManager.class);
+        DateNotificationService.start(app);
+        android.app.Notification stale=Shadows.shadowOf(manager).getNotification(73);
+        String expectedTitle=stale.extras.getCharSequence(android.app.Notification.EXTRA_TITLE).toString();
+        stale.extras.putCharSequence(android.app.Notification.EXTRA_TITLE,"Yesterday");
+        manager.notify(73,stale);
+        DateNotificationService.ensureVisible(app);
+        String newTitle=Shadows.shadowOf(manager).getNotification(73).extras
+                .getCharSequence(android.app.Notification.EXTRA_TITLE).toString();
+        assertEquals(expectedTitle,newTitle);
+        assertTrue(AppSettings.persistentDateNotificationEnabled(app));
+    }
+
     @Test public void returningUserGetsEnabledDateWithoutOpeningSettings() {
         Application app=RuntimeEnvironment.getApplication(); AppString.init(app);
         Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);

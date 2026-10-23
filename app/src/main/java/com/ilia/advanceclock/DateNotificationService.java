@@ -21,7 +21,7 @@ public final class DateNotificationService extends Service {
     public static final String CHANNEL = "advance_clock_date_v1";
     private static final int ID = 73;
 
-    /** Restore an enabled date card on app entry without reposting an existing one. */
+    /** Restore a missing or stale date card on app entry. */
     static void ensureVisible(Context context) {
         if (!AppSettings.persistentDateNotificationEnabled(context)) {
             stop(context);
@@ -30,7 +30,15 @@ public final class DateNotificationService extends Service {
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         if (manager != null) {
             for (android.service.notification.StatusBarNotification notification : manager.getActiveNotifications()) {
-                if (notification.getId() == ID && notification.getTag() == null) return;
+                if (notification.getId() == ID && notification.getTag() == null) {
+                    Notification current = notification.getNotification();
+                    Notification expected = buildNotification(context);
+                    if (android.text.TextUtils.equals(current.extras.getCharSequence(Notification.EXTRA_TITLE),
+                            expected.extras.getCharSequence(Notification.EXTRA_TITLE))
+                            && android.text.TextUtils.equals(current.extras.getCharSequence(Notification.EXTRA_TEXT),
+                            expected.extras.getCharSequence(Notification.EXTRA_TEXT))) return;
+                    break;
+                }
             }
         }
         start(context);
