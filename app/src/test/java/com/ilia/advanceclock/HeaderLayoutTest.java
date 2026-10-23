@@ -22,17 +22,20 @@ public class HeaderLayoutTest {
     @Test public void persianDateFitsAboveTabsEvenWithLargeSystemText() {
         Application app=RuntimeEnvironment.getApplication();
         AppString.init(app);
-        for (float scale : new float[]{1f,1.5f,2f}) {
+        for (float scale : new float[]{.85f,1f,1.5f,2f}) {
             Configuration config=new Configuration(app.getResources().getConfiguration());
             config.fontScale=scale;
             config.setLocale(new java.util.Locale("fa"));
-            Context context=new ContextThemeWrapper(app.createConfigurationContext(config),
+            Context context=new ContextThemeWrapper(AppSettings.localizedContext(app.createConfigurationContext(config)),
                     R.style.Theme_AdvanceClock_Base_Light);
+            assertEquals(1f,context.getResources().getConfiguration().fontScale,0f);
             ViewGroup root=(ViewGroup)LayoutInflater.from(context).inflate(R.layout.activity_main,null);
             TextView date=root.findViewById(R.id.header_date);
             date.setText("۳۰ مهر ۱۴۰۵");
             TextView time=root.findViewById(R.id.header_time);
             time.setText("۱۱:۲۵");
+            assertTrue(date.getTextSize()<time.getTextSize());
+            assertTrue(date.getTextSize()>=time.getTextSize()*.85f);
             int width=Math.round(360*context.getResources().getDisplayMetrics().density);
             root.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(2000,View.MeasureSpec.EXACTLY));

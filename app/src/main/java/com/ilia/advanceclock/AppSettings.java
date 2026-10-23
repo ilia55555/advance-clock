@@ -966,6 +966,7 @@ public final class AppSettings {
             }
         }
         Configuration configuration = new Configuration(context.getResources().getConfiguration());
+        configuration.fontScale=1f;
         configuration.setLocales(new LocaleList(locale));
         configuration.setLayoutDirection(locale);
         context.getResources().updateConfiguration(
@@ -973,7 +974,7 @@ public final class AppSettings {
     }
 
     /**
-     * Returns a context whose resources always use the explicitly saved app language. Unlike
+     * Returns a context with fixed app text scaling and the explicitly saved app language. Unlike
      * mutating a long-lived Resources instance, this context cannot silently fall back to the
      * device locale after Android dispatches a configuration change.
      */
@@ -981,6 +982,7 @@ public final class AppSettings {
         Locale locale = Locale.forLanguageTag(language(context));
         Configuration configuration = new Configuration(
                 context.getResources().getConfiguration());
+        configuration.fontScale=1f;
         configuration.setLocales(new LocaleList(locale));
         configuration.setLayoutDirection(locale);
         return context.createConfigurationContext(configuration);

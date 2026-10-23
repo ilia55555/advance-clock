@@ -70,7 +70,7 @@
             android:paddingBottom="1dp"
             android:text="@string/runtime_text_0414"
             android:textColor="#D9EFED"
-            android:textSize="12sp" />
+            android:textSize="22sp" />
 
         <LinearLayout
             android:id="@+id/tab_bar"
