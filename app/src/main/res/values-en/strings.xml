@@ -1326,4 +1326,6 @@ Lock screen</string>
     <string name="date_notification_calendar">Calendar</string>
     <string name="smart_input_examples">I have a meeting tomorrow at 09:30\n\n{\&quot;date\&quot;:\&quot;2027/01/15\&quot;,\&quot;time\&quot;:\&quot;09:30\&quot;,\&quot;title\&quot;:\&quot;Meeting\&quot;}</string>
     <string name="smart_voice_stop">Stop dictation</string>
+    <string name="smart_voice_network_error">The speech service needs internet for this request. Check your internet connection.</string>
+    <string name="smart_voice_retry">Speech recognition was interrupted. Retrying…</string>
 </resources>

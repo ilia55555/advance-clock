@@ -36,6 +36,21 @@ public class SmartScheduleActivityTest {
         EditText field=ReflectionHelpers.getField(host,"input");
         assertTrue(field.getText().toString().contains("08:30"));
         assertTrue(shadow.isDestroyed());
+        assertTrue(ReflectionHelpers.<Boolean>getField(host,"listening"));
+        Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(400));
+        android.speech.SpeechRecognizer next=org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer();
+        assertNotSame(recognizer,next);
+        Shadows.shadowOf(next).triggerOnError(android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT);
+        assertTrue(ReflectionHelpers.<Boolean>getField(host,"listening"));
+        Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(400));
+        android.speech.SpeechRecognizer afterPause=org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer();
+        assertNotSame(next,afterPause);
+        Shadows.shadowOf(afterPause).triggerOnError(android.speech.SpeechRecognizer.ERROR_NETWORK);
+        assertTrue(ReflectionHelpers.<Boolean>getField(host,"listening"));
+        host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input").performClick();
+        assertFalse(ReflectionHelpers.<Boolean>getField(host,"listening"));
+        Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofSeconds(4));
+        assertSame(afterPause,org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer());
         assertNull(Shadows.shadowOf(host).getNextStartedActivity());
         host.finish();
     }

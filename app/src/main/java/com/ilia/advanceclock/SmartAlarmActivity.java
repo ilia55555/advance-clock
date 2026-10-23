@@ -54,6 +54,8 @@ public final class SmartAlarmActivity extends Activity {
     private Button voiceButton;
     private boolean listening;
     private int speechSession;
+    private int lastSpeechError = -1;
+    private final Runnable restartSpeech = () -> { if (listening) beginSpeechCycle(); };
 
     private void setHelperIcon(Button button, int resource) {
         android.graphics.drawable.Drawable icon = getDrawable(resource).mutate();
@@ -85,7 +87,14 @@ public final class SmartAlarmActivity extends Activity {
             requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, VOICE_REQUEST);
             return;
         }
-        stopVoiceInput();
+        listening=true;
+        lastSpeechError=-1;
+        voiceButton.setText(R.string.smart_voice_stop);
+        beginSpeechCycle();
+    }
+
+    private void beginSpeechCycle() {
+        releaseSpeechRecognizer();
         final int session = speechSession;
         try {
             speechRecognizer = android.speech.SpeechRecognizer.createSpeechRecognizer(this);
@@ -98,19 +107,33 @@ public final class SmartAlarmActivity extends Activity {
                 public void onPartialResults(Bundle b) {}
                 public void onEvent(int type, Bundle b) {}
                 public void onError(int error) {
-                    if (session != speechSession) return;
-                    stopVoiceInput();
-                    LogoToast.makeText(SmartAlarmActivity.this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+                    if (session != speechSession || !listening) return;
+                    if (error == android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
+                            || error == android.speech.SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED
+                            || error == android.speech.SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE) {
+                        stopVoiceInput();
+                        LogoToast.makeText(SmartAlarmActivity.this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    boolean silence = error == android.speech.SpeechRecognizer.ERROR_NO_MATCH
+                            || error == android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
+                    if (!silence && lastSpeechError != error) {
+                        int message = error == android.speech.SpeechRecognizer.ERROR_NETWORK
+                                || error == android.speech.SpeechRecognizer.ERROR_NETWORK_TIMEOUT
+                                ? R.string.smart_voice_network_error : R.string.smart_voice_retry;
+                        LogoToast.makeText(SmartAlarmActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                    lastSpeechError=error;
+                    queueSpeechRestart(silence ? 350 : 3000);
                 }
                 public void onResults(Bundle results) {
                     if (session != speechSession) return;
                     ArrayList<String> values=results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
-                    stopVoiceInput();
+                    lastSpeechError=-1;
                     if (values!=null && !values.isEmpty()) insertText(values.get(0));
+                    queueSpeechRestart(350);
                 }
             });
-            listening=true;
-            voiceButton.setText(R.string.smart_voice_stop);
             speechRecognizer.startListening(speechIntent(this));
         } catch (RuntimeException error) {
             stopVoiceInput();
@@ -118,10 +141,21 @@ public final class SmartAlarmActivity extends Activity {
         }
     }
 
+    private void queueSpeechRestart(long delay) {
+        releaseSpeechRecognizer();
+        liveHandler.removeCallbacks(restartSpeech);
+        if (listening) liveHandler.postDelayed(restartSpeech, delay);
+    }
+
     private void stopVoiceInput() {
-        speechSession++;
         listening=false;
+        liveHandler.removeCallbacks(restartSpeech);
+        releaseSpeechRecognizer();
         if (voiceButton!=null) voiceButton.setText(R.string.smart_voice_input);
+    }
+
+    private void releaseSpeechRecognizer() {
+        speechSession++;
         if (speechRecognizer!=null) {
             android.speech.SpeechRecognizer old=speechRecognizer;
             speechRecognizer=null;
