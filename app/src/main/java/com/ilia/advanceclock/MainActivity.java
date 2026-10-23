@@ -41,7 +41,6 @@ import java.util.TimeZone;
 public final class MainActivity extends Activity {
     private static final int REQ_NOTIFICATIONS = 100;
     private static final int REQ_SETTINGS = 200;
-    private static final int REQ_NOTIFICATION_SETTINGS = 201;
     private static final int REQ_QUICK_ALARM_IMAGE_1 = 310;
     private static final int REQ_QUICK_ALARM_IMAGE_2 = 311;
     private static final String PREFS = "advance_clock_app";
@@ -380,10 +379,6 @@ public final class MainActivity extends Activity {
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
             menu.getMenu().add(0, 1, 0, AppString.get(R.string.runtime_text_0001));
-            if (AppSettings.adhanEnabled(this))
-                menu.getMenu().add(0, 7, 1,
-                        AppString.get(R.string.runtime_text_0076));
-            menu.getMenu().add(0, 4, 2, AppString.get(R.string.runtime_text_0069));
             menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
             menu.getMenu().add(0, 6, 4, AppString.get(R.string.runtime_text_0108));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
@@ -391,16 +386,6 @@ public final class MainActivity extends Activity {
             HeaderMenu.show(this, anchor, menu.getMenu(), item -> {
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
-                    return true;
-                }
-                if (item.getItemId() == 7) {
-                    startActivity(new Intent(this, PrayerSettingsActivity.class));
-                    return true;
-                }
-                if (item.getItemId() == 4) {
-                    startActivityForResult(
-                            new Intent(this, NotificationSettingsActivity.class),
-                            REQ_NOTIFICATION_SETTINGS);
                     return true;
                 }
                 if (item.getItemId() == 5) {
@@ -1227,10 +1212,6 @@ public final class MainActivity extends Activity {
 
         if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
             recreate();
-            return;
-        }
-
-        if (requestCode == REQ_NOTIFICATION_SETTINGS && resultCode == RESULT_OK) {
             return;
         }
 

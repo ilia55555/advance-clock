@@ -1292,4 +1292,8 @@
     <string name="clock_format_label">قالب نمایش ساعت</string>
     <string name="clock_format_24">۲۴ ساعته — ۲۳:۰۰</string>
     <string name="clock_format_12">۱۲ ساعته — ۱۱:۰۰ ب.ظ</string>
+    <string name="settings_section_tabs">تب‌ها</string>
+    <string name="settings_section_notifications">اعلان‌ها</string>
+    <string name="settings_expanded">باز</string>
+    <string name="settings_collapsed">بسته</string>
 </resources>

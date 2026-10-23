@@ -64,10 +64,11 @@ public class DateNotificationDisplayTest {
         app.getSystemService(NotificationManager.class).createNotificationChannel(
                 new NotificationChannel(DateNotificationService.CHANNEL,"Date",
                         NotificationManager.IMPORTANCE_NONE));
-        try (org.robolectric.android.controller.ActivityController<NotificationSettingsActivity> controller =
-                     Robolectric.buildActivity(NotificationSettingsActivity.class).setup()) {
-            NotificationSettingsActivity activity=controller.get();
-            android.widget.Button button=org.robolectric.util.ReflectionHelpers.getField(activity,"dateChannelButton");
+        try (org.robolectric.android.controller.ActivityController<SettingsActivity> controller =
+                     Robolectric.buildActivity(SettingsActivity.class).setup()) {
+            SettingsActivity activity=controller.get();
+            Object panel=org.robolectric.util.ReflectionHelpers.getField(activity,"notificationPanel");
+            android.widget.Button button=org.robolectric.util.ReflectionHelpers.getField(panel,"dateChannelButton");
             assertEquals(View.VISIBLE,button.getVisibility());
             button.performClick();
             android.content.Intent intent=Shadows.shadowOf(activity).getNextStartedActivity();

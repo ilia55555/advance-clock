@@ -140,7 +140,8 @@ public final class PrayerTimesWidgetProvider extends AppWidgetProvider {
                         rowOpen,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
-        Intent manage = new Intent(context, PrayerSettingsActivity.class);
+        Intent manage = new Intent(context, SettingsActivity.class)
+                .putExtra(SettingsActivity.EXTRA_SECTION, "prayer");
         views.setOnClickPendingIntent(
                 R.id.prayer_widget_manage,
                 PendingIntent.getActivity(

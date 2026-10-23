@@ -55,9 +55,9 @@ public final class RequestedBehaviorFrameworkTest {
         Shadows.shadowOf((Application) c).grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS);
         NotificationManager manager = c.getSystemService(NotificationManager.class);
         Shadows.shadowOf(manager).setNotificationsEnabled(false);
-        org.robolectric.android.controller.ActivityController<NotificationSettingsActivity> controller =
-                Robolectric.buildActivity(NotificationSettingsActivity.class).setup();
-        ViewGroup root = controller.get().findViewById(android.R.id.content);
+        org.robolectric.android.controller.ActivityController<SettingsActivity> controller =
+                Robolectric.buildActivity(SettingsActivity.class).setup();
+        ViewGroup root = controller.get().findViewById(android.R.id.content).findViewWithTag("settings_content_notification");
         assertDisabledSwitches(root);
         assertTrue(hasVisiblePermission(root));
         Shadows.shadowOf(manager).setNotificationsEnabled(true);

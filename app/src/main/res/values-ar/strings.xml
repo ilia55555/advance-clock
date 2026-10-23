@@ -1308,4 +1308,8 @@
     <string name="clock_format_label">تنسيق الوقت</string>
     <string name="clock_format_24">٢٤ ساعة — ٢٣:٠٠</string>
     <string name="clock_format_12">١٢ ساعة — ١١:٠٠ م</string>
+    <string name="settings_section_tabs">علامات التبويب</string>
+    <string name="settings_section_notifications">الإشعارات</string>
+    <string name="settings_expanded">موسّع</string>
+    <string name="settings_collapsed">مطوي</string>
 </resources>

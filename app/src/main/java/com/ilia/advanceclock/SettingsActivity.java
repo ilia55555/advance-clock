@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -20,11 +19,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public final class SettingsActivity extends Activity {
+    public static final String EXTRA_SECTION = "settings_section";
+    private final java.util.List<SettingsSection> sections = new java.util.ArrayList<>();
+    private String expandedSection = "general";
+    private NotificationSettingsPanel notificationPanel;
+    private PrayerSettingsPanel prayerPanel;
+
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         AppSettings.applyModalOverlay(this);
         super.onCreate(savedInstanceState);
 
+        expandedSection = savedInstanceState != null
+                ? savedInstanceState.getString(EXTRA_SECTION, "general")
+                : getIntent().getStringExtra(EXTRA_SECTION);
+        if (expandedSection == null) expandedSection = "general";
         int pad = dp(18);
 
         ScrollView scroll = new ScrollView(this);
@@ -63,11 +72,25 @@ public final class SettingsActivity extends Activity {
 
         root.addView(top);
 
-        LinearLayout generalSettings = section(root, R.string.settings_section_general);
-        LinearLayout tabSettings = section(root, R.string.runtime_text_0159);
-        LinearLayout calendarSettings = section(root, R.string.settings_section_calendar);
-        LinearLayout alarmSettings = section(root, R.string.settings_section_alarms);
-        LinearLayout prayerSettingsCard = section(root, R.string.runtime_text_0077);
+        LinearLayout generalSettings = section(root, "general", R.string.settings_section_general, R.drawable.ic_md_settings);
+        LinearLayout tabSettings = section(root, "tabs", R.string.settings_section_tabs, android.R.drawable.ic_menu_sort_by_size);
+        LinearLayout notificationSettings = section(root, "notification", R.string.settings_section_notifications, android.R.drawable.ic_popup_reminder);
+        LinearLayout calendarSettings = section(root, "calendar", R.string.settings_section_calendar, android.R.drawable.ic_menu_my_calendar);
+        LinearLayout alarmSettings = section(root, "alarm", R.string.settings_section_alarms, R.drawable.ic_alarm);
+        LinearLayout prayerSettingsCard = section(root, "prayer", R.string.runtime_text_0077, android.R.drawable.ic_menu_compass);
+        notificationPanel = new NotificationSettingsPanel(this, notificationSettings, alarmSettings);
+
+        generalSettings.addView(label(AppString.get(R.string.runtime_text_0043)));
+        Spinner theme = spinner(new String[]{AppString.get(R.string.runtime_text_0044), AppString.get(R.string.runtime_text_0045)});
+        theme.setSelection(AppSettings.themeMode(this) == AppSettings.THEME_DARK ? 1 : 0);
+        generalSettings.addView(theme, new LinearLayout.LayoutParams(-1, dp(54)));
+        watch(theme, position -> {
+            int mode = position == 1 ? AppSettings.THEME_DARK : AppSettings.THEME_LIGHT;
+            if (AppSettings.themeMode(this) == mode) return;
+            AppSettings.setThemeMode(this, mode);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, true);
+        });
 
         generalSettings.addView(label(getString(R.string.language_label)));
         Spinner language = languageSpinner(
@@ -132,22 +155,7 @@ public final class SettingsActivity extends Activity {
         };
         refreshExtraSources.run();
 
-        LinearLayout prayerRow = new LinearLayout(this);
-        prayerRow.setOrientation(LinearLayout.HORIZONTAL);
-        prayerRow.setGravity(Gravity.CENTER_VERTICAL);
-        prayerRow.setLayoutDirection(AppSettings.layoutDirection(this));
-        Switch adhanEnabled = settingSwitch(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(this));
-        prayerRow.addView(adhanEnabled, new LinearLayout.LayoutParams(0, -2, 1f));
-
-        Button prayerSettings = new Button(this);
-        prayerSettings.setText(AppString.get(R.string.runtime_text_0001));
-        prayerSettings.setAllCaps(false);
-        prayerSettings.setTextColor(AppSettings.primaryColor(this));
-        prayerSettings.setBackgroundResource(R.drawable.bg_soft_button);
-        prayerSettings.setOnClickListener(v ->
-                startActivity(new Intent(this, PrayerSettingsActivity.class)));
-        prayerRow.addView(prayerSettings, new LinearLayout.LayoutParams(dp(100), dp(44)));
-        prayerSettingsCard.addView(prayerRow);
+        prayerPanel = new PrayerSettingsPanel(this, prayerSettingsCard);
 
         generalSettings.addView(label(AppString.get(R.string.runtime_text_0156)));
         Spinner layout = spinner(new String[]{
@@ -288,13 +296,6 @@ public final class SettingsActivity extends Activity {
             AdvanceClockApplication.refreshOpenActivities(this, false);
         });
 
-        adhanEnabled.setOnCheckedChangeListener((button, checked) -> {
-            if (AppSettings.adhanEnabled(this) == checked) return;
-            AppSettings.setAdhanEnabled(this, checked);
-            runtimeChanged();
-            AdvanceClockApplication.refreshOpenActivities(this, false);
-        });
-
         watch(layout, position -> {
             if (AppSettings.clockLayoutMode(this) == position) return;
             AppSettings.setClockLayoutMode(this, position);
@@ -385,29 +386,50 @@ public final class SettingsActivity extends Activity {
         return control;
     }
 
-    private LinearLayout settingsCard() {
-        LinearLayout card = new LinearLayout(this);
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setLayoutDirection(AppSettings.layoutDirection(this));
-        card.setPadding(dp(14), dp(14), dp(14), dp(14));
-        card.setBackgroundResource(R.drawable.bg_card);
-        return card;
+    private LinearLayout section(LinearLayout root, String key, int title, int icon) {
+        SettingsSection section = new SettingsSection(this, key, title, icon, () -> {
+            SettingsSection clicked = null;
+            for (SettingsSection item : sections) if (item.key.equals(key)) clicked = item;
+            boolean open = clicked != null && !clicked.isExpanded();
+            android.transition.TransitionManager.beginDelayedTransition(root,
+                    new android.transition.AutoTransition().setDuration(180));
+            expandedSection = open ? key : "";
+            for (SettingsSection item : sections) item.setExpanded(open && item.key.equals(key));
+        });
+        sections.add(section);
+        section.setExpanded(key.equals(expandedSection));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        params.topMargin = dp(14);
+        root.addView(section, params);
+        return section.content;
     }
 
-    private LinearLayout section(LinearLayout root, int titleResource) {
-        LinearLayout card = settingsCard();
-        TextView heading = new TextView(this);
-        heading.setText(titleResource);
-        heading.setTextColor(AppSettings.primaryColor(this));
-        heading.setTextSize(17);
-        heading.setTypeface(null, android.graphics.Typeface.BOLD);
-        heading.setPadding(0, 0, 0, dp(8));
-        if (android.os.Build.VERSION.SDK_INT >= 28) heading.setAccessibilityHeading(true);
-        card.addView(heading);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
-        params.topMargin = dp(16);
-        root.addView(card, params);
-        return card;
+    @Override protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString(EXTRA_SECTION, expandedSection);
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (notificationPanel != null) notificationPanel.onResume();
+        if (prayerPanel != null) prayerPanel.onResume();
+    }
+
+    @Override protected void onActivityResult(int request, int result, Intent data) {
+        super.onActivityResult(request, result, data);
+        if (notificationPanel != null) notificationPanel.onActivityResult(request, result, data);
+        if (prayerPanel != null) prayerPanel.onActivityResult(request, result, data);
+    }
+
+    @Override public void onRequestPermissionsResult(int request, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(request, permissions, results);
+        if (notificationPanel != null) notificationPanel.onRequestPermissionsResult(request, permissions, results);
+        if (prayerPanel != null) prayerPanel.onRequestPermissionsResult(request, permissions, results);
+    }
+
+    @Override protected void onDestroy() {
+        if (prayerPanel != null) prayerPanel.onDestroy();
+        super.onDestroy();
     }
 
     private int[] extraCalendarTypes(int primary) {

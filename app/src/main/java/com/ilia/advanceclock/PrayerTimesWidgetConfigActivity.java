@@ -187,7 +187,8 @@ public final class PrayerTimesWidgetConfigActivity extends Activity {
         manage.setTextColor(AppSettings.primaryColor(this));
         manage.setBackgroundResource(R.drawable.bg_soft_button);
         manage.setOnClickListener(v ->
-                startActivity(new Intent(this, PrayerSettingsActivity.class)));
+                startActivity(new Intent(this, SettingsActivity.class)
+                        .putExtra(SettingsActivity.EXTRA_SECTION, "prayer")));
         root.addView(manage, new LinearLayout.LayoutParams(-1, dp(50)));
 
         Button reset = new Button(this);
