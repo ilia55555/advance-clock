@@ -74,7 +74,7 @@ public final class AdhanSoundService extends Service {
 
     private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) setMuted(true);
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) silence();
         }
     };
 
@@ -91,7 +91,7 @@ public final class AdhanSoundService extends Service {
                 return;
             }
             if (current < previous) {
-                setMuted(true);
+                silence();
             } else if (current > previous) {
                 setMuted(false);
             }
@@ -119,6 +119,7 @@ public final class AdhanSoundService extends Service {
     static void setOutputVibrating(long id,boolean value) {
         AdhanSoundService service=output(id);if(service==null)return;
         service.vibrationEnabled=value;if(service.vibrator!=null)service.vibrator.cancel(); if(value)service.startVibration();
+        AlertOutputEvents.changed();
     }
 
     @Override public void onCreate() {
@@ -144,7 +145,7 @@ public final class AdhanSoundService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
-        if (ACTION_MUTE.equals(action)) setMuted(true);
+        if (ACTION_MUTE.equals(action)) silence();
         else if (ACTION_UNMUTE.equals(action)) setMuted(false);
         else if (ACTION_LOWER.equals(action)) lowerVolume();
         else if (ACTION_RAISE.equals(action)) raiseVolume();
@@ -265,6 +266,7 @@ public final class AdhanSoundService extends Service {
         }
         vibrationEnabled=AppSettings.adhanVibrate(this,type);
         if(vibrationEnabled)startVibration();
+        AlertOutputEvents.changed();
     }
 
     private void startVibration() {
@@ -274,21 +276,31 @@ public final class AdhanSoundService extends Service {
         }catch(RuntimeException ignored){}
     }
 
+    private void silence() {
+        setMuted(true);
+        vibrationEnabled=false;
+        try { if(vibrator!=null)vibrator.cancel(); } catch(RuntimeException ignored){}
+        AlertOutputEvents.changed();
+    }
+
     private void setMuted(boolean value) {
         muted = value;
         applyVolume();
+        AlertOutputEvents.changed();
     }
 
     private void lowerVolume() {
         muted = false;
         volume = Math.max(0.10f, volume - 0.10f);
         applyVolume();
+        AlertOutputEvents.changed();
     }
 
     private void raiseVolume() {
         muted = false;
         volume = Math.min(1f, volume + 0.10f);
         applyVolume();
+        AlertOutputEvents.changed();
     }
 
     private void applyVolume() {
@@ -306,6 +318,7 @@ public final class AdhanSoundService extends Service {
     @Override public void onDestroy() {
         playing = false;
         foreground = false;
+        AlertOutputEvents.changed();
         if (running.get() == this) running.clear();
         stopHandler.removeCallbacks(maximumDuration);
         stopPlayback();

@@ -6,8 +6,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
@@ -23,13 +21,10 @@ final class AlertActions extends LinearLayout {
             R.string.runtime_text_0582,R.string.runtime_text_0583};
     private final Activity host;
     private final AlertOutput output;
-    private final Handler handler=new Handler(Looper.getMainLooper());
     private final LinearLayout sound, vibration;
     private final int color;
     private AlertDialog dialog;
-    private final Runnable refresh=new Runnable() {
-        @Override public void run() { refreshState(); handler.postDelayed(this,250); }
-    };
+    private final Runnable refresh=this::refreshState;
 
     AlertActions(Activity host, AlertOutput output, String openLabel, Runnable open,
                  int selectedMinutes, int color, Consumer<int[]> snooze) {
@@ -50,10 +45,14 @@ final class AlertActions extends LinearLayout {
         addView(row,new LayoutParams(-1,-2));
         Button later=new Button(host);later.setTag("alert_snooze");
         later.setText(AppString.get(R.string.ui_snooze));later.setAllCaps(false);
-        later.setTextColor(color);later.setTextSize(16);later.setMinHeight(dp(50));
+        later.setTextColor(color);later.setTextSize(13);later.setMinHeight(0);later.setMinimumHeight(0);
+        later.setMinWidth(0);later.setMinimumWidth(0);later.setPadding(dp(16),0,dp(16),0);
+        later.setIncludeFontPadding(false);later.setMaxLines(1);later.setEllipsize(null);
+        later.setHorizontallyScrolling(false);
+        later.setAutoSizeTextTypeUniformWithConfiguration(4,13,1,android.util.TypedValue.COMPLEX_UNIT_SP);
         later.setStateListAnimator(null);later.setElevation(0);later.setBackground(border());
         later.setOnClickListener(v->showSnooze(selectedMinutes,snooze));
-        LayoutParams params=new LayoutParams(-1,-2);params.topMargin=dp(12);
+        LayoutParams params=new LayoutParams(Math.min(dp(180),getResources().getDisplayMetrics().widthPixels-dp(64)),dp(40));params.topMargin=dp(8);params.gravity=Gravity.CENTER_HORIZONTAL;
         addView(later,params);refreshState();
     }
     private LayoutParams column() {
@@ -62,16 +61,18 @@ final class AlertActions extends LinearLayout {
     private LinearLayout action(String tag,int icon,String title,Runnable click) {
         LinearLayout column=new LinearLayout(host);column.setOrientation(VERTICAL);column.setGravity(Gravity.CENTER_HORIZONTAL);
         ImageButton button=new ImageButton(host);button.setTag(tag);button.setImageResource(icon);button.setColorFilter(color);
-        button.setPadding(dp(18),dp(18),dp(18),dp(18));button.setBackground(border());button.setStateListAnimator(null);button.setElevation(0);
+        button.setPadding(dp(12),dp(12),dp(12),dp(12));button.setBackground(border());button.setStateListAnimator(null);button.setElevation(0);
         button.setContentDescription(title);button.setOnClickListener(v->{if(click!=null)click.run();});
-        column.addView(button,new LayoutParams(dp(64),dp(64)));
-        TextView label=new TextView(host);label.setText(title);label.setTextSize(12);label.setTextColor(color);
-        label.setGravity(Gravity.CENTER);label.setPadding(0,dp(5),0,0);label.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-        label.setMaxLines(2);label.setMinHeight(dp(36));
+        column.addView(button,new LayoutParams(dp(48),dp(48)));
+        TextView label=new TextView(host);label.setText(title);label.setTextSize(10);label.setTextColor(color);
+        label.setGravity(Gravity.CENTER);label.setPadding(0,dp(4),0,0);label.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+        label.setMaxLines(1);label.setEllipsize(null);label.setIncludeFontPadding(false);
+        label.setHorizontallyScrolling(false);
+        label.setAutoSizeTextTypeUniformWithConfiguration(2,10,1,android.util.TypedValue.COMPLEX_UNIT_SP);
         column.addView(label,new LayoutParams(-1,-2));return column;
     }
     private android.graphics.drawable.Drawable border() {
-        GradientDrawable shape=new GradientDrawable();shape.setColor(Color.TRANSPARENT);shape.setCornerRadius(dp(16));shape.setStroke(dp(1),color);
+        GradientDrawable shape=new GradientDrawable();shape.setColor(Color.TRANSPARENT);shape.setCornerRadius(dp(12));shape.setStroke(dp(1),color);
         return new RippleDrawable(ColorStateList.valueOf((color&0xFFFFFF)|0x22000000),shape,null);
     }
     void refreshState() {
@@ -102,7 +103,7 @@ final class AlertActions extends LinearLayout {
             dialog.dismiss();accept.accept(result);
         });
     }
-    @Override protected void onAttachedToWindow(){super.onAttachedToWindow();handler.post(refresh);}
-    @Override protected void onDetachedFromWindow(){handler.removeCallbacks(refresh);if(dialog!=null)dialog.dismiss();super.onDetachedFromWindow();}
+    @Override protected void onAttachedToWindow(){super.onAttachedToWindow();AlertOutputEvents.add(refresh);refreshState();}
+    @Override protected void onDetachedFromWindow(){AlertOutputEvents.remove(refresh);if(dialog!=null)dialog.dismiss();super.onDetachedFromWindow();}
     private int dp(int value){return Math.round(value*getResources().getDisplayMetrics().density);}
 }

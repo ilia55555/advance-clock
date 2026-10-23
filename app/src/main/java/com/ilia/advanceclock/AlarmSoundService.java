@@ -66,7 +66,7 @@ public final class AlarmSoundService extends Service {
 
     private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) muteCurrentAlarm();
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) silenceCurrentAlarm();
         }
     };
 
@@ -83,7 +83,7 @@ public final class AlarmSoundService extends Service {
                 return;
             }
             if (current < previous) {
-                muteCurrentAlarm();
+                silenceCurrentAlarm();
             } else if (current > previous) {
                 unmuteCurrentAlarm();
             }
@@ -150,6 +150,7 @@ public final class AlarmSoundService extends Service {
     static void setOutputVibrating(long id,boolean value) {
         AlarmSoundService service=output(id);if(service==null)return;
         service.currentVibrate=value;if(value) service.startVibration(); else service.stopVibration();
+        AlertOutputEvents.changed();
     }
 
     @Override public void onCreate() {
@@ -175,7 +176,7 @@ public final class AlarmSoundService extends Service {
             return START_NOT_STICKY;
         }
         if (ACTION_MUTE.equals(intent.getAction())) {
-            muteCurrentAlarm();
+            silenceCurrentAlarm();
             return START_NOT_STICKY;
         }
         if (ACTION_UNMUTE.equals(intent.getAction())) {
@@ -213,6 +214,7 @@ public final class AlarmSoundService extends Service {
         } else {
             stopVibration();
         }
+        AlertOutputEvents.changed();
         return START_NOT_STICKY;
     }
 
@@ -303,14 +305,23 @@ public final class AlarmSoundService extends Service {
         AlarmAudioEngine.play(this, AlarmPreparationReceiver.key(kind, currentAlarmId), currentSoundUri);
     }
 
+    private void silenceCurrentAlarm() {
+        muteCurrentAlarm();
+        currentVibrate=false;
+        stopVibration();
+        AlertOutputEvents.changed();
+    }
+
     private void muteCurrentAlarm() {
         muted = true;
         AlarmAudioEngine.mute(true);
+        AlertOutputEvents.changed();
     }
 
     private void unmuteCurrentAlarm() {
         muted = false;
         AlarmAudioEngine.mute(false);
+        AlertOutputEvents.changed();
     }
 
     private void startVibration() {
@@ -356,6 +367,7 @@ public final class AlarmSoundService extends Service {
 
     private void stopAlarm() {
         playing=false; foreground=false;
+        AlertOutputEvents.changed();
         ringTimeout.cancel();
         stopPlayer();
         stopVibration();

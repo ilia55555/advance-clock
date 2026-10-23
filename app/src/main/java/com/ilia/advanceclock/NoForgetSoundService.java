@@ -44,22 +44,30 @@ public final class NoForgetSoundService extends Service {
     private boolean muted, active;
     private final android.content.BroadcastReceiver muteEvents = new android.content.BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) setMuted(true);
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) silence();
             else {
                 int current = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_VALUE", -1);
                 int previous = intent.getIntExtra("android.media.EXTRA_PREV_VOLUME_STREAM_VALUE", -1);
                 int stream = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", -1);
                 if (current >= 0 && previous >= 0 && current != previous
-                        && (stream == android.media.AudioManager.STREAM_ALARM || stream == android.media.AudioManager.STREAM_MUSIC || stream == android.media.AudioManager.STREAM_RING)) setMuted(current < previous);
+                        && (stream == android.media.AudioManager.STREAM_ALARM || stream == android.media.AudioManager.STREAM_MUSIC || stream == android.media.AudioManager.STREAM_RING)) { if(current<previous)silence();else setMuted(false); }
             }
         }
     };
     static Intent volumeIntent(Context context, boolean mute) {
         return new Intent(context, NoForgetSoundService.class).setAction(mute ? ACTION_MUTE : ACTION_UNMUTE);
     }
+    private void silence() {
+        setMuted(true);
+        vibrationEnabled=false;
+        try { if(vibrator!=null)vibrator.cancel(); } catch(RuntimeException ignored){}
+        AlertOutputEvents.changed();
+    }
+
     private void setMuted(boolean value) {
         muted = value;
         try { if (player != null) player.setVolume(value ? 0 : 1, value ? 0 : 1); } catch (Exception ignored) {}
+        AlertOutputEvents.changed();
     }
 
     static Intent startIntent(Context context, long noteId) {
@@ -84,6 +92,7 @@ public final class NoForgetSoundService extends Service {
     static void setOutputVibrating(long id,boolean value) {
         NoForgetSoundService service=output(id);if(service==null)return;
         service.vibrationEnabled=value;if(service.vibrator!=null)service.vibrator.cancel(); if(value)service.vibrate();
+        AlertOutputEvents.changed();
     }
 
     @Override public void onCreate() {
@@ -103,7 +112,7 @@ public final class NoForgetSoundService extends Service {
             return START_NOT_STICKY;
         }
         if (ACTION_MUTE.equals(intent.getAction()) || ACTION_UNMUTE.equals(intent.getAction())) {
-            if (active) setMuted(ACTION_MUTE.equals(intent.getAction()));
+            if (active) { if(ACTION_MUTE.equals(intent.getAction()))silence();else setMuted(false); }
             else stopSelf();
             return START_NOT_STICKY;
         }
@@ -124,6 +133,7 @@ public final class NoForgetSoundService extends Service {
         play(item.soundUri);
         vibrationEnabled=item.vibrate;
         if (vibrationEnabled) vibrate();
+        AlertOutputEvents.changed();
         return START_NOT_STICKY;
     }
 
@@ -187,6 +197,7 @@ public final class NoForgetSoundService extends Service {
 
     private void stopReminder() {
         active = false; foreground=false;
+        AlertOutputEvents.changed();
         ringTimeout.cancel();
         releasePlayer();
         try { if (vibrator != null) vibrator.cancel(); } catch (Exception ignored) {}
