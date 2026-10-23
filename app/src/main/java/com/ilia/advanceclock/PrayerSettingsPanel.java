@@ -75,6 +75,7 @@ final class PrayerSettingsPanel {
         this.host = host;
         qiblaLocationClient = new QiblaLocationClient(host);
         adhanFeatureSwitch = toggle(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(host));
+        adhanFeatureSwitch.setTextSize(18);
         adhanFeatureSwitch.setOnCheckedChangeListener((button, checked) -> {
             if (syncingAdhanSwitches) return;
             AppSettings.setAdhanEnabled(host, checked);
@@ -87,7 +88,7 @@ final class PrayerSettingsPanel {
         masterAdhanSwitch = toggle(
                 AppString.get(R.string.runtime_text_0351),
                 AppSettings.showPrayerTimes(host));
-        masterAdhanSwitch.setTextSize(18);
+        masterAdhanSwitch.setTextSize(16);
         masterAdhanSwitch.setTextColor(AppSettings.textPrimary(host));
         masterAdhanSwitch.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         masterAdhanSwitch.setOnCheckedChangeListener((button, checked) -> {

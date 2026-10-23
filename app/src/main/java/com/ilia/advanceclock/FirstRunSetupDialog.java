@@ -130,7 +130,8 @@ final class FirstRunSetupDialog {
 
         Switch adhan = new Switch(activity);
         adhan.setTextColor(AppSettings.textPrimary(activity));
-        adhan.setChecked(false);
+        adhan.setChecked(AppSettings.adhanEnabled(activity));
+        adhan.setTextSize(18);
         adhan.setPadding(
                 0,
                 dp(activity, 12),

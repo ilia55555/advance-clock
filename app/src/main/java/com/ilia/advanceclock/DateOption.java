@@ -24,7 +24,7 @@ final class DateOption {
         controls.setBaselineAligned(false);
         controls.setGravity(Gravity.CENTER_VERTICAL);
         controls.setBackgroundResource(R.drawable.bg_field);
-        controls.setPadding(dp(10),dp(6),dp(10),dp(6));
+        controls.setPadding(dp(10),dp(2),dp(10),dp(2));
         dateSwitch = card(R.string.apply_alarm_date, id);
         View row = (View) date.getParent();
         LinearLayout parent = (LinearLayout) row.getParent();
@@ -47,21 +47,30 @@ final class DateOption {
     }
 
     private Switch card(int label, int id) {
-        LinearLayout card = new LinearLayout(host);
+        LinearLayout card = new LinearLayout(host){
+            @Override protected void onMeasure(int widthSpec,int heightSpec){
+                if(getChildCount()==2 && View.MeasureSpec.getMode(widthSpec)!=View.MeasureSpec.UNSPECIFIED){
+                    View toggle=getChildAt(1);
+                    toggle.measure(View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED),heightSpec);
+                    ((TextView)getChildAt(0)).setMaxWidth(Math.max(1,View.MeasureSpec.getSize(widthSpec)-toggle.getMeasuredWidth()-dp(2)));
+                }
+                super.onMeasure(widthSpec,heightSpec);
+            }
+        };
         card.setLayoutDirection(AppSettings.layoutDirection(host));
         card.setOrientation(LinearLayout.HORIZONTAL);
         card.setBaselineAligned(false);
-        card.setGravity(Gravity.CENTER_VERTICAL);
+        card.setGravity(Gravity.CENTER);
         card.setMinimumHeight(dp(48));
         TextView caption = new TextView(host);
         caption.setText(label==R.string.alarm_auto_delete_finished?R.string.alarm_auto_delete_short:label);
         caption.setTextColor(AppSettings.textSecondary(host));
         caption.setTextSize(12);
-        caption.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+        caption.setGravity(Gravity.CENTER);
         caption.setMaxLines(1);caption.setEllipsize(null);caption.setHorizontallyScrolling(false);
         caption.setIncludeFontPadding(false);
         caption.setAutoSizeTextTypeUniformWithConfiguration(8,12,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-        card.addView(caption,new LinearLayout.LayoutParams(0,-2,1));
+        card.addView(caption,new LinearLayout.LayoutParams(-2,-2));
         Switch toggle = new Switch(host);
         toggle.setId(id);
         toggle.setContentDescription(host.getString(label));

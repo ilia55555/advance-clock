@@ -170,7 +170,7 @@ public final class AppSettings {
     }
 
     public static boolean adhanEnabled(Context context) {
-        return prefs(context).getBoolean("adhan_enabled", false);
+        return prefs(context).getBoolean("adhan_enabled", true);
     }
 
     public static void setAdhanEnabled(Context context, boolean value) {
@@ -179,13 +179,7 @@ public final class AppSettings {
     }
 
     public static boolean showPrayerTimes(Context context) {
-        SharedPreferences preferences = prefs(context);
-        if (!preferences.contains("show_prayer_times")) {
-            boolean initial = preferences.getBoolean("adhan_enabled", false);
-            preferences.edit().putBoolean("show_prayer_times", initial).apply();
-            return initial;
-        }
-        return preferences.getBoolean("show_prayer_times", false);
+        return prefs(context).getBoolean("show_prayer_times",true);
     }
 
     public static void setShowPrayerTimes(Context context, boolean value) {
