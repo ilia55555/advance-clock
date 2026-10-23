@@ -56,6 +56,28 @@
                 android:autoSizeMaxTextSize="32sp"
                 android:autoSizeStepGranularity="1sp"
                 android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/date_notification_day_latin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layoutDirection="ltr"
+                android:textDirection="ltr"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:maxLines="1"
+                android:scrollHorizontally="false"
+                android:includeFontPadding="false"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeMaxTextSize="24sp"
+                android:autoSizeStepGranularity="1sp"
+                android:visibility="gone"
+                android:importantForAccessibility="no" />
         </FrameLayout>
 
         <LinearLayout

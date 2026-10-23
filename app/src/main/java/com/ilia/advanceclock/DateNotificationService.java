@@ -220,17 +220,16 @@ public final class DateNotificationService extends Service {
         views.setInt(R.id.date_notification_day_border, "setColorFilter", primary);
         views.setInt(R.id.date_notification_day_border, "setImageAlpha", 255);
         views.setTextColor(R.id.date_notification_day, primary);
+        views.setTextColor(R.id.date_notification_day_latin, primary);
         views.setTextColor(R.id.date_notification_title, text);
         views.setTextColor(R.id.date_notification_other_dates, text);
         views.setTextViewText(R.id.date_notification_title, title);
         views.setTextViewText(R.id.date_notification_other_dates, otherDates);
         views.setTextViewText(R.id.date_notification_day, dayLabel(context, day));
-        if (useEnglishDay(context)) {
-            // Latin digits occupy more of the badge than Persian digits. Reserve
-            // an inner inset so TextView autosizing leaves the outline clear.
-            int inset = Math.round(6 * context.getResources().getDisplayMetrics().density);
-            views.setViewPadding(R.id.date_notification_day, inset, inset, inset, inset);
-        }
+        views.setTextViewText(R.id.date_notification_day_latin, dayLabel(context, day));
+        boolean latinDay = useEnglishDay(context);
+        views.setViewVisibility(R.id.date_notification_day, latinDay ? View.GONE : View.VISIBLE);
+        views.setViewVisibility(R.id.date_notification_day_latin, latinDay ? View.VISIBLE : View.GONE);
         views.setViewVisibility(R.id.date_notification_other_dates, otherDates.isEmpty() ? View.GONE : View.VISIBLE);
         // The first child is the day badge: left in English, right in Persian/Arabic.
         int direction = AppSettings.layoutDirection(context);
