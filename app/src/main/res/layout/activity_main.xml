@@ -20,7 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="56dp"
+            android:minHeight="48dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:layoutDirection="ltr">
@@ -35,36 +35,18 @@
                 android:src="@drawable/ic_md_dark"
                 android:tint="#FFFFFF" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/header_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:minHeight="48dp"
                 android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/header_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:text="00:00"
-                    android:textColor="#FFFFFF"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/header_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:includeFontPadding="true"
-                    android:paddingBottom="2dp"
-                    android:text="@string/runtime_text_0414"
-                    android:textColor="#D9EFED"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:includeFontPadding="false"
+                android:text="00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/header_menu"
@@ -76,6 +58,19 @@
                 android:src="@drawable/ic_md_more_vert"
                 android:tint="#FFFFFF" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/header_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:includeFontPadding="false"
+            android:paddingBottom="1dp"
+            android:text="@string/runtime_text_0414"
+            android:textColor="#D9EFED"
+            android:textSize="12sp" />
 
         <LinearLayout
             android:id="@+id/tab_bar"

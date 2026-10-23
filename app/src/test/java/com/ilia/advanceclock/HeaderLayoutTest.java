@@ -16,6 +16,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
+@org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
 @Config(application=Application.class, sdk={28,35})
 public class HeaderLayoutTest {
     @Test public void persianDateFitsAboveTabsEvenWithLargeSystemText() {
@@ -36,14 +37,20 @@ public class HeaderLayoutTest {
             root.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(2000,View.MeasureSpec.EXACTLY));
             root.layout(0,0,width,2000);
-            View textBlock=(View)date.getParent();
-            View clockRow=(View)textBlock.getParent();
+            View clockRow=(View)time.getParent();
             View tabs=root.findViewById(R.id.tab_bar);
             assertTrue("date clipped at font scale "+scale,
-                    date.getBottom()<=textBlock.getHeight());
-            assertTrue(textBlock.getBottom()<=clockRow.getHeight());
-            assertTrue("date row overlaps tabs",clockRow.getBottom()<=tabs.getTop());
-            assertTrue("clock overlaps date",time.getBottom()<=date.getTop());
+                    date.getHeight()>=date.getLayout().getHeight()+date.getCompoundPaddingTop()+date.getCompoundPaddingBottom());
+            assertTrue("date overlaps tabs",date.getBottom()<=tabs.getTop());
+            android.graphics.Rect clockInk=new android.graphics.Rect(),dateInk=new android.graphics.Rect();
+            time.getPaint().getTextBounds(time.getText().toString(),0,time.length(),clockInk);
+            date.getPaint().getTextBounds(date.getText().toString(),0,date.length(),dateInk);
+            int clockBottom=clockRow.getTop()+time.getTop()+time.getBaseline()+clockInk.bottom;
+            int dateTop=date.getTop()+date.getBaseline()+dateInk.top;
+            assertTrue("clock and date glyphs overlap at scale "+scale,clockBottom<dateTop);
+            View menu=root.findViewById(R.id.header_menu), theme=root.findViewById(R.id.theme_toggle);
+            assertEquals(time.getTop()+time.getHeight()/2f,menu.getTop()+menu.getHeight()/2f,.5f);
+            assertEquals(time.getTop()+time.getHeight()/2f,theme.getTop()+theme.getHeight()/2f,.5f);
         }
     }
 }
