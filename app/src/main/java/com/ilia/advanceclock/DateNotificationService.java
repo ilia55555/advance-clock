@@ -230,6 +230,25 @@ public final class DateNotificationService extends Service {
         int direction = AppSettings.layoutDirection(context);
         views.setInt(R.id.date_notification_row, "setLayoutDirection", direction);
         views.setInt(R.id.date_notification_text, "setLayoutDirection", direction);
+        if (layout == R.layout.notification_date_expanded) {
+            views.setTextViewText(R.id.date_notification_settings,
+                    context.getString(R.string.date_notification_settings));
+            views.setTextColor(R.id.date_notification_settings, primary);
+            Intent settings = new Intent(context, SettingsActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            views.setOnClickPendingIntent(R.id.date_notification_settings,
+                    PendingIntent.getActivity(context, 75, settings,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+            views.setTextViewText(R.id.date_notification_calendar,
+                    context.getString(R.string.date_notification_calendar));
+            views.setTextColor(R.id.date_notification_calendar, primary);
+            Intent calendar = new Intent(context, MainActivity.class)
+                    .putExtra("openTab", "clock")
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            views.setOnClickPendingIntent(R.id.date_notification_calendar,
+                    PendingIntent.getActivity(context, 76, calendar,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        }
         // Text direction comes from XML: setTextDirection is not permitted by RemoteViews.
         // Calling it through setInt causes System UI to reject the whole notification.
         return views;

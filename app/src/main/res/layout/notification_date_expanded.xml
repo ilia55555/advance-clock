@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
 
     <ImageView
         android:id="@+id/date_notification_background"
@@ -101,3 +106,36 @@
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        android:layoutDirection="locale">
+        <TextView
+            android:id="@+id/date_notification_settings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/bg_date_notification_action"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false" />
+        <TextView
+            android:id="@+id/date_notification_calendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/bg_date_notification_action"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false" />
+    </LinearLayout>
+</LinearLayout>

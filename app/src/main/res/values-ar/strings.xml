@@ -1340,4 +1340,6 @@
     <string name="app_reference_time_zone">المنطقة الزمنية</string>
     <string name="app_reference_system">حسب إعدادات الهاتف</string>
     <string name="alarm_auto_delete_short">حذف تلقائي</string>
+    <string name="date_notification_settings">الإعدادات</string>
+    <string name="date_notification_calendar">التقويم</string>
 </resources>

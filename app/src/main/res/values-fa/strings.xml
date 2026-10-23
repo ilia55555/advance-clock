@@ -1279,4 +1279,6 @@
     <string name="app_reference_time_zone">منطقه زمانی</string>
     <string name="app_reference_system">مطابق تنظیمات گوشی</string>
     <string name="alarm_auto_delete_short">حذف خودکار</string>
+    <string name="date_notification_settings">تنظیمات</string>
+    <string name="date_notification_calendar">تقویم</string>
 </resources>
