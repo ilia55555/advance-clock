@@ -66,28 +66,31 @@ public class AlarmDismissalTest {
             idle(1500);assertEquals(1,dismissed[0]);
         } finally {ReflectionHelpers.callStaticMethod(android.animation.ValueAnimator.class,"setDurationScale",ReflectionHelpers.ClassParameter.from(float.class,previous));}
     }
-    @Test public void settingsPreviewIsInteractiveSilentAndSelectionPersists() {
+    @Test public void settingsOpensFullScreenPreviewAndSelectionPersists() {
         Application app=RuntimeEnvironment.getApplication();
         Intent intent=new Intent(app,SettingsActivity.class).putExtra(SettingsActivity.EXTRA_SECTION,"alarm");
         try(var controller=Robolectric.buildActivity(SettingsActivity.class,intent).setup().visible()) {
             SettingsActivity host=controller.get();Spinner selector=host.findViewById(android.R.id.content).findViewWithTag("alarm_dismiss_mode_selector");
-            selector.setSelection(AlarmDismissal.TAP);idle(1);
-            AlarmDismissPreview preview=host.findViewById(android.R.id.content).findViewWithTag("alarm_dismiss_preview");
-            preview.findViewWithTag("alarm_dismiss_tap").performClick();assertNotNull(preview.findViewWithTag("alarm_dismiss_preview_done"));
-            selector.setSelection(AlarmDismissal.HOLD);idle(1);layout(preview,360,300);
-            HoldToDismissView hold=preview.findViewWithTag("alarm_dismiss_hold");
-            touch(hold,MotionEvent.ACTION_DOWN,20,20);idle(2500);assertNotNull(preview.findViewWithTag("alarm_dismiss_preview_done"));
-            org.robolectric.shadows.ShadowChoreographer.setPaused(false);
-            selector.setSelection(AlarmDismissal.SWIPE);idle(1);layout(preview,360,300);
-            View hint=preview.findViewWithTag("alarm_dismiss_swipe_hint");SwipeAlarmSurface swipe=(SwipeAlarmSurface)((View)hint.getParent()).getParent();
-            float down=swipe.getHeight()*.8f,up=down-swipe.getHeight()*.3f;
-            touch(swipe,MotionEvent.ACTION_DOWN,100,down);touch(swipe,MotionEvent.ACTION_MOVE,100,up);touch(swipe,MotionEvent.ACTION_UP,100,up);
-            idle(300);assertNotNull(preview.findViewWithTag("alarm_dismiss_preview_done"));
-            assertNull(Shadows.shadowOf(host).getNextStartedService());
-            selector.setSelection(AlarmDismissal.HOLD);idle(1);controller.recreate();
-            assertEquals(AlarmDismissal.HOLD,AppSettings.alarmDismissMode(controller.get()));
-            Spinner restored=controller.get().findViewById(android.R.id.content).findViewWithTag("alarm_dismiss_mode_selector");
-            assertEquals(AlarmDismissal.HOLD,restored.getSelectedItemPosition());
+            selector.setSelection(AlarmDismissal.HOLD);idle(1);
+            assertNull(host.findViewById(android.R.id.content).findViewWithTag("alarm_dismiss_preview"));
+            host.findViewById(android.R.id.content).findViewWithTag("alarm_preview_button").performClick();
+            assertEquals(AlarmPreviewActivity.class.getName(),Shadows.shadowOf(host).getNextStartedActivity().getComponent().getClassName());
+            assertEquals(AlarmDismissal.HOLD,AppSettings.alarmDismissMode(host));
+        }
+    }
+    @Test public void fullScreenPreviewUsesAllStylesAndMethodsWithoutStartingServices(){
+        Application app=RuntimeEnvironment.getApplication();
+        for(int style=0;style<5;style++) for(int mode=0;mode<3;mode++) {
+            AppSettings.setAlarmScreenStyle(app,style);AppSettings.setAlarmDismissMode(app,mode);
+            try(var controller=Robolectric.buildActivity(AlarmPreviewActivity.class).setup().visible()) {
+                AlarmPreviewActivity host=controller.get();
+                View content=host.findViewById(android.R.id.content);
+                assertNotNull(content.findViewWithTag(mode==0?"alarm_dismiss_tap":mode==1?"alarm_dismiss_hold":"alarm_dismiss_swipe_hint"));
+                assertNull(Shadows.shadowOf(host).getNextStartedService());
+                if(mode==AlarmDismissal.TAP){
+                    content.findViewWithTag("alarm_dismiss_tap").performClick();assertTrue(host.isFinishing());
+                }
+            }
         }
     }
     @Test public void everyAlarmNoteAndAdhanEntryPointUsesSelectedMethod() {

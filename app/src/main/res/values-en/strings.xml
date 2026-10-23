@@ -1308,8 +1308,5 @@ Lock screen</string>
     <string name="alarm_dismiss_mode_hold">Hold to dismiss</string>
     <string name="alarm_dismiss_mode_swipe">Swipe up</string>
     <string name="alarm_dismiss_hold_hint">Hold for 2.5 seconds to dismiss</string>
-    <string name="alarm_dismiss_preview_title">Interactive preview</string>
-    <string name="alarm_dismiss_preview_try">Try the selected method here</string>
-    <string name="alarm_dismiss_preview_done">Sample alert dismissed</string>
-    <string name="alarm_dismiss_preview_again">Try again</string>
+    <string name="alarm_dismiss_preview_title">Alarm preview</string>
 </resources>

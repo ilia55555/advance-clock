@@ -203,12 +203,17 @@ public final class SettingsActivity extends Activity {
         dismissMode.setTag("alarm_dismiss_mode_selector");
         dismissMode.setSelection(AppSettings.alarmDismissMode(this));
         alarmSettings.addView(dismissMode,new LinearLayout.LayoutParams(-1,dp(54)));
-        AlarmDismissPreview dismissPreview = new AlarmDismissPreview(this);
-        alarmSettings.addView(dismissPreview,new LinearLayout.LayoutParams(-1,-2));
+        android.widget.Button preview = new android.widget.Button(this);
+        preview.setTag("alarm_preview_button");
+        preview.setText(AppString.get(R.string.alarm_dismiss_preview_title));
+        preview.setAllCaps(false);preview.setTextSize(15);
+        preview.setTextColor(AppSettings.primaryColor(this));
+        preview.setBackgroundResource(R.drawable.bg_soft_button);preview.setStateListAnimator(null);
+        preview.setOnClickListener(view -> startActivity(new Intent(this,AlarmPreviewActivity.class)));
+        alarmSettings.addView(preview,new LinearLayout.LayoutParams(-1,dp(48)));
         watch(dismissMode, position -> {
             if (AppSettings.alarmDismissMode(this)==position) return;
             AppSettings.setAlarmDismissMode(this,position);
-            dismissPreview.setMode(position);
             setResult(RESULT_OK);
         });
 

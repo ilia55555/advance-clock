@@ -132,6 +132,8 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <activity android:name=".AlarmPreviewActivity" android:screenOrientation="portrait" android:exported="false" />
+
         <activity
             android:name=".AlarmRingActivity" android:enableOnBackInvokedCallback="true"
             android:screenOrientation="portrait"
