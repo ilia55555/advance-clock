@@ -36,5 +36,8 @@ jobs:
       - name: Verify public legal documents
         run: python tools/generate_legal_docs.py --check
 
-      - name: Test calendars and build debug APK
-        run: gradle :app:testDebugUnitTest :app:assembleDebug --stacktrace
+      - name: Test app and build debug and optimized release APKs
+        run: gradle :app:testDebugUnitTest :app:assembleDebug :app:assembleRelease --stacktrace
+
+      - name: Verify compiled release security flags and R8 output
+        run: python tools/verify_release_apk.py

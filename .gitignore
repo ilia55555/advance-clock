@@ -8,6 +8,14 @@ captures/
 .externalNativeBuild/
 .cxx/
 
+# Production signing secrets stay local; never commit private release keys.
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+signing.properties
+
 # Obsolete localization generator output; localization_full.xml is the canonical resource.
 app/src/main/res/values*/ui_text_values.xml
 
