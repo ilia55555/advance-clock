@@ -53,6 +53,7 @@ public final class AlarmSoundService extends Service {
     private boolean currentVibrate = true;
     private String currentSoundUri = "";
     private boolean muted;
+    private String currentToolPayload;
 
     private static final String ACTION_VOLUME_CHANGED =
             "android.media.VOLUME_CHANGED_ACTION";
@@ -136,6 +137,21 @@ public final class AlarmSoundService extends Service {
         return new Intent(context, AlarmSoundService.class).setAction(ACTION_UNMUTE);
     }
 
+    private static AlarmSoundService output(long id) {
+        AlarmSoundService service=runningService.get();
+        return service!=null && service.playing && service.currentAlarmId == id ? service : null;
+    }
+    static boolean outputMuted(long id) { AlarmSoundService service=output(id);return service!=null && service.muted; }
+    static boolean outputVibrating(long id) { AlarmSoundService service=output(id);return service!=null && service.currentVibrate; }
+    static void setOutputMuted(long id,boolean value) {
+        AlarmSoundService service=output(id);if(service==null)return;
+        if(value) service.muteCurrentAlarm(); else service.unmuteCurrentAlarm();
+    }
+    static void setOutputVibrating(long id,boolean value) {
+        AlarmSoundService service=output(id);if(service==null)return;
+        service.currentVibrate=value;if(value) service.startVibration(); else service.stopVibration();
+    }
+
     @Override public void onCreate() {
         super.onCreate();
         runningService=new java.lang.ref.WeakReference<>(this);
@@ -176,6 +192,7 @@ public final class AlarmSoundService extends Service {
         String toolKind = intent.getStringExtra("toolKind");
         currentToolKind = toolKind;
         currentAlarmPayload = intent.getStringExtra("alarmPayload");
+        currentToolPayload = intent.getStringExtra("toolPayload");
 
         startForeground(
                 NotificationHelper.notificationId(currentAlarmId),
@@ -208,6 +225,7 @@ public final class AlarmSoundService extends Service {
                 .putExtra("label", label)
                 .putExtra("toolKind", toolKind)
                 .putExtra("alarmPayload", currentAlarmPayload)
+                .putExtra("toolPayload", currentToolPayload)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -262,6 +280,7 @@ public final class AlarmSoundService extends Service {
             startActivity(new Intent(this, AlarmRingActivity.class)
                     .putExtra("alarmId", id).putExtra("label", label).putExtra("toolKind", toolKind)
                     .putExtra("alarmPayload", currentAlarmPayload)
+                .putExtra("toolPayload", currentToolPayload)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
                             | Intent.FLAG_ACTIVITY_SINGLE_TOP));
         } catch (RuntimeException ignored) {

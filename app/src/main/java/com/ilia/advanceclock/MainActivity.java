@@ -170,6 +170,7 @@ public final class MainActivity extends Activity {
         AppSettings.applyTheme(this);
         super.onCreate(savedInstanceState);
         previousExactPermission = PermissionHelper.exactAlarmsGranted(this);
+        AlertSnoozes.restore(this);
         setContentView(R.layout.activity_main);
         NotificationHelper.ensureChannels(this);
 
@@ -1141,6 +1142,7 @@ public final class MainActivity extends Activity {
             AlarmScheduler.rescheduleAll(this);
             NoForgetScheduler.rescheduleAll(this);
             AdhanScheduler.rescheduleAll(this);
+            AlertSnoozes.restore(this);
         }
         previousExactPermission = exactPermission;
         if (stopwatchController != null) stopwatchController.onResume();
@@ -1518,6 +1520,7 @@ public final class MainActivity extends Activity {
             AlarmScheduler.rescheduleAll(this);
             NoForgetScheduler.rescheduleAll(this);
             AdhanScheduler.rescheduleAll(this);
+            AlertSnoozes.restore(this);
         }
         try { DateNotificationService.start(this); } catch (Exception ignored) {}
     }

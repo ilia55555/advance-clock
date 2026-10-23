@@ -1314,4 +1314,11 @@
     <string name="settings_collapsed">مطوي</string>
     <string name="tab_order_move_up">نقل %1$s إلى الأعلى</string>
     <string name="tab_order_move_down">نقل %1$s إلى الأسفل</string>
+    <string name="alert_mute">كتم الصوت</string>
+    <string name="alert_unmute">تشغيل الصوت</string>
+    <string name="alert_vibration_off">إيقاف الاهتزاز</string>
+    <string name="alert_vibration_on">تشغيل الاهتزاز</string>
+    <string name="alert_confirm">تأكيد</string>
+    <string name="alert_snooze_choose">اختر وقتًا واحدًا على الأقل.</string>
+    <string name="alert_snooze_10">١٠ دقائق</string>
 </resources>

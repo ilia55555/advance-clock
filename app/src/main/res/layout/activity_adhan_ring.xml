@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#071B29">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/adhan_ring_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:paddingStart="24dp"
@@ -41,6 +46,7 @@
     <!-- This space stays reserved even when the Qibla display is disabled. -->
     <FrameLayout
         android:id="@+id/adhan_qibla_slot"
+        android:minHeight="120dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -85,15 +91,11 @@
             android:importantForAccessibility="no" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/adhan_sound_toggle"
+    <LinearLayout
+        android:id="@+id/adhan_alert_actions"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_soft_button"
-        android:text="@string/ui_mute_completely"
-        android:textAllCaps="false"
-        android:textSize="17sp"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <Button
         android:id="@+id/adhan_stop"
@@ -107,3 +109,4 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 </LinearLayout>
+</ScrollView>

@@ -1298,4 +1298,11 @@
     <string name="settings_collapsed">بسته</string>
     <string name="tab_order_move_up">انتقال %1$s به بالا</string>
     <string name="tab_order_move_down">انتقال %1$s به پایین</string>
+    <string name="alert_mute">قطع صدا</string>
+    <string name="alert_unmute">وصل صدا</string>
+    <string name="alert_vibration_off">قطع لرزش</string>
+    <string name="alert_vibration_on">وصل لرزش</string>
+    <string name="alert_confirm">تأیید</string>
+    <string name="alert_snooze_choose">حداقل یک زمان را انتخاب کنید.</string>
+    <string name="alert_snooze_10">۱۰ دقیقه</string>
 </resources>

@@ -49,19 +49,40 @@ public final class AlarmRingActivity extends Activity {
             data.image1 = p.getString(toolKind + "_active_image1", ""); data.image2 = p.getString(toolKind + "_active_image2", "");
             data.background = p.getBoolean(toolKind + "_active_background", false);
             data.attachments = NoteAttachment.parse(p.getString(toolKind + "_active_attachments", "[]"));
+            String toolPayload = intent == null ? null : intent.getStringExtra("toolPayload");
+            if (toolPayload != null && !toolPayload.isEmpty()) try {
+                org.json.JSONObject saved = new org.json.JSONObject(toolPayload);
+                data.image1=saved.optString("image1"); data.image2=saved.optString("image2");
+                data.background=saved.optBoolean("background");
+                data.attachments=NoteAttachment.parse(saved.optString("attachments","[]"));
+            } catch(org.json.JSONException ignored) {}
         } else if (item != null) {
             data.image1 = item.imageUri1; data.image2 = item.imageUri2; data.background = item.imagesAsBackground;
             data.attachments = NoteAttachment.parse(item.attachmentsJson); data.snoozeMinutes = item.snoozeMinutes;
         }
+        data.output = AlertOutput.alarm(alarmId);
+        String snapshot = "";
+        try {
+            snapshot = tool ? new org.json.JSONObject().put("image1",data.image1).put("image2",data.image2)
+                    .put("background",data.background).put("attachments",NoteAttachment.encode(data.attachments)).toString()
+                    : item == null ? "" : item.toJson().toString();
+        } catch (org.json.JSONException ignored) {}
+        final String snoozePayload = snapshot;
         Runnable open = tool ? () -> {
             startActivity(new Intent(this, MainActivity.class).putExtra("openTab", toolKind).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)); stopAndClose();
-        } : item == null ? null : () -> {
-            AlarmEditorActivity.protect(alarmId);
-            startActivity(new Intent(this, AlarmEditorActivity.class).putExtra("alarmId", alarmId)); stopAndClose();
+        } : () -> {
+            if (new AlarmStore(this).find(alarmId) == null) {
+                startActivity(new Intent(this, MainActivity.class).putExtra("openTab","clock")
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            } else {
+                AlarmEditorActivity.protect(alarmId);
+                startActivity(new Intent(this, AlarmEditorActivity.class).putExtra("alarmId", alarmId));
+            }
+            stopAndClose();
         };
         setContentView(new ReminderScreen(this, data, this::stopAndClose, open, minutes -> {
-            boolean ok = tool ? ToolAlarmScheduler.reschedule(this, toolKind, System.currentTimeMillis() + minutes * 60_000L, data.title)
-                    : AlarmScheduler.snooze(this, alarmId, minutes * 60_000L);
+            boolean ok = AlertSnoozes.schedule(this, tool ? toolKind : "alarm", alarmId,
+                    data.title, snoozePayload, minutes);
             if (ok) { ClockWidgetProvider.updateAll(this); stopAndClose(); }
             else LogoToast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
         }));

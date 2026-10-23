@@ -127,6 +127,7 @@ public final class AlarmScheduler {
     }
 
     public static void cancel(Context context, long id) {
+        AlertSnoozes.cancel(context,"alarm",id);
         AlarmStore store = new AlarmStore(context);
         AlarmItem item = store.find(id);
         cancelPrimary(context, id);

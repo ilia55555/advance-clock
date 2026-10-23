@@ -1296,4 +1296,11 @@ Lock screen</string>
     <string name="settings_collapsed">Collapsed</string>
     <string name="tab_order_move_up">Move %1$s up</string>
     <string name="tab_order_move_down">Move %1$s down</string>
+    <string name="alert_mute">Mute</string>
+    <string name="alert_unmute">Unmute</string>
+    <string name="alert_vibration_off">Vibration off</string>
+    <string name="alert_vibration_on">Vibration on</string>
+    <string name="alert_confirm">Confirm</string>
+    <string name="alert_snooze_choose">Select at least one time.</string>
+    <string name="alert_snooze_10">10 minutes</string>
 </resources>

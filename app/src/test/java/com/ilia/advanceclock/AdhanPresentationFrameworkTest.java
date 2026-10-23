@@ -67,7 +67,7 @@ public final class AdhanPresentationFrameworkTest {
             View title = activity.findViewById(R.id.adhan_ring_title);
             View time = activity.findViewById(R.id.adhan_ring_time);
             View slot = activity.findViewById(R.id.adhan_qibla_slot);
-            View sound = activity.findViewById(R.id.adhan_sound_toggle);
+            View sound = activity.findViewById(R.id.adhan_alert_actions);
             View stop = activity.findViewById(R.id.adhan_stop);
             assertTrue(title.getBottom() <= time.getTop());
             assertTrue(time.getBottom() <= slot.getTop());

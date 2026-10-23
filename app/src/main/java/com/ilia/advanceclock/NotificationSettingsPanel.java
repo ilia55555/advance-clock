@@ -167,6 +167,7 @@ final class NotificationSettingsPanel {
             AlarmScheduler.rescheduleAll(host);
             NoForgetScheduler.rescheduleAll(host);
             AdhanScheduler.rescheduleAll(host);
+            AlertSnoozes.restore(host);
         }
         hadExactPermission = exact;
     }

@@ -38,6 +38,7 @@ public final class NoForgetSoundService extends Service {
     private final AlarmRingTimeout ringTimeout = new AlarmRingTimeout();
     private MediaPlayer player;
     private Vibrator vibrator;
+    private boolean vibrationEnabled;
     private static final String ACTION_MUTE = "com.ilia.advanceclock.MUTE_NOTE";
     private static final String ACTION_UNMUTE = "com.ilia.advanceclock.UNMUTE_NOTE";
     private boolean muted, active;
@@ -68,6 +69,21 @@ public final class NoForgetSoundService extends Service {
 
     static Intent stopIntent(Context context) {
         return new Intent(context, NoForgetSoundService.class).setAction(ACTION_STOP);
+    }
+
+    private static NoForgetSoundService output(long id) {
+        NoForgetSoundService service=runningService.get();
+        return service!=null && service.active && service.currentItem != null && service.currentItem.id == id ? service : null;
+    }
+    static boolean outputMuted(long id) { NoForgetSoundService service=output(id);return service!=null && service.muted; }
+    static boolean outputVibrating(long id) { NoForgetSoundService service=output(id);return service!=null && service.vibrationEnabled; }
+    static void setOutputMuted(long id,boolean value) {
+        NoForgetSoundService service=output(id);if(service==null)return;
+        service.setMuted(value);
+    }
+    static void setOutputVibrating(long id,boolean value) {
+        NoForgetSoundService service=output(id);if(service==null)return;
+        service.vibrationEnabled=value;if(service.vibrator!=null)service.vibrator.cancel(); if(value)service.vibrate();
     }
 
     @Override public void onCreate() {
@@ -106,7 +122,8 @@ public final class NoForgetSoundService extends Service {
         });
         muted = false;
         play(item.soundUri);
-        if (item.vibrate) vibrate();
+        vibrationEnabled=item.vibrate;
+        if (vibrationEnabled) vibrate();
         return START_NOT_STICKY;
     }
 

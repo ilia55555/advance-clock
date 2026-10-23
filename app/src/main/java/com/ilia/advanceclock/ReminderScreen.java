@@ -12,19 +12,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.*;
 import java.util.*;
-import java.util.function.IntConsumer;
+import java.util.function.Consumer;
 
 /** The same alert surface and controls for alarms, notes, stopwatch and timer. */
 final class ReminderScreen extends FrameLayout {
-    static final int[] SNOOZE_MINUTES = {5,15,30,60,120,180,360,720,1440};
-    private static final int[] SNOOZE_LABELS = {R.string.runtime_text_0575,R.string.runtime_text_0576,
-            R.string.runtime_text_0577,R.string.runtime_text_0578,R.string.runtime_text_0579,
-            R.string.runtime_text_0580,R.string.runtime_text_0581,R.string.runtime_text_0582,R.string.runtime_text_0583};
+    static final int[] SNOOZE_MINUTES = AlertActions.MINUTES;
     static final class Content {
         String title = "", body = "", image1 = "", image2 = "", openLabel = "";
         boolean background;
         List<NoteAttachment> attachments = new ArrayList<>();
         int snoozeMinutes = 15;
+        AlertOutput output;
     }
     private final Activity host;
     private final android.os.Handler clockHandler = new android.os.Handler(android.os.Looper.getMainLooper());
@@ -69,7 +67,7 @@ final class ReminderScreen extends FrameLayout {
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
 
-    ReminderScreen(Activity host, Content data, Runnable stop, Runnable open, IntConsumer snooze) {
+    ReminderScreen(Activity host, Content data, Runnable stop, Runnable open, Consumer<int[]> snooze) {
         super(host); this.host = host;
         int style = AppSettings.alarmScreenStyle(host);
         boolean modern = style >= 3;
@@ -130,36 +128,10 @@ final class ReminderScreen extends FrameLayout {
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
         LinearLayout footer = new LinearLayout(host); footer.setOrientation(LinearLayout.VERTICAL);
         footer.setPadding(0, dp(8), 0, modern ? dp(2) : dp(32));
-        if (open != null) {
-            Button edit = button(data.openLabel.isEmpty() ? host.getString(R.string.media_open) : data.openLabel, false);
-            edit.setOnClickListener(v -> open.run()); footer.addView(edit, new LinearLayout.LayoutParams(-1, dp(44)));
-        }
-        LinearLayout snoozeRow = new LinearLayout(host); snoozeRow.setGravity(Gravity.CENTER_VERTICAL);
-        Spinner durations = new Spinner(host);
-        String[] labels = new String[SNOOZE_LABELS.length];
-        int selected = 1;
-        for (int i = 0; i < labels.length; i++) { labels[i] = host.getString(SNOOZE_LABELS[i]); if (SNOOZE_MINUTES[i] == data.snoozeMinutes) selected = i; }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(host, android.R.layout.simple_spinner_item, labels) {
-            @Override public View getView(int position, View reuse, android.view.ViewGroup parent) {
-                TextView label = (TextView) super.getView(position, reuse, parent);
-                label.setTextColor(textColor); label.setHorizontallyScrolling(false);
-                label.setMaxLines(1); return label;
-            }
-        };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        durations.setAdapter(adapter); durations.setSelection(selected);
-        durations.setContentDescription(host.getString(R.string.ui_snooze_after));
-        snoozeRow.addView(durations, new LinearLayout.LayoutParams(0, dp(48), 1));
-        Button later = button(host.getString(R.string.ui_snooze), false);
-        later.setOnClickListener(v -> snooze.accept(SNOOZE_MINUTES[durations.getSelectedItemPosition()]));
-        snoozeRow.addView(later, new LinearLayout.LayoutParams(0, dp(48), 1));
-        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(48)); rowParams.topMargin = dp(8);
-        boolean centeredSnooze = style == 4 && values.isEmpty();
-        if (centeredSnooze) {
-            FrameLayout.LayoutParams centered = new FrameLayout.LayoutParams(-1,dp(56),Gravity.CENTER);
-            centered.leftMargin=dp(24); centered.rightMargin=dp(24);
-            screen.addView(snoozeRow,centered);
-        } else footer.addView(snoozeRow,rowParams);
+        AlertActions actions = new AlertActions(host, data.output,
+                data.openLabel.isEmpty() ? host.getString(R.string.media_open) : data.openLabel,
+                open, data.snoozeMinutes, textColor, snooze);
+        footer.addView(actions, new LinearLayout.LayoutParams(-1,-2));
         Button dismiss = button(host.getString(R.string.ui_stop_alarm), true); dismiss.setOnClickListener(v -> stop.run());
         LinearLayout.LayoutParams dismissParams = new LinearLayout.LayoutParams(-1, dp(60)); dismissParams.topMargin = dp(10);
         TextView swipeHint = null;
@@ -183,7 +155,9 @@ final class ReminderScreen extends FrameLayout {
         screen.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             int height = screen.getHeight();
             headingContent.measure(View.MeasureSpec.makeMeasureSpec(Math.max(1, screen.getWidth() - screen.getPaddingLeft() - screen.getPaddingRight()), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            int headerHeight = Math.min(headingContent.getMeasuredHeight(), modern ? height * 3 / 5 : height / 3);
+            int headerHeight = Math.min(headingContent.getMeasuredHeight(), Math.min(
+                    modern ? height * 3 / 5 : height / 3,
+                    Math.max(dp(64),height-footer.getMeasuredHeight()-dp(16))));
             FrameLayout.LayoutParams hp = (FrameLayout.LayoutParams) header.getLayoutParams();
             if (hp.height != headerHeight) { hp.height = headerHeight; header.setLayoutParams(hp); }
             int top = headerHeight + dp(8), bottom = height - footer.getMeasuredHeight() - dp(8);

@@ -49,6 +49,7 @@ public final class ToolAlarmScheduler {
     }
 
     public static void cancel(Context context, String kind) {
+        AlertSnoozes.cancel(context,kind,alarmId(kind));
         AlarmPreparationReceiver.cancel(context, kind, alarmId(kind));
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager != null) manager.cancel(pendingIntent(context, kind));

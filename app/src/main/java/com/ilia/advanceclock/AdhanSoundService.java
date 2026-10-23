@@ -56,6 +56,7 @@ public final class AdhanSoundService extends Service {
 
     private MediaPlayer player;
     private Vibrator vibrator;
+    private boolean vibrationEnabled;
     private float volume = 1f;
     private boolean muted;
     private int type;
@@ -103,6 +104,21 @@ public final class AdhanSoundService extends Service {
 
     public static Intent command(Context context, String action) {
         return new Intent(context, AdhanSoundService.class).setAction(action);
+    }
+
+    private static AdhanSoundService output(long id) {
+        AdhanSoundService service=running.get();
+        return service!=null && service.playing && service.type == id ? service : null;
+    }
+    static boolean outputMuted(long id) { AdhanSoundService service=output(id);return service!=null && service.muted; }
+    static boolean outputVibrating(long id) { AdhanSoundService service=output(id);return service!=null && service.vibrationEnabled; }
+    static void setOutputMuted(long id,boolean value) {
+        AdhanSoundService service=output(id);if(service==null)return;
+        service.setMuted(value);
+    }
+    static void setOutputVibrating(long id,boolean value) {
+        AdhanSoundService service=output(id);if(service==null)return;
+        service.vibrationEnabled=value;if(service.vibrator!=null)service.vibrator.cancel(); if(value)service.startVibration();
     }
 
     @Override public void onCreate() {
@@ -247,11 +263,15 @@ public final class AdhanSoundService extends Service {
                 } catch (Exception ignored) { stopSelf(); }
             }
         }
-        if (AppSettings.adhanVibrate(this, type)) {
-            vibrator = getSystemService(Vibrator.class);
-            if (vibrator != null) vibrator.vibrate(VibrationEffect.createWaveform(
-                    new long[]{0, 700, 350, 700}, -1));
-        }
+        vibrationEnabled=AppSettings.adhanVibrate(this,type);
+        if(vibrationEnabled)startVibration();
+    }
+
+    private void startVibration() {
+        try {
+            vibrator=getSystemService(Vibrator.class);
+            if(vibrator!=null)vibrator.vibrate(VibrationEffect.createWaveform(new long[]{0,700,350,700},0));
+        }catch(RuntimeException ignored){}
     }
 
     private void setMuted(boolean value) {

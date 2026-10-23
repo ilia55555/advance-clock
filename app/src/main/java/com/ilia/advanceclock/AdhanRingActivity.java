@@ -32,6 +32,7 @@ public final class AdhanRingActivity
             new java.lang.ref.WeakReference<>(null);
 
     private boolean screenVisible;
+    private AlertActions alertActions;
 
     static boolean isVisible(int type) {
         AdhanRingActivity activity = showing.get();
@@ -120,27 +121,17 @@ public final class AdhanRingActivity
 
         configureQiblaDisplay();
 
-        Button sound = findViewById(
-                R.id.adhan_sound_toggle);
-        sound.setOnClickListener(view -> {
-            boolean muted =
-                    AppString.get(
-                            R.string.runtime_text_0306)
-                            .contentEquals(
-                                    sound.getText());
-
-            send(
-                    muted
-                            ? AdhanSoundService.ACTION_UNMUTE
-                            : AdhanSoundService.ACTION_MUTE);
-
-            sound.setText(
-                    muted
-                            ? AppString.get(
-                            R.string.runtime_text_0305)
-                            : AppString.get(
-                            R.string.runtime_text_0306));
-        });
+        alertActions = new AlertActions(this, AlertOutput.adhan(type),
+                getString(R.string.reminder_open_destination,getString(R.string.ui_adhan)), () -> {
+                    startActivity(new Intent(this,SettingsActivity.class)
+                            .putExtra(SettingsActivity.EXTRA_SECTION,"prayer"));
+                    stopAndClose();
+                },15,android.graphics.Color.WHITE,minutes -> {
+                    if(AlertSnoozes.schedule(this,"adhan",type,AdhanScheduler.title(type),"",minutes))stopAndClose();
+                    else LogoToast.makeText(this,R.string.runtime_text_0587,android.widget.Toast.LENGTH_LONG).show();
+                });
+        ((android.widget.LinearLayout)findViewById(R.id.adhan_alert_actions)).addView(alertActions,
+                new android.widget.LinearLayout.LayoutParams(-1,-2));
 
         findViewById(
                 R.id.adhan_stop)
@@ -431,11 +422,7 @@ public final class AdhanRingActivity
                 == KeyEvent.KEYCODE_VOLUME_DOWN) {
             send(
                     AdhanSoundService.ACTION_MUTE);
-            ((Button) findViewById(
-                    R.id.adhan_sound_toggle))
-                    .setText(
-                            AppString.get(
-                                    R.string.runtime_text_0306));
+            if(alertActions!=null)alertActions.refreshState();
             return true;
         }
 
@@ -443,11 +430,7 @@ public final class AdhanRingActivity
                 == KeyEvent.KEYCODE_VOLUME_UP) {
             send(
                     AdhanSoundService.ACTION_RAISE);
-            ((Button) findViewById(
-                    R.id.adhan_sound_toggle))
-                    .setText(
-                            AppString.get(
-                                    R.string.runtime_text_0305));
+            if(alertActions!=null)alertActions.refreshState();
             return true;
         }
 

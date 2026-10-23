@@ -14,7 +14,7 @@ public final class NoForgetScheduler {
     private NoForgetScheduler(){}
 
     public static boolean schedule(Context context,NoForgetItem item){
-        cancel(context,item.id);
+        cancelScheduled(context,item.id);
         if(!item.reminderEnabled||!item.hasDue)return false;
 
         long now=System.currentTimeMillis();
@@ -53,12 +53,17 @@ public final class NoForgetScheduler {
             }
             return true;
         }catch(SecurityException e){
-            cancel(context,item.id);
+            cancelScheduled(context,item.id);
             return false;
         }
     }
 
     public static void cancel(Context context,long id){
+        AlertSnoozes.cancel(context,"note",id);
+        cancelScheduled(context,id);
+    }
+
+    private static void cancelScheduled(Context context,long id){
         AlarmManager manager=context.getSystemService(AlarmManager.class);
         context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
         if(manager==null)return;
