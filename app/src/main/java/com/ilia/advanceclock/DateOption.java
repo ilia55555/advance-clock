@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -47,16 +48,19 @@ final class DateOption {
     }
 
     private Switch card(int label, int id) {
-        LinearLayout card = new LinearLayout(host){
+        FrameLayout column=new FrameLayout(host){
             @Override protected void onMeasure(int widthSpec,int heightSpec){
-                if(getChildCount()==2 && View.MeasureSpec.getMode(widthSpec)!=View.MeasureSpec.UNSPECIFIED){
-                    View toggle=getChildAt(1);
+                if(getChildCount()==1 && View.MeasureSpec.getMode(widthSpec)!=View.MeasureSpec.UNSPECIFIED){
+                    LinearLayout group=(LinearLayout)getChildAt(0);
+                    View toggle=group.getChildAt(1);
                     toggle.measure(View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED),heightSpec);
-                    ((TextView)getChildAt(0)).setMaxWidth(Math.max(1,View.MeasureSpec.getSize(widthSpec)-toggle.getMeasuredWidth()-dp(2)));
+                    ((TextView)group.getChildAt(0)).setMaxWidth(Math.max(1,View.MeasureSpec.getSize(widthSpec)-toggle.getMeasuredWidth()-dp(2)));
                 }
                 super.onMeasure(widthSpec,heightSpec);
             }
         };
+        column.setMinimumHeight(dp(48));
+        LinearLayout card=new LinearLayout(host);
         card.setLayoutDirection(AppSettings.layoutDirection(host));
         card.setOrientation(LinearLayout.HORIZONTAL);
         card.setBaselineAligned(false);
@@ -78,7 +82,9 @@ final class DateOption {
         LinearLayout.LayoutParams toggleParams=new LinearLayout.LayoutParams(-2,-2);toggleParams.setMarginStart(dp(2));
         card.addView(toggle,toggleParams);
         card.setOnClickListener(view->toggle.toggle());
-        controls.addView(card, new LinearLayout.LayoutParams(0, -2, 1));
+        column.addView(card,new FrameLayout.LayoutParams(-2,-2,Gravity.CENTER));
+        column.setOnClickListener(view->toggle.toggle());
+        controls.addView(column,new LinearLayout.LayoutParams(0,-2,1));
         return toggle;
     }
 

@@ -33,7 +33,11 @@ public class AlarmEditorLayoutTest {
             assertEquals(root.getWidth(),header.getWidth());assertTrue(header.getPaddingTop()>=30);
             Switch date=host.findViewById(R.id.date_option_alarm_editor),automatic=host.findViewById(R.id.auto_delete_alarm_editor);
             for(Switch toggle:new Switch[]{date,automatic}){
-                LinearLayout card=(LinearLayout)toggle.getParent();LinearLayout controls=(LinearLayout)card.getParent();
+                LinearLayout card=(LinearLayout)toggle.getParent();
+                FrameLayout column=(FrameLayout)card.getParent();LinearLayout controls=(LinearLayout)column.getParent();
+                assertNull(card.getBackground());assertNull(column.getBackground());
+                assertEquals(column.getWidth()/2f,card.getLeft()+card.getWidth()/2f,1f);
+                assertTrue(card.getWidth()<=column.getWidth());
                 assertTrue(controls.getHeight()>=48);
                 View caption=card.getChildAt(0);
                 float groupCenter=(Math.min(caption.getLeft(),toggle.getLeft())+Math.max(caption.getRight(),toggle.getRight()))/2f;
@@ -42,10 +46,10 @@ public class AlarmEditorLayoutTest {
                 assertEquals(LinearLayout.HORIZONTAL,card.getOrientation());
                 assertEquals(1,((TextView)card.getChildAt(0)).getMaxLines());
                 assertTrue(Math.abs((toggle.getTop()+toggle.getBottom())/2-(card.getChildAt(0).getTop()+card.getChildAt(0).getBottom())/2)<=1);assertTrue(toggle.getHeight()>0);assertTrue(toggle.isShown());
-                assertTrue(toggle.getBottom()<=card.getHeight());assertTrue(card.getBottom()<=controls.getHeight());
+                assertTrue(toggle.getBottom()<=card.getHeight());assertTrue(card.getBottom()<=column.getHeight());
             }
-            assertTrue(((View)date.getParent()).getLeft()<((View)automatic.getParent()).getLeft());
-            LinearLayout controls=(LinearLayout)date.getParent().getParent();
+            assertTrue(((View)date.getParent().getParent()).getLeft()<((View)automatic.getParent().getParent()).getLeft());
+            LinearLayout controls=(LinearLayout)date.getParent().getParent().getParent();
             View timeRow=(View)host.findViewById(R.id.pick_time).getParent();assertTrue(controls.getBottom()<=timeRow.getTop());
             if(world){LinearLayout field=(LinearLayout)host.findViewById(R.id.alarm_priority).getParent();
                 View previous=((ViewGroup)field.getParent()).getChildAt(((ViewGroup)field.getParent()).indexOfChild(field)-1);
