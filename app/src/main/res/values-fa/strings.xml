@@ -1260,4 +1260,13 @@
     <string name="alert_confirm">تأیید</string>
     <string name="alert_snooze_choose">حداقل یک زمان را انتخاب کنید.</string>
     <string name="alert_snooze_10">۱۰ دقیقه</string>
+    <string name="alarm_dismiss_mode_label">روش قطع هشدار</string>
+    <string name="alarm_dismiss_mode_tap">لمس برای قطع</string>
+    <string name="alarm_dismiss_mode_hold">نگه‌داشتن برای قطع</string>
+    <string name="alarm_dismiss_mode_swipe">کشیدن به بالا</string>
+    <string name="alarm_dismiss_hold_hint">برای قطع، ۲٫۵ ثانیه نگه دارید</string>
+    <string name="alarm_dismiss_preview_title">پیش‌نمایش تعاملی</string>
+    <string name="alarm_dismiss_preview_try">روش انتخاب‌شده را اینجا امتحان کنید</string>
+    <string name="alarm_dismiss_preview_done">هشدار آزمایشی متوقف شد</string>
+    <string name="alarm_dismiss_preview_again">آزمایش دوباره</string>
 </resources>

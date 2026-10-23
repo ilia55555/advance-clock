@@ -9,16 +9,21 @@ final class SwipeAlarmSurface extends FrameLayout {
     private final Runnable stop;
     private float downX,downY;
     private boolean dragging,finished;
+    private boolean captureParentGestures;
+    void captureParentGestures(){captureParentGestures=true;}
+    private void releaseParent(){if(captureParentGestures && getParent()!=null)getParent().requestDisallowInterceptTouchEvent(false);}
     SwipeAlarmSurface(Context context,Runnable stop) { super(context);this.stop=stop;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES); }
     @Override public boolean onInterceptTouchEvent(MotionEvent event) {
         if(event.getActionMasked()==MotionEvent.ACTION_DOWN) {
             downX=event.getRawX();downY=event.getRawY();dragging=false;animate().cancel();
+            if(captureParentGestures && getParent()!=null)getParent().requestDisallowInterceptTouchEvent(true);
         } else if(event.getActionMasked()==MotionEvent.ACTION_MOVE && !finished) {
             float dy=event.getRawY()-downY,dx=event.getRawX()-downX;
             if(dy < -ViewConfiguration.get(getContext()).getScaledTouchSlop() && -dy>Math.abs(dx)) {
                 dragging=true;return true;
             }
         }
+        if(event.getActionMasked()==MotionEvent.ACTION_UP || event.getActionMasked()==MotionEvent.ACTION_CANCEL)releaseParent();
         return false;
     }
     @Override public boolean onTouchEvent(MotionEvent event) {
@@ -29,9 +34,10 @@ final class SwipeAlarmSurface extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 if(dy<0) { dragging=true;setTranslationY(dy*.85f); } return true;
             case MotionEvent.ACTION_UP:
+                releaseParent();
                 if(dragging && -dy>=getHeight()*.20f && getHeight()>0) dismiss();
                 else springBack();return true;
-            case MotionEvent.ACTION_CANCEL: springBack();return true;
+            case MotionEvent.ACTION_CANCEL: releaseParent();springBack();return true;
         }
         return true;
     }

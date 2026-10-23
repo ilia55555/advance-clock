@@ -197,6 +197,21 @@ public final class SettingsActivity extends Activity {
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
         alarmSettings.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        alarmSettings.addView(label(AppString.get(R.string.alarm_dismiss_mode_label)));
+        Spinner dismissMode = spinner(new String[]{AppString.get(R.string.alarm_dismiss_mode_tap),
+                AppString.get(R.string.alarm_dismiss_mode_hold),AppString.get(R.string.alarm_dismiss_mode_swipe)});
+        dismissMode.setTag("alarm_dismiss_mode_selector");
+        dismissMode.setSelection(AppSettings.alarmDismissMode(this));
+        alarmSettings.addView(dismissMode,new LinearLayout.LayoutParams(-1,dp(54)));
+        AlarmDismissPreview dismissPreview = new AlarmDismissPreview(this);
+        alarmSettings.addView(dismissPreview,new LinearLayout.LayoutParams(-1,-2));
+        watch(dismissMode, position -> {
+            if (AppSettings.alarmDismissMode(this)==position) return;
+            AppSettings.setAlarmDismissMode(this,position);
+            dismissPreview.setMode(position);
+            setResult(RESULT_OK);
+        });
+
         alarmSettings.addView(label(getString(R.string.alarm_auto_stop_title)));
         String[] ringOptions = new String[AppSettings.ALARM_RING_MINUTES.length];
         int ringSelection = 2;

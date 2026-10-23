@@ -94,8 +94,17 @@ public final class AdhanRingActivity
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        setContentView(
-                R.layout.activity_adhan_ring);
+        View content = getLayoutInflater().inflate(R.layout.activity_adhan_ring,null);
+        int dismissMode=AppSettings.alarmDismissMode(this);
+        View dismissal=AlarmDismissal.control(this,dismissMode,AppSettings.primaryColor(this),android.graphics.Color.WHITE,this::stopAndClose);
+        ((android.widget.LinearLayout)content.findViewById(R.id.adhan_stop)).addView(dismissal,
+                new android.widget.LinearLayout.LayoutParams(-1,-2));
+        if(dismissMode==AlarmDismissal.SWIPE){
+            SwipeAlarmSurface swipe=new SwipeAlarmSurface(this,this::stopAndClose);
+            swipe.addView(content,new FrameLayout.LayoutParams(-1,-1));
+            swipe.addView(new SwipeHintArrow(this,dismissal,android.graphics.Color.WHITE),new FrameLayout.LayoutParams(-1,-1));
+            setContentView(swipe);
+        }else setContentView(content);
 
         int type = getIntent().getIntExtra(
                 "adhanType",
@@ -133,10 +142,6 @@ public final class AdhanRingActivity
         ((android.widget.LinearLayout)findViewById(R.id.adhan_alert_actions)).addView(alertActions,
                 new android.widget.LinearLayout.LayoutParams(-1,-2));
 
-        findViewById(
-                R.id.adhan_stop)
-                .setOnClickListener(
-                        view -> stopAndClose());
         AlertSoundHint.show(this, "adhan");
     }
 

@@ -71,6 +71,8 @@ final class ReminderScreen extends FrameLayout {
         super(host); this.host = host;
         int style = AppSettings.alarmScreenStyle(host);
         boolean modern = style >= 3;
+        int dismissMode=AppSettings.alarmDismissMode(host);
+        boolean swipeToStop=dismissMode==AlarmDismissal.SWIPE;
         palette(style);
         setBackgroundColor(background);
         host.getWindow().setStatusBarColor(background); host.getWindow().setNavigationBarColor(background);
@@ -127,25 +129,15 @@ final class ReminderScreen extends FrameLayout {
         ScrollView header = new ScrollView(host); header.addView(headingContent);
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
         LinearLayout footer = new LinearLayout(host); footer.setOrientation(LinearLayout.VERTICAL);
-        footer.setPadding(0, dp(8), 0, modern ? dp(2) : dp(32));
+        footer.setPadding(0, dp(8), 0, swipeToStop ? dp(2) : dp(24));
         AlertActions actions = new AlertActions(host, data.output,
                 data.openLabel.isEmpty() ? host.getString(R.string.media_open) : data.openLabel,
                 open, data.snoozeMinutes, textColor, snooze);
         footer.addView(actions, new LinearLayout.LayoutParams(-1,-2));
-        Button dismiss = button(host.getString(R.string.ui_stop_alarm), true); dismiss.setOnClickListener(v -> stop.run());
-        LinearLayout.LayoutParams dismissParams = new LinearLayout.LayoutParams(-1, dp(60)); dismissParams.topMargin = dp(10);
-        TextView swipeHint = null;
-        if (modern) {
-            swipeHint = text(host.getString(R.string.alarm_swipe_stop),18);
-            swipeHint.setGravity(Gravity.CENTER);
-            swipeHint.setPadding(0,dp(12),0,0);
-            swipeHint.setIncludeFontPadding(false);
-            swipeHint.setMaxLines(1);
-            swipeHint.setHorizontallyScrolling(false);
-            swipeHint.setEllipsize(null);
-            swipeHint.setAutoSizeTextTypeUniformWithConfiguration(6,18,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-            footer.addView(swipeHint, new LinearLayout.LayoutParams(-1,-2));
-        } else footer.addView(dismiss, dismissParams);
+        View dismissal = AlarmDismissal.control(host,dismissMode,primary,textColor,stop);
+        LinearLayout.LayoutParams dismissParams = new LinearLayout.LayoutParams(-1,-2);
+        if(!swipeToStop)dismissParams.topMargin=dp(10);
+        footer.addView(dismissal,dismissParams);
         screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
         View shortcuts = attachmentStrip(values);
         screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(164), Gravity.CENTER));
@@ -175,13 +167,13 @@ final class ReminderScreen extends FrameLayout {
             } else { top = insets.getStableInsetTop(); bottom = insets.getStableInsetBottom(); }
             headingContent.setPadding(0, Math.max(dp(30), top + dp(8)), 0, dp(8));
             int visibleBottom=Build.VERSION.SDK_INT>=30 ? insets.getInsets(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout()).bottom : insets.getSystemWindowInsetBottom();
-            footer.setPadding(0, dp(8), 0, modern ? visibleBottom + dp(2) : bottom + dp(24)); return insets;
+            footer.setPadding(0, dp(8), 0, swipeToStop ? visibleBottom + dp(2) : bottom + dp(24)); return insets;
         });
         ScrollView root = new ScrollView(host); root.setFillViewport(true); root.addView(screen, new ScrollView.LayoutParams(-1, -1));
-        if (modern) {
+        if (swipeToStop) {
             SwipeAlarmSurface swipe = new SwipeAlarmSurface(host,stop);
             swipe.addView(root,new FrameLayout.LayoutParams(-1,-1));
-            swipe.addView(new SwipeHintArrow(host,swipeHint,mutedColor),new FrameLayout.LayoutParams(-1,-1));
+            swipe.addView(new SwipeHintArrow(host,dismissal,mutedColor),new FrameLayout.LayoutParams(-1,-1));
             addView(swipe,new FrameLayout.LayoutParams(-1,-1));
         } else addView(root,new FrameLayout.LayoutParams(-1,-1));
         if(style==4) { screen.setBackgroundColor(Color.TRANSPARENT);setBackgroundColor(0x66000000); }

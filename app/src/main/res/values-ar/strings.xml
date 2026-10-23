@@ -1321,4 +1321,13 @@
     <string name="alert_confirm">تأكيد</string>
     <string name="alert_snooze_choose">اختر وقتًا واحدًا على الأقل.</string>
     <string name="alert_snooze_10">١٠ دقائق</string>
+    <string name="alarm_dismiss_mode_label">طريقة إيقاف التنبيه</string>
+    <string name="alarm_dismiss_mode_tap">النقر للإيقاف</string>
+    <string name="alarm_dismiss_mode_hold">الضغط المطوّل للإيقاف</string>
+    <string name="alarm_dismiss_mode_swipe">السحب إلى الأعلى</string>
+    <string name="alarm_dismiss_hold_hint">اضغط لمدة ٢٫٥ ثانية للإيقاف</string>
+    <string name="alarm_dismiss_preview_title">معاينة تفاعلية</string>
+    <string name="alarm_dismiss_preview_try">جرّب الطريقة المحددة هنا</string>
+    <string name="alarm_dismiss_preview_done">تم إيقاف التنبيه التجريبي</string>
+    <string name="alarm_dismiss_preview_again">جرّب مجددًا</string>
 </resources>

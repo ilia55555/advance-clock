@@ -97,16 +97,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" />
 
-    <Button
+    <LinearLayout
         android:id="@+id/adhan_stop"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_teal_button"
-        android:text="@string/ui_end_adhan"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:orientation="vertical" />
 </LinearLayout>
 </ScrollView>
