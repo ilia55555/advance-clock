@@ -27,7 +27,7 @@ public final class AlarmScheduler {
                     item.recurrenceMode,
                     item.intervalDays,
                     item.customDatesJson,
-                    now);
+                    now,item.timeZone());
             if (normalized <= now) {
                 cancelPrimary(context, item.id);
                 item.enabled = false;
@@ -184,7 +184,7 @@ public final class AlarmScheduler {
                     item.recurrenceMode,
                     item.intervalDays,
                     item.customDatesJson,
-                    now);
+                    now,item.timeZone());
 
             if (next <= now) {
                 item.enabled = false;

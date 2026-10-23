@@ -37,6 +37,10 @@ public final class AlarmEditorActivity extends Activity {
     private Button repeatButton;
     private Button remindersButton;
     private Spinner priority;
+    private boolean worldReference;
+    private int storedPriority=PriorityUtils.MEDIUM;
+    private java.util.List<String> referenceZones=java.util.Collections.emptyList();
+    private String referenceZone="";
     private Button deleteButton;
     private Switch vibrate;
     private Switch autoDelete;
@@ -100,6 +104,7 @@ public final class AlarmEditorActivity extends Activity {
         priority.setSelection(PriorityUtils.MEDIUM);
 
         alarmId = getIntent().getLongExtra("alarmId", -1L);
+        configureReference(savedInstanceState);
         if (alarmId >= 0L) protect(alarmId);
         if (alarmId >= 0) {
             loadExisting();
@@ -118,7 +123,7 @@ public final class AlarmEditorActivity extends Activity {
         }
         dateButton.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 this,
-                selected.getTimeInMillis(),
+                pickerDateMillis(),
                 dateCalendarType,
                 (picked, type) -> {
                     dateCalendarType = type;
@@ -148,7 +153,7 @@ public final class AlarmEditorActivity extends Activity {
                 selected.getTimeInMillis(),
                 recurrenceMode,
                 intervalDays,
-                customDatesJson,
+                customDatesJson,selected.getTimeZone(),
                 (mode, interval, dates) -> {
                     recurrenceMode = mode;
                     intervalDays = interval;
@@ -186,6 +191,7 @@ public final class AlarmEditorActivity extends Activity {
 
     @Override protected void onSaveInstanceState(Bundle out) {
         out.putLong("selectedTime", selected.getTimeInMillis());
+        out.putString("referenceZone",referenceZone);
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
     }
 
@@ -232,7 +238,8 @@ public final class AlarmEditorActivity extends Activity {
         autoDelete.setChecked(item.autoDeleteAfterCompletion);
         label.setText(item.label);
         selected.setTimeInMillis(item.triggerAtMillis);
-        priority.setSelection(item.priority);
+        storedPriority=item.priority;
+        if(!worldReference)priority.setSelection(item.priority);
         vibrate.setChecked(item.vibrate);
 
         recurrenceMode = item.recurrenceMode;
@@ -257,6 +264,42 @@ public final class AlarmEditorActivity extends Activity {
         updateImagePreviews();
     }
 
+    private void configureReference(Bundle state){
+        AlarmItem existing=alarmId>=0?new AlarmStore(this).find(alarmId):null;
+        worldReference=getIntent().getBooleanExtra("worldTimeReference",false)
+                || (existing!=null&&!existing.referenceZoneId.isEmpty());
+        if(!worldReference)return;
+        referenceZones=WorldClockStore.zones(this);
+        String preferred=state!=null?state.getString("referenceZone",""):existing!=null?existing.referenceZoneId:"";
+        int index=Math.max(0,referenceZones.indexOf(preferred));
+        if(referenceZones.isEmpty()){findViewById(R.id.save_alarm).setEnabled(false);return;}
+        referenceZone=referenceZones.get(index);selected.setTimeZone(java.util.TimeZone.getTimeZone(referenceZone));
+        priority.setAdapter(referenceAdapter());priority.setSelection(index);
+        priority.setPrompt(AppString.get(R.string.world_alarm_reference));
+        priority.setContentDescription(AppString.get(R.string.world_alarm_reference));
+        android.widget.LinearLayout row=(android.widget.LinearLayout)priority.getParent();
+        android.widget.LinearLayout parent=(android.widget.LinearLayout)row.getParent();
+        TextView title=new TextView(this);title.setText(AppString.get(R.string.world_alarm_reference));
+        title.setTextColor(AppSettings.textSecondary(this));title.setTextSize(14);
+        parent.addView(title,parent.indexOfChild(row));
+        priority.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){
+            public void onItemSelected(android.widget.AdapterView<?> p,View view,int position,long id){
+                String zone=referenceZones.get(position);
+                if(zone.equals(referenceZone))return;
+                WorldAlarmReference.changeZone(selected,zone);referenceZone=zone;updateButtons();
+            }
+            public void onNothingSelected(android.widget.AdapterView<?> p){}
+        });
+    }
+    private ArrayAdapter<String> referenceAdapter(){
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,
+                new java.util.ArrayList<>(java.util.Arrays.asList(WorldAlarmReference.labels(this,referenceZones,selected.getTimeInMillis()))));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);return adapter;
+    }
+    private long pickerDateMillis(){
+        return WorldAlarmReference.pickerDate(selected.getTimeInMillis(),selected.getTimeZone());
+    }
+
     private void updateReminderButton() {
         remindersButton.setText(
                 AlarmReminderUtils.summary(
@@ -265,10 +308,15 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     private void updateButtons() {
+        if(worldReference&&!referenceZones.isEmpty()){
+            @SuppressWarnings("unchecked") ArrayAdapter<String> adapter=(ArrayAdapter<String>)priority.getAdapter();
+            adapter.setNotifyOnChange(false);adapter.clear();
+            adapter.addAll(new java.util.ArrayList<>(java.util.Arrays.asList(WorldAlarmReference.labels(this,referenceZones,selected.getTimeInMillis()))));adapter.notifyDataSetChanged();
+        }
         dateButton.setText(
                 CalendarUtils.formatDate(
                         selected.getTimeInMillis(),
-                        dateCalendarType));
+                        dateCalendarType,selected.getTimeZone()));
 
         String time = String.format(
                 Locale.US,
@@ -280,7 +328,7 @@ public final class AlarmEditorActivity extends Activity {
 
     private void save() {
         long trigger = AlarmTimePolicy.next(selected.getTimeInMillis(), dateOption.isApplied(),
-                recurrenceMode, intervalDays, customDatesJson, System.currentTimeMillis());
+                recurrenceMode, intervalDays, customDatesJson, System.currentTimeMillis(),selected.getTimeZone());
 
         if (trigger <= System.currentTimeMillis()) {
             LogoToast.makeText(
@@ -302,13 +350,14 @@ public final class AlarmEditorActivity extends Activity {
                 compat,
                 true,
                 vibrate.isChecked(),
-                priority.getSelectedItemPosition(),
+                worldReference?storedPriority:priority.getSelectedItemPosition(),
                 recurrenceMode,
                 intervalDays,
                 customDatesJson,
                 snoozeMinutes,
                 reminderMode,
                 reminderMinutesJson);
+        item.referenceZoneId=worldReference?referenceZone:"";
         item.applyDate = dateOption.isApplied();
         item.autoDeleteAfterCompletion = autoDelete.isChecked();
         AlarmItem previous = alarmId >= 0 ? new AlarmStore(this).find(alarmId) : null;

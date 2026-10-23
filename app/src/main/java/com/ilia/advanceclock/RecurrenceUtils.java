@@ -28,6 +28,10 @@ public final class RecurrenceUtils {
     }
 
     public static long next(long base, int mode, int intervalDays, String customDatesJson, long now) {
+        return next(base,mode,intervalDays,customDatesJson,now,java.util.TimeZone.getDefault());
+    }
+
+    public static long next(long base,int mode,int intervalDays,String customDatesJson,long now,java.util.TimeZone zone){
         if (mode == NONE) return base > now ? base : -1L;
         if (mode == INTERVAL_MINUTES) {
             if (base > now) return base;
@@ -40,7 +44,7 @@ public final class RecurrenceUtils {
         if (mode == WEEKDAYS) {
             List<Integer> weekdays = parseWeekdays(customDatesJson);
             if (weekdays.isEmpty()) return -1L;
-            Calendar baseCalendar = Calendar.getInstance();
+            Calendar baseCalendar = Calendar.getInstance(zone);
             baseCalendar.setTimeInMillis(base);
             Calendar candidate = (Calendar) baseCalendar.clone();
             boolean permanent = isPermanentWeekdays(customDatesJson);
@@ -66,7 +70,7 @@ public final class RecurrenceUtils {
             return best == Long.MAX_VALUE ? -1L : best;
         }
 
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(zone);
         c.setTimeInMillis(base);
         int safeInterval = Math.max(1, intervalDays);
         while (c.getTimeInMillis() <= now) {

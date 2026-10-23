@@ -24,7 +24,7 @@ public final class AlarmCountdownUtils {
                 item.recurrenceMode,
                 item.intervalDays,
                 item.customDatesJson,
-                now);
+                now,item.timeZone());
     }
 
     public static String remainingText(

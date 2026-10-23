@@ -32,7 +32,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
                     item.recurrenceMode,
                     item.intervalDays,
                     item.customDatesJson,
-                    now);
+                    now,item.timeZone());
 
             if (next > now) {
                 item.triggerAtMillis = next;

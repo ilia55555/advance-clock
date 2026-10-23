@@ -25,6 +25,10 @@ public final class RecurrenceDialog {
 
     public static void show(Context context, long baseMillis, int mode, int intervalDays,
                             String customDatesJson, Callback callback) {
+        show(context,baseMillis,mode,intervalDays,customDatesJson,java.util.TimeZone.getDefault(),callback);
+    }
+    public static void show(Context context,long baseMillis,int mode,int intervalDays,String customDatesJson,
+                            java.util.TimeZone zone,Callback callback){
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(dp(context,18), dp(context,12), dp(context,18), dp(context,8));
@@ -125,10 +129,10 @@ public final class RecurrenceDialog {
             StringBuilder sb = new StringBuilder();
             for (Long date : customDates) {
                 if (sb.length() > 0) sb.append("\n");
-                String clock = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-                        .format(new java.util.Date(date));
+                java.text.SimpleDateFormat timeFormat=new java.text.SimpleDateFormat("HH:mm",java.util.Locale.getDefault());
+                timeFormat.setTimeZone(zone);String clock=timeFormat.format(new java.util.Date(date));
                 sb.append("• ")
-                        .append(CalendarUtils.formatDate(date, AppSettings.defaultCalendar(context)))
+                        .append(CalendarUtils.formatDate(date, AppSettings.defaultCalendar(context),zone))
                         .append("  ")
                         .append(clock);
             }
@@ -145,13 +149,14 @@ public final class RecurrenceDialog {
 
         addDate.setOnClickListener(v -> CalendarPickerDialog.showDate(
                 context,
-                Math.max(baseMillis, System.currentTimeMillis()),
+                WorldAlarmReference.pickerDate(Math.max(baseMillis,System.currentTimeMillis()),zone),
                 AppSettings.defaultCalendar(context),
                 (picked, type) -> {
-                    Calendar base = Calendar.getInstance();
+                    Calendar base = Calendar.getInstance(zone);
                     base.setTimeInMillis(baseMillis);
                     Calendar chosen = Calendar.getInstance();
                     chosen.setTimeInMillis(picked);
+                    WorldAlarmReference.changeZone(chosen,zone.getID());
 
                     int defaultHour = base.get(Calendar.HOUR_OF_DAY);
                     int defaultMinute = base.get(Calendar.MINUTE);

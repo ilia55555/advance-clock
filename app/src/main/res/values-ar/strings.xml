@@ -1334,4 +1334,6 @@
     <string name="alarm_dismiss_instant">بلمسة واحدة</string>
     <string name="alarm_dismiss_seconds">%1$s ثانية</string>
     <string name="alarm_dismiss_hold_seconds">اضغط مطولاً لمدة %1$s ثانية للإيقاف</string>
+    <string name="world_alarm_reference">مرجع الوقت</string>
+    <string name="note_confirm_delete">تأكيد الحذف</string>
 </resources>

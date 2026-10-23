@@ -1606,14 +1606,13 @@ public final class MainActivity extends Activity {
                 : item.triggerAtMillis;
 
         TextView time = smallText(
-                formatAppDateTime(displayAt)
+                (item.referenceZoneId.isEmpty()?formatAppDateTime(displayAt):WorldAlarmReference.summary(this,item,displayAt))
                         + "  •  "
                         + RecurrenceUtils.summary(
                         item.recurrenceMode,
                         item.intervalDays,
                         item.customDatesJson)
-                        + AppString.get(R.string.runtime_text_0429)
-                        + PriorityUtils.label(item.priority)
+                        + (item.referenceZoneId.isEmpty()?AppString.get(R.string.runtime_text_0429)+PriorityUtils.label(item.priority):"")
                         + (item.reminderMode != AlarmReminderUtils.MODE_NONE
                         ? "  •  " + reminder
                         : "")
@@ -1634,13 +1633,13 @@ public final class MainActivity extends Activity {
         Button enabled = actionButton(item.enabled ? AppString.get(R.string.runtime_text_0212) : AppString.get(R.string.runtime_text_0213));
         applyAlarmStateStyle(enabled, item.enabled);
         long activation = AlarmTimePolicy.next(item.triggerAtMillis, item.applyDate,
-                item.recurrenceMode, item.intervalDays, item.customDatesJson, System.currentTimeMillis());
+                item.recurrenceMode, item.intervalDays, item.customDatesJson, System.currentTimeMillis(),item.timeZone());
         enabled.setEnabled(item.enabled || activation > System.currentTimeMillis());
         enabled.setAlpha(enabled.isEnabled() ? 1f : .45f);
         enabled.setOnClickListener(v -> {
             if (!item.enabled) {
                 long next = AlarmTimePolicy.next(item.triggerAtMillis, item.applyDate, item.recurrenceMode,
-                        item.intervalDays, item.customDatesJson, System.currentTimeMillis());
+                        item.intervalDays, item.customDatesJson, System.currentTimeMillis(),item.timeZone());
                 if (next <= System.currentTimeMillis()) {
                     LogoToast.makeText(this, AppString.get(R.string.runtime_text_0147), Toast.LENGTH_SHORT).show();
                     return;
@@ -1733,6 +1732,7 @@ public final class MainActivity extends Activity {
     }
 
     private void renderNoForget() {
+        clearAlarmDeleteConfirmation();
         Object previous = noForgetList.getTag();
         int previousCount = previous instanceof Integer ? (Integer) previous : 0;
         List<NoForgetItem> items = new NoForgetStore(this).all();
@@ -1826,7 +1826,12 @@ public final class MainActivity extends Activity {
         ImageButton delete = deleteIconButton();
         delete.setLayoutParams(new LinearLayout.LayoutParams(dp(36), dp(36)));
         delete.setPadding(dp(8), dp(8), dp(8), dp(8));
+        styleAlarmDelete(delete,false);
         delete.setOnClickListener(v -> {
+            if(!delete.isSelected()){
+                clearAlarmDeleteConfirmation();pendingAlarmDelete=delete;styleAlarmDelete(delete,true);return;
+            }
+            pendingAlarmDelete=null;
             NoForgetScheduler.cancel(this, item.id);
             new NoForgetStore(this).delete(item.id);
             NoForgetWidgetProvider.updateAll(this);

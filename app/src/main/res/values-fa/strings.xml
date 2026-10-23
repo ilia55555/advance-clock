@@ -1273,4 +1273,6 @@
     <string name="alarm_dismiss_instant">با یک لمس</string>
     <string name="alarm_dismiss_seconds">%1$s ثانیه</string>
     <string name="alarm_dismiss_hold_seconds">برای قطع، %1$s ثانیه نگه دارید</string>
+    <string name="world_alarm_reference">مرجع زمان</string>
+    <string name="note_confirm_delete">تأیید حذف</string>
 </resources>

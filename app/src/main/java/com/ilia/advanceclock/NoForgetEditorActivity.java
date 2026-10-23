@@ -139,7 +139,12 @@ public final class NoForgetEditorActivity extends Activity {
         soundButton.setOnClickListener(v->startActivityForResult(
                 new Intent(this,SoundPickerActivity.class),REQ_SOUND));
         findViewById(R.id.save_note).setOnClickListener(v->save());
-        deleteButton.setOnClickListener(v->delete());
+        deleteButton.setOnClickListener(v->{
+            if(!deleteButton.isSelected()){
+                deleteButton.setSelected(true);deleteButton.setText(AppString.get(R.string.note_confirm_delete));return;
+            }
+            delete();
+        });
         findViewById(R.id.cancel_note).setOnClickListener(v->finish());
 
         if (savedInstanceState != null && savedInstanceState.containsKey("selectedTime"))

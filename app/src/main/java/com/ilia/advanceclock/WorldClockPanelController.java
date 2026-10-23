@@ -100,8 +100,12 @@ final class WorldClockPanelController {
 
         root.findViewById(R.id.world_fab).setOnClickListener(v -> showAddDialog());
         root.findViewById(R.id.world_pick_reference).setOnClickListener(v -> pickReferenceDate());
-        root.findViewById(R.id.world_alarm).setOnClickListener(v ->
-                MainActivity.launchCreateEditor(host, AlarmEditorActivity.class));
+        ((android.widget.Button)root.findViewById(R.id.world_alarm)).setText(AppString.get(R.string.ui_alarm));
+        root.findViewById(R.id.world_alarm).setOnClickListener(v -> {
+            host.startActivity(new android.content.Intent(host,AlarmEditorActivity.class)
+                    .putExtra("modalCreate",true).putExtra("worldTimeReference",true));
+            host.overridePendingTransition(R.anim.editor_enter,R.anim.editor_stay);
+        });
         nowButton.setOnClickListener(v -> {
             referenceMode = false;
             referenceMillis = 0L;

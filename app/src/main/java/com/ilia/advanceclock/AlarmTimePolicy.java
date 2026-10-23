@@ -8,11 +8,14 @@ public final class AlarmTimePolicy {
 
     public static long next(long selected, boolean applyDate, int recurrence, int interval,
                             String customDates, long now) {
+        return next(selected,applyDate,recurrence,interval,customDates,now,java.util.TimeZone.getDefault());
+    }
+    public static long next(long selected,boolean applyDate,int recurrence,int interval,String customDates,long now,java.util.TimeZone zone){
         long base = selected;
         if (!applyDate) {
-            Calendar time = Calendar.getInstance();
+            Calendar time = Calendar.getInstance(zone);
             time.setTimeInMillis(selected);
-            Calendar today = Calendar.getInstance();
+            Calendar today = Calendar.getInstance(zone);
             today.setTimeInMillis(now);
             today.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
             today.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
@@ -22,6 +25,6 @@ public final class AlarmTimePolicy {
                 today.add(Calendar.DAY_OF_YEAR, 1);
             base = today.getTimeInMillis();
         }
-        return RecurrenceUtils.next(base, recurrence, interval, customDates, now);
+        return RecurrenceUtils.next(base, recurrence, interval, customDates, now,zone);
     }
 }
