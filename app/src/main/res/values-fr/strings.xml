@@ -938,6 +938,6 @@ Sans rappel</string>
     <string name="alarm_swipe_stop">Swipe up to stop</string>
     <string name="alarm_blur_support">Background blur depends on device support.</string>
     <string name="date_display_format_label">Date display format</string>
-    <string name="date_display_format_written">Written — 1 Mehr 1405</string>
-    <string name="date_display_format_numeric">Numeric — 1405/07/01</string>
+    <string name="date_display_format_written">Written — %1$s</string>
+    <string name="date_display_format_numeric">Numeric — %1$s</string>
 </resources>

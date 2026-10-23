@@ -86,8 +86,12 @@ public final class SettingsActivity extends Activity {
         calendarSettings.addView(calendar, new LinearLayout.LayoutParams(-1, dp(54)));
 
         calendarSettings.addView(label(AppString.get(R.string.date_display_format_label)));
-        Spinner dateFormat = spinner(new String[]{AppString.get(R.string.date_display_format_written),
-                AppString.get(R.string.date_display_format_numeric)});
+        java.util.ArrayList<String> dateExamples = new java.util.ArrayList<>(java.util.Arrays.asList(dateFormatOptions()));
+        ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,dateExamples);
+        dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner dateFormat = new Spinner(this);
+        dateFormat.setLayoutDirection(AppSettings.layoutDirection(this));
+        dateFormat.setAdapter(dateAdapter);
         dateFormat.setSelection(AppSettings.dateDisplayFormat(this));
         calendarSettings.addView(dateFormat, new LinearLayout.LayoutParams(-1, dp(54)));
 
@@ -229,6 +233,10 @@ public final class SettingsActivity extends Activity {
                     return;
                 }
                 AppSettings.setDefaultCalendar(SettingsActivity.this, position);
+                String[] examples = dateFormatOptions();
+                dateExamples.set(0,examples[0]);
+                dateExamples.set(1,examples[1]);
+                dateAdapter.notifyDataSetChanged();
                 refreshExtraSources.run();
                 runtimeChanged();
                 AdvanceClockApplication.refreshOpenActivities(SettingsActivity.this, false);
@@ -412,6 +420,15 @@ public final class SettingsActivity extends Activity {
             return AppString.get(R.string.runtime_text_0473);
         }
         return AppString.get(R.string.runtime_text_0474);
+    }
+
+    private String[] dateFormatOptions() {
+        int type = AppSettings.defaultCalendar(this);
+        int year = CalendarUtils.fromMillis(type,System.currentTimeMillis()).get(android.icu.util.Calendar.YEAR);
+        String written = CalendarUtils.fa(1) + " " + CalendarUtils.monthName(type,0) + " " + CalendarUtils.fa(year);
+        String numeric = CalendarUtils.fa(String.format(java.util.Locale.US,"%04d/01/01",year));
+        return new String[]{AppString.get(R.string.date_display_format_written,written),
+                AppString.get(R.string.date_display_format_numeric,numeric)};
     }
 
     private Spinner spinner(String[] values) {
