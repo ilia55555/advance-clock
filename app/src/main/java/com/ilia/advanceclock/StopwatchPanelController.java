@@ -193,7 +193,7 @@ final class StopwatchPanelController {
         long target = mode == 2 ? selectedTarget : running ? startedAtWall + remaining
                 : accumulatedMillis > 0 ? System.currentTimeMillis() + remaining
                 : System.currentTimeMillis() + readLimit();
-        summary.setText(CalendarUtils.fa(String.format(Locale.US,"%tR",target))
+        summary.setText(TimeFormat.clock(host,target)
                 + "   " + CalendarUtils.formatDate(target,calendarType));
     }
 

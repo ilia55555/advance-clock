@@ -35,7 +35,7 @@ final class ReminderScreen extends FrameLayout {
         @Override public void run() { updateClock(); clockHandler.postDelayed(this, 1000 - System.currentTimeMillis()%1000); }
     };
     static void applyWindowTheme(Activity host) {
-        if (AppSettings.alarmScreenStyle(host)==4 && Build.VERSION.SDK_INT>=31)
+        if (AppSettings.alarmScreenStyle(host)==4)
             host.getTheme().applyStyle(R.style.OverlayAdvanceClockBlur,true);
     }
 
@@ -47,6 +47,10 @@ final class ReminderScreen extends FrameLayout {
         if (Build.VERSION.SDK_INT >= 27) { host.setShowWhenLocked(true); host.setTurnScreenOn(true); }
         else host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if(AppSettings.alarmScreenStyle(host)==4) {
+            host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+            host.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+        }
         hideSystemBars(host);
     }
     static void hideSystemBars(Activity host) {
@@ -100,7 +104,7 @@ final class ReminderScreen extends FrameLayout {
         if (style == 3) {
             analogClock = new AlarmAnalogView(host);
             int clockSize = Math.min(dp(270), Math.min(host.getResources().getDisplayMetrics().widthPixels-dp(64),
-                    Math.round(host.getResources().getDisplayMetrics().heightPixels*.28f)));
+                    Math.round(host.getResources().getDisplayMetrics().heightPixels*.34f)));
             LinearLayout.LayoutParams clockParams = new LinearLayout.LayoutParams(clockSize,clockSize);
             clockParams.gravity=Gravity.CENTER_HORIZONTAL;
             headingContent.addView(analogClock,clockParams);
@@ -114,10 +118,10 @@ final class ReminderScreen extends FrameLayout {
         timeLabel.setMaxLines(1);
         timeLabel.setHorizontallyScrolling(false);
         timeLabel.setAutoSizeTextTypeUniformWithConfiguration(28,style == 4 ? 80 : 48,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-        if (modern) { headingContent.addView(timeLabel,matchWrap()); headingContent.addView(dateLabel,matchWrap()); }
+        if (modern) { if(style!=3) headingContent.addView(timeLabel,matchWrap()); else timeLabel.setVisibility(View.GONE); headingContent.addView(dateLabel,matchWrap()); }
         else { headingContent.addView(dateLabel,matchWrap()); headingContent.addView(timeLabel,matchWrap()); }
         updateClock();
-        TextView title = text(data.title, 24); title.setGravity(Gravity.CENTER); headingContent.addView(title, matchWrap());
+        TextView title = text(data.title, 18); title.setGravity(Gravity.CENTER); headingContent.addView(title, matchWrap());
         if (data.body != null && !data.body.isEmpty()) {
             TextView body = text(data.body, 16); body.setGravity(Gravity.CENTER); body.setTextColor(mutedColor);
             LinearLayout.LayoutParams bp = matchWrap(); bp.topMargin = dp(8); headingContent.addView(body, bp);
@@ -125,7 +129,7 @@ final class ReminderScreen extends FrameLayout {
         ScrollView header = new ScrollView(host); header.addView(headingContent);
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
         LinearLayout footer = new LinearLayout(host); footer.setOrientation(LinearLayout.VERTICAL);
-        footer.setPadding(0, dp(8), 0, dp(32));
+        footer.setPadding(0, dp(8), 0, modern ? dp(2) : dp(32));
         if (open != null) {
             Button edit = button(data.openLabel.isEmpty() ? host.getString(R.string.media_open) : data.openLabel, false);
             edit.setOnClickListener(v -> open.run()); footer.addView(edit, new LinearLayout.LayoutParams(-1, dp(44)));
@@ -162,7 +166,12 @@ final class ReminderScreen extends FrameLayout {
         if (modern) {
             swipeHint = text(host.getString(R.string.alarm_swipe_stop),18);
             swipeHint.setGravity(Gravity.CENTER);
-            swipeHint.setPadding(0,dp(18),0,dp(8));
+            swipeHint.setPadding(0,dp(12),0,0);
+            swipeHint.setIncludeFontPadding(false);
+            swipeHint.setMaxLines(1);
+            swipeHint.setHorizontallyScrolling(false);
+            swipeHint.setEllipsize(null);
+            swipeHint.setAutoSizeTextTypeUniformWithConfiguration(6,18,1,android.util.TypedValue.COMPLEX_UNIT_SP);
             footer.addView(swipeHint, new LinearLayout.LayoutParams(-1,-2));
         } else footer.addView(dismiss, dismissParams);
         screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
@@ -191,7 +200,8 @@ final class ReminderScreen extends FrameLayout {
                 android.graphics.Insets safe = insets.getInsetsIgnoringVisibility(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout()); top = safe.top; bottom = safe.bottom;
             } else { top = insets.getStableInsetTop(); bottom = insets.getStableInsetBottom(); }
             headingContent.setPadding(0, Math.max(dp(30), top + dp(8)), 0, dp(8));
-            footer.setPadding(0, dp(8), 0, bottom + dp(24)); return insets;
+            int visibleBottom=Build.VERSION.SDK_INT>=30 ? insets.getInsets(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout()).bottom : insets.getSystemWindowInsetBottom();
+            footer.setPadding(0, dp(8), 0, modern ? visibleBottom + dp(2) : bottom + dp(24)); return insets;
         });
         ScrollView root = new ScrollView(host); root.setFillViewport(true); root.addView(screen, new ScrollView.LayoutParams(-1, -1));
         if (modern) {
@@ -200,8 +210,8 @@ final class ReminderScreen extends FrameLayout {
             swipe.addView(new SwipeHintArrow(host,swipeHint,mutedColor),new FrameLayout.LayoutParams(-1,-1));
             addView(swipe,new FrameLayout.LayoutParams(-1,-1));
         } else addView(root,new FrameLayout.LayoutParams(-1,-1));
+        if(style==4) { screen.setBackgroundColor(Color.TRANSPARENT);setBackgroundColor(0x66000000); }
         if (style == 4 && Build.VERSION.SDK_INT>=31) {
-            screen.setBackgroundColor(Color.TRANSPARENT);
             blurListener = enabled -> {
                 if (enabled) {
                     setBackgroundColor(0x55000000);
@@ -211,7 +221,7 @@ final class ReminderScreen extends FrameLayout {
                     host.getWindow().setAttributes(attributes);
                     host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 } else {
-                    setBackgroundColor(background);
+                    setBackgroundColor(0x99000000);
                     host.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 }
             };
@@ -220,10 +230,7 @@ final class ReminderScreen extends FrameLayout {
     }
     private void updateClock() {
         long now=System.currentTimeMillis();
-        String pattern=android.text.format.DateFormat.is24HourFormat(host)?"HH:mm":"hh:mm a";
-        if (AppSettings.alarmScreenStyle(host)==3)
-            pattern=android.text.format.DateFormat.is24HourFormat(host)?"HH:mm:ss":"hh:mm:ss a";
-        if(timeLabel!=null) timeLabel.setText(CalendarUtils.fa(new java.text.SimpleDateFormat(pattern,AppString.locale()).format(new Date(now))));
+        if(timeLabel!=null) timeLabel.setText(TimeFormat.clock(host,now));
         if(dateLabel!=null) dateLabel.setText(CalendarUtils.formatDate(now,AppSettings.defaultCalendar(host)));
         if(analogClock!=null) analogClock.invalidate();
     }

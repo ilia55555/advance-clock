@@ -1010,9 +1010,7 @@ final class WorldClockPanelController {
 
         for (ClockRowBinding binding : clockRows) {
             SimpleDateFormat timeFormat =
-                    new SimpleDateFormat(
-                            "HH:mm",
-                            Locale.getDefault());
+                    TimeFormat.formatter(host,false,binding.zone);
             timeFormat.setTimeZone(
                     binding.zone);
 

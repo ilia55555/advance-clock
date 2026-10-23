@@ -1305,4 +1305,7 @@
     <string name="date_display_format_label">تنسيق التاريخ</string>
     <string name="date_display_format_written">باسم الشهر — %1$s</string>
     <string name="date_display_format_numeric">رقمي — %1$s</string>
+    <string name="clock_format_label">تنسيق الوقت</string>
+    <string name="clock_format_24">٢٤ ساعة — ٢٣:٠٠</string>
+    <string name="clock_format_12">١٢ ساعة — ١١:٠٠ م</string>
 </resources>

@@ -436,8 +436,7 @@ public final class MainActivity extends Activity {
 
     private void updateHeaderClock() {
         long now = System.currentTimeMillis();
-        String time = new java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
-                .format(new java.util.Date(now));
+        String time = TimeFormat.clock(this,now);
         headerTime.setText(CalendarUtils.fa(time));
         headerDate.setText(
                 CalendarUtils.formatDate(now, AppSettings.defaultCalendar(this)));
@@ -1970,10 +1969,7 @@ public final class MainActivity extends Activity {
     }
 
     private String formatAppDateTime(long millis) {
-        String time = new java.text.SimpleDateFormat(
-                "HH:mm",
-                Locale.getDefault())
-                .format(new java.util.Date(millis));
+        String time = TimeFormat.clock(this,millis);
         return CalendarUtils.formatDate(
                 millis,
                 AppSettings.defaultCalendar(this))

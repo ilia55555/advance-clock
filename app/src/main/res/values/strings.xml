@@ -1289,4 +1289,7 @@
     <string name="date_display_format_label">قالب نمایش تاریخ</string>
     <string name="date_display_format_written">با نام ماه — %1$s</string>
     <string name="date_display_format_numeric">عددی — %1$s</string>
+    <string name="clock_format_label">قالب نمایش ساعت</string>
+    <string name="clock_format_24">۲۴ ساعته — ۲۳:۰۰</string>
+    <string name="clock_format_12">۱۲ ساعته — ۱۱:۰۰ ب.ظ</string>
 </resources>

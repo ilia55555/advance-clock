@@ -27,11 +27,11 @@ final class AlarmAnalogView extends View {
             canvas.drawLine(0,-radius*.91f,0,-radius*(i%5==0?.86f:.88f),paint);
             canvas.restore();
         }
-        paint.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL));paint.setTextSize(size*.082f);
+        paint.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));paint.setTextSize(size*.11f);
         paint.setTextAlign(Paint.Align.CENTER);paint.setColor(ink);
         for(int i=1;i<=12;i++) {
             double angle=Math.toRadians(i*30-90);
-            float x=(float)Math.cos(angle)*radius*.73f,y=(float)Math.sin(angle)*radius*.73f;
+            float x=(float)Math.cos(angle)*radius*.70f,y=(float)Math.sin(angle)*radius*.70f;
             canvas.drawText(CalendarUtils.fa(i),x,y-(paint.ascent()+paint.descent())/2,paint);
         }
         Calendar now=Calendar.getInstance();

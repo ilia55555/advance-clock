@@ -106,10 +106,7 @@ public final class AdhanRingActivity
                         AdhanScheduler.title(type));
 
         String time =
-                new SimpleDateFormat(
-                        "HH:mm",
-                        AppString.locale())
-                        .format(new Date());
+                TimeFormat.clock(this,System.currentTimeMillis());
         ((TextView) findViewById(
                 R.id.adhan_ring_time))
                 .setText(

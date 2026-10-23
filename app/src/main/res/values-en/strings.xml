@@ -1287,4 +1287,7 @@ Lock screen</string>
     <string name="date_display_format_label">Date format</string>
     <string name="date_display_format_written">Month name — %1$s</string>
     <string name="date_display_format_numeric">Numeric — %1$s</string>
+    <string name="clock_format_label">Time format</string>
+    <string name="clock_format_24">24-hour — 23:00</string>
+    <string name="clock_format_12">12-hour — 11:00 PM</string>
 </resources>

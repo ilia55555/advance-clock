@@ -130,7 +130,8 @@
 
     <style name="Theme.AdvanceClock" parent="Theme.AdvanceClock.Palette6.Light" />
     <style name="OverlayAdvanceClockBlur">
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowIsFloating">false</item>

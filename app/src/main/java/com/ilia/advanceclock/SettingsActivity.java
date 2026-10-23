@@ -80,6 +80,11 @@ public final class SettingsActivity extends Activity {
         palette.setSelection(AppSettings.palette(this));
         generalSettings.addView(palette, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        generalSettings.addView(label(AppString.get(R.string.clock_format_label)));
+        Spinner clockFormat=spinner(new String[]{AppString.get(R.string.clock_format_24),AppString.get(R.string.clock_format_12)});
+        clockFormat.setSelection(AppSettings.clock24Hour(this)?0:1);
+        generalSettings.addView(clockFormat,new LinearLayout.LayoutParams(-1,dp(54)));
+
         calendarSettings.addView(label(getString(R.string.calendar_label)));
         Spinner calendar = spinner(getResources().getStringArray(R.array.calendar_options));
         calendar.setSelection(AppSettings.defaultCalendar(this));
@@ -177,9 +182,6 @@ public final class SettingsActivity extends Activity {
         });
         alarmStyle.setSelection(AppSettings.alarmScreenStyle(this));
         alarmSettings.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
-        TextView blurSupport = label(AppString.get(R.string.alarm_blur_support));
-        blurSupport.setVisibility(AppSettings.alarmScreenStyle(this)==4 ? View.VISIBLE : View.GONE);
-        alarmSettings.addView(blurSupport);
 
         alarmSettings.addView(label(getString(R.string.alarm_auto_stop_title)));
         String[] ringOptions = new String[AppSettings.ALARM_RING_MINUTES.length];
@@ -245,6 +247,13 @@ public final class SettingsActivity extends Activity {
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        watch(clockFormat,position -> {
+            if(AppSettings.clock24Hour(this)==(position==0)) return;
+            AppSettings.setClock24Hour(this,position==0);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this,false);
+        });
+
         watch(dateFormat, position -> {
             if (AppSettings.dateDisplayFormat(this) == position) return;
             AppSettings.setDateDisplayFormat(this, position);
@@ -302,7 +311,6 @@ public final class SettingsActivity extends Activity {
         });
 
         watch(alarmStyle, position -> {
-            blurSupport.setVisibility(position==4 ? View.VISIBLE : View.GONE);
             if (AppSettings.alarmScreenStyle(this) == position) return;
             AppSettings.setAlarmScreenStyle(this, position);
             runtimeChanged();
