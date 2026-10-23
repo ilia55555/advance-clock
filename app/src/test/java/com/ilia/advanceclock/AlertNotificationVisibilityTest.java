@@ -10,6 +10,22 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk={28,35},shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class AlertNotificationVisibilityTest {
+ @Test @Config(sdk=35) public void initialAlarmNoteAndAdhanNotificationsRequestImmediatePresentation(){
+  Application app=RuntimeEnvironment.getApplication();AppString.init(app);NotificationHelper.ensureChannels(app);
+  var alarm=Robolectric.buildService(AlarmSoundService.class).create();
+  var note=Robolectric.buildService(NoForgetSoundService.class).create();
+  var adhan=Robolectric.buildService(AdhanSoundService.class).create();
+  try{
+   NoForgetItem item=new NoForgetItem(51,"Note","Body","[]",2,true,1000,true,100);
+   Notification a=ReflectionHelpers.callInstanceMethod(alarm.get(),"buildNotification",
+      ReflectionHelpers.ClassParameter.from(long.class,42L),ReflectionHelpers.ClassParameter.from(String.class,"Test"),
+      ReflectionHelpers.ClassParameter.from(String.class,""),ReflectionHelpers.ClassParameter.from(boolean.class,true));
+   Notification n=ReflectionHelpers.callInstanceMethod(note.get(),"buildNotification",
+      ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item),ReflectionHelpers.ClassParameter.from(boolean.class,true));
+   Notification d=ReflectionHelpers.callInstanceMethod(adhan.get(),"notification",ReflectionHelpers.ClassParameter.from(boolean.class,true));
+   for(Notification notification:new Notification[]{a,n,d})assertEquals(Notification.FOREGROUND_SERVICE_IMMEDIATE,(int)ReflectionHelpers.<Integer>getField(notification,"mFgsDeferBehavior"));
+  }finally{alarm.destroy();note.destroy();adhan.destroy();}
+ }
  @Test public void alarmTimerAndStopwatchNotificationsFollowTheirOwnScreen() {
   Application app=RuntimeEnvironment.getApplication();AppString.init(app);NotificationHelper.ensureChannels(app);
   for(String kind:new String[]{"",ToolAlarmScheduler.TIMER,ToolAlarmScheduler.STOPWATCH}) {

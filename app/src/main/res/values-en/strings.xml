@@ -1309,4 +1309,11 @@ Lock screen</string>
     <string name="alarm_dismiss_mode_swipe">Swipe up</string>
     <string name="alarm_dismiss_hold_hint">Hold for 2.5 seconds to dismiss</string>
     <string name="alarm_dismiss_preview_title">Alarm preview</string>
+    <string name="alarm_dismiss_shape_pill">Pill</string>
+    <string name="alarm_dismiss_shape_circle">Circle</string>
+    <string name="alarm_dismiss_shape_outline">Outlined</string>
+    <string name="alarm_dismiss_duration">Button activation time</string>
+    <string name="alarm_dismiss_instant">Single tap</string>
+    <string name="alarm_dismiss_seconds">%1$s seconds</string>
+    <string name="alarm_dismiss_hold_seconds">Hold for %1$s seconds to dismiss</string>
 </resources>

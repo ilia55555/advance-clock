@@ -28,6 +28,13 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         // An advance reminder rings with the note's settings but leaves the due time intact.
         if (preReminder) return;
 
+        Context application=context.getApplicationContext();
+        AlarmReceiverWork.execute(goAsync(),()->afterRing(application,intent,item));
+    }
+
+    private void afterRing(Context context,Intent intent,NoForgetItem item){
+        long id=item.id;
+        NoForgetStore store=new NoForgetStore(context);
         if (intent.getBooleanExtra("snooze", false)) {
             context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
             return; // Snoozing never moves the note's normal recurrence schedule.

@@ -124,6 +124,13 @@ public final class NoForgetSoundService extends Service {
         startForeground(NotificationHelper.reminderNotificationId(id), buildNotification(item,!NoteReminderActivity.isVisible(id)));
         active = true; foreground=true;
         updateNotificationVisibility();
+        KeyguardManager keyguard=getSystemService(KeyguardManager.class);
+        boolean locked=keyguard!=null && keyguard.isKeyguardLocked();
+        if(!NoteReminderActivity.isVisible(id)
+                && (locked?item.fullscreenLocked:item.fullscreenUnlocked))try{
+            startActivity(new Intent(this,NoteReminderActivity.class).putExtra("noteId",id)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        }catch(RuntimeException ignored){}
         ringTimeout.start(this, () -> {
             NoteReminderActivity.finishIfShowing(id);
             stopReminder();
@@ -168,6 +175,7 @@ public final class NoForgetSoundService extends Service {
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
         if (allowFullscreen && (locked ? item.fullscreenLocked : item.fullscreenUnlocked))
             builder.setFullScreenIntent(open, true);
+        if(Build.VERSION.SDK_INT>=31)builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         return builder.build();
     }
 
@@ -180,7 +188,13 @@ public final class NoForgetSoundService extends Service {
             player = new MediaPlayer();
             player.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
-            player.setDataSource(this, uri); player.setLooping(true); player.prepare(); player.setVolume(muted ? 0 : 1, muted ? 0 : 1); player.start();
+            MediaPlayer preparing=player;
+            preparing.setOnPreparedListener(ready->{
+                if(player!=ready || !active)return;
+                ready.setVolume(muted?0:1,muted?0:1);ready.start();
+            });
+            preparing.setOnErrorListener((failed,what,extra)->{if(player==failed)releasePlayer();return true;});
+            preparing.setDataSource(this,uri);preparing.setLooping(true);preparing.prepareAsync();
         } catch (Exception ignored) { releasePlayer(); }
     }
 

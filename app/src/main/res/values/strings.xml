@@ -1311,4 +1311,11 @@
     <string name="alarm_dismiss_mode_swipe">کشیدن به بالا</string>
     <string name="alarm_dismiss_hold_hint">برای قطع، ۲٫۵ ثانیه نگه دارید</string>
     <string name="alarm_dismiss_preview_title">پیش‌نمایش هشدار</string>
+    <string name="alarm_dismiss_shape_pill">کپسولی</string>
+    <string name="alarm_dismiss_shape_circle">دایره‌ای</string>
+    <string name="alarm_dismiss_shape_outline">کادردار</string>
+    <string name="alarm_dismiss_duration">زمان فعال‌شدن دکمه</string>
+    <string name="alarm_dismiss_instant">با یک لمس</string>
+    <string name="alarm_dismiss_seconds">%1$s ثانیه</string>
+    <string name="alarm_dismiss_hold_seconds">برای قطع، %1$s ثانیه نگه دارید</string>
 </resources>

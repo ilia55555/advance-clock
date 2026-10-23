@@ -33,6 +33,37 @@ public class AlarmDismissalTest {
             }
         }
     }
+    @Test public void allButtonDesignsHonorOneToFiveSecondsAndSingleTap(){
+        Application app=RuntimeEnvironment.getApplication();
+        try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()){
+          for(int mode:new int[]{AlarmDismissal.TAP,AlarmDismissal.HOLD,AlarmDismissal.OUTLINE})for(int seconds=0;seconds<=5;seconds++){
+            AppSettings.setAlarmDismissSeconds(app,mode,seconds);
+                int[] calls={0};View root=AlarmDismissal.control(controller.get(),mode,0xff006699,0xff111111,()->calls[0]++);
+                controller.get().setContentView(root);layout(root,360,180);
+                HoldToDismissView button=(HoldToDismissView)((LinearLayout)root).getChildAt(0);
+                if(seconds==0){button.performClick();assertEquals(1,calls[0]);}
+                else {button.performClick();assertEquals(0,calls[0]);
+                    touch(button,MotionEvent.ACTION_DOWN,20,20);idle(seconds*1000-1);assertEquals(0,calls[0]);
+                    // Handler delivery may follow the deadline on the next UI scheduling turn.
+                    idle(100);assertEquals("mode="+mode+" seconds="+seconds,1,calls[0]);}
+            }
+        }
+    }
+    @Test public void durationSelectorIsHiddenForSwipeAndSavedSeparatelyForEachButton(){
+        Application app=RuntimeEnvironment.getApplication();
+        try(var controller=Robolectric.buildActivity(SettingsActivity.class,new Intent(app,SettingsActivity.class)
+                .putExtra(SettingsActivity.EXTRA_SECTION,"alarm")).setup().visible()){
+            View root=controller.get().findViewById(android.R.id.content);
+            Spinner mode=root.findViewWithTag("alarm_dismiss_mode_selector"),seconds=root.findViewWithTag("alarm_dismiss_seconds_selector");
+            assertEquals(View.GONE,((View)seconds.getParent()).getVisibility());
+            mode.setSelection(0);idle(1);assertEquals(View.VISIBLE,((View)seconds.getParent()).getVisibility());
+            seconds.setSelection(4);idle(1);assertEquals(4,AppSettings.alarmDismissSeconds(app,AlarmDismissal.TAP));
+            mode.setSelection(2);idle(1);assertEquals(AlarmDismissal.OUTLINE,AppSettings.alarmDismissMode(app));
+            seconds.setSelection(2);idle(1);assertEquals(2,AppSettings.alarmDismissSeconds(app,AlarmDismissal.OUTLINE));
+            mode.setSelection(0);idle(1);assertEquals(4,seconds.getSelectedItemPosition());
+            mode.setSelection(3);idle(1);assertEquals(View.GONE,((View)seconds.getParent()).getVisibility());
+        }
+    }
     @Test public void holdRequiresFullDurationAndEarlyReleaseNeverDismisses() {
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {
             int[] dismissed={0};HoldToDismissView hold=new HoldToDismissView(controller.get(),0xff006699,()->dismissed[0]++);

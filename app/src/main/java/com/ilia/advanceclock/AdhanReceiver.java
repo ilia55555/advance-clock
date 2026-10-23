@@ -30,6 +30,7 @@ public final class AdhanReceiver extends BroadcastReceiver {
         } else {
             context.startService(service);
         }
-        AdhanScheduler.scheduleNext(context, type);
+        Context application=context.getApplicationContext();
+        AlarmReceiverWork.execute(goAsync(),()->AdhanScheduler.scheduleNext(application,type));
     }
 }

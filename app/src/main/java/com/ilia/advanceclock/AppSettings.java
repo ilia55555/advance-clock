@@ -1021,11 +1021,18 @@ public final class AppSettings {
     }
 
     public static int alarmDismissMode(Context context) {
-        return Math.max(0, Math.min(2, prefs(context).getInt("alarm_dismiss_mode", AlarmDismissal.SWIPE)));
+        return Math.max(0, Math.min(3, prefs(context).getInt("alarm_dismiss_mode", AlarmDismissal.SWIPE)));
     }
 
     public static void setAlarmDismissMode(Context context, int mode) {
-        prefs(context).edit().putInt("alarm_dismiss_mode", Math.max(0, Math.min(2, mode))).apply();
+        prefs(context).edit().putInt("alarm_dismiss_mode", Math.max(0, Math.min(3, mode))).apply();
+    }
+
+    public static int alarmDismissSeconds(Context context,int mode) {
+        return Math.max(0,Math.min(5,prefs(context).getInt("alarm_dismiss_seconds_"+mode,mode==AlarmDismissal.HOLD?1:0)));
+    }
+    public static void setAlarmDismissSeconds(Context context,int mode,int seconds) {
+        prefs(context).edit().putInt("alarm_dismiss_seconds_"+mode,Math.max(0,Math.min(5,seconds))).apply();
     }
 
     public static int alarmScreenStyle(Context context) {

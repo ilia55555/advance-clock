@@ -201,7 +201,7 @@ public final class AlarmSoundService extends Service {
         );
         playing=true; foreground=true;
         updateNotificationVisibility();
-        openScreenIfAppVisible(currentAlarmId, label, toolKind);
+        openScreenIfAllowed(currentAlarmId, label, toolKind);
         ringTimeout.start(this, () -> {
             AlarmRingActivity.finishIfShowing(currentAlarmId);
             stopAlarm();
@@ -275,9 +275,9 @@ public final class AlarmSoundService extends Service {
         return builder.build();
     }
 
-    private void openScreenIfAppVisible(long id, String label, String toolKind) {
+    private void openScreenIfAllowed(long id, String label, String toolKind) {
         if (AlarmRingActivity.isVisible(id)) return;
-        if (!AdvanceClockApplication.hasResumedActivity() || !shouldOpenFullscreen()) return;
+        if (!shouldOpenFullscreen()) return;
         try {
             startActivity(new Intent(this, AlarmRingActivity.class)
                     .putExtra("alarmId", id).putExtra("label", label).putExtra("toolKind", toolKind)

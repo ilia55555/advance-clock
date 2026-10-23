@@ -155,8 +155,8 @@ public final class AdhanSoundService extends Service {
             playing = true;
             startForeground(3_300_000 + type, notification(!AdhanRingActivity.isVisible(type)));
             foreground = true;
-            startPlayback();
             if (openWhileUnlocked && !AdhanRingActivity.isVisible(type)) openRingActivity();
+            startPlayback();
             updateNotificationVisibility();
         }
         return START_NOT_STICKY;
@@ -187,6 +187,7 @@ public final class AdhanSoundService extends Service {
                 .setCustomContentView(notificationControls(R.layout.notification_adhan, open, stop))
                 .setCustomBigContentView(notificationControls(R.layout.notification_adhan_expanded, open, stop));
         if (allowFullscreen && shouldOpenFullscreen()) builder.setFullScreenIntent(open, true);
+        if(Build.VERSION.SDK_INT>=31)builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         return builder.build();
     }
 
@@ -252,15 +253,17 @@ public final class AdhanSoundService extends Service {
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
                     player.setDataSource(this, audioUri);
                     player.setLooping(false);
-                    player.prepare();
-                    applyVolume();
+                    player.setOnPreparedListener(value->{
+                        if(player!=value || !playing)return;
+                        applyVolume();value.start();
+                    });
                     player.setWakeMode(this, android.os.PowerManager.PARTIAL_WAKE_LOCK);
                     player.setOnCompletionListener(value -> stopSelf());
                     player.setOnErrorListener((value, what, extra) -> {
                         stopSelf();
                         return true;
                     });
-                    player.start();
+                    player.prepareAsync();
                 } catch (Exception ignored) { stopSelf(); }
             }
         }

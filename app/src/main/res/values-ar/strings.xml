@@ -1327,4 +1327,11 @@
     <string name="alarm_dismiss_mode_swipe">السحب إلى الأعلى</string>
     <string name="alarm_dismiss_hold_hint">اضغط لمدة ٢٫٥ ثانية للإيقاف</string>
     <string name="alarm_dismiss_preview_title">معاينة التنبيه</string>
+    <string name="alarm_dismiss_shape_pill">كبسولة</string>
+    <string name="alarm_dismiss_shape_circle">دائرة</string>
+    <string name="alarm_dismiss_shape_outline">بإطار</string>
+    <string name="alarm_dismiss_duration">مدة تفعيل الزر</string>
+    <string name="alarm_dismiss_instant">بلمسة واحدة</string>
+    <string name="alarm_dismiss_seconds">%1$s ثانية</string>
+    <string name="alarm_dismiss_hold_seconds">اضغط مطولاً لمدة %1$s ثانية للإيقاف</string>
 </resources>

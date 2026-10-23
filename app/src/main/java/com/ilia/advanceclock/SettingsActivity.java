@@ -198,11 +198,27 @@ public final class SettingsActivity extends Activity {
         alarmSettings.addView(alarmStyle, new LinearLayout.LayoutParams(-1, dp(54)));
 
         alarmSettings.addView(label(AppString.get(R.string.alarm_dismiss_mode_label)));
-        Spinner dismissMode = spinner(new String[]{AppString.get(R.string.alarm_dismiss_mode_tap),
-                AppString.get(R.string.alarm_dismiss_mode_hold),AppString.get(R.string.alarm_dismiss_mode_swipe)});
+        final int[] dismissModes={AlarmDismissal.TAP,AlarmDismissal.HOLD,AlarmDismissal.OUTLINE,AlarmDismissal.SWIPE};
+        Spinner dismissMode = spinner(new String[]{AppString.get(R.string.alarm_dismiss_shape_pill),
+                AppString.get(R.string.alarm_dismiss_shape_circle),AppString.get(R.string.alarm_dismiss_shape_outline),AppString.get(R.string.alarm_dismiss_mode_swipe)});
         dismissMode.setTag("alarm_dismiss_mode_selector");
-        dismissMode.setSelection(AppSettings.alarmDismissMode(this));
+        dismissMode.setSelection(AppSettings.alarmDismissMode(this)==AlarmDismissal.SWIPE?3:AppSettings.alarmDismissMode(this)==AlarmDismissal.OUTLINE?2:AppSettings.alarmDismissMode(this));
         alarmSettings.addView(dismissMode,new LinearLayout.LayoutParams(-1,dp(54)));
+        LinearLayout dismissTiming=new LinearLayout(this);dismissTiming.setOrientation(LinearLayout.VERTICAL);
+        dismissTiming.addView(label(AppString.get(R.string.alarm_dismiss_duration)));
+        String[] timingOptions=new String[6];timingOptions[0]=AppString.get(R.string.alarm_dismiss_instant);
+        for(int i=1;i<=5;i++)timingOptions[i]=getString(R.string.alarm_dismiss_seconds,CalendarUtils.fa(i));
+        Spinner dismissSeconds=spinner(timingOptions);dismissSeconds.setTag("alarm_dismiss_seconds_selector");
+        dismissSeconds.setSelection(AppSettings.alarmDismissSeconds(this,AppSettings.alarmDismissMode(this)));
+        dismissTiming.addView(dismissSeconds,new LinearLayout.LayoutParams(-1,dp(54)));
+        dismissTiming.setVisibility(AppSettings.alarmDismissMode(this)==AlarmDismissal.SWIPE?View.GONE:View.VISIBLE);
+        alarmSettings.addView(dismissTiming,new LinearLayout.LayoutParams(-1,-2));
+        watch(dismissSeconds,seconds->{
+            int mode=AppSettings.alarmDismissMode(this);
+            if(mode!=AlarmDismissal.SWIPE && seconds!=AppSettings.alarmDismissSeconds(this,mode)){
+                AppSettings.setAlarmDismissSeconds(this,mode,seconds);setResult(RESULT_OK);
+            }
+        });
         android.widget.Button preview = new android.widget.Button(this);
         preview.setTag("alarm_preview_button");
         preview.setText(AppString.get(R.string.alarm_dismiss_preview_title));
@@ -212,8 +228,11 @@ public final class SettingsActivity extends Activity {
         preview.setOnClickListener(view -> startActivity(new Intent(this,AlarmPreviewActivity.class)));
         alarmSettings.addView(preview,new LinearLayout.LayoutParams(-1,dp(48)));
         watch(dismissMode, position -> {
-            if (AppSettings.alarmDismissMode(this)==position) return;
-            AppSettings.setAlarmDismissMode(this,position);
+            int mode=dismissModes[position];
+            if (AppSettings.alarmDismissMode(this)==mode) return;
+            AppSettings.setAlarmDismissMode(this,mode);
+            dismissTiming.setVisibility(mode==AlarmDismissal.SWIPE?View.GONE:View.VISIBLE);
+            dismissSeconds.setSelection(AppSettings.alarmDismissSeconds(this,mode));
             setResult(RESULT_OK);
         });
 

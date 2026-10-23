@@ -1,32 +1,23 @@
 package com.ilia.advanceclock;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RippleDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 
 /** The same dismissal control is used by real ringing screens and the silent settings preview. */
 final class AlarmDismissal {
-    static final int TAP=0,HOLD=1,SWIPE=2;
+    static final int TAP=0,HOLD=1,SWIPE=2,OUTLINE=3;
     static View control(Context context,int mode,int primary,int textColor,Runnable dismiss){
-        if(mode==TAP){
-            Button button=new Button(context);button.setTag("alarm_dismiss_tap");
-            button.setText(AppString.get(R.string.ui_stop_alarm));button.setAllCaps(false);button.setTextSize(16);
-            button.setTextColor(Color.luminance(primary)>.5?0xff17212b:Color.WHITE);
-            button.setMinHeight(dp(context,60));button.setStateListAnimator(null);button.setElevation(0);
-            GradientDrawable shape=new GradientDrawable();shape.setColor(primary);shape.setCornerRadius(dp(context,18));
-            button.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22000000),shape,null));
-            button.setOnClickListener(view->dismiss.run());return button;
-        }
-        if(mode==HOLD){
+        if(mode!=SWIPE){
+            int seconds=AppSettings.alarmDismissSeconds(context,mode);
             LinearLayout container=new LinearLayout(context);container.setOrientation(LinearLayout.VERTICAL);container.setGravity(Gravity.CENTER_HORIZONTAL);
-            container.addView(new HoldToDismissView(context,primary,dismiss),new LinearLayout.LayoutParams(dp(context,72),dp(context,72)));
-            TextView hint=hint(context,AppString.get(R.string.alarm_dismiss_hold_hint),textColor,14);
-            hint.setPadding(0,dp(context,4),0,0);container.addView(hint,new LinearLayout.LayoutParams(-1,-2));return container;
+            HoldToDismissView button=new HoldToDismissView(context,primary,textColor,mode,seconds*1000L,dismiss);
+            button.setTag(mode==TAP?"alarm_dismiss_tap":mode==HOLD?"alarm_dismiss_hold":"alarm_dismiss_outline");
+            container.addView(button,new LinearLayout.LayoutParams(mode==HOLD?dp(context,88):dp(context,220),dp(context,mode==HOLD?88:58)));
+            TextView hint=hint(context,seconds==0?AppString.get(R.string.alarm_dismiss_instant):
+                    context.getString(R.string.alarm_dismiss_hold_seconds,CalendarUtils.fa(seconds)),textColor,13);
+            hint.setPadding(0,dp(context,6),0,0);container.addView(hint,new LinearLayout.LayoutParams(-1,-2));return container;
         }
         TextView hint=hint(context,AppString.get(R.string.alarm_swipe_stop),textColor,18);
         hint.setTag("alarm_dismiss_swipe_hint");hint.setPadding(0,dp(context,12),0,0);return hint;

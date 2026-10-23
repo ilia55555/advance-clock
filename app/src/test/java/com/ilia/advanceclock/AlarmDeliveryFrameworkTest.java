@@ -39,6 +39,26 @@ public final class AlarmDeliveryFrameworkTest {
         assertFalse(AdvanceClockApplication.hasResumedActivity());
     }
 
+    @Test public void backgroundAlertAttemptsOpeningImmediatelyAndRespectsFullscreenSetting(){
+        Context c=RuntimeEnvironment.getApplication();assertFalse(AdvanceClockApplication.hasResumedActivity());
+        var controller=Robolectric.buildService(AlarmSoundService.class).create();
+        try{
+            AppSettings.setAlarmFullscreenUnlocked(c,true);
+            org.robolectric.util.ReflectionHelpers.callInstanceMethod(controller.get(),"openScreenIfAllowed",
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(long.class,42L),
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(String.class,"Wake"),
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(String.class,""));
+            Intent screen=Shadows.shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity();
+            assertNotNull(screen);assertEquals(AlarmRingActivity.class.getName(),screen.getComponent().getClassName());
+            AppSettings.setAlarmFullscreenUnlocked(c,false);
+            org.robolectric.util.ReflectionHelpers.callInstanceMethod(controller.get(),"openScreenIfAllowed",
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(long.class,42L),
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(String.class,"Wake"),
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(String.class,""));
+            assertNull(Shadows.shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity());
+        }finally{controller.destroy();}
+    }
+
     @Test public void receiverPassesAlarmSnapshotToAvoidRepeatedEncryptedRead() throws Exception {
         Context c = RuntimeEnvironment.getApplication();
         AlarmItem item = new AlarmItem(31L, "Wake", System.currentTimeMillis() + 60000, 0, true);
