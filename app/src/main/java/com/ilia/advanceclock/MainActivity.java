@@ -1166,6 +1166,7 @@ public final class MainActivity extends Activity {
         applyPrayerTimesUi();
         applyCalendarEventsUi();
         NotificationHelper.ensureChannels(this);
+        DateNotificationService.ensureVisible(this);
         renderAlarms();
         renderNoForget();
 
