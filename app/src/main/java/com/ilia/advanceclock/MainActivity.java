@@ -111,8 +111,8 @@ public final class MainActivity extends Activity {
     private TextView headerTime;
     private TextView headerDate;
     private ImageButton themeToggle;
-    private Button clockFab;
-    private Button noteFab;
+    private android.widget.ImageButton clockFab;
+    private android.widget.ImageButton noteFab;
     private String currentTab;
     private TabMotion tabMotion;
     private float tabSwipeX, tabSwipeY;

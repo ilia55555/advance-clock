@@ -38,12 +38,12 @@ public final class QiblaVisibilityFrameworkTest {
         view.draw(new Canvas(Bitmap.createBitmap(600, 600, Bitmap.Config.ARGB_8888)));
     }
 
-    @Test public void everyCompassModeDrawsQiblaWhenLocationIsKnown() throws Exception {
+    @Test public void onlyQiblaModeDrawsMarkerWhenLocationIsKnown() throws Exception {
         Context context = RuntimeEnvironment.getApplication();
         AppString.init(context);
         context.getSharedPreferences("advance_clock_settings", 0).edit()
                 .putString("prayer_horizons", "[{\"label\":\"Tehran\",\"lat\":35.6892,\"lon\":51.3890,\"zone\":\"Asia/Tehran\"}]").commit();
-        for (int mode = 0; mode <= 2; mode++) {
+        for (int mode = 0; mode <= 1; mode++) {
             Intent intent = new Intent(context, CompassToolActivity.class)
                     .putExtra(CompassToolActivity.EXTRA_START_MODE, mode);
             org.robolectric.android.controller.ActivityController<CompassToolActivity> controller =
@@ -51,9 +51,26 @@ public final class QiblaVisibilityFrameworkTest {
             Field field = CompassToolActivity.class.getDeclaredField("compassView");
             field.setAccessible(true);
             draw((View) field.get(controller.get()));
-            assertEquals(1, MarkerCalls.directions);
+            assertEquals(mode == CompassToolActivity.MODE_QIBLA ? 1 : 0, MarkerCalls.directions);
             assertEquals(0, MarkerCalls.pending);
             controller.pause().stop().destroy();
+        }
+    }
+
+
+    @Test public void compassWithoutLocationDoesNotDrawPendingQiblaArtwork() throws Exception {
+        Context context = RuntimeEnvironment.getApplication(); AppString.init(context);
+        context.getSharedPreferences("qibla_location", 0).edit().clear().commit();
+        context.getSharedPreferences("advance_clock_settings", 0).edit().clear().commit();
+        for (int mode=0; mode<=1; mode++) {
+            Intent intent=new Intent(context,CompassToolActivity.class)
+                    .putExtra(CompassToolActivity.EXTRA_START_MODE,mode);
+            try(var controller=Robolectric.buildActivity(CompassToolActivity.class,intent).setup()) {
+                Field field=CompassToolActivity.class.getDeclaredField("compassView");field.setAccessible(true);
+                draw((View)field.get(controller.get()));
+                assertEquals(0,MarkerCalls.directions);
+                assertEquals(mode==CompassToolActivity.MODE_QIBLA ? 1 : 0,MarkerCalls.pending);
+            }
         }
     }
 

@@ -1120,34 +1120,34 @@
                 android:layout="@layout/panel_world_clock" />
         </FrameLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/clock_fab"
             android:layout_width="58dp"
             android:layout_height="58dp"
             android:layout_gravity="bottom|right"
             android:layout_margin="18dp"
             android:background="@drawable/bg_fab"
+            android:contentDescription="@string/runtime_text_0008"
+            android:src="@drawable/ic_fab_add"
+            android:scaleType="center"
+            android:padding="0dp"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            android:text="+"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
             android:visibility="gone" />
 
-        <Button
+        <ImageButton
             android:id="@+id/note_fab"
             android:layout_width="58dp"
             android:layout_height="58dp"
             android:layout_gravity="bottom|right"
             android:layout_margin="18dp"
             android:background="@drawable/bg_fab"
+            android:contentDescription="@string/runtime_text_0008"
+            android:src="@drawable/ic_fab_add"
+            android:scaleType="center"
+            android:padding="0dp"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            android:text="+"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
             android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

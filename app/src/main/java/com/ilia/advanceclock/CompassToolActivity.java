@@ -37,7 +37,6 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
 
     public static final int MODE_COMPASS = 0;
     public static final int MODE_QIBLA = 1;
-    public static final int MODE_DIRECTIONS = 2;
 
     private static final String PREFS = "compass_tool";
     private static final String KEY_MODE = "display_mode";
@@ -98,7 +97,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         selectorCard.addView(selectorLabel);
         Spinner selector = new Spinner(this);
         String[] modes = new String[]{
-                AppString.get(R.string.runtime_text_0320), AppString.get(R.string.runtime_text_0321), AppString.get(R.string.runtime_text_0322)};
+                AppString.get(R.string.runtime_text_0320), AppString.get(R.string.runtime_text_0321)};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_dropdown_item, modes);
         selector.setAdapter(adapter);
@@ -108,7 +107,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                 EXTRA_START_MODE,
                 -1);
         if (requestedMode >= MODE_COMPASS
-                && requestedMode <= MODE_DIRECTIONS) {
+                && requestedMode <= MODE_QIBLA) {
             selectedMode = requestedMode;
         } else {
             selectedMode = getSharedPreferences(
@@ -117,8 +116,9 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                     KEY_MODE,
                     MODE_QIBLA);
         }
+        if (selectedMode == 2) selectedMode = MODE_COMPASS; // Retired duplicate mode.
         if (selectedMode < MODE_COMPASS
-                || selectedMode > MODE_DIRECTIONS) {
+                || selectedMode > MODE_QIBLA) {
             selectedMode = MODE_QIBLA;
         }
         selector.setSelection(selectedMode);
@@ -314,8 +314,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                         bearing,
                         signedAngle((float) bearing - heading)));
             }
-        } else if (selectedMode == MODE_DIRECTIONS) {
-            status.setText(directionName(heading) + "  •  " + Math.round(heading) + "°");
+
         } else {
             status.setText(AppString.get(R.string.runtime_text_0327)
                     + Math.round(heading) + "°");
@@ -409,7 +408,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         if (locationAccessCard == null) return;
 
         boolean qiblaMode =
-                selectedMode == MODE_QIBLA || qiblaLocation == null;
+                selectedMode == MODE_QIBLA;
         locationAccessCard.setVisibility(
                 qiblaMode
                         ? View.VISIBLE
@@ -703,10 +702,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             }
             canvas.restore();
 
-            if (selectedMode != MODE_QIBLA) {
-                drawNorthNeedle(canvas, cx, cy, radius);
-            }
-            if (qiblaLocation != null) {
+            drawNorthNeedle(canvas, cx, cy, radius);
+            if (selectedMode == MODE_QIBLA && qiblaLocation != null) {
                 drawQiblaNeedle(canvas, cx, cy, radius,
                         signedAngle((float) qiblaBearing() - azimuth));
             }
@@ -715,7 +712,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
             canvas.drawCircle(cx, cy, dp(10), paint);
             paint.setColor(0xFFD8B15B);
             canvas.drawCircle(cx, cy, dp(5), paint);
-            if (qiblaLocation == null) {
+            if (selectedMode == MODE_QIBLA && qiblaLocation == null) {
                 // Artwork is visible while location is pending; never invent a bearing.
                 marker.drawPending(canvas, cx, cy, radius);
             }
