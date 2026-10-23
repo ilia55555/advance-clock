@@ -66,6 +66,7 @@ final class PrayerSettingsPanel {
     private final Switch[] adhanTypeSwitches = new Switch[5];
     private boolean syncingAdhanSwitches;
     private LinearLayout activeDetails;
+    private ImageView activeDetailsArrow;
     private final java.util.Map<Integer, TextView> summaries = new java.util.HashMap<>();
 
     private final Activity host;
@@ -735,9 +736,15 @@ final class PrayerSettingsPanel {
         labels.setFocusable(true);
         labels.setBackgroundResource(R.drawable.bg_soft_button);
         labels.setContentDescription(title + "، " + AppString.get(R.string.runtime_text_0001));
+        ImageView expand = new ImageView(host);
         labels.setOnClickListener(v -> {
             boolean opening = details.getVisibility() != View.VISIBLE;
             if (activeDetails != null) activeDetails.setVisibility(View.GONE);
+            if (activeDetailsArrow != null) {
+                activeDetailsArrow.animate().cancel();
+                activeDetailsArrow.animate().rotation(0f).setDuration(180).start();
+            }
+            activeDetailsArrow = null;
             activeDetails = null;
             activeMuezzinList = null;
             activeAdhanType = -1;
@@ -746,10 +753,12 @@ final class PrayerSettingsPanel {
                 showAdhanSettings(title, type, details);
                 details.setVisibility(View.VISIBLE);
                 activeDetails = details;
+                activeDetailsArrow = expand;
+                expand.animate().cancel();
+                expand.animate().rotation(180f).setDuration(180).start();
             }
         });
-        ImageView expand = new ImageView(host);
-        expand.setImageResource(android.R.drawable.arrow_down_float);
+        expand.setImageResource(R.drawable.ic_settings_chevron_down);
         expand.setColorFilter(AppSettings.primaryColor(host));
         expand.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         expand.setOnClickListener(v -> labels.performClick());

@@ -192,7 +192,7 @@
     <string formatted="false" name="runtime_text_0107">Tab order</string>
     <string formatted="false" name="runtime_text_0108">Reorder tabs</string>
     <string formatted="false" name="runtime_text_0109">Alarm and notification permissions</string>
-    <string formatted="false" name="runtime_text_0110">Widgets and settings</string>
+    <string formatted="false" name="runtime_text_0110">Widgets</string>
     <string formatted="false" name="runtime_text_0111">Widget settings</string>
     <string formatted="false" name="runtime_text_0112">Live preview</string>
     <string formatted="false" name="runtime_text_0113">Add to Home screen</string>
@@ -1294,4 +1294,6 @@ Lock screen</string>
     <string name="settings_section_notifications">Notifications</string>
     <string name="settings_expanded">Expanded</string>
     <string name="settings_collapsed">Collapsed</string>
+    <string name="tab_order_move_up">Move %1$s up</string>
+    <string name="tab_order_move_down">Move %1$s down</string>
 </resources>

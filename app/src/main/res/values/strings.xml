@@ -194,7 +194,7 @@
     <string formatted="false" name="runtime_text_0107">ترتیب تب‌ها</string>
     <string formatted="false" name="runtime_text_0108">جابه‌جایی ترتیب تب‌ها</string>
     <string formatted="false" name="runtime_text_0109">مجوزهای آلارم و اعلان</string>
-    <string formatted="false" name="runtime_text_0110">ویجت‌ها و تنظیمات</string>
+    <string formatted="false" name="runtime_text_0110">ویجت‌ها</string>
     <string formatted="false" name="runtime_text_0111">تنظیمات ویجت</string>
     <string formatted="false" name="runtime_text_0112">پیش‌نمایش زنده</string>
     <string formatted="false" name="runtime_text_0113">افزودن به صفحه اصلی</string>
@@ -1296,4 +1296,6 @@
     <string name="settings_section_notifications">اعلان‌ها</string>
     <string name="settings_expanded">باز</string>
     <string name="settings_collapsed">بسته</string>
+    <string name="tab_order_move_up">انتقال %1$s به بالا</string>
+    <string name="tab_order_move_down">انتقال %1$s به پایین</string>
 </resources>

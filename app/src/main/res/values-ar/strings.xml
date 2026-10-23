@@ -147,7 +147,7 @@
     <string formatted="false" name="runtime_text_0107">ترتيب علامات التبويب</string>
     <string formatted="false" name="runtime_text_0108">إعادة ترتيب علامات التبويب</string>
     <string formatted="false" name="runtime_text_0109">أذونات المنبّه والإشعارات</string>
-    <string formatted="false" name="runtime_text_0110">الأدوات والإعدادات</string>
+    <string formatted="false" name="runtime_text_0110">عناصر واجهة المستخدم</string>
     <string formatted="false" name="runtime_text_0111">إعدادات الأداة</string>
     <string formatted="false" name="runtime_text_0112">معاينة مباشرة</string>
     <string formatted="false" name="runtime_text_0113">إضافة إلى الشاشة الرئيسية</string>
@@ -1312,4 +1312,6 @@
     <string name="settings_section_notifications">الإشعارات</string>
     <string name="settings_expanded">موسّع</string>
     <string name="settings_collapsed">مطوي</string>
+    <string name="tab_order_move_up">نقل %1$s إلى الأعلى</string>
+    <string name="tab_order_move_down">نقل %1$s إلى الأسفل</string>
 </resources>

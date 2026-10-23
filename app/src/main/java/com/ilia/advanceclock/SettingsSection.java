@@ -59,7 +59,7 @@ final class SettingsSection extends LinearLayout {
         textParams.setMarginEnd(dp(10));
         header.addView(label, textParams);
         arrow = new ImageView(context);
-        arrow.setImageResource(android.R.drawable.arrow_down_float);
+        arrow.setImageResource(R.drawable.ic_settings_chevron_down);
         arrow.setColorFilter(AppSettings.primaryColor(context));
         arrow.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         header.addView(arrow, new LayoutParams(dp(22), dp(22)));
@@ -83,7 +83,12 @@ final class SettingsSection extends LinearLayout {
     void setExpanded(boolean expanded) {
         content.setVisibility(expanded ? VISIBLE : GONE);
         divider.setVisibility(expanded ? VISIBLE : GONE);
-        arrow.animate().rotation(expanded ? 180f : 0f).setDuration(180).start();
+        arrow.animate().cancel();
+        if (isLaidOut()) {
+            arrow.animate().rotation(expanded ? 180f : 0f).setDuration(180).start();
+        } else {
+            arrow.setRotation(expanded ? 180f : 0f);
+        }
         background.setStroke(dp(1), expanded ? AppSettings.primaryColor(getContext())
                 : AppSettings.field(getContext()));
         header.setSelected(expanded);

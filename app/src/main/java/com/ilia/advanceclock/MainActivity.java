@@ -380,7 +380,6 @@ public final class MainActivity extends Activity {
             PopupMenu menu = new PopupMenu(this, anchor);
             menu.getMenu().add(0, 1, 0, AppString.get(R.string.runtime_text_0001));
             menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
-            menu.getMenu().add(0, 6, 4, AppString.get(R.string.runtime_text_0108));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
             menu.getMenu().add(0, 9, 7, getString(R.string.about_title));
             HeaderMenu.show(this, anchor, menu.getMenu(), item -> {
@@ -390,13 +389,6 @@ public final class MainActivity extends Activity {
                 }
                 if (item.getItemId() == 5) {
                     startActivity(new Intent(this, WidgetCenterActivity.class));
-                    return true;
-                }
-                if (item.getItemId() == 6) {
-                    TabOrderDialog.show(this, () -> {
-                        applyTabOrder();
-                        applyTabVisibility();
-                    });
                     return true;
                 }
                 if (item.getItemId() == 8) {

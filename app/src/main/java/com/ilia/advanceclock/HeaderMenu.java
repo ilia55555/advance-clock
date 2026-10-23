@@ -57,10 +57,10 @@ final class HeaderMenu {
             case 1:return R.drawable.ic_md_settings;
             case 7:return R.drawable.ic_alarm;
             case 4:return android.R.drawable.ic_popup_reminder;
-            case 5:return android.R.drawable.ic_menu_gallery;
-            case 6:return android.R.drawable.ic_menu_sort_by_size;
-            case 8:return android.R.drawable.ic_menu_manage;
-            default:return android.R.drawable.ic_dialog_info;
+            case 5:return R.drawable.ic_settings_widgets;
+            case 6:return R.drawable.ic_settings_tabs;
+            case 8:return R.drawable.ic_settings_tools;
+            default:return R.drawable.ic_settings_info;
         }
     }
     private static int dp(Activity host,int value) {return Math.round(value*host.getResources().getDisplayMetrics().density);}

@@ -101,6 +101,46 @@ public class SettingsAccordionTest {
         }
     }
 
+    @Test public void reorderingTabsSavesImmediatelyAndPreservesVisibilityAfterReopening() {
+        Application app=RuntimeEnvironment.getApplication();
+        String[] original=AppSettings.tabOrder(app);
+        AppSettings.setTabEnabled(app,original[0],false);
+        Intent intent=new Intent(app,SettingsActivity.class).putExtra(SettingsActivity.EXTRA_SECTION,"tabs");
+        try(var controller=Robolectric.buildActivity(SettingsActivity.class,intent).setup()) {
+            SettingsActivity host=controller.get();
+            LinearLayout list=section(host,"tabs").content.findViewWithTag("tab_order_controls");
+            assertEquals("tab_order_row_"+original[0],list.getChildAt(0).getTag());
+            list.findViewWithTag("tab_order_down_"+original[0]).performClick();
+            assertEquals(original[1],AppSettings.tabOrder(host)[0]);
+            assertEquals(original[0],AppSettings.tabOrder(host)[1]);
+            assertFalse(AppSettings.tabEnabled(host,original[0]));
+            assertFalse(list.findViewWithTag("tab_order_up_"+original[1]).isEnabled());
+            assertFalse(list.findViewWithTag("tab_order_down_"+original[original.length-1]).isEnabled());
+            assertNull(Shadows.shadowOf(host).getNextStartedActivity());
+            controller.recreate();
+            host=controller.get();
+            list=section(host,"tabs").content.findViewWithTag("tab_order_controls");
+            assertEquals("tab_order_row_"+original[1],list.getChildAt(0).getTag());
+            Switch hidden=(Switch)((LinearLayout)list.getChildAt(1)).getChildAt(0);
+            assertFalse(hidden.isChecked());
+            hidden.setChecked(true);
+            assertTrue(AppSettings.tabEnabled(host,original[0]));
+        }
+    }
+
+    @Test public void chevronRotatesHalfATurnWhenSectionOpensAndReturnsWhenClosed() {
+        try(var controller=Robolectric.buildActivity(SettingsActivity.class).setup().visible()) {
+            SettingsSection tabs=section(controller.get(),"tabs");
+            View arrow=tabs.header.getChildAt(2);
+            tabs.header.performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(300));
+            assertEquals(180f,arrow.getRotation(),.1f);
+            tabs.header.performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(300));
+            assertEquals(0f,arrow.getRotation(),.1f);
+        }
+    }
+
     private void assertRedirect(Activity activity,String key) {
         Intent next=Shadows.shadowOf(activity).getNextStartedActivity();
         assertEquals(SettingsActivity.class.getName(),next.getComponent().getClassName());
