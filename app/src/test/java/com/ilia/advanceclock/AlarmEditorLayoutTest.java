@@ -40,6 +40,7 @@ public class AlarmEditorLayoutTest {
                 assertTrue(Math.abs((toggle.getTop()+toggle.getBottom())/2-(card.getChildAt(0).getTop()+card.getChildAt(0).getBottom())/2)<=1);assertTrue(toggle.getHeight()>0);assertTrue(toggle.isShown());
                 assertTrue(toggle.getBottom()<=card.getHeight());assertTrue(card.getBottom()<=controls.getHeight());
             }
+            assertTrue(((View)date.getParent()).getLeft()<((View)automatic.getParent()).getLeft());
             LinearLayout controls=(LinearLayout)date.getParent().getParent();
             View timeRow=(View)host.findViewById(R.id.pick_time).getParent();assertTrue(controls.getBottom()<=timeRow.getTop());
             if(world){LinearLayout field=(LinearLayout)host.findViewById(R.id.alarm_priority).getParent();

@@ -20,7 +20,7 @@ final class DateOption {
         this.host = host;
         controls = new LinearLayout(host);
         controls.setOrientation(LinearLayout.HORIZONTAL);
-        controls.setLayoutDirection(AppSettings.layoutDirection(host));
+        controls.setLayoutDirection(View.LAYOUT_DIRECTION_LTR); // Keep the date pair above the physical left date field.
         controls.setBaselineAligned(false);
         controls.setGravity(Gravity.CENTER_VERTICAL);
         controls.setBackgroundResource(R.drawable.bg_field);
@@ -57,7 +57,7 @@ final class DateOption {
         caption.setText(label==R.string.alarm_auto_delete_finished?R.string.alarm_auto_delete_short:label);
         caption.setTextColor(AppSettings.textSecondary(host));
         caption.setTextSize(12);
-        caption.setGravity(Gravity.CENTER);
+        caption.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
         caption.setMaxLines(1);caption.setEllipsize(null);caption.setHorizontallyScrolling(false);
         caption.setIncludeFontPadding(false);
         caption.setAutoSizeTextTypeUniformWithConfiguration(8,12,1,android.util.TypedValue.COMPLEX_UNIT_SP);
@@ -66,7 +66,7 @@ final class DateOption {
         toggle.setId(id);
         toggle.setContentDescription(host.getString(label));
         toggle.setMinimumHeight(dp(48));
-        LinearLayout.LayoutParams toggleParams=new LinearLayout.LayoutParams(-2,-2);toggleParams.setMarginStart(dp(4));
+        LinearLayout.LayoutParams toggleParams=new LinearLayout.LayoutParams(-2,-2);toggleParams.setMarginStart(dp(2));
         card.addView(toggle,toggleParams);
         card.setOnClickListener(view->toggle.toggle());
         controls.addView(card, new LinearLayout.LayoutParams(0, -2, 1));
