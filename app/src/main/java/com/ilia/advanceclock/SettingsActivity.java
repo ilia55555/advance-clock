@@ -74,10 +74,10 @@ public final class SettingsActivity extends Activity {
 
         LinearLayout generalSettings = section(root, "general", R.string.settings_section_general, R.drawable.ic_md_settings);
         LinearLayout tabSettings = section(root, "tabs", R.string.settings_section_tabs, android.R.drawable.ic_menu_sort_by_size);
-        LinearLayout notificationSettings = section(root, "notification", R.string.settings_section_notifications, android.R.drawable.ic_popup_reminder);
+        LinearLayout notificationSettings = section(root, "notification", R.string.settings_section_notifications, R.drawable.ic_settings_notification);
         LinearLayout calendarSettings = section(root, "calendar", R.string.settings_section_calendar, android.R.drawable.ic_menu_my_calendar);
-        LinearLayout alarmSettings = section(root, "alarm", R.string.settings_section_alarms, R.drawable.ic_alarm);
-        LinearLayout prayerSettingsCard = section(root, "prayer", R.string.runtime_text_0077, android.R.drawable.ic_menu_compass);
+        LinearLayout alarmSettings = section(root, "alarm", R.string.settings_section_alarms, R.drawable.ic_settings_alarm);
+        LinearLayout prayerSettingsCard = section(root, "prayer", R.string.runtime_text_0077, R.drawable.ic_settings_adhan);
         notificationPanel = new NotificationSettingsPanel(this, notificationSettings, alarmSettings);
 
         generalSettings.addView(label(AppString.get(R.string.runtime_text_0043)));
