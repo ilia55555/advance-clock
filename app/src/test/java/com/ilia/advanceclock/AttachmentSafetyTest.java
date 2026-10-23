@@ -28,7 +28,10 @@ public class AttachmentSafetyTest {
     @Test public void widgetAndBootReceiversAreNotExported() throws Exception {
         android.content.Context context = org.robolectric.RuntimeEnvironment.getApplication();
         android.content.pm.PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), android.content.pm.PackageManager.GET_RECEIVERS);
-        for (android.content.pm.ActivityInfo receiver : info.receivers)
-            assertFalse(receiver.name, receiver.exported);
+        for (android.content.pm.ActivityInfo receiver : info.receivers) {
+            if (receiver.name.equals(SystemTimeChangedReceiver.class.getName())) {
+                assertTrue(receiver.exported); // Protected system clock actions only.
+            } else assertFalse(receiver.name, receiver.exported);
+        }
     }
 }

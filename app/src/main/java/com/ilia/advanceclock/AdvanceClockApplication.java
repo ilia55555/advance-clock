@@ -36,6 +36,22 @@ public final class AdvanceClockApplication extends Application {
         AppSettings.applyLanguage(this);
         AppString.init(this);
         CalendarUtils.setHijriReference(AppSettings.hijriReference(this));
+        // A process-scoped receiver also handles OEMs that suppress manifest date
+        // broadcasts while the UI is closed. Registration does not keep the CPU awake.
+        android.content.IntentFilter clockChanges = new android.content.IntentFilter();
+        clockChanges.addAction(Intent.ACTION_TIME_CHANGED);
+        clockChanges.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        clockChanges.addAction(Intent.ACTION_DATE_CHANGED);
+        android.content.BroadcastReceiver clockReceiver = new android.content.BroadcastReceiver() {
+            @Override public void onReceive(Context context, Intent intent) {
+                DateNotificationService.refreshNow(context);
+            }
+        };
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(clockReceiver, clockChanges, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(clockReceiver, clockChanges);
+        }
         PrayerTimeZoneRepair.repairIfNeeded(this);
         MainNoteTabEnhancer.install(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
