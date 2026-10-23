@@ -129,7 +129,7 @@ final class ReminderScreen extends FrameLayout {
         ScrollView header = new ScrollView(host); header.addView(headingContent);
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
         LinearLayout footer = new LinearLayout(host); footer.setOrientation(LinearLayout.VERTICAL);
-        footer.setPadding(0, dp(8), 0, swipeToStop ? dp(2) : dp(24));
+        footer.setPadding(0, dp(8), 0, swipeToStop ? dp(2) : dp(8));
         AlertActions actions = new AlertActions(host, data.output,
                 data.openLabel.isEmpty() ? host.getString(R.string.media_open) : data.openLabel,
                 open, data.snoozeMinutes, textColor, snooze);
@@ -167,7 +167,7 @@ final class ReminderScreen extends FrameLayout {
             } else { top = insets.getStableInsetTop(); bottom = insets.getStableInsetBottom(); }
             headingContent.setPadding(0, Math.max(dp(30), top + dp(8)), 0, dp(8));
             int visibleBottom=Build.VERSION.SDK_INT>=30 ? insets.getInsets(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout()).bottom : insets.getSystemWindowInsetBottom();
-            footer.setPadding(0, dp(8), 0, swipeToStop ? visibleBottom + dp(2) : bottom + dp(24)); return insets;
+            footer.setPadding(0, dp(8), 0, visibleBottom + (swipeToStop ? dp(2) : dp(8))); return insets;
         });
         ScrollView root = new ScrollView(host); root.setFillViewport(true); root.addView(screen, new ScrollView.LayoutParams(-1, -1));
         if (swipeToStop) {

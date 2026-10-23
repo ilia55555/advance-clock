@@ -11,6 +11,7 @@ import android.view.*;
 final class HoldToDismissView extends View {
     static final long HOLD_MILLIS=2500;
     private final Handler handler=new Handler(Looper.getMainLooper());
+    private final android.graphics.drawable.Drawable dismissIcon;
     private final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Runnable dismiss;
     private final int color,style;
@@ -30,7 +31,7 @@ final class HoldToDismissView extends View {
         this(context,color,color,AlarmDismissal.HOLD,HOLD_MILLIS,dismiss);
     }
     HoldToDismissView(Context context,int color,int textColor,int style,long duration,Runnable dismiss){
-        super(context);this.color=color;this.style=style;this.duration=duration;this.dismiss=dismiss;
+        super(context);dismissIcon=context.getDrawable(R.drawable.ic_alarm_dismiss).mutate();this.color=color;this.style=style;this.duration=duration;this.dismiss=dismiss;
         setTag("alarm_dismiss_hold");setClickable(true);setFocusable(true);setLongClickable(duration>0);
         setContentDescription(duration==0?AppString.get(R.string.ui_stop_alarm):
                 context.getString(R.string.alarm_dismiss_hold_seconds,CalendarUtils.fa((int)(duration/1000))));
@@ -95,13 +96,10 @@ final class HoldToDismissView extends View {
                 measure.getSegment(0,measure.getLength()*progress,segment,true);canvas.drawPath(segment,paint);}
         }
         int ink=outline?color:Color.luminance(color)>.5?Color.BLACK:Color.WHITE;
-        paint.setColor(ink);paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(2.2f));
-        // Bell with a diagonal stroke: dismissing an alert, rather than stopping video playback.
-        canvas.save();canvas.translate(circle?x:dp(30),y);canvas.scale(dp(1),dp(1));
-        Path bell=new Path();bell.moveTo(-8,5);bell.lineTo(-6,1);bell.lineTo(-6,-4);
-        bell.cubicTo(-6,-12,6,-12,6,-4);bell.lineTo(6,1);bell.lineTo(8,5);bell.close();
-        canvas.drawPath(bell,paint);canvas.drawArc(-2,6,2,10,0,180,false,paint);
-        canvas.drawLine(-10,-11,10,11,paint);canvas.restore();
+        dismissIcon.setTint(ink);
+        float iconX=circle?x:dp(30),half=dp(circle?17:14);
+        dismissIcon.setBounds(Math.round(iconX-half),Math.round(y-half),Math.round(iconX+half),Math.round(y+half));
+        dismissIcon.draw(canvas);
         if(!circle){paint.setStyle(Paint.Style.FILL);paint.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
             String label=AppString.get(R.string.ui_stop_alarm);paint.setTextSize(dp(16));
             float available=getWidth()-dp(78);while(paint.measureText(label)>available && paint.getTextSize()>dp(8))paint.setTextSize(paint.getTextSize()-1);

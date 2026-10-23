@@ -13,7 +13,7 @@
     android:paddingStart="24dp"
     android:paddingEnd="24dp"
     android:paddingTop="32dp"
-    android:paddingBottom="24dp"
+    android:paddingBottom="8dp"
     android:background="#071B29">
 
     <TextView
