@@ -863,7 +863,7 @@ final class WorldClockPanelController {
         for (String zoneId : zones) {
             LinearLayout row =
                     new LinearLayout(host);
-            row.setLayoutDirection(AppSettings.layoutDirection(host));
+            row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             row.setOrientation(
                     LinearLayout.HORIZONTAL);
             row.setGravity(
@@ -886,30 +886,30 @@ final class WorldClockPanelController {
                     new LinearLayout(host);
             details.setOrientation(
                     LinearLayout.VERTICAL);
-            details.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            details.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 
             TextView name =
                     text(
                             displayCity,
-                            16,
+                            20,
                             AppSettings.textPrimary(host));
             name.setTypeface(
                     Typeface.DEFAULT,
                     Typeface.BOLD);
-            name.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            name.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
             name.setMaxLines(1);
-            name.setAutoSizeTextTypeUniformWithConfiguration(12,16,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-            details.addView(name, new LinearLayout.LayoutParams(-1, dp(32)));
+            name.setAutoSizeTextTypeUniformWithConfiguration(14,20,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+            details.addView(name, new LinearLayout.LayoutParams(-1, dp(36)));
 
             TextView geography =
                     text(
                             geography(zoneId),
-                            11,
+                            14,
                             AppSettings.textSecondary(host));
-            geography.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            geography.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
             geography.setMaxLines(1);
-            geography.setAutoSizeTextTypeUniformWithConfiguration(8,11,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-            LinearLayout.LayoutParams geoParams=new LinearLayout.LayoutParams(-1,dp(22));
+            geography.setAutoSizeTextTypeUniformWithConfiguration(11,14,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+            LinearLayout.LayoutParams geoParams=new LinearLayout.LayoutParams(-1,dp(28));
             geoParams.topMargin=dp(4);
             details.addView(geography,geoParams);
 
@@ -917,7 +917,7 @@ final class WorldClockPanelController {
                     details,
                     new LinearLayout.LayoutParams(
                             0,
-                            dp(72),
+                            dp(80),
                             1f));
 
             LinearLayout converted =
@@ -934,25 +934,25 @@ final class WorldClockPanelController {
                             AppSettings.primaryColor(host));
             time.setGravity(Gravity.CENTER);
             time.setMaxLines(1);
-            converted.addView(time, new LinearLayout.LayoutParams(-1,dp(32)));
+            converted.addView(time, new LinearLayout.LayoutParams(-1,dp(36)));
 
             TextView date =
                     text(
                             "",
-                            11,
+                            14,
                             AppSettings.textSecondary(host));
             date.setGravity(Gravity.CENTER);
             date.setMaxLines(1);
-            date.setAutoSizeTextTypeUniformWithConfiguration(8,11,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-            LinearLayout.LayoutParams dateParams=new LinearLayout.LayoutParams(-1,dp(22));
+            date.setAutoSizeTextTypeUniformWithConfiguration(11,14,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+            LinearLayout.LayoutParams dateParams=new LinearLayout.LayoutParams(-1,dp(28));
             dateParams.topMargin=dp(4);
             converted.addView(date,dateParams);
 
             row.addView(
                     converted,
                     new LinearLayout.LayoutParams(
-                            dp(122),
-                            dp(72)));
+                            dp(148),
+                            dp(80)));
 
             ImageButton remove =
                     new ImageButton(host);
@@ -995,8 +995,8 @@ final class WorldClockPanelController {
             row.addView(
                     remove,
                     new LinearLayout.LayoutParams(
-                            dp(36),
-                            dp(36)));
+                            dp(28),
+                            dp(28)));
 
             LinearLayout.LayoutParams lp =
                     new LinearLayout.LayoutParams(
