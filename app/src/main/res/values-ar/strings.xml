@@ -7,7 +7,7 @@
     <string name="media_widget_description">تذكيرات ووصول سريع إلى الصور والصوت والفيديو والملفات</string>
     <string name="world_clock_widget_description">شبكة ساعات عالمية متجاوبة بتمرير متدرج</string>
     <string name="tab_clock">الساعة</string>
-    <string name="tab_notes">الملاحظات</string>
+    <string name="tab_notes">ملاحظة</string>
     <string name="tab_stopwatch">ساعة الإيقاف</string>
     <string name="tab_timer">المؤقت</string>
     <string name="tab_world">العالم</string>

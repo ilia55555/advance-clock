@@ -7,7 +7,7 @@
     <string name="media_widget_description">Reminders and quick access to photos, audio, video, and files</string>
     <string name="world_clock_widget_description">Responsive world clock grid with stepped scrolling</string>
     <string name="tab_clock">Clock</string>
-    <string name="tab_notes">Notes</string>
+    <string name="tab_notes">Note</string>
     <string name="tab_stopwatch">Stopwatch</string>
     <string name="tab_timer">Timer</string>
     <string name="tab_world">World</string>

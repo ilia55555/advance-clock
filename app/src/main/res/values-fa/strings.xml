@@ -7,7 +7,7 @@
     <string name="media_widget_description">یادآوری و دسترسی سریع به عکس، صوت، ویدیو و فایل‌ها</string>
     <string name="world_clock_widget_description">شبکه واکنش‌گرای ساعت‌های جهانی با پیمایش پله‌ای</string>
     <string name="tab_clock">ساعت</string>
-    <string name="tab_notes">یادداشت‌ها</string>
+    <string name="tab_notes">یادداشت</string>
     <string name="tab_stopwatch">کرنومتر</string>
     <string name="tab_timer">تایمر</string>
     <string name="tab_world">جهانی</string>
