@@ -3,6 +3,15 @@
 Production version: use the **release** build variant. A debug APK is intentionally
 debuggable and must not be distributed as the production app.
 
+Debug uses application ID `com.ilia.advanceclock.debug` and version suffix
+`-debug`, so it can coexist with the original Release package
+`com.ilia.advanceclock`. The namespace/class names remain unchanged. Provider
+authorities use `${applicationId}`; content/resource URIs and RemoteViews use the
+runtime package. Alarm/widget PendingIntents target explicit components in their
+own package; notifications/channels and private preferences are scoped per app.
+The two installations have separate data, permissions, alarms and widgets.
+This does not change Release's version, signing configuration or launcher art.
+
 Release enables R8 optimization/obfuscation and resource shrinking with
 `proguard-android-optimize.txt` plus `app/proguard-rules.pro`. Debugging, native
 debugging, shell profiling and test-only installation are disabled. Backup and
