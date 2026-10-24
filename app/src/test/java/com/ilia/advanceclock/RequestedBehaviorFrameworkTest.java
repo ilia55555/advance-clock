@@ -110,7 +110,7 @@ public final class RequestedBehaviorFrameworkTest {
         assertTrue(delete.getRight() <= actions.getChildAt(1).getLeft());
         assertTrue(actions.getChildAt(1).getRight() <= actions.getChildAt(3).getLeft());
 
-        assertEquals(Math.round(actions.getChildAt(3).getLayoutParams().height * 0.75f), delete.getLayoutParams().height);
+        assertEquals(Math.round(actions.getChildAt(3).getLayoutParams().height * 0.9f), delete.getLayoutParams().height);
         assertEquals(delete.getLayoutParams().height, delete.getLayoutParams().width);
         assertFalse(delete.isSelected());
         assertTrue(delete.getBackground() instanceof android.graphics.drawable.GradientDrawable);
