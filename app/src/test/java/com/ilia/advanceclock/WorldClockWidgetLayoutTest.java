@@ -57,6 +57,17 @@ public final class WorldClockWidgetLayoutTest {
         assertEquals(1, portrait.columns); assertEquals(2, landscape.columns);
         assertEquals(original, portrait.itemHeight, 0);
     }
+    @Test public void extraCitiesKeepTheSameTwoByTwoViewport() {
+        for (float height : new float[]{110, 140, 180}) {
+            WorldClockWidgetLayout four = WorldClockWidgetLayout.forSize(400, height, 4);
+            WorldClockWidgetLayout thousand = WorldClockWidgetLayout.forSize(400, height, 1000);
+            assertEquals(2, four.rows);
+            assertEquals(4, thousand.capacity);
+            assertEquals(four.itemHeight, thousand.itemHeight, 0);
+            assertEquals(four.textSizes(6,6,6,0,0).time, thousand.textSizes(6,6,6,0,0).time, 0);
+        }
+        assertEquals(1, WorldClockWidgetLayout.forSize(400, 80, 1000).rows);
+    }
     @Test public void emptyOrInvalidHostSizesRemainSafe() {
         WorldClockWidgetLayout layout = WorldClockWidgetLayout.forSize(Float.NaN, 0, 0);
         assertEquals(1, layout.capacity); assertEquals(1, layout.pages()); assertEquals(0, layout.normalizePage(99));

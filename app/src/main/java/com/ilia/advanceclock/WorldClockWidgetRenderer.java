@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.Gravity;
 import android.widget.RemoteViews;
 
 /** One item renderer for responsive collections and pre-Android-12 remote services. */
@@ -28,6 +29,9 @@ final class WorldClockWidgetRenderer {
         item.setTextColor(R.id.world_item_date, WorldClockWidgetPrefs.textColor(context, widgetId));
         item.setTextColor(R.id.world_item_time, WorldClockWidgetPrefs.timeColor(context, widgetId));
         item.setInt(R.id.world_item_root, "setMinimumHeight", dp(layout.itemHeight));
+        // A lone row in a tall widget starts at the top like the first scroll row.
+        item.setInt(R.id.world_item_root, "setGravity", layout.rows == 1 && layout.height >= 100
+                ? Gravity.TOP | Gravity.CENTER_HORIZONTAL : Gravity.CENTER);
         if (Build.VERSION.SDK_INT >= 31) item.setViewLayoutHeight(R.id.world_item_root, layout.itemHeight, TypedValue.COMPLEX_UNIT_DIP);
         WorldClockWidgetLayout.TextSizes text = layout.textSizes(
                 WorldClockWidgetPrefs.timeSize(context, widgetId), WorldClockWidgetPrefs.nameSize(context, widgetId),

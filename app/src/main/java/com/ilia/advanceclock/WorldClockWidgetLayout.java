@@ -18,7 +18,8 @@ final class WorldClockWidgetLayout {
         int count = Math.max(1, zoneCount);
         int maxColumns = Math.round((width + 30) / 70) <= 3 ? 1 : 2;
         int columns = Math.min(count, maxColumns);
-        int availableRows = Math.max(1, Math.round((height + 30) / 70));
+        // A short widget has one row; the standard 5×2 viewport has two.
+        int availableRows = height < 100 ? 1 : Math.max(2, (int) (height / 100));
         int rows = Math.min(availableRows, (count + columns - 1) / columns);
         return new WorldClockWidgetLayout(width, height, columns, rows, Math.min(count, columns * rows), Math.max(0, zoneCount));
     }
@@ -41,9 +42,12 @@ final class WorldClockWidgetLayout {
     }
     TextSizes textSizes(int timePreset, int namePreset, int datePreset, int topPreset, int bottomPreset) {
         float[] factors = {.7f, .8f, .9f, 1f, 1.1f, 1.2f, 1.3f};
-        float time = Math.min(itemWidth / 3.15f, itemHeight * (compact ? .55f : .62f)) * factors[index(timePreset, 6)] / 1.3f;
-        float name = (compact ? 12 : 19) * factors[index(namePreset, 6)];
-        float date = (compact ? 10 : 15) * factors[index(datePreset, 6)];
+        // Scale the whole clock to its cell, rather than starting from fixed labels.
+        // At the largest preset the three lines consume the available height.
+        float unit = Math.max(1, itemHeight - 4) / (1.12f + .28f * 1.18f + .24f * 1.18f);
+        float time = Math.min((itemWidth - 2) / 2.85f, unit) * factors[index(timePreset, 6)] / 1.3f;
+        float name = unit * .28f * factors[index(namePreset, 6)] / 1.3f;
+        float date = unit * .24f * factors[index(datePreset, 6)] / 1.3f;
         float[] gaps = compact ? new float[]{0, .5f, 1, 2, 3} : new float[]{0, 1, 2, 4, 6};
         float top = gaps[index(topPreset, 4)], bottom = gaps[index(bottomPreset, 4)];
         float block = name * 1.18f + time * 1.12f + date * 1.18f + top + bottom;
