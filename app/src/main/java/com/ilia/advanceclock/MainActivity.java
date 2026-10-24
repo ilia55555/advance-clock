@@ -1666,6 +1666,13 @@ public final class MainActivity extends Activity {
         });
 
         Button edit = actionButton(AppString.get(R.string.runtime_text_0007));
+        edit.setTextSize(9f);
+        edit.setMinHeight(0);
+        edit.setMinWidth(0);
+        edit.setMinimumWidth(0);
+        edit.setMinimumHeight(0);
+        edit.setPadding(dp(9), 0, dp(9), 0);
+        edit.setLayoutParams(new LinearLayout.LayoutParams(-2, dp(30)));
         edit.setTextColor(0xFFFFFFFF);
         GradientDrawable editBackground = new GradientDrawable();
         editBackground.setColor(0xFF1976D2);
@@ -1677,10 +1684,10 @@ public final class MainActivity extends Activity {
                         .putExtra("alarmId", item.id)));
 
         ImageButton delete = deleteIconButton();
-        LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(dp(40), dp(40));
+        LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(dp(30), dp(30));
         deleteParams.rightMargin = dp(6);
         delete.setLayoutParams(deleteParams);
-        delete.setPadding(dp(8), dp(8), dp(8), dp(8));
+        delete.setPadding(dp(6), dp(6), dp(6), dp(6));
         styleAlarmDelete(delete, false);
         delete.setOnClickListener(v -> {
             if (!delete.isSelected()) {

@@ -336,7 +336,7 @@ public final class AlarmSoundService extends Service {
 
             if (vibrator != null) {
                 long[] pattern = {0, 700, 300, 700, 300};
-                vibrator.vibrate(VibrationEffect.createWaveform(pattern, 1));
+                AlarmVibration.start(vibrator, VibrationEffect.createWaveform(pattern, 1));
             }
         } catch (Exception ignored) {
         }

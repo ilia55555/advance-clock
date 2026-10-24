@@ -1041,7 +1041,7 @@ public final class AppSettings {
     }
 
     public static int alarmScreenStyle(Context context) {
-        return Math.max(0, Math.min(4, prefs(context).getInt("alarm_screen_style", 0)));
+        return Math.max(0, Math.min(4, prefs(context).getInt("alarm_screen_style", 4)));
     }
 
     public static void setAlarmScreenStyle(Context context, int value) {

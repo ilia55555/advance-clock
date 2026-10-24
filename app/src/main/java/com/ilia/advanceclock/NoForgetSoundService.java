@@ -204,7 +204,7 @@ public final class NoForgetSoundService extends Service {
                 VibratorManager manager = getSystemService(VibratorManager.class);
                 vibrator = manager == null ? null : manager.getDefaultVibrator();
             } else vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-            if (vibrator != null) vibrator.vibrate(VibrationEffect.createWaveform(
+            if (vibrator != null) AlarmVibration.start(vibrator, VibrationEffect.createWaveform(
                     new long[]{0, 700, 300, 700, 300}, 1));
         } catch (Exception ignored) {}
     }

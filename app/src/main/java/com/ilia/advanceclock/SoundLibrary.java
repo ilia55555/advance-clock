@@ -23,15 +23,18 @@ final class SoundLibrary {
 
     private SoundLibrary() {}
 
-    static List<Sound> all(Context context) {
+    static List<Sound> all(Context context) { return all(context, false); }
+
+    static List<Sound> all(Context context, boolean adhan) {
         ArrayList<Sound> sounds = new ArrayList<>();
         sounds.add(new Sound(AppString.get(R.string.runtime_text_0144), ""));
-        addNamedBundledSound(context, sounds, "rawadhan_1", AppString.get(R.string.runtime_text_0680));
-        addNamedBundledSound(context, sounds, "rawadhan_2", AppString.get(R.string.runtime_text_0681));
-        addBundledSounds(context, sounds, "adhan", AppString.get(R.string.runtime_text_0682), 10);
-        addBundledSounds(context, sounds, "alarm", AppString.get(R.string.runtime_text_0683), 10);
+        if (adhan) {
+            addNamedBundledSound(context, sounds, "rawadhan_1", AppString.get(R.string.runtime_text_0680));
+            addNamedBundledSound(context, sounds, "rawadhan_2", AppString.get(R.string.runtime_text_0681));
+            addBundledSounds(context, sounds, "adhan", AppString.get(R.string.runtime_text_0682), 10);
+        } else addBundledSounds(context, sounds, "alarm", AppString.get(R.string.runtime_text_0683), 10);
         try {
-            JSONArray array = new JSONArray(context.getSharedPreferences(PREFS, 0)
+            JSONArray array = new JSONArray(context.getSharedPreferences(adhan ? PREFS + "_adhan" : PREFS, 0)
                     .getString(KEY, "[]"));
             for (int i = 0; i < array.length(); i++) {
                 JSONObject item = array.optJSONObject(i);
@@ -66,10 +69,12 @@ final class SoundLibrary {
                         + "/raw/" + resourceName));
     }
 
-    static void add(Context context, Uri uri) {
+    static void add(Context context, Uri uri) { add(context, uri, false); }
+
+    static void add(Context context, Uri uri, boolean adhan) {
         if (uri == null) return;
         String value = uri.toString();
-        List<Sound> current = all(context);
+        List<Sound> current = all(context, adhan);
         for (Sound sound : current) if (value.equals(sound.uri)) return;
         JSONArray array = new JSONArray();
         for (Sound sound : current) {
@@ -81,11 +86,13 @@ final class SoundLibrary {
         JSONObject added = new JSONObject();
         try { added.put("name", displayName(context, uri)); added.put("uri", value); array.put(added); }
         catch (Exception ignored) {}
-        context.getSharedPreferences(PREFS, 0).edit().putString(KEY, array.toString()).apply();
+        context.getSharedPreferences(adhan ? PREFS + "_adhan" : PREFS, 0).edit().putString(KEY, array.toString()).apply();
     }
 
-    static String name(Context context, String uri) {
-        for (Sound sound : all(context)) if (sound.uri.equals(uri == null ? "" : uri)) return sound.name;
+    static String name(Context context, String uri) { return name(context, uri, false); }
+
+    static String name(Context context, String uri, boolean adhan) {
+        for (Sound sound : all(context, adhan)) if (sound.uri.equals(uri == null ? "" : uri)) return sound.name;
         return AppString.get(R.string.runtime_text_0685);
     }
 

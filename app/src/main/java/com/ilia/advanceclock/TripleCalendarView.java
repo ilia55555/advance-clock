@@ -399,6 +399,8 @@ public final class TripleCalendarView extends View {
                 + " - " + CalendarUtils.formatDate(footerMillis, CalendarUtils.HIJRI);
         paint.setTypeface(regular);
         paint.setTextSize(26);
+        String spacedDates = dates.replace(" - ", "   -   ");
+        if (paint.measureText(spacedDates) <= 480f) dates = spacedDates;
         float labelSize = 26 * Math.min(1f, 480f / Math.max(1f, paint.measureText(dates)));
         centered(c, dates, 340, 630 + shift, labelSize, primary(), regular);
         float halfWidth = paint.measureText(dates) / 2f;

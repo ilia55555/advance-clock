@@ -275,7 +275,7 @@ public final class AdhanSoundService extends Service {
     private void startVibration() {
         try {
             vibrator=getSystemService(Vibrator.class);
-            if(vibrator!=null)vibrator.vibrate(VibrationEffect.createWaveform(new long[]{0,700,350,700},0));
+            if(vibrator!=null)AlarmVibration.start(vibrator, VibrationEffect.createWaveform(new long[]{0,700,350,700},0));
         }catch(RuntimeException ignored){}
     }
 

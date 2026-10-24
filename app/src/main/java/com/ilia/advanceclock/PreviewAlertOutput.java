@@ -40,7 +40,7 @@ final class PreviewAlertOutput implements AlertOutput {
     }
     public void vibrate(boolean enabled){
         vibrate=enabled;
-        try{if(vibrator!=null){vibrator.cancel();if(enabled&&!closed)vibrator.vibrate(VibrationEffect.createWaveform(new long[]{0,700,300},0));}}catch(RuntimeException ignored){}
+        try{if(vibrator!=null){vibrator.cancel();if(enabled&&!closed)AlarmVibration.start(vibrator, VibrationEffect.createWaveform(new long[]{0,700,300},0));}}catch(RuntimeException ignored){}
         AlertOutputEvents.changed();
     }
     void silence(){mute(true);vibrate(false);}

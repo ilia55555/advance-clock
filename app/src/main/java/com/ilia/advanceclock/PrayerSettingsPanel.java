@@ -823,10 +823,10 @@ final class PrayerSettingsPanel {
                 }
             }
             return same
-                    ? SoundLibrary.name(host, firstSound) + " • " + firstVolume + AppString.get(R.string.runtime_text_0568)
+                    ? SoundLibrary.name(host, firstSound, true) + " • " + firstVolume + AppString.get(R.string.runtime_text_0568)
                     : AppString.get(R.string.runtime_text_0344);
         }
-        return SoundLibrary.name(host, AppSettings.adhanSoundUri(host, type))
+        return SoundLibrary.name(host, AppSettings.adhanSoundUri(host, type), true)
                 + " • " + AppSettings.adhanVolume(host, type) + AppString.get(R.string.runtime_text_0568);
     }
 
@@ -1002,7 +1002,7 @@ final class PrayerSettingsPanel {
             if (selected == null) selected = "";
         }
 
-        for (SoundLibrary.Sound item : SoundLibrary.all(host)) {
+        for (SoundLibrary.Sound item : SoundLibrary.all(host, true)) {
             boolean checked = item.uri.equals(selected);
             LinearLayout row = new LinearLayout(host);
             row.setOrientation(LinearLayout.HORIZONTAL);
@@ -1077,7 +1077,7 @@ final class PrayerSettingsPanel {
                 host.getContentResolver().takePersistableUriPermission(
                         uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } catch (Exception ignored) {}
-            SoundLibrary.add(host, uri);
+            SoundLibrary.add(host, uri, true);
             setAdhanSound(activeAdhanType, uri.toString());
             renderMuezzinList(activeAdhanType);
             host.setResult(Activity.RESULT_OK);
