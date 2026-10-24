@@ -62,7 +62,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         source(photos, R.string.media_camera, R.drawable.ic_media_camera, () -> chooseImage(true));
         LinearLayout shortcuts = horizontal(add);
         source(shortcuts, R.string.media_file, R.drawable.ic_about_document, () -> pick("*/*", FILE));
-        source(shortcuts, R.string.media_app, R.drawable.ic_app, this::chooseApp);
+        source(shortcuts, R.string.media_app, R.drawable.ic_attachment_app, this::chooseApp);
         source(shortcuts, R.string.media_link, R.drawable.ic_media_link, this::addLink);
 
         LinearLayout options = card(root);
@@ -388,7 +388,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             LinearLayout details = horizontal(entry);
             ImageView icon = new ImageView(this);
             boolean app = NoteAttachment.KIND_APP.equals(item.kind);
-            icon.setImageResource(app ? R.drawable.ic_app : NoteAttachment.KIND_URL.equals(item.kind)
+            icon.setImageResource(app ? R.drawable.ic_attachment_app : NoteAttachment.KIND_URL.equals(item.kind)
                     ? R.drawable.ic_media_link : R.drawable.ic_about_document);
             String displayName = item.name == null || item.name.trim().isEmpty() ? item.value : item.name;
             if (app) {

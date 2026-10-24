@@ -1622,11 +1622,11 @@ public final class MainActivity extends Activity {
                         item.recurrenceMode,
                         item.intervalDays,
                         item.customDatesJson)
-                        + (item.referenceZoneId.isEmpty()?AppString.get(R.string.runtime_text_0429)+PriorityUtils.label(item.priority):"")
+                        + (item.referenceZoneId.isEmpty() ? "  •  " + PriorityUtils.displayLabel(item.priority) : "")
                         + (item.reminderMode != AlarmReminderUtils.MODE_NONE
                         ? "  •  " + reminder
                         : "")
-                        + (item.vibrate ? AppString.get(R.string.runtime_text_0431) : ""));
+                        + (item.vibrate ? "  " + AppString.get(R.string.runtime_text_0431).trim() : ""));
         time.setTag("alarm_summary_"+item.id);
         time.setPadding(0, dp(6), 0, dp(4));
         card.addView(time);
