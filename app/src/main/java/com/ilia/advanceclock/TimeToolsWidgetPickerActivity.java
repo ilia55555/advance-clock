@@ -232,17 +232,13 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
         calendarType.setSelection(
                 Math.max(0, Math.min(2, initialType)));
         calendarType.setBackgroundResource(R.drawable.bg_field);
-        root.addView(
-                calendarType,
-                new LinearLayout.LayoutParams(-1, dp(54)));
-
         year = new NumberPicker(this);
         month = new NumberPicker(this);
         day = new NumberPicker(this);
         clockHour = picker(0, 0, 23);
         clockMinute = picker(0, 0, 59);
 
-        final long initialTarget = target;
+        final long[] selectedDate = {target};
 
         Runnable refresh = () -> {
             refreshingDate = true;
@@ -250,7 +246,7 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
             android.icu.util.Calendar c =
                     CalendarUtils.fromMillis(
                             type,
-                            initialTarget);
+                            selectedDate[0]);
 
             year.setMinValue(1);
             year.setMaxValue(CalendarUtils.maximumYear(type));
@@ -280,7 +276,7 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
                             android.icu.util.Calendar.DAY_OF_MONTH));
 
             Calendar normal = Calendar.getInstance(AppTime.zone());
-            normal.setTimeInMillis(initialTarget);
+            normal.setTimeInMillis(selectedDate[0]);
             clockHour.setValue(
                     normal.get(Calendar.HOUR_OF_DAY));
             clockMinute.setValue(
@@ -314,32 +310,24 @@ public final class TimeToolsWidgetPickerActivity extends Activity {
                             android.widget.AdapterView<?> parent) {}
                 });
 
-        LinearLayout dateRow = new LinearLayout(this);
-        dateRow.setOrientation(LinearLayout.HORIZONTAL);
-        dateRow.setLayoutDirection(AppSettings.layoutDirection(this));
-        dateRow.setGravity(Gravity.CENTER);
-        dateRow.setPadding(dp(4), dp(8), dp(4), dp(8));
-        dateRow.setBackgroundResource(R.drawable.bg_card);
-        dateRow.addView(
-                pickerColumn(
-                        AppString.get(R.string.runtime_text_0179),
-                        year),
-                new LinearLayout.LayoutParams(0, dp(160), 1f));
-        dateRow.addView(
-                pickerColumn(
-                        AppString.get(R.string.runtime_text_0169),
-                        month),
-                new LinearLayout.LayoutParams(0, dp(160), 1f));
-        dateRow.addView(
-                pickerColumn(
-                        AppString.get(R.string.runtime_text_0039),
-                        day),
-                new LinearLayout.LayoutParams(0, dp(160), 1f));
-
-        LinearLayout.LayoutParams dateLp =
-                new LinearLayout.LayoutParams(-1, -2);
-        dateLp.topMargin = dp(10);
-        root.addView(dateRow, dateLp);
+        Button dateButton = new Button(this);
+        dateButton.setTag("time_tools_date_picker");
+        dateButton.setAllCaps(false);
+        dateButton.setBackgroundResource(R.drawable.bg_field);
+        dateButton.setTextColor(AppSettings.primaryColor(this));
+        dateButton.setText(CalendarUtils.formatDate(selectedDate[0],initialType));
+        dateButton.setOnClickListener(v -> {
+            long initial=CalendarUtils.toMillis(calendarType.getSelectedItemPosition(),
+                    year.getValue(),month.getValue(),day.getValue(),clockHour.getValue(),clockMinute.getValue());
+            CalendarPickerDialog.showDate(this,initial,calendarType.getSelectedItemPosition(),(millis,type)->{
+                selectedDate[0]=millis;
+                calendarType.setSelection(type);
+                refresh.run();
+                dateButton.setText(CalendarUtils.formatDate(millis,type));
+            });
+        });
+        LinearLayout.LayoutParams dateLp=new LinearLayout.LayoutParams(-1,dp(56));
+        dateLp.topMargin=dp(10);root.addView(dateButton,dateLp);
 
         LinearLayout timeRow = new LinearLayout(this);
         timeRow.setOrientation(LinearLayout.HORIZONTAL);
