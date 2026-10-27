@@ -168,32 +168,35 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     private void compactSettingsRows() {
-        LinearLayout reminderToggle=(LinearLayout)alarmEnabled.getParent();
-        TextView caption=(TextView)reminderToggle.getChildAt(0);
-        reminderToggle.setContentDescription(caption.getText());
-        caption.setText(R.string.ui_alarm);
-        caption.setTextSize(13);
-        reminderToggle.setPadding(dp(8),0,dp(8),0);
-        compactPair(priority,reminderToggle);
+        View attachmentRow=(View)sketchAction.getParent();
+        priority.setPadding(dp(3),0,dp(3),0);
+        compactRow(priority,sketchAction,filesAction);
+        ((android.view.ViewGroup)attachmentRow.getParent()).removeView(attachmentRow);
+        View dateRow=(View)dateButton.getParent();
+        compactRow(dateOption.compactInlineView(),dateButton,timeButton);
+        ((android.view.ViewGroup)dateRow.getParent()).removeView(dateRow);
+        compactRow(repeatButton,remindersButton);
         vibrate.setTextSize(13);
         vibrate.setPadding(dp(8),0,dp(8),0);
-        compactPair(repeatButton,vibrate);
-        compactPair(remindersButton,soundButton);
+        compactRow(soundButton,vibrate);
     }
 
-    private void compactPair(View first,View second) {
-        LinearLayout parent=(LinearLayout)first.getParent();
-        int position=parent.indexOfChild(first);
-        parent.removeView(first);
-        ((android.view.ViewGroup)second.getParent()).removeView(second);
+    private void compactRow(View... fields) {
+        LinearLayout parent=(LinearLayout)fields[0].getParent();
+        int position=parent.indexOfChild(fields[0]);
+        for(View field:fields) if(field.getParent()==parent)
+            position=Math.min(position,parent.indexOfChild(field));
         LinearLayout row=new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setLayoutDirection(AppSettings.layoutDirection(this));
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setBaselineAligned(false);
-        row.addView(first,new LinearLayout.LayoutParams(0,-1,1f));
-        row.addView(new Space(this),new LinearLayout.LayoutParams(dp(8),1));
-        row.addView(second,new LinearLayout.LayoutParams(0,-1,1f));
+        for(int i=0;i<fields.length;i++) {
+            View field=fields[i];
+            ((android.view.ViewGroup)field.getParent()).removeView(field);
+            if(i>0) row.addView(new Space(this),new LinearLayout.LayoutParams(dp(8),1));
+            row.addView(field,new LinearLayout.LayoutParams(0,-1,1f));
+        }
         LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,dp(56));
         params.topMargin=dp(8);
         parent.addView(row,position,params);
@@ -216,7 +219,15 @@ public final class NoForgetEditorActivity extends Activity {
         ArrayAdapter<String> adapter=new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                priorityValues);
+                priorityValues) {
+            @Override public View getView(int position,View convertView,android.view.ViewGroup parent) {
+                TextView label=(TextView)super.getView(position,convertView,parent);
+                label.setMaxLines(1);label.setHorizontallyScrolling(false);label.setEllipsize(null);
+                label.setTextColor(AppSettings.textPrimary(NoForgetEditorActivity.this));
+                label.setAutoSizeTextTypeUniformWithConfiguration(9,13,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+                return label;
+            }
+        };
         adapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         priority.setAdapter(adapter);

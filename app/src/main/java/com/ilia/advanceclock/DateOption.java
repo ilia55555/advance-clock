@@ -54,7 +54,7 @@ final class DateOption {
                     LinearLayout group=(LinearLayout)getChildAt(0);
                     View toggle=group.getChildAt(1);
                     toggle.measure(View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED),heightSpec);
-                    ((TextView)group.getChildAt(0)).setMaxWidth(Math.max(1,View.MeasureSpec.getSize(widthSpec)-toggle.getMeasuredWidth()-dp(2)));
+                    ((TextView)group.getChildAt(0)).setMaxWidth(Math.max(1,View.MeasureSpec.getSize(widthSpec)-(group.getOrientation()==LinearLayout.VERTICAL ? 0 : toggle.getMeasuredWidth()+dp(2))));
                 }
                 super.onMeasure(widthSpec,heightSpec);
             }
@@ -86,6 +86,13 @@ final class DateOption {
         column.setOnClickListener(view->toggle.toggle());
         controls.addView(column,new LinearLayout.LayoutParams(0,-2,1));
         return toggle;
+    }
+
+    View compactInlineView() {
+        ((LinearLayout)dateSwitch.getParent()).setOrientation(LinearLayout.VERTICAL);
+        dateSwitch.setMinimumHeight(dp(36));
+        controls.setPadding(dp(4),0,dp(4),0);
+        return controls;
     }
 
     boolean isApplied() { return dateSwitch.isChecked(); }
