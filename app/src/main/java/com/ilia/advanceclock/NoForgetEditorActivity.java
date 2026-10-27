@@ -164,6 +164,39 @@ public final class NoForgetEditorActivity extends Activity {
 
         renderAttachments();
         updateActionButtons();
+        compactSettingsRows();
+    }
+
+    private void compactSettingsRows() {
+        LinearLayout reminderToggle=(LinearLayout)alarmEnabled.getParent();
+        TextView caption=(TextView)reminderToggle.getChildAt(0);
+        reminderToggle.setContentDescription(caption.getText());
+        caption.setText(R.string.ui_alarm);
+        caption.setTextSize(13);
+        reminderToggle.setPadding(dp(8),0,dp(8),0);
+        compactPair(priority,reminderToggle);
+        vibrate.setTextSize(13);
+        vibrate.setPadding(dp(8),0,dp(8),0);
+        compactPair(repeatButton,vibrate);
+        compactPair(remindersButton,soundButton);
+    }
+
+    private void compactPair(View first,View second) {
+        LinearLayout parent=(LinearLayout)first.getParent();
+        int position=parent.indexOfChild(first);
+        parent.removeView(first);
+        ((android.view.ViewGroup)second.getParent()).removeView(second);
+        LinearLayout row=new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setLayoutDirection(AppSettings.layoutDirection(this));
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBaselineAligned(false);
+        row.addView(first,new LinearLayout.LayoutParams(0,-1,1f));
+        row.addView(new Space(this),new LinearLayout.LayoutParams(dp(8),1));
+        row.addView(second,new LinearLayout.LayoutParams(0,-1,1f));
+        LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,dp(56));
+        params.topMargin=dp(8);
+        parent.addView(row,position,params);
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
