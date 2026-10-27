@@ -54,6 +54,27 @@ public final class TripleCalendarView extends View {
     private final Typeface medium = Typeface.create("sans-serif-medium", Typeface.NORMAL);
     private final Typeface bold = Typeface.create("sans-serif", Typeface.BOLD);
 
+    private int eventSource;
+    private CalendarDayMarkers markers;
+    private final java.util.Map<Integer,Integer> dayPriorities=new java.util.HashMap<>();
+    private String markerMonth="";
+
+    public void setEventSource(boolean notes) {
+        eventSource=notes ? 2 : 1; refreshCalendar();
+    }
+
+    private int priorityForDay(int day) {
+        if(markers==null) return -1;
+        String month=calendarType+":"+displayYear+":"+displayMonth;
+        if(!month.equals(markerMonth)) { dayPriorities.clear();markerMonth=month; }
+        Integer value=dayPriorities.get(day);
+        if(value!=null) return value;
+        long start=CalendarUtils.toMillis(calendarType,displayYear,displayMonth,day,0,0);
+        java.util.Calendar end=java.util.Calendar.getInstance(AppTime.zone());
+        end.setTimeInMillis(start);end.add(java.util.Calendar.DAY_OF_YEAR,1);
+        int priority=markers.priority(start,end.getTimeInMillis());dayPriorities.put(day,priority);return priority;
+    }
+
     private int calendarType;
     private int displayYear;
     private int displayMonth;
@@ -108,6 +129,8 @@ public final class TripleCalendarView extends View {
     public int getCalendarType() { return calendarType; }
 
     public void refreshCalendar() {
+        if(eventSource!=0) markers=new CalendarDayMarkers(getContext(),eventSource==2);
+        dayPriorities.clear();markerMonth="";
         ensureCalendarCache();
         requestLayout();
         invalidate();
@@ -116,6 +139,8 @@ public final class TripleCalendarView extends View {
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         IntentFilter filter = new IntentFilter();
+        filter.addAction(AlarmStore.ACTION_CHANGED);
+        filter.addAction(NoForgetStore.ACTION_CHANGED);
         filter.addAction(Intent.ACTION_DATE_CHANGED);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
@@ -339,6 +364,13 @@ public final class TripleCalendarView extends View {
                             8,
                             stroke);
                 }
+            }
+
+            int importance=priorityForDay(item.day);
+            if(importance>=0) {
+                paint.setStyle(Paint.Style.FILL);paint.setColor(CalendarDayMarkers.color(importance));
+                c.drawCircle(left+10,top+10,3.5f,paint);
+                c.drawCircle(left+CELL_W-10,top+10,3.5f,paint);
             }
 
             int main = selected

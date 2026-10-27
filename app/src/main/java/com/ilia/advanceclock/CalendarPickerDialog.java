@@ -36,6 +36,10 @@ public final class CalendarPickerDialog {
 
     private static void show(Context context, long initialMillis, int initialType,
                              boolean monthYearOnly, boolean rejectPast, Callback callback) {
+        if (!monthYearOnly) {
+            showCalendar(context, initialMillis, initialType, rejectPast, callback);
+            return;
+        }
         int pad = dp(context, 18);
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -184,6 +188,53 @@ public final class CalendarPickerDialog {
                     dialog.dismiss();
                 });
             }
+        });
+        dialog.show();
+    }
+
+    private static void showCalendar(Context context, long initialMillis, int initialType,
+                                     boolean rejectPast, Callback callback) {
+        LinearLayout content = new LinearLayout(context);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(context,8),dp(context,8),dp(context,8),0);
+        Spinner type = new Spinner(context);
+        type.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                new String[]{CalendarUtils.calendarName(0),CalendarUtils.calendarName(1),CalendarUtils.calendarName(2)}));
+        type.setSelection(Math.max(0,Math.min(2,initialType)));
+        content.addView(type,new LinearLayout.LayoutParams(-1,dp(context,48)));
+        TripleCalendarView calendar = new TripleCalendarView(context);
+        calendar.setTag("date_picker_calendar");
+        calendar.setCalendarType(initialType);
+        calendar.setSelectedMillis(rejectPast ? Math.max(initialMillis,System.currentTimeMillis()) : initialMillis);
+        content.addView(calendar,new LinearLayout.LayoutParams(-1,-2));
+        type.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            public void onItemSelected(android.widget.AdapterView<?> parent,View view,int position,long id) {
+                if(calendar.getCalendarType()!=position) calendar.setCalendarType(position);
+            }
+        });
+        calendar.setOnMonthYearClickListener((visible,calType)->showMonthYear(context,visible,calType,
+                (millis,pickedType)->{type.setSelection(pickedType);calendar.setVisibleMonthMillis(millis,pickedType);}));
+        android.widget.ScrollView scroll = new android.widget.ScrollView(context);
+        scroll.addView(content);
+        AlertDialog dialog = new AlertDialog.Builder(context).setView(scroll)
+                .setNegativeButton(AppString.get(R.string.runtime_text_0003),null)
+                .setPositiveButton(AppString.get(R.string.runtime_text_0004),null)
+                .setNeutralButton(AppString.get(R.string.runtime_text_0174),null).create();
+        dialog.setOnShowListener(ignored->{
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v->calendar.setSelectedMillis(System.currentTimeMillis()));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v->{
+                Calendar picked=Calendar.getInstance(AppTime.zone());picked.setTimeInMillis(calendar.getSelectedMillis());
+                Calendar original=Calendar.getInstance(AppTime.zone());original.setTimeInMillis(initialMillis);
+                picked.set(Calendar.HOUR_OF_DAY,original.get(Calendar.HOUR_OF_DAY));
+                picked.set(Calendar.MINUTE,original.get(Calendar.MINUTE));picked.set(Calendar.SECOND,0);picked.set(Calendar.MILLISECOND,0);
+                if(rejectPast && picked.getTimeInMillis()<startOfToday()) {
+                    LogoToast.makeText(context,R.string.runtime_text_0146,Toast.LENGTH_SHORT).show();return;
+                }
+                callback.onPicked(picked.getTimeInMillis(),calendar.getCalendarType());dialog.dismiss();
+            });
+            if(dialog.getWindow()!=null) dialog.getWindow().setLayout(
+                    Math.min(dp(context,400),context.getResources().getDisplayMetrics().widthPixels-dp(context,24)), -2);
         });
         dialog.show();
     }

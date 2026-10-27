@@ -708,6 +708,8 @@ public final class MainActivity extends Activity {
     }
 
     private void setupCalendars() {
+        clockCalendar.setEventSource(false);
+        noteCalendar.setEventSource(true);
         int type = AppSettings.defaultCalendar(this);
         clockCalendar.setCalendarType(type);
         noteCalendar.setCalendarType(type);

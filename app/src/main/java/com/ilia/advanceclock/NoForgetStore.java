@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class NoForgetStore {
+    static final String ACTION_CHANGED="com.ilia.advanceclock.NOTES_CHANGED";
     private static final String PREFS = "noforget_notes";
     private static final String KEY = "items_v1";
     private final Context context;
@@ -65,5 +66,6 @@ public final class NoForgetStore {
             try { array.put(item.toJson()); } catch (Exception ignored) {}
         }
         SecurePreferences.write(context, PREFS, KEY, array.toString());
+        context.sendBroadcast(new android.content.Intent(ACTION_CHANGED).setPackage(context.getPackageName()));
     }
 }
