@@ -11,6 +11,29 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk={28,35},shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class UnifiedDatePickerTest {
+    @Test public void worldGoToDateUsesCalendarAndAcceptsPastDatesBeforePickingTime() {
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        app.getSharedPreferences("advance_clock_app",0).edit().putBoolean("language_calendar_setup_v1",true)
+                .putBoolean("permission_onboarding_v2",true).commit();
+        try(var controller=Robolectric.buildActivity(MainActivity.class).setup()) {
+            MainActivity host=controller.get();host.findViewById(R.id.tab_world).performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            host.findViewById(R.id.world_pick_reference).performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            AlertDialog dialog=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+            TripleCalendarView calendar=dialog.findViewById(android.R.id.content).findViewWithTag("date_picker_calendar");
+            assertNotNull(calendar);
+            calendar.setSelectedMillis(CalendarUtils.toMillis(CalendarUtils.GREGORIAN,2020,0,1,0,0));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            TimePickerDialog time=(TimePickerDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+            time.updateTime(12,30);time.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+            Object world=org.robolectric.util.ReflectionHelpers.getField(host,"worldController");
+            assertTrue(org.robolectric.util.ReflectionHelpers.<Boolean>getField(world,"referenceMode"));
+            assertEquals(CalendarUtils.toMillis(CalendarUtils.GREGORIAN,2020,0,1,12,30),
+                    (long)org.robolectric.util.ReflectionHelpers.<Long>getField(world,"referenceMillis"));
+        }
+    }
     @Test public void widgetDateModesAlsoOpenTheSameCalendar() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         app.getSharedPreferences("time_tools",0).edit().putBoolean("timer_date_mode",true).putInt("stopwatch_mode",2).commit();
