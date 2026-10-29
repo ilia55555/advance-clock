@@ -98,14 +98,14 @@ public class AppUpdatesTest {
         AppUpdates.prefs(app).edit().putLong("success",System.currentTimeMillis()).commit();
         assertNull(AppUpdates.available(production,"https://github.com/owner/InfiniTime"));
     }
-    @Test public void legacyBackgroundJobsAreCancelledAndNewRepositoryStartsDisabled() {
+    @Test public void legacyBackgroundJobsAreCancelledAndDedicatedRepositoryIsConfigured() {
         var jobs=app.getSystemService(android.app.job.JobScheduler.class);
         android.content.ComponentName component=new ComponentName(app,"com.ilia.advanceclock.UpdateCheckJob");
         jobs.schedule(new android.app.job.JobInfo.Builder(AppUpdates.JOB_ID,component).setPeriodic(86400000).build());
         jobs.schedule(new android.app.job.JobInfo.Builder(AppUpdates.DUE_JOB_ID,component).setMinimumLatency(1000).build());
         assertEquals(2,jobs.getAllPendingJobs().size());
         AppUpdates.cancelLegacyJobs(app);assertEquals(0,jobs.getAllPendingJobs().size());
-        assertEquals("",AppUpdates.repository(app)); assertNull(AppUpdates.available(app));
+        assertEquals("https://github.com/infinitimeilia/-infinitime",AppUpdates.repository(app)); assertNull(AppUpdates.available(app));
         assertTrue(AppUpdates.validRepository("https://github.com/owner/InfiniTime"));
         for(String bad:new String[]{"", "https://evil.test/a/b","https://github.com.evil.test/a/b","http://github.com/a/b","https://github.com/a/b?next=evil"})
             assertFalse(bad,AppUpdates.validRepository(bad));

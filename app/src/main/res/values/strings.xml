@@ -1342,7 +1342,7 @@
     <string name="update_whats_new">قابلیت‌های جدید</string>
     <string name="update_later">بعداً</string>
     <string name="update_download">دانلود نسخهٔ جدید</string>
-    <!-- Set only after the owner supplies the dedicated public release repository. -->
-    <string name="update_repository" translatable="false"></string>
+    <!-- Dedicated public release repository; APKs and metadata are release assets. -->
+    <string name="update_repository" translatable="false">https://github.com/infinitimeilia/-infinitime</string>
     <string name="date_notification_holiday">تعطیل</string>
 </resources>

@@ -1,6 +1,6 @@
 # Foreground-only GitHub Releases updates
 
-The owner will provide a **new public release repository**. Until then `update_repository` in `app/src/main/res/values/strings.xml` is intentionally empty: no update HTTP request, old-repository fallback or update offer is made. After receiving the actual link, set it to the exact canonical `https://github.com/OWNER/REPOSITORY` (no trailing slash). It is not user-editable and accepts only a GitHub repository path.
+The dedicated public release repository is **https://github.com/infinitimeilia/-infinitime**, configured in `update_repository` in `app/src/main/res/values/strings.xml`. Version `1.0.0.5` (code 5) is the first build connected to this repository. For an end-to-end upgrade test, install that signed build, then publish `1.0.0.6` (code 6) signed with the same key. Earlier builds with an empty repository cannot discover this channel and need a manual initial upgrade.
 
 ## Publishing
 
