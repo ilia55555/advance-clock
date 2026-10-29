@@ -1331,4 +1331,11 @@
     <string name="smart_voice_network_error">سرویس گفتار برای این درخواست به اینترنت نیاز دارد؛ اتصال اینترنت خود را بررسی کنید.</string>
     <string name="smart_voice_retry">دریافت گفتار موقتاً متوقف شد؛ دوباره تلاش می‌شود.</string>
     <string name="smart_speech_language">زبان گفتار</string>
+    <string name="update_available">به‌روزرسانی جدید</string>
+    <string name="update_downloading">در حال دانلود و بررسی امنیت فایل…</string>
+    <string name="update_ready">نسخهٔ تأییدشده در پوشهٔ دانلودها ذخیره شد. برای نصب، فایل را در فایل‌منیجر باز کنید.</string>
+    <string name="update_failed">دانلود یا تأیید امنیت فایل موفق نبود. اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.</string>
+    <string name="update_open_downloads">باز کردن دانلودها</string>
+    <string name="update_choose_location">فایل تأیید شد؛ محل ذخیره را انتخاب کنید.</string>
+    <string name="update_save_apk">ذخیرهٔ فایل APK</string>
 </resources>

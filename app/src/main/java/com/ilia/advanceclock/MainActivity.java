@@ -384,7 +384,13 @@ public final class MainActivity extends Activity {
             menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
             menu.getMenu().add(0, 9, 7, getString(R.string.about_title));
+            if (AppUpdates.available(this) != null)
+                menu.getMenu().add(0, 10, 9, getString(R.string.update_available));
             HeaderMenu.show(this, anchor, menu.getMenu(), item -> {
+                if (item.getItemId() == 10) {
+                    startActivity(new Intent(this, UpdateDownloadActivity.class));
+                    return true;
+                }
                 if (item.getItemId() == 1) {
                     startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
                     return true;
@@ -1140,6 +1146,7 @@ public final class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         panelsResumed = true;
+        AppUpdates.start(this);
         boolean exactPermission = PermissionHelper.exactAlarmsGranted(this);
         if (!previousExactPermission && exactPermission) {
             AlarmScheduler.rescheduleAll(this);

@@ -28,18 +28,22 @@ final class HeaderMenu {
             LinearLayout row=new LinearLayout(host);
             row.setOrientation(LinearLayout.HORIZONTAL);row.setGravity(Gravity.CENTER_VERTICAL);
             row.setMinimumHeight(dp(host,56));row.setPadding(dp(host,10),dp(host,8),dp(host,10),dp(host,8));
+            boolean update = item.getItemId() == 10;
+            int accent = AppSettings.themeMode(host) == AppSettings.THEME_DARK ? 0xFF81C995 : 0xFF18783D;
             row.setFocusable(true);row.setEnabled(item.isEnabled());
             row.setBackground(new RippleDrawable(ColorStateList.valueOf((primary & 0x00FFFFFF)|0x22000000),
-                    shape(host,Color.TRANSPARENT,14),shape(host,Color.WHITE,14)));
+                    shape(host,update ? ((accent & 0x00FFFFFF)|0x20000000) : Color.TRANSPARENT,14),shape(host,Color.WHITE,14)));
             ImageView icon=new ImageView(host);
-            icon.setImageResource(icon(item.getItemId()));icon.setColorFilter(primary);
+            icon.setImageResource(icon(item.getItemId()));icon.setColorFilter(update ? accent : primary);
             icon.setPadding(dp(host,8),dp(host,8),dp(host,8),dp(host,8));
             icon.setBackground(shape(host,(primary & 0x00FFFFFF)|0x18000000,12));
             icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(dp(host,36),dp(host,36));
             ip.setMarginEnd(dp(host,12));row.addView(icon,ip);
             TextView title=new TextView(host);title.setText(item.getTitle());title.setTextSize(15);
-            title.setTextColor(AppSettings.textPrimary(host));title.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+            title.setTextColor(update ? accent : AppSettings.textPrimary(host));
+            if (update) title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
+            title.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
             row.addView(title,new LinearLayout.LayoutParams(0,-2,1));
             row.setOnClickListener(v->{popup.dismiss();action.onMenuItemClick(item);});
             list.addView(row,new LinearLayout.LayoutParams(-1,-2));
@@ -54,6 +58,7 @@ final class HeaderMenu {
     }
     private static int icon(int id) {
         switch(id) {
+            case 10:return android.R.drawable.stat_sys_download;
             case 1:return R.drawable.ic_md_settings;
             case 7:return R.drawable.ic_alarm;
             case 4:return android.R.drawable.ic_popup_reminder;
