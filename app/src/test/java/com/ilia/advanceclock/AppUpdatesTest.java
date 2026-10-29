@@ -105,7 +105,7 @@ public class AppUpdatesTest {
         jobs.schedule(new android.app.job.JobInfo.Builder(AppUpdates.DUE_JOB_ID,component).setMinimumLatency(1000).build());
         assertEquals(2,jobs.getAllPendingJobs().size());
         AppUpdates.cancelLegacyJobs(app);assertEquals(0,jobs.getAllPendingJobs().size());
-        assertEquals("https://github.com/infinitimeilia/-infinitime",AppUpdates.repository(app)); assertNull(AppUpdates.available(app));
+        assertEquals("https://github.com/infinitimeilia/infinitime",AppUpdates.repository(app)); assertNull(AppUpdates.available(app));
         assertTrue(AppUpdates.validRepository("https://github.com/owner/InfiniTime"));
         for(String bad:new String[]{"", "https://evil.test/a/b","https://github.com.evil.test/a/b","http://github.com/a/b","https://github.com/a/b?next=evil"})
             assertFalse(bad,AppUpdates.validRepository(bad));

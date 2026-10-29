@@ -1,6 +1,6 @@
 # Foreground-only GitHub Releases updates
 
-The dedicated public release repository is **https://github.com/infinitimeilia/-infinitime**, configured in `update_repository` in `app/src/main/res/values/strings.xml`. Version `1.0.0.5` (code 5) is the first build connected to this repository. For an end-to-end upgrade test, install that signed build, then publish `1.0.0.6` (code 6) signed with the same key. Earlier builds with an empty repository cannot discover this channel and need a manual initial upgrade.
+The dedicated public release repository is **https://github.com/infinitimeilia/infinitime**, configured in `update_repository` in `app/src/main/res/values/strings.xml`. Version `1.0.0.5` (code 5) is the first build connected to this repository. For an end-to-end upgrade test, install that signed build, then publish `1.0.0.6` (code 6) signed with the same key. Earlier builds with an empty repository cannot discover this channel and need a manual initial upgrade.
 
 ## Publishing
 
