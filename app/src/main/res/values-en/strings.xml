@@ -1336,4 +1336,8 @@ Lock screen</string>
     <string name="update_open_downloads">Open Downloads</string>
     <string name="update_choose_location">File verified. Choose where to save it.</string>
     <string name="update_save_apk">Save APK</string>
+    <string name="persistent_date_channel_name">Persistent daily date</string>
+    <string name="update_whats_new">What’s new</string>
+    <string name="update_later">Later</string>
+    <string name="update_download">Download update</string>
 </resources>

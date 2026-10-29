@@ -13,6 +13,7 @@ def main():
     parser.add_argument('apk', type=pathlib.Path)
     parser.add_argument('--aapt', default='aapt', help='Path to Android SDK build-tools aapt/aapt2')
     parser.add_argument('--apksigner', default='apksigner', help='Path to Android SDK build-tools apksigner')
+    parser.add_argument('--notes', type=pathlib.Path, help='JSON with localized title and releaseNotes')
     parser.add_argument('--output', type=pathlib.Path, default=pathlib.Path('update.json'))
     args = parser.parse_args()
     subprocess.run([args.apksigner, 'verify', '--verbose', str(args.apk)], check=True)
@@ -29,7 +30,20 @@ def main():
         digest = hashlib.file_digest(stream, 'sha256').hexdigest()
     metadata = dict(versionCode=int(match[2]), versionName=match[3], tag='v' + match[3],
                     size=size, sha256=digest)
-    args.output.write_text(json.dumps(metadata, indent=2) + '\n', encoding='utf-8')
+    if args.notes:
+        notes = json.loads(args.notes.read_text(encoding='utf-8'))
+        if not isinstance(notes, dict):
+            parser.error('Notes must be a JSON object')
+        for key in ('title', 'releaseNotes'):
+            value = notes.get(key, '')
+            strings = value.values() if isinstance(value, dict) else [value]
+            if any(not isinstance(text, str) or len(text) > 4000 for text in strings):
+                parser.error('Notes must be plain strings or language-to-string objects, up to 4000 characters')
+            metadata[key] = value
+    output = json.dumps(metadata, indent=2, ensure_ascii=False) + '\n'
+    if len(output.encode('utf-8')) > 16384:
+        parser.error('Update metadata including notes must fit within 16 KiB')
+    args.output.write_text(output, encoding='utf-8')
     print(f'Upload {args.apk} as InfiniTime.apk and {args.output} to release {metadata["tag"]}')
 
 

@@ -27,6 +27,7 @@ public final class DateNotificationService extends Service {
             stop(context);
             return;
         }
+        ensureChannel(context);
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         if (manager != null) {
             for (android.service.notification.StatusBarNotification notification : manager.getActiveNotifications()) {
@@ -137,9 +138,16 @@ public final class DateNotificationService extends Service {
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         if (manager == null) return;
 
+        NotificationChannel existing = manager.getNotificationChannel(CHANNEL);
+        if (existing != null) {
+            existing.setName(AppString.get(R.string.persistent_date_channel_name));
+            existing.setDescription(AppString.get(R.string.runtime_text_0667));
+            manager.createNotificationChannel(existing);
+            return;
+        }
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL,
-                AppString.get(R.string.runtime_text_0666),
+                AppString.get(R.string.persistent_date_channel_name),
                 NotificationManager.IMPORTANCE_LOW);
         channel.setDescription(AppString.get(R.string.runtime_text_0667));
         channel.setShowBadge(false);
@@ -195,6 +203,10 @@ public final class DateNotificationService extends Service {
         builder.setContentTitle(title)
                 .setContentText(twoOtherDates.toString())
                 .setContentIntent(content)
+                .setDeleteIntent(PendingIntent.getBroadcast(context, 74,
+                        new Intent(context, DateNotificationDismissedReceiver.class)
+                                .setAction(DateNotificationDismissedReceiver.ACTION),
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
@@ -209,7 +221,9 @@ public final class DateNotificationService extends Service {
 
         // Use resource-backed monochrome icons for System UI/OEM compatibility; keep the day number.
         builder.setSmallIcon(dayIconResource(context, day));
-        return builder.build();
+        Notification notification = builder.build();
+        notification.flags |= Notification.FLAG_NO_CLEAR;
+        return notification;
     }
 
     private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day) {

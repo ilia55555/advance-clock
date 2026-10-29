@@ -48,7 +48,6 @@
         <activity android:name=".AlarmAttachmentEditorActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:enableOnBackInvokedCallback="true" android:name=".AlarmPhotoCropActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".UpdateDownloadActivity" android:screenOrientation="portrait" android:exported="false" />
-        <service android:name=".UpdateCheckJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false" />
         <activity android:name=".AboutActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
@@ -228,6 +227,7 @@
         <receiver android:name=".MediaWidgetActionReceiver" android:exported="false" />
 
         <receiver android:name=".DateNotificationRefreshReceiver" android:exported="false" />
+        <receiver android:name=".DateNotificationDismissedReceiver" android:exported="false" />
 
         <receiver
             android:name=".BootReceiver"

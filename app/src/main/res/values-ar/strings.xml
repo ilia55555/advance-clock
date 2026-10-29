@@ -1354,4 +1354,8 @@
     <string name="update_open_downloads">فتح التنزيلات</string>
     <string name="update_choose_location">تم التحقق من الملف. اختر مكان حفظه.</string>
     <string name="update_save_apk">حفظ ملف APK</string>
+    <string name="persistent_date_channel_name">عرض تاريخ اليوم الدائم</string>
+    <string name="update_whats_new">الميزات الجديدة</string>
+    <string name="update_later">لاحقًا</string>
+    <string name="update_download">تنزيل التحديث</string>
 </resources>

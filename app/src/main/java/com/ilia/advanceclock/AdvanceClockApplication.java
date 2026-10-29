@@ -32,6 +32,7 @@ public final class AdvanceClockApplication extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
+        AppUpdates.cancelLegacyJobs(this);
         AppTime.configure(AppSettings.referenceTimeZoneId(this));
         AppSettings.applyLanguage(this);
         AppString.init(this);

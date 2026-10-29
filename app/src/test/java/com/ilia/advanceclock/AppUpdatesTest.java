@@ -25,7 +25,7 @@ public class AppUpdatesTest {
     }
     @Test public void metadataCannotChooseDownloadHostOrFileName() throws Exception {
         AppUpdates.Release r=new AppUpdates.Release(json());
-        assertEquals("https://github.com/ilia55555/advance-clock/releases/download/v1.0.0.5/InfiniTime.apk",r.url());
+        assertEquals("https://github.com/ilia55555/advance-clock/releases/download/v1.0.0.5/InfiniTime.apk",r.url("https://github.com/ilia55555/advance-clock"));
         for (String[] change:new String[][]{{"tag","../../evil"},{"versionName","1.0.0.5/evil"},{"sha256","missing"},
                 {"size","0"},{"size","157286401"},{"versionCode","-1"}}) {
             JSONObject o=new JSONObject(json()).put(change[0],change[1]);
@@ -79,50 +79,59 @@ public class AppUpdatesTest {
     }
     @Test public void debugBuildNeverOffersProductionUpdate() throws Exception {
         Assume.assumeTrue(app.getPackageName().endsWith(".debug"));
-        AppUpdates.prefs(app).edit().putLong("success",System.currentTimeMillis()).putString("release",json()).commit();
+        AppUpdates.prefs(app).edit().putString("source","https://github.com/owner/InfiniTime").putLong("success",System.currentTimeMillis()).putString("release",json()).commit();
         assertNull(AppUpdates.available(app));
-        AppUpdates.start(app);
+        AppUpdates.cancelLegacyJobs(app);
         assertNull(app.getSystemService(android.app.job.JobScheduler.class).getPendingJob(AppUpdates.JOB_ID));
     }
     @Test public void availabilityExpiresAndInstalledVersionsAreNotOffered() throws Exception {
         Context production=new ContextWrapper(app) { @Override public String getPackageName() { return "com.ilia.advanceclock"; } @Override public Context getApplicationContext() { return this; } };
         PackageInfo installed=pkg(4,"owner"); installed.applicationInfo.packageName=installed.packageName;
         Shadows.shadowOf(app.getPackageManager()).installPackage(installed);
-        AppUpdates.prefs(app).edit().putLong("success",System.currentTimeMillis()).putString("release",json()).commit();
-        assertNotNull(AppUpdates.available(production));
+        AppUpdates.prefs(app).edit().putString("source","https://github.com/owner/InfiniTime").putLong("success",System.currentTimeMillis()).putString("release",json()).commit();
+        assertNotNull(AppUpdates.available(production,"https://github.com/owner/InfiniTime"));
+        assertNull(AppUpdates.available(production,"https://github.com/owner/OtherApp"));
         AppUpdates.prefs(app).edit().putLong("success",System.currentTimeMillis()-8L*86400000).commit();
-        assertNull(AppUpdates.available(production));
+        assertNull(AppUpdates.available(production,"https://github.com/owner/InfiniTime"));
         installed=pkg(5,"owner");installed.applicationInfo.packageName=installed.packageName;
         Shadows.shadowOf(app.getPackageManager()).installPackage(installed);
         AppUpdates.prefs(app).edit().putLong("success",System.currentTimeMillis()).commit();
-        assertNull(AppUpdates.available(production));
+        assertNull(AppUpdates.available(production,"https://github.com/owner/InfiniTime"));
     }
-    @Test public void periodicAndDueChecksRequireNetworkAndDoNotPoll() {
-        Context production=new ContextWrapper(app) { @Override public String getPackageName() { return "com.ilia.advanceclock"; } @Override public Context getApplicationContext() { return this; } };
-        AppUpdates.start(production);
+    @Test public void legacyBackgroundJobsAreCancelledAndNewRepositoryStartsDisabled() {
         var jobs=app.getSystemService(android.app.job.JobScheduler.class);
-        var periodic=jobs.getPendingJob(AppUpdates.JOB_ID);
-        assertNotNull(periodic);assertTrue(periodic.isPeriodic());assertTrue(periodic.isPersisted());
-        assertEquals(AppUpdates.INTERVAL,periodic.getIntervalMillis());
-        assertEquals(android.app.job.JobInfo.NETWORK_TYPE_ANY,periodic.getNetworkType());
-        assertNotNull(jobs.getPendingJob(AppUpdates.DUE_JOB_ID));
+        android.content.ComponentName component=new ComponentName(app,"com.ilia.advanceclock.UpdateCheckJob");
+        jobs.schedule(new android.app.job.JobInfo.Builder(AppUpdates.JOB_ID,component).setPeriodic(86400000).build());
+        jobs.schedule(new android.app.job.JobInfo.Builder(AppUpdates.DUE_JOB_ID,component).setMinimumLatency(1000).build());
         assertEquals(2,jobs.getAllPendingJobs().size());
-        AppUpdates.start(production);assertEquals(2,jobs.getAllPendingJobs().size());
+        AppUpdates.cancelLegacyJobs(app);assertEquals(0,jobs.getAllPendingJobs().size());
+        assertEquals("",AppUpdates.repository(app)); assertNull(AppUpdates.available(app));
+        assertTrue(AppUpdates.validRepository("https://github.com/owner/InfiniTime"));
+        for(String bad:new String[]{"", "https://evil.test/a/b","https://github.com.evil.test/a/b","http://github.com/a/b","https://github.com/a/b?next=evil"})
+            assertFalse(bad,AppUpdates.validRepository(bad));
     }
-    @Test public void checksAreThrottledAndClockChangesCannotBlockThemForever() {
-        long now=10L*AppUpdates.INTERVAL;
-        assertTrue(AppUpdates.due(now,0,true));
-        assertFalse(AppUpdates.due(now,now-AppUpdates.INTERVAL+1,true));
-        assertTrue(AppUpdates.due(now,now-AppUpdates.INTERVAL,true));
-        assertFalse(AppUpdates.due(now,now-86400000+1,false));
-        assertTrue(AppUpdates.due(now,now-86400000,false));
-        assertTrue(AppUpdates.due(now,now+86400000,true));
+    @Test public void rapidActivityReturnsAreThrottledWithoutSchedulingRetries() {
+        long now=10L*AppUpdates.ENTRY_THROTTLE;
+        assertTrue(AppUpdates.due(now,0));
+        assertFalse(AppUpdates.due(now,now-AppUpdates.ENTRY_THROTTLE+1));
+        assertTrue(AppUpdates.due(now,now-AppUpdates.ENTRY_THROTTLE));
+        assertTrue(AppUpdates.due(now,now+1000));
+    }
+    @Test public void releaseNotesUseSelectedLanguageAndPlainTextFallback() throws Exception {
+        String body=new JSONObject(json()).put("title",new JSONObject().put("fa","نسخه جدید").put("en","New version"))
+                .put("releaseNotes",new JSONObject().put("fa","ویژگی اول\nویژگی دوم").put("en","<script>plain text</script>")).toString();
+        var r=new AppUpdates.Release(body);
+        assertEquals("نسخه جدید",r.text("title","fa"));
+        assertEquals("New version",r.text("title","ar"));
+        assertEquals("ویژگی اول\nویژگی دوم",r.text("releaseNotes","fa"));
+        assertEquals("<script>plain text</script>",r.text("releaseNotes","ar"));
+        assertEquals("",r.text("missing","fa"));
     }
     @Test public void updateComponentsPrivateAndNoInstallationPermission() throws Exception {
         var pm=app.getPackageManager();
         assertFalse(pm.getActivityInfo(new ComponentName(app,UpdateDownloadActivity.class),0).exported);
-        ServiceInfo job=pm.getServiceInfo(new ComponentName(app,UpdateCheckJob.class),0);
-        assertFalse(job.exported);assertEquals("android.permission.BIND_JOB_SERVICE",job.permission);
+        for (ServiceInfo service : pm.getPackageInfo(app.getPackageName(),PackageManager.GET_SERVICES).services)
+            assertNotEquals("com.ilia.advanceclock.UpdateCheckJob",service.name);
         String[] requested=pm.getPackageInfo(app.getPackageName(),PackageManager.GET_PERMISSIONS).requestedPermissions;
         assertFalse(java.util.Arrays.asList(requested).contains("android.permission.REQUEST_INSTALL_PACKAGES"));
     }

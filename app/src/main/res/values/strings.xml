@@ -1338,4 +1338,10 @@
     <string name="update_open_downloads">باز کردن دانلودها</string>
     <string name="update_choose_location">فایل تأیید شد؛ محل ذخیره را انتخاب کنید.</string>
     <string name="update_save_apk">ذخیرهٔ فایل APK</string>
+    <string name="persistent_date_channel_name">نمایش تاریخ روز دائمی</string>
+    <string name="update_whats_new">قابلیت‌های جدید</string>
+    <string name="update_later">بعداً</string>
+    <string name="update_download">دانلود نسخهٔ جدید</string>
+    <!-- Set only after the owner supplies the dedicated public release repository. -->
+    <string name="update_repository" translatable="false"></string>
 </resources>

@@ -9,30 +9,41 @@ import java.io.*;
 import java.net.*;
 import java.security.MessageDigest;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 /** Public release metadata is untrusted. Only a newer APK with our installed signer is exported. */
 final class AppUpdates {
-    static final String REPO = "https://github.com/ilia55555/advance-clock";
-    static final String METADATA = REPO + "/releases/latest/download/update.json";
-    static final long INTERVAL = 3L * 24 * 60 * 60 * 1000;
+    static final long ENTRY_THROTTLE = 5L * 60 * 1000;
     static final long MAX_APK = 150L * 1024 * 1024;
     static final int JOB_ID = 8204;
     static final int DUE_JOB_ID = 8205;
-    private static final AtomicBoolean CHECKING = new AtomicBoolean();
+
 
     static final class Release {
         final long code, size;
         final String version, hash, tag;
+        final JSONObject metadata;
         Release(String json) throws Exception {
-            JSONObject o = new JSONObject(json);
+            JSONObject o = new JSONObject(json); metadata = o;
             code = o.getLong("versionCode"); size = o.getLong("size");
             version = o.getString("versionName"); hash = o.getString("sha256"); tag = o.getString("tag");
             if (code <= 0 || code > 2100000000L || version.length() > 40 || size <= 0 || size > MAX_APK || !version.matches("[0-9]+(?:\\.[0-9]+){3}")
                     || !hash.matches("[a-f0-9]{64}") || !tag.equals("v" + version))
                 throw new IOException("Invalid release metadata");
         }
-        String url() { return REPO + "/releases/download/" + tag + "/InfiniTime.apk"; }
+        String url(String repository) throws IOException {
+            if (!validRepository(repository)) throw new IOException("Update repository not configured");
+            return repository + "/releases/download/" + tag + "/InfiniTime.apk";
+        }
+        String text(String key, String language) {
+            Object value = metadata.opt(key);
+            if (value instanceof JSONObject) {
+                JSONObject labels = (JSONObject) value;
+                value = labels.opt(language);
+                if (!(value instanceof String) || ((String)value).trim().isEmpty()) value = labels.opt("en");
+            }
+            return value instanceof String ? ((String)value).trim().substring(0, Math.min(((String)value).trim().length(), key.equals("title") ? 200 : 4000)) : "";
+        }
     }
     static android.content.SharedPreferences prefs(Context c) {
         return c.getSharedPreferences("app_updates", Context.MODE_PRIVATE);
@@ -43,8 +54,13 @@ final class AppUpdates {
         return c.getPackageManager().getPackageInfo(c.getPackageName(), flags());
     }
     private static int flags() { return Build.VERSION.SDK_INT >= 28 ? PackageManager.GET_SIGNING_CERTIFICATES : PackageManager.GET_SIGNATURES; }
-    static Release available(Context c) {
-        if (!production(c)) return null;
+    static String repository(Context c) { return c.getString(R.string.update_repository).trim(); }
+    static boolean validRepository(String value) {
+        return value != null && value.matches("https://github\\.com/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*");
+    }
+    static Release available(Context c) { return available(c, repository(c)); }
+    static Release available(Context c, String repository) {
+        if (!production(c) || !validRepository(repository) || !repository.equals(prefs(c).getString("source", ""))) return null;
         try {
             long age = System.currentTimeMillis() - prefs(c).getLong("success", 0);
             if (age < 0 || age > 7L * 24 * 60 * 60 * 1000) return null;
@@ -52,67 +68,61 @@ final class AppUpdates {
             return r.code > code(installed(c)) ? r : null;
         } catch (Exception e) { return null; }
     }
-    static void start(Context context) {
-        Context c = context.getApplicationContext();
-        if (!production(c)) return;
+    static void cancelLegacyJobs(Context c) {
         JobScheduler jobs = c.getSystemService(JobScheduler.class);
-        if (jobs != null && jobs.getPendingJob(JOB_ID) == null) {
-            jobs.schedule(new JobInfo.Builder(JOB_ID, new ComponentName(c, UpdateCheckJob.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(true)
-                    .setPeriodic(INTERVAL, 6L * 60 * 60 * 1000).build());
-        }
-        if (jobs != null && due(System.currentTimeMillis(), prefs(c).getLong("attempt", 0), prefs(c).getBoolean("last_ok", false))
-                && jobs.getPendingJob(DUE_JOB_ID) == null) {
-            jobs.schedule(new JobInfo.Builder(DUE_JOB_ID, new ComponentName(c, UpdateCheckJob.class))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setMinimumLatency(0).build());
-        }
+        if (jobs != null) { jobs.cancel(JOB_ID); jobs.cancel(DUE_JOB_ID); }
     }
-    static void check(Context c) {
-        if (!production(c) || !CHECKING.compareAndSet(false, true)) return;
+    static void check(Context c, ForegroundUpdates.Request request, String repository) {
+        if (!production(c) || !validRepository(repository) || request.cancelled) return;
         try {
-            long now = System.currentTimeMillis(), last = prefs(c).getLong("attempt", 0);
-            if (!due(now, last, prefs(c).getBoolean("last_ok", false))) return;
-            prefs(c).edit().putLong("attempt", now).putBoolean("last_ok", false).apply();
-            HttpURLConnection conn = open(METADATA);
+            long now = System.currentTimeMillis();
+            prefs(c).edit().putLong("attempt", now).apply();
+            HttpURLConnection conn = open(repository + "/releases/latest/download/update.json", request);
+            request.connection = conn;
             try {
+                if (request.cancelled) return;
                 if (conn.getResponseCode() == 404) {
-                    prefs(c).edit().remove("release").putLong("success", now).putBoolean("last_ok", true).apply();
-                    return; // No public release yet.
+                    prefs(c).edit().remove("release").putString("source", repository).putLong("success", now).apply();
+                    return;
                 }
                 if (conn.getResponseCode() != 200) throw new IOException("Metadata unavailable");
                 String json;
                 try (InputStream in = conn.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                     byte[] b = new byte[4096]; int n; long started = android.os.SystemClock.elapsedRealtime();
                     while ((n = in.read(b)) != -1) {
-                        if (Thread.currentThread().isInterrupted() || android.os.SystemClock.elapsedRealtime() - started > 60000) throw new IOException("Metadata timeout");
-                        if (out.size() + n > 16384) throw new IOException("Metadata too large"); out.write(b, 0, n); }
+                        if (request.cancelled || Thread.currentThread().isInterrupted() || android.os.SystemClock.elapsedRealtime() - started > 60000) throw new IOException("Metadata cancelled");
+                        if (out.size() + n > 16384) throw new IOException("Metadata too large");
+                        out.write(b, 0, n);
+                    }
                     json = out.toString("UTF-8");
                 }
                 new Release(json);
-                prefs(c).edit().putString("release", json).putLong("success", now).putBoolean("last_ok", true).apply();
-            } finally { conn.disconnect(); }
+                if (!request.cancelled) prefs(c).edit().putString("release", json).putString("source", repository).putLong("success", now).apply();
+            } finally { conn.disconnect(); request.connection = null; }
         } catch (Exception ignored) { /* Offline must never interrupt clocks or alarms. */ }
-        finally { CHECKING.set(false); }
     }
-    static boolean due(long now, long last, boolean lastOk) {
-        long delay = lastOk ? INTERVAL : 24L * 60 * 60 * 1000;
-        return last <= 0 || now < last || now - last >= delay;
-    }
+    static boolean due(long now, long last) { return last <= 0 || now < last || now - last >= ENTRY_THROTTLE; }
     static boolean allowed(URL u) {
         if (!"https".equals(u.getProtocol()) || u.getUserInfo() != null || (u.getPort() != -1 && u.getPort() != 443)) return false;
         String host = u.getHost();
         return host.equals("github.com") || host.equals("release-assets.githubusercontent.com")
                 || host.equals("objects.githubusercontent.com");
     }
-    static HttpURLConnection open(String address) throws Exception {
+    static HttpURLConnection open(String address) throws Exception { return open(address, null); }
+    static HttpURLConnection open(String address, ForegroundUpdates.Request request) throws Exception {
         URL url = new URL(address);
         for (int i = 0; i < 5; i++) {
+            if (request != null && request.cancelled) throw new IOException("Check cancelled");
             if (!allowed(url)) throw new IOException("Untrusted download host");
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            if (request != null) request.connection = c;
             c.setConnectTimeout(15000); c.setReadTimeout(20000); c.setInstanceFollowRedirects(false);
             c.setRequestProperty("User-Agent", "InfiniTime-Update");
             c.setRequestProperty("Accept-Encoding", "identity");
-            int status = c.getResponseCode();
+            if (request != null && request.cancelled) { c.disconnect(); throw new IOException("Check cancelled"); }
+            int status;
+            try { status = c.getResponseCode(); } catch (Exception e) { c.disconnect(); throw e; }
+            if (request != null && request.cancelled) { c.disconnect(); throw new IOException("Check cancelled"); }
             if (status == 301 || status == 302 || status == 303 || status == 307 || status == 308) {
                 String next = c.getHeaderField("Location"); c.disconnect();
                 if (next == null) throw new IOException("Missing redirect");
@@ -125,7 +135,7 @@ final class AppUpdates {
         File file = File.createTempFile("update-", ".apk", c.getCacheDir());
         boolean valid = false;
         try {
-            HttpURLConnection conn = open(r.url());
+            HttpURLConnection conn = open(r.url(repository(c)));
             try {
                 if (conn.getResponseCode() != 200) throw new IOException("Download unavailable");
                 MessageDigest hash = MessageDigest.getInstance("SHA-256");
