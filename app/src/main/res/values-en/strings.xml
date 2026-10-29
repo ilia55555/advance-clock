@@ -1340,4 +1340,5 @@ Lock screen</string>
     <string name="update_whats_new">What’s new</string>
     <string name="update_later">Later</string>
     <string name="update_download">Download update</string>
+    <string name="date_notification_holiday">Holiday</string>
 </resources>

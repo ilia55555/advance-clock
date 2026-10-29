@@ -158,8 +158,19 @@ public final class DateNotificationService extends Service {
     }
 
     private static Notification buildNotification(Context context) {
+        return buildNotification(context, System.currentTimeMillis());
+    }
+
+    static String holidayLabel(Context context, long millis, int calendarType) {
+        if (CalendarEventRepository.isOfficialHolidayInEnabledSources(context, millis, calendarType))
+            return AppString.get(R.string.calendar_event_text_007);
+        if (CalendarEventRepository.isWeekend(millis, calendarType))
+            return AppString.get(R.string.date_notification_holiday);
+        return "";
+    }
+
+    static Notification buildNotification(Context context, long now) {
         int selectedType = AppSettings.defaultCalendar(context);
-        long now = System.currentTimeMillis();
 
         android.icu.util.Calendar selected =
                 CalendarUtils.fromMillis(selectedType, now);
@@ -183,6 +194,8 @@ public final class DateNotificationService extends Service {
         };
         String weekday = AppString.get(weekdays[selected.get(android.icu.util.Calendar.DAY_OF_WEEK) - 1]);
         String title = weekday + " " + notificationDigits(context, CalendarUtils.formatDate(now, selectedType));
+        String holiday = holidayLabel(context, now, selectedType);
+        if (!holiday.isEmpty()) title += " (" + holiday + ")";
         BidiFormatter bidi = BidiFormatter.getInstance(AppSettings.layoutDirection(context) == View.LAYOUT_DIRECTION_RTL);
 
         StringBuilder twoOtherDates = new StringBuilder();
@@ -216,8 +229,8 @@ public final class DateNotificationService extends Service {
                 .setColor(AppSettings.primaryColor(context))
                 .setColorized(false)
                 .setStyle(new Notification.DecoratedCustomViewStyle())
-                .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day))
-                .setCustomBigContentView(dateView(context, R.layout.notification_date_expanded, title, twoOtherDates.toString(), day));
+                .setCustomContentView(dateView(context, R.layout.notification_date, title, twoOtherDates.toString(), day, !holiday.isEmpty()))
+                .setCustomBigContentView(dateView(context, R.layout.notification_date_expanded, title, twoOtherDates.toString(), day, !holiday.isEmpty()));
 
         // Use resource-backed monochrome icons for System UI/OEM compatibility; keep the day number.
         builder.setSmallIcon(dayIconResource(context, day));
@@ -227,11 +240,15 @@ public final class DateNotificationService extends Service {
     }
 
     private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day) {
+        return dateView(context, layout, title, otherDates, day, false);
+    }
+
+    private static RemoteViews dateView(Context context, int layout, String title, String otherDates, int day, boolean holiday) {
         RemoteViews views = new RemoteViews(context.getPackageName(), layout);
         int primary = AppSettings.primaryColor(context);
         int text = Color.luminance(primary) > 0.179f ? Color.BLACK : Color.WHITE;
         views.setInt(R.id.date_notification_background, "setColorFilter", primary);
-        views.setInt(R.id.date_notification_day_border, "setColorFilter", primary);
+        views.setInt(R.id.date_notification_day_border, "setColorFilter", holiday ? 0xFFC62828 : primary);
         views.setInt(R.id.date_notification_day_border, "setImageAlpha", 255);
         views.setTextColor(R.id.date_notification_day, primary);
         views.setTextColor(R.id.date_notification_day_latin, primary);

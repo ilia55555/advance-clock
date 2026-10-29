@@ -1358,4 +1358,5 @@
     <string name="update_whats_new">الميزات الجديدة</string>
     <string name="update_later">لاحقًا</string>
     <string name="update_download">تنزيل التحديث</string>
+    <string name="date_notification_holiday">عطلة</string>
 </resources>

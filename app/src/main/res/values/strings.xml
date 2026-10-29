@@ -1344,4 +1344,5 @@
     <string name="update_download">دانلود نسخهٔ جدید</string>
     <!-- Set only after the owner supplies the dedicated public release repository. -->
     <string name="update_repository" translatable="false"></string>
+    <string name="date_notification_holiday">تعطیل</string>
 </resources>
