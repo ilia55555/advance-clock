@@ -1379,4 +1379,14 @@
     <string name="update_download_cancelled">توقف التنزيل. اضغط للبدء مجددًا.</string>
     <string name="update_verifying">اكتمل التنزيل؛ جارٍ التحقق من الملف…</string>
     <string name="update_storage_error">تعذّر حفظ الملف. تحقق من المساحة المتاحة وإمكانية الوصول إلى التنزيلات.</string>
+    <string name="update_install_button">تثبيت التحديث</string>
+    <string name="update_install_ready">الملف موثوق وجاهز للتثبيت.</string>
+    <string name="update_install_permission">اسمح بالتثبيت من هذا التطبيق في الشاشة التالية.</string>
+    <string name="update_install_denied">لم يُمنح إذن التثبيت. حدّث التطبيق من مدير ملفات الهاتف.</string>
+    <string name="update_install_requested">أكّد التثبيت في نافذة أندرويد لإكمال التحديث.</string>
+    <string name="update_install_cancelled">لم يكتمل التثبيت. حاول مجددًا أو افتح الملف من مدير الملفات.</string>
+    <string name="update_installer_unavailable">تعذّر فتح مثبّت أندرويد. ثبّت الملف من مدير الملفات.</string>
+    <string name="update_open_files">فتح مدير الملفات</string>
+    <string name="update_manual_saved">تم حفظ ملف التثبيت. افتحه من مدير ملفات الهاتف.</string>
+    <string name="update_file_manager_unavailable">افتح مدير الملفات يدويًا وابحث عن ملف التطبيق في Download/InfiniTime.</string>
 </resources>

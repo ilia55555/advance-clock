@@ -127,13 +127,13 @@ public class AppUpdatesTest {
         assertEquals("<script>plain text</script>",r.text("releaseNotes","ar"));
         assertEquals("",r.text("missing","fa"));
     }
-    @Test public void updateComponentsPrivateAndNoInstallationPermission() throws Exception {
+    @Test public void updateComponentsPrivateAndInstallationRequiresUserPermission() throws Exception {
         var pm=app.getPackageManager();
         assertThrows(PackageManager.NameNotFoundException.class, () ->
                 pm.getActivityInfo(new ComponentName(app,"com.ilia.advanceclock.UpdateDownloadActivity"),0));
         for (ServiceInfo service : pm.getPackageInfo(app.getPackageName(),PackageManager.GET_SERVICES).services)
             assertNotEquals("com.ilia.advanceclock.UpdateCheckJob",service.name);
         String[] requested=pm.getPackageInfo(app.getPackageName(),PackageManager.GET_PERMISSIONS).requestedPermissions;
-        assertFalse(java.util.Arrays.asList(requested).contains("android.permission.REQUEST_INSTALL_PACKAGES"));
+        assertTrue(java.util.Arrays.asList(requested).contains("android.permission.REQUEST_INSTALL_PACKAGES"));
     }
 }

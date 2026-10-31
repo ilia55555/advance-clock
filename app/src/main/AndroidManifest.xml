@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -17,6 +18,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <queries>
+        <intent><action android:name="android.intent.action.VIEW" /><data android:mimeType="vnd.android.document/directory" /></intent>
+        <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.APP_FILES" /></intent>
+        <package android:name="com.sec.android.app.myfiles" />
+        <package android:name="com.mi.android.globalFileexplorer" />
+        <package android:name="com.android.fileexplorer" />
+        <package android:name="com.huawei.hidisk" />
+        <package android:name="com.hihonor.filemanager" />
+        <package android:name="com.google.android.apps.nbu.files" />
         <intent><action android:name="android.speech.RecognitionService" /></intent>
         <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent>
         <intent><action android:name="android.media.action.IMAGE_CAPTURE" /></intent>
@@ -41,6 +50,8 @@
         android:theme="@style/Theme.AdvanceClock"
         android:usesCleartextTraffic="false">
 
+        <provider android:name=".UpdatePackageProvider" android:authorities="${applicationId}.updates"
+            android:exported="false" android:grantUriPermissions="true" />
         <provider android:name=".SafeDocumentProvider" android:authorities="${applicationId}.checkeddocuments"
             android:exported="false" android:grantUriPermissions="true" />
         <provider android:name=".AlarmMediaProvider" android:authorities="${applicationId}.alarmmedia"

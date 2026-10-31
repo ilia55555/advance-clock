@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.*;
 import android.os.*;
+import android.net.Uri;
 import android.view.*;
 import android.widget.*;
 import java.io.File;
@@ -21,8 +22,14 @@ final class UpdatePrompt {
     static void dismiss(Activity host) { Session s=session(host);if(s!=null)s.close(); }
     static void pause(Activity host) { Session s=session(host);if(s!=null)s.pause(); }
     static boolean onActivityResult(Activity host,int request,int result,Intent data) {
-        if(request!=SAVE_REQUEST)return false;
-        Session s=session(host);if(s!=null && !s.closed)s.saved(result,data);return true;
+        if(request!=SAVE_REQUEST && request!=UpdateInstaller.PERMISSION_REQUEST && request!=UpdateInstaller.INSTALL_REQUEST)return false;
+        Session s=session(host);
+        if(s!=null && !s.closed) {
+            if(request==SAVE_REQUEST)s.saved(result,data);
+            else if(request==UpdateInstaller.PERMISSION_REQUEST)s.installPermissionReturned();
+            else s.status.setText(result==Activity.RESULT_OK?R.string.update_install_requested:R.string.update_install_cancelled);
+        }
+        return true;
     }
     static void show(Activity host,AppUpdates.Release release,boolean manual) {
         if(release==null || host.isFinishing() || host.isDestroyed())return;
@@ -39,8 +46,8 @@ final class UpdatePrompt {
         final Activity host;final AppUpdates.Release release;final Dialog dialog;final Downloader downloader;
         final Handler main=new Handler(Looper.getMainLooper());
         final LinearLayout root;final TextView status,amount;final ProgressBar progress;
-        final Button later,download;
-        ForegroundUpdates.Request request;File verified;boolean working,ready,awaitingSave,closed;int generation;
+        final Button later,download,files;
+        ForegroundUpdates.Request request;Uri installUri,publicUri;boolean working,ready,awaitingSave,closed;int generation;
         Session(Activity host,AppUpdates.Release release) { this(host,release,AppUpdates::download); }
         Session(Activity host,AppUpdates.Release release,Downloader downloader) {
             this.downloader=downloader;this.host=host;this.release=release;dialog=new Dialog(host);dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -82,6 +89,9 @@ final class UpdatePrompt {
             download=new Button(host);download.setText(R.string.update_download);download.setTag("update_download_button");style(download,true);download.setOnClickListener(v->download());
             actions.addView(later,new LinearLayout.LayoutParams(0,dp(host,48),1));
             LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(host,48),1);p.leftMargin=dp(host,10);actions.addView(download,p);root.addView(actions);
+            files=new Button(host);files.setText(R.string.update_open_files);files.setTag("update_open_files_button");style(files,false);
+            files.setVisibility(View.GONE);files.setOnClickListener(v->openDownloads());
+            LinearLayout.LayoutParams fp=new LinearLayout.LayoutParams(-1,dp(host,44));fp.topMargin=dp(host,8);root.addView(files,fp);
         }
         void style(Button button,boolean primary) {
             int accent=AppSettings.primaryColor(host);GradientDrawable bg=shape(primary?accent:AppSettings.surface(host),dp(host,14));bg.setStroke(dp(host,1),accent);
@@ -95,15 +105,14 @@ final class UpdatePrompt {
             Window window=dialog.getWindow();if(window!=null){window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));window.setLayout(-1,-2);window.setGravity(Gravity.BOTTOM);}
             root.setTranslationY(dp(host,80));root.setAlpha(0);root.animate().translationY(0).alpha(1).setDuration(220).start();
         }
-        void close() {closed=true;generation++;if(request!=null)request.cancel();if(verified!=null)verified.delete();dialog.dismiss();}
+        void close() {closed=true;generation++;if(request!=null)request.cancel();dialog.dismiss();}
         void pause() {
             if(working && !awaitingSave){generation++;if(request!=null)request.cancel();working=false;download.setEnabled(true);status.setText(R.string.update_download_cancelled);download.setText(R.string.update_download_retry);}
         }
         boolean live(int token){return !closed && token==generation && !host.isDestroyed() && !host.isFinishing();}
         String filename(){return "InfiniTime-"+release.version+".apk";}
         void download() {
-            if(ready){openDownloads();return;}
-            if(verified!=null && verified.isFile()){chooseSave();return;}
+            if(ready){install();return;}
             if(working)return;
             working=true;download.setEnabled(false);status.setVisibility(View.VISIBLE);status.setText(R.string.update_downloading);
             progress.setVisibility(View.VISIBLE);progress.setProgress(0);amount.setVisibility(View.VISIBLE);amount.setText(volume(0,release.size));
@@ -117,34 +126,56 @@ final class UpdatePrompt {
                         main.post(()->{if(live(token)){progress.setProgress((int)(done*1000/Math.max(1,total)),true);amount.setText(volume(done,total));if(verifying)status.setText(R.string.update_verifying);}});
                     },operation);
                     if(operation.cancelled)throw new java.io.IOException("Cancelled");
-                    if(Build.VERSION.SDK_INT>=29){UpdateFiles.publish(host.getApplicationContext(),file,filename(),operation);file=null;}
-                    File result=file;
+                    Uri staged=UpdatePackageProvider.stage(host.getApplicationContext(),file);
+                    Uri published=null;
+                    if(operation.cancelled)throw new java.io.IOException("Cancelled");
+                    if(Build.VERSION.SDK_INT>=29) {
+                        try{published=UpdateFiles.publish(host.getApplicationContext(),file,filename(),operation);}
+                        catch(Exception exportError){/* Installation can use the private verified copy; manual export stays available. */}
+                    }
+                    file.delete();file=null;Uri exported=published;
                     main.post(()->{
-                        if(!live(token)){if(result!=null)result.delete();return;}
-                        verified=result;working=false;download.setEnabled(true);
-                        if(Build.VERSION.SDK_INT>=29){ready=true;status.setText(R.string.update_ready);download.setText(R.string.update_open_downloads);}
-                        else{status.setText(R.string.update_choose_location);download.setText(R.string.update_save_apk);chooseSave();}
+                        if(!live(token))return;
+                        installUri=staged;publicUri=exported;working=false;ready=true;download.setEnabled(true);
+                        status.setText(R.string.update_install_ready);download.setText(R.string.update_install_button);files.setVisibility(View.VISIBLE);
+                        install();
                     });
                 }catch(Exception e){if(file!=null)file.delete();main.post(()->{if(live(token)){working=false;download.setEnabled(true);download.setText(R.string.update_download_retry);status.setText(AppUpdates.errorMessage(e));}});}
             },"verified-update-download");operation.thread.start();
         }
         void chooseSave() {
-            if(verified==null || !verified.isFile())return;
+            if(installUri==null)return;
             try{awaitingSave=true;host.startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
                     .setType("application/vnd.android.package-archive").putExtra(Intent.EXTRA_TITLE,filename()),SAVE_REQUEST);}
             catch(ActivityNotFoundException e){awaitingSave=false;status.setText(R.string.update_storage_error);}
         }
         void saved(int result,Intent data) {
             awaitingSave=false;
-            if(result!=Activity.RESULT_OK || data==null || data.getData()==null || verified==null){status.setText(R.string.update_choose_location);return;}
-            working=true;download.setEnabled(false);int token=++generation;File file=verified;
+            if(result!=Activity.RESULT_OK || data==null || data.getData()==null || installUri==null){status.setText(R.string.update_choose_location);return;}
+            working=true;download.setEnabled(false);int token=++generation;Uri target=data.getData();
             request=new ForegroundUpdates.Request(host);ForegroundUpdates.Request operation=request;
             operation.thread=new Thread(()->{
-                try{UpdateFiles.save(host.getApplicationContext(),file,data.getData(),operation);file.delete();main.post(()->{if(live(token)){verified=null;working=false;ready=true;download.setEnabled(true);download.setText(R.string.update_open_downloads);status.setText(R.string.update_ready);}});}
+                try{UpdateFiles.save(host.getApplicationContext(),installUri,target,operation);main.post(()->{if(live(token)){publicUri=target;working=false;ready=true;download.setEnabled(true);download.setText(R.string.update_install_button);status.setText(R.string.update_manual_saved);UpdateInstaller.openFiles(host,publicUri);}});}
                 catch(Exception e){main.post(()->{if(live(token)){working=false;download.setEnabled(true);status.setText(AppUpdates.errorMessage(e));}});}
             },"save-verified-update");operation.thread.start();
         }
-        void openDownloads(){try{host.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));}catch(ActivityNotFoundException e){status.setText(R.string.update_ready);}}
+        void install() {
+            if(installUri==null)return;
+            if(!UpdateInstaller.allowed(host)) {
+                status.setText(R.string.update_install_permission);
+                try{host.startActivityForResult(UpdateInstaller.permissionIntent(host),UpdateInstaller.PERMISSION_REQUEST);}
+                catch(ActivityNotFoundException|SecurityException error){permissionDenied();}
+                return;
+            }
+            status.setText(R.string.update_install_requested);
+            if(!UpdateInstaller.launch(host,installUri))status.setText(R.string.update_installer_unavailable);
+        }
+        void installPermissionReturned(){if(UpdateInstaller.allowed(host))install();else permissionDenied();}
+        void permissionDenied(){status.setText(R.string.update_install_denied);files.setVisibility(View.VISIBLE);download.setEnabled(true);}
+        void openDownloads(){
+            if(publicUri==null){chooseSave();return;}
+            if(!UpdateInstaller.openFiles(host,publicUri))status.setText(R.string.update_file_manager_unavailable);
+        }
     }
     static String volume(long done,long total){return String.format(Locale.ROOT,"%.2f / %.2f MB  ·  %d%%",done/1048576d,total/1048576d,(int)(done*100/Math.max(1,total)));}
     private static GradientDrawable shape(int color,float radius){GradientDrawable bg=new GradientDrawable();bg.setColor(color);bg.setCornerRadius(radius);return bg;}

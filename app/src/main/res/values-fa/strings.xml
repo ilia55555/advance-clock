@@ -1311,4 +1311,14 @@
     <string name="update_download_cancelled">دانلود متوقف شد. برای شروع دوباره دکمه را بزنید.</string>
     <string name="update_verifying">دانلود کامل شد؛ در حال بررسی امنیت فایل…</string>
     <string name="update_storage_error">ذخیرهٔ فایل انجام نشد. فضای خالی و دسترسی به پوشهٔ دانلودها را بررسی کنید.</string>
+    <string name="update_install_button">نصب به‌روزرسانی</string>
+    <string name="update_install_ready">فایل تأیید شد و برای نصب آماده است.</string>
+    <string name="update_install_permission">برای نصب، اجازهٔ نصب از این برنامه را در صفحهٔ بعد فعال کنید.</string>
+    <string name="update_install_denied">مجوز نصب داده نشد. از طریق فایل‌منیجر موبایل برنامه را به‌روزرسانی کنید.</string>
+    <string name="update_install_requested">برای تکمیل به‌روزرسانی، نصب را در پنجرهٔ اندروید تأیید کنید.</string>
+    <string name="update_install_cancelled">نصب کامل نشد. می‌توانید دوباره نصب کنید یا فایل را در فایل‌منیجر باز کنید.</string>
+    <string name="update_installer_unavailable">نصب‌کنندهٔ اندروید باز نشد. فایل را از طریق فایل‌منیجر موبایل نصب کنید.</string>
+    <string name="update_open_files">باز کردن فایل‌منیجر</string>
+    <string name="update_manual_saved">فایل نصب ذخیره شد. آن را در فایل‌منیجر موبایل باز کنید.</string>
+    <string name="update_file_manager_unavailable">فایل‌منیجر باز نشد. آن را دستی باز کنید و در پوشهٔ Download/InfiniTime فایل برنامه را پیدا کنید.</string>
 </resources>

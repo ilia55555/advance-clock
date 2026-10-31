@@ -47,11 +47,16 @@ The main About screen offers **Check for updates** and a link to the public GitH
 
 Download failures distinguish missing release APK (check the `vN.N.N.N` release tag), hash mismatch, incompatible signer/package, connection issues and other download/storage failures. The Latest release must actually contain both JSON and APK, and the version-specific APK URL derived from metadata must resolve. Merely uploading JSON tagged `v1.0.0.6` under a release tagged `main1` does not create the expected APK path.
 
-## Download security and manual installation
+## Download security and user-confirmed installation
 
 A user-requested APK download is staged in app-private cache. It is bounded to 150 MiB and ten minutes, with HTTPS-only redirect hosts limited to GitHub and its release CDN. Before export, the app verifies exact size, SHA-256, package name, increasing versionCode, versionName, non-debug/non-test flags and equality of the APK signing certificates with the installed app. Missing certificates or mismatches fail closed. Signing-key rotation is deliberately rejected; migrate the trust policy explicitly if needed.
 
-Android 10+: verified APK is published atomically in `Downloads/InfiniTime`, then the user can open Downloads/file manager from the sheet. Android 8–9: the system file picker asks where to save the verified APK, then an Open Downloads button is available in the sheet. If an OEM does not handle the Downloads intent, the screen explains the saved location. The user opens the APK and approves installation separately. There is **no REQUEST_INSTALL_PACKAGES permission, installer intent, automatic installation or exported update entry point**.
+Version `1.0.0.7` (code 7) adds user-confirmed installation. Only an APK that passed verification is copied into app-private staging and exposed through a non-exported read-only provider (`${applicationId}.updates`). The installer gets only a temporary read grant; path traversal, external writes and arbitrary external download URLs are rejected. Old staged files are cleaned after seven days.
+
+The app declares `REQUEST_INSTALL_PACKAGES`. If Android has not authorized installation from this app, it opens that app-specific settings page and rechecks permission on return. Denial produces an explicit message and a file-manager button. Approval opens the system APK installer, which still requires the user to confirm installation; there is no silent installation or permission bypass.
+
+On Android 10+, a verified copy is also published atomically in `Download/InfiniTime`. File-manager navigation tries a standard folder intent, the system Files category and launchable Samsung, Xiaomi, Huawei, Honor or Google Files apps. DownloadManager is not used because its list need not include MediaStore exports. No OEM-independent API guarantees a specific file-manager UI; if none resolves, a manual location message is shown. On older Android or if public export fails, the manual fallback first asks the user where to save the verified APK using the system document picker. No broad storage or QUERY_ALL_PACKAGES permission is requested.
+
 
 The signing key remains the security boundary even if release metadata is replaced. Protect it and the GitHub account (2FA/passkeys). Once exported, a public Downloads file is governed by Android/file-manager permissions; the OS independently validates package signatures during installation.
 

@@ -1361,4 +1361,14 @@ Lock screen</string>
     <string name="update_download_cancelled">Download stopped. Tap to start again.</string>
     <string name="update_verifying">Download complete. Verifying the file…</string>
     <string name="update_storage_error">The file could not be saved. Check free space and access to Downloads.</string>
+    <string name="update_install_button">Install update</string>
+    <string name="update_install_ready">The verified file is ready to install.</string>
+    <string name="update_install_permission">Allow installation from this app on the next screen.</string>
+    <string name="update_install_denied">Installation permission was not granted. Update the app using your phone’s file manager.</string>
+    <string name="update_install_requested">Confirm installation in the Android installer to finish updating.</string>
+    <string name="update_install_cancelled">Installation was not completed. Try again or open the APK in your file manager.</string>
+    <string name="update_installer_unavailable">The Android installer could not be opened. Install the APK through your file manager.</string>
+    <string name="update_open_files">Open file manager</string>
+    <string name="update_manual_saved">The APK was saved. Open it in your phone’s file manager.</string>
+    <string name="update_file_manager_unavailable">Open your file manager manually and find the APK in Download/InfiniTime.</string>
 </resources>
