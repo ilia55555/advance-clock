@@ -194,7 +194,7 @@ public final class NoForgetSoundService extends Service {
                 ready.setVolume(muted?0:1,muted?0:1);ready.start();
             });
             preparing.setOnErrorListener((failed,what,extra)->{if(player==failed)releasePlayer();return true;});
-            preparing.setDataSource(this,uri);preparing.setLooping(true);preparing.prepareAsync();
+            preparing.setDataSource(this,LocalMedia.require(uri));preparing.setLooping(true);preparing.prepareAsync();
         } catch (Exception ignored) { releasePlayer(); }
     }
 

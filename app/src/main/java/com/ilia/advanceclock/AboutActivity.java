@@ -167,7 +167,7 @@ public final class AboutActivity extends Activity {
         updateStatus.setTextColor(AppSettings.textSecondary(this)); updateStatus.setVisibility(View.GONE);
         updates.addView(updateStatus, new LinearLayout.LayoutParams(-1,-2));
         LinearLayout releaseLink = action(updates, R.string.update_github_link,
-                () -> openLink(AppUpdates.repository(this) + "/releases"));
+                () -> openLink(AppUpdates.repository(this)));
         releaseLink.setTag("about_update_github");
 
         LinearLayout developer = card(root);

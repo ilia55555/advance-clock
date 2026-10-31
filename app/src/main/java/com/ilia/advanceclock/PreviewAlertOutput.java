@@ -24,7 +24,7 @@ final class PreviewAlertOutput implements AlertOutput {
             player.setLooping(true);
             player.setOnPreparedListener(ready->{if(player==ready&&!closed){ready.setVolume(muted?0:1,muted?0:1);ready.start();}});
             player.setOnErrorListener((failed,what,extra)->{if(player==failed)releasePlayer();return true;});
-            player.setDataSource(context,uri);player.prepareAsync();
+            player.setDataSource(context,LocalMedia.require(uri));player.prepareAsync();
         }catch(Exception ignored){releasePlayer();}
         if(Build.VERSION.SDK_INT>=31){
             VibratorManager manager=context.getSystemService(VibratorManager.class);

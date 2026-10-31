@@ -160,7 +160,7 @@ public final class MediaWidgetViewerActivity extends Activity {
 
     private void showVideo() {
         videoView = new VideoView(this);
-        videoView.setVideoURI(uri);
+        videoView.setVideoURI(LocalMedia.require(uri));
         videoView.setOnClickListener(
                 v -> showControlsTemporarily());
         videoView.setOnPreparedListener(mp -> {
@@ -211,7 +211,7 @@ public final class MediaWidgetViewerActivity extends Activity {
                             .setUsage(AudioAttributes.USAGE_MEDIA)
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .build());
-            audioPlayer.setDataSource(this, uri);
+            audioPlayer.setDataSource(this, LocalMedia.require(uri));
             audioPlayer.setOnPreparedListener(mp -> {
                 prepared = true;
                 if (startPositionMs > 0) {
@@ -455,7 +455,7 @@ public final class MediaWidgetViewerActivity extends Activity {
     private Bitmap embeddedArt() {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            retriever.setDataSource(this, uri);
+            retriever.setDataSource(this, LocalMedia.require(uri));
             byte[] data = retriever.getEmbeddedPicture();
             if (data == null || data.length == 0) return null;
             return BitmapFactory.decodeByteArray(data, 0, data.length);

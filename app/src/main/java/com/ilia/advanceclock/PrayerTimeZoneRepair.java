@@ -113,7 +113,7 @@ final class PrayerTimeZoneRepair {
     }
 
     private static HttpURLConnection open(String url) throws Exception {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        HttpURLConnection connection = ReadOnlyNetwork.location(url);
         connection.setInstanceFollowRedirects(false);
         connection.setConnectTimeout(8_000);
         connection.setReadTimeout(8_000);

@@ -146,7 +146,7 @@ final class UpdatePrompt {
         void chooseSave() {
             if(installUri==null)return;
             try{awaitingSave=true;host.startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
-                    .setType("application/vnd.android.package-archive").putExtra(Intent.EXTRA_TITLE,filename()),SAVE_REQUEST);}
+                    .setType("application/vnd.android.package-archive").putExtra(Intent.EXTRA_LOCAL_ONLY,true).putExtra(Intent.EXTRA_TITLE,filename()),SAVE_REQUEST);}
             catch(ActivityNotFoundException e){awaitingSave=false;status.setText(R.string.update_storage_error);}
         }
         void saved(int result,Intent data) {

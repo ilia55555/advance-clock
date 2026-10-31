@@ -273,7 +273,7 @@ public final class PrayerLocationSearchActivity extends Activity {
                         "accept-language",
                         AppSettings.language(this) + ",en")
                 .build();
-        HttpURLConnection connection = (HttpURLConnection) new URL(uri.toString()).openConnection();
+        HttpURLConnection connection = ReadOnlyNetwork.location(uri.toString());
         connection.setInstanceFollowRedirects(false);
         connection.setConnectTimeout(10_000);
         connection.setReadTimeout(10_000);
@@ -558,7 +558,7 @@ public final class PrayerLocationSearchActivity extends Activity {
     }
 
     private HttpURLConnection openJsonConnection(String url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        HttpURLConnection connection = ReadOnlyNetwork.location(url);
         connection.setInstanceFollowRedirects(false);
         connection.setConnectTimeout(8_000);
         connection.setReadTimeout(8_000);

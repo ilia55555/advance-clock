@@ -50,13 +50,9 @@ public final class SmartAlarmActivity extends Activity {
     private Button saveAll;
     private Spinner bulkMode;
     private EditText bulkMinutes;
-    private android.speech.SpeechRecognizer speechRecognizer;
+    static final String GOOGLE_SPEECH_PACKAGE="com.google.android.googlequicksearchbox";
     private Button voiceButton;
     private SmartSpeechLanguages speechLanguages;
-    private boolean listening;
-    private int speechSession;
-    private int lastSpeechError = -1;
-    private final Runnable restartSpeech = () -> { if (listening) beginSpeechCycle(); };
 
     private void setHelperIcon(Button button, int resource) {
         android.graphics.drawable.Drawable icon = getDrawable(resource).mutate();
@@ -74,108 +70,21 @@ public final class SmartAlarmActivity extends Activity {
                 .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                         android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, tag)
-                .putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+                .putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                .putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, false)
+                .setPackage(GOOGLE_SPEECH_PACKAGE);
     }
 
     private void startVoiceInput() {
-        if (listening) { stopVoiceInput(); return; }
-        if (!android.speech.SpeechRecognizer.isRecognitionAvailable(this)) {
-            LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
-            return;
+        Intent request=speechIntent(this);
+        if(speechLanguages!=null)request.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE,speechLanguages.language());
+        if(request.resolveActivity(getPackageManager())==null) {
+            LogoToast.makeText(this,R.string.smart_voice_google_required,Toast.LENGTH_LONG).show();return;
         }
-        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
-                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, VOICE_REQUEST);
-            return;
+        try{startActivityForResult(request,VOICE_REQUEST);}
+        catch(android.content.ActivityNotFoundException|SecurityException error){
+            LogoToast.makeText(this,R.string.smart_voice_google_required,Toast.LENGTH_LONG).show();
         }
-        listening=true;
-        lastSpeechError=-1;
-        voiceButton.setText(R.string.smart_voice_stop);
-        beginSpeechCycle();
-    }
-
-    private void beginSpeechCycle() {
-        releaseSpeechRecognizer();
-        final int session = speechSession;
-        try {
-            speechRecognizer = android.speech.SpeechRecognizer.createSpeechRecognizer(this);
-            speechRecognizer.setRecognitionListener(new android.speech.RecognitionListener() {
-                public void onReadyForSpeech(Bundle b) {}
-                public void onBeginningOfSpeech() {}
-                public void onRmsChanged(float rms) {}
-                public void onBufferReceived(byte[] buffer) {}
-                public void onEndOfSpeech() {}
-                public void onPartialResults(Bundle b) {}
-                public void onEvent(int type, Bundle b) {}
-                public void onError(int error) {
-                    if (session != speechSession || !listening) return;
-                    if (error == android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
-                            || error == android.speech.SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED
-                            || error == android.speech.SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE) {
-                        stopVoiceInput();
-                        LogoToast.makeText(SmartAlarmActivity.this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    boolean silence = error == android.speech.SpeechRecognizer.ERROR_NO_MATCH
-                            || error == android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
-                    if (!silence && lastSpeechError != error) {
-                        int message = error == android.speech.SpeechRecognizer.ERROR_NETWORK
-                                || error == android.speech.SpeechRecognizer.ERROR_NETWORK_TIMEOUT
-                                ? R.string.smart_voice_network_error : R.string.smart_voice_retry;
-                        LogoToast.makeText(SmartAlarmActivity.this, message, Toast.LENGTH_LONG).show();
-                    }
-                    lastSpeechError=error;
-                    queueSpeechRestart(silence ? 350 : 3000);
-                }
-                public void onResults(Bundle results) {
-                    if (session != speechSession) return;
-                    ArrayList<String> values=results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
-                    lastSpeechError=-1;
-                    if (values!=null && !values.isEmpty()) insertText(values.get(0));
-                    queueSpeechRestart(350);
-                }
-            });
-            Intent request = speechIntent(this);
-            if (speechLanguages != null) request.putExtra(
-                    android.speech.RecognizerIntent.EXTRA_LANGUAGE, speechLanguages.language());
-            speechRecognizer.startListening(request);
-        } catch (RuntimeException error) {
-            stopVoiceInput();
-            LogoToast.makeText(this, R.string.smart_voice_unavailable, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void queueSpeechRestart(long delay) {
-        releaseSpeechRecognizer();
-        liveHandler.removeCallbacks(restartSpeech);
-        if (listening) liveHandler.postDelayed(restartSpeech, delay);
-    }
-
-    private void stopVoiceInput() {
-        listening=false;
-        liveHandler.removeCallbacks(restartSpeech);
-        releaseSpeechRecognizer();
-        if (voiceButton!=null) voiceButton.setText(R.string.smart_voice_input);
-    }
-
-    private void releaseSpeechRecognizer() {
-        speechSession++;
-        if (speechRecognizer!=null) {
-            android.speech.SpeechRecognizer old=speechRecognizer;
-            speechRecognizer=null;
-            old.cancel(); old.destroy();
-        }
-    }
-
-    @Override public void onRequestPermissionsResult(int request, String[] permissions, int[] results) {
-        super.onRequestPermissionsResult(request, permissions, results);
-        if (request==VOICE_REQUEST && results.length>0
-                && results[0]==android.content.pm.PackageManager.PERMISSION_GRANTED) startVoiceInput();
-    }
-
-    @Override protected void onStop() {
-        stopVoiceInput();
-        super.onStop();
     }
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -278,7 +187,7 @@ public final class SmartAlarmActivity extends Activity {
         LinearLayout helpers = new LinearLayout(this);
         helpers.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         speechLanguages = new SmartSpeechLanguages(this, () -> {
-            if (listening) queueSpeechRestart(0);
+            // The selected language is passed on the next user-requested Google voice session.
         });
         LinearLayout.LayoutParams languageParams = new LinearLayout.LayoutParams(0, dp(48), 0.9f);
         languageParams.setMarginEnd(dp(6));

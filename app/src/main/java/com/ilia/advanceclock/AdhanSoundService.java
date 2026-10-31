@@ -251,7 +251,7 @@ public final class AdhanSoundService extends Service {
                     player.setAudioAttributes(new AudioAttributes.Builder()
                             .setUsage(AudioAttributes.USAGE_ALARM)
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
-                    player.setDataSource(this, audioUri);
+                    player.setDataSource(this, LocalMedia.require(audioUri));
                     player.setLooping(false);
                     player.setOnPreparedListener(value->{
                         if(player!=value || !playing)return;

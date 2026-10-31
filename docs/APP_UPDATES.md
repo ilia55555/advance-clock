@@ -63,3 +63,7 @@ The signing key remains the security boundary even if release metadata is replac
 Automated checks cover metadata, destination restrictions, hash/package/version/signers, removal of background scheduling and optional sheet actions. A real signed upgrade and OEM file-manager handoff still require physical-phone testing; the workspace has no device or production signing key.
 
 If a published APK is replaced (including rebuilding the same version), regenerate `update.json`: its size and SHA-256 must match the exact new bytes. A mismatch is rejected and the staged file is deleted. The modal reads the localized `releaseNotes` field embedded in `update.json`; changing only a separate notes asset requires regenerating that metadata too.
+
+## Outbound privacy policy
+
+All app-managed update traffic now passes through the HTTPS read-only boundary in `ReadOnlyNetwork`, with fixed repository paths, per-hop redirect validation and no upload body or private headers. APK trust checks remain mandatory. See [network/privacy review](NETWORK_PRIVACY_REVIEW.md) for the city/location and explicitly requested external Google voice exceptions and the limits of app-level enforcement.

@@ -86,7 +86,7 @@ public class UpdateCheckFeedbackTest {
             TextView status=root.findViewWithTag("about_update_status");
             assertTrue(button.isEnabled());assertEquals(host.getString(AppUpdates.production(host) ? R.string.update_no_internet : R.string.update_release_only),status.getText().toString());
             root.findViewWithTag("about_update_github").performClick();
-            assertEquals(repo+"/releases",Shadows.shadowOf(host).getNextStartedActivity().getDataString());
+            assertEquals(repo,Shadows.shadowOf(host).getNextStartedActivity().getDataString());
         }
         try(var controller=Robolectric.buildActivity(AboutActivity.class,new Intent().putExtra("document","privacy")).setup().visible()) {
             assertNull(controller.get().getWindow().getDecorView().findViewWithTag("about_check_update"));

@@ -8,6 +8,11 @@ import java.io.*;
 
 /** Exports only an APK that already passed size, hash, package and signer validation. */
 final class UpdateFiles {
+    static void requireLocalDestination(Uri uri) throws IOException {
+        if(uri==null || !"content".equals(uri.getScheme()) ||
+                !("com.android.externalstorage.documents".equals(uri.getAuthority()) || "com.android.providers.downloads.documents".equals(uri.getAuthority())))
+            throw new AppUpdates.UpdateFailure(R.string.update_local_save_only);
+    }
     static void copy(InputStream in, OutputStream out, ForegroundUpdates.Request request) throws IOException {
         if (in == null || out == null) throw new IOException("No output");
         byte[] buffer=new byte[32768];int n;
@@ -37,6 +42,7 @@ final class UpdateFiles {
         } finally { verified.delete(); }
     }
     static void save(Context c,Uri verified,Uri uri,ForegroundUpdates.Request request) throws Exception {
+        requireLocalDestination(uri);
         try(InputStream in=c.getContentResolver().openInputStream(verified);OutputStream out=c.getContentResolver().openOutputStream(uri)) { copy(in,out,request); }
         catch(Exception error) {
             try{DocumentsContract.deleteDocument(c.getContentResolver(),uri);}catch(Exception ignored){}
@@ -44,6 +50,7 @@ final class UpdateFiles {
         }
     }
     static void save(Context c,File verified,Uri uri,ForegroundUpdates.Request request) throws Exception {
+        requireLocalDestination(uri);
         try(InputStream in=new FileInputStream(verified);OutputStream out=c.getContentResolver().openOutputStream(uri)) { copy(in,out,request); }
         catch(Exception error) {
             try{DocumentsContract.deleteDocument(c.getContentResolver(),uri);}catch(Exception ignored){}

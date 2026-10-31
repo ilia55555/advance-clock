@@ -223,7 +223,7 @@ public final class MediaWidgetPlaybackService extends Service {
                             .setUsage(AudioAttributes.USAGE_MEDIA)
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .build());
-            player.setDataSource(this, Uri.parse(uriValue));
+            player.setDataSource(this, LocalMedia.require(Uri.parse(uriValue)));
             player.setOnPreparedListener(mp -> {
                 prepared = true;
                 try {

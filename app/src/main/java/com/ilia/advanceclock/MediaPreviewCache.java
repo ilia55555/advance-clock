@@ -92,7 +92,7 @@ public final class MediaPreviewCache {
             MediaMetadataRetriever retriever =
                     new MediaMetadataRetriever();
             try {
-                retriever.setDataSource(context, uri);
+                retriever.setDataSource(context, LocalMedia.require(uri));
                 Bitmap frame;
                 if (Build.VERSION.SDK_INT >= 27) {
                     frame = retriever.getScaledFrameAtTime(
@@ -121,7 +121,7 @@ public final class MediaPreviewCache {
             MediaMetadataRetriever retriever =
                     new MediaMetadataRetriever();
             try {
-                retriever.setDataSource(context, uri);
+                retriever.setDataSource(context, LocalMedia.require(uri));
                 byte[] art = retriever.getEmbeddedPicture();
                 if (art == null || art.length == 0) return null;
                 return decodeByteArraySampled(art);

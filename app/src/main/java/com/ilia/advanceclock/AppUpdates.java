@@ -79,10 +79,11 @@ final class AppUpdates {
         return c.getPackageManager().getPackageInfo(c.getPackageName(), flags());
     }
     private static int flags() { return Build.VERSION.SDK_INT >= 28 ? PackageManager.GET_SIGNING_CERTIFICATES : PackageManager.GET_SIGNATURES; }
-    static String repository(Context c) { return c.getString(R.string.update_repository).trim(); }
-    static boolean validRepository(String value) {
-        return value != null && value.matches("https://github\\.com/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*");
+    static String repository(Context c) {
+        String configured=c.getString(R.string.update_repository).trim();
+        return ReadOnlyNetwork.REPOSITORY.equals(configured)?configured:"";
     }
+    static boolean validRepository(String value) { return ReadOnlyNetwork.REPOSITORY.equals(value); }
     static Release available(Context c) { return available(c, repository(c)); }
     static Release available(Context c, String repository) {
         if (!production(c) || !validRepository(repository) || !repository.equals(prefs(c).getString("source", ""))) return null;
@@ -146,19 +147,14 @@ final class AppUpdates {
         }
     }
     static boolean due(long now, long last) { return last <= 0 || now < last || now - last >= ENTRY_THROTTLE; }
-    static boolean allowed(URL u) {
-        if (!"https".equals(u.getProtocol()) || u.getUserInfo() != null || (u.getPort() != -1 && u.getPort() != 443)) return false;
-        String host = u.getHost();
-        return host.equals("github.com") || host.equals("release-assets.githubusercontent.com")
-                || host.equals("objects.githubusercontent.com");
-    }
+    static boolean allowed(URL u) { return ReadOnlyNetwork.updateUrl(u); }
     static HttpURLConnection open(String address) throws Exception { return open(address, null); }
     static HttpURLConnection open(String address, ForegroundUpdates.Request request) throws Exception {
         URL url = new URL(address);
         for (int i = 0; i < 5; i++) {
             if (request != null && request.cancelled) throw new IOException("Check cancelled");
             if (!allowed(url)) throw new IOException("Untrusted download host");
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            HttpURLConnection c = ReadOnlyNetwork.update(url);
             if (request != null) request.connection = c;
             c.setConnectTimeout(15000); c.setReadTimeout(20000); c.setInstanceFollowRedirects(false);
             c.setRequestProperty("User-Agent", "InfiniTime-Update");

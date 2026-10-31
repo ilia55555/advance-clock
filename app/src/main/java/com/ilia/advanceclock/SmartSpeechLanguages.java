@@ -57,24 +57,14 @@ final class SmartSpeechLanguages {
     String language() { return selected; }
 
     void requestSupportedLanguages() {
-        String service=android.provider.Settings.Secure.getString(host.getContentResolver(),"voice_recognition_service");
-        ComponentName component=service==null ? null : ComponentName.unflattenFromString(service);
-        Intent details=component!=null
-                ? new Intent(RecognizerIntent.ACTION_GET_LANGUAGE_DETAILS).setPackage(component.getPackageName())
-                : RecognizerIntent.getVoiceDetailsIntent(host);
-        if(details==null) {
-            details=new Intent(RecognizerIntent.ACTION_GET_LANGUAGE_DETAILS);
-        }
+        Intent details=new Intent(RecognizerIntent.ACTION_GET_LANGUAGE_DETAILS).setPackage(SmartAlarmActivity.GOOGLE_SPEECH_PACKAGE);
         try {
-            host.sendOrderedBroadcast(details,null,new BroadcastReceiver() {
-                @Override public void onReceive(Context context,Intent intent) {
-                    if(host.isFinishing() || host.isDestroyed()) return;
-                    acceptDetails(getResultExtras(false));
+            host.sendOrderedBroadcast(details,null,new BroadcastReceiver(){
+                @Override public void onReceive(Context context,Intent intent){
+                    if(!host.isFinishing() && !host.isDestroyed())acceptDetails(getResultExtras(false));
                 }
             },null,Activity.RESULT_OK,null,null);
-        } catch (RuntimeException unavailable) {
-            // Keep provisional choices when an OEM engine does not expose details.
-        }
+        }catch(RuntimeException unavailable){/* Keep provisional language choices if Google does not expose details. */}
     }
 
     void acceptDetails(Bundle details) {

@@ -49,47 +49,23 @@ public class SmartScheduleActivityTest {
         }
         host.finish();
     }
-    @Test public void directSpeechInsertsResultsAndReleasesMicrophoneSession() {
-        Application app=RuntimeEnvironment.getApplication();
-        AppSettings.setLanguage(app,"fa");
-        Shadows.shadowOf(app).grantPermissions(android.Manifest.permission.RECORD_AUDIO);
-        android.content.pm.ResolveInfo engine=new android.content.pm.ResolveInfo();
-        engine.serviceInfo=new android.content.pm.ServiceInfo();
-        engine.serviceInfo.packageName="test.speech";engine.serviceInfo.name="test.speech.Engine";
-        Shadows.shadowOf(app.getPackageManager()).addResolveInfoForIntent(
-                new Intent("android.speech.RecognitionService"),engine);
+    @Test public void googleVoiceUiReturnsTextWithoutAppMicrophoneCapture() {
+        Application app=RuntimeEnvironment.getApplication();AppSettings.setLanguage(app,"fa");
+        android.content.pm.ResolveInfo google=new android.content.pm.ResolveInfo();google.activityInfo=new android.content.pm.ActivityInfo();
+        google.activityInfo.packageName=SmartAlarmActivity.GOOGLE_SPEECH_PACKAGE;google.activityInfo.name="VoiceSearch";
+        Shadows.shadowOf(app.getPackageManager()).addResolveInfoForIntent(SmartAlarmActivity.speechIntent(app),google);
         SmartAlarmActivity host=activity(false);
         host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input").performClick();
-        android.speech.SpeechRecognizer recognizer=org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer();
-        assertNotNull(recognizer);
-        org.robolectric.shadows.ShadowSpeechRecognizer shadow=Shadows.shadowOf(recognizer);
-        assertEquals("fa-IR",shadow.getLastRecognizerIntent().getStringExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE));
-        android.os.Bundle results=new android.os.Bundle();
-        results.putStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION,
-                new ArrayList<>(Collections.singletonList("فردا ساعت 08:30 جلسه")));
-        shadow.triggerOnResults(results);
-        EditText field=ReflectionHelpers.getField(host,"input");
-        assertTrue(field.getText().toString().contains("08:30"));
-        assertTrue(shadow.isDestroyed());
-        assertTrue(ReflectionHelpers.<Boolean>getField(host,"listening"));
-        Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(400));
-        android.speech.SpeechRecognizer next=org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer();
-        assertNotSame(recognizer,next);
-        Shadows.shadowOf(next).triggerOnError(android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT);
-        assertTrue(ReflectionHelpers.<Boolean>getField(host,"listening"));
-        Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(400));
-        android.speech.SpeechRecognizer afterPause=org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer();
-        assertNotSame(next,afterPause);
-        Shadows.shadowOf(afterPause).triggerOnError(android.speech.SpeechRecognizer.ERROR_NETWORK);
-        assertTrue(ReflectionHelpers.<Boolean>getField(host,"listening"));
-        host.findViewById(android.R.id.content).findViewWithTag("smart_voice_input").performClick();
-        assertFalse(ReflectionHelpers.<Boolean>getField(host,"listening"));
-        Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofSeconds(4));
-        assertSame(afterPause,org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer());
-        assertNull(Shadows.shadowOf(host).getNextStartedActivity());
-        host.finish();
+        Intent launched=Shadows.shadowOf(host).getNextStartedActivity();
+        assertEquals(SmartAlarmActivity.GOOGLE_SPEECH_PACKAGE,launched.getPackage());
+        assertEquals(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH,launched.getAction());
+        assertEquals("fa-IR",launched.getStringExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE));
+        host.onActivityResult(7101,Activity.RESULT_OK,new Intent().putStringArrayListExtra(android.speech.RecognizerIntent.EXTRA_RESULTS,
+                new ArrayList<>(Collections.singletonList("فردا ساعت 08:30 جلسه"))));
+        EditText field=ReflectionHelpers.getField(host,"input");assertTrue(field.getText().toString().contains("08:30"));
+        assertNull(org.robolectric.shadows.ShadowSpeechRecognizer.getLatestSpeechRecognizer());host.finish();
     }
-    @Test public void speechUsesAppLanguageWithoutRequiringOfflineLanguagePack() {
+    @Test public void speechUsesAppLanguageAndGoogleMayProcessOnline() {
         Application app=RuntimeEnvironment.getApplication();
         for(String[] pair:new String[][]{{"fa","fa-IR"},{"en","en-US"},{"ar","ar-SA"}}) {
             AppSettings.setLanguage(app,pair[0]);

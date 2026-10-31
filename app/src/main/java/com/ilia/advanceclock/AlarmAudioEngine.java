@@ -90,7 +90,7 @@ final class AlarmAudioEngine {
                 if (session.claimed) start(session);
             });
             player.setOnErrorListener((value, what, extra) -> { release(session); return true; });
-            player.setDataSource(context, Uri.parse(session.uri));
+            player.setDataSource(context, LocalMedia.require(Uri.parse(session.uri)));
             armTimeout(session);
             player.prepareAsync();
         } catch (Exception ignored) { release(session); }
