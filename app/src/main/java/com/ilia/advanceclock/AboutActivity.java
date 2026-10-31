@@ -135,10 +135,14 @@ public final class AboutActivity extends Activity {
         ImageView icon = new ImageView(this);
         icon.setImageDrawable(getApplicationInfo().loadIcon(getPackageManager()));
         icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-        icon.setPadding(dp(10), dp(10), dp(10), dp(10));
-        icon.setBackground(shape(AppSettings.surface(this), 28));
-        icon.setElevation(dp(3));
-        brand.addView(icon, new LinearLayout.LayoutParams(dp(100), dp(100)));
+        android.widget.FrameLayout logoFrame = new android.widget.FrameLayout(this);
+        logoFrame.setPadding(dp(10), dp(10), dp(10), dp(10));
+        logoFrame.setBackground(shape(AppSettings.surface(this), 28));
+        logoFrame.setElevation(dp(3));
+        icon.setBackground(shape(AppSettings.surface(this), 18));
+        icon.setClipToOutline(true);
+        logoFrame.addView(icon, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        brand.addView(logoFrame, new LinearLayout.LayoutParams(dp(100), dp(100)));
         TextView name = text(getString(R.string.app_name), 27, true);
         name.setPadding(0, dp(18), 0, dp(10));
         name.setGravity(Gravity.CENTER);
