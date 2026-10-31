@@ -27,9 +27,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-/** Offline about/legal reader. External pages open only when the user selects a link. */
+/** About/legal reader with an explicit, user-requested foreground update check. */
 public final class AboutActivity extends Activity {
     private ScrollView scroll;
+    private LinearLayout checkUpdate;
+    private TextView updateStatus;
 
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this);
@@ -154,6 +156,16 @@ public final class AboutActivity extends Activity {
         summary.setPadding(0, dp(18), 0, 0);
         brand.addView(summary, new LinearLayout.LayoutParams(-1, -2));
 
+        LinearLayout updates = card(root);
+        checkUpdate = action(updates, R.string.update_check_now, this::checkForUpdate);
+        checkUpdate.setTag("about_check_update");
+        updateStatus = text("", 14, false); updateStatus.setTag("about_update_status");
+        updateStatus.setTextColor(AppSettings.textSecondary(this)); updateStatus.setVisibility(View.GONE);
+        updates.addView(updateStatus, new LinearLayout.LayoutParams(-1,-2));
+        LinearLayout releaseLink = action(updates, R.string.update_github_link,
+                () -> openLink(AppUpdates.repository(this) + "/releases"));
+        releaseLink.setTag("about_update_github");
+
         LinearLayout developer = card(root);
         developer.setOrientation(LinearLayout.HORIZONTAL);
         developer.setGravity(Gravity.CENTER_VERTICAL);
@@ -264,7 +276,7 @@ public final class AboutActivity extends Activity {
         root.addView(view, new LinearLayout.LayoutParams(-1, -2));
     }
 
-    private void action(LinearLayout root, int label, Runnable action) {
+    private LinearLayout action(LinearLayout root, int label, Runnable action) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -297,6 +309,26 @@ public final class AboutActivity extends Activity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         if (root == scroll.getChildAt(0)) lp.topMargin = dp(10);
         root.addView(row, lp);
+        return row;
+    }
+
+    private void checkForUpdate() {
+        checkUpdate.setEnabled(false);
+        updateStatus.setVisibility(View.VISIBLE);
+        updateStatus.setText(R.string.update_checking);
+        ForegroundUpdates.checkNow(this, result -> {
+            checkUpdate.setEnabled(true);
+            if (result.message != 0) updateStatus.setText(result.message);
+        });
+    }
+
+    @Override protected void onPause() {
+        ForegroundUpdates.stop(this);
+        if (checkUpdate != null && !checkUpdate.isEnabled()) {
+            checkUpdate.setEnabled(true);
+            updateStatus.setText(R.string.update_check_cancelled);
+        }
+        super.onPause();
     }
 
     private String versionLabel() {

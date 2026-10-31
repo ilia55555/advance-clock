@@ -1341,4 +1341,20 @@ Lock screen</string>
     <string name="update_later">Later</string>
     <string name="update_download">Download update</string>
     <string name="date_notification_holiday">Holiday</string>
+    <string name="update_check_now">Check for updates</string>
+    <string name="update_github_link">App releases on GitHub</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_current">You have the latest published version.</string>
+    <string name="update_no_internet">No Internet connection. Connect and try again.</string>
+    <string name="update_not_published">Update information is missing from the release. Please try again later.</string>
+    <string name="update_network_error">The connection failed or timed out. Check your Internet and access to GitHub, then try again.</string>
+    <string name="update_invalid_metadata">The published update information is invalid. Please try again later.</string>
+    <string name="update_server_error">The release server is unavailable. Please try again later.</string>
+    <string name="update_secure_error">A secure connection could not be verified. Check your device date and Internet connection.</string>
+    <string name="update_release_only">Updates are available for the production app. Debug builds use a separate package.</string>
+    <string name="update_config_error">The update repository is missing or invalid.</string>
+    <string name="update_check_cancelled">Check cancelled. Tap to check again.</string>
+    <string name="update_download_missing">The APK is missing from this release path. Please try again later.</string>
+    <string name="update_hash_error">The downloaded file does not match the release and was deleted. Please try again.</string>
+    <string name="update_signature_error">The APK signature or package details do not match this app. The file was not made available for installation.</string>
 </resources>

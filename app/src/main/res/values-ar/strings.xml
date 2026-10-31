@@ -1359,4 +1359,20 @@
     <string name="update_later">لاحقًا</string>
     <string name="update_download">تنزيل التحديث</string>
     <string name="date_notification_holiday">عطلة</string>
+    <string name="update_check_now">التحقق من التحديثات</string>
+    <string name="update_github_link">إصدارات التطبيق على GitHub</string>
+    <string name="update_checking">جارٍ التحقق من التحديثات…</string>
+    <string name="update_current">لديك أحدث إصدار منشور.</string>
+    <string name="update_no_internet">لا يوجد اتصال بالإنترنت. اتصل ثم حاول مجددًا.</string>
+    <string name="update_not_published">معلومات التحديث غير موجودة في الإصدار. حاول لاحقًا.</string>
+    <string name="update_network_error">فشل الاتصال أو انتهت مهلته. تحقق من الإنترنت والوصول إلى GitHub ثم حاول مجددًا.</string>
+    <string name="update_invalid_metadata">معلومات التحديث المنشورة غير صالحة. حاول لاحقًا.</string>
+    <string name="update_server_error">خادم الإصدارات غير متاح. حاول لاحقًا.</string>
+    <string name="update_secure_error">تعذّر التحقق من الاتصال الآمن. تحقق من تاريخ الهاتف واتصال الإنترنت.</string>
+    <string name="update_release_only">التحديثات مخصصة للتطبيق الأصلي؛ نسخة Debug تستخدم حزمة منفصلة.</string>
+    <string name="update_config_error">عنوان مستودع التحديث مفقود أو غير صالح.</string>
+    <string name="update_check_cancelled">توقف التحقق. اضغط للمحاولة مجددًا.</string>
+    <string name="update_download_missing">ملف التثبيت غير موجود في مسار هذا الإصدار. حاول لاحقًا.</string>
+    <string name="update_hash_error">الملف المنزّل لا يطابق معلومات الإصدار وقد حُذف. حاول مجددًا.</string>
+    <string name="update_signature_error">توقيع ملف التثبيت أو معلوماته لا تطابق هذا التطبيق؛ لم يُقدّم الملف للتثبيت.</string>
 </resources>

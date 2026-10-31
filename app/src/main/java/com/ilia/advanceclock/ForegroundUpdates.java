@@ -22,26 +22,36 @@ final class ForegroundUpdates {
         }
     }
     private static Request active;
-    static void start(Activity host) {
+    static void start(Activity host) { begin(host, false, null); }
+    static void checkNow(Activity host, java.util.function.Consumer<AppUpdates.CheckResult> callback) {
+        begin(host, true, callback);
+    }
+    private static void begin(Activity host, boolean manual, java.util.function.Consumer<AppUpdates.CheckResult> callback) {
         stop(host);
         Context c = host.getApplicationContext();
         AppUpdates.cancelLegacyJobs(c);
         String repository = AppUpdates.repository(c);
         if (!repository.equals(AppUpdates.prefs(c).getString("source", "")))
             AppUpdates.prefs(c).edit().remove("release").remove("attempt").remove("shown_code").putString("source", repository).apply();
-        if (!AppUpdates.production(c) || !AppUpdates.validRepository(repository) || !online(c)) return;
+        AppUpdates.CheckResult blocked = !AppUpdates.production(c) ? AppUpdates.CheckResult.UNSUPPORTED
+                : !AppUpdates.validRepository(repository) ? AppUpdates.CheckResult.CONFIG_ERROR
+                : !online(c) ? AppUpdates.CheckResult.OFFLINE : null;
+        if (blocked != null) { if (callback != null) callback.accept(blocked); return; }
         Request request = new Request(host); active = request;
-        Runnable deliver = () -> {
+        java.util.function.Consumer<AppUpdates.CheckResult> deliver = result -> {
             Activity activity = request.host.get();
-            if (active == request && !request.cancelled && activity != null && !activity.isFinishing() && !activity.isDestroyed())
-                UpdatePrompt.show(activity, AppUpdates.available(c), false);
+            if (active != request || request.cancelled || activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+            if (callback != null) callback.accept(result);
+            if (result == AppUpdates.CheckResult.AVAILABLE)
+                UpdatePrompt.show(activity, AppUpdates.available(c), manual);
         };
-        if (!AppUpdates.due(System.currentTimeMillis(), AppUpdates.prefs(c).getLong("attempt", 0))) {
-            host.getWindow().getDecorView().post(deliver); return;
+        if (!manual && !AppUpdates.due(System.currentTimeMillis(), AppUpdates.prefs(c).getLong("attempt", 0))) {
+            host.getWindow().getDecorView().post(() -> deliver.accept(AppUpdates.available(c) != null
+                    ? AppUpdates.CheckResult.AVAILABLE : AppUpdates.CheckResult.CURRENT)); return;
         }
         request.thread = new Thread(() -> {
-            AppUpdates.check(c, request, repository);
-            new android.os.Handler(android.os.Looper.getMainLooper()).post(deliver);
+            AppUpdates.CheckResult result = AppUpdates.check(c, request, repository);
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> deliver.accept(result));
         }, "foreground-release-check");
         request.thread.start();
     }
@@ -53,7 +63,6 @@ final class ForegroundUpdates {
         ConnectivityManager manager = c.getSystemService(ConnectivityManager.class);
         if (manager == null) return false;
         NetworkCapabilities caps = manager.getNetworkCapabilities(manager.getActiveNetwork());
-        return caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+        return caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 }

@@ -19,6 +19,31 @@ final class AppUpdates {
     static final int DUE_JOB_ID = 8205;
 
 
+    enum CheckResult {
+        AVAILABLE(R.string.update_available), CURRENT(R.string.update_current),
+        OFFLINE(R.string.update_no_internet), NOT_PUBLISHED(R.string.update_not_published),
+        NETWORK_ERROR(R.string.update_network_error), INVALID_METADATA(R.string.update_invalid_metadata),
+        SERVER_ERROR(R.string.update_server_error), SECURITY_ERROR(R.string.update_secure_error),
+        UNSUPPORTED(R.string.update_release_only), CONFIG_ERROR(R.string.update_config_error), CANCELLED(0);
+        final int message;
+        CheckResult(int message) { this.message = message; }
+    }
+    interface ConnectionFactory {
+        HttpURLConnection open(String address, ForegroundUpdates.Request request) throws Exception;
+    }
+    static final class UpdateFailure extends IOException {
+        final int message;
+        UpdateFailure(int message) { super("Update failed: " + message); this.message = message; }
+    }
+    static int errorMessage(Exception error) {
+        if (error instanceof UpdateFailure) return ((UpdateFailure)error).message;
+        if (error instanceof javax.net.ssl.SSLException) return R.string.update_secure_error;
+        if (error instanceof java.net.SocketTimeoutException || error instanceof java.net.UnknownHostException
+                || error instanceof java.net.ConnectException || error instanceof java.net.SocketException)
+            return R.string.update_network_error;
+        return R.string.update_failed;
+    }
+
     static final class Release {
         final long code, size;
         final String version, hash, tag;
@@ -72,34 +97,53 @@ final class AppUpdates {
         JobScheduler jobs = c.getSystemService(JobScheduler.class);
         if (jobs != null) { jobs.cancel(JOB_ID); jobs.cancel(DUE_JOB_ID); }
     }
-    static void check(Context c, ForegroundUpdates.Request request, String repository) {
-        if (!production(c) || !validRepository(repository) || request.cancelled) return;
+    static CheckResult check(Context c, ForegroundUpdates.Request request, String repository) {
+        return check(c, request, repository, AppUpdates::open);
+    }
+    static CheckResult check(Context c, ForegroundUpdates.Request request, String repository, ConnectionFactory factory) {
+        if (request.cancelled) return CheckResult.CANCELLED;
+        if (!production(c)) return CheckResult.UNSUPPORTED;
+        if (!validRepository(repository)) return CheckResult.CONFIG_ERROR;
         try {
             long now = System.currentTimeMillis();
             prefs(c).edit().putLong("attempt", now).apply();
-            HttpURLConnection conn = open(repository + "/releases/latest/download/update.json", request);
+            HttpURLConnection conn = factory.open(repository + "/releases/latest/download/update.json", request);
             request.connection = conn;
             try {
-                if (request.cancelled) return;
+                if (request.cancelled) return CheckResult.CANCELLED;
                 if (conn.getResponseCode() == 404) {
                     prefs(c).edit().remove("release").putString("source", repository).putLong("success", now).apply();
-                    return;
+                    return CheckResult.NOT_PUBLISHED;
                 }
-                if (conn.getResponseCode() != 200) throw new IOException("Metadata unavailable");
+                if (conn.getResponseCode() != 200) return CheckResult.SERVER_ERROR;
                 String json;
                 try (InputStream in = conn.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                     byte[] b = new byte[4096]; int n; long started = android.os.SystemClock.elapsedRealtime();
                     while ((n = in.read(b)) != -1) {
                         if (request.cancelled || Thread.currentThread().isInterrupted() || android.os.SystemClock.elapsedRealtime() - started > 60000) throw new IOException("Metadata cancelled");
-                        if (out.size() + n > 16384) throw new IOException("Metadata too large");
+                        if (out.size() + n > 16384) throw new UpdateFailure(R.string.update_invalid_metadata);
                         out.write(b, 0, n);
                     }
                     json = out.toString("UTF-8");
                 }
-                new Release(json);
-                if (!request.cancelled) prefs(c).edit().putString("release", json).putString("source", repository).putLong("success", now).apply();
+                Release release;
+                try { release = new Release(json); }
+                catch (Exception invalid) {
+                    prefs(c).edit().remove("release").apply();
+                    return CheckResult.INVALID_METADATA;
+                }
+                if (request.cancelled) return CheckResult.CANCELLED;
+                prefs(c).edit().putString("release", json).putString("source", repository).putLong("success", now).apply();
+                return release.code > code(installed(c)) ? CheckResult.AVAILABLE : CheckResult.CURRENT;
             } finally { conn.disconnect(); request.connection = null; }
-        } catch (Exception ignored) { /* Offline must never interrupt clocks or alarms. */ }
+        } catch (UpdateFailure error) {
+            prefs(c).edit().remove("release").apply();
+            return request.cancelled ? CheckResult.CANCELLED : CheckResult.INVALID_METADATA;
+        } catch (javax.net.ssl.SSLException error) {
+            return request.cancelled ? CheckResult.CANCELLED : CheckResult.SECURITY_ERROR;
+        } catch (Exception error) {
+            return request.cancelled ? CheckResult.CANCELLED : CheckResult.NETWORK_ERROR;
+        }
     }
     static boolean due(long now, long last) { return last <= 0 || now < last || now - last >= ENTRY_THROTTLE; }
     static boolean allowed(URL u) {
@@ -137,7 +181,8 @@ final class AppUpdates {
         try {
             HttpURLConnection conn = open(r.url(repository(c)));
             try {
-                if (conn.getResponseCode() != 200) throw new IOException("Download unavailable");
+                if (conn.getResponseCode() == 404) throw new UpdateFailure(R.string.update_download_missing);
+                if (conn.getResponseCode() != 200) throw new UpdateFailure(R.string.update_server_error);
                 MessageDigest hash = MessageDigest.getInstance("SHA-256");
                 long count = 0, started = android.os.SystemClock.elapsedRealtime();
                 try (InputStream in = conn.getInputStream(); OutputStream out = new FileOutputStream(file)) {
@@ -158,13 +203,13 @@ final class AppUpdates {
     }
     static void verifyDigest(Release r, long size, byte[] digest) throws IOException {
         if (size != r.size || !MessageDigest.isEqual(hex(digest).getBytes(java.nio.charset.StandardCharsets.US_ASCII),
-                r.hash.getBytes(java.nio.charset.StandardCharsets.US_ASCII))) throw new IOException("Hash mismatch");
+                r.hash.getBytes(java.nio.charset.StandardCharsets.US_ASCII))) throw new UpdateFailure(R.string.update_hash_error);
     }
     static void verify(PackageInfo current, PackageInfo apk, Release r) throws IOException {
         if (apk == null || !"com.ilia.advanceclock".equals(apk.packageName)
                 || code(apk) != r.code || code(apk) <= code(current) || !r.version.equals(apk.versionName)
                 || apk.applicationInfo == null || (apk.applicationInfo.flags & (ApplicationInfo.FLAG_DEBUGGABLE | ApplicationInfo.FLAG_TEST_ONLY)) != 0
-                || !signers(current).equals(signers(apk)) || signers(current).isEmpty()) throw new IOException("Untrusted APK");
+                || !signers(current).equals(signers(apk)) || signers(current).isEmpty()) throw new UpdateFailure(R.string.update_signature_error);
     }
     private static Set<String> signers(PackageInfo info) throws IOException {
         android.content.pm.Signature[] values = Build.VERSION.SDK_INT >= 28

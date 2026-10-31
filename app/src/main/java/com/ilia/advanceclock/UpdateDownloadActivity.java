@@ -45,7 +45,7 @@ public final class UpdateDownloadActivity extends Activity {
                 });
             } catch (Exception e) {
                 if (verified != null) verified.delete();
-                runOnUiThread(() -> { if (!isDestroyed()) status.setText(R.string.update_failed); });
+                runOnUiThread(() -> { if (!isDestroyed()) status.setText(AppUpdates.errorMessage(e)); });
             }
         }, "verified-release-download"); worker.start();
     }
@@ -97,7 +97,7 @@ public final class UpdateDownloadActivity extends Activity {
                 runOnUiThread(() -> { status.setText(R.string.update_ready); open.setText(R.string.update_open_downloads); openFiles(); });
             } catch (Exception e) {
                 try { android.provider.DocumentsContract.deleteDocument(getContentResolver(), destination); } catch (Exception ignored) {}
-                runOnUiThread(() -> { if (!isDestroyed()) status.setText(R.string.update_failed); });
+                runOnUiThread(() -> { if (!isDestroyed()) status.setText(AppUpdates.errorMessage(e)); });
             }
         }, "export-verified-release"); worker.start();
     }

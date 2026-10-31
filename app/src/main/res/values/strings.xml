@@ -1345,4 +1345,20 @@
     <!-- Dedicated public release repository; APKs and metadata are release assets. -->
     <string name="update_repository" translatable="false">https://github.com/infinitimeilia/infinitime</string>
     <string name="date_notification_holiday">تعطیل</string>
+    <string name="update_check_now">بررسی به‌روزرسانی</string>
+    <string name="update_github_link">نسخه‌های برنامه در GitHub</string>
+    <string name="update_checking">در حال بررسی نسخهٔ جدید…</string>
+    <string name="update_current">آخرین نسخهٔ منتشرشده را نصب دارید.</string>
+    <string name="update_no_internet">اتصال اینترنت برقرار نیست. اینترنت را روشن کنید و دوباره بررسی کنید.</string>
+    <string name="update_not_published">اطلاعات به‌روزرسانی در مخزن انتشار موجود نیست. لطفاً بعداً دوباره بررسی کنید.</string>
+    <string name="update_network_error">ارتباط با سرور برقرار نشد یا قطع شد. اینترنت و دسترسی به GitHub را بررسی و دوباره تلاش کنید.</string>
+    <string name="update_invalid_metadata">اطلاعات نسخهٔ منتشرشده معتبر نیست. لطفاً بعداً دوباره بررسی کنید.</string>
+    <string name="update_server_error">سرور انتشار فعلاً پاسخ مناسبی نمی‌دهد. کمی بعد دوباره تلاش کنید.</string>
+    <string name="update_secure_error">اتصال امن به سرور تأیید نشد. تاریخ گوشی و اتصال اینترنت را بررسی کنید.</string>
+    <string name="update_release_only">بررسی آپدیت برای نسخهٔ اصلی برنامه است؛ نسخهٔ آزمایشی Debug از این مسیر به‌روزرسانی نمی‌شود.</string>
+    <string name="update_config_error">نشانی مخزن به‌روزرسانی تنظیم نشده یا معتبر نیست.</string>
+    <string name="update_check_cancelled">بررسی متوقف شد. برای بررسی دوباره دکمه را بزنید.</string>
+    <string name="update_download_missing">فایل نصب این نسخه در مسیر انتشار پیدا نشد. لطفاً بعداً دوباره تلاش کنید.</string>
+    <string name="update_hash_error">فایل دانلودشده با مشخصات نسخه مطابقت ندارد و حذف شد. دوباره تلاش کنید.</string>
+    <string name="update_signature_error">امضا یا مشخصات فایل نصب با این برنامه سازگار نیست؛ فایل برای نصب ارائه نشد.</string>
 </resources>

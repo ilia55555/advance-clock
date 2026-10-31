@@ -35,11 +35,17 @@ The app reads `REPOSITORY/releases/latest/download/update.json`. JSON contains `
 
 ## Foreground behavior and battery
 
-Only the production package checks this channel. When the main app screen resumes with a validated Internet connection, it checks the small JSON. Rapid resumes are throttled to five minutes. There is **no periodic job, alarm, connectivity listener, retry timer, update notification or background checking**. Old JobScheduler IDs 8204/8205 are cancelled on migration/app startup. Leaving the main screen interrupts the request, disconnects it and prevents callbacks from opening a sheet later. Offline and error cases are silent.
+Only the production package checks this channel. When the main app screen resumes with an active network advertising Internet access, it checks the small JSON. Rapid resumes are throttled to five minutes. There is **no periodic job, alarm, connectivity listener, retry timer, update notification or background checking**. Old JobScheduler IDs 8204/8205 are cancelled on migration/app startup. Leaving the main screen interrupts the request, disconnects it and prevents callbacks from opening a sheet later. Automatic offline/error cases are silent. Android network validation is not required: VPNs and some networks can reach GitHub without receiving the Android VALIDATED capability. HTTPS certificate and release validation remain mandatory.
 
 A new version opens an optional bottom sheet at most once per version/source. Back, outside tap, close and Later all dismiss it. The distinct final menu option remains available for reopening the sheet manually. The APK is downloaded only after tapping **Download update**. No forced update and no automatic APK download. Cached offers expire after seven days and cannot cross repository changes.
 
 No API token, signing key, user identifier, location or application data is uploaded. HTTPS requests reveal the normal network IP to GitHub.
+
+## Manual check and diagnostics
+
+The main About screen offers **Check for updates** and a link to the public GitHub releases page. A user-requested check bypasses the five-minute throttle and can reopen the new-version sheet even if it was dismissed before. It reports current version, offline/network/secure-connection errors, missing metadata, invalid metadata, unavailable server or unsupported Debug package. It never automatically downloads an APK. Leaving About cancels the check.
+
+Download failures distinguish missing release APK (check the `vN.N.N.N` release tag), hash mismatch, incompatible signer/package, connection issues and other download/storage failures. The Latest release must actually contain both JSON and APK, and the version-specific APK URL derived from metadata must resolve. Merely uploading JSON tagged `v1.0.0.6` under a release tagged `main1` does not create the expected APK path.
 
 ## Download security and manual installation
 
