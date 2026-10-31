@@ -95,6 +95,14 @@ public final class AppSettings {
         prefs(context).edit().putInt("palette", clampPalette(value)).apply();
     }
 
+    public static boolean showCalendarDayMarkers(Context context) {
+        return prefs(context).getBoolean("show_calendar_day_markers", false);
+    }
+
+    public static void setShowCalendarDayMarkers(Context context, boolean enabled) {
+        prefs(context).edit().putBoolean("show_calendar_day_markers", enabled).apply();
+    }
+
     public static boolean clock24Hour(Context context) { return prefs(context).getBoolean("clock_24_hour",true); }
     public static void setClock24Hour(Context context,boolean enabled) { prefs(context).edit().putBoolean("clock_24_hour",enabled).apply(); }
 

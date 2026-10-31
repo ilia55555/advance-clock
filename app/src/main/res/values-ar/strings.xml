@@ -1391,4 +1391,5 @@
     <string name="update_file_manager_unavailable">افتح مدير الملفات يدويًا وابحث عن ملف التطبيق في Download/InfiniTime.</string>
     <string name="smart_voice_google_required">ثبّت تطبيق Google أو فعّله لاستخدام نافذة الإدخال الصوتي من Google.</string>
     <string name="update_local_save_only">اختر ذاكرة الهاتف أو بطاقة الذاكرة؛ التخزين السحابي محظور لمنع الرفع.</string>
+    <string name="calendar_day_markers_label">إظهار نقاط التنبيهات والملاحظات في التقويم</string>
 </resources>

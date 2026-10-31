@@ -142,6 +142,16 @@ public final class SettingsActivity extends Activity {
         dateFormat.setSelection(AppSettings.dateDisplayFormat(this));
         calendarSettings.addView(dateFormat, new LinearLayout.LayoutParams(-1, dp(54)));
 
+        Switch showDayMarkers = settingSwitch(
+                getString(R.string.calendar_day_markers_label),
+                AppSettings.showCalendarDayMarkers(this));
+        calendarSettings.addView(showDayMarkers);
+        showDayMarkers.setOnCheckedChangeListener((button, checked) -> {
+            AppSettings.setShowCalendarDayMarkers(this, checked);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
+
         Switch showCalendarEvents = settingSwitch(
                 AppString.get(R.string.runtime_text_0155),
                 AppSettings.showCalendarEvents(this));

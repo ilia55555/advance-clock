@@ -64,7 +64,7 @@ public final class TripleCalendarView extends View {
     }
 
     private int priorityForDay(int day) {
-        if(markers==null) return -1;
+        if(!AppSettings.showCalendarDayMarkers(getContext()) || markers==null) return -1;
         String month=calendarType+":"+displayYear+":"+displayMonth;
         if(!month.equals(markerMonth)) { dayPriorities.clear();markerMonth=month; }
         Integer value=dayPriorities.get(day);

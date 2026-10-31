@@ -1373,4 +1373,5 @@ Lock screen</string>
     <string name="update_file_manager_unavailable">Open your file manager manually and find the APK in Download/InfiniTime.</string>
     <string name="smart_voice_google_required">Install or enable the Google app to use its voice input window.</string>
     <string name="update_local_save_only">Choose phone storage or an SD card. Cloud destinations are blocked to prevent uploads.</string>
+    <string name="calendar_day_markers_label">Show alarm and note dots on the calendar</string>
 </resources>
