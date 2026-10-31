@@ -86,6 +86,7 @@ public class SmartScheduleActivityTest {
             android.view.View close=root.findViewWithTag("smart_header_close");
             assertEquals(host.getString(note ? R.string.smart_note_title : R.string.runtime_text_0263),title.getText().toString());
             assertSame(close.getParent(),title.getParent());
+            assertEquals(android.view.Gravity.RIGHT,title.getGravity() & android.view.Gravity.HORIZONTAL_GRAVITY_MASK);
             String hint=field.getHint().toString();
             assertTrue(hint.contains("09:30"));
             String json=hint.substring(hint.indexOf('{'));

@@ -141,7 +141,8 @@ public final class SmartAlarmActivity extends Activity {
         TextView title = text(getString(noteMode ? R.string.smart_note_title : R.string.runtime_text_0263), 20, AppSettings.textPrimary(this));
         title.setTag("smart_header_title");
         title.setTypeface(null, android.graphics.Typeface.BOLD);
-        title.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+        title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        title.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
         title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
         title.setSingleLine(true);
         title.setPadding(dp(8), 0, dp(4), 0);
