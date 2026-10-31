@@ -71,6 +71,8 @@ public final class SmartAlarmActivity extends Activity {
                         android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, tag)
                 .putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                .putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L)
+                .putExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 3000L)
                 .putExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE, false)
                 .setPackage(GOOGLE_SPEECH_PACKAGE);
     }
@@ -132,10 +134,18 @@ public final class SmartAlarmActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0x00000000);
         close.setPadding(dp(12), dp(12), dp(12), dp(12));
+        close.setTag("smart_header_close");
         close.setContentDescription(AppString.get(R.string.runtime_text_0002));
         close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
-
+        TextView title = text(getString(noteMode ? R.string.smart_note_title : R.string.runtime_text_0263), 20, AppSettings.textPrimary(this));
+        title.setTag("smart_header_title");
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+        title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+        title.setSingleLine(true);
+        title.setPadding(dp(8), 0, dp(4), 0);
+        top.addView(title, new LinearLayout.LayoutParams(0, dp(48), 1));
         return top;
     }
 
@@ -186,11 +196,14 @@ public final class SmartAlarmActivity extends Activity {
         card.addView(input, inputParams);
         LinearLayout helpers = new LinearLayout(this);
         helpers.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        helpers.setGravity(Gravity.CENTER_VERTICAL);
+        helpers.setBaselineAligned(false);
+        helpers.setTag("smart_helpers_row");
         speechLanguages = new SmartSpeechLanguages(this, () -> {
             // The selected language is passed on the next user-requested Google voice session.
         });
-        LinearLayout.LayoutParams languageParams = new LinearLayout.LayoutParams(0, dp(48), 0.9f);
-        languageParams.setMarginEnd(dp(6));
+        LinearLayout.LayoutParams languageParams = new LinearLayout.LayoutParams(0, dp(48), 1f);
+        languageParams.setMarginEnd(dp(8));
         helpers.addView(speechLanguages.view(), languageParams);
         Button insertTime = softButton(getString(R.string.smart_insert_time));
         insertTime.setTag("smart_insert_time");
@@ -225,12 +238,14 @@ public final class SmartAlarmActivity extends Activity {
                 insertTime.setCompoundDrawablesRelative(null, null, null, null);
             }
         });
-        card.addView(helpers);
+        LinearLayout.LayoutParams helperParams = new LinearLayout.LayoutParams(-1, dp(48));
+        helperParams.topMargin = helperParams.bottomMargin = dp(8);
+        card.addView(helpers, helperParams);
         speechLanguages.requestSupportedLanguages();
         Button simplify = softButton(AppString.get(R.string.runtime_text_0640));
         simplify.setOnClickListener(v -> simplifyInput());
         LinearLayout.LayoutParams simplifyParams = new LinearLayout.LayoutParams(-1, dp(46));
-        simplifyParams.topMargin = dp(8);
+        simplifyParams.topMargin = 0;
         card.addView(simplify, simplifyParams);
 
         analyze = primaryButton(AppString.get(R.string.runtime_text_0267));

@@ -26,13 +26,18 @@ final class SmartSpeechLanguages {
         spinner.setTag("smart_speech_language");
         spinner.setContentDescription(host.getString(R.string.smart_speech_language));
         spinner.setBackgroundResource(R.drawable.bg_field);
+        int inset=Math.round(4*host.getResources().getDisplayMetrics().density);
+        spinner.setPaddingRelative(inset,0,inset,0);
         adapter=new ArrayAdapter<String>(host,android.R.layout.simple_spinner_item,labels) {
             @Override public View getView(int position, View convertView, ViewGroup parent) {
                 TextView text=(TextView)super.getView(position,convertView,parent);
                 text.setText(Locale.forLanguageTag(tags.get(position)).getDisplayLanguage(AppString.locale()));
                 text.setTextSize(13); text.setSingleLine(true);
                 text.setTextColor(AppSettings.textPrimary(host));
-                text.setPadding(4,0,4,0);
+                int padding=Math.round(12*host.getResources().getDisplayMetrics().density);
+                text.setPaddingRelative(padding,0,padding,0);
+                text.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+                text.setLayoutDirection(AppSettings.layoutDirection(host));
                 return text;
             }
         };

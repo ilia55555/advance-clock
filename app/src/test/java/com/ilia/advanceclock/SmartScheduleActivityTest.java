@@ -72,6 +72,8 @@ public class SmartScheduleActivityTest {
             Intent intent=SmartAlarmActivity.speechIntent(app);
             assertEquals(pair[1],intent.getStringExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE));
             assertFalse(intent.getBooleanExtra(android.speech.RecognizerIntent.EXTRA_PREFER_OFFLINE,false));
+            assertEquals(5000L,intent.getLongExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,0));
+            assertEquals(3000L,intent.getLongExtra(android.speech.RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,0));
         }
     }
 
@@ -79,6 +81,11 @@ public class SmartScheduleActivityTest {
         for(boolean note:new boolean[]{false,true}) {
             SmartAlarmActivity host=activity(note);
             EditText field=ReflectionHelpers.getField(host,"input");
+            android.view.View root=host.findViewById(android.R.id.content);
+            TextView title=root.findViewWithTag("smart_header_title");
+            android.view.View close=root.findViewWithTag("smart_header_close");
+            assertEquals(host.getString(note ? R.string.smart_note_title : R.string.runtime_text_0263),title.getText().toString());
+            assertSame(close.getParent(),title.getParent());
             String hint=field.getHint().toString();
             assertTrue(hint.contains("09:30"));
             String json=hint.substring(hint.indexOf('{'));
