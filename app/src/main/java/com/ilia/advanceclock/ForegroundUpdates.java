@@ -57,7 +57,7 @@ final class ForegroundUpdates {
     }
     static void stop(Activity host) {
         if (active != null) { active.cancel(); active = null; }
-        UpdatePrompt.dismiss(host);
+        UpdatePrompt.pause(host);
     }
     static boolean online(Context c) {
         ConnectivityManager manager = c.getSystemService(ConnectivityManager.class);

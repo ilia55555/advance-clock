@@ -1307,4 +1307,8 @@
     <string name="update_download_missing">فایل نصب این نسخه در مسیر انتشار پیدا نشد. لطفاً بعداً دوباره تلاش کنید.</string>
     <string name="update_hash_error">فایل دانلودشده با مشخصات نسخه مطابقت ندارد و حذف شد. دوباره تلاش کنید.</string>
     <string name="update_signature_error">امضا یا مشخصات فایل نصب با این برنامه سازگار نیست؛ فایل برای نصب ارائه نشد.</string>
+    <string name="update_download_retry">تلاش دوباره</string>
+    <string name="update_download_cancelled">دانلود متوقف شد. برای شروع دوباره دکمه را بزنید.</string>
+    <string name="update_verifying">دانلود کامل شد؛ در حال بررسی امنیت فایل…</string>
+    <string name="update_storage_error">ذخیرهٔ فایل انجام نشد. فضای خالی و دسترسی به پوشهٔ دانلودها را بررسی کنید.</string>
 </resources>

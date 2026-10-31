@@ -129,7 +129,8 @@ public class AppUpdatesTest {
     }
     @Test public void updateComponentsPrivateAndNoInstallationPermission() throws Exception {
         var pm=app.getPackageManager();
-        assertFalse(pm.getActivityInfo(new ComponentName(app,UpdateDownloadActivity.class),0).exported);
+        assertThrows(PackageManager.NameNotFoundException.class, () ->
+                pm.getActivityInfo(new ComponentName(app,"com.ilia.advanceclock.UpdateDownloadActivity"),0));
         for (ServiceInfo service : pm.getPackageInfo(app.getPackageName(),PackageManager.GET_SERVICES).services)
             assertNotEquals("com.ilia.advanceclock.UpdateCheckJob",service.name);
         String[] requested=pm.getPackageInfo(app.getPackageName(),PackageManager.GET_PERMISSIONS).requestedPermissions;

@@ -1375,4 +1375,8 @@
     <string name="update_download_missing">ملف التثبيت غير موجود في مسار هذا الإصدار. حاول لاحقًا.</string>
     <string name="update_hash_error">الملف المنزّل لا يطابق معلومات الإصدار وقد حُذف. حاول مجددًا.</string>
     <string name="update_signature_error">توقيع ملف التثبيت أو معلوماته لا تطابق هذا التطبيق؛ لم يُقدّم الملف للتثبيت.</string>
+    <string name="update_download_retry">حاول مجددًا</string>
+    <string name="update_download_cancelled">توقف التنزيل. اضغط للبدء مجددًا.</string>
+    <string name="update_verifying">اكتمل التنزيل؛ جارٍ التحقق من الملف…</string>
+    <string name="update_storage_error">تعذّر حفظ الملف. تحقق من المساحة المتاحة وإمكانية الوصول إلى التنزيلات.</string>
 </resources>

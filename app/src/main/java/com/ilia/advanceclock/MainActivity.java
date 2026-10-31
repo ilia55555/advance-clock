@@ -1206,6 +1206,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onDestroy() {
+        UpdatePrompt.dismiss(this);
         headerHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
@@ -1215,6 +1216,7 @@ public final class MainActivity extends Activity {
             int resultCode,
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (UpdatePrompt.onActivityResult(this, requestCode, resultCode, data)) return;
 
         if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
             recreate();

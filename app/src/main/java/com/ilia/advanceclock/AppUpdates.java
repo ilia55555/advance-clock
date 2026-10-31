@@ -175,27 +175,41 @@ final class AppUpdates {
         }
         throw new IOException("Too many redirects");
     }
+    interface DownloadObserver { void progress(long downloaded, long total, boolean verifying); }
     static File download(Context c, Release r) throws Exception {
+        return download(c, r, (done,total,verifying) -> {}, new ForegroundUpdates.Request(null), AppUpdates::open);
+    }
+    static File download(Context c, Release r, DownloadObserver observer, ForegroundUpdates.Request request) throws Exception {
+        return download(c, r, observer, request, AppUpdates::open);
+    }
+    static File download(Context c, Release r, DownloadObserver observer, ForegroundUpdates.Request request, ConnectionFactory factory) throws Exception {
         File file = File.createTempFile("update-", ".apk", c.getCacheDir());
         boolean valid = false;
         try {
-            HttpURLConnection conn = open(r.url(repository(c)));
+            HttpURLConnection conn = factory.open(r.url(repository(c)), request);
+            request.connection = conn;
             try {
+                if (request.cancelled) throw new IOException("Cancelled");
                 if (conn.getResponseCode() == 404) throw new UpdateFailure(R.string.update_download_missing);
                 if (conn.getResponseCode() != 200) throw new UpdateFailure(R.string.update_server_error);
                 MessageDigest hash = MessageDigest.getInstance("SHA-256");
                 long count = 0, started = android.os.SystemClock.elapsedRealtime();
+                observer.progress(0, r.size, false);
                 try (InputStream in = conn.getInputStream(); OutputStream out = new FileOutputStream(file)) {
                     byte[] b = new byte[32768]; int n;
                     while ((n = in.read(b)) != -1) {
                         count += n;
-                        if (Thread.currentThread().isInterrupted() || count > r.size
-                                || android.os.SystemClock.elapsedRealtime() - started > 10 * 60 * 1000L) throw new IOException("Download limit");
+                        if (request.cancelled || Thread.currentThread().isInterrupted()) throw new IOException("Cancelled");
+                        if (count > r.size) throw new UpdateFailure(R.string.update_hash_error);
+                        if (android.os.SystemClock.elapsedRealtime() - started > 10 * 60 * 1000L) throw new SocketTimeoutException("Download timeout");
                         hash.update(b, 0, n); out.write(b, 0, n);
+                        observer.progress(count, r.size, false);
                     }
                 }
                 verifyDigest(r, count, hash.digest());
-            } finally { conn.disconnect(); }
+            } finally { conn.disconnect(); request.connection = null; }
+            if (request.cancelled) throw new IOException("Cancelled");
+            observer.progress(r.size, r.size, true);
             PackageInfo apk = c.getPackageManager().getPackageArchiveInfo(file.getAbsolutePath(), flags());
             verify(installed(c), apk, r);
             valid = true; return file;

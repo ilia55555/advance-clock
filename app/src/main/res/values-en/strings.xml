@@ -1357,4 +1357,8 @@ Lock screen</string>
     <string name="update_download_missing">The APK is missing from this release path. Please try again later.</string>
     <string name="update_hash_error">The downloaded file does not match the release and was deleted. Please try again.</string>
     <string name="update_signature_error">The APK signature or package details do not match this app. The file was not made available for installation.</string>
+    <string name="update_download_retry">Try again</string>
+    <string name="update_download_cancelled">Download stopped. Tap to start again.</string>
+    <string name="update_verifying">Download complete. Verifying the file…</string>
+    <string name="update_storage_error">The file could not be saved. Check free space and access to Downloads.</string>
 </resources>

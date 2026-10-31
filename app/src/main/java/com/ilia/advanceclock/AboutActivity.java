@@ -331,6 +331,15 @@ public final class AboutActivity extends Activity {
         super.onPause();
     }
 
+    @Override protected void onDestroy() {
+        UpdatePrompt.dismiss(this);
+        super.onDestroy();
+    }
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UpdatePrompt.onActivityResult(this, requestCode, resultCode, data);
+    }
+
     private String versionLabel() {
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
