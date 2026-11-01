@@ -1344,7 +1344,7 @@
     <string name="permissions_install">نصب به‌روزرسانی (اختیاری)</string>
     <string name="permissions_install_reason">برای نصب نسخه جدید با تأیید شما.</string>
     <string name="permissions_warning">برخی مجوزها فعال نیستند؛ امکانات وابسته ممکن است درست کار نکنند.</string>
-    <string name="permissions_menu">مجوزهای غیرفعال</string>
+    <string name="permissions_menu">مجوزها را فعال کنید</string>
     <string name="permissions_unavailable">صفحه این مجوز در دسترس نیست؛ از تنظیمات گوشی، بخش برنامه‌ها، مجوزهای InfiniTime را بررسی کنید.</string>
     <string name="permissions_dismiss">بستن</string>
 </resources>

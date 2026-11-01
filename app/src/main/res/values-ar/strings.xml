@@ -1412,7 +1412,7 @@
     <string name="permissions_install">تثبيت التحديثات (اختياري)</string>
     <string name="permissions_install_reason">لتثبيت إصدار جديد بموافقتك.</string>
     <string name="permissions_warning">بعض الأذونات غير مفعّلة؛ قد لا تعمل الميزات المرتبطة.</string>
-    <string name="permissions_menu">أذونات غير مفعّلة</string>
+    <string name="permissions_menu">فعّل الأذونات</string>
     <string name="permissions_unavailable">صفحة هذا الإذن غير متاحة. راجع أذونات InfiniTime في إعدادات التطبيقات على هاتفك.</string>
     <string name="permissions_dismiss">إغلاق</string>
 </resources>

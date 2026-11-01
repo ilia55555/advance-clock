@@ -1394,7 +1394,7 @@ Lock screen</string>
     <string name="permissions_install">Install updates (optional)</string>
     <string name="permissions_install_reason">For installing a new version with your confirmation.</string>
     <string name="permissions_warning">Some permissions are off; related features may not work.</string>
-    <string name="permissions_menu">Missing permissions</string>
+    <string name="permissions_menu">Enable permissions</string>
     <string name="permissions_unavailable">This permission screen is unavailable. Check InfiniTime permissions in your phone’s app settings.</string>
     <string name="permissions_dismiss">Close</string>
 </resources>
