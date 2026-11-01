@@ -20,21 +20,21 @@ final class PermissionWarning {
         LinearLayout card=new LinearLayout(host);card.setOrientation(LinearLayout.VERTICAL);
         card.setLayoutDirection(AppSettings.layoutDirection(host));
         int pad=dp(host,16);card.setPadding(pad,pad,pad,pad);
-        GradientDrawable bg=new GradientDrawable();bg.setColor(optional ? 0xFFFFD600
+        GradientDrawable bg=new GradientDrawable();bg.setColor(optional ? (AppSettings.themeMode(host)==AppSettings.THEME_DARK?0xFF302217:0xFFFFF3E0)
                 : (AppSettings.themeMode(host)==AppSettings.THEME_DARK?0xFF4A1919:0xFFFFEBEE));
-        bg.setCornerRadius(dp(host,18));bg.setStroke(dp(host,1),optional?0xFFFFD600:0xFFC62828);card.setBackground(bg);
+        bg.setCornerRadius(dp(host,18));bg.setStroke(dp(host,1),optional?(AppSettings.themeMode(host)==AppSettings.THEME_DARK?0xFFFFB74D:0xFFEF6C00):0xFFC62828);card.setBackground(bg);
         TextView message=new TextView(host);message.setText(messageRes);message.setTextSize(14);
-        message.setTextColor(optional ? 0xFF202020
+        message.setTextColor(optional ? (AppSettings.themeMode(host)==AppSettings.THEME_DARK?0xFFFFB74D:0xFFEF6C00)
                 : (AppSettings.themeMode(host)==AppSettings.THEME_DARK?0xFFFFCDD2:0xFFB71C1C));
         card.addView(message,new LinearLayout.LayoutParams(-1,-2));
         boolean dark=AppSettings.themeMode(host)==AppSettings.THEME_DARK;
-        int accent=optional ? 0xFF202020 : (dark?0xFFFF8A80:0xFFB71C1C);
+        int accent=optional ? (AppSettings.themeMode(host)==AppSettings.THEME_DARK?0xFFFFB74D:0xFFEF6C00) : (dark?0xFFFF8A80:0xFFB71C1C);
         LinearLayout actions=new LinearLayout(host);actions.setGravity(Gravity.CENTER_VERTICAL);
         actions.setLayoutDirection(AppSettings.layoutDirection(host));
         LinearLayout.LayoutParams actionsParams=new LinearLayout.LayoutParams(-1,-2);
         actionsParams.topMargin=dp(host,14);card.addView(actions,actionsParams);
         Button review=action(host,optional?R.string.permissions_optional_allow:R.string.permissions_review,true,accent,dark);
-        if(optional)review.setTextColor(0xFFFFD600);
+        if(optional)review.setTextColor(dark?0xFF21170D:android.graphics.Color.WHITE);
         Button close=action(host,R.string.permissions_dismiss,false,accent,dark);
         LinearLayout.LayoutParams reviewParams=new LinearLayout.LayoutParams(0,dp(host,48),1);
         reviewParams.setMarginEnd(dp(host,10));

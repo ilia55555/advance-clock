@@ -457,8 +457,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                                     : requested
                                     ? R.string.location_access_permission_denied
                                     : R.string.location_access_permission_needed));
-            locationAccessStatus.setTextColor(0xFF202020);
-            locationAccessStatus.setBackgroundColor(0xFFFFD600);
+            locationAccessStatus.setTextColor(AppSettings.themeMode(this)==AppSettings.THEME_DARK?0xFFFFB74D:0xFFEF6C00);
 
             locationPermissionAction.setText(
                     AppString.get(

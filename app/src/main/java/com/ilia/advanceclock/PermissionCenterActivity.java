@@ -113,17 +113,17 @@ public final class PermissionCenterActivity extends Activity {
         int[] reasons={R.string.permissions_notifications_reason,R.string.permissions_alarms_reason,R.string.permissions_fullscreen_reason,R.string.permissions_location_reason,R.string.permissions_install_reason};
         for(int i=0;i<titles.length;i++) {
             int kind=i;boolean allowed=granted(this,i);
-            int color=allowed?0xFF238047:(i>=3 ? 0xFFFFD600 : 0xFFC62828);
+            int color=allowed?0xFF238047:(i>=3 ? (AppSettings.themeMode(this)==AppSettings.THEME_DARK?0xFFFFB74D:0xFFEF6C00) : 0xFFC62828);
             boolean optionalMissing=i>=3 && !allowed;
             LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);
             card.setPadding(dp(14),dp(12),dp(14),dp(12));
-            GradientDrawable bg=new GradientDrawable();bg.setColor(optionalMissing?0xFFFFD600:AppSettings.surface(this));bg.setCornerRadius(dp(16));bg.setStroke(dp(1),color);card.setBackground(bg);
+            GradientDrawable bg=new GradientDrawable();bg.setColor(AppSettings.surface(this));bg.setCornerRadius(dp(16));bg.setStroke(dp(1),color);card.setBackground(bg);
             LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-1,-2);cp.topMargin=dp(12);content.addView(card,cp);
             LinearLayout previous=content;content=card;
-            text(getString(titles[i]),17,optionalMissing?0xFF202020:AppSettings.textPrimary(this));
-            text(getString(reasons[i]),14,optionalMissing?0xFF202020:AppSettings.textSecondary(this));
-            text(getString(allowed?R.string.permissions_granted:R.string.permissions_missing),14,optionalMissing?0xFF202020:color);
-            Button action=button(getString(allowed?R.string.permissions_manage:R.string.permissions_allow),optionalMissing?0xFF202020:color);
+            text(getString(titles[i]),17,AppSettings.textPrimary(this));
+            text(getString(reasons[i]),14,optionalMissing?color:AppSettings.textSecondary(this));
+            text(getString(allowed?R.string.permissions_granted:R.string.permissions_missing),14,color);
+            Button action=button(getString(allowed?R.string.permissions_manage:R.string.permissions_allow),color);
             action.setTag("permission_"+i);action.setOnClickListener(v->startBatch(kind));
             content=previous;
         }
