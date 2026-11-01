@@ -56,7 +56,7 @@ public final class TripleCalendarView extends View {
 
     private int eventSource;
     private CalendarDayMarkers markers;
-    private final java.util.Map<Integer,Integer> dayPriorities=new java.util.HashMap<>();
+    private final java.util.Map<Integer,int[]> dayPriorities=new java.util.HashMap<>();
     private String markerMonth="";
 
     public void setEventSource(boolean notes) {
@@ -64,15 +64,20 @@ public final class TripleCalendarView extends View {
     }
 
     private int priorityForDay(int day) {
-        if(!AppSettings.showCalendarDayMarkers(getContext(), eventSource==2) || markers==null) return -1;
+        int[] values=prioritiesForDay(day);
+        return values.length==0 ? -1 : values[0];
+    }
+
+    private int[] prioritiesForDay(int day) {
+        if(!AppSettings.showCalendarDayMarkers(getContext(), eventSource==2) || markers==null) return new int[0];
         String month=calendarType+":"+displayYear+":"+displayMonth;
         if(!month.equals(markerMonth)) { dayPriorities.clear();markerMonth=month; }
-        Integer value=dayPriorities.get(day);
+        int[] value=dayPriorities.get(day);
         if(value!=null) return value;
         long start=CalendarUtils.toMillis(calendarType,displayYear,displayMonth,day,0,0);
         java.util.Calendar end=java.util.Calendar.getInstance(AppTime.zone());
         end.setTimeInMillis(start);end.add(java.util.Calendar.DAY_OF_YEAR,1);
-        int priority=markers.priority(start,end.getTimeInMillis());dayPriorities.put(day,priority);return priority;
+        int[] priorities=markers.priorities(start,end.getTimeInMillis());dayPriorities.put(day,priorities);return priorities;
     }
 
     private int calendarType;
@@ -366,11 +371,11 @@ public final class TripleCalendarView extends View {
                 }
             }
 
-            int importance=priorityForDay(item.day);
-            if(importance>=0) {
-                paint.setStyle(Paint.Style.FILL);paint.setColor(CalendarDayMarkers.color(importance));
-                c.drawCircle(left+10,top+10,3.5f,paint);
-                c.drawCircle(left+CELL_W-10,top+10,3.5f,paint);
+            int[] priorities=prioritiesForDay(item.day);
+            for(int i=0;i<priorities.length;i++) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(CalendarDayMarkers.color(priorities[i]));
+                c.drawCircle(i==0 ? left+CELL_W-10 : left+10,top+10,3.5f,paint);
             }
 
             int main = selected

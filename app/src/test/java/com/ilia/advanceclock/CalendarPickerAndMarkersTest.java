@@ -66,6 +66,26 @@ public class CalendarPickerAndMarkersTest {
                 org.robolectric.util.ReflectionHelpers.ClassParameter.from(int.class,day));
     }
 
+    @Test public void eachEntryAddsOneDotAndOnlyTheTwoMostImportantRemain() {
+        Context app=RuntimeEnvironment.getApplication(); AppString.init(app);
+        NoForgetStore store=new NoForgetStore(app);
+        CalendarDayMarkers empty=new CalendarDayMarkers(app,true);
+        assertArrayEquals(new int[0],empty.priorities(date(12,0),date(13,0)));
+        store.save(new NoForgetItem(101,"Medium","","[]",2,false,date(12,9),false,date(1,9)));
+        assertArrayEquals(new int[]{2},new CalendarDayMarkers(app,true).priorities(date(12,0),date(13,0)));
+        store.save(new NoForgetItem(102,"Very high","","[]",4,false,date(12,10),false,date(1,9)));
+        assertArrayEquals(new int[]{4,2},new CalendarDayMarkers(app,true).priorities(date(12,0),date(13,0)));
+        store.save(new NoForgetItem(103,"High","","[]",3,false,date(12,11),false,date(1,9)));
+        assertArrayEquals(new int[]{4,3},new CalendarDayMarkers(app,true).priorities(date(12,0),date(13,0)));
+        store.save(new NoForgetItem(104,"Another very high","","[]",4,false,date(12,12),false,date(1,9)));
+        assertArrayEquals(new int[]{4,4},new CalendarDayMarkers(app,true).priorities(date(12,0),date(13,0)));
+        assertArrayEquals(new int[0],new CalendarDayMarkers(app,true).priorities(date(13,0),date(14,0)));
+        AlarmItem alarm=new AlarmItem(105,"Repeated",date(12,9),RecurrenceUtils.INTERVAL_MINUTES,true);
+        alarm.intervalDays=5; alarm.priority=3;
+        new AlarmStore(app).save(alarm);
+        assertArrayEquals(new int[]{3},new CalendarDayMarkers(app,false).priorities(date(12,0),date(13,0)));
+    }
+
     @Test public void calendarPickerSelectsDayPreservingTimeAndCancelDoesNotSave() {
         Context app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup()) {
