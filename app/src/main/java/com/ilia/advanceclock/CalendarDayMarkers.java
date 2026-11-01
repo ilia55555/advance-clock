@@ -18,8 +18,15 @@ final class CalendarDayMarkers {
                     item.customDatesJson,start-1,item.timeZone());
             if(next>=start && next<end) priority=Math.max(priority,item.priority);
         }
-        for(NoForgetItem item:notes) if(item.hasDue) {
-            long next=RecurrenceUtils.next(item.dueAtMillis,item.recurrenceMode,item.intervalDays,item.customDatesJson,start-1);
+        for(NoForgetItem item:notes) {
+            if (!item.applyDate && !item.hasDue) continue;
+            // A calendar date is independent of whether the note rings.
+            // Older non-ringing notes did not retain the chosen date: use their creation day.
+            long date = item.dueAtMillis > 0 ? item.dueAtMillis : item.createdAt;
+            if (date <= 0) continue;
+            long next = item.hasDue
+                    ? RecurrenceUtils.next(date,item.recurrenceMode,item.intervalDays,item.customDatesJson,start-1)
+                    : date;
             if(next>=start && next<end) priority=Math.max(priority,item.priority);
         }
         return priority;

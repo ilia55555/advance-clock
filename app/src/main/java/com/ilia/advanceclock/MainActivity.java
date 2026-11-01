@@ -1099,7 +1099,7 @@ public final class MainActivity extends Activity {
         boolean alarmEnabled = quickNoteAlarmSwitch.isChecked();
         long due = alarmEnabled ? AlarmTimePolicy.next(quickNoteDue.getTimeInMillis(),
                 quickNoteDateOption.isApplied(), noteRecurrenceMode, noteIntervalDays,
-                noteCustomDates, System.currentTimeMillis()) : 0L;
+                noteCustomDates, System.currentTimeMillis()) : quickNoteDue.getTimeInMillis();
 
         if (alarmEnabled && due <= System.currentTimeMillis()) {
             LogoToast.makeText(

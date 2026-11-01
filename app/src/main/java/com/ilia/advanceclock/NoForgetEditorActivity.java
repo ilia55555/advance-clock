@@ -824,7 +824,7 @@ public final class NoForgetEditorActivity extends Activity {
         alarmEnabled.setChecked(item.reminderEnabled&&item.hasDue);
         createdAt=item.createdAt;
 
-        if(item.hasDue&&item.dueAtMillis>0){
+        if(item.dueAtMillis>0){
             due.setTimeInMillis(item.dueAtMillis);
         }
 
@@ -892,7 +892,7 @@ public final class NoForgetEditorActivity extends Activity {
 
         boolean enabled=alarmEnabled.isChecked();
         long dueAt=enabled ? AlarmTimePolicy.next(due.getTimeInMillis(), dateOption.isApplied(),
-                recurrenceMode, intervalDays, customDatesJson, System.currentTimeMillis()) : 0L;
+                recurrenceMode, intervalDays, customDatesJson, System.currentTimeMillis()) : due.getTimeInMillis();
 
         if(enabled&&dueAt<=System.currentTimeMillis()){
             LogoToast.makeText(

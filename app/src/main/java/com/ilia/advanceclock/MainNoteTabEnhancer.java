@@ -459,7 +459,7 @@ final class MainNoteTabEnhancer {
         android.widget.CompoundButton dateOption = activity.findViewById(R.id.date_option_quick_note);
         boolean applyDate = dateOption == null || dateOption.isChecked();
         long dueAt = enabled ? AlarmTimePolicy.next(due.getTimeInMillis(), applyDate,
-                recurrence, interval, dates, System.currentTimeMillis()) : 0L;
+                recurrence, interval, dates, System.currentTimeMillis()) : due.getTimeInMillis();
         if (enabled && dueAt <= System.currentTimeMillis()) {
             LogoToast.makeText(activity, AppString.get(R.string.runtime_text_0148), Toast.LENGTH_LONG).show();
             return;

@@ -33,6 +33,39 @@ public class CalendarPickerAndMarkersTest {
         assertNotEquals(CalendarDayMarkers.color(0),CalendarDayMarkers.color(4));
     }
 
+    @Test public void nonRingingNotesHaveMarkersAndEachTabSwitchControlsOnlyItsOwnView() {
+        Context app=RuntimeEnvironment.getApplication(); AppString.init(app);
+        NoForgetItem note=new NoForgetItem(77,"Silent note","","[]",4,false,date(8,11),false,date(1,10));
+        new NoForgetStore(app).save(note);
+        TripleCalendarView notes=new TripleCalendarView(app);
+        notes.setEventSource(true); notes.setCalendarType(CalendarUtils.GREGORIAN);
+        notes.setSelectedMillis(date(8,11));
+        AppSettings.setShowCalendarDayMarkers(app,true,true);
+        assertEquals(4,dayPriority(notes,8));
+        assertEquals(-1,dayPriority(notes,1));
+        AppSettings.setShowCalendarDayMarkers(app,false,false);
+        assertEquals(4,dayPriority(notes,8));
+        AppSettings.setShowCalendarDayMarkers(app,true,false);
+        assertEquals(-1,dayPriority(notes,8));
+        AppSettings.setShowCalendarDayMarkers(app,true,true);
+        assertEquals(4,dayPriority(notes,8));
+        assertFalse(new NoForgetStore(app).all().get(0).reminderEnabled);
+    }
+
+    @Test public void legacyNotesUseCreationDayButUndatedNotesHaveNoMarker() {
+        Context app=RuntimeEnvironment.getApplication(); AppString.init(app);
+        NoForgetItem legacy=new NoForgetItem(88,"Old note","","[]",2,false,0,false,date(6,10));
+        new NoForgetStore(app).save(legacy);
+        assertEquals(2,new CalendarDayMarkers(app,true).priority(date(6,0),date(7,0)));
+        legacy.applyDate=false;new NoForgetStore(app).save(legacy);
+        assertEquals(-1,new CalendarDayMarkers(app,true).priority(date(6,0),date(7,0)));
+    }
+
+    private int dayPriority(TripleCalendarView view,int day) {
+        return org.robolectric.util.ReflectionHelpers.callInstanceMethod(view,"priorityForDay",
+                org.robolectric.util.ReflectionHelpers.ClassParameter.from(int.class,day));
+    }
+
     @Test public void calendarPickerSelectsDayPreservingTimeAndCancelDoesNotSave() {
         Context app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup()) {
