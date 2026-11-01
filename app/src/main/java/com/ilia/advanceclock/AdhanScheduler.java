@@ -60,8 +60,14 @@ public final class AdhanScheduler {
             long when = prayerMillis(context, day, type);
             if (when <= now) continue;
             try {
-                manager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP, when, operation(context, type));
+                PendingIntent show = PendingIntent.getActivity(
+                        context, 3_150_000 + type,
+                        new Intent(context, SettingsActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                // User-visible prayer alarms must wake from Doze like clock alarms.
+                manager.setAlarmClock(new AlarmManager.AlarmClockInfo(when, show),
+                        operation(context, type));
             } catch (SecurityException ignored) {
                 setScheduled(context, type, false);
                 return false;

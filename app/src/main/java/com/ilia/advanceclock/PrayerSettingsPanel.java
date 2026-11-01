@@ -1404,7 +1404,7 @@ final class PrayerSettingsPanel {
             double lat, double lon, String fallback, int requestGeneration) {
         String label = fallback;
         try {
-            Geocoder geocoder = new Geocoder(host, Locale.getDefault());
+            Geocoder geocoder = new Geocoder(host, Locale.forLanguageTag(AppSettings.language(host)));
             List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address a = addresses.get(0);
@@ -1417,13 +1417,20 @@ final class PrayerSettingsPanel {
             }
         } catch (IOException | RuntimeException ignored) {}
 
+        if (fallback.equals(label)) {
+            String resolved = PrayerLocationName.lookup(lat, lon, AppSettings.language(host));
+            if (resolved != null) label = resolved;
+        }
         final String finalLabel = label;
         host.runOnUiThread(() -> {
             if (requestGeneration != locationRequestGeneration || host.isFinishing()
                     || (Build.VERSION.SDK_INT >= 17 && host.isDestroyed())) {
                 return;
             }
-            AppSettings.setPrayerLocation(host, lat, lon, finalLabel);
+            if (Double.compare(AppSettings.prayerLatitude(host), lat) != 0
+                    || Double.compare(AppSettings.prayerLongitude(host), lon) != 0) return;
+            AppSettings.setPrayerLocation(host, lat, lon, finalLabel,
+                    AppSettings.prayerTimeZone(host).getID());
             refresh();
         });
     }

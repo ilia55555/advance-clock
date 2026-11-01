@@ -28,6 +28,12 @@ final class ReadOnlyNetwork {
             exact(uri,"format","jsonv2");exact(uri,"addressdetails","1");exact(uri,"limit","20");
             String language=uri.getQueryParameter("accept-language");
             if(language==null || !language.matches("[A-Za-z,-]{1,48}"))throw new IOException("Invalid language");
+        } else if("nominatim.openstreetmap.org".equals(u.getHost()) && "/reverse".equals(u.getPath())) {
+            allowed=new HashSet<>(Arrays.asList("lat","lon","format","addressdetails","zoom","accept-language"));
+            coordinate(uri,"lat",90);coordinate(uri,"lon",180);
+            exact(uri,"format","jsonv2");exact(uri,"addressdetails","1");exact(uri,"zoom","10");
+            String language=uri.getQueryParameter("accept-language");
+            if(language==null || !language.matches("[A-Za-z,-]{1,48}"))throw new IOException("Invalid language");
         } else if(("timeapi.io".equals(u.getHost()) && "/api/timezone/coordinate".equals(u.getPath()))
                 || ("api.open-meteo.com".equals(u.getHost()) && "/v1/forecast".equals(u.getPath()))) {
             allowed=new HashSet<>(Arrays.asList("latitude","longitude"));
