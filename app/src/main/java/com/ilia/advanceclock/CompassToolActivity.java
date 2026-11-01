@@ -448,6 +448,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         locationGpsAction.setVisibility(View.GONE);
         locationRetryAction.setVisibility(View.GONE);
 
+        locationAccessStatus.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         if (!permission) {
             locationAccessStatus.setText(
                     AppString.get(
@@ -456,7 +457,8 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                                     : requested
                                     ? R.string.location_access_permission_denied
                                     : R.string.location_access_permission_needed));
-            locationAccessStatus.setTextColor(0xFF936000);
+            locationAccessStatus.setTextColor(0xFF202020);
+            locationAccessStatus.setBackgroundColor(0xFFFFD600);
 
             locationPermissionAction.setText(
                     AppString.get(
