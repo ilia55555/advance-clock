@@ -15,16 +15,12 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk={28,35},shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class PermissionCenterTest {
-    @Test public void introHasOneButtonAndNeverRequestsSystemPermissionsAutomatically() {
+    @Test public void opensAllPermissionStatusesDirectlyWithoutRequestingPermissions() {
         AppString.init(RuntimeEnvironment.getApplication());
         try(var controller=Robolectric.buildActivity(PermissionCenterActivity.class).setup()) {
             PermissionCenterActivity activity=controller.get();
             ViewGroup root=activity.findViewById(android.R.id.content);
-            assertNotNull(root.findViewWithTag("permission_review"));
-            assertNull(root.findViewWithTag("permission_0"));
-            assertNull(Shadows.shadowOf(activity).getLastRequestedPermission());
-            assertNull(Shadows.shadowOf(activity).getNextStartedActivity());
-            root.findViewWithTag("permission_review").performClick();
+            assertNull(root.findViewWithTag("permission_review"));
             for(int i=0;i<5;i++)assertNotNull(root.findViewWithTag("permission_"+i));
             assertNull(Shadows.shadowOf(activity).getLastRequestedPermission());
             assertNull(Shadows.shadowOf(activity).getNextStartedActivity());

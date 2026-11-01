@@ -18,7 +18,6 @@ import android.widget.*;
 public final class PermissionCenterActivity extends Activity {
     static final int REQUEST=7193;
     private LinearLayout content;
-    private boolean reviewing;
     static boolean granted(Context c,int kind) {
         switch(kind) {
             case 0:return PermissionHelper.notificationsGranted(c);
@@ -34,11 +33,7 @@ public final class PermissionCenterActivity extends Activity {
     }
     @Override public void onCreate(Bundle state) {
         AppSettings.applyTheme(this);super.onCreate(state);
-        reviewing=state!=null ? state.getBoolean("reviewing") : getIntent().getBooleanExtra("review",false);
         render();
-    }
-    @Override protected void onSaveInstanceState(Bundle state) {
-        state.putBoolean("reviewing",reviewing);super.onSaveInstanceState(state);
     }
     @Override protected void onResume() {super.onResume();if(content!=null)render();}
     private void render() {
@@ -47,30 +42,24 @@ public final class PermissionCenterActivity extends Activity {
         content.setPadding(dp(20),dp(20),dp(20),dp(20));
         content.setBackgroundColor(AppSettings.background(this));
         text(getString(R.string.permissions_title),23,AppSettings.textPrimary(this));
-        text(getString(R.string.permissions_intro),15,AppSettings.textSecondary(this));
-        if(!reviewing) {
-            Button review=button(getString(R.string.permissions_review),AppSettings.primaryColor(this));
-            review.setTag("permission_review");review.setOnClickListener(v->{reviewing=true;render();});
-        } else {
-            int[] titles={R.string.permissions_notifications,R.string.permissions_alarms,R.string.permissions_fullscreen,R.string.permissions_location,R.string.permissions_install};
-            int[] reasons={R.string.permissions_notifications_reason,R.string.permissions_alarms_reason,R.string.permissions_fullscreen_reason,R.string.permissions_location_reason,R.string.permissions_install_reason};
-            for(int i=0;i<titles.length;i++) {
-                int kind=i;boolean allowed=granted(this,i);
-                int color=allowed?0xFF238047:0xFFC62828;
-                LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);
-                card.setPadding(dp(14),dp(12),dp(14),dp(12));
-                GradientDrawable bg=new GradientDrawable();bg.setColor(AppSettings.surface(this));bg.setCornerRadius(dp(16));bg.setStroke(dp(1),color);card.setBackground(bg);
-                LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-1,-2);cp.topMargin=dp(12);content.addView(card,cp);
-                LinearLayout previous=content;content=card;
-                text(getString(titles[i]),17,AppSettings.textPrimary(this));
-                text(getString(reasons[i]),14,AppSettings.textSecondary(this));
-                text(getString(allowed?R.string.permissions_granted:R.string.permissions_missing),14,color);
-                Button action=button(getString(allowed?R.string.permissions_manage:R.string.permissions_allow),color);
-                action.setTag("permission_"+i);action.setOnClickListener(v->request(kind));
-                content=previous;
-            }
-            button(getString(R.string.permissions_close),AppSettings.primaryColor(this)).setOnClickListener(v->finish());
+        int[] titles={R.string.permissions_notifications,R.string.permissions_alarms,R.string.permissions_fullscreen,R.string.permissions_location,R.string.permissions_install};
+        int[] reasons={R.string.permissions_notifications_reason,R.string.permissions_alarms_reason,R.string.permissions_fullscreen_reason,R.string.permissions_location_reason,R.string.permissions_install_reason};
+        for(int i=0;i<titles.length;i++) {
+            int kind=i;boolean allowed=granted(this,i);
+            int color=allowed?0xFF238047:0xFFC62828;
+            LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);
+            card.setPadding(dp(14),dp(12),dp(14),dp(12));
+            GradientDrawable bg=new GradientDrawable();bg.setColor(AppSettings.surface(this));bg.setCornerRadius(dp(16));bg.setStroke(dp(1),color);card.setBackground(bg);
+            LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-1,-2);cp.topMargin=dp(12);content.addView(card,cp);
+            LinearLayout previous=content;content=card;
+            text(getString(titles[i]),17,AppSettings.textPrimary(this));
+            text(getString(reasons[i]),14,AppSettings.textSecondary(this));
+            text(getString(allowed?R.string.permissions_granted:R.string.permissions_missing),14,color);
+            Button action=button(getString(allowed?R.string.permissions_manage:R.string.permissions_allow),color);
+            action.setTag("permission_"+i);action.setOnClickListener(v->request(kind));
+            content=previous;
         }
+        button(getString(R.string.permissions_close),AppSettings.primaryColor(this)).setOnClickListener(v->finish());
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);scroll.addView(content);
         setContentView(scroll);AlertWindowInsets.apply(getWindow(),scroll);
     }
