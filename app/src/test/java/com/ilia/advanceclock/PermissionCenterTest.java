@@ -70,6 +70,7 @@ public class PermissionCenterTest {
 
     @Test public void deniedPermissionsWarningIsDismissibleAndMenuEntryRemains() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        Shadows.shadowOf(app.getSystemService(android.app.NotificationManager.class)).setNotificationsEnabled(false);
         app.getSharedPreferences("advance_clock_app",0).edit()
                 .putBoolean("language_calendar_setup_v1",true)
                 .putBoolean("permission_onboarding_v2",true).commit();
@@ -118,6 +119,31 @@ public class PermissionCenterTest {
             controller.resume();
             assertTrue(activity.isFinishing());
             assertEquals(android.app.Activity.RESULT_OK,Shadows.shadowOf(activity).getResultCode());
+        }
+    }
+
+    @Test @Config(shadows=FullScreenGranted.class)
+    public void missingOptionalPermissionsDoNotShowMainWarningOrMenuEntry() {
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS);
+        Shadows.shadowOf(app).denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION);
+        Shadows.shadowOf(app.getSystemService(AlarmManager.class)).setCanScheduleExactAlarms(true);
+        Shadows.shadowOf(app.getPackageManager()).setCanRequestPackageInstalls(false);
+        assertTrue(PermissionCenterActivity.incomplete(app));
+        assertFalse(PermissionCenterActivity.requiredIncomplete(app));
+        app.getSharedPreferences("advance_clock_app",0).edit().putBoolean("language_calendar_setup_v1",true)
+                .putBoolean("permission_onboarding_v2",true).commit();
+        try(var controller=Robolectric.buildActivity(MainActivity.class).setup()) {
+            MainActivity activity=controller.get();
+            activity.onActivityResult(PermissionCenterActivity.REQUEST,android.app.Activity.RESULT_OK,null);
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            assertNull(org.robolectric.util.ReflectionHelpers.getField(activity,"permissionWarning"));
+            activity.findViewById(R.id.header_menu).performClick();
+            android.widget.PopupWindow menu=Shadows.shadowOf(app).getLatestPopupWindow();
+            ViewGroup list=(ViewGroup)((android.widget.ScrollView)menu.getContentView()).getChildAt(0);
+            ViewGroup first=(ViewGroup)list.getChildAt(0);
+            assertEquals(activity.getString(R.string.runtime_text_0001),((android.widget.TextView)first.getChildAt(1)).getText().toString());
+            menu.dismiss();
         }
     }
 

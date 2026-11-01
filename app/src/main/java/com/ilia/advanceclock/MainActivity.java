@@ -378,7 +378,7 @@ public final class MainActivity extends Activity {
 
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
-            if (PermissionCenterActivity.incomplete(this))
+            if (PermissionCenterActivity.requiredIncomplete(this))
                 menu.getMenu().add(0, 11, 0, getString(R.string.permissions_menu));
             menu.getMenu().add(0, 1, 1, AppString.get(R.string.runtime_text_0001));
             menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
@@ -1230,7 +1230,7 @@ public final class MainActivity extends Activity {
             }
             DateNotificationService.start(this);
             getWindow().getDecorView().post(() -> {
-                if (!isFinishing() && !isDestroyed() && PermissionCenterActivity.incomplete(this)) {
+                if (!isFinishing() && !isDestroyed() && PermissionCenterActivity.requiredIncomplete(this)) {
                     if (permissionWarning != null) permissionWarning.dismiss();
                     permissionWarning=PermissionWarning.show(this);
                 }

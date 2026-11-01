@@ -369,7 +369,17 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
         requestFreshLocation();
     }
 
+    @Override protected void onDestroy() {
+        if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();
+        super.onDestroy();
+    }
+    private android.widget.PopupWindow optionalPermissionWarning;
     private void requestLocationPermission() {
+        if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();
+        optionalPermissionWarning=PermissionWarning.optional(this,R.string.permissions_location_hint,
+                this::requestLocationPermissionNow);
+    }
+    private void requestLocationPermissionNow() {
         if (Build.VERSION.SDK_INT < 23) {
             ensureQiblaLocation();
             return;
@@ -390,11 +400,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
     }
 
     private void handleLocationPermissionAction() {
-        if (QiblaUtils.locationPermissionBlocked(this)) {
-            openAppPermissionSettings();
-        } else {
-            requestLocationPermission();
-        }
+        requestLocationPermission();
     }
 
     private void openAppPermissionSettings() {
@@ -450,7 +456,7 @@ public final class CompassToolActivity extends Activity implements SensorEventLi
                                     : requested
                                     ? R.string.location_access_permission_denied
                                     : R.string.location_access_permission_needed));
-            locationAccessStatus.setTextColor(0xFFC44C4C);
+            locationAccessStatus.setTextColor(0xFF936000);
 
             locationPermissionAction.setText(
                     AppString.get(

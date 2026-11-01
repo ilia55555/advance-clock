@@ -48,7 +48,11 @@ public class UpdateInstallationTest {
         Shadows.shadowOf(app.getPackageManager()).setCanRequestPackageInstalls(false);
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {
             Activity host=controller.get();UpdatePrompt.Session sheet=new UpdatePrompt.Session(host,release());sheet.show();sheet.ready=true;sheet.installUri=staged();
-            sheet.download.performClick();Intent settings=Shadows.shadowOf(host).getNextStartedActivity();
+            sheet.download.performClick();
+            assertNull(Shadows.shadowOf(host).getNextStartedActivity());
+            assertTrue(sheet.optionalPermissionWarning.isShowing());
+            sheet.optionalPermissionWarning.getContentView().findViewWithTag("permissions_warning_grant").performClick();
+            Intent settings=Shadows.shadowOf(host).getNextStartedActivity();
             assertEquals(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,settings.getAction());
             assertEquals("package:"+host.getPackageName(),settings.getDataString());
             sheet.installPermissionReturned();assertEquals(host.getString(R.string.update_install_denied),sheet.status.getText().toString());

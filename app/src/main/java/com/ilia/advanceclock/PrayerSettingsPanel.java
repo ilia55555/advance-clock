@@ -1122,7 +1122,13 @@ final class PrayerSettingsPanel {
         fetchCurrentLocation();
     }
 
+    private android.widget.PopupWindow optionalPermissionWarning;
     private void requestLocationPermission() {
+        if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();
+        optionalPermissionWarning=PermissionWarning.optional(host,R.string.permissions_location_hint,
+                this::requestLocationPermissionNow);
+    }
+    private void requestLocationPermissionNow() {
         if (Build.VERSION.SDK_INT < 23) {
             fetchCurrentLocation();
             return;
@@ -1143,11 +1149,7 @@ final class PrayerSettingsPanel {
     }
 
     private void handleLocationPermissionAction() {
-        if (QiblaUtils.locationPermissionBlocked(host)) {
-            openAppPermissionSettings();
-        } else {
-            requestLocationPermission();
-        }
+        requestLocationPermission();
     }
 
     private void openAppPermissionSettings() {
@@ -1193,7 +1195,7 @@ final class PrayerSettingsPanel {
                                     : requested
                                     ? R.string.location_access_permission_denied
                                     : R.string.location_access_permission_needed));
-            locationAccessStatus.setTextColor(0xFFC44C4C);
+            locationAccessStatus.setTextColor(0xFF936000);
 
             locationPermissionAction.setText(
                     AppString.get(
@@ -1396,6 +1398,7 @@ final class PrayerSettingsPanel {
     }
 
     void onDestroy() {
+        if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();
         cancelLocationRequest();
     }
 

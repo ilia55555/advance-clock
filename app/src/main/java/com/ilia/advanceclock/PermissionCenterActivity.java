@@ -36,6 +36,10 @@ public final class PermissionCenterActivity extends Activity {
         for(int i=0;i<5;i++) if(!granted(c,i))return true;
         return false;
     }
+    static boolean requiredIncomplete(Context c) {
+        for(int i=0;i<3;i++) if(!granted(c,i))return true;
+        return false;
+    }
     @Override public void onCreate(Bundle state) {
         AppSettings.applyTheme(this);super.onCreate(state);
         if(state!=null) {
@@ -77,12 +81,14 @@ public final class PermissionCenterActivity extends Activity {
     private void postNext() {
         getWindow().getDecorView().post(() -> {
             if(!batchRunning || pendingKind>=0 || isFinishing() || isDestroyed())return;
-            for(int i=0;i<5;i++) {
+            for(int i=0;i<3;i++) {
                 if((attemptedMask & (1 << i))==0 && !granted(this,i)) {
                     launchStep(i);return;
                 }
             }
-            batchRunning=false;render();
+            batchRunning=false;
+            if(!requiredIncomplete(this)) { setResult(RESULT_OK);finish(); }
+            else render();
         });
     }
     private void stepReturned() {
@@ -107,7 +113,7 @@ public final class PermissionCenterActivity extends Activity {
         int[] reasons={R.string.permissions_notifications_reason,R.string.permissions_alarms_reason,R.string.permissions_fullscreen_reason,R.string.permissions_location_reason,R.string.permissions_install_reason};
         for(int i=0;i<titles.length;i++) {
             int kind=i;boolean allowed=granted(this,i);
-            int color=allowed?0xFF238047:0xFFC62828;
+            int color=allowed?0xFF238047:(i>=3 ? (AppSettings.themeMode(this)==AppSettings.THEME_DARK ? 0xFFFFD54F : 0xFF936000) : 0xFFC62828);
             LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);
             card.setPadding(dp(14),dp(12),dp(14),dp(12));
             GradientDrawable bg=new GradientDrawable();bg.setColor(AppSettings.surface(this));bg.setCornerRadius(dp(16));bg.setStroke(dp(1),color);card.setBackground(bg);

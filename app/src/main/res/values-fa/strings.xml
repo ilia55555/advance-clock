@@ -1347,4 +1347,7 @@
     <string name="permissions_menu">مجوزها را فعال کنید</string>
     <string name="permissions_unavailable">صفحه این مجوز در دسترس نیست؛ از تنظیمات گوشی، بخش برنامه‌ها، مجوزهای InfiniTime را بررسی کنید.</string>
     <string name="permissions_dismiss">بستن</string>
+    <string name="permissions_optional_allow">فعال کردن</string>
+    <string name="permissions_location_hint">برای دریافت موقعیت، مجوز مکان را فعال کنید؛ انتخاب دستی شهر هم ممکن است.</string>
+    <string name="permissions_install_hint">برای نصب به‌روزرسانی، مجوز نصب برنامه را فعال کنید.</string>
 </resources>

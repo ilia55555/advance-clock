@@ -47,6 +47,7 @@ final class UpdatePrompt {
         final Handler main=new Handler(Looper.getMainLooper());
         final LinearLayout root;final TextView status,amount;final ProgressBar progress;
         final Button later,download,files;
+        android.widget.PopupWindow optionalPermissionWarning;
         ForegroundUpdates.Request request;Uri installUri,publicUri;boolean working,ready,awaitingSave,closed;int generation;
         Session(Activity host,AppUpdates.Release release) { this(host,release,AppUpdates::download); }
         Session(Activity host,AppUpdates.Release release,Downloader downloader) {
@@ -105,7 +106,7 @@ final class UpdatePrompt {
             Window window=dialog.getWindow();if(window!=null){window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));window.setLayout(-1,-2);window.setGravity(Gravity.BOTTOM);}
             root.setTranslationY(dp(host,80));root.setAlpha(0);root.animate().translationY(0).alpha(1).setDuration(220).start();
         }
-        void close() {closed=true;generation++;if(request!=null)request.cancel();dialog.dismiss();}
+        void close() {if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();closed=true;generation++;if(request!=null)request.cancel();dialog.dismiss();}
         void pause() {
             if(working && !awaitingSave){generation++;if(request!=null)request.cancel();working=false;download.setEnabled(true);status.setText(R.string.update_download_cancelled);download.setText(R.string.update_download_retry);}
         }
@@ -163,8 +164,11 @@ final class UpdatePrompt {
             if(installUri==null)return;
             if(!UpdateInstaller.allowed(host)) {
                 status.setText(R.string.update_install_permission);
-                try{host.startActivityForResult(UpdateInstaller.permissionIntent(host),UpdateInstaller.PERMISSION_REQUEST);}
-                catch(ActivityNotFoundException|SecurityException error){permissionDenied();}
+                if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();
+                optionalPermissionWarning=PermissionWarning.optional(host,R.string.permissions_install_hint,()->{
+                    try{host.startActivityForResult(UpdateInstaller.permissionIntent(host),UpdateInstaller.PERMISSION_REQUEST);}
+                    catch(ActivityNotFoundException|SecurityException error){permissionDenied();}
+                });
                 return;
             }
             status.setText(R.string.update_install_requested);
