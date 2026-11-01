@@ -1397,7 +1397,7 @@
     <string name="permissions_intro">راجع استخدام كل إذن للتنبيهات والأذان والميزات الاختيارية. لن يُطلب أي إذن إلا باختيارك.</string>
     <string name="permissions_review">الأذونات</string>
     <string name="permissions_close">المتابعة إلى التطبيق</string>
-    <string name="permissions_allow">منح الإذن</string>
+    <string name="permissions_allow">منح الأذونات</string>
     <string name="permissions_manage">إدارة الإذن</string>
     <string name="permissions_granted">✓ مسموح</string>
     <string name="permissions_missing">✕ غير مسموح</string>

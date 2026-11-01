@@ -1379,7 +1379,7 @@ Lock screen</string>
     <string name="permissions_intro">Review why each permission is needed for alarms, adhan and optional features. Permission requests open only when you choose them.</string>
     <string name="permissions_review">Permissions</string>
     <string name="permissions_close">Continue to app</string>
-    <string name="permissions_allow">Grant permission</string>
+    <string name="permissions_allow">Grant permissions</string>
     <string name="permissions_manage">Manage permission</string>
     <string name="permissions_granted">✓ Allowed</string>
     <string name="permissions_missing">✕ Not allowed</string>

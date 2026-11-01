@@ -1329,7 +1329,7 @@
     <string name="permissions_intro">برای کارکرد درست هشدارها، اذان و امکانات اختیاری، کاربرد هر مجوز را بررسی کنید. هیچ مجوزی بدون انتخاب شما درخواست نمی‌شود.</string>
     <string name="permissions_review">مجوزها</string>
     <string name="permissions_close">ادامه به برنامه</string>
-    <string name="permissions_allow">دادن مجوز</string>
+    <string name="permissions_allow">دادن مجوزها</string>
     <string name="permissions_manage">مدیریت مجوز</string>
     <string name="permissions_granted">✓ مجاز</string>
     <string name="permissions_missing">✕ نیاز به مجوز</string>

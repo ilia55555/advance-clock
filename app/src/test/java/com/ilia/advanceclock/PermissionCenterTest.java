@@ -36,12 +36,38 @@ public class PermissionCenterTest {
             Intent install=Shadows.shadowOf(activity).getNextStartedActivity();
             assertEquals(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,install.getAction());
             assertEquals("package:"+activity.getPackageName(),install.getDataString());
-            root.findViewWithTag("permission_1").performClick();
-            Intent exact=Shadows.shadowOf(activity).getNextStartedActivity();
-            assertEquals(android.os.Build.VERSION.SDK_INT>=31?Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM:Settings.ACTION_APPLICATION_DETAILS_SETTINGS,exact.getAction());
             assertNull(Shadows.shadowOf(activity).getNextStartedActivity());
         }
     }
+    @Test public void oneTapContinuesAfterDenialSkipsGrantedAndNeverLoops() {
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        Shadows.shadowOf(app).denyPermissions(Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION);
+        Shadows.shadowOf(app.getSystemService(AlarmManager.class)).setCanScheduleExactAlarms(true);
+        try(var controller=Robolectric.buildActivity(PermissionCenterActivity.class).setup()) {
+            PermissionCenterActivity activity=controller.get();
+            ((ViewGroup)activity.findViewById(android.R.id.content)).findViewWithTag("permission_3").performClick();
+            Shadows.shadowOf(activity).getNextStartedActivity(); // System location prompt.
+            activity.onRequestPermissionsResult(103,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},new int[]{-1});
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            int next=org.robolectric.util.ReflectionHelpers.getField(activity,"pendingKind");
+            assertNotEquals(3,next);
+            int seen=1 << 3;
+            for(int step=0;step<5 && next>=0;step++) {
+                assertEquals(0,seen & (1 << next));seen |= 1 << next;
+                if(next==0 && android.os.Build.VERSION.SDK_INT>=33)
+                    activity.onRequestPermissionsResult(100,new String[]{Manifest.permission.POST_NOTIFICATIONS},new int[]{-1});
+                else activity.onActivityResult(620,android.app.Activity.RESULT_CANCELED,null);
+                Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                next=org.robolectric.util.ReflectionHelpers.getField(activity,"pendingKind");
+            }
+            assertEquals(-1,next);
+            assertFalse((Boolean)org.robolectric.util.ReflectionHelpers.getField(activity,"batchRunning"));
+            assertEquals(0,seen & (1 << 1)); // Exact alarms already allowed.
+        }
+    }
+
     @Test public void deniedPermissionsWarningIsDismissibleAndMenuEntryRemains() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         app.getSharedPreferences("advance_clock_app",0).edit()

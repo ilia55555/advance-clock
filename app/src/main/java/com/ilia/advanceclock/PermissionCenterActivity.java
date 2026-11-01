@@ -14,10 +14,15 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 
-/** Permissions are requested only by a deliberate tap on their own row. */
+/** One deliberate tap starts a finite sequence; each system prompt remains user-controlled. */
 public final class PermissionCenterActivity extends Activity {
     static final int REQUEST=7193;
     private LinearLayout content;
+    private boolean batchRunning;
+    private int attemptedMask;
+    private int pendingKind = -1;
+    private static final int SETTINGS_REQUEST = 620;
+
     static boolean granted(Context c,int kind) {
         switch(kind) {
             case 0:return PermissionHelper.notificationsGranted(c);
@@ -33,9 +38,54 @@ public final class PermissionCenterActivity extends Activity {
     }
     @Override public void onCreate(Bundle state) {
         AppSettings.applyTheme(this);super.onCreate(state);
+        if(state!=null) {
+            batchRunning=state.getBoolean("batchRunning");
+            attemptedMask=state.getInt("attemptedMask");
+            pendingKind=state.getInt("pendingKind",-1);
+        }
         render();
     }
-    @Override protected void onResume() {super.onResume();if(content!=null)render();}
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putBoolean("batchRunning",batchRunning);
+        state.putInt("attemptedMask",attemptedMask);
+        state.putInt("pendingKind",pendingKind);
+        super.onSaveInstanceState(state);
+    }
+    @Override protected void onResume() {
+        super.onResume();if(content!=null)render();
+        if(batchRunning && pendingKind<0)postNext();
+    }
+    private void startBatch(int first) {
+        if(batchRunning)return;
+        batchRunning=true;attemptedMask=0;
+        launchStep(first);
+    }
+    private void launchStep(int kind) {
+        attemptedMask |= 1 << kind;
+        pendingKind=kind;
+        request(kind);
+    }
+    private void postNext() {
+        getWindow().getDecorView().post(() -> {
+            if(!batchRunning || pendingKind>=0 || isFinishing() || isDestroyed())return;
+            for(int i=0;i<5;i++) {
+                if((attemptedMask & (1 << i))==0 && !granted(this,i)) {
+                    launchStep(i);return;
+                }
+            }
+            batchRunning=false;render();
+        });
+    }
+    private void stepReturned() {
+        pendingKind=-1;render();postNext();
+    }
+    @Override protected void onActivityResult(int request,int result,Intent data) {
+        super.onActivityResult(request,result,data);
+        if(request==SETTINGS_REQUEST && batchRunning && pendingKind>=0)stepReturned();
+    }
+    private void openSettings(Intent intent) {
+        startActivityForResult(intent,SETTINGS_REQUEST);
+    }
     private void render() {
         content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);
         content.setLayoutDirection(AppSettings.layoutDirection(this));
@@ -56,7 +106,7 @@ public final class PermissionCenterActivity extends Activity {
             text(getString(reasons[i]),14,AppSettings.textSecondary(this));
             text(getString(allowed?R.string.permissions_granted:R.string.permissions_missing),14,color);
             Button action=button(getString(allowed?R.string.permissions_manage:R.string.permissions_allow),color);
-            action.setTag("permission_"+i);action.setOnClickListener(v->request(kind));
+            action.setTag("permission_"+i);action.setOnClickListener(v->startBatch(kind));
             content=previous;
         }
         button(getString(R.string.permissions_close),AppSettings.primaryColor(this)).setOnClickListener(v->finish());
@@ -73,25 +123,28 @@ public final class PermissionCenterActivity extends Activity {
             }
             String action=Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
             if(kind==0) {
-                startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE,getPackageName()));return;
+                openSettings(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE,getPackageName()));return;
             }
             if(kind==1 && Build.VERSION.SDK_INT>=31)action=Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
             if(kind==2 && Build.VERSION.SDK_INT>=34)action=Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT;
             if(kind==4)action=Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES;
-            startActivity(new Intent(action,Uri.parse("package:"+getPackageName())));
+            openSettings(new Intent(action,Uri.parse("package:"+getPackageName())));
         } catch(RuntimeException unavailable) {
             LogoToast.makeText(this,getString(R.string.permissions_unavailable),Toast.LENGTH_LONG).show();
+            stepReturned();
         }
     }
     private void requestRuntime(String[] permissions,int kind) {
         android.content.SharedPreferences prefs=getSharedPreferences("permission_center",0);
         if(prefs.getBoolean("asked_"+kind,false) && !shouldShowRequestPermissionRationale(permissions[permissions.length-1])) {
-            startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+getPackageName())));return;
+            openSettings(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+getPackageName())));return;
         }
         prefs.edit().putBoolean("asked_"+kind,true).apply();requestPermissions(permissions,kind+100);
     }
     @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results) {
-        super.onRequestPermissionsResult(request,permissions,results);render();
+        super.onRequestPermissionsResult(request,permissions,results);
+        if(batchRunning && pendingKind>=0 && request==pendingKind+100)stepReturned();
+        else render();
     }
     private void text(String value,int size,int color) {
         TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);
