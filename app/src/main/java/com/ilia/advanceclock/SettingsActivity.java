@@ -144,10 +144,20 @@ public final class SettingsActivity extends Activity {
 
         Switch showDayMarkers = settingSwitch(
                 getString(R.string.calendar_day_markers_label),
-                AppSettings.showCalendarDayMarkers(this));
+                AppSettings.showCalendarDayMarkers(this, false));
         calendarSettings.addView(showDayMarkers);
         showDayMarkers.setOnCheckedChangeListener((button, checked) -> {
-            AppSettings.setShowCalendarDayMarkers(this, checked);
+            AppSettings.setShowCalendarDayMarkers(this, false, checked);
+            runtimeChanged();
+            AdvanceClockApplication.refreshOpenActivities(this, false);
+        });
+
+        Switch showNoteDayMarkers = settingSwitch(
+                getString(R.string.calendar_note_day_markers_label),
+                AppSettings.showCalendarDayMarkers(this, true));
+        calendarSettings.addView(showNoteDayMarkers);
+        showNoteDayMarkers.setOnCheckedChangeListener((button, checked) -> {
+            AppSettings.setShowCalendarDayMarkers(this, true, checked);
             runtimeChanged();
             AdvanceClockApplication.refreshOpenActivities(this, false);
         });

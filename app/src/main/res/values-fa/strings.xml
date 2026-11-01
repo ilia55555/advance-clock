@@ -1323,5 +1323,6 @@
     <string name="update_file_manager_unavailable">فایل‌منیجر باز نشد. آن را دستی باز کنید و در پوشهٔ Download/InfiniTime فایل برنامه را پیدا کنید.</string>
     <string name="smart_voice_google_required">برای ورودی گفتار، برنامهٔ Google را نصب یا فعال کنید. تشخیص گفتار در پنجرهٔ گوگل انجام می‌شود.</string>
     <string name="update_local_save_only">برای جلوگیری از آپلود، فایل را فقط در حافظهٔ داخلی یا کارت حافظهٔ گوشی ذخیره کنید؛ فضای ابری مجاز نیست.</string>
-    <string name="calendar_day_markers_label">نمایش نقطه‌های هشدار و یادداشت در تقویم</string>
+    <string name="calendar_day_markers_label">نمایش نقطه‌های هشدار در تقویم تب ساعت</string>
+    <string name="calendar_note_day_markers_label">نمایش نقطه‌های یادداشت در تقویم تب یادداشت</string>
 </resources>
