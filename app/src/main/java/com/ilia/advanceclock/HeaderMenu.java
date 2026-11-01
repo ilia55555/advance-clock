@@ -28,8 +28,9 @@ final class HeaderMenu {
             LinearLayout row=new LinearLayout(host);
             row.setOrientation(LinearLayout.HORIZONTAL);row.setGravity(Gravity.CENTER_VERTICAL);
             row.setMinimumHeight(dp(host,56));row.setPadding(dp(host,10),dp(host,8),dp(host,10),dp(host,8));
-            boolean update = item.getItemId() == 10;
+            boolean update = item.getItemId() == 10 || item.getItemId() == 11;
             int accent = AppSettings.themeMode(host) == AppSettings.THEME_DARK ? 0xFF81C995 : 0xFF18783D;
+            if (item.getItemId() == 11) accent = AppSettings.themeMode(host) == AppSettings.THEME_DARK ? 0xFFFF8A80 : 0xFFC62828;
             row.setFocusable(true);row.setEnabled(item.isEnabled());
             row.setBackground(new RippleDrawable(ColorStateList.valueOf((primary & 0x00FFFFFF)|0x22000000),
                     shape(host,update ? ((accent & 0x00FFFFFF)|0x20000000) : Color.TRANSPARENT,14),shape(host,Color.WHITE,14)));
@@ -58,6 +59,7 @@ final class HeaderMenu {
     }
     private static int icon(int id) {
         switch(id) {
+            case 11:return android.R.drawable.ic_dialog_alert;
             case 10:return android.R.drawable.stat_sys_download;
             case 1:return R.drawable.ic_md_settings;
             case 7:return R.drawable.ic_alarm;

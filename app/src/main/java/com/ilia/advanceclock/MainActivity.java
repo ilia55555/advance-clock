@@ -39,7 +39,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public final class MainActivity extends Activity {
-    private static final int REQ_NOTIFICATIONS = 100;
     private static final int REQ_SETTINGS = 200;
     private static final int REQ_QUICK_ALARM_IMAGE_1 = 310;
     private static final int REQ_QUICK_ALARM_IMAGE_2 = 311;
@@ -164,8 +163,7 @@ public final class MainActivity extends Activity {
     private String noteCustomDates = "[]";
 
     private boolean previousExactPermission;
-    private int permissionStage = -1;
-    private boolean waitingForSettings;
+    private android.widget.PopupWindow permissionWarning;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
@@ -380,13 +378,20 @@ public final class MainActivity extends Activity {
 
         findViewById(R.id.header_menu).setOnClickListener(anchor -> {
             PopupMenu menu = new PopupMenu(this, anchor);
-            menu.getMenu().add(0, 1, 0, AppString.get(R.string.runtime_text_0001));
+            if (PermissionCenterActivity.incomplete(this))
+                menu.getMenu().add(0, 11, 0, getString(R.string.permissions_menu));
+            menu.getMenu().add(0, 1, 1, AppString.get(R.string.runtime_text_0001));
             menu.getMenu().add(0, 5, 3, AppString.get(R.string.runtime_text_0110));
             menu.getMenu().add(0, 8, 5, AppString.get(R.string.runtime_text_0317));
             menu.getMenu().add(0, 9, 7, getString(R.string.about_title));
             if (AppUpdates.available(this) != null)
                 menu.getMenu().add(0, 10, 9, getString(R.string.update_available));
             HeaderMenu.show(this, anchor, menu.getMenu(), item -> {
+                if (item.getItemId() == 11) {
+                    startActivityForResult(new Intent(this, PermissionCenterActivity.class)
+                            .putExtra("review", true), PermissionCenterActivity.REQUEST);
+                    return true;
+                }
                 if (item.getItemId() == 10) {
                     UpdatePrompt.show(this, AppUpdates.available(this), true);
                     return true;
@@ -1185,11 +1190,7 @@ public final class MainActivity extends Activity {
         long delay = 60_000L - Math.floorMod(now, 60_000L) + 60L;
         headerHandler.postDelayed(headerTicker, delay);
 
-        if (waitingForSettings) {
-            waitingForSettings = false;
-            getWindow().getDecorView().postDelayed(
-                    this::advancePermissionFlow, 300);
-        }
+
     }
 
     @Override protected void onPause() {
@@ -1207,6 +1208,7 @@ public final class MainActivity extends Activity {
 
     @Override protected void onDestroy() {
         UpdatePrompt.dismiss(this);
+        if (permissionWarning != null) permissionWarning.dismiss();
         headerHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
@@ -1217,6 +1219,25 @@ public final class MainActivity extends Activity {
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (UpdatePrompt.onActivityResult(this, requestCode, resultCode, data)) return;
+        if (requestCode == PermissionCenterActivity.REQUEST) {
+            getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                    .putBoolean(PERMISSION_ONBOARDING, true).apply();
+            if (PermissionHelper.exactAlarmsGranted(this)) {
+                AlarmScheduler.rescheduleAll(this);
+                NoForgetScheduler.rescheduleAll(this);
+                AdhanScheduler.rescheduleAll(this);
+                AlertSnoozes.restore(this);
+            }
+            DateNotificationService.start(this);
+            getWindow().getDecorView().post(() -> {
+                if (!isFinishing() && !isDestroyed() && PermissionCenterActivity.incomplete(this)) {
+                    if (permissionWarning != null) permissionWarning.dismiss();
+                    permissionWarning=PermissionWarning.show(this);
+                }
+            });
+            return;
+        }
+
 
         if (requestCode == REQ_SETTINGS && resultCode == RESULT_OK) {
             recreate();
@@ -1472,81 +1493,10 @@ public final class MainActivity extends Activity {
     }
 
     private void startPermissionFlow() {
-        permissionStage = 0;
-        waitingForSettings = false;
-        advancePermissionFlow();
-    }
-
-    private void advancePermissionFlow() {
-        if (permissionStage < 0) return;
-
-        if (permissionStage == 0) {
-            permissionStage = 1;
-            if (Build.VERSION.SDK_INT >= 33
-                    && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQ_NOTIFICATIONS);
-                return;
-            }
-        }
-
-        if (permissionStage == 1) {
-            permissionStage = 2;
-            if (Build.VERSION.SDK_INT >= 31
-                    && !PermissionHelper.exactAlarmsGranted(this)) {
-                try {
-                    waitingForSettings = true;
-                    startActivity(new Intent(
-                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-                            Uri.parse("package:" + getPackageName())));
-                    return;
-                } catch (Exception ignored) {
-                    waitingForSettings = false;
-                }
-            }
-        }
-
-        if (permissionStage == 2) {
-            permissionStage = 3;
-            if (Build.VERSION.SDK_INT >= 34
-                    && !PermissionHelper.fullScreenGranted(this)) {
-                try {
-                    waitingForSettings = true;
-                    startActivity(new Intent(
-                            Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
-                            Uri.parse("package:" + getPackageName())));
-                    return;
-                } catch (Exception ignored) {
-                    waitingForSettings = false;
-                }
-            }
-        }
-
-        permissionStage = -1;
-        getSharedPreferences(PREFS, MODE_PRIVATE)
-                .edit()
-                .putBoolean(PERMISSION_ONBOARDING, true)
-                .apply();
-
-        if (PermissionHelper.exactAlarmsGranted(this)) {
-            AlarmScheduler.rescheduleAll(this);
-            NoForgetScheduler.rescheduleAll(this);
-            AdhanScheduler.rescheduleAll(this);
-            AlertSnoozes.restore(this);
-        }
-        try { DateNotificationService.start(this); } catch (Exception ignored) {}
-    }
-
-    @Override public void onRequestPermissionsResult(
-            int requestCode,
-            String[] permissions,
-            int[] results) {
-        super.onRequestPermissionsResult(requestCode, permissions, results);
-        if (requestCode == REQ_NOTIFICATIONS && permissionStage >= 0) {
-            getWindow().getDecorView().post(this::advancePermissionFlow);
-        }
+        startActivityForResult(new Intent(this, PermissionCenterActivity.class)
+                        .putExtra("review", getSharedPreferences(PREFS, MODE_PRIVATE)
+                                .getBoolean(PERMISSION_ONBOARDING, false)),
+                PermissionCenterActivity.REQUEST);
     }
 
     private void pinWidgetAndExit(Class<?> provider) {
