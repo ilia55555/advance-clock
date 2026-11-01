@@ -94,6 +94,33 @@ public class PermissionCenterTest {
         }
     }
 
+    @org.robolectric.annotation.Implements(android.app.NotificationManager.class)
+    public static class FullScreenGranted extends org.robolectric.shadows.ShadowNotificationManager {
+        @org.robolectric.annotation.Implementation(minSdk=34)
+        protected boolean canUseFullScreenIntent() { return true; }
+    }
+
+    @Test @Config(shadows=FullScreenGranted.class)
+    public void allPermissionsGrantedClosesCenterAutomatically() {
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        Shadows.shadowOf(app).denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION);
+        try(var controller=Robolectric.buildActivity(PermissionCenterActivity.class).setup()) {
+            PermissionCenterActivity activity=controller.get();
+            assertFalse(activity.isFinishing());
+            controller.pause();
+            Shadows.shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.USE_FULL_SCREEN_INTENT);
+            Shadows.shadowOf(app.getSystemService(AlarmManager.class)).setCanScheduleExactAlarms(true);
+            Shadows.shadowOf(app.getPackageManager()).setCanRequestPackageInstalls(true);
+            Shadows.shadowOf(app.getSystemService(android.app.NotificationManager.class)).setNotificationsEnabled(true);
+            assertFalse(PermissionCenterActivity.incomplete(activity));
+            controller.resume();
+            assertTrue(activity.isFinishing());
+            assertEquals(android.app.Activity.RESULT_OK,Shadows.shadowOf(activity).getResultCode());
+        }
+    }
+
     @Test public void locationRequestDoesNotRequestBackgroundLocationOrStartGps() {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         Shadows.shadowOf(app).denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION);

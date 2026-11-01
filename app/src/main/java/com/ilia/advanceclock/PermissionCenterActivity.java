@@ -52,8 +52,17 @@ public final class PermissionCenterActivity extends Activity {
         super.onSaveInstanceState(state);
     }
     @Override protected void onResume() {
-        super.onResume();if(content!=null)render();
+        super.onResume();
+        if (closeIfComplete()) return;
+        if(content!=null)render();
         if(batchRunning && pendingKind<0)postNext();
+    }
+    private boolean closeIfComplete() {
+        if (incomplete(this)) return false;
+        batchRunning=false;
+        setResult(RESULT_OK);
+        finish();
+        return true;
     }
     private void startBatch(int first) {
         if(batchRunning)return;
@@ -77,7 +86,9 @@ public final class PermissionCenterActivity extends Activity {
         });
     }
     private void stepReturned() {
-        pendingKind=-1;render();postNext();
+        pendingKind=-1;
+        if (closeIfComplete()) return;
+        render();postNext();
     }
     @Override protected void onActivityResult(int request,int result,Intent data) {
         super.onActivityResult(request,result,data);
