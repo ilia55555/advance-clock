@@ -106,6 +106,9 @@ public final class AdhanRingActivity
             setContentView(swipe);
         }else setContentView(content);
 
+        AlertWindowInsets.apply(getWindow(),
+                ((android.view.ViewGroup)findViewById(android.R.id.content)).getChildAt(0));
+
         int type = getIntent().getIntExtra(
                 "adhanType",
                 AdhanScheduler.FAJR);
