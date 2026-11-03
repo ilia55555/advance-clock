@@ -21,6 +21,7 @@ final class ReminderScreen extends FrameLayout {
         String title = "", body = "", image1 = "", image2 = "", openLabel = "";
         boolean background;
         List<NoteAttachment> attachments = new ArrayList<>();
+        int priority = -1;
         int snoozeMinutes = 15;
         AlertOutput output;
     }
@@ -28,6 +29,8 @@ final class ReminderScreen extends FrameLayout {
     private final android.os.Handler clockHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private TextView timeLabel, dateLabel;
     private AlarmAnalogView analogClock;
+    private int digitalClockMax;
+
     private java.util.function.Consumer<Boolean> blurListener;
     private final Runnable clockTick = new Runnable() {
         @Override public void run() { updateClock(); clockHandler.postDelayed(this, 1000 - System.currentTimeMillis()%1000); }
@@ -113,18 +116,39 @@ final class ReminderScreen extends FrameLayout {
         dateLabel.setTextColor(mutedColor); dateLabel.setGravity(Gravity.CENTER);
         timeLabel = text("", style == 4 ? 80 : 48);
         timeLabel.setTextColor(modern ? textColor : photoBackground ? Color.WHITE : primary);
+        timeLabel.setTag("alert_clock");dateLabel.setTag("alert_date");
         timeLabel.setGravity(Gravity.CENTER);timeLabel.setTextDirection(View.TEXT_DIRECTION_LTR);
         timeLabel.setTypeface(null, android.graphics.Typeface.BOLD);
         timeLabel.setMaxLines(1);
         timeLabel.setHorizontallyScrolling(false);
         timeLabel.setAutoSizeTextTypeUniformWithConfiguration(28,style == 4 ? 80 : 48,1,android.util.TypedValue.COMPLEX_UNIT_SP);
-        if (modern) { if(style!=3) headingContent.addView(timeLabel,matchWrap()); else timeLabel.setVisibility(View.GONE); headingContent.addView(dateLabel,matchWrap()); }
-        else { headingContent.addView(dateLabel,matchWrap()); headingContent.addView(timeLabel,matchWrap()); }
+        if(style==3) {
+            timeLabel.setVisibility(View.GONE);headingContent.addView(dateLabel,matchWrap());
+        } else {
+            digitalClockMax=style==4?80:48;
+            timeLabel.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_NONE);
+            timeLabel.setIncludeFontPadding(false);dateLabel.setIncludeFontPadding(false);
+            dateLabel.setSingleLine(true);dateLabel.setEllipsize(null);
+            headingContent.addView(timeLabel,matchWrap());
+            LinearLayout.LayoutParams dateParams=matchWrap();dateParams.topMargin=dp(2);
+            headingContent.addView(dateLabel,dateParams);
+            headingContent.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->fitDigitalClock());
+        }
         updateClock();
-        TextView title = text(data.title, 18); title.setGravity(Gravity.CENTER); headingContent.addView(title, matchWrap());
-        if (data.body != null && !data.body.isEmpty()) {
-            TextView body = text(data.body, 16); body.setGravity(Gravity.CENTER); body.setTextColor(mutedColor);
-            LinearLayout.LayoutParams bp = matchWrap(); bp.topMargin = dp(8); headingContent.addView(body, bp);
+        if(data.priority>=0) {
+            TextView importance=text(PriorityUtils.label(data.priority),16);
+            importance.setTag("alert_priority");importance.setGravity(Gravity.CENTER);
+            importance.setTextColor(mutedColor);
+            LinearLayout.LayoutParams params=matchWrap();params.topMargin=dp(12);
+            headingContent.addView(importance,params);
+        }
+        if(data.title!=null && !data.title.trim().isEmpty()) {
+            TextView title=text(data.title,18);title.setTag("alert_title");title.setGravity(Gravity.CENTER);
+            headingContent.addView(title,matchWrap());
+            if(data.body!=null && !data.body.trim().isEmpty()) {
+                TextView body=text(data.body,16);body.setGravity(Gravity.CENTER);body.setTextColor(mutedColor);
+                LinearLayout.LayoutParams bp=matchWrap();bp.topMargin=dp(4);headingContent.addView(body,bp);
+            }
         }
         ScrollView header = new ScrollView(host); header.addView(headingContent);
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
@@ -139,6 +163,11 @@ final class ReminderScreen extends FrameLayout {
         if(!swipeToStop)dismissParams.topMargin=dp(10);
         footer.addView(dismissal,dismissParams);
         screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
+        AlertDrawingView board=(style==0 || style==1)?new AlertDrawingView(host,style==1):null;
+        if(board!=null) {
+            board.setTag("alert_drawing_board");
+            screen.addView(board,0,new FrameLayout.LayoutParams(-1,0,Gravity.TOP));
+        }
         View shortcuts = attachmentStrip(values);
         screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(164), Gravity.CENTER));
         if (values.isEmpty()) shortcuts.setVisibility(View.GONE);
@@ -153,6 +182,13 @@ final class ReminderScreen extends FrameLayout {
             FrameLayout.LayoutParams hp = (FrameLayout.LayoutParams) header.getLayoutParams();
             if (hp.height != headerHeight) { hp.height = headerHeight; header.setLayoutParams(hp); }
             int top = headerHeight + dp(8), bottom = height - footer.getMeasuredHeight() - dp(8);
+            if(board!=null) {
+                FrameLayout.LayoutParams bounds=(FrameLayout.LayoutParams)board.getLayoutParams();
+                int boardHeight=Math.max(0,bottom-top);
+                if(bounds.topMargin!=top || bounds.height!=boardHeight) {
+                    bounds.topMargin=top;bounds.height=boardHeight;board.setLayoutParams(bounds);
+                }
+            }
             ReminderLayout.Placement placement = ReminderLayout.centered(height, top, bottom, preferredHeight);
             int shortcutHeight = placement.height, shortcutTop = placement.top;
             FrameLayout.LayoutParams cp = (FrameLayout.LayoutParams) shortcuts.getLayoutParams();
@@ -199,6 +235,7 @@ final class ReminderScreen extends FrameLayout {
         if(timeLabel!=null) timeLabel.setText(TimeFormat.clock(host,now));
         if(dateLabel!=null) dateLabel.setText(CalendarUtils.formatDate(now,AppSettings.defaultCalendar(host)));
         if(analogClock!=null) analogClock.invalidate();
+        else fitDigitalClock();
     }
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();clockHandler.post(clockTick);
@@ -214,12 +251,30 @@ final class ReminderScreen extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
+    private void fitDigitalClock() {
+        if(timeLabel==null || dateLabel==null || digitalClockMax==0)return;
+        int available=Math.min(timeLabel.getWidth(),dateLabel.getWidth());
+        if(available<=0)return;
+        float unit=getResources().getDisplayMetrics().scaledDensity;
+        android.graphics.Paint timePaint=new android.graphics.Paint(timeLabel.getPaint());
+        android.graphics.Paint datePaint=new android.graphics.Paint(dateLabel.getPaint());
+        float size=digitalClockMax;
+        while(size>12) {
+            timePaint.setTextSize(size*unit);datePaint.setTextSize((size-4)*unit);
+            if(timePaint.measureText(timeLabel.getText().toString())<=available
+                    && datePaint.measureText(dateLabel.getText().toString())<=available)break;
+            size--;
+        }
+        timeLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,size*unit);
+        dateLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,(size-4)*unit);
+    }
+
     private void palette(int style) {
         if (style == 3) { background = AppSettings.background(host); primary = AppSettings.primaryColor(host); textColor = AppSettings.textPrimary(host); mutedColor = AppSettings.textSecondary(host); secondary = AppSettings.field(host); }
         else if (style == 4) { background = 0xFF17212B; primary = Color.WHITE; textColor = Color.WHITE; mutedColor = 0xFFE1E5EB; secondary = 0x554E5B69; }
-        else if (style == 1) { background = 0xFF080B0D; primary = 0xFF53C7C0; textColor = 0xFFF7FAF9; mutedColor = 0xFF9BAAA6; secondary = 0xFF2A3533; }
+        else if (style == 1) { background = 0xFF202321; primary = 0xFFEDEDE7; textColor = 0xFFF3F2ED; mutedColor = 0xFFB8BCB7; secondary = 0xFF373B37; }
         else if (style == 2) { background = 0xFFFFF5EA; primary = 0xFFB85C00; textColor = 0xFF4B2A12; mutedColor = 0xFF8B6A50; secondary = 0xFFFFDFC0; }
-        else { background = 0xFFF5FAF9; primary = AppSettings.primaryColor(host); textColor = 0xFF173F3B; mutedColor = 0xFF758783; secondary = 0xFFE7F1EF; }
+        else { background = 0xFFFAFAF7; primary = 0xFF242825; textColor = 0xFF242825; mutedColor = 0xFF666D67; secondary = 0xFFE8EBE6; }
     }
     private Button button(String label, boolean main) {
         Button view = new Button(host); view.setText(label); view.setAllCaps(false);

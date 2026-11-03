@@ -147,7 +147,6 @@ final class TimerPanelController {
         deadline = System.currentTimeMillis() + value;
         remainingMillis = value; running = true;
         String label = labelInput.getText().toString().trim();
-        if (label.isEmpty()) label = ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER);
         boolean scheduled = ToolAlarmScheduler.schedule(host, ToolAlarmScheduler.TIMER, deadline, label);
         if (!scheduled) LogoToast.makeText(host, AppString.get(R.string.runtime_text_0149), Toast.LENGTH_LONG).show();
         save(); updateControls(); handler.post(ticker);

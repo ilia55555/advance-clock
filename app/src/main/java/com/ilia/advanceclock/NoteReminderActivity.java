@@ -31,7 +31,8 @@ public final class NoteReminderActivity extends Activity {
         NoForgetItem item = new NoForgetStore(this).find(noteId);
         if (item == null) { finish(); return; }
         ReminderScreen.Content data = new ReminderScreen.Content();
-        data.title = item.title.trim().isEmpty() ? getString(R.string.runtime_text_0311) : item.title;
+        data.title = item.title;
+        data.priority = item.priority;
         data.openLabel = getString(R.string.reminder_open_destination,getString(R.string.tab_notes));
         data.output = AlertOutput.note(noteId);
         data.body = item.body; data.attachments = NoteAttachment.parse(item.attachmentsJson);

@@ -161,7 +161,6 @@ final class StopwatchPanelController {
             running=true;
             if(limitMillis>0L){
                 String label=labelInput.getText().toString().trim();
-                if(label.isEmpty())label=ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.STOPWATCH);
                 boolean scheduled=ToolAlarmScheduler.schedule(host,ToolAlarmScheduler.STOPWATCH,startedAtWall+(limitMillis-accumulatedMillis),label);
                 if(!scheduled)LogoToast.makeText(host,AppString.get(R.string.runtime_text_0149),Toast.LENGTH_LONG).show();
             }
