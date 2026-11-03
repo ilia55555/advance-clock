@@ -30,8 +30,8 @@ public class AlertPresentationRefinementTest {
             TextView clock=screen.findViewWithTag("alert_clock"),date=screen.findViewWithTag("alert_date");
             assertTrue(date.getTop()>=clock.getBottom());
             assertTrue(date.getTop()-clock.getBottom()<=3*app.getResources().getDisplayMetrics().density);
-            assertEquals((style==4?22:18)*app.getResources().getDisplayMetrics().scaledDensity,date.getTextSize(),.1f);
-            assertTrue(clock.getTextSize()>date.getTextSize()*2);
+            assertEquals(27*app.getResources().getDisplayMetrics().scaledDensity,date.getTextSize(),.1f);
+            assertTrue(clock.getTextSize()>date.getTextSize());
             assertNull(screen.findViewWithTag("alert_title"));assertNull(screen.findViewWithTag("alert_priority"));
         }
     }

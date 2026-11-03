@@ -64,11 +64,11 @@ final class AlarmPhotoView extends View {
                 }
             } catch (Exception ignored) {} catch (OutOfMemoryError ignored) {}
             Bitmap result = decoded;
-            post(() -> { if (generation == request) { bitmap = result; invalidate(); } });
+            post(() -> { if (generation == request) { bitmap = result; requestLayout();invalidate(); } });
         }, "alarm-photo").start();
     }
     private void drawPhoto(Canvas canvas, int width, int height) {
-        canvas.drawColor(Color.BLACK);
+        if(!fitWithinBounds)canvas.drawColor(Color.BLACK);
         if (bitmap == null) return;
         float scale = (float) (fitWithinBounds
                 ? Math.min((double)width/bitmap.getWidth(),(double)height/bitmap.getHeight())
@@ -77,6 +77,13 @@ final class AlarmPhotoView extends View {
         Matrix matrix = new Matrix(); matrix.setScale(scale, scale);
         matrix.postTranslate((width - bitmap.getWidth() * scale) / 2 + x, (height - bitmap.getHeight() * scale) / 2 + y);
         canvas.drawBitmap(bitmap, matrix, paint);
+    }
+    @Override protected void onMeasure(int widthSpec,int heightSpec) {
+        if(fitWithinBounds && MeasureSpec.getMode(heightSpec)!=MeasureSpec.EXACTLY) {
+            int width=MeasureSpec.getSize(widthSpec);
+            int height=bitmap==null?width:Math.max(1,Math.round((float)width*bitmap.getHeight()/bitmap.getWidth()));
+            setMeasuredDimension(resolveSize(width,widthSpec),resolveSize(height,heightSpec));
+        } else super.onMeasure(widthSpec,heightSpec);
     }
     @Override protected void onDraw(Canvas canvas) { super.onDraw(canvas); drawPhoto(canvas, getWidth(), getHeight()); }
     @Override public boolean onTouchEvent(MotionEvent event) {

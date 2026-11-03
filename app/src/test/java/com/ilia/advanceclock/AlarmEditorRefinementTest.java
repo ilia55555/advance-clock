@@ -83,6 +83,17 @@ public class AlarmEditorRefinementTest {
         assertEquals(.2f,view.framing()[1],.001f);
         output.recycle();source.recycle();
     }
+    @Test public void alertPhotoKeepsSavedFrameAspectInsteadOfCompressingIntoAStrip() {
+        AlarmPhotoView photo=new AlarmPhotoView(RuntimeEnvironment.getApplication(),false);
+        photo.setFitWithinBounds(true);
+        Bitmap savedFrame=Bitmap.createBitmap(100,200,Bitmap.Config.ARGB_8888);
+        ReflectionHelpers.setField(photo,"bitmap",savedFrame);
+        photo.measure(View.MeasureSpec.makeMeasureSpec(300,View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED));
+        assertEquals(300,photo.getMeasuredWidth());assertEquals(600,photo.getMeasuredHeight());
+        savedFrame.recycle();
+    }
+
     @Test public void twoPhotoAttachmentsAreStackedRatherThanSideBySide() {
         Context app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(android.app.Activity.class).setup()) {
@@ -94,7 +105,11 @@ public class AlarmEditorRefinementTest {
             View view=ReflectionHelpers.callInstanceMethod(screen,"attachmentStrip",ReflectionHelpers.ClassParameter.from(java.util.List.class,photos));
             assertTrue(view instanceof LinearLayout);
             assertEquals(LinearLayout.VERTICAL,((LinearLayout)view).getOrientation());
-            assertEquals(2,((LinearLayout)view).getChildCount());
+            ScrollView gallery=view.findViewWithTag("alert_photo_gallery");assertNotNull(gallery);
+            LinearLayout stack=(LinearLayout)gallery.getChildAt(0);
+            assertEquals(LinearLayout.VERTICAL,stack.getOrientation());
+            assertEquals(2,stack.getChildCount());
+            assertEquals(ViewGroup.LayoutParams.WRAP_CONTENT,stack.getChildAt(0).getLayoutParams().height);
         }
     }
 }

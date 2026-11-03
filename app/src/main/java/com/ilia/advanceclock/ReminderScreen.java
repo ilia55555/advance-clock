@@ -17,10 +17,10 @@ import java.util.function.Consumer;
 /** The same alert surface and controls for alarms, notes, stopwatch and timer. */
 final class ReminderScreen extends FrameLayout {
     // Manual font sizes (sp): classic light/dark/warm sunrise, then glass.
-    static final int CLASSIC_CLOCK_SIZE_SP = 64;
-    static final int CLASSIC_DATE_SIZE_SP = 18;
-    static final int GLASS_CLOCK_SIZE_SP = 80;
-    static final int GLASS_DATE_SIZE_SP = 22;
+    static final int CLASSIC_CLOCK_SIZE_SP = 82;
+    static final int CLASSIC_DATE_SIZE_SP = 27;
+    static final int GLASS_CLOCK_SIZE_SP = 82;
+    static final int GLASS_DATE_SIZE_SP = 27;
 
     static final int[] SNOOZE_MINUTES = AlertActions.MINUTES;
     static final class Content {
@@ -179,7 +179,8 @@ final class ReminderScreen extends FrameLayout {
         screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(164), Gravity.CENTER));
         if (values.isEmpty()) shortcuts.setVisibility(View.GONE);
         boolean hasImages = false; for (NoteAttachment value : values) if (value.isImage()) hasImages = true;
-        final int preferredHeight = dp(hasImages ? 220 : 164);
+        final boolean hasPhotoAttachments=hasImages;
+        final int preferredHeight = dp(112);
         screen.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             int height = screen.getHeight();
             headingContent.measure(View.MeasureSpec.makeMeasureSpec(Math.max(1, screen.getWidth() - screen.getPaddingLeft() - screen.getPaddingRight()), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
@@ -196,7 +197,7 @@ final class ReminderScreen extends FrameLayout {
                     bounds.topMargin=top;bounds.height=boardHeight;board.setLayoutParams(bounds);
                 }
             }
-            ReminderLayout.Placement placement = ReminderLayout.centered(height, top, bottom, preferredHeight);
+            ReminderLayout.Placement placement = ReminderLayout.centered(height,top,bottom,hasPhotoAttachments?Math.max(0,bottom-top):preferredHeight);
             int shortcutHeight = placement.height, shortcutTop = placement.top;
             FrameLayout.LayoutParams cp = (FrameLayout.LayoutParams) shortcuts.getLayoutParams();
             if (cp.height != shortcutHeight || cp.topMargin != shortcutTop || cp.gravity != Gravity.TOP) {
@@ -298,16 +299,27 @@ final class ReminderScreen extends FrameLayout {
         List<NoteAttachment> pictures=new ArrayList<>(),others=new ArrayList<>();
         for(NoteAttachment value:values)(value.isImage()?pictures:others).add(value);
         if(!pictures.isEmpty()) {
+            LinearLayout group=new LinearLayout(host);group.setOrientation(LinearLayout.VERTICAL);
+            ScrollView gallery=new ScrollView(host);gallery.setTag("alert_photo_gallery");
+            gallery.setVerticalScrollBarEnabled(false);gallery.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            gallery.setOnTouchListener((v,event)->{
+                if(v.getParent()!=null)v.getParent().requestDisallowInterceptTouchEvent(
+                        event.getActionMasked()!=android.view.MotionEvent.ACTION_UP
+                                && event.getActionMasked()!=android.view.MotionEvent.ACTION_CANCEL);
+                return false;
+            });
             LinearLayout stack=new LinearLayout(host);stack.setOrientation(LinearLayout.VERTICAL);
             for(NoteAttachment picture:pictures) {
                 AlarmPhotoView image=new AlarmPhotoView(host,false);image.setFitWithinBounds(true);image.load(picture.value);
                 image.setContentDescription(picture.name);
                 image.setOnClickListener(v->openAttachment(picture));
-                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,0,1);
-                params.bottomMargin=dp(4);stack.addView(image,params);
+                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);
+                params.bottomMargin=dp(8);stack.addView(image,params);
             }
-            if(!others.isEmpty())stack.addView(attachmentStrip(others),new LinearLayout.LayoutParams(-1,dp(100)));
-            return stack;
+            gallery.addView(stack,new ScrollView.LayoutParams(-1,-2));
+            group.addView(gallery,new LinearLayout.LayoutParams(-1,0,1));
+            if(!others.isEmpty())group.addView(attachmentStrip(others),new LinearLayout.LayoutParams(-1,dp(84)));
+            return group;
         }
         HorizontalScrollView scroll = new HorizontalScrollView(host);
         scroll.setHorizontalScrollBarEnabled(false);
@@ -323,7 +335,7 @@ final class ReminderScreen extends FrameLayout {
             View card = attachmentView(value);
             card.setOnClickListener(v -> openAttachment(value));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    dp(NoteAttachment.KIND_APP.equals(value.kind) ? 100 : 200), -1);
+                    dp(NoteAttachment.KIND_APP.equals(value.kind) ? 80 : 120), -1);
             // Symmetric margins keep one app and groups centered without a trailing gap.
             params.setMarginStart(dp(4)); params.setMarginEnd(dp(4));
             row.addView(card, params);
@@ -332,7 +344,7 @@ final class ReminderScreen extends FrameLayout {
         boolean appsOnly = !values.isEmpty();
         for (NoteAttachment value : values) if (!NoteAttachment.KIND_APP.equals(value.kind)) appsOnly = false;
         if (appsOnly) scroll.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob) -> {
-            int width = Math.max(dp(92), Math.min(dp(100),
+            int width = Math.max(dp(64), Math.min(dp(80),
                     (scroll.getWidth() - dp(8) * values.size()) / values.size()));
             for (int i = 0; i < row.getChildCount(); i++) {
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) row.getChildAt(i).getLayoutParams();
@@ -418,26 +430,26 @@ final class ReminderScreen extends FrameLayout {
             }catch(Exception ignored){}
             card.addView(
                     icon,
-                    new LinearLayout.LayoutParams(dp(80),dp(80)));
+                    new LinearLayout.LayoutParams(dp(48),dp(48)));
         }else{
             TextView symbol=text(
                     NoteAttachment.KIND_URL.equals(value.kind)?"🌐":"📎",
-                    52);
+                    32);
             symbol.setGravity(Gravity.CENTER);
             card.addView(
                     symbol,
                     new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
-                            dp(132)));
+                            dp(44)));
         }
 
-        TextView name=text(displayName,15);
+        TextView name=text(displayName,12);
         name.setGravity(Gravity.CENTER);
-        name.setMaxLines(2);
+        name.setMaxLines(1);
         name.setEllipsize(android.text.TextUtils.TruncateAt.END);
         name.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         LinearLayout.LayoutParams np=matchWrap();
-        np.topMargin=dp(8);
+        np.topMargin=dp(4);
         card.addView(name,np);
         return card;
     }
