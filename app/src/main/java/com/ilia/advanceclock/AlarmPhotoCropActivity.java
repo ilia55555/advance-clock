@@ -38,8 +38,16 @@ public final class AlarmPhotoCropActivity extends Activity {
             int w = Math.min(area.getWidth(), (int) ((long) area.getHeight() * width / height));
             photo.setLayoutParams(new FrameLayout.LayoutParams(w, (int) ((long) w * height / width), android.view.Gravity.CENTER));
         });
-        save = new Button(this); save.setText(R.string.tool_save); root.addView(save);
-        cancel = new Button(this); cancel.setText(android.R.string.cancel); root.addView(cancel);
+        LinearLayout actions=new LinearLayout(this);
+        actions.setLayoutDirection(AppSettings.layoutDirection(this));
+        actions.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams actionParams=new LinearLayout.LayoutParams(-1,dp(52));
+        actionParams.topMargin=dp(16);root.addView(actions,actionParams);
+        save=actionButton(R.string.tool_save,true);
+        cancel=actionButton(android.R.string.cancel,false);
+        LinearLayout.LayoutParams saveParams=new LinearLayout.LayoutParams(0,-1,1);
+        saveParams.setMarginEnd(dp(10));actions.addView(save,saveParams);
+        actions.addView(cancel,new LinearLayout.LayoutParams(0,-1,1));
         cancel.setOnClickListener(v -> finish());
         save.setOnClickListener(v -> savePhoto());
         setContentView(root); AppSettings.applyFullscreenInsets(root);
@@ -47,6 +55,22 @@ public final class AlarmPhotoCropActivity extends Activity {
         if (state != null) photo.restoreFraming(state.getFloatArray("frame"));
         job = (SaveJob) getLastNonConfigurationInstance();
         if (job != null) { job.owner = this; save.setEnabled(false); cancel.setEnabled(false); }
+    }
+
+    private Button actionButton(int title,boolean filled) {
+        Button button=new Button(this);button.setText(title);button.setAllCaps(false);
+        button.setTextSize(16);button.setSingleLine(true);button.setMinWidth(0);
+        button.setPadding(dp(12),0,dp(12),0);button.setElevation(0);button.setStateListAnimator(null);
+        int accent=AppSettings.primaryColor(this);
+        button.setTextColor(filled ? (android.graphics.Color.luminance(accent)>.179f?android.graphics.Color.BLACK:android.graphics.Color.WHITE) : accent);
+        android.graphics.drawable.GradientDrawable shape=new android.graphics.drawable.GradientDrawable();
+        shape.setCornerRadius(dp(14));shape.setColor(filled?accent:android.graphics.Color.TRANSPARENT);
+        shape.setStroke(dp(1),accent);
+        android.graphics.drawable.GradientDrawable mask=new android.graphics.drawable.GradientDrawable();
+        mask.setColor(android.graphics.Color.WHITE);mask.setCornerRadius(dp(14));
+        button.setBackground(new android.graphics.drawable.RippleDrawable(
+                android.content.res.ColorStateList.valueOf((accent & 0x00FFFFFF)|0x22000000),shape,mask));
+        return button;
     }
 
     private void savePhoto() {

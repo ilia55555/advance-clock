@@ -25,6 +25,12 @@ public class AlarmEditorRefinementTest {
             Spinner priority=host.findViewById(R.id.alarm_priority);
             assertEquals(0,priority.getSelectedItemPosition());
             assertEquals(host.getString(R.string.priority_unset),priority.getSelectedItem());
+            ListAdapter adapter=(ListAdapter)priority.getAdapter();
+            assertFalse(adapter.isEnabled(0));assertTrue(adapter.isEnabled(1));
+            View hidden=priority.getAdapter().getDropDownView(0,null,new LinearLayout(host));
+            assertEquals(View.GONE,hidden.getVisibility());
+            View option=priority.getAdapter().getDropDownView(1,hidden,new LinearLayout(host));
+            assertEquals(View.VISIBLE,option.getVisibility());
             View sound=host.findViewById(R.id.alarm_sound_button);
             View vibration=(View)host.findViewById(R.id.alarm_vibrate).getParent();
             assertSame(sound.getParent(),vibration.getParent());

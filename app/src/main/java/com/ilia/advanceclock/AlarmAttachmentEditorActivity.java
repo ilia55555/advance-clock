@@ -110,6 +110,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setBaselineAligned(false);
+        row.setClipChildren(false);row.setClipToPadding(false);
         parent.addView(row, new LinearLayout.LayoutParams(-1, -2));
         return row;
     }
@@ -132,6 +133,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         button.setBackgroundTintList(null);
         button.setBackgroundResource(primary ? R.drawable.bg_teal_button : R.drawable.bg_soft_button);
         button.setMinHeight(dp(52));
+        button.setElevation(0);button.setStateListAnimator(null);
         button.setPadding(dp(10), dp(10), dp(10), dp(10));
         return button;
     }
@@ -368,15 +370,14 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             preview.load(image);
             photo.addView(preview, new LinearLayout.LayoutParams(-1, dp(220)));
             LinearLayout actions = horizontal(photo);
+            actions.setMinimumHeight(dp(64));actions.setPadding(0,dp(8),0,dp(4));
             Button frame = button(R.string.media_crop, false);
-            LinearLayout.LayoutParams first = new LinearLayout.LayoutParams(0, -2, 1);
-            first.topMargin = dp(12);
+            LinearLayout.LayoutParams first = new LinearLayout.LayoutParams(0, dp(52), 1);
             first.setMarginEnd(dp(8));
             actions.addView(frame, first);
             frame.setOnClickListener(v -> crop(slot));
             ImageButton remove = trash();
-            LinearLayout.LayoutParams second = new LinearLayout.LayoutParams(dp(48), dp(48));
-            second.topMargin = dp(12);
+            LinearLayout.LayoutParams second = new LinearLayout.LayoutParams(dp(52), dp(52));
             actions.addView(remove, second);
             remove.setOnClickListener(v -> {
                 SharedPreferences.Editor edit = prefs.edit();

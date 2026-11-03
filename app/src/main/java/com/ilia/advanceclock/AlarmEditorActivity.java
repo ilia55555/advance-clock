@@ -100,7 +100,20 @@ public final class AlarmEditorActivity extends Activity {
         ArrayAdapter<String> pr = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                priorityValues);
+                priorityValues) {
+            @Override public boolean areAllItemsEnabled() { return false; }
+            @Override public boolean isEnabled(int position) { return position>0; }
+            @Override public View getDropDownView(int position,View recycled,android.view.ViewGroup parent) {
+                if(position==0) {
+                    TextView hidden=new TextView(getContext());
+                    hidden.setVisibility(View.GONE);
+                    hidden.setLayoutParams(new android.widget.AbsListView.LayoutParams(-1,0));
+                    return hidden;
+                }
+                if(recycled!=null && recycled.getVisibility()==View.GONE)recycled=null;
+                return super.getDropDownView(position,recycled,parent);
+            }
+        };
         pr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         priority.setAdapter(pr);
         priority.setSelection(0);
