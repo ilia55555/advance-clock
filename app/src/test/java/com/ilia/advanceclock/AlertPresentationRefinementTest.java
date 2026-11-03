@@ -20,7 +20,7 @@ public class AlertPresentationRefinementTest {
         view.measure(View.MeasureSpec.makeMeasureSpec(360,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(800,View.MeasureSpec.EXACTLY));
         view.layout(0,0,360,800);
     }
-    @Test public void digitalStylesPutDateImmediatelyBelowClockFourUnitsSmallerAndOmitEmptyRows() {
+    @Test public void digitalStylesKeepDateCompactBelowAnIndependentlyLargerClockAndOmitEmptyRows() {
         Context app=RuntimeEnvironment.getApplication();AppString.init(app);
         for(int style:new int[]{0,1,2,4})try(var controller=Robolectric.buildActivity(Activity.class).setup()) {
             AppSettings.setAlarmScreenStyle(app,style);
@@ -30,7 +30,8 @@ public class AlertPresentationRefinementTest {
             TextView clock=screen.findViewWithTag("alert_clock"),date=screen.findViewWithTag("alert_date");
             assertTrue(date.getTop()>=clock.getBottom());
             assertTrue(date.getTop()-clock.getBottom()<=3*app.getResources().getDisplayMetrics().density);
-            assertEquals(4*app.getResources().getDisplayMetrics().scaledDensity,clock.getTextSize()-date.getTextSize(),.1f);
+            assertEquals((style==4?22:18)*app.getResources().getDisplayMetrics().scaledDensity,date.getTextSize(),.1f);
+            assertTrue(clock.getTextSize()>date.getTextSize()*2);
             assertNull(screen.findViewWithTag("alert_title"));assertNull(screen.findViewWithTag("alert_priority"));
         }
     }

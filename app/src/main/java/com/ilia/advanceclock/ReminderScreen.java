@@ -16,6 +16,12 @@ import java.util.function.Consumer;
 
 /** The same alert surface and controls for alarms, notes, stopwatch and timer. */
 final class ReminderScreen extends FrameLayout {
+    // Manual font sizes (sp): classic light/dark/warm sunrise, then glass.
+    static final int CLASSIC_CLOCK_SIZE_SP = 64;
+    static final int CLASSIC_DATE_SIZE_SP = 18;
+    static final int GLASS_CLOCK_SIZE_SP = 80;
+    static final int GLASS_DATE_SIZE_SP = 22;
+
     static final int[] SNOOZE_MINUTES = AlertActions.MINUTES;
     static final class Content {
         String title = "", body = "", image1 = "", image2 = "", openLabel = "";
@@ -29,7 +35,7 @@ final class ReminderScreen extends FrameLayout {
     private final android.os.Handler clockHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private TextView timeLabel, dateLabel;
     private AlarmAnalogView analogClock;
-    private int digitalClockMax;
+    private int digitalClockMax, digitalDateMax;
 
     private java.util.function.Consumer<Boolean> blurListener;
     private final Runnable clockTick = new Runnable() {
@@ -112,20 +118,21 @@ final class ReminderScreen extends FrameLayout {
             clockParams.gravity=Gravity.CENTER_HORIZONTAL;
             headingContent.addView(analogClock,clockParams);
         }
-        dateLabel = text("", modern ? 18 : 14);
+        dateLabel = text("", style==3?18:style==4?GLASS_DATE_SIZE_SP:CLASSIC_DATE_SIZE_SP);
         dateLabel.setTextColor(mutedColor); dateLabel.setGravity(Gravity.CENTER);
-        timeLabel = text("", style == 4 ? 80 : 48);
+        timeLabel = text("", style==4?GLASS_CLOCK_SIZE_SP:CLASSIC_CLOCK_SIZE_SP);
         timeLabel.setTextColor(modern ? textColor : photoBackground ? Color.WHITE : primary);
         timeLabel.setTag("alert_clock");dateLabel.setTag("alert_date");
         timeLabel.setGravity(Gravity.CENTER);timeLabel.setTextDirection(View.TEXT_DIRECTION_LTR);
         timeLabel.setTypeface(null, android.graphics.Typeface.BOLD);
         timeLabel.setMaxLines(1);
         timeLabel.setHorizontallyScrolling(false);
-        timeLabel.setAutoSizeTextTypeUniformWithConfiguration(28,style == 4 ? 80 : 48,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+        timeLabel.setAutoSizeTextTypeUniformWithConfiguration(28,style==4?GLASS_CLOCK_SIZE_SP:CLASSIC_CLOCK_SIZE_SP,1,android.util.TypedValue.COMPLEX_UNIT_SP);
         if(style==3) {
             timeLabel.setVisibility(View.GONE);headingContent.addView(dateLabel,matchWrap());
         } else {
-            digitalClockMax=style==4?80:48;
+            digitalClockMax=style==4?GLASS_CLOCK_SIZE_SP:CLASSIC_CLOCK_SIZE_SP;
+            digitalDateMax=style==4?GLASS_DATE_SIZE_SP:CLASSIC_DATE_SIZE_SP;
             timeLabel.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_NONE);
             timeLabel.setIncludeFontPadding(false);dateLabel.setIncludeFontPadding(false);
             dateLabel.setSingleLine(true);dateLabel.setEllipsize(null);
@@ -258,15 +265,20 @@ final class ReminderScreen extends FrameLayout {
         float unit=getResources().getDisplayMetrics().scaledDensity;
         android.graphics.Paint timePaint=new android.graphics.Paint(timeLabel.getPaint());
         android.graphics.Paint datePaint=new android.graphics.Paint(dateLabel.getPaint());
-        float size=digitalClockMax;
-        while(size>12) {
-            timePaint.setTextSize(size*unit);datePaint.setTextSize((size-4)*unit);
-            if(timePaint.measureText(timeLabel.getText().toString())<=available
-                    && datePaint.measureText(dateLabel.getText().toString())<=available)break;
-            size--;
+        float clockSize=digitalClockMax;
+        while(clockSize>12) {
+            timePaint.setTextSize(clockSize*unit);
+            if(timePaint.measureText(timeLabel.getText().toString())<=available)break;
+            clockSize--;
         }
-        timeLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,size*unit);
-        dateLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,(size-4)*unit);
+        float dateSize=digitalDateMax;
+        while(dateSize>12) {
+            datePaint.setTextSize(dateSize*unit);
+            if(datePaint.measureText(dateLabel.getText().toString())<=available)break;
+            dateSize--;
+        }
+        timeLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,clockSize*unit);
+        dateLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,dateSize*unit);
     }
 
     private void palette(int style) {
