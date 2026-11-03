@@ -27,21 +27,7 @@ public final class DateNotificationService extends Service {
             stop(context);
             return;
         }
-        ensureChannel(context);
-        NotificationManager manager = context.getSystemService(NotificationManager.class);
-        if (manager != null) {
-            for (android.service.notification.StatusBarNotification notification : manager.getActiveNotifications()) {
-                if (notification.getId() == ID && notification.getTag() == null) {
-                    Notification current = notification.getNotification();
-                    Notification expected = buildNotification(context);
-                    if (android.text.TextUtils.equals(current.extras.getCharSequence(Notification.EXTRA_TITLE),
-                            expected.extras.getCharSequence(Notification.EXTRA_TITLE))
-                            && android.text.TextUtils.equals(current.extras.getCharSequence(Notification.EXTRA_TEXT),
-                            expected.extras.getCharSequence(Notification.EXTRA_TEXT))) return;
-                    break;
-                }
-            }
-        }
+        // Re-post even if an OEM reports a dismissed card as still active.
         start(context);
     }
 

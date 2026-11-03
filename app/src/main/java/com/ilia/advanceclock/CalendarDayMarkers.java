@@ -20,7 +20,7 @@ final class CalendarDayMarkers {
         for(AlarmItem item:alarms) if(item.enabled) {
             long next=RecurrenceUtils.next(item.triggerAtMillis,item.recurrenceMode,item.intervalDays,
                     item.customDatesJson,start-1,item.timeZone());
-            if(next>=start && next<end) priorities.add(PriorityUtils.clamp(item.priority));
+            if(next>=start && next<end) priorities.add(item.priority<0?-1:PriorityUtils.clamp(item.priority));
         }
         for(NoForgetItem item:notes) {
             if (!item.applyDate && !item.hasDue) continue;
@@ -31,7 +31,7 @@ final class CalendarDayMarkers {
             long next = item.hasDue
                     ? RecurrenceUtils.next(date,item.recurrenceMode,item.intervalDays,item.customDatesJson,start-1)
                     : date;
-            if(next>=start && next<end) priorities.add(PriorityUtils.clamp(item.priority));
+            if(next>=start && next<end) priorities.add(item.priority<0?-1:PriorityUtils.clamp(item.priority));
         }
         priorities.sort(java.util.Collections.reverseOrder());
         int[] result = new int[Math.min(2,priorities.size())];
@@ -39,6 +39,7 @@ final class CalendarDayMarkers {
         return result;
     }
     static int color(int priority) {
+        if(priority<0)return 0xFF78909C;
         return new int[]{0xFF2E9D50,0xFF75A843,0xFFE5AC28,0xFFED762D,0xFFD32F2F}[PriorityUtils.clamp(priority)];
     }
 }

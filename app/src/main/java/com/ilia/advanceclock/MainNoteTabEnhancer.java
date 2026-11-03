@@ -554,7 +554,7 @@ final class MainNoteTabEnhancer {
                 : AppString.get(R.string.runtime_text_0467) + CalendarUtils.fa(Integer.toString(files)) + ")");
         state.targetButton.setText(targets == 0 ? AppString.get(R.string.runtime_text_0117)
                 : AppString.get(R.string.runtime_text_0468) + CalendarUtils.fa(Integer.toString(targets)) + ")");
-        state.filesButton.setText(R.string.media_show_items);
+        AlarmAttachments.refreshLabel(activity,state.filesButton,"quick_note");
     }
 
     private static void updateReminderButton(State state) {

@@ -38,7 +38,7 @@ public final class AlarmEditorActivity extends Activity {
     private Button remindersButton;
     private Spinner priority;
     private boolean worldReference,createdFromWorld;
-    private int storedPriority=PriorityUtils.MEDIUM;
+    private int storedPriority=-1;
     private java.util.List<String> referenceZones=java.util.Collections.emptyList();
     private String referenceZone="";
     private Button deleteButton;
@@ -93,7 +93,9 @@ public final class AlarmEditorActivity extends Activity {
         soundValue = findViewById(R.id.alarm_sound_value);
         dateCalendarType = AppSettings.defaultCalendar(this);
 
-        String[] priorityValues = PriorityUtils.displayLabels();
+        String[] priorityValues = new String[6];
+        priorityValues[0]=getString(R.string.priority_unset);
+        System.arraycopy(PriorityUtils.displayLabels(),0,priorityValues,1,5);
 
         ArrayAdapter<String> pr = new ArrayAdapter<>(
                 this,
@@ -101,7 +103,7 @@ public final class AlarmEditorActivity extends Activity {
                 priorityValues);
         pr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         priority.setAdapter(pr);
-        priority.setSelection(PriorityUtils.MEDIUM);
+        priority.setSelection(0);
 
         alarmId = getIntent().getLongExtra("alarmId", -1L);
         configureReference(savedInstanceState);
@@ -227,7 +229,7 @@ public final class AlarmEditorActivity extends Activity {
         label.setText(item.label);
         selected.setTimeInMillis(item.triggerAtMillis);
         storedPriority=item.priority;
-        if(!worldReference)priority.setSelection(item.priority);
+        if(!worldReference)priority.setSelection(item.priority+1);
         vibrate.setChecked(item.vibrate);
 
         recurrenceMode = item.recurrenceMode;
@@ -334,7 +336,7 @@ public final class AlarmEditorActivity extends Activity {
                 compat,
                 true,
                 vibrate.isChecked(),
-                worldReference?storedPriority:priority.getSelectedItemPosition(),
+                worldReference?storedPriority:priority.getSelectedItemPosition()-1,
                 recurrenceMode,
                 intervalDays,
                 customDatesJson,

@@ -58,7 +58,7 @@ public class WorldAlarmReferenceTest {
             AlarmItem saved=new AlarmStore(app).all().get(0);id=saved.id;
             assertTrue(saved.createdFromWorld);
             assertEquals("America/New_York",saved.referenceZoneId);assertEquals(selected.getTimeInMillis(),saved.triggerAtMillis);
-            assertEquals(PriorityUtils.MEDIUM,saved.priority);
+            assertEquals(-1,saved.priority);
         }
         try(var controller=Robolectric.buildActivity(AlarmEditorActivity.class,new Intent(app,AlarmEditorActivity.class).putExtra("alarmId",id)).setup()){
             Spinner reference=controller.get().findViewById(R.id.alarm_priority);

@@ -66,6 +66,7 @@ public final class AdvanceClockApplication extends Application {
             @Override public void onActivityResumed(Activity activity) {
                 resumedActivity = new java.lang.ref.WeakReference<>(activity);
                 activity.setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
+                DateNotificationService.ensureVisible(activity);
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
             }

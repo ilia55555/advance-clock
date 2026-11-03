@@ -1584,7 +1584,7 @@ public final class MainActivity extends Activity {
                         item.recurrenceMode,
                         item.intervalDays,
                         item.customDatesJson)
-                        + (item.referenceZoneId.isEmpty() ? "  •  " + PriorityUtils.displayLabel(item.priority) : "")
+                        + (item.referenceZoneId.isEmpty() && item.priority>=0 ? "  •  " + PriorityUtils.displayLabel(item.priority) : "")
                         + (item.reminderMode != AlarmReminderUtils.MODE_NONE
                         ? "  •  " + reminder
                         : "")
@@ -1825,6 +1825,7 @@ public final class MainActivity extends Activity {
     }
 
     private int priorityStroke(int priority) {
+        if(priority<0)return AppSettings.textSecondary(this);
         switch (PriorityUtils.clamp(priority)) {
             case PriorityUtils.VERY_HIGH: return 0xFFE26767;
             case PriorityUtils.HIGH: return 0xFFE9A276;

@@ -107,11 +107,11 @@
     <string formatted="false" name="runtime_text_0021">یادآوری‌ها</string>
     <string formatted="false" name="runtime_text_0022">لرزش</string>
     <string formatted="false" name="runtime_text_0023">اهمیت</string>
-    <string formatted="false" name="runtime_text_0024">کم</string>
-    <string formatted="false" name="runtime_text_0025">نسبتاً کم</string>
-    <string formatted="false" name="runtime_text_0026">متوسط</string>
-    <string formatted="false" name="runtime_text_0027">زیاد</string>
-    <string formatted="false" name="runtime_text_0028">خیلی زیاد</string>
+    <string formatted="false" name="runtime_text_0024">غیرفوری</string>
+    <string formatted="false" name="runtime_text_0025">کم‌اولویت</string>
+    <string formatted="false" name="runtime_text_0026">عادی</string>
+    <string formatted="false" name="runtime_text_0027">ضروری</string>
+    <string formatted="false" name="runtime_text_0028">حیاتی</string>
     <string formatted="false" name="runtime_text_0029">فقط یک بار</string>
     <string formatted="false" name="runtime_text_0030">هر روز</string>
     <string formatted="false" name="runtime_text_0031">هر هفته</string>
@@ -1350,4 +1350,6 @@
     <string name="permissions_optional_allow">فعال کردن</string>
     <string name="permissions_location_hint">برای دریافت موقعیت، مجوز مکان را فعال کنید؛ انتخاب دستی شهر هم ممکن است.</string>
     <string name="permissions_install_hint">برای نصب به‌روزرسانی، مجوز نصب برنامه را فعال کنید.</string>
+    <string name="priority_unset">انتخاب اهمیت</string>
+    <string name="attachment_count">%s پیوست</string>
 </resources>

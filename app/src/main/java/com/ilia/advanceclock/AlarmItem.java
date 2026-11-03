@@ -69,7 +69,7 @@ public final class AlarmItem {
         this.repeatType=repeatType;
         this.enabled=enabled;
         this.vibrate=vibrate;
-        this.priority=PriorityUtils.clamp(priority);
+        this.priority=priority<0?-1:PriorityUtils.clamp(priority);
         this.recurrenceMode=Math.max(0,Math.min(RecurrenceUtils.INTERVAL_MINUTES,recurrenceMode));
         this.intervalDays=Math.max(1,intervalDays);
         this.customDatesJson=customDatesJson==null?"[]":customDatesJson;
@@ -110,7 +110,7 @@ public final class AlarmItem {
         int oldRepeat=o.optInt("repeatType",REPEAT_NONE);
         int rawPriority=o.optInt("priority",PRIORITY_MEDIUM);
         int priority=o.optInt("priorityVersion",1)>=2
-                ? PriorityUtils.clamp(rawPriority)
+                ? (rawPriority<0?-1:PriorityUtils.clamp(rawPriority))
                 : PriorityUtils.migrateLegacy(rawPriority);
 
         AlarmItem item = new AlarmItem(

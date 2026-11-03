@@ -61,11 +61,11 @@
     <string formatted="false" name="runtime_text_0021">التذكيرات</string>
     <string formatted="false" name="runtime_text_0022">الاهتزاز</string>
     <string formatted="false" name="runtime_text_0023">الأهمية</string>
-    <string formatted="false" name="runtime_text_0024">منخفض</string>
-    <string formatted="false" name="runtime_text_0025">منخفض نسبيًا</string>
-    <string formatted="false" name="runtime_text_0026">متوسط</string>
-    <string formatted="false" name="runtime_text_0027">مرتفع</string>
-    <string formatted="false" name="runtime_text_0028">مرتفع جدًا</string>
+    <string formatted="false" name="runtime_text_0024">غير عاجل</string>
+    <string formatted="false" name="runtime_text_0025">أولوية منخفضة</string>
+    <string formatted="false" name="runtime_text_0026">عادي</string>
+    <string formatted="false" name="runtime_text_0027">عاجل</string>
+    <string formatted="false" name="runtime_text_0028">بالغ الأهمية</string>
     <string formatted="false" name="runtime_text_0029">مرة واحدة فقط</string>
     <string formatted="false" name="runtime_text_0030">كل يوم</string>
     <string formatted="false" name="runtime_text_0031">كل أسبوع</string>
@@ -1418,4 +1418,6 @@
     <string name="permissions_optional_allow">تفعيل</string>
     <string name="permissions_location_hint">فعّل إذن الموقع لاستخدام GPS، أو اختر المدينة يدويًا.</string>
     <string name="permissions_install_hint">فعّل إذن تثبيت التطبيقات لتثبيت هذا التحديث.</string>
+    <string name="priority_unset">اختيار الأولوية</string>
+    <string name="attachment_count">%s مرفقات</string>
 </resources>

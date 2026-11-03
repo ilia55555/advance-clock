@@ -39,7 +39,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="32sp"
+                android:textSize="32dp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
                 android:maxLines="1"
@@ -47,9 +47,9 @@
                 android:paddingStart="2dp"
                 android:paddingEnd="2dp"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="22sp"
-                android:autoSizeMaxTextSize="32sp"
-                android:autoSizeStepGranularity="1sp"
+                android:autoSizeMinTextSize="22dp"
+                android:autoSizeMaxTextSize="32dp"
+                android:autoSizeStepGranularity="1dp"
                 android:importantForAccessibility="no" />
 
             <TextView
@@ -61,16 +61,16 @@
                 android:textDirection="ltr"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
-                android:textSize="22sp"
+                android:textSize="22dp"
                 android:maxLines="1"
                 android:scrollHorizontally="false"
                 android:includeFontPadding="false"
                 android:paddingStart="2dp"
                 android:paddingEnd="2dp"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeMaxTextSize="22sp"
-                android:autoSizeStepGranularity="1sp"
+                android:autoSizeMinTextSize="12dp"
+                android:autoSizeMaxTextSize="22dp"
+                android:autoSizeStepGranularity="1dp"
                 android:visibility="gone"
                 android:importantForAccessibility="no" />
         </FrameLayout>
@@ -93,15 +93,15 @@
                 android:gravity="start|center_vertical"
                 android:textDirection="firstStrong"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="19dp"
                 android:textStyle="bold"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="10sp"
-                android:autoSizeMaxTextSize="18sp"
-                android:autoSizeStepGranularity="1sp" />
+                android:autoSizeMinTextSize="10dp"
+                android:autoSizeMaxTextSize="19dp"
+                android:autoSizeStepGranularity="1dp" />
 
             <TextView
                 android:id="@+id/date_notification_other_dates"
@@ -112,14 +112,14 @@
                 android:gravity="start|center_vertical"
                 android:textDirection="firstStrong"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="15dp"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="10sp"
-                android:autoSizeMaxTextSize="14sp"
-                android:autoSizeStepGranularity="1sp" />
+                android:autoSizeMinTextSize="10dp"
+                android:autoSizeMaxTextSize="15dp"
+                android:autoSizeStepGranularity="1dp" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

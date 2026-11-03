@@ -14,12 +14,21 @@ final class AlarmPhotoView extends View {
     private final boolean editable;
     private final ScaleGestureDetector detector;
     private int generation;
+    private boolean fitWithinBounds;
+    void setFitWithinBounds(boolean fit) { fitWithinBounds=fit;invalidate(); }
 
     AlarmPhotoView(Context context, boolean editable) {
         super(context); this.editable = editable;
         detector = new ScaleGestureDetector(context, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
             @Override public boolean onScale(ScaleGestureDetector d) {
-                zoom = Math.max(1, Math.min(5, zoom * d.getScaleFactor())); clampOffsets(); invalidate(); return true;
+                float previous=zoom;
+                zoom=Math.max(.1f,Math.min(8,zoom*d.getScaleFactor()));
+                float ratio=zoom/previous;
+                float focusX=(d.getFocusX()-getWidth()/2f)/Math.max(1,getWidth());
+                float focusY=(d.getFocusY()-getHeight()/2f)/Math.max(1,getHeight());
+                offsetX=focusX-(focusX-offsetX)*ratio;
+                offsetY=focusY-(focusY-offsetY)*ratio;
+                clampOffsets();invalidate();return true;
             }
         });
     }
@@ -59,19 +68,21 @@ final class AlarmPhotoView extends View {
         }, "alarm-photo").start();
     }
     private void drawPhoto(Canvas canvas, int width, int height) {
+        canvas.drawColor(Color.BLACK);
         if (bitmap == null) return;
-        float scale = (float) AlarmPhotoLayout.fillScale(bitmap.getWidth(), bitmap.getHeight(), width, height) * zoom;
-        float excessX = Math.max(0, (bitmap.getWidth() * scale - width) / 2);
-        float excessY = Math.max(0, (bitmap.getHeight() * scale - height) / 2);
-        float x = Math.max(-excessX, Math.min(excessX, offsetX * width));
-        float y = Math.max(-excessY, Math.min(excessY, offsetY * height));
+        float scale = (float) (fitWithinBounds
+                ? Math.min((double)width/bitmap.getWidth(),(double)height/bitmap.getHeight())
+                : AlarmPhotoLayout.fillScale(bitmap.getWidth(),bitmap.getHeight(),width,height)) * zoom;
+        float x=offsetX*width, y=offsetY*height;
         Matrix matrix = new Matrix(); matrix.setScale(scale, scale);
         matrix.postTranslate((width - bitmap.getWidth() * scale) / 2 + x, (height - bitmap.getHeight() * scale) / 2 + y);
         canvas.drawBitmap(bitmap, matrix, paint);
     }
     @Override protected void onDraw(Canvas canvas) { super.onDraw(canvas); drawPhoto(canvas, getWidth(), getHeight()); }
     @Override public boolean onTouchEvent(MotionEvent event) {
-        if (!editable) return false;
+        if (!editable) return super.onTouchEvent(event);
+        if(getParent()!=null)getParent().requestDisallowInterceptTouchEvent(
+                event.getActionMasked()!=MotionEvent.ACTION_UP && event.getActionMasked()!=MotionEvent.ACTION_CANCEL);
         detector.onTouchEvent(event);
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) { lastX = event.getX(); lastY = event.getY(); }
         else if (event.getActionMasked() == MotionEvent.ACTION_MOVE && !detector.isInProgress()) {
@@ -83,14 +94,17 @@ final class AlarmPhotoView extends View {
     }
     float[] framing() { return new float[]{zoom, offsetX, offsetY}; }
     void restoreFraming(float[] frame) {
-        if (frame == null || frame.length != 3) return;
-        zoom = Math.max(1, Math.min(5, frame[0])); offsetX = frame[1]; offsetY = frame[2]; invalidate();
+        if (frame == null || frame.length != 3
+                || !Float.isFinite(frame[0]) || !Float.isFinite(frame[1]) || !Float.isFinite(frame[2])) return;
+        zoom = Math.max(.1f, Math.min(8, frame[0])); offsetX = frame[1]; offsetY = frame[2]; invalidate();
     }
     private void clampOffsets() {
         if (bitmap == null || getWidth() <= 0 || getHeight() <= 0) return;
         double scale = AlarmPhotoLayout.fillScale(bitmap.getWidth(), bitmap.getHeight(), getWidth(), getHeight()) * zoom;
-        offsetX = (float) AlarmPhotoLayout.clampOffset(offsetX, bitmap.getWidth(), getWidth(), scale);
-        offsetY = (float) AlarmPhotoLayout.clampOffset(offsetY, bitmap.getHeight(), getHeight(), scale);
+        float limitX=(float)(.45+bitmap.getWidth()*scale/(2*getWidth()));
+        float limitY=(float)(.45+bitmap.getHeight()*scale/(2*getHeight()));
+        offsetX=Math.max(-limitX,Math.min(limitX,offsetX));
+        offsetY=Math.max(-limitY,Math.min(limitY,offsetY));
     }
     @Override protected void onDetachedFromWindow() {
         generation++; bitmap = null; super.onDetachedFromWindow();

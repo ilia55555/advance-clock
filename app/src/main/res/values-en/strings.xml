@@ -106,11 +106,11 @@
     <string formatted="false" name="runtime_text_0021">Reminders</string>
     <string formatted="false" name="runtime_text_0022">Vibration</string>
     <string formatted="false" name="runtime_text_0023">Priority</string>
-    <string formatted="false" name="runtime_text_0024">Low</string>
-    <string formatted="false" name="runtime_text_0025">Fairly low</string>
-    <string formatted="false" name="runtime_text_0026">Medium</string>
-    <string formatted="false" name="runtime_text_0027">High</string>
-    <string formatted="false" name="runtime_text_0028">Very high</string>
+    <string formatted="false" name="runtime_text_0024">Non-urgent</string>
+    <string formatted="false" name="runtime_text_0025">Low priority</string>
+    <string formatted="false" name="runtime_text_0026">Normal</string>
+    <string formatted="false" name="runtime_text_0027">Urgent</string>
+    <string formatted="false" name="runtime_text_0028">Critical</string>
     <string formatted="false" name="runtime_text_0029">Only once</string>
     <string formatted="false" name="runtime_text_0030">Every day</string>
     <string formatted="false" name="runtime_text_0031">Every week</string>
@@ -1400,4 +1400,6 @@ Lock screen</string>
     <string name="permissions_optional_allow">Enable</string>
     <string name="permissions_location_hint">Enable location permission to use GPS, or select a city manually.</string>
     <string name="permissions_install_hint">Enable app installation permission to install this update.</string>
+    <string name="priority_unset">Select priority</string>
+    <string name="attachment_count">%s attachments</string>
 </resources>

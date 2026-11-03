@@ -114,6 +114,15 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         return row;
     }
 
+    private ImageButton trash() {
+        ImageButton button=new ImageButton(this);
+        button.setImageResource(R.drawable.ic_md_delete);
+        button.setContentDescription(getString(R.string.tool_delete));
+        button.setColorFilter(0xFFD32F2F);
+        button.setBackgroundResource(R.drawable.bg_soft_button);
+        button.setPadding(dp(12),dp(12),dp(12),dp(12));
+        button.setElevation(0);return button;
+    }
     private Button button(int label, boolean primary) {
         Button button = new Button(this);
         button.setText(label);
@@ -365,21 +374,18 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             first.setMarginEnd(dp(8));
             actions.addView(frame, first);
             frame.setOnClickListener(v -> crop(slot));
-            Button remove = button(R.string.tool_remove_image, false);
-            ButtonStyles.destructive(remove);
-            LinearLayout.LayoutParams second = new LinearLayout.LayoutParams(0, -2, 1);
+            ImageButton remove = trash();
+            LinearLayout.LayoutParams second = new LinearLayout.LayoutParams(dp(48), dp(48));
             second.topMargin = dp(12);
             actions.addView(remove, second);
             remove.setOnClickListener(v -> {
                 SharedPreferences.Editor edit = prefs.edit();
                 if (slot == 1) {
                     String source = prefs.getString(key + "_source2", prefs.getString(key + "_image2", ""));
-                    edit.putString(key + "_image1", source).putString(key + "_source1", source)
+                    edit.putString(key + "_image1", prefs.getString(key+"_image2", "")).putString(key + "_source1", source)
                             .remove(key + "_image2").remove(key + "_source2");
-                } else edit.remove(key + "_image2").remove(key + "_source2")
-                        .putString(key + "_image1", prefs.getString(key + "_source1", prefs.getString(key + "_image1", "")));
+                } else edit.remove(key + "_image2").remove(key + "_source2");
                 edit.apply(); render();
-                if (!prefs.getString(key + "_image1", "").isEmpty()) crop(1);
             });
         }
         List<NoteAttachment> items = NoteAttachment.parse(prefs.getString(key + "_attachments", "[]"));
@@ -419,8 +425,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
             } else openParams.topMargin = dp(12);
             openParams.setMarginEnd(dp(8));
             actions.addView(open, openParams);
-            Button remove = button(R.string.tool_delete, false);
-            ButtonStyles.destructive(remove);
+            ImageButton remove = trash();
             remove.setOnClickListener(v -> {
                 List<NoteAttachment> current = NoteAttachment.parse(prefs.getString(key + "_attachments", "[]"));
                 for (int index = 0; index < current.size(); index++) {
@@ -430,11 +435,8 @@ public final class AlarmAttachmentEditorActivity extends Activity {
                 prefs.edit().putString(key + "_attachments", NoteAttachment.encode(current)).apply();
                 render();
             });
-            LinearLayout.LayoutParams removeParams = new LinearLayout.LayoutParams(0, -2, 1);
-            if (app) {
-                compactAction(remove);
-                removeParams = new LinearLayout.LayoutParams(-2, dp(48));
-            } else removeParams.topMargin = dp(12);
+            LinearLayout.LayoutParams removeParams = new LinearLayout.LayoutParams(dp(48),dp(48));
+            removeParams.topMargin=app?0:dp(12);
             actions.addView(remove, removeParams);
         }
         if (list.getChildCount() == 0) {

@@ -228,6 +228,20 @@ final class ReminderScreen extends FrameLayout {
         view.setBackground(shape); return view;
     }
     private View attachmentStrip(List<NoteAttachment> values) {
+        List<NoteAttachment> pictures=new ArrayList<>(),others=new ArrayList<>();
+        for(NoteAttachment value:values)(value.isImage()?pictures:others).add(value);
+        if(!pictures.isEmpty()) {
+            LinearLayout stack=new LinearLayout(host);stack.setOrientation(LinearLayout.VERTICAL);
+            for(NoteAttachment picture:pictures) {
+                AlarmPhotoView image=new AlarmPhotoView(host,false);image.setFitWithinBounds(true);image.load(picture.value);
+                image.setContentDescription(picture.name);
+                image.setOnClickListener(v->openAttachment(picture));
+                LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,0,1);
+                params.bottomMargin=dp(4);stack.addView(image,params);
+            }
+            if(!others.isEmpty())stack.addView(attachmentStrip(others),new LinearLayout.LayoutParams(-1,dp(100)));
+            return stack;
+        }
         HorizontalScrollView scroll = new HorizontalScrollView(host);
         scroll.setHorizontalScrollBarEnabled(false);
         scroll.setOverScrollMode(View.OVER_SCROLL_NEVER);

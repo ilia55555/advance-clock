@@ -29,10 +29,12 @@ public final class PriorityUtils {
     }
 
     public static String label(int value) {
+        if(value<0)return AppString.get(R.string.priority_unset);
         return AppString.get(LABEL_IDS[Math.max(0, Math.min(LABEL_IDS.length - 1, value))]);
     }
 
     public static String displayLabel(int value) {
+        if(value<0)return label(value);
         return AppString.get(R.string.runtime_text_0420).trim()
                 + " "
                 + label(value).trim();

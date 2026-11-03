@@ -16,13 +16,35 @@ final class AlarmAttachments {
         Button button = new Button(host); button.setText(R.string.media_show_items);
         button.setAllCaps(false); button.setTextColor(AppSettings.primaryColor(host));
         button.setBackgroundResource(R.drawable.bg_soft_button);
-        button.setOnClickListener(v -> open(host, key)); return button;
+        button.setOnClickListener(v -> open(host, key)); track(host,button,key);return button;
     }
     static void bindButton(Activity host, Button first, String key) {
         android.view.ViewGroup row = (android.view.ViewGroup) first.getParent();
         for (int i = 0; i < row.getChildCount(); i++) if (row.getChildAt(i) != first) row.getChildAt(i).setVisibility(View.GONE);
         first.setText(R.string.media_show_items);
         first.setOnClickListener(v -> open(host, key));
+        track(host,first,key);
+    }
+    static void refreshLabel(Context context,Button button,String key) {
+        SharedPreferences preferences=prefs(context);
+        int count=NoteAttachment.parse(preferences.getString(key+"_attachments","[]")).size();
+        for(int slot=1;slot<=2;slot++)if(!preferences.getString(key+"_image"+slot,"").isEmpty())count++;
+        button.setText(count==0?context.getString(R.string.media_show_items)
+                :context.getString(R.string.attachment_count,CalendarUtils.fa(count)));
+    }
+    private static void track(Activity host,Button button,String key) {
+        SharedPreferences preferences=prefs(host);
+        Runnable update=()->refreshLabel(host,button,key);
+        button.setTextSize(18);button.setSingleLine(true);
+        button.setAutoSizeTextTypeUniformWithConfiguration(12,18,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+        SharedPreferences.OnSharedPreferenceChangeListener listener=(prefs,changed)->{
+            if(changed==null || changed.startsWith(key+"_"))button.post(update);
+        };
+        button.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener(){
+            public void onViewAttachedToWindow(View v){preferences.registerOnSharedPreferenceChangeListener(listener);update.run();}
+            public void onViewDetachedFromWindow(View v){preferences.unregisterOnSharedPreferenceChangeListener(listener);}
+        });
+        update.run();
     }
     static void read(Context context, String key, AlarmItem item) {
         SharedPreferences p = prefs(context);
