@@ -300,14 +300,8 @@ final class ReminderScreen extends FrameLayout {
         for(NoteAttachment value:values)(value.isImage()?pictures:others).add(value);
         if(!pictures.isEmpty()) {
             LinearLayout group=new LinearLayout(host);group.setOrientation(LinearLayout.VERTICAL);
-            ScrollView gallery=new ScrollView(host);gallery.setTag("alert_photo_gallery");
+            ScrollView gallery=new AlertPhotoGallery(host);gallery.setTag("alert_photo_gallery");
             gallery.setVerticalScrollBarEnabled(false);gallery.setOverScrollMode(View.OVER_SCROLL_NEVER);
-            gallery.setOnTouchListener((v,event)->{
-                if(v.getParent()!=null)v.getParent().requestDisallowInterceptTouchEvent(
-                        event.getActionMasked()!=android.view.MotionEvent.ACTION_UP
-                                && event.getActionMasked()!=android.view.MotionEvent.ACTION_CANCEL);
-                return false;
-            });
             LinearLayout stack=new LinearLayout(host);stack.setOrientation(LinearLayout.VERTICAL);
             for(NoteAttachment picture:pictures) {
                 AlarmPhotoView image=new AlarmPhotoView(host,false);image.setFitWithinBounds(true);image.load(picture.value);
