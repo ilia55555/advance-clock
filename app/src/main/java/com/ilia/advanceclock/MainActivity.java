@@ -241,6 +241,7 @@ public final class MainActivity extends Activity {
         alertsHeader = findViewById(R.id.alerts_header);
         prayerTimesCard = findViewById(R.id.prayer_times_card);
         prayerTimesScroll = findViewById(R.id.prayer_times_scroll);
+        ((TapOnlyHorizontalScrollView)prayerTimesScroll).setOnTapListener(this::openPrayerSettings);
         prayerScrollLeft = findViewById(R.id.prayer_scroll_left);
         prayerScrollRight = findViewById(R.id.prayer_scroll_right);
         prayerAdditionalHorizons = findViewById(R.id.prayer_additional_horizons);
@@ -432,6 +433,11 @@ public final class MainActivity extends Activity {
                 CalendarUtils.formatDate(now, AppSettings.defaultCalendar(this)));
     }
 
+    private void openPrayerSettings() {
+        startActivityForResult(new Intent(this,SettingsActivity.class)
+                .putExtra(SettingsActivity.EXTRA_SECTION,"prayer"),REQ_SETTINGS);
+    }
+
     private void applyPrayerTimesUi() {
         if (prayerTimesCard == null || clockCalendar == null) return;
 
@@ -496,7 +502,8 @@ public final class MainActivity extends Activity {
                     millis, horizon.latitude, horizon.longitude,
                     TimeZone.getTimeZone(horizon.timeZoneId));
             FrameLayout bar = new FrameLayout(this);
-            HorizontalScrollView scroll = new HorizontalScrollView(this);
+            TapOnlyHorizontalScrollView scroll = new TapOnlyHorizontalScrollView(this);
+            scroll.setOnTapListener(this::openPrayerSettings);
             scroll.setHorizontalScrollBarEnabled(false);
             scroll.setFillViewport(true);
             scroll.setOverScrollMode(View.OVER_SCROLL_NEVER);

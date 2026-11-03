@@ -440,7 +440,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="72dp">
 
-                    <HorizontalScrollView
+                    <com.ilia.advanceclock.TapOnlyHorizontalScrollView
                         android:id="@+id/prayer_times_scroll"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -668,7 +668,7 @@
                                     android:textStyle="bold" />
                             </LinearLayout>
                     </LinearLayout>
-                    </HorizontalScrollView>
+                    </com.ilia.advanceclock.TapOnlyHorizontalScrollView>
 
                     <TextView
                         android:id="@+id/prayer_scroll_left"

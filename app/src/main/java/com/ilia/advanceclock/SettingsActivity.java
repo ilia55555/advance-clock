@@ -292,6 +292,15 @@ public final class SettingsActivity extends Activity {
                 this, AppSettings.ALARM_RING_MINUTES[position]));
 
         setContentView(scroll);
+        if(savedInstanceState==null && !expandedSection.isEmpty())
+            scroll.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener(){
+                @Override public void onGlobalLayout() {
+                    scroll.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    for(SettingsSection section:sections)if(section.key.equals(expandedSection)) {
+                        scroll.scrollTo(0,section.getTop());break;
+                    }
+                }
+            });
         AppSettings.applyFullscreenInsets(scroll);
         AppSettings.playFullscreenEnter(this);
 
