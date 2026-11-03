@@ -35,6 +35,22 @@ public class AlertPresentationRefinementTest {
             assertNull(screen.findViewWithTag("alert_title"));assertNull(screen.findViewWithTag("alert_priority"));
         }
     }
+    @Test public void anyPhotoOrAttachmentDisablesDrawingIncludingBackgroundPhotos() {
+        Context app=RuntimeEnvironment.getApplication();AppString.init(app);
+        for(int style:new int[]{0,1})try(var controller=Robolectric.buildActivity(Activity.class).setup()) {
+            AppSettings.setAlarmScreenStyle(app,style);
+            for(int kind=0;kind<4;kind++) {
+                ReminderScreen.Content data=new ReminderScreen.Content();
+                if(kind==0 || kind==1) {
+                    data.image1="content://test/photo";data.background=kind==1;
+                } else data.attachments.add(new NoteAttachment(kind==2?NoteAttachment.KIND_APP:NoteAttachment.KIND_URL,
+                        kind==2?app.getPackageName():"https://example.com","Attachment",""));
+                ReminderScreen screen=new ReminderScreen(controller.get(),data,()->{},()->{},values->{});
+                assertNull(screen.findViewWithTag("alert_drawing_board"));
+            }
+        }
+    }
+
     @Test public void priorityAndTitleAreIndependentAndBoardStaysBetweenTextAndControls() {
         Context app=RuntimeEnvironment.getApplication();AppString.init(app);
         for(int style:new int[]{0,1})try(var controller=Robolectric.buildActivity(Activity.class).setup()) {

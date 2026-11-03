@@ -170,7 +170,9 @@ final class ReminderScreen extends FrameLayout {
         if(!swipeToStop)dismissParams.topMargin=dp(10);
         footer.addView(dismissal,dismissParams);
         screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
-        AlertDrawingView board=(style==0 || style==1)?new AlertDrawingView(host,style==1):null;
+        boolean hasAttachments=!photos.isEmpty() || !data.attachments.isEmpty();
+        AlertDrawingView board=(style==0 || style==1) && !hasAttachments
+                ?new AlertDrawingView(host,style==1):null;
         if(board!=null) {
             board.setTag("alert_drawing_board");
             screen.addView(board,0,new FrameLayout.LayoutParams(-1,0,Gravity.TOP));
