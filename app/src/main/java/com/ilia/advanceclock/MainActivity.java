@@ -1802,7 +1802,7 @@ public final class MainActivity extends Activity {
                 check.setContentDescription(getString(done?R.string.task_reopen:R.string.task_complete));
                 Button alarmState=card.findViewWithTag("note_alarm_enabled_"+item.id);if(alarmState!=null)updateNoteAlarmState(alarmState,updated);
                 for(TextView text:taskTexts)TaskCelebration.strike(text,done,true);
-                if(done){TaskCelebration.celebrate(card);LogoToast.makeText(this,R.string.task_congratulations,android.widget.Toast.LENGTH_SHORT).show();}
+                if(done)TaskCelebration.celebrate(card);
             });
         }else card.addView(taskTitle);
 
