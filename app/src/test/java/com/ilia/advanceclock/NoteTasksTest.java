@@ -75,8 +75,8 @@ public class NoteTasksTest {
             MainActivity host=controller.get();
             LinearLayout card=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item));
             CheckBox box=card.findViewWithTag("task_check_107");assertNotNull(box);assertFalse(box.isChecked());
-            box.setChecked(true);assertTrue(new NoForgetStore(c).find(item.id).taskCompleted);
-            box.setChecked(false);assertFalse(new NoForgetStore(c).find(item.id).taskCompleted);
+            box.setChecked(true);awaitCompletion();assertTrue(new NoForgetStore(c).find(item.id).taskCompleted);
+            box.setChecked(false);awaitCompletion();assertFalse(new NoForgetStore(c).find(item.id).taskCompleted);
             item.taskMode=false;LinearLayout ordinary=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item));assertNull(ordinary.findViewWithTag("task_check_107"));
         }
     }
@@ -99,9 +99,26 @@ public class NoteTasksTest {
         try(var controller=Robolectric.buildActivity(MainActivity.class).setup().visible()){
             LinearLayout card=ReflectionHelpers.callInstanceMethod(controller.get(),"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,done));
             Button enabled=card.findViewWithTag("note_alarm_enabled_109");assertFalse(enabled.isEnabled());assertFalse(new NoForgetStore(c).find(item.id).reminderEnabled);
-            ((CheckBox)card.findViewWithTag("task_check_109")).setChecked(false);assertTrue(enabled.isEnabled());
+            ((CheckBox)card.findViewWithTag("task_check_109")).setChecked(false);awaitCompletion();assertTrue(enabled.isEnabled());
             assertEquals(c.getString(R.string.runtime_text_0212),enabled.getText().toString());
         }
+    }
+    void awaitCompletion(){
+        try{NoteTasks.WORK.submit(()->{}).get(10,java.util.concurrent.TimeUnit.SECONDS);}
+        catch(Exception error){throw new AssertionError(error);}
+        Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+    }
+    @Test public void checkboxStartsCelebrationBeforeBlockedStorageWorkFinishes() throws Exception {
+        NoForgetItem item=task(110,RecurrenceUtils.NONE);
+        java.util.concurrent.CountDownLatch gate=new java.util.concurrent.CountDownLatch(1);
+        NoteTasks.WORK.execute(()->{try{gate.await();}catch(InterruptedException e){Thread.currentThread().interrupt();}});
+        try(var controller=Robolectric.buildActivity(MainActivity.class).setup().visible()){
+            MainActivity host=controller.get();LinearLayout card=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item));
+            CheckBox box=card.findViewWithTag("task_check_110");box.setChecked(true);
+            assertFalse(box.isEnabled());assertNotNull(card.getTag(R.id.task_celebration_tag));
+            assertFalse(new NoForgetStore(c).find(item.id).taskCompleted);
+            gate.countDown();awaitCompletion();assertTrue(box.isEnabled());assertTrue(new NoForgetStore(c).find(item.id).taskCompleted);
+        }finally{gate.countDown();awaitCompletion();}
     }
     @Test public void celebrationContainsCoreAndOuterParticlesForBothVisualStyles(){
         for(boolean fireworks:new boolean[]{false,true}){

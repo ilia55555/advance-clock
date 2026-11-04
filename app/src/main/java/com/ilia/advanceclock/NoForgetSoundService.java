@@ -84,7 +84,12 @@ public final class NoForgetSoundService extends Service {
         NoForgetSoundService service=runningService.get();
         return service!=null && service.active && service.currentItem != null && service.currentItem.id == id ? service : null;
     }
-    static void stopTask(long id){NoForgetSoundService service=output(id);if(service!=null){service.stopReminder();service.stopSelf();}}
+    static void stopTask(long id){
+        if(android.os.Looper.myLooper()!=android.os.Looper.getMainLooper()){
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(()->stopTask(id));return;
+        }
+        NoForgetSoundService service=output(id);if(service!=null){service.stopReminder();service.stopSelf();}
+    }
     static boolean outputMuted(long id) { NoForgetSoundService service=output(id);return service!=null && service.muted; }
     static boolean outputVibrating(long id) { NoForgetSoundService service=output(id);return service!=null && service.vibrationEnabled; }
     static void setOutputMuted(long id,boolean value) {

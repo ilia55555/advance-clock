@@ -1797,12 +1797,31 @@ public final class MainActivity extends Activity {
             check.setContentDescription(getString(check.isChecked()?R.string.task_reopen:R.string.task_complete));
             titleRow.addView(check,new LinearLayout.LayoutParams(dp(48),dp(48)));titleRow.addView(taskTitle,new LinearLayout.LayoutParams(0,-2,1));card.addView(titleRow);
             TaskCelebration.strike(taskTitle,check.isChecked(),false);
+            boolean[] restoring={false},lastSaved={check.isChecked()};
             check.setOnCheckedChangeListener((button,done)->{
-                NoForgetItem updated=NoteTasks.setCompleted(this,item.id,done);if(updated==null)return;
+                if(restoring[0])return;
+                check.setEnabled(false);
+                Button alarmState=card.findViewWithTag("note_alarm_enabled_"+item.id);if(alarmState!=null)alarmState.setEnabled(false);
                 check.setContentDescription(getString(done?R.string.task_reopen:R.string.task_complete));
-                Button alarmState=card.findViewWithTag("note_alarm_enabled_"+item.id);if(alarmState!=null)updateNoteAlarmState(alarmState,updated);
                 for(TextView text:taskTexts)TaskCelebration.strike(text,done,true);
                 if(done)TaskCelebration.celebrate(card);
+                NoForgetSoundService.stopTask(item.id);
+                NoteTasks.setCompletedAsync(this,item.id,done,(updated,error)->{
+                    if(isFinishing() || isDestroyed())return;
+                    check.setEnabled(true);
+                    if(updated!=null){
+                        lastSaved[0]=updated.taskDone(System.currentTimeMillis());
+                        if(alarmState!=null)updateNoteAlarmState(alarmState,updated);
+                    }
+                    if(error!=null){
+                        if(updated==null && alarmState!=null)updateNoteAlarmState(alarmState,item);
+                        restoring[0]=true;check.setChecked(lastSaved[0]);restoring[0]=false;
+                        check.setContentDescription(getString(lastSaved[0]?R.string.task_reopen:R.string.task_complete));
+                        for(TextView text:taskTexts)TaskCelebration.strike(text,lastSaved[0],false);
+                        if(card.getTag(R.id.task_celebration_tag) instanceof android.animation.ValueAnimator)((android.animation.ValueAnimator)card.getTag(R.id.task_celebration_tag)).cancel();
+                        LogoToast.makeText(this,R.string.task_save_error,Toast.LENGTH_LONG).show();
+                    }else if(updated==null)renderNoForget();
+                });
             });
         }else card.addView(taskTitle);
 

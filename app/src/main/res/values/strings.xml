@@ -1445,4 +1445,5 @@
     <string name="task_complete">Mark as done</string>
     <string name="task_reopen">Mark as not done</string>
     <string name="task_congratulations">Well done! Task completed.</string>
+    <string name="task_save_error">Could not save task status. Please try again.</string>
 </resources>
