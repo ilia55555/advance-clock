@@ -824,7 +824,7 @@ public final class MainActivity extends Activity {
         quickAlarmReminders.setOnClickListener(v -> AlarmReminderDialog.show(
                 this,
                 alarmReminderMode,
-                alarmReminderMinutesJson,
+                alarmReminderMinutesJson,false,AlarmTimePolicy.next(quickAlarm.getTimeInMillis(),quickAlarmDateOption.isApplied(),alarmRecurrenceMode,alarmIntervalDays,alarmCustomDates,System.currentTimeMillis()),quickAlarm.getTimeZone(),
                 (mode, json) -> {
                     alarmReminderMode = mode;
                     alarmReminderMinutesJson = json;

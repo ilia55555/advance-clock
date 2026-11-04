@@ -58,6 +58,14 @@ final class MainNoteTabEnhancer {
         });
     }
 
+    private static long reminderEventTime(Activity activity){
+        Calendar due=(Calendar)readField(activity,"quickNoteDue",Calendar.getInstance(AppTime.zone()));
+        android.widget.CompoundButton date=activity.findViewById(R.id.date_option_quick_note);
+        return AlarmTimePolicy.next(due.getTimeInMillis(),date==null || date.isChecked(),
+                (Integer)readField(activity,"noteRecurrenceMode",RecurrenceUtils.NONE),
+                (Integer)readField(activity,"noteIntervalDays",1),
+                (String)readField(activity,"noteCustomDates","[]"),System.currentTimeMillis());
+    }
     private static void enhance(Activity activity) {
         State state = STATES.get(activity);
         if (state == null) {
@@ -122,7 +130,7 @@ final class MainNoteTabEnhancer {
         state.remindersButton.setOnClickListener(v -> AlarmReminderDialog.show(
                 activity,
                 state.reminderMode,
-                state.reminderMinutesJson,true,
+                state.reminderMinutesJson,true,reminderEventTime(activity),AppTime.zone(),
                 (mode, json) -> {
                     state.reminderMode = mode;
                     state.reminderMinutesJson = json;

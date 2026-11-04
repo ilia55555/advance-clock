@@ -286,7 +286,7 @@ public final class NoForgetEditorActivity extends Activity {
         remindersButton.setOnClickListener(v->AlarmReminderDialog.show(
                 this,
                 reminderMode,
-                reminderMinutesJson,true,
+                reminderMinutesJson,true,AlarmTimePolicy.next(due.getTimeInMillis(),dateOption.isApplied(),recurrenceMode,intervalDays,customDatesJson,System.currentTimeMillis()),due.getTimeZone(),
                 (mode,json)->{
                     reminderMode=mode;
                     reminderMinutesJson=json;

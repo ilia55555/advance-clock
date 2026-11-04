@@ -1,9 +1,10 @@
 package com.ilia.advanceclock;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.text.InputType;
+
 import android.view.*;
 import android.widget.*;
 import java.util.*;
@@ -11,8 +12,10 @@ import java.util.*;
 public final class AlarmReminderDialog {
     public interface Callback {void onConfigured(int mode,String customMinutesJson);}
     public static void show(Context c,int mode,String json,Callback callback){show(c,mode,json,false,callback);}
-    public static void show(Context c,int mode,String json,boolean legacyBefore,Callback callback){new Editor(c,mode,json,legacyBefore,callback).show();}
+    public static void show(Context c,int mode,String json,boolean legacyBefore,Callback callback){show(c,mode,json,legacyBefore,System.currentTimeMillis()+86400000L,AppTime.zone(),callback);}
+    public static void show(Context c,int mode,String json,boolean legacyBefore,long eventMillis,TimeZone zone,Callback callback){if(eventMillis<=0){LogoToast.makeText(c,R.string.event_set_due,Toast.LENGTH_SHORT).show();return;}new Editor(c,mode,json,legacyBefore,eventMillis,zone,callback).show();}
     private static final class Editor {
+        final long eventMillis;final TimeZone zone;
         final Context c;final Callback callback;
         final LinkedHashMap<String,EventReminderRules.Rule> selected=new LinkedHashMap<>();
         final List<SettingsSection> directions=new ArrayList<>();
@@ -22,8 +25,8 @@ public final class AlarmReminderDialog {
 
         final TextView count;
         final LinearLayout root;
-        Editor(Context c,int mode,String json,boolean legacyBefore,Callback callback){
-            this.c=c;this.callback=callback;
+        Editor(Context c,int mode,String json,boolean legacyBefore,long eventMillis,TimeZone zone,Callback callback){
+            this.c=c;this.callback=callback;this.eventMillis=eventMillis/60000L*60000L;this.zone=zone;
             for(EventReminderRules.Rule rule:EventReminderRules.parse(mode,json,legacyBefore)){
                 selected.put(rule.key(),rule);if(rule.custom)manual.add(rule);
             }
@@ -53,25 +56,40 @@ public final class AlarmReminderDialog {
             for(int week:new int[]{1,2,3,4})option(longer.content,new EventReminderRules.Rule(before,"week",week,false));
             for(int month:new int[]{1,2,3,6,12})option(longer.content,new EventReminderRules.Rule(before,"month",month,false));
             SettingsSection custom=accordion(section.content,groups,key+"_custom",R.string.event_custom);
+            Calendar picked=Calendar.getInstance(zone);picked.setTimeInMillis(eventMillis+(before?-86400000L:86400000L));
+            int[] calendarType={AppSettings.defaultCalendar(c)};
             LinearLayout entry=new LinearLayout(c);entry.setGravity(Gravity.CENTER_VERTICAL);entry.setBaselineAligned(false);
-            EditText amount=new EditText(c);amount.setHint(R.string.event_amount);amount.setSingleLine(true);
-            amount.setInputType(InputType.TYPE_CLASS_NUMBER);amount.setTextSize(15);amount.setTextColor(AppSettings.textPrimary(c));
-            amount.setTag("event_"+key+"_amount");entry.addView(amount,new LinearLayout.LayoutParams(0,dp(52),1));
-            Spinner unit=new Spinner(c);String[] names={c.getString(R.string.event_unit_minutes_name),c.getString(R.string.event_unit_hours_name),c.getString(R.string.event_unit_days_name),c.getString(R.string.event_unit_weeks_name),c.getString(R.string.event_unit_months_name)};
-            ArrayAdapter<String> adapter=new ArrayAdapter<>(c,android.R.layout.simple_spinner_item,names);adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);unit.setAdapter(adapter);
-            unit.setTag("event_"+key+"_unit");entry.addView(unit,new LinearLayout.LayoutParams(0,dp(52),1));custom.content.addView(entry);
+            Button date=fieldButton("event_"+key+"_date"),time=fieldButton("event_"+key+"_time");
+            Runnable render=()->{date.setText(CalendarUtils.formatDate(picked.getTimeInMillis(),calendarType[0],zone));time.setText(CalendarUtils.fa(TimeFormat.formatter(c,false,zone).format(picked.getTime())));};
+            LinearLayout.LayoutParams dateLp=new LinearLayout.LayoutParams(0,dp(56),1);dateLp.setMarginEnd(dp(6));entry.addView(date,dateLp);
+            entry.addView(time,new LinearLayout.LayoutParams(0,dp(56),1));custom.content.addView(entry);render.run();
+            date.setOnClickListener(v->CalendarPickerDialog.showDateAny(c,WorldAlarmReference.pickerDate(picked.getTimeInMillis(),zone),calendarType[0],(millis,type)->{
+                Calendar day=Calendar.getInstance(AppTime.zone());day.setTimeInMillis(millis);
+                picked.set(day.get(Calendar.YEAR),day.get(Calendar.MONTH),day.get(Calendar.DAY_OF_MONTH));calendarType[0]=type;render.run();
+            }));
+            time.setOnClickListener(v->new TimePickerDialog(c,(view,hour,minute)->{
+                picked.set(Calendar.HOUR_OF_DAY,hour);picked.set(Calendar.MINUTE,minute);picked.set(Calendar.SECOND,0);picked.set(Calendar.MILLISECOND,0);render.run();
+            },picked.get(Calendar.HOUR_OF_DAY),picked.get(Calendar.MINUTE),AppSettings.clock24Hour(c)).show());
             Button add=new Button(c);add.setText(R.string.event_add);add.setAllCaps(false);add.setTextColor(AppSettings.primaryColor(c));add.setBackground(ReminderModalStyle.shape(c,AppSettings.field(c),AppSettings.primaryColor(c),12));
             add.setTag("event_"+key+"_add");custom.content.addView(add,new LinearLayout.LayoutParams(-1,dp(48)));
             LinearLayout entries=column();custom.content.addView(entries);
             for(EventReminderRules.Rule rule:new ArrayList<>(manual))if(rule.before==before)manualRow(entries,rule);
             add.setOnClickListener(v->{
-                int n;try{n=Integer.parseInt(amount.getText().toString().trim());}catch(Exception e){n=0;}
-                EventReminderRules.Rule rule=new EventReminderRules.Rule(before,EventReminderRules.UNITS[unit.getSelectedItemPosition()],n,true);
-                if(!EventReminderRules.valid(rule)){amount.setError(c.getString(R.string.event_invalid_amount));return;}
+                long delta=(picked.getTimeInMillis()/60000L*60000L-eventMillis)/60000L;
+                if((before && delta>=0) || (!before && delta<=0)){
+                    LogoToast.makeText(c,before?R.string.event_pick_before:R.string.event_pick_after,Toast.LENGTH_SHORT).show();return;
+                }
+                if(picked.getTimeInMillis()<=System.currentTimeMillis()){LogoToast.makeText(c,R.string.event_pick_future,Toast.LENGTH_SHORT).show();return;}
+                EventReminderRules.Rule rule=new EventReminderRules.Rule(before,"minute",(int)Math.abs(delta),true);
+                if(!EventReminderRules.valid(rule)){LogoToast.makeText(c,R.string.event_invalid_amount,Toast.LENGTH_SHORT).show();return;}
                 if(selected.containsKey(rule.key()))return;
                 if(manual.size()>=EventReminderRules.MAX_CUSTOM){LogoToast.makeText(c,R.string.event_custom_limit,Toast.LENGTH_SHORT).show();return;}
-                manual.add(rule);selected.put(rule.key(),rule);manualRow(entries,rule);syncChecks(rule.key(),true);amount.setText("");updateCount();
+                manual.add(rule);selected.put(rule.key(),rule);manualRow(entries,rule);syncChecks(rule.key(),true);updateCount();
             });
+        }
+        Button fieldButton(String tag){
+            Button button=new Button(c);button.setTag(tag);button.setAllCaps(false);button.setTextSize(14);button.setTextColor(AppSettings.textPrimary(c));
+            button.setBackground(ReminderModalStyle.shape(c,AppSettings.field(c),AppSettings.primaryColor(c),12));return button;
         }
         SettingsSection accordion(LinearLayout parent,List<SettingsSection> siblings,String key,int title){
             SettingsSection[] ref=new SettingsSection[1];
@@ -97,6 +115,7 @@ public final class AlarmReminderDialog {
         void manualRow(LinearLayout parent,EventReminderRules.Rule rule){
             LinearLayout row=new LinearLayout(c);row.setGravity(Gravity.CENTER_VERTICAL);
             option(row,rule);
+            ((CheckBox)row.getChildAt(0)).setText(CalendarUtils.formatDate(rule.at(eventMillis,zone),AppSettings.defaultCalendar(c),zone)+"  •  "+CalendarUtils.fa(TimeFormat.formatter(c,false,zone).format(new Date(rule.at(eventMillis,zone)))));
             row.getChildAt(0).setLayoutParams(new LinearLayout.LayoutParams(0,-2,1));
             ImageButton remove=new ImageButton(c);remove.setImageResource(R.drawable.ic_md_delete);remove.setColorFilter(0xFFC62828);
             remove.setContentDescription(c.getString(R.string.tool_delete));remove.setBackgroundColor(android.graphics.Color.TRANSPARENT);

@@ -1380,4 +1380,9 @@
     <string name="event_one_month">یک ماه</string>
     <string name="recurrence_interval_months">فاصلهٔ تکرار بر حسب ماه</string>
     <string name="recurrence_interval_years">فاصلهٔ تکرار بر حسب سال</string>
+
+    <string name="event_pick_before">زمان یادآوری باید پیش از موعد رویداد باشد.</string>
+    <string name="event_pick_after">زمان یادآوری باید پس از موعد رویداد باشد.</string>
+    <string name="event_pick_future">زمان یادآوری را در آینده انتخاب کنید.</string>
+    <string name="event_set_due">ابتدا تاریخ و ساعت رویداد را انتخاب کنید.</string>
 </resources>

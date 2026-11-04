@@ -1434,4 +1434,9 @@
     <string name="event_one_month">1 month</string>
     <string name="recurrence_interval_months">Repeat interval (months)</string>
     <string name="recurrence_interval_years">Repeat interval (years)</string>
+
+    <string name="event_pick_before">Choose a time before the event.</string>
+    <string name="event_pick_after">Choose a time after the event.</string>
+    <string name="event_pick_future">Choose a future reminder time.</string>
+    <string name="event_set_due">Choose the event date and time first.</string>
 </resources>

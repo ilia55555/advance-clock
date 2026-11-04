@@ -17,7 +17,7 @@ public class EventReminderDialogTest {
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {
             Activity host=controller.get();String[] result={null};int[] mode={-1};
-            AlarmReminderDialog.show(host,0,"[]",(m,j)->{mode[0]=m;result[0]=j;});
+            AlarmReminderDialog.show(host,0,"[]",false,System.currentTimeMillis()+3*86400000L,AppTime.zone(),(m,j)->{mode[0]=m;result[0]=j;});
             AlertDialog dialog=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
             ViewGroup root=dialog.findViewById(android.R.id.content);
             SettingsSection before=root.findViewWithTag("settings_section_before");
@@ -27,9 +27,17 @@ public class EventReminderDialogTest {
             root.findViewWithTag("settings_header_before_days").performClick();assertFalse(hours.isExpanded());
             ((CheckBox)root.findViewWithTag("event_rule_before_day_1")).setChecked(true);
             ((CheckBox)root.findViewWithTag("event_rule_after_hour_8")).setChecked(true);
-            EditText amount=root.findViewWithTag("event_before_amount");
-            for(int i=61;i<=70;i++){amount.setText(Integer.toString(i));root.findViewWithTag("event_before_add").performClick();}
-            amount.setText("71");root.findViewWithTag("event_before_add").performClick();
+            assertNull(root.findViewWithTag("event_before_amount"));
+            root.findViewWithTag("event_before_date").performClick();
+            AlertDialog calendar=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            assertNotSame(dialog,calendar);calendar.dismiss();
+            for(int i=1;i<=11;i++){
+                root.findViewWithTag("event_before_time").performClick();
+                TimePickerDialog time=(TimePickerDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+                time.updateTime(10,i);time.getButton(AlertDialog.BUTTON_POSITIVE).performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                root.findViewWithTag("event_before_add").performClick();
+            }
             assertEquals(host.getString(R.string.reminder_count_summary,CalendarUtils.fa(12)),
                     ((TextView)root.findViewWithTag("event_reminder_count")).getText().toString());
             assertNull(result[0]);dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
@@ -42,6 +50,33 @@ public class EventReminderDialogTest {
             assertEquals(host.getString(R.string.reminder_count_summary,CalendarUtils.fa(12)),AlarmReminderUtils.summary(mode[0],result[0]));
         }
     }
+    @Test public void customCalendarAndClockSaveExactSelectedTimeAndRepeatItsOffset(){
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {
+            Activity host=controller.get();TimeZone zone=AppTime.zone();
+            Calendar event=Calendar.getInstance(zone);event.setTimeInMillis(System.currentTimeMillis()+10*86400000L);
+            event.set(Calendar.HOUR_OF_DAY,9);event.set(Calendar.MINUTE,0);event.set(Calendar.SECOND,0);event.set(Calendar.MILLISECOND,0);
+            Calendar target=(Calendar)event.clone();target.add(Calendar.DAY_OF_YEAR,-3);target.set(Calendar.HOUR_OF_DAY,18);target.set(Calendar.MINUTE,25);
+            String[] saved={null};
+            AlarmReminderDialog.show(host,0,"[]",false,event.getTimeInMillis(),zone,(m,j)->saved[0]=j);
+            AlertDialog dialog=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();View root=dialog.findViewById(android.R.id.content);
+            root.findViewWithTag("event_before_date").performClick();
+            AlertDialog calendar=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            ((TripleCalendarView)calendar.findViewById(android.R.id.content).findViewWithTag("date_picker_calendar")).setSelectedMillis(target.getTimeInMillis());
+            calendar.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+            root.findViewWithTag("event_before_time").performClick();
+            TimePickerDialog clock=(TimePickerDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+            clock.updateTime(18,25);clock.getButton(AlertDialog.BUTTON_POSITIVE).performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            root.findViewWithTag("event_before_add").performClick();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            EventReminderRules.Rule rule=EventReminderRules.parse(2,saved[0],false).get(0);
+            assertTrue(rule.before);assertTrue(rule.custom);assertEquals(target.getTimeInMillis(),rule.at(event.getTimeInMillis(),zone));
+            long next=rule.next(event.getTimeInMillis(),RecurrenceUtils.WEEKLY,1,"[]",zone,target.getTimeInMillis());
+            assertEquals(target.getTimeInMillis()+7*86400000L,rule.at(next,zone));
+        }
+    }
+
     @Test public void recurrenceHoursRoundTripAsMinutesWithoutChangingStoredMode(){
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {

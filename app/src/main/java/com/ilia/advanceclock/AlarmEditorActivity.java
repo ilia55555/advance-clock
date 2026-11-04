@@ -180,7 +180,7 @@ public final class AlarmEditorActivity extends Activity {
         remindersButton.setOnClickListener(v -> AlarmReminderDialog.show(
                 this,
                 reminderMode,
-                reminderMinutesJson,
+                reminderMinutesJson,false,AlarmTimePolicy.next(selected.getTimeInMillis(),dateOption.isApplied(),recurrenceMode,intervalDays,customDatesJson,System.currentTimeMillis(),selected.getTimeZone()),selected.getTimeZone(),
                 (mode, json) -> {
                     reminderMode = mode;
                     reminderMinutesJson = json;
