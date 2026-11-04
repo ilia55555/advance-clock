@@ -1,1 +1,1 @@
-<set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="300" android:interpolator="@interpolator/motion_gentle"><alpha android:fromAlpha="1" android:toAlpha="0"/><translate android:fromXDelta="0" android:toXDelta="5%"/></set>
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:duration="420" android:interpolator="@interpolator/motion_gentle"><alpha android:fromAlpha="1" android:toAlpha="0" /><translate android:fromXDelta="0" android:toXDelta="7%" /></set>

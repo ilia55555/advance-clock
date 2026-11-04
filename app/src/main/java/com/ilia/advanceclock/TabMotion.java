@@ -36,7 +36,7 @@ final class TabMotion {
             float distance, float start, float end, long duration, Runnable complete) {
         animator = ValueAnimator.ofFloat(start, end);
         animator.setDuration(duration);
-        animator.setInterpolator(new PathInterpolator(.25f, .1f, .25f, 1f));
+        animator.setInterpolator(new PathInterpolator(.42f, 0f, .58f, 1f));
         animator.addUpdateListener(animation -> {
             float offset = (float) animation.getAnimatedValue();
             outgoing.setTranslationX(offset);

@@ -15,11 +15,11 @@ final class AppMotion {
 
         TransitionSet set=new TransitionSet().setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.addTransition(new ChangeBounds());set.addTransition(new Fade());set.setDuration(360);
-        set.setInterpolator(new android.view.animation.PathInterpolator(.25f,.1f,.25f,1));
+        set.setInterpolator(new android.view.animation.PathInterpolator(.42f,0,.58f,1));
         TransitionManager.beginDelayedTransition(parent,set);
     }
     static void launch(Activity host,Intent intent,View origin){
-        if(enabled() && origin!=null && origin.isLaidOut())host.startActivity(intent,ActivityOptions.makeScaleUpAnimation(origin,0,0,origin.getWidth(),origin.getHeight()).toBundle());
+        if(enabled() && origin!=null && origin.isLaidOut())host.startActivity(intent,ActivityOptions.makeCustomAnimation(host,R.anim.editor_enter,R.anim.editor_stay).toBundle());
         else {host.startActivity(intent);if(!enabled())host.overridePendingTransition(0,0);}
     }
     static boolean editor(Activity host){return host instanceof AlarmEditorActivity || host instanceof NoForgetEditorActivity || host instanceof AlarmAttachmentEditorActivity || host instanceof AlarmPhotoCropActivity;}

@@ -745,7 +745,7 @@ final class PrayerSettingsPanel {
             if (activeDetails != null) activeDetails.setVisibility(View.GONE);
             if (activeDetailsArrow != null) {
                 activeDetailsArrow.animate().cancel();
-                activeDetailsArrow.animate().rotation(0f).setDuration(AppMotion.enabled()?320:0).setInterpolator(new android.view.animation.PathInterpolator(.25f,.1f,.25f,1)).start();
+                activeDetailsArrow.animate().rotation(0f).setDuration(AppMotion.enabled()?320:0).setInterpolator(new android.view.animation.PathInterpolator(.42f,0,.58f,1)).start();
             }
             activeDetailsArrow = null;
             activeDetails = null;
@@ -758,7 +758,7 @@ final class PrayerSettingsPanel {
                 activeDetails = details;
                 activeDetailsArrow = expand;
                 expand.animate().cancel();
-                expand.animate().rotation(180f).setDuration(AppMotion.enabled()?320:0).setInterpolator(new android.view.animation.PathInterpolator(.25f,.1f,.25f,1)).start();
+                expand.animate().rotation(180f).setDuration(AppMotion.enabled()?320:0).setInterpolator(new android.view.animation.PathInterpolator(.42f,0,.58f,1)).start();
             }
         });
         expand.setImageResource(R.drawable.ic_settings_chevron_down);
