@@ -36,7 +36,7 @@ final class TabMotion {
             float distance, float start, float end, long duration, Runnable complete) {
         animator = ValueAnimator.ofFloat(start, end);
         animator.setDuration(duration);
-        animator.setInterpolator(new PathInterpolator(.22f, .61f, .36f, 1f));
+        animator.setInterpolator(new PathInterpolator(.25f, .1f, .25f, 1f));
         animator.addUpdateListener(animation -> {
             float offset = (float) animation.getAnimatedValue();
             outgoing.setTranslationX(offset);
@@ -97,7 +97,7 @@ final class TabMotion {
         incoming.setTranslationX(distance);
         incoming.postOnAnimation(() -> {
             if (token != generation) return;
-            animatePages(previous, tab, outgoing, incoming, distance, 0, -distance, 300,
+            animatePages(previous, tab, outgoing, incoming, distance, 0, -distance, 420,
                     () -> { if (token == generation) finish(); });
         });
     }
@@ -140,7 +140,7 @@ final class TabMotion {
         View outgoing = panels.get(selected), incoming = panels.get(target);
         int token = ++generation;
         float end = commit ? -dragDistance : 0;
-        long duration = (long) (180 + 140 * Math.abs(end - dragOffset) / Math.abs(dragDistance));
+        long duration = (long) (240 + 180 * Math.abs(end - dragOffset) / Math.abs(dragDistance));
         dragTarget = null;
         Runnable complete = () -> {
             if (token != generation) return;

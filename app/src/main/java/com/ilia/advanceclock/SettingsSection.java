@@ -97,7 +97,7 @@ final class SettingsSection extends LinearLayout {
         divider.setVisibility(expanded ? VISIBLE : GONE);
         arrow.animate().cancel();
         if (isLaidOut() && AppMotion.enabled()) {
-            arrow.animate().rotation(expanded ? 180f : 0f).setDuration(180).start();
+            arrow.animate().rotation(expanded ? 180f : 0f).setDuration(320).setInterpolator(new android.view.animation.PathInterpolator(.25f,.1f,.25f,1)).start();
         } else {
             arrow.setRotation(expanded ? 180f : 0f);
         }

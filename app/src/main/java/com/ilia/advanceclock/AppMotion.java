@@ -14,8 +14,8 @@ final class AppMotion {
         if(parent==null || !parent.isLaidOut() || !enabled())return;
 
         TransitionSet set=new TransitionSet().setOrdering(TransitionSet.ORDERING_TOGETHER);
-        set.addTransition(new ChangeBounds());set.addTransition(new Fade());set.setDuration(220);
-        set.setInterpolator(new android.view.animation.PathInterpolator(.2f,0,0,1));
+        set.addTransition(new ChangeBounds());set.addTransition(new Fade());set.setDuration(360);
+        set.setInterpolator(new android.view.animation.PathInterpolator(.25f,.1f,.25f,1));
         TransitionManager.beginDelayedTransition(parent,set);
     }
     static void launch(Activity host,Intent intent,View origin){
