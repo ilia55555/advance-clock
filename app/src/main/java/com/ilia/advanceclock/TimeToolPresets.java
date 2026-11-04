@@ -38,20 +38,20 @@ final class TimeToolPresets {
         boolean stopwatch = ToolAlarmScheduler.STOPWATCH.equals(kind);
         View anchor = stopwatch ? parent.findViewById(R.id.stopwatch_lap) : label;
         LinearLayout.LayoutParams extrasLayout = new LinearLayout.LayoutParams(-1, -2);
-        extrasLayout.topMargin = Math.round(16 * host.getResources().getDisplayMetrics().density);
+        extrasLayout.topMargin = Math.round(8 * host.getResources().getDisplayMetrics().density);
         parent.addView(controls, anchor == null ? parent.getChildCount()
                 : parent.indexOfChild(anchor) + 1, extrasLayout);
         attachments = AlarmAttachments.button(host, kind);
         controls.addView(attachments);
         LinearLayout actions = new LinearLayout(host);
         LinearLayout.LayoutParams actionsLayout = new LinearLayout.LayoutParams(-1, -2);
-        actionsLayout.topMargin = Math.round(12 * host.getResources().getDisplayMetrics().density);
+        actionsLayout.topMargin = Math.round(8 * host.getResources().getDisplayMetrics().density);
         controls.addView(actions, actionsLayout);
         Button save = button(R.string.tool_save);
         Button saved = button(R.string.tool_saved);
         actions.addView(save, new LinearLayout.LayoutParams(0, -2, 1));
         LinearLayout.LayoutParams savedLayout = new LinearLayout.LayoutParams(0, -2, 1);
-        savedLayout.setMarginStart(Math.round(10 * host.getResources().getDisplayMetrics().density));
+        savedLayout.setMarginStart(Math.round(8 * host.getResources().getDisplayMetrics().density));
         actions.addView(saved, savedLayout);
         save.setOnClickListener(v -> savePreset());
         saved.setOnClickListener(v -> showSaved());
