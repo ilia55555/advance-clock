@@ -45,20 +45,24 @@ final class TaskCelebration {
         final int[] colors={0xFF45B8A8,0xFFF7C65D,0xFFEF8FA1,0xFF6FAFE5,0xFFB19ADD};
         Drawable particles=new Drawable(){
             final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);final float density=card.getResources().getDisplayMetrics().density;
-            final float[] vx=new float[32],vy=new float[32],spin=new float[32];
+            final float[] vx=new float[64],vy=new float[64],spin=new float[64],offsetX=new float[64],offsetY=new float[64];
             {
-                for(int i=0;i<32;i++){
+                for(int i=0;i<64;i++){
                     double angle=i*2.399963;
-                    vx[i]=(float)Math.cos(angle)*(65+i%7*12)*density;
-                    vy[i]=-(65+i%6*17)*density;spin[i]=(i%2==0?1:-1)*(100+i%5*30);
+                    float reach=(125+i%8*18)*density;
+                    vx[i]=(float)Math.cos(angle)*reach;
+                    vy[i]=(float)Math.sin(angle)*reach*.75f-90*density;
+                    offsetX[i]=(float)Math.cos(angle)*Math.min(card.getWidth()*.15f,50*density);
+                    offsetY[i]=(float)Math.sin(angle)*12*density;
+                    spin[i]=(i%2==0?1:-1)*(180+i%5*45);
                 }
             }
             @Override public void draw(Canvas canvas){
                 float t=getLevel()/10000f;
-                float opacity=Math.min(1f,t/.12f)*Math.min(1f,(1-t)/.4f);
-                for(int i=0;i<32;i++){
-                    float px=x+vx[i]*t+(float)Math.sin(t*4+i)*5*density*t;
-                    float py=y+vy[i]*t+190*density*t*t;
+                float opacity=Math.min(1f,t/.05f)*Math.min(1f,(1-t)/.4f);
+                for(int i=0;i<64;i++){
+                    float px=x+offsetX[i]+vx[i]*t+(float)Math.sin(t*4+i)*5*density*t;
+                    float py=y+offsetY[i]+vy[i]*t+220*density*t*t;
                     float size=(2.5f+i%3*.7f)*density;
                     paint.setColor(colors[i%colors.length]);paint.setAlpha((int)(230*opacity));
                     int saved=canvas.save();canvas.rotate(i*23+spin[i]*t,px,py);
@@ -71,7 +75,7 @@ final class TaskCelebration {
             public void setAlpha(int a){} public void setColorFilter(ColorFilter f){} public int getOpacity(){return PixelFormat.TRANSLUCENT;}
         };
         particles.setBounds(0,0,root.getWidth(),root.getHeight());root.getOverlay().add(particles);
-        ValueAnimator animator=ValueAnimator.ofInt(0,10000);animator.setDuration(1600);animator.setInterpolator(new android.view.animation.LinearInterpolator());animator.addUpdateListener(a->particles.setLevel((int)a.getAnimatedValue()));
+        ValueAnimator animator=ValueAnimator.ofInt(0,10000);animator.setDuration(1200);animator.setInterpolator(new android.view.animation.LinearInterpolator());animator.addUpdateListener(a->particles.setLevel((int)a.getAnimatedValue()));
         View.OnAttachStateChangeListener detach=new View.OnAttachStateChangeListener(){public void onViewAttachedToWindow(View v){}public void onViewDetachedFromWindow(View v){animator.cancel();}};card.addOnAttachStateChangeListener(detach);
         animator.addListener(new AnimatorListenerAdapter(){public void onAnimationEnd(Animator a){root.getOverlay().remove(particles);card.removeOnAttachStateChangeListener(detach);card.setTag(R.id.task_celebration_tag,null);}});card.setTag(R.id.task_celebration_tag,animator);animator.start();
     }
