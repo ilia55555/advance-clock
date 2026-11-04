@@ -220,7 +220,7 @@ final class MainNoteTabEnhancer {
         canvasParams.topMargin = dp(activity, 8);
         root.addView(canvas, canvasParams);
 
-        AlertDialog dialog = new AlertDialog.Builder(activity)
+        AlertDialog dialog = new MotionDialogs.Builder(activity)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
                 .setPositiveButton(AppString.get(R.string.runtime_text_0204), (buttonDialog, which) -> {
@@ -252,7 +252,7 @@ final class MainNoteTabEnhancer {
         root.addView(scroll, scrollParams);
         renderAttachmentList(activity, state, list, NoteAttachment.KIND_FILE);
 
-        state.dialog = new AlertDialog.Builder(activity)
+        state.dialog = new MotionDialogs.Builder(activity)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0002), null)
                 .create();
@@ -301,7 +301,7 @@ final class MainNoteTabEnhancer {
         root.addView(scroll, scrollParams);
         renderAttachmentList(activity, state, list, "targets");
 
-        state.dialog = new AlertDialog.Builder(activity)
+        state.dialog = new MotionDialogs.Builder(activity)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0002), null)
                 .create();

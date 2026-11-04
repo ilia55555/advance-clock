@@ -20,6 +20,7 @@ public final class ToolsDialog {
 
     public static void show(Activity host) {
         Dialog dialog = new Dialog(host);
+        AppMotion.window(dialog.getWindow(),R.style.MotionSheet);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         LinearLayout root = new LinearLayout(host);

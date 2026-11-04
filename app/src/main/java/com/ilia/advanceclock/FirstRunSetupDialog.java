@@ -159,7 +159,7 @@ final class FirstRunSetupDialog {
                 continueButton,
                 continueParams);
 
-        AlertDialog dialog = new AlertDialog.Builder(activity)
+        AlertDialog dialog = new MotionDialogs.Builder(activity)
                 .setView(content)
                 .create();
         dialog.setCancelable(false);

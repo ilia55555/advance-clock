@@ -210,7 +210,7 @@ public final class SmartAlarmActivity extends Activity {
         insertTime.setTag("smart_insert_time");
         insertTime.setOnClickListener(v -> {
             Calendar now = Calendar.getInstance(AppTime.zone());
-            new TimePickerDialog(this, (view, hour, minute) -> insertText(
+            new MotionDialogs.TimePicker(this, (view, hour, minute) -> insertText(
                     String.format(Locale.US, "%02d:%02d", hour, minute)),
                     now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show();
         });
@@ -672,7 +672,7 @@ public final class SmartAlarmActivity extends Activity {
                     date.setText(draft.dateText());
                 }));
 
-        time.setOnClickListener(v -> new TimePickerDialog(
+        time.setOnClickListener(v -> new MotionDialogs.TimePicker(
                 this,
                 (view, hour, minute) -> {
                     draft.hour = hour;
@@ -683,7 +683,7 @@ public final class SmartAlarmActivity extends Activity {
                 draft.minute,
                 true).show());
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = new MotionDialogs.Builder(this)
                 .setTitle(noteMode ? getString(R.string.smart_edit_note) : AppString.get(R.string.runtime_text_0280))
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)

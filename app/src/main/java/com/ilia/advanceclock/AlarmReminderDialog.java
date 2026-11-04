@@ -37,7 +37,7 @@ public final class AlarmReminderDialog {
         }
         void show(){
             ScrollView scroll=ReminderModalStyle.scroll(c,root);
-            AlertDialog dialog=new AlertDialog.Builder(c).setTitle(AppString.get(R.string.runtime_text_0021)).setView(scroll)
+            AlertDialog dialog=new MotionDialogs.Builder(c).setTitle(AppString.get(R.string.runtime_text_0021)).setView(scroll)
                     .setNegativeButton(AppString.get(R.string.runtime_text_0003),null)
                     .setPositiveButton(AppString.get(R.string.runtime_text_0004),(d,w)->callback.onConfigured(
                             selected.isEmpty()?AlarmReminderUtils.MODE_NONE:AlarmReminderUtils.MODE_CUSTOM,EventReminderRules.encode(selected.values())))
@@ -67,7 +67,7 @@ public final class AlarmReminderDialog {
                 Calendar day=Calendar.getInstance(AppTime.zone());day.setTimeInMillis(millis);
                 picked.set(day.get(Calendar.YEAR),day.get(Calendar.MONTH),day.get(Calendar.DAY_OF_MONTH));calendarType[0]=type;render.run();
             }));
-            time.setOnClickListener(v->new TimePickerDialog(c,(view,hour,minute)->{
+            time.setOnClickListener(v->new MotionDialogs.TimePicker(c,(view,hour,minute)->{
                 picked.set(Calendar.HOUR_OF_DAY,hour);picked.set(Calendar.MINUTE,minute);picked.set(Calendar.SECOND,0);picked.set(Calendar.MILLISECOND,0);render.run();
             },picked.get(Calendar.HOUR_OF_DAY),picked.get(Calendar.MINUTE),AppSettings.clock24Hour(c)).show());
             Button add=new Button(c);add.setText(R.string.event_add);add.setAllCaps(false);add.setTextColor(AppSettings.primaryColor(c));add.setBackground(ReminderModalStyle.shape(c,AppSettings.field(c),AppSettings.primaryColor(c),12));

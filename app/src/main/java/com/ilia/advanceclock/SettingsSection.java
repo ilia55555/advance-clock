@@ -92,10 +92,11 @@ final class SettingsSection extends LinearLayout {
     boolean isExpanded() { return content.getVisibility() == VISIBLE; }
 
     void setExpanded(boolean expanded) {
+        if(isExpanded()!=expanded && getParent() instanceof android.view.ViewGroup)AppMotion.expand((android.view.ViewGroup)getParent());
         content.setVisibility(expanded ? VISIBLE : GONE);
         divider.setVisibility(expanded ? VISIBLE : GONE);
         arrow.animate().cancel();
-        if (isLaidOut()) {
+        if (isLaidOut() && AppMotion.enabled()) {
             arrow.animate().rotation(expanded ? 180f : 0f).setDuration(180).start();
         } else {
             arrow.setRotation(expanded ? 180f : 0f);

@@ -156,7 +156,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         if (first.isEmpty()) pendingSlot = 1;
         else if (prefs.getString(key + "_image2", "").isEmpty()) pendingSlot = 2;
         else {
-            new AlertDialog.Builder(this).setItems(new String[]{getString(R.string.media_top), getString(R.string.media_bottom)},
+            new MotionDialogs.Builder(this).setItems(new String[]{getString(R.string.media_top), getString(R.string.media_bottom)},
                     (d, i) -> { pendingSlot = i + 1; launchImage(camera); }).show(); return;
         }
         launchImage(camera);
@@ -299,7 +299,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         appList.setAdapter(adapter);
         int height = Math.min(420, Math.max(160, getResources().getConfiguration().screenHeightDp / 2));
         picker.addView(appList, new LinearLayout.LayoutParams(-1, dp(height)));
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.media_app)
+        AlertDialog dialog = new MotionDialogs.Builder(this).setTitle(R.string.media_app)
                 .setView(picker).setNegativeButton(android.R.string.cancel, null).create();
         appList.setOnItemClickListener((parent, view, position, id) -> {
             add(NoteAttachment.app(this, apps.get(visible.get(position)).activityInfo.packageName));
@@ -336,7 +336,7 @@ public final class AlarmAttachmentEditorActivity extends Activity {
         LinearLayout holder = new LinearLayout(this);
         holder.setPadding(dp(20), dp(12), dp(20), 0);
         holder.addView(input, new LinearLayout.LayoutParams(-1, -2));
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.media_link).setView(holder)
+        AlertDialog dialog = new MotionDialogs.Builder(this).setTitle(R.string.media_link).setView(holder)
                 .setPositiveButton(R.string.media_add, null).setNegativeButton(android.R.string.cancel, null).create();
         dialog.setOnShowListener(v -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(b -> {
             String value = input.getText().toString().trim();

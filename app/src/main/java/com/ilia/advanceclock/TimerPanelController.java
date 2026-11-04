@@ -98,7 +98,7 @@ final class TimerPanelController {
         timeButton.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance(AppTime.zone());
             c.setTimeInMillis(selectedTarget);
-            new TimePickerDialog(host, (view, hour, minute) -> {
+            new MotionDialogs.TimePicker(host, (view, hour, minute) -> {
                 c.set(Calendar.HOUR_OF_DAY, hour);
                 c.set(Calendar.MINUTE, minute);
                 c.set(Calendar.SECOND, 0);

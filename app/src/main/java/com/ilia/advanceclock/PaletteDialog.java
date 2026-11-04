@@ -63,7 +63,7 @@ public final class PaletteDialog {
             updatePreview.run();
         });
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        AlertDialog dialog = new MotionDialogs.Builder(context)
                 .setTitle(AppString.get(R.string.runtime_text_0562))
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)

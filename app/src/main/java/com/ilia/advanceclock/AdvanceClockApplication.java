@@ -59,6 +59,7 @@ public final class AdvanceClockApplication extends Application {
             @Override public void onActivityCreated(Activity activity, Bundle state) {
                 synchronized (OPEN_ACTIVITIES) { OPEN_ACTIVITIES.put(activity, true); }
                 activity.setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
+                AppMotion.activity(activity);
                 fixPrayerArrows(activity);
                 NoteComposerVisibilityController.apply(activity);
             }

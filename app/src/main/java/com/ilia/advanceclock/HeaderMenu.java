@@ -49,9 +49,8 @@ final class HeaderMenu {
             row.setOnClickListener(v->{popup.dismiss();action.onMenuItemClick(item);});
             list.addView(row,new LinearLayout.LayoutParams(-1,-2));
         }
+        popup.setAnimationStyle(AppMotion.enabled()?R.style.MotionMenu:0);
         popup.showAsDropDown(anchor,0,dp(host,6),Gravity.END);
-        list.setAlpha(0);list.setTranslationY(-dp(host,8));
-        list.animate().alpha(1).translationY(0).setDuration(160).start();
         return popup;
     }
     private static GradientDrawable shape(Activity host,int color,int radius) {

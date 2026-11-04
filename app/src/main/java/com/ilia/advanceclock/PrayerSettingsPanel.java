@@ -739,11 +739,13 @@ final class PrayerSettingsPanel {
         labels.setContentDescription(title + "، " + AppString.get(R.string.runtime_text_0001));
         ImageView expand = new ImageView(host);
         labels.setOnClickListener(v -> {
+            if(details.getParent() instanceof android.view.ViewGroup)AppMotion.expand((android.view.ViewGroup)details.getParent());
+            if(activeDetails!=null && activeDetails.getParent() instanceof android.view.ViewGroup && activeDetails.getParent()!=details.getParent())AppMotion.expand((android.view.ViewGroup)activeDetails.getParent());
             boolean opening = details.getVisibility() != View.VISIBLE;
             if (activeDetails != null) activeDetails.setVisibility(View.GONE);
             if (activeDetailsArrow != null) {
                 activeDetailsArrow.animate().cancel();
-                activeDetailsArrow.animate().rotation(0f).setDuration(180).start();
+                activeDetailsArrow.animate().rotation(0f).setDuration(AppMotion.enabled()?180:0).start();
             }
             activeDetailsArrow = null;
             activeDetails = null;
@@ -756,7 +758,7 @@ final class PrayerSettingsPanel {
                 activeDetails = details;
                 activeDetailsArrow = expand;
                 expand.animate().cancel();
-                expand.animate().rotation(180f).setDuration(180).start();
+                expand.animate().rotation(180f).setDuration(AppMotion.enabled()?180:0).start();
             }
         });
         expand.setImageResource(R.drawable.ic_settings_chevron_down);

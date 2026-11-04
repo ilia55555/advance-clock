@@ -267,7 +267,7 @@ final class WorldClockPanelController {
             LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)content.getChildAt(i).getLayoutParams();
             params.leftMargin=dp(16);params.rightMargin=dp(16);
         }
-        AlertDialog dialog = new AlertDialog.Builder(host).create();
+        AlertDialog dialog = new MotionDialogs.Builder(host).create();
 
         dialogSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -840,7 +840,7 @@ final class WorldClockPanelController {
                     initialTime.setTimeInMillis(initial);
                     selected.set(Calendar.HOUR_OF_DAY, initialTime.get(Calendar.HOUR_OF_DAY));
                     selected.set(Calendar.MINUTE, initialTime.get(Calendar.MINUTE));
-                    new TimePickerDialog(host, (view, hour, minute) -> {
+                    new MotionDialogs.TimePicker(host, (view, hour, minute) -> {
                         selected.set(Calendar.HOUR_OF_DAY, hour);
                         selected.set(Calendar.MINUTE, minute);
                         selected.set(Calendar.SECOND, 0);

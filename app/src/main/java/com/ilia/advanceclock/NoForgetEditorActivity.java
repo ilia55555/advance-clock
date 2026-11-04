@@ -260,7 +260,7 @@ public final class NoForgetEditorActivity extends Activity {
                     updateDueButtons();
                 }));
 
-        timeButton.setOnClickListener(v->new TimePickerDialog(
+        timeButton.setOnClickListener(v->new MotionDialogs.TimePicker(
                 this,
                 (view,hour,minute)->{
                     due.set(Calendar.HOUR_OF_DAY,hour);
@@ -505,7 +505,7 @@ public final class NoForgetEditorActivity extends Activity {
         cp.topMargin=dp(8);
         root.addView(canvas,cp);
 
-        AlertDialog dialog=new AlertDialog.Builder(this)
+        AlertDialog dialog=new MotionDialogs.Builder(this)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003),null)
                 .setPositiveButton(
@@ -564,7 +564,7 @@ public final class NoForgetEditorActivity extends Activity {
         sp.topMargin=dp(8);
         root.addView(scroll,sp);
 
-        filesDialog=new AlertDialog.Builder(this)
+        filesDialog=new MotionDialogs.Builder(this)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0002),null)
                 .create();
@@ -650,7 +650,7 @@ public final class NoForgetEditorActivity extends Activity {
         sp.topMargin=dp(8);
         root.addView(scroll,sp);
 
-        appSiteDialog=new AlertDialog.Builder(this)
+        appSiteDialog=new MotionDialogs.Builder(this)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0002),null)
                 .create();
@@ -812,8 +812,8 @@ public final class NoForgetEditorActivity extends Activity {
         super.finish();
         if(createMode){
             overridePendingTransition(
-                    R.anim.editor_stay,
-                    R.anim.editor_exit);
+                    AppMotion.enabled()?R.anim.editor_stay:0,
+                    AppMotion.enabled()?R.anim.editor_exit:0);
         }
     }
 

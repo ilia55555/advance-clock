@@ -192,7 +192,7 @@ public final class RecurrenceDialog {
                     int defaultHour = base.get(Calendar.HOUR_OF_DAY);
                     int defaultMinute = base.get(Calendar.MINUTE);
 
-                    new TimePickerDialog(context, (timeView, hour, minute) -> {
+                    new MotionDialogs.TimePicker(context, (timeView, hour, minute) -> {
                         chosen.set(Calendar.HOUR_OF_DAY, hour);
                         chosen.set(Calendar.MINUTE, minute);
                         chosen.set(Calendar.SECOND, 0);
@@ -218,7 +218,7 @@ public final class RecurrenceDialog {
         refresh.run();
 
         android.widget.ScrollView scroll=ReminderModalStyle.scroll(context,root);
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        AlertDialog dialog = new MotionDialogs.Builder(context)
                 .setTitle(AppString.get(R.string.runtime_text_0287))
                 .setView(scroll)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)

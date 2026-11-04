@@ -52,6 +52,7 @@ final class PermissionWarning {
         if(insets!=null) bottom=android.os.Build.VERSION.SDK_INT>=30
                 ? insets.getInsets(android.view.WindowInsets.Type.systemBars()).bottom
                 : insets.getSystemWindowInsetBottom();
+        popup.setAnimationStyle(AppMotion.enabled()?R.style.MotionSheet:0);
         popup.showAtLocation(decor,Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL,0,dp(host,12)+bottom);
         return popup;
     }

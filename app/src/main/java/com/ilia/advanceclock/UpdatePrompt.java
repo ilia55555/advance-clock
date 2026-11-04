@@ -51,7 +51,7 @@ final class UpdatePrompt {
         ForegroundUpdates.Request request;Uri installUri,publicUri;boolean working,ready,awaitingSave,closed;int generation;
         Session(Activity host,AppUpdates.Release release) { this(host,release,AppUpdates::download); }
         Session(Activity host,AppUpdates.Release release,Downloader downloader) {
-            this.downloader=downloader;this.host=host;this.release=release;dialog=new Dialog(host);dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            this.downloader=downloader;this.host=host;this.release=release;dialog=new Dialog(host);AppMotion.window(dialog.getWindow(),R.style.MotionSheet);dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             root=new LinearLayout(host);root.setOrientation(LinearLayout.VERTICAL);root.setLayoutDirection(AppSettings.layoutDirection(host));
             root.setPadding(dp(host,20),dp(host,12),dp(host,20),dp(host,20));
             GradientDrawable bg=shape(AppSettings.surface(host),dp(host,24));float r=dp(host,24);
@@ -104,7 +104,7 @@ final class UpdatePrompt {
         void show() {
             dialog.setContentView(root);dialog.setCanceledOnTouchOutside(false);dialog.setCancelable(false);dialog.show();
             Window window=dialog.getWindow();if(window!=null){window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));window.setLayout(-1,-2);window.setGravity(Gravity.BOTTOM);}
-            root.setTranslationY(dp(host,80));root.setAlpha(0);root.animate().translationY(0).alpha(1).setDuration(220).start();
+
         }
         void close() {if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();closed=true;generation++;if(request!=null)request.cancel();dialog.dismiss();}
         void pause() {

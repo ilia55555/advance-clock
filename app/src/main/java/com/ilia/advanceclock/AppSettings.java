@@ -1278,11 +1278,11 @@ public final class AppSettings {
     }
 
     public static void playFullscreenEnter(Activity activity) {
-        activity.overridePendingTransition(R.anim.editor_enter, R.anim.editor_stay);
+        activity.overridePendingTransition(AppMotion.enabled()?(AppMotion.editor(activity)?R.anim.editor_enter:R.anim.motion_nav_enter):0, AppMotion.enabled()?R.anim.editor_stay:0);
     }
 
     public static void playFullscreenExit(Activity activity) {
-        activity.overridePendingTransition(R.anim.editor_stay, R.anim.settings_exit);
+        activity.overridePendingTransition(AppMotion.enabled()?R.anim.editor_stay:0, AppMotion.enabled()?(AppMotion.editor(activity)?R.anim.editor_exit:R.anim.motion_nav_exit):0);
     }
 
     private static int clampPalette(int value) {

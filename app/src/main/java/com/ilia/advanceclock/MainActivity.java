@@ -202,9 +202,9 @@ public final class MainActivity extends Activity {
                 pinWidgetAndExit(NoForgetWidgetProvider.class));
 
         clockFab.setOnClickListener(v ->
-                launchCreateEditor(this, AlarmEditorActivity.class));
+                AppMotion.launch(this,new Intent(this,AlarmEditorActivity.class).putExtra("modalCreate",true),v));
         noteFab.setOnClickListener(v ->
-                launchCreateEditor(this, NoForgetEditorActivity.class));
+                AppMotion.launch(this,new Intent(this,NoForgetEditorActivity.class).putExtra("modalCreate",true),v));
 
         String requestedTab = getIntent().getStringExtra("openTab");
         showTab("clock".equals(requestedTab)
@@ -365,7 +365,7 @@ public final class MainActivity extends Activity {
 
     static void launchCreateEditor(Activity host, Class<? extends Activity> editorClass) {
         host.startActivity(new Intent(host, editorClass).putExtra("modalCreate", true));
-        host.overridePendingTransition(R.anim.editor_enter, R.anim.editor_stay);
+        host.overridePendingTransition(AppMotion.enabled()?R.anim.editor_enter:0,AppMotion.enabled()?R.anim.editor_stay:0);
     }
 
     private void setupHeader() {
@@ -795,7 +795,7 @@ public final class MainActivity extends Activity {
                     applyCalendarEventsUi();
                 }));
 
-        quickAlarmTime.setOnClickListener(v -> new TimePickerDialog(
+        quickAlarmTime.setOnClickListener(v -> new MotionDialogs.TimePicker(
                 this,
                 (view, hour, minute) -> {
                     quickAlarm.set(Calendar.HOUR_OF_DAY, hour);
@@ -867,7 +867,7 @@ public final class MainActivity extends Activity {
                     updateQuickNoteLabels();
                 }));
 
-        quickNoteTime.setOnClickListener(v -> new TimePickerDialog(
+        quickNoteTime.setOnClickListener(v -> new MotionDialogs.TimePicker(
                 this,
                 (view, hour, minute) -> {
                     quickNoteDue.set(Calendar.HOUR_OF_DAY, hour);
@@ -1649,8 +1649,8 @@ public final class MainActivity extends Activity {
         edit.setBackgroundTintList(null);
         edit.setBackground(editBackground);
         edit.setOnClickListener(v ->
-                startActivity(new Intent(this, AlarmEditorActivity.class)
-                        .putExtra("alarmId", item.id)));
+                AppMotion.launch(this,new Intent(this, AlarmEditorActivity.class)
+                        .putExtra("alarmId", item.id),card));
 
         ImageButton delete = deleteIconButton();
         LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(dp(36), dp(36));
@@ -1834,8 +1834,8 @@ public final class MainActivity extends Activity {
         editParams.leftMargin = dp(6);
         edit.setLayoutParams(editParams);
         edit.setOnClickListener(v ->
-                startActivity(new Intent(this, NoForgetEditorActivity.class)
-                        .putExtra("noteId", item.id)));
+                AppMotion.launch(this,new Intent(this, NoForgetEditorActivity.class)
+                        .putExtra("noteId", item.id),card));
 
         ImageButton delete = deleteIconButton();
         delete.setLayoutParams(new LinearLayout.LayoutParams(dp(36), dp(36)));

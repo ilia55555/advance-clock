@@ -90,7 +90,7 @@ final class AlertActions extends LinearLayout {
     private void showSnooze(int initial,Consumer<int[]> accept) {
         boolean[] chosen=new boolean[MINUTES.length];String[] labels=new String[MINUTES.length];
         for(int i=0;i<MINUTES.length;i++){chosen[i]=MINUTES[i]==initial;labels[i]=AppString.get(LABELS[i]);}
-        dialog=new AlertDialog.Builder(host).setTitle(AppString.get(R.string.ui_snooze))
+        dialog=new MotionDialogs.Builder(host).setTitle(AppString.get(R.string.ui_snooze))
                 .setMultiChoiceItems(labels,chosen,(d,index,checked)->chosen[index]=checked)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003),null)
                 .setPositiveButton(AppString.get(R.string.alert_confirm),null).create();

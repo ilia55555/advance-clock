@@ -1,0 +1,12 @@
+<resources>
+<style name="MotionDialog" parent="@android:style/Animation.Dialog"><item name="android:windowEnterAnimation">@anim/motion_dialog_enter</item><item name="android:windowExitAnimation">@anim/motion_dialog_exit</item></style>
+<style name="MotionPicker" parent="@android:style/Animation.Dialog"><item name="android:windowEnterAnimation">@anim/motion_picker_enter</item><item name="android:windowExitAnimation">@anim/motion_picker_exit</item></style>
+<style name="MotionSheet" parent="@android:style/Animation.Dialog"><item name="android:windowEnterAnimation">@anim/motion_sheet_enter</item><item name="android:windowExitAnimation">@anim/motion_sheet_exit</item></style>
+<style name="MotionMenu" parent="@android:style/Animation.Dialog"><item name="android:windowEnterAnimation">@anim/motion_menu_enter</item><item name="android:windowExitAnimation">@anim/motion_menu_exit</item></style>
+<style name="MotionPage" parent="@android:style/Animation.Activity">
+<item name="android:activityOpenEnterAnimation">@anim/editor_enter</item><item name="android:activityOpenExitAnimation">@anim/editor_stay</item>
+<item name="android:activityCloseEnterAnimation">@anim/editor_stay</item><item name="android:activityCloseExitAnimation">@anim/editor_exit</item>
+</style><style name="MotionNavigation" parent="@android:style/Animation.Activity">
+<item name="android:activityOpenEnterAnimation">@anim/motion_nav_enter</item><item name="android:activityOpenExitAnimation">@anim/editor_stay</item>
+<item name="android:activityCloseEnterAnimation">@anim/editor_stay</item><item name="android:activityCloseExitAnimation">@anim/motion_nav_exit</item>
+</style></resources>

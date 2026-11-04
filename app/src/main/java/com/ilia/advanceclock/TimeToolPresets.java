@@ -106,7 +106,7 @@ final class TimeToolPresets {
         }
         String[] names = new String[items.length()];
         for (int i = 0; i < names.length; i++) names[i] = items.optJSONObject(i).optString("label", "");
-        new AlertDialog.Builder(host).setTitle(R.string.tool_saved).setItems(names, (d, index) -> {
+        new MotionDialogs.Builder(host).setTitle(R.string.tool_saved).setItems(names, (d, index) -> {
             JSONObject item = items.optJSONObject(index);
             String[] choices = {host.getString(R.string.tool_run), host.getString(R.string.tool_edit),
                     host.getString(R.string.tool_delete)};
@@ -119,9 +119,9 @@ final class TimeToolPresets {
                     return row;
                 }
             };
-            new AlertDialog.Builder(host).setTitle(names[index]).setAdapter(options, (dialog, action) -> {
+            new MotionDialogs.Builder(host).setTitle(names[index]).setAdapter(options, (dialog, action) -> {
                 if (action == 2) {
-                    AlertDialog confirmation = new AlertDialog.Builder(host).setMessage(R.string.tool_delete_confirm)
+                    AlertDialog confirmation = new MotionDialogs.Builder(host).setMessage(R.string.tool_delete_confirm)
                             .setPositiveButton(android.R.string.ok, (confirm, which) -> {
                                 // Read again so deleting cannot discard a more recent edit.
                                 prefs.edit().putString(kind + "_presets", TimeToolPresetStore.delete(
@@ -133,7 +133,7 @@ final class TimeToolPresets {
                             confirmation.getButton(AlertDialog.BUTTON_POSITIVE)));
                     confirmation.show();
                 } else if (editor.busy()) {
-                    new AlertDialog.Builder(host).setMessage(R.string.tool_replace_running)
+                    new MotionDialogs.Builder(host).setMessage(R.string.tool_replace_running)
                             .setPositiveButton(android.R.string.ok, (confirm, which) -> load(item, action == 0))
                             .setNegativeButton(android.R.string.cancel, null).show();
                 } else load(item, action == 0);

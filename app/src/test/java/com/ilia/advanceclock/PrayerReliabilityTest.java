@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class, sdk={28,35})
 public class PrayerReliabilityTest {
+    @org.junit.Before public void initializeStrings(){AppString.init(RuntimeEnvironment.getApplication());}
     @Test public void prayerUsesWakeupAlarmClockAndCancellationRemovesIt() {
         Context context=RuntimeEnvironment.getApplication();
         AlarmManager manager=context.getSystemService(AlarmManager.class);

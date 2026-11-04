@@ -145,7 +145,7 @@ public final class CalendarPickerDialog {
 
         refresh.run();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+        AlertDialog.Builder builder = new MotionDialogs.Builder(context)
                 .setView(root)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
                 .setPositiveButton(AppString.get(R.string.runtime_text_0004), null);
@@ -189,6 +189,7 @@ public final class CalendarPickerDialog {
                 });
             }
         });
+        AppMotion.window(dialog.getWindow(),R.style.MotionPicker);
         dialog.show();
     }
 
@@ -217,7 +218,7 @@ public final class CalendarPickerDialog {
                 (millis,pickedType)->{type.setSelection(pickedType);calendar.setVisibleMonthMillis(millis,pickedType);}));
         android.widget.ScrollView scroll = new android.widget.ScrollView(context);
         scroll.addView(content);
-        AlertDialog dialog = new AlertDialog.Builder(context).setView(scroll)
+        AlertDialog dialog = new MotionDialogs.Builder(context).setView(scroll)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003),null)
                 .setPositiveButton(AppString.get(R.string.runtime_text_0004),null)
                 .setNeutralButton(AppString.get(R.string.runtime_text_0174),null).create();
@@ -236,6 +237,7 @@ public final class CalendarPickerDialog {
             if(dialog.getWindow()!=null) dialog.getWindow().setLayout(
                     Math.min(dp(context,400),context.getResources().getDisplayMetrics().widthPixels-dp(context,24)), -2);
         });
+        AppMotion.window(dialog.getWindow(),R.style.MotionPicker);
         dialog.show();
     }
 

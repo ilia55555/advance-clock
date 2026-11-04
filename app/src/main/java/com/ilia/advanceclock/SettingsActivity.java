@@ -484,8 +484,7 @@ public final class SettingsActivity extends Activity {
             SettingsSection clicked = null;
             for (SettingsSection item : sections) if (item.key.equals(key)) clicked = item;
             boolean open = clicked != null && !clicked.isExpanded();
-            android.transition.TransitionManager.beginDelayedTransition(root,
-                    new android.transition.AutoTransition().setDuration(180));
+            AppMotion.expand(root);
             expandedSection = open ? key : "";
             for (SettingsSection item : sections) item.setExpanded(open && item.key.equals(key));
         });

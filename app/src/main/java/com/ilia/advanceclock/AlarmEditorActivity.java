@@ -150,7 +150,7 @@ public final class AlarmEditorActivity extends Activity {
                     updateButtons();
                 }));
 
-        timeButton.setOnClickListener(v -> new TimePickerDialog(
+        timeButton.setOnClickListener(v -> new MotionDialogs.TimePicker(
                 this,
                 (view, hour, minute) -> {
                     selected.set(Calendar.HOUR_OF_DAY, hour);
@@ -226,7 +226,7 @@ public final class AlarmEditorActivity extends Activity {
     @Override public void finish() {
         super.finish();
         if (createMode) {
-            overridePendingTransition(R.anim.editor_stay, R.anim.editor_exit);
+            overridePendingTransition(AppMotion.enabled()?R.anim.editor_stay:0, AppMotion.enabled()?R.anim.editor_exit:0);
         }
     }
 
