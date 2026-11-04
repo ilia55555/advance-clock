@@ -1389,7 +1389,14 @@ public final class MainActivity extends Activity {
             if (tabMotion != null) tabMotion.finish();
             tabSwipeX = event.getRawX(); tabSwipeY = event.getRawY();
             tabDragging = false;
-            tabSwipeAllowed = insideTabBar(tabSwipeX,tabSwipeY) || !blocksTabSwipe(getWindow().getDecorView(), tabSwipeX, tabSwipeY);
+            tabSwipeAllowed = insideTabBar(tabSwipeX,tabSwipeY)
+                    || TabSwipeZones.edge(findViewById(android.R.id.content),tabSwipeX,tabSwipeY)
+                    || TabSwipeZones.calendar(clockCalendar,tabSwipeX,tabSwipeY)
+                    || TabSwipeZones.calendar(noteCalendar,tabSwipeX,tabSwipeY)
+                    || TabSwipeZones.prayer(prayerTimesCard,tabSwipeX,tabSwipeY)
+                    || !blocksTabSwipe(getWindow().getDecorView(), tabSwipeX, tabSwipeY);
+            if(clockCalendar!=null)clockCalendar.reserveSwipeForTabs(tabSwipeAllowed);
+            if(noteCalendar!=null)noteCalendar.reserveSwipeForTabs(tabSwipeAllowed);
             if (tabVelocity != null) tabVelocity.recycle();
             tabVelocity = android.view.VelocityTracker.obtain();
         }

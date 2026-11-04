@@ -565,6 +565,14 @@ public final class TripleCalendarView extends View {
         c.drawText(text, cx, cy - (fm.ascent + fm.descent) / 2f, paint);
     }
 
+    private boolean swipeReservedForTabs;
+    void reserveSwipeForTabs(boolean reserved){swipeReservedForTabs=reserved;}
+    boolean tabSwipeFooter(float localY){
+        // Stay below all date cells, including months with a sixth week.
+        float lastCellBottom=CELL_TOP[Math.min(CELL_TOP.length,rowCount())-1]+CELL_H;
+        return getWidth()>0 && localY>= (lastCellBottom+4)*getWidth()/BASE_W && localY<getHeight();
+    }
+
     @Override public boolean onTouchEvent(MotionEvent e) {
         float s = getWidth() / BASE_W;
         float x = e.getX() / s + CONTENT_OFFSET_X;
@@ -609,6 +617,7 @@ public final class TripleCalendarView extends View {
         float dx = x - downX;
         float dy = y - downY;
 
+        if(swipeReservedForTabs && horizontalGesture){horizontalGesture=false;return true;}
         if (Math.abs(dx) > 58f && Math.abs(dx) > Math.abs(dy) * 1.15f) {
             // Right-to-left = next month; left-to-right = previous month.
             // Header button actions stay unchanged.
