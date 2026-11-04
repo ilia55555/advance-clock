@@ -103,6 +103,19 @@ public class NoteTasksTest {
             assertEquals(c.getString(R.string.runtime_text_0212),enabled.getText().toString());
         }
     }
+    @Test public void celebrationContainsCoreAndOuterParticlesForBothVisualStyles(){
+        for(boolean fireworks:new boolean[]{false,true}){
+            TaskCelebration.Burst burst=new TaskCelebration.Burst(1,0,0,300,fireworks,new java.util.Random(42));
+            int core=0,outer=0;
+            for(int i=0;i<TaskCelebration.Burst.COUNT;i++){
+                double vertical=(burst.vy[i]+(fireworks?0:90))/(fireworks?1:.75);
+                double reach=Math.hypot(burst.vx[i],vertical);
+                if(reach<35)core++;if(reach>180)outer++;
+                if(!fireworks && i%8==0)assertTrue(Math.hypot(burst.offsetX[i],burst.offsetY[i])<8);
+            }
+            assertTrue("The center must contain particles",core>=8);assertTrue("Keep a wide outer burst",outer>=16);
+        }
+    }
     @Test public void completedStylingCanRenderWithoutAnyAnimationOrOverlay(){
         TextView title=new TextView(c);title.setText("Task");TaskCelebration.strike(title,true,false);
         assertTrue((title.getPaintFlags()&Paint.STRIKE_THRU_TEXT_FLAG)!=0);assertEquals(.55f,title.getAlpha(),.01f);
