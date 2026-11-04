@@ -32,7 +32,7 @@ public final class RecurrenceDialog {
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(dp(context,18), dp(context,12), dp(context,18), dp(context,8));
-        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setLayoutDirection(AppSettings.layoutDirection(context));
 
         Spinner modeSpinner = new Spinner(context);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
@@ -51,8 +51,21 @@ public final class RecurrenceDialog {
         NumberPicker interval = new NumberPicker(context);
         interval.setMinValue(1);
         interval.setMaxValue(mode == RecurrenceUtils.INTERVAL_MINUTES ? 525600 : Math.max(365, intervalDays));
-        interval.setValue(Math.max(1, intervalDays));
+        int initialPeriod=RecurrenceUtils.period(customDatesJson);
+        if(mode==RecurrenceUtils.WEEKLY || mode==RecurrenceUtils.MONTHLY || mode==RecurrenceUtils.YEARLY) {
+            interval.setMaxValue(Math.max(365,initialPeriod));interval.setValue(initialPeriod);
+        } else interval.setValue(Math.max(1, intervalDays));
         root.addView(interval, new LinearLayout.LayoutParams(-1, dp(context,110)));
+
+        Spinner intervalUnit=new Spinner(context);intervalUnit.setTag("recurrence_interval_unit");
+        ArrayAdapter<String> units=new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,new String[]{
+                context.getString(R.string.event_unit_minutes_name),context.getString(R.string.event_unit_hours_name)});
+        units.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);intervalUnit.setAdapter(units);
+        boolean initialHours=mode==RecurrenceUtils.INTERVAL_MINUTES && intervalDays%60==0;
+        intervalUnit.setSelection(initialHours?1:0);
+        if(initialHours){interval.setValue(Math.max(1,intervalDays/60));interval.setMaxValue(8760);}
+        interval.setTag("recurrence_interval_value");
+        root.addView(intervalUnit,new LinearLayout.LayoutParams(-1,dp(context,48)));
 
         TextView weekIntervalLabel = new TextView(context);
         weekIntervalLabel.setText(AppString.get(R.string.runtime_text_0289));
@@ -108,10 +121,15 @@ public final class RecurrenceDialog {
 
         Runnable refresh = () -> {
             int selectedMode = modeSpinner.getSelectedItemPosition();
-            interval.setMaxValue(selectedMode == RecurrenceUtils.INTERVAL_MINUTES ? 525600 : Math.max(365, intervalDays));
-            boolean intervalVisible = selectedMode == RecurrenceUtils.INTERVAL_DAYS || selectedMode == RecurrenceUtils.INTERVAL_MINUTES;
+            interval.setMaxValue(selectedMode == RecurrenceUtils.INTERVAL_MINUTES
+                    ? (intervalUnit.getSelectedItemPosition()==1?8760:525600) : Math.max(Math.max(365,intervalDays),initialPeriod));
+            intervalUnit.setVisibility(selectedMode==RecurrenceUtils.INTERVAL_MINUTES?View.VISIBLE:View.GONE);
+            boolean intervalVisible = selectedMode == RecurrenceUtils.INTERVAL_DAYS || selectedMode == RecurrenceUtils.INTERVAL_MINUTES
+                    || selectedMode==RecurrenceUtils.WEEKLY || selectedMode==RecurrenceUtils.MONTHLY || selectedMode==RecurrenceUtils.YEARLY;
             intervalLabel.setText(selectedMode == RecurrenceUtils.INTERVAL_MINUTES
-                    ? R.string.recurrence_interval_minutes : R.string.runtime_text_0288);
+                    ? R.string.recurrence_interval_minutes : selectedMode==RecurrenceUtils.WEEKLY?R.string.runtime_text_0289:
+                    selectedMode==RecurrenceUtils.MONTHLY?R.string.recurrence_interval_months:
+                    selectedMode==RecurrenceUtils.YEARLY?R.string.recurrence_interval_years:R.string.runtime_text_0288);
             boolean datesVisible = selectedMode == RecurrenceUtils.CUSTOM_DATES;
             boolean weekdaysVisible = selectedMode == RecurrenceUtils.WEEKDAYS;
             intervalLabel.setVisibility(intervalVisible ? View.VISIBLE : View.GONE);
@@ -144,6 +162,19 @@ public final class RecurrenceDialog {
                 refresh.run();
             }
             @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+        int[] previousUnit={initialHours?1:0};
+        intervalUnit.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){
+            @Override public void onItemSelected(android.widget.AdapterView<?> parent,View view,int position,long id){
+                if(position!=previousUnit[0]) {
+                    int minutes=interval.getValue()*(previousUnit[0]==1?60:1);
+                    interval.setMaxValue(position==1?8760:525600);
+                    interval.setValue(Math.max(1,Math.min(interval.getMaxValue(),position==1?minutes/60:minutes)));
+                    previousUnit[0]=position;
+                }
+                refresh.run();
+            }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent){}
         });
         permanentWeekdays.setOnCheckedChangeListener((button, checked) -> refresh.run());
 
@@ -186,9 +217,10 @@ public final class RecurrenceDialog {
 
         refresh.run();
 
+        android.widget.ScrollView scroll=ReminderModalStyle.scroll(context,root);
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(AppString.get(R.string.runtime_text_0287))
-                .setView(root)
+                .setView(scroll)
                 .setNegativeButton(AppString.get(R.string.runtime_text_0003), null)
                 .setPositiveButton(AppString.get(R.string.runtime_text_0004), (d,w) -> {
                     int selectedMode = modeSpinner.getSelectedItemPosition();
@@ -198,14 +230,15 @@ public final class RecurrenceDialog {
                     callback.onConfigured(
                             selectedMode,
                             selectedMode == RecurrenceUtils.WEEKDAYS
-                                    ? weekInterval.getValue() : interval.getValue(),
+                                    ? weekInterval.getValue() : interval.getValue()*(selectedMode==RecurrenceUtils.INTERVAL_MINUTES && intervalUnit.getSelectedItemPosition()==1?60:1),
                             selectedMode == RecurrenceUtils.WEEKDAYS
                                     ? RecurrenceUtils.weekdaysToJson(
                                             weekdays, permanentWeekdays.isChecked())
-                                    : RecurrenceUtils.toJson(customDates));
+                                    : (selectedMode==RecurrenceUtils.WEEKLY || selectedMode==RecurrenceUtils.MONTHLY || selectedMode==RecurrenceUtils.YEARLY)
+                                        ? RecurrenceUtils.periodJson(interval.getValue()):RecurrenceUtils.toJson(customDates));
                 })
                 .create();
-        dialog.show();
+        dialog.show();ReminderModalStyle.apply(dialog,scroll);
     }
 
     private static int dp(Context context, int value) {

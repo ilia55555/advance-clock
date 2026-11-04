@@ -70,6 +70,7 @@ public final class NoForgetSoundService extends Service {
         AlertOutputEvents.changed();
     }
 
+    private long reminderOccurrence;
     static Intent startIntent(Context context, long noteId) {
         return new Intent(context, NoForgetSoundService.class).setAction(ACTION_START)
                 .putExtra("noteId", noteId);
@@ -121,6 +122,7 @@ public final class NoForgetSoundService extends Service {
         if (item == null) { stopSelf(); return START_NOT_STICKY; }
         stopReminder();
         currentItem=item;
+        reminderOccurrence=intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
         startForeground(NotificationHelper.reminderNotificationId(id), buildNotification(item,!NoteReminderActivity.isVisible(id)));
         active = true; foreground=true;
         updateNotificationVisibility();
@@ -128,7 +130,7 @@ public final class NoForgetSoundService extends Service {
         boolean locked=keyguard!=null && keyguard.isKeyguardLocked();
         if(!NoteReminderActivity.isVisible(id)
                 && (locked?item.fullscreenLocked:item.fullscreenUnlocked))try{
-            startActivity(new Intent(this,NoteReminderActivity.class).putExtra("noteId",id)
+            startActivity(new Intent(this,NoteReminderActivity.class).putExtra("noteId",id).putExtra(EventReminderScheduler.OCCURRENCE,reminderOccurrence)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));
         }catch(RuntimeException ignored){}
         ringTimeout.start(this, () -> {
@@ -146,7 +148,7 @@ public final class NoForgetSoundService extends Service {
 
     private Notification buildNotification(NoForgetItem item) { return buildNotification(item,true); }
     private Notification buildNotification(NoForgetItem item, boolean allowFullscreen) {
-        Intent show = new Intent(this, NoteReminderActivity.class).putExtra("noteId", item.id)
+        Intent show = new Intent(this, NoteReminderActivity.class).putExtra("noteId", item.id).putExtra(EventReminderScheduler.OCCURRENCE,reminderOccurrence)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent open = PendingIntent.getActivity(this,
@@ -162,6 +164,8 @@ public final class NoForgetSoundService extends Service {
                 ? AppString.get(R.string.runtime_text_0311) : item.title;
         String notificationBody = item.body.trim().isEmpty()
                 ? AppString.get(R.string.runtime_text_0312) : item.body;
+        if(reminderOccurrence>0)notificationBody=getString(R.string.event_at,
+                CalendarUtils.formatDate(reminderOccurrence,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,reminderOccurrence));
         builder.setSmallIcon(R.drawable.ic_note)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody)

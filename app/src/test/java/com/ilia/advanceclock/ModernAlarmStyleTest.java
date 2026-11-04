@@ -85,13 +85,14 @@ public class ModernAlarmStyleTest {
    assertTrue("Swipe hint too far from bottom",screen.getHeight()-rect.bottom<=8);
   } finally {RuntimeEnvironment.setFontScale(previous);}
  }
- @Test public void timerShowsOnlyUserTitleOrSingleDefaultTitle() {
+ @Test public void timerShowsOnlyUserTitleAndOmitsDefaultForEmptyTitle() {
   Application app=RuntimeEnvironment.getApplication();AppString.init(app);
   for(String label:new String[]{"", "My timer"}) {
    android.content.Intent intent=new android.content.Intent(app,AlarmRingActivity.class).putExtra("toolKind",ToolAlarmScheduler.TIMER).putExtra("label",label);
    try(var controller=Robolectric.buildActivity(AlarmRingActivity.class,intent).setup().visible()) {
     android.view.ViewGroup root=controller.get().findViewById(android.R.id.content);
-    assertNotNull(findText(root,label.isEmpty()?ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER):label));
+    if(label.isEmpty())assertNull(findText(root,ToolAlarmScheduler.defaultLabel(ToolAlarmScheduler.TIMER)));
+    else assertNotNull(findText(root,label));
     assertNull(findText(root,controller.get().getString(R.string.runtime_text_0584)));
    }
   }

@@ -44,7 +44,9 @@ public final class AlarmRingActivity extends Activity {
         data.openLabel = getString(R.string.reminder_open_destination, getString(tool
                 ? ToolAlarmScheduler.TIMER.equals(toolKind) ? R.string.tab_timer : R.string.tab_stopwatch
                 : R.string.ui_alarm));
-        data.body = "";
+        long eventTime=intent==null?0:intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
+        data.body=eventTime>0?getString(R.string.event_at,item!=null?WorldAlarmReference.summary(this,item,eventTime):
+                CalendarUtils.formatDate(eventTime,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,eventTime)):"";
         if (tool) {
             android.content.SharedPreferences p = AlarmAttachments.prefs(this);
             data.image1 = p.getString(toolKind + "_active_image1", ""); data.image2 = p.getString(toolKind + "_active_image2", "");

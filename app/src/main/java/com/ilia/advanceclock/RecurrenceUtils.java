@@ -76,7 +76,7 @@ public final class RecurrenceUtils {
         while (c.getTimeInMillis() <= now) {
             switch (mode) {
                 case DAILY: c.add(Calendar.DAY_OF_YEAR, 1); break;
-                case WEEKLY: c.add(Calendar.WEEK_OF_YEAR, 1); break;
+                case WEEKLY: c.add(Calendar.WEEK_OF_YEAR, period(customDatesJson)); break;
                 case MONTHLY: c.add(Calendar.MONTH, period(customDatesJson)); break;
                 case YEARLY: c.add(Calendar.YEAR, period(customDatesJson)); break;
                 case INTERVAL_DAYS: c.add(Calendar.DAY_OF_YEAR, safeInterval); break;
@@ -86,9 +86,14 @@ public final class RecurrenceUtils {
         return c.getTimeInMillis();
     }
 
-    private static int period(String json) {
+    static int period(String json) {
         try { return Math.max(1, Math.min(36500, new org.json.JSONObject(json).optInt("period", 1))); }
         catch (Exception ignored) { return 1; }
+    }
+
+    static String periodJson(int value){
+        try{return new org.json.JSONObject().put("period",Math.max(1,value)).toString();}
+        catch(org.json.JSONException impossible){return "{}";}
     }
 
     public static List<Long> parseDates(String raw) {
@@ -156,8 +161,10 @@ public final class RecurrenceUtils {
     }
 
     public static String summary(int mode, int intervalDays, String customDatesJson) {
-        if (mode == INTERVAL_MINUTES) return AppString.get(R.string.runtime_text_0553)
-                + CalendarUtils.fa(Math.max(1, intervalDays)) + " " + AppString.get(R.string.smart_alarm_minutes_joiner);
+        if (mode == INTERVAL_MINUTES) return AppString.get(R.string.runtime_text_0553).trim()+" "
+                + (intervalDays>=60 && intervalDays%60==0
+                    ? AppString.get(R.string.event_unit_hour,CalendarUtils.fa(intervalDays/60))
+                    : AppString.get(R.string.event_unit_minute,CalendarUtils.fa(Math.max(1,intervalDays))));
         if (mode == INTERVAL_DAYS) return AppString.get(R.string.runtime_text_0553) + Math.max(1, intervalDays) + AppString.get(R.string.runtime_text_0554);
         if (mode == CUSTOM_DATES) return parseDates(customDatesJson).size() + AppString.get(R.string.runtime_text_0555);
         if (mode == WEEKDAYS) {
@@ -165,7 +172,7 @@ public final class RecurrenceUtils {
                     ? AppString.get(R.string.runtime_text_0556)
                     : AppString.get(R.string.runtime_text_0557) + Math.max(1, intervalDays) + AppString.get(R.string.runtime_text_0558);
         }
-        if ((mode == MONTHLY || mode == YEARLY) && period(customDatesJson) > 1)
+        if ((mode == WEEKLY || mode == MONTHLY || mode == YEARLY) && period(customDatesJson) > 1)
             return labels()[mode] + " × " + CalendarUtils.fa(period(customDatesJson));
         String[] labels = labels();
         return labels[Math.max(0, Math.min(labels.length - 1, mode))];

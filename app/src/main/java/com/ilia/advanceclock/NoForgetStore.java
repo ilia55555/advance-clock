@@ -50,6 +50,7 @@ public final class NoForgetStore {
     }
 
     public synchronized void delete(long id) {
+        EventReminderScheduler.cancel(context,"note",id);
         List<NoForgetItem> items = all();
         items.removeIf(item -> item.id == id);
         write(items);

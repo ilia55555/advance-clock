@@ -39,6 +39,8 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
             context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
             return; // Snoozing never moves the note's normal recurrence schedule.
         }
+        item.lastFiredAtMillis=item.dueAtMillis;
+        EventReminderScheduler.sync(context,item);
         long now=System.currentTimeMillis()+1000L;
         long next=RecurrenceUtils.next(
                 item.dueAtMillis,

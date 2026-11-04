@@ -122,7 +122,7 @@ final class MainNoteTabEnhancer {
         state.remindersButton.setOnClickListener(v -> AlarmReminderDialog.show(
                 activity,
                 state.reminderMode,
-                state.reminderMinutesJson,
+                state.reminderMinutesJson,true,
                 (mode, json) -> {
                     state.reminderMode = mode;
                     state.reminderMinutesJson = json;

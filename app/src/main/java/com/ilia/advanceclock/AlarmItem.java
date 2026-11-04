@@ -13,6 +13,7 @@ public final class AlarmItem {
     public static final int PRIORITY_HIGH = PriorityUtils.HIGH;
     public static final int PRIORITY_VERY_HIGH = PriorityUtils.VERY_HIGH;
 
+    public long reminderAnchorMillis;
     public long id;
     public String referenceZoneId="";
     public boolean createdFromWorld;
@@ -64,6 +65,7 @@ public final class AlarmItem {
                      int priority,int recurrenceMode,int intervalDays,String customDatesJson,int snoozeMinutes,
                      int reminderMode,String reminderMinutesJson){
         this.id=id;
+        this.reminderAnchorMillis=triggerAtMillis;
         this.label=label==null?"":label;
         this.triggerAtMillis=triggerAtMillis;
         this.repeatType=repeatType;
@@ -84,6 +86,7 @@ public final class AlarmItem {
 
     public JSONObject toJson() throws JSONException{
         JSONObject o=new JSONObject();
+        o.put("reminderAnchorMillis",reminderAnchorMillis);
         o.put("createdFromWorld",createdFromWorld);
         o.put("referenceZoneId",referenceZoneId);
         o.put("applyDate", applyDate);
@@ -123,6 +126,7 @@ public final class AlarmItem {
                 o.optInt("reminderMode",AlarmReminderUtils.MODE_NONE),
                 o.optString("reminderMinutesJson","[]")
         );
+        item.reminderAnchorMillis=o.optLong("reminderAnchorMillis",item.triggerAtMillis);
         item.referenceZoneId=o.optString("referenceZoneId", "");
         item.createdFromWorld=o.optBoolean("createdFromWorld",!item.referenceZoneId.isEmpty());
         item.autoDeleteAfterCompletion = o.optBoolean("autoDeleteAfterCompletion", false);

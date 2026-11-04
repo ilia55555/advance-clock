@@ -1206,8 +1206,8 @@
     <string name="about_osm_privacy" formatted="false">حریم خصوصی OpenStreetMap</string>
     <string name="about_timeapi_privacy" formatted="false">حریم خصوصی TimeAPI</string>
     <string name="about_openmeteo_terms" formatted="false">شرایط و حریم خصوصی Open-Meteo</string>
-    <string name="reminder_count_summary">%1$s یادآوری</string>
-    <string name="reminder_count_single">%1$s یادآوری</string>
+    <string name="reminder_count_summary">%1$s یادآوری تنظیم شده</string>
+    <string name="reminder_count_single">%1$s یادآوری تنظیم شده</string>
     <string name="apply_alarm_date">اعمال تاریخ</string>
     <string name="media_show_items">نمایش عکس، فایل، اپ و لینک</string>
     <string name="media_items_title">عکس، فایل، اپ و لینک</string>
@@ -1239,7 +1239,7 @@
     <string name="smart_notes_empty">هنوز یادآوری‌ای شناسایی نشده است.</string>
     <string name="smart_edit_note">ویرایش یادداشت</string>
     <string name="smart_voice_privacy">ورودی گفتاری با سرویس دستگاه انجام می‌شود؛ آفلاین بودن آن به دستگاه و تنظیماتش بستگی دارد.</string>
-    <string name="recurrence_interval_minutes">فاصلهٔ تکرار بر حسب دقیقه</string>
+    <string name="recurrence_interval_minutes">فاصلهٔ تکرار دقیقه‌ای / ساعتی</string>
     <string name="date_channel_settings">کانال اعلان تاریخ بسته است؛ باز کردن تنظیمات</string>
     <string name="alarm_style_analog">ساعت عقربه‌ای</string>
     <string name="alarm_style_glass">ساعت شیشه‌ای</string>
@@ -1352,4 +1352,32 @@
     <string name="permissions_install_hint">برای نصب به‌روزرسانی، مجوز نصب برنامه را فعال کنید.</string>
     <string name="priority_unset">انتخاب اهمیت</string>
     <string name="attachment_count">%s پیوست</string>
+    <string name="event_before">پیش از موعد</string>
+    <string name="event_after">پس از هشدار</string>
+    <string name="event_hours">دقیقه و ساعت</string>
+    <string name="event_days">روزها</string>
+    <string name="event_weeks_months">هفته و ماه</string>
+    <string name="event_custom">زمان دلخواه</string>
+    <string name="event_add">افزودن</string>
+    <string name="event_amount">تعداد</string>
+    <string name="event_custom_limit">حداکثر ۱۰ زمان دلخواه قابل تنظیم است.</string>
+    <string name="event_invalid_amount">مقدار واردشده معتبر نیست.</string>
+    <string name="event_unit_minute">%s دقیقه</string>
+    <string name="event_unit_hour">%s ساعت</string>
+    <string name="event_unit_day">%s روز</string>
+    <string name="event_unit_week">%s هفته</string>
+    <string name="event_unit_month">%s ماه</string>
+    <string name="event_unit_minutes_name">دقیقه</string>
+    <string name="event_unit_hours_name">ساعت</string>
+    <string name="event_unit_days_name">روز</string>
+    <string name="event_unit_weeks_name">هفته</string>
+    <string name="event_unit_months_name">ماه</string>
+    <string name="event_at">موعد رویداد: %s</string>
+    <string name="event_one_minute">یک دقیقه</string>
+    <string name="event_one_hour">یک ساعت</string>
+    <string name="event_one_day">یک روز</string>
+    <string name="event_one_week">یک هفته</string>
+    <string name="event_one_month">یک ماه</string>
+    <string name="recurrence_interval_months">فاصلهٔ تکرار بر حسب ماه</string>
+    <string name="recurrence_interval_years">فاصلهٔ تکرار بر حسب سال</string>
 </resources>

@@ -51,6 +51,7 @@ public final class NoForgetScheduler {
                         at,
                         preReminderPendingIntent(context,item.id,i,minutes));
             }
+            EventReminderScheduler.sync(context,item);
             return true;
         }catch(SecurityException e){
             cancelScheduled(context,item.id);
@@ -59,6 +60,9 @@ public final class NoForgetScheduler {
     }
 
     public static void cancel(Context context,long id){
+        EventReminderScheduler.cancel(context,"note",id);
+        NoForgetItem item=new NoForgetStore(context).find(id);
+        if(item!=null && item.lastFiredAtMillis>0){item.lastFiredAtMillis=0;new NoForgetStore(context).save(item);}
         AlertSnoozes.cancel(context,"note",id);
         cancelScheduled(context,id);
     }
@@ -78,6 +82,7 @@ public final class NoForgetScheduler {
         NoForgetStore store=new NoForgetStore(context);
         java.util.Map<String, ?> snoozes = context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).getAll();
         for(NoForgetItem item:store.all()){
+            if(EventReminderRules.rich(item.reminderMinutesJson))EventReminderScheduler.sync(context,item);
             if(!item.reminderEnabled||!item.hasDue)continue;
             if(!schedule(context,item)){
                 long next=RecurrenceUtils.next(

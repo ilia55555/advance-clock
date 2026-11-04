@@ -59,6 +59,7 @@ public final class AlarmStore {
     }
 
     public void delete(long id) {
+        EventReminderScheduler.cancel(context,"alarm",id);
         synchronized (LOCK) {
             List<AlarmItem> items = all();
             items.removeIf(item -> item.id == id);
@@ -86,7 +87,8 @@ public final class AlarmStore {
             items.removeIf(item -> !AlarmSoundService.isRinging(item.id)
                     && !AlarmEditorActivity.isEditing(item.id)
                     && (deleteAllExpired || (item.autoDeleteAfterCompletion && item.lastFiredAtMillis > 0L))
-                    && AlarmCompletion.finished(item, now));
+                    && AlarmCompletion.finished(item, now)
+                    && !EventReminderScheduler.hasPending(context,"alarm",item.id,now));
             if (items.size() != before) {
                 write(items);
                 context.sendBroadcast(new android.content.Intent(ACTION_CHANGED).setPackage(context.getPackageName()));

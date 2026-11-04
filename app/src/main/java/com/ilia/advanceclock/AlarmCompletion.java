@@ -7,6 +7,9 @@ final class AlarmCompletion {
         if (item.pendingSnoozeAtMillis > 0L) return false;
         if (RecurrenceUtils.next(item.triggerAtMillis, item.recurrenceMode,
                 item.intervalDays, item.customDatesJson, now) > now) return false;
+        if(EventReminderRules.rich(item.reminderMinutesJson) && item.lastFiredAtMillis>0)
+            for(EventReminderRules.Rule rule:EventReminderRules.parse(item.reminderMode,item.reminderMinutesJson,false))
+                if(!rule.before && rule.at(item.lastFiredAtMillis,item.timeZone())>now)return false;
         int lastReminderMinutes = 0;
         for (int minutes : AlarmReminderUtils.effective(item.reminderMode, item.reminderMinutesJson))
             lastReminderMinutes = Math.max(lastReminderMinutes, minutes);

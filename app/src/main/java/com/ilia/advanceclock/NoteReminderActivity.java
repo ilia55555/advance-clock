@@ -35,7 +35,8 @@ public final class NoteReminderActivity extends Activity {
         data.priority = item.priority;
         data.openLabel = getString(R.string.reminder_open_destination,getString(R.string.tab_notes));
         data.output = AlertOutput.note(noteId);
-        data.body = item.body; data.attachments = NoteAttachment.parse(item.attachmentsJson);
+        long eventTime=intent==null?0:intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
+        data.body = eventTime>0?getString(R.string.event_at,CalendarUtils.formatDate(eventTime,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,eventTime)):item.body; data.attachments = NoteAttachment.parse(item.attachmentsJson);
         data.image1 = item.imageUri1; data.image2 = item.imageUri2; data.background = item.imagesAsBackground;
         setContentView(new ReminderScreen(this, data, this::stopAndClose, () -> {
             startActivity(new Intent(this, NoForgetEditorActivity.class).putExtra("noteId", noteId));

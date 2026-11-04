@@ -72,11 +72,9 @@ public final class AlarmReminderUtils {
 
     public static String summary(int mode, String customJson) {
         if (mode == MODE_NONE) return AppString.get(R.string.runtime_text_0035);
-        if (mode == MODE_SMART) return AppString.get(R.string.runtime_text_0036);
-        List<Integer> values = effective(mode, customJson);
-        if (values.isEmpty()) return AppString.get(R.string.runtime_text_0035);
-        return AppString.get(values.size() == 1 ? R.string.reminder_count_single
-                : R.string.reminder_count_summary, CalendarUtils.fa(values.size()));
+        int count=EventReminderRules.parse(mode,customJson,false).size();
+        if(count==0)return AppString.get(R.string.runtime_text_0035);
+        return AppString.get(count==1?R.string.reminder_count_single:R.string.reminder_count_summary,CalendarUtils.fa(count));
     }
 
     /** Completed one-shot alarms remain eligible; explicit cancellation clears lastFiredAtMillis. */

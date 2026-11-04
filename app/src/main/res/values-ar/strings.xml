@@ -1263,8 +1263,8 @@
     <string name="about_osm_privacy" formatted="false">سياسة خصوصية OpenStreetMap</string>
     <string name="about_timeapi_privacy" formatted="false">سياسة خصوصية TimeAPI</string>
     <string name="about_openmeteo_terms" formatted="false">شروط Open-Meteo وخصوصيته</string>
-    <string name="reminder_count_summary">%1$s تذكير</string>
-    <string name="reminder_count_single">%1$s تذكير</string>
+    <string name="reminder_count_summary">تم ضبط %1$s تذكير</string>
+    <string name="reminder_count_single">تم ضبط %1$s تذكير</string>
     <string name="apply_alarm_date">تطبيق التاريخ</string>
     <string name="media_show_items">عرض الصور والملفات والتطبيقات والروابط</string>
     <string name="media_items_title">الصور والملفات والتطبيقات والروابط</string>
@@ -1296,7 +1296,7 @@
     <string name="smart_notes_empty">No reminder has been detected yet.</string>
     <string name="smart_edit_note">Edit note</string>
     <string name="smart_voice_privacy">Dictation uses the device speech service; offline availability depends on your device and settings.</string>
-    <string name="recurrence_interval_minutes">Repeat interval in minutes</string>
+    <string name="recurrence_interval_minutes">فاصل التكرار بالدقائق / الساعات</string>
     <string name="date_channel_settings">Date notification channel is blocked — open settings</string>
     <string name="alarm_style_analog">Analog clock</string>
     <string name="alarm_style_glass">Glass clock</string>
@@ -1420,4 +1420,32 @@
     <string name="permissions_install_hint">فعّل إذن تثبيت التطبيقات لتثبيت هذا التحديث.</string>
     <string name="priority_unset">اختيار الأولوية</string>
     <string name="attachment_count">%s مرفقات</string>
+    <string name="event_before">قبل الموعد</string>
+    <string name="event_after">بعد التنبيه</string>
+    <string name="event_hours">الدقائق والساعات</string>
+    <string name="event_days">الأيام</string>
+    <string name="event_weeks_months">الأسابيع والأشهر</string>
+    <string name="event_custom">أوقات مخصصة</string>
+    <string name="event_add">إضافة</string>
+    <string name="event_amount">العدد</string>
+    <string name="event_custom_limit">يمكنك إضافة 10 أوقات مخصصة كحد أقصى.</string>
+    <string name="event_invalid_amount">أدخل مقدارًا صالحًا.</string>
+    <string name="event_unit_minute">%s دقيقة</string>
+    <string name="event_unit_hour">%s ساعة</string>
+    <string name="event_unit_day">%s أيام</string>
+    <string name="event_unit_week">%s أسابيع</string>
+    <string name="event_unit_month">%s أشهر</string>
+    <string name="event_unit_minutes_name">دقائق</string>
+    <string name="event_unit_hours_name">ساعات</string>
+    <string name="event_unit_days_name">أيام</string>
+    <string name="event_unit_weeks_name">أسابيع</string>
+    <string name="event_unit_months_name">أشهر</string>
+    <string name="event_at">موعد الحدث: %s</string>
+    <string name="event_one_minute">دقيقة واحدة</string>
+    <string name="event_one_hour">ساعة واحدة</string>
+    <string name="event_one_day">يوم واحد</string>
+    <string name="event_one_week">أسبوع واحد</string>
+    <string name="event_one_month">شهر واحد</string>
+    <string name="recurrence_interval_months">فاصل التكرار بالأشهر</string>
+    <string name="recurrence_interval_years">فاصل التكرار بالسنوات</string>
 </resources>

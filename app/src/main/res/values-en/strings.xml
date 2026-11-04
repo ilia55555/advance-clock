@@ -1245,8 +1245,8 @@ Lock screen</string>
     <string name="about_osm_privacy" formatted="false">OpenStreetMap privacy policy</string>
     <string name="about_timeapi_privacy" formatted="false">TimeAPI privacy policy</string>
     <string name="about_openmeteo_terms" formatted="false">Open-Meteo terms and privacy</string>
-    <string name="reminder_count_summary">%1$s reminders</string>
-    <string name="reminder_count_single">%1$s reminder</string>
+    <string name="reminder_count_summary">%1$s reminders configured</string>
+    <string name="reminder_count_single">%1$s reminder configured</string>
     <string name="apply_alarm_date">Apply date</string>
     <string name="media_show_items">Show photos, files, apps and links</string>
     <string name="media_items_title">Photos, files, apps and links</string>
@@ -1278,7 +1278,7 @@ Lock screen</string>
     <string name="smart_notes_empty">No reminder has been detected yet.</string>
     <string name="smart_edit_note">Edit note</string>
     <string name="smart_voice_privacy">Dictation uses the device speech service; offline availability depends on your device and settings.</string>
-    <string name="recurrence_interval_minutes">Repeat interval in minutes</string>
+    <string name="recurrence_interval_minutes">Minute / hour interval</string>
     <string name="date_channel_settings">Date notification channel is blocked — open settings</string>
     <string name="alarm_style_analog">Analog clock</string>
     <string name="alarm_style_glass">Glass clock</string>
@@ -1402,4 +1402,32 @@ Lock screen</string>
     <string name="permissions_install_hint">Enable app installation permission to install this update.</string>
     <string name="priority_unset">Select priority</string>
     <string name="attachment_count">%s attachments</string>
+    <string name="event_before">Before the event</string>
+    <string name="event_after">After the alarm</string>
+    <string name="event_hours">Minutes and hours</string>
+    <string name="event_days">Days</string>
+    <string name="event_weeks_months">Weeks and months</string>
+    <string name="event_custom">Custom offsets</string>
+    <string name="event_add">Add</string>
+    <string name="event_amount">Amount</string>
+    <string name="event_custom_limit">You can add up to 10 custom offsets.</string>
+    <string name="event_invalid_amount">Enter a valid amount.</string>
+    <string name="event_unit_minute">%s min</string>
+    <string name="event_unit_hour">%s hr</string>
+    <string name="event_unit_day">%s days</string>
+    <string name="event_unit_week">%s weeks</string>
+    <string name="event_unit_month">%s months</string>
+    <string name="event_unit_minutes_name">Minutes</string>
+    <string name="event_unit_hours_name">Hours</string>
+    <string name="event_unit_days_name">Days</string>
+    <string name="event_unit_weeks_name">Weeks</string>
+    <string name="event_unit_months_name">Months</string>
+    <string name="event_at">Event time: %s</string>
+    <string name="event_one_minute">1 minute</string>
+    <string name="event_one_hour">1 hour</string>
+    <string name="event_one_day">1 day</string>
+    <string name="event_one_week">1 week</string>
+    <string name="event_one_month">1 month</string>
+    <string name="recurrence_interval_months">Repeat interval (months)</string>
+    <string name="recurrence_interval_years">Repeat interval (years)</string>
 </resources>

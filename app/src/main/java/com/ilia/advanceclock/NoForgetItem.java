@@ -11,6 +11,8 @@ public final class NoForgetItem {
     public static final int PRIORITY_HIGH = PriorityUtils.HIGH;
     public static final int PRIORITY_VERY_HIGH = PriorityUtils.VERY_HIGH;
 
+    public long reminderAnchorMillis;
+    public long lastFiredAtMillis;
     public long id;
     public boolean applyDate = true;
     public String title;
@@ -45,6 +47,7 @@ public final class NoForgetItem {
                         boolean hasDue,long dueAtMillis,boolean reminderEnabled,long createdAt,
                         int recurrenceMode,int intervalDays,String customDatesJson){
         this.id=id;
+        this.reminderAnchorMillis=dueAtMillis;
         this.title=title==null?"":title;
         this.body=body==null?"":body;
         this.sketchJson=sketchJson==null?"[]":sketchJson;
@@ -67,6 +70,8 @@ public final class NoForgetItem {
 
     public JSONObject toJson() throws JSONException{
         JSONObject o=new JSONObject();
+        o.put("reminderAnchorMillis",reminderAnchorMillis);
+        o.put("lastFiredAtMillis",lastFiredAtMillis);
         o.put("applyDate", applyDate);
         o.put("id",id);o.put("title",title);o.put("body",body);o.put("sketchJson",sketchJson);
         o.put("priority",priority);o.put("priorityVersion",2);
@@ -93,6 +98,8 @@ public final class NoForgetItem {
                 o.optBoolean("reminderEnabled",false),o.optLong("createdAt",System.currentTimeMillis()),
                 o.optInt("recurrenceMode",RecurrenceUtils.NONE),o.optInt("intervalDays",1),o.optString("customDatesJson","[]")
         );
+        item.reminderAnchorMillis=o.optLong("reminderAnchorMillis",item.dueAtMillis);
+        item.lastFiredAtMillis=o.optLong("lastFiredAtMillis",0);
         item.applyDate = o.optBoolean("applyDate", true); // Preserve explicit dates in existing records.
         item.attachmentsJson=o.optString("attachmentsJson","[]");
         item.imageUri1=o.optString("imageUri1", ""); item.imageUri2=o.optString("imageUri2", "");

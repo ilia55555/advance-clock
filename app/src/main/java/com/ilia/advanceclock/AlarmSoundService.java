@@ -90,12 +90,17 @@ public final class AlarmSoundService extends Service {
         }
     };
 
-    static void ring(Context context, AlarmItem item) {
+    private long reminderOccurrence;
+    private java.util.TimeZone reminderZone;
+    static void ring(Context context, AlarmItem item) { ring(context,item,0); }
+    static void ring(Context context,AlarmItem item,long occurrence) {
         Intent service = startIntent(context, item.id, item.label, item.vibrate, item.soundUri);
         try {
             String payload = item.toJson().toString();
             if (payload.length() <= 64_000) service.putExtra("alarmPayload", payload);
         } catch (org.json.JSONException ignored) {}
+        service.putExtra(EventReminderScheduler.OCCURRENCE,occurrence)
+                .putExtra("reminderZone",item.timeZone().getID());
         long previous = ringingAlarmId;
         ringingAlarmId = item.id;
         try {
@@ -190,6 +195,9 @@ public final class AlarmSoundService extends Service {
         currentSoundUri = intent.getStringExtra("soundUri");
         String label = intent.getStringExtra("label");
         currentLabel=label;
+        reminderOccurrence=intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
+        String zoneId=intent.getStringExtra("reminderZone");
+        reminderZone=zoneId==null?AppTime.zone():java.util.TimeZone.getTimeZone(zoneId);
         String toolKind = intent.getStringExtra("toolKind");
         currentToolKind = toolKind;
         currentAlarmPayload = intent.getStringExtra("alarmPayload");
@@ -226,6 +234,7 @@ public final class AlarmSoundService extends Service {
                 .putExtra("alarmId", id)
                 .putExtra("label", label)
                 .putExtra("toolKind", toolKind)
+                .putExtra(EventReminderScheduler.OCCURRENCE,reminderOccurrence)
                 .putExtra("alarmPayload", currentAlarmPayload)
                 .putExtra("toolPayload", currentToolPayload)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -253,6 +262,9 @@ public final class AlarmSoundService extends Service {
                 : ToolAlarmScheduler.STOPWATCH.equals(toolKind)
                 ? AppString.get(R.string.runtime_text_0302)
                 : AppString.get(R.string.runtime_text_0574);
+        if(reminderOccurrence>0)message=getString(R.string.event_at,
+                CalendarUtils.formatDate(reminderOccurrence,AppSettings.defaultCalendar(this),reminderZone)+" "
+                        +CalendarUtils.fa(TimeFormat.formatter(this,false,reminderZone).format(new java.util.Date(reminderOccurrence))));
         Notification.Builder builder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, NotificationHelper.ALARM_CHANNEL)
                 : new Notification.Builder(this);
@@ -281,7 +293,8 @@ public final class AlarmSoundService extends Service {
         try {
             startActivity(new Intent(this, AlarmRingActivity.class)
                     .putExtra("alarmId", id).putExtra("label", label).putExtra("toolKind", toolKind)
-                    .putExtra("alarmPayload", currentAlarmPayload)
+                    .putExtra(EventReminderScheduler.OCCURRENCE,reminderOccurrence)
+                .putExtra("alarmPayload", currentAlarmPayload)
                 .putExtra("toolPayload", currentToolPayload)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
                             | Intent.FLAG_ACTIVITY_SINGLE_TOP));

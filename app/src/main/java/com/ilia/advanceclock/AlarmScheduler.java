@@ -16,6 +16,7 @@ public final class AlarmScheduler {
 
     private static boolean schedulePrimary(Context context, AlarmItem item, boolean normalize) {
         if (!item.enabled) {
+            EventReminderScheduler.cancel(context,"alarm",item.id);
             cancelPrimary(context, item.id);
             return true;
         }
@@ -57,6 +58,7 @@ public final class AlarmScheduler {
                     new AlarmManager.AlarmClockInfo(item.triggerAtMillis, show),
                     operation);
             AlarmPreparationReceiver.schedule(context, AlarmPreparationReceiver.CLOCK, item.id, item.triggerAtMillis);
+            EventReminderScheduler.sync(context,item);
             return true;
         } catch (SecurityException e) {
             return false;
@@ -69,6 +71,7 @@ public final class AlarmScheduler {
      * the reminders that still belong to the occurrence that just rang.
      */
     public static void schedulePostReminders(Context context, AlarmItem item, long firedAtMillis) {
+        if(EventReminderRules.rich(item.reminderMinutesJson)) { EventReminderScheduler.sync(context,item);return; }
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager == null) return;
         // Editing the selection must also remove old alarms from the system's next-alarm display.
@@ -127,6 +130,7 @@ public final class AlarmScheduler {
     }
 
     public static void cancel(Context context, long id) {
+        EventReminderScheduler.cancel(context,"alarm",id);
         AlertSnoozes.cancel(context,"alarm",id);
         AlarmStore store = new AlarmStore(context);
         AlarmItem item = store.find(id);
@@ -172,6 +176,7 @@ public final class AlarmScheduler {
         store.deleteExpired(now);
 
         for (AlarmItem item : store.all()) {
+            if(EventReminderRules.rich(item.reminderMinutesJson))EventReminderScheduler.sync(context,item);
             if (item.pendingSnoozeAtMillis > 0L)
                 scheduleSnoozeAt(context, item, Math.max(now + 1000L, item.pendingSnoozeAtMillis));
             if (item.lastFiredAtMillis > 0L) {
