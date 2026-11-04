@@ -55,6 +55,7 @@ public final class NoForgetEditorActivity extends Activity {
     private Spinner penSize;
     private ImageButton gridToggle;
     private Switch vibrate;
+    private Switch taskMode;
     private Switch fullscreenUnlocked;
     private Switch fullscreenLocked;
     private Button soundButton;
@@ -108,6 +109,10 @@ public final class NoForgetEditorActivity extends Activity {
         vibrate=findViewById(R.id.note_vibrate);
         fullscreenUnlocked=findViewById(R.id.note_fullscreen_unlocked);
         fullscreenLocked=findViewById(R.id.note_fullscreen_locked);
+        fullscreenUnlocked.setVisibility(View.GONE);fullscreenLocked.setVisibility(View.GONE);
+        LinearLayout modeHeader=findViewById(R.id.note_editor_header);
+        modeHeader.removeAllViews();
+        taskMode=NoteModeHeader.add(this,modeHeader,0,savedInstanceState!=null && savedInstanceState.getBoolean("taskMode"),true);
         soundButton=findViewById(R.id.note_sound);
         attachmentsView=findViewById(R.id.note_attachments);
         dateCalendarType=AppSettings.defaultCalendar(this);
@@ -122,6 +127,7 @@ public final class NoForgetEditorActivity extends Activity {
         noteId=getIntent().getLongExtra("noteId",-1L);
         if(noteId>=0)loadExisting();
         else deleteButton.setVisibility(View.GONE);
+        if(savedInstanceState!=null)taskMode.setChecked(savedInstanceState.getBoolean("taskMode",taskMode.isChecked()));
 
         attachmentKey = savedInstanceState == null ? null : savedInstanceState.getString("attachmentKey");
         if (attachmentKey == null || attachmentKey.isEmpty()) {
@@ -203,6 +209,7 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
+        out.putBoolean("taskMode",taskMode.isChecked());
         out.putLong("selectedTime", due.getTimeInMillis());
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
     }
@@ -818,6 +825,7 @@ public final class NoForgetEditorActivity extends Activity {
         }
 
         dateOption.setApplied(item.applyDate);
+        taskMode.setChecked(item.taskMode);
         title.setText(item.title);
         body.setText(item.body);
         priority.setSelection(PriorityUtils.clamp(item.priority));
@@ -845,8 +853,8 @@ public final class NoForgetEditorActivity extends Activity {
         attachments.addAll(
                 NoteAttachment.parse(item.attachmentsJson));
         vibrate.setChecked(item.vibrate);
-        fullscreenUnlocked.setChecked(item.fullscreenUnlocked);
-        fullscreenLocked.setChecked(item.fullscreenLocked);
+        fullscreenUnlocked.setChecked(true);
+        fullscreenLocked.setChecked(true);
         soundUri=item.soundUri;
         soundButton.setText(
                 AppString.get(R.string.runtime_text_0461)+SoundLibrary.name(this,soundUri));
@@ -922,8 +930,9 @@ public final class NoForgetEditorActivity extends Activity {
         AlarmAttachments.read(this, attachmentKey, item);
         item.vibrate=vibrate.isChecked();
         item.soundUri=soundUri;
-        item.fullscreenUnlocked=fullscreenUnlocked.isChecked();
-        item.fullscreenLocked=fullscreenLocked.isChecked();
+        item.taskMode=taskMode.isChecked();
+        item.fullscreenUnlocked=true;
+        item.fullscreenLocked=true;
         item.reminderMode=reminderMode;
         item.reminderMinutesJson=reminderMinutesJson;
 

@@ -1453,4 +1453,7 @@
     <string name="event_pick_after">اختر وقتًا بعد موعد الحدث.</string>
     <string name="event_pick_future">اختر وقت تذكير في المستقبل.</string>
     <string name="event_set_due">اختر تاريخ الحدث ووقته أولًا.</string>
+    <string name="note_mode_note">ملاحظة</string>
+    <string name="note_mode_tasks">المهام</string>
+    <string name="note_mode_selector">ملاحظة أو مهمة</string>
 </resources>

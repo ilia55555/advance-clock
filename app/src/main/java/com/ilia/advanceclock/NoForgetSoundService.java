@@ -129,7 +129,7 @@ public final class NoForgetSoundService extends Service {
         KeyguardManager keyguard=getSystemService(KeyguardManager.class);
         boolean locked=keyguard!=null && keyguard.isKeyguardLocked();
         if(!NoteReminderActivity.isVisible(id)
-                && (locked?item.fullscreenLocked:item.fullscreenUnlocked))try{
+                && (locked?AppSettings.alarmFullscreenLocked(this):AppSettings.alarmFullscreenUnlocked(this)))try{
             startActivity(new Intent(this,NoteReminderActivity.class).putExtra("noteId",id).putExtra(EventReminderScheduler.OCCURRENCE,reminderOccurrence)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));
         }catch(RuntimeException ignored){}
@@ -177,7 +177,7 @@ public final class NoForgetSoundService extends Service {
                         null, AppString.get(R.string.runtime_text_0406), stop).build());
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         boolean locked = keyguard != null && keyguard.isKeyguardLocked();
-        if (allowFullscreen && (locked ? item.fullscreenLocked : item.fullscreenUnlocked))
+        if (allowFullscreen && (locked ? AppSettings.alarmFullscreenLocked(this) : AppSettings.alarmFullscreenUnlocked(this)))
             builder.setFullScreenIntent(open, true);
         if(Build.VERSION.SDK_INT>=31)builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         return builder.build();

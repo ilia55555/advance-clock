@@ -1435,4 +1435,7 @@ Lock screen</string>
     <string name="event_pick_after">Choose a time after the event.</string>
     <string name="event_pick_future">Choose a future reminder time.</string>
     <string name="event_set_due">Choose the event date and time first.</string>
+    <string name="note_mode_note">Note</string>
+    <string name="note_mode_tasks">Tasks</string>
+    <string name="note_mode_selector">Note or task</string>
 </resources>

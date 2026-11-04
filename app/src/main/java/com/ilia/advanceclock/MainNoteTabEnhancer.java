@@ -72,6 +72,8 @@ final class MainNoteTabEnhancer {
             state = new State();
             STATES.put(activity, state);
         }
+        LinearLayout composer=activity.findViewById(R.id.note_composer_card);
+        if(state.taskMode==null && composer!=null)state.taskMode=NoteModeHeader.add(activity,composer,0,false,false);
         installActions(activity, state);
         installAlarmExtras(activity, state);
         View sketchCard = activity.findViewById(R.id.note_sketch_card);
@@ -150,21 +152,7 @@ final class MainNoteTabEnhancer {
         });
         addBlock(holder, state.soundButton, activity, 54);
 
-        LinearLayout fullscreenRow = new LinearLayout(activity);
-        fullscreenRow.setOrientation(LinearLayout.HORIZONTAL);
-        fullscreenRow.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        LinearLayout unlocked = labeledSwitch(activity, AppString.get(R.string.runtime_text_0703));
-        LinearLayout locked = labeledSwitch(activity, AppString.get(R.string.runtime_text_0704));
-        state.fullscreenUnlocked = (Switch) unlocked.getChildAt(1);
-        state.fullscreenLocked = (Switch) locked.getChildAt(1);
-        state.fullscreenUnlocked.setChecked(true);
-        state.fullscreenLocked.setChecked(true);
-
-        fullscreenRow.addView(unlocked, new LinearLayout.LayoutParams(0, dp(activity, 64), 1f));
-        addGap(fullscreenRow, activity);
-        fullscreenRow.addView(locked, new LinearLayout.LayoutParams(0, dp(activity, 64), 1f));
-        addBlock(holder, fullscreenRow, activity, 64);
 
         controls.addView(holder, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -492,8 +480,9 @@ final class MainNoteTabEnhancer {
         AlarmAttachments.read(activity, "quick_note", item);
         item.vibrate = state.vibrate == null || state.vibrate.isChecked();
         item.soundUri = state.soundUri == null ? "" : state.soundUri;
-        item.fullscreenUnlocked = state.fullscreenUnlocked == null || state.fullscreenUnlocked.isChecked();
-        item.fullscreenLocked = state.fullscreenLocked == null || state.fullscreenLocked.isChecked();
+        item.taskMode=state.taskMode!=null && state.taskMode.isChecked();
+        item.fullscreenUnlocked = true;
+        item.fullscreenLocked = true;
         item.reminderMode = state.reminderMode;
         item.reminderMinutesJson = state.reminderMinutesJson;
 
@@ -516,6 +505,7 @@ final class MainNoteTabEnhancer {
         state.soundUri = "";
         state.soundName = "";
         if (state.vibrate != null) state.vibrate.setChecked(true);
+        if(state.taskMode!=null)state.taskMode.setChecked(false);
         if (state.fullscreenUnlocked != null) state.fullscreenUnlocked.setChecked(true);
         if (state.fullscreenLocked != null) state.fullscreenLocked.setChecked(true);
         writeField(activity, "noteRecurrenceMode", RecurrenceUtils.NONE);
@@ -717,6 +707,7 @@ final class MainNoteTabEnhancer {
         Button remindersButton;
         Button soundButton;
         Switch vibrate;
+        Switch taskMode;
         Switch fullscreenUnlocked;
         Switch fullscreenLocked;
         AlertDialog dialog;

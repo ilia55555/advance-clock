@@ -1133,6 +1133,8 @@ public final class MainActivity extends Activity {
                 noteIntervalDays,
                 noteCustomDates);
 
+        android.widget.Switch noteMode=noteComposerCard.findViewWithTag("note_mode_switch");
+        item.taskMode=noteMode!=null && noteMode.isChecked();
         item.applyDate = quickNoteDateOption.isApplied();
         new NoForgetStore(this).save(item);
         if (alarmEnabled) NoForgetScheduler.schedule(this, item);
@@ -1775,6 +1777,7 @@ public final class MainActivity extends Activity {
         }
 
         StringBuilder meta = new StringBuilder();
+        if(item.taskMode)meta.append(getString(R.string.note_mode_tasks)).append("  •  ");
         meta.append(PriorityUtils.displayLabel(item.priority));
         if (item.hasDue) {
             meta.append("  •  ").append(formatAppDateTime(item.dueAtMillis));

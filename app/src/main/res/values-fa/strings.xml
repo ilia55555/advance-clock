@@ -1385,4 +1385,7 @@
     <string name="event_pick_after">زمان یادآوری باید پس از موعد رویداد باشد.</string>
     <string name="event_pick_future">زمان یادآوری را در آینده انتخاب کنید.</string>
     <string name="event_set_due">ابتدا تاریخ و ساعت رویداد را انتخاب کنید.</string>
+    <string name="note_mode_note">یادداشت</string>
+    <string name="note_mode_tasks">وظایف</string>
+    <string name="note_mode_selector">یادداشت یا وظایف</string>
 </resources>

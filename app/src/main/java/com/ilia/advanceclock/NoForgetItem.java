@@ -14,6 +14,7 @@ public final class NoForgetItem {
     public long reminderAnchorMillis;
     public long lastFiredAtMillis;
     public long id;
+    public boolean taskMode;
     public boolean applyDate = true;
     public String title;
     public String body;
@@ -73,6 +74,7 @@ public final class NoForgetItem {
         o.put("reminderAnchorMillis",reminderAnchorMillis);
         o.put("lastFiredAtMillis",lastFiredAtMillis);
         o.put("applyDate", applyDate);
+        o.put("taskMode",taskMode);
         o.put("id",id);o.put("title",title);o.put("body",body);o.put("sketchJson",sketchJson);
         o.put("priority",priority);o.put("priorityVersion",2);
         o.put("hasDue",hasDue);o.put("dueAtMillis",dueAtMillis);
@@ -98,6 +100,7 @@ public final class NoForgetItem {
                 o.optBoolean("reminderEnabled",false),o.optLong("createdAt",System.currentTimeMillis()),
                 o.optInt("recurrenceMode",RecurrenceUtils.NONE),o.optInt("intervalDays",1),o.optString("customDatesJson","[]")
         );
+        item.taskMode=o.optBoolean("taskMode",false);
         item.reminderAnchorMillis=o.optLong("reminderAnchorMillis",item.dueAtMillis);
         item.lastFiredAtMillis=o.optLong("lastFiredAtMillis",0);
         item.applyDate = o.optBoolean("applyDate", true); // Preserve explicit dates in existing records.
