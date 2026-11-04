@@ -86,6 +86,26 @@ public class CalendarPickerAndMarkersTest {
         assertArrayEquals(new int[]{3},new CalendarDayMarkers(app,false).priorities(date(12,0),date(13,0)));
     }
 
+    @Test public void noteCalendarAcceptsPastDaysWithoutAnAlarmValidationToast() {
+        Context app=RuntimeEnvironment.getApplication();AppString.init(app);
+        app.getSharedPreferences("advance_clock_app",0).edit()
+                .putBoolean("language_calendar_setup_v1",true)
+                .putBoolean("permission_onboarding_v2",true).commit();
+        try(var controller=Robolectric.buildActivity(MainActivity.class).setup()) {
+            MainActivity host=controller.get();
+            TripleCalendarView calendar=host.findViewById(R.id.noforget_calendar);
+            TripleCalendarView.OnDateSelectedListener listener=org.robolectric.util.ReflectionHelpers.getField(calendar,"dateListener");
+            Calendar previous=Calendar.getInstance(AppTime.zone());previous.add(Calendar.DAY_OF_YEAR,-5);
+            previous.set(Calendar.HOUR_OF_DAY,12);
+            String oldToast=org.robolectric.shadows.ShadowToast.getTextOfLatestToast();
+            listener.onDateSelected(previous.getTimeInMillis());
+            Calendar due=org.robolectric.util.ReflectionHelpers.getField(host,"quickNoteDue");
+            assertEquals(previous.get(Calendar.YEAR),due.get(Calendar.YEAR));
+            assertEquals(previous.get(Calendar.DAY_OF_YEAR),due.get(Calendar.DAY_OF_YEAR));
+            assertEquals(oldToast,org.robolectric.shadows.ShadowToast.getTextOfLatestToast());
+        }
+    }
+
     @Test public void calendarPickerSelectsDayPreservingTimeAndCancelDoesNotSave() {
         Context app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup()) {

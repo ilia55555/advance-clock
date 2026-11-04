@@ -764,10 +764,7 @@ public final class MainActivity extends Activity {
         });
 
         noteCalendar.setOnDateSelectedListener(millis -> {
-            if (millis < startOfToday()) {
-                LogoToast.makeText(this, AppString.get(R.string.runtime_text_0146), Toast.LENGTH_SHORT).show();
-                return;
-            }
+            // Browsing and dating notes is allowed in the past; validate only when scheduling a ring.
             quickNoteCalendarType = noteCalendar.getCalendarType();
             applyDate(quickNoteDue, millis);
             updateQuickNoteLabels();
