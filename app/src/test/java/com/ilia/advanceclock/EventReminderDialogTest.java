@@ -26,7 +26,7 @@ public class EventReminderDialogTest {
             SettingsSection hours=root.findViewWithTag("settings_section_before_hours");assertTrue(hours.isExpanded());
             root.findViewWithTag("settings_header_before_days").performClick();assertFalse(hours.isExpanded());
             ((CheckBox)root.findViewWithTag("event_rule_before_day_1")).setChecked(true);
-            ((CheckBox)root.findViewWithTag("event_rule_after_hour_8")).setChecked(true);
+            ((CheckBox)root.findViewWithTag("event_rule_after_hour_6")).setChecked(true);
             assertNull(root.findViewWithTag("event_before_amount"));
             root.findViewWithTag("event_before_date").performClick();
             AlertDialog calendar=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
@@ -46,7 +46,7 @@ public class EventReminderDialogTest {
             List<EventReminderRules.Rule> rules=EventReminderRules.parse(mode[0],result[0],false);assertEquals(12,rules.size());
             assertEquals(10,rules.stream().filter(r->r.custom).count());
             assertTrue(rules.stream().anyMatch(r->r.before && r.unit.equals("day") && r.amount==1));
-            assertTrue(rules.stream().anyMatch(r->!r.before && r.unit.equals("hour") && r.amount==8));
+            assertTrue(rules.stream().anyMatch(r->!r.before && r.unit.equals("hour") && r.amount==6));
             assertEquals(host.getString(R.string.reminder_count_summary,CalendarUtils.fa(12)),AlarmReminderUtils.summary(mode[0],result[0]));
         }
     }
@@ -77,6 +77,17 @@ public class EventReminderDialogTest {
         }
     }
 
+    @Test public void compactHourAndMinutePresetsKeepOldSelectionsRemovable(){
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()){
+            AlarmReminderDialog.show(controller.get(),2,EventReminderRules.encode(java.util.Arrays.asList(new EventReminderRules.Rule(true,"hour",8,false))),(m,j)->{});
+            AlertDialog dialog=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();View root=dialog.findViewById(android.R.id.content);
+            for(int hour:new int[]{1,2,3,6,12,18,24})assertNotNull(root.findViewWithTag("event_rule_after_hour_"+hour));
+            assertNull(root.findViewWithTag("event_rule_after_hour_4"));assertNotNull(root.findViewWithTag("event_rule_before_minute_20"));assertNotNull(root.findViewWithTag("event_rule_before_minute_40"));
+            assertTrue(((CheckBox)root.findViewWithTag("event_rule_before_hour_8")).isChecked());
+            dialog.dismiss();
+        }
+    }
     @Test public void recurrenceHoursRoundTripAsMinutesWithoutChangingStoredMode(){
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {

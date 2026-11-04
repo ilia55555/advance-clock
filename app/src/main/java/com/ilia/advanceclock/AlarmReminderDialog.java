@@ -48,13 +48,13 @@ public final class AlarmReminderDialog {
             SettingsSection section=accordion(root,directions,key,before?R.string.event_before:R.string.event_after);
             List<SettingsSection> groups=new ArrayList<>();
             SettingsSection hours=accordion(section.content,groups,key+"_hours",R.string.event_hours);
-            for(int minutes:new int[]{5,10,15,30,45})option(hours.content,new EventReminderRules.Rule(before,"minute",minutes,false));
-            for(int hour=1;hour<=24;hour++)option(hours.content,new EventReminderRules.Rule(before,"hour",hour,false));
+            for(int minutes:new int[]{5,10,15,20,30,40,45})option(hours.content,new EventReminderRules.Rule(before,"minute",minutes,false));
+            for(int hour:new int[]{1,2,3,6,12,18,24})option(hours.content,new EventReminderRules.Rule(before,"hour",hour,false));
             SettingsSection days=accordion(section.content,groups,key+"_days",R.string.event_days);
             for(int day:new int[]{1,2,3,5,7,10,14,21,30})option(days.content,new EventReminderRules.Rule(before,"day",day,false));
             SettingsSection longer=accordion(section.content,groups,key+"_longer",R.string.event_weeks_months);
             for(int week:new int[]{1,2,3,4})option(longer.content,new EventReminderRules.Rule(before,"week",week,false));
-            for(int month:new int[]{1,2,3,6,12})option(longer.content,new EventReminderRules.Rule(before,"month",month,false));
+            for(int month:new int[]{1,2,3,6,12})option(longer.content,new EventReminderRules.Rule(before,"month",month,false,AppSettings.defaultCalendar(c)));
             SettingsSection custom=accordion(section.content,groups,key+"_custom",R.string.event_custom);
             Calendar picked=Calendar.getInstance(zone);picked.setTimeInMillis(eventMillis+(before?-86400000L:86400000L));
             int[] calendarType={AppSettings.defaultCalendar(c)};
@@ -74,6 +74,8 @@ public final class AlarmReminderDialog {
             add.setTag("event_"+key+"_add");custom.content.addView(add,new LinearLayout.LayoutParams(-1,dp(48)));
             LinearLayout entries=column();custom.content.addView(entries);
             for(EventReminderRules.Rule rule:new ArrayList<>(manual))if(rule.before==before)manualRow(entries,rule);
+            // Keep previously selected, retired presets visible and removable without changing them.
+            for(EventReminderRules.Rule rule:new ArrayList<>(selected.values()))if(rule.before==before && !bindings.containsKey(rule.key()))manualRow(entries,rule);
             add.setOnClickListener(v->{
                 long delta=(picked.getTimeInMillis()/60000L*60000L-eventMillis)/60000L;
                 if((before && delta>=0) || (!before && delta<=0)){

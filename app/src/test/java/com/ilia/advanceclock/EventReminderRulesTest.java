@@ -18,6 +18,32 @@ public class EventReminderRulesTest {
     final TimeZone zone=TimeZone.getTimeZone("Asia/Tehran");
     long date(TimeZone z,int year,int month,int day,int hour){Calendar c=Calendar.getInstance(z);c.clear();c.set(year,month-1,day,hour,0);return c.getTimeInMillis();}
     long date(int year,int month,int day,int hour){return date(zone,year,month,day,hour);}
+    long calendarDate(int type,int year,int month,int day){
+        android.icu.util.Calendar c=CalendarUtils.create(type);c.setTimeZone(android.icu.util.TimeZone.getTimeZone(zone.getID()));c.clear();c.set(year,month-1,day,10,0);return c.getTimeInMillis();
+    }
+    @Test public void thirtyDaysAreNotAcalendarMonthAndPersianMonthsFollowTheSelectedCalendar(){
+        int type=CalendarUtils.PERSIAN;long esfand=calendarDate(type,1405,12,1);
+        EventReminderRules.Rule days=new EventReminderRules.Rule(false,"day",30,false);
+        assertEquals(30*86400000L,days.at(esfand,zone)-esfand);
+        EventReminderRules.Rule month=new EventReminderRules.Rule(false,"month",1,false,type);
+        assertEquals(calendarDate(type,1406,1,1),month.at(esfand,zone));assertNotEquals(month.at(esfand,zone),days.at(esfand,zone));
+        EventReminderRules.Rule year=new EventReminderRules.Rule(false,"month",12,false,type);
+        assertEquals(calendarDate(type,1406,12,1),year.at(esfand,zone));
+        EventReminderRules.Rule before=new EventReminderRules.Rule(true,"month",1,false,type);
+        assertEquals(esfand,before.at(calendarDate(type,1406,1,1),zone));
+        EventReminderRules.Rule restored=EventReminderRules.parse(2,EventReminderRules.encode(java.util.Arrays.asList(year)),false).get(0);
+        assertEquals(type,restored.calendarType);assertEquals(year.at(esfand,zone),restored.at(esfand,zone));
+    }
+    @Test public void hijriMonthsAndTwelveMonthsFollowLunarCalendarRatherThanThirtyDays(){
+        int type=CalendarUtils.HIJRI,month=1;
+        while(month<12 && CalendarUtils.daysInMonth(type,1448,month-1)!=29)month++;
+        assertEquals(29,CalendarUtils.daysInMonth(type,1448,month-1));
+        long start=calendarDate(type,1448,month,1),following=calendarDate(type,month==12?1449:1448,month==12?1:month+1,1);
+        EventReminderRules.Rule lunarMonth=new EventReminderRules.Rule(false,"month",1,false,type);
+        assertEquals(following,lunarMonth.at(start,zone));
+        assertEquals(following+86400000L,new EventReminderRules.Rule(false,"day",30,false).at(start,zone));
+        assertEquals(calendarDate(type,1449,month,1),new EventReminderRules.Rule(false,"month",12,false,type).at(start,zone));
+    }
     @Test public void weeklyFridayRemindersRepeatOnThursdayEveryWeek(){
         EventReminderRules.Rule rule=new EventReminderRules.Rule(true,"day",1,false);
         long anchor=date(2027,1,8,10);

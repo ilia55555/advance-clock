@@ -10,13 +10,19 @@ final class EventReminderRules {
     static final class Rule {
         final boolean before,custom;
         final String unit;
-        final int amount;
-        Rule(boolean before,String unit,int amount,boolean custom){this.before=before;this.unit=unit;this.amount=amount;this.custom=custom;}
-        String key(){return (before?"before":"after")+"_"+unit+"_"+amount;}
+        final int amount,calendarType;
+        Rule(boolean before,String unit,int amount,boolean custom){this(before,unit,amount,custom,CalendarUtils.GREGORIAN);}
+        Rule(boolean before,String unit,int amount,boolean custom,int calendarType){this.before=before;this.unit=unit;this.amount=amount;this.custom=custom;this.calendarType=calendarType;}
+        String key(){return (before?"before":"after")+"_"+unit+"_"+amount+(unit.equals("month") && calendarType!=CalendarUtils.GREGORIAN?"_calendar_"+calendarType:"");}
         long at(long occurrence,TimeZone zone){
             int signed=before?-amount:amount;
             if(unit.equals("minute"))return occurrence+signed*60000L;
             if(unit.equals("hour"))return occurrence+signed*3600000L;
+            if(unit.equals("month") && calendarType!=CalendarUtils.GREGORIAN){
+                android.icu.util.Calendar date=CalendarUtils.create(calendarType);
+                date.setTimeZone(android.icu.util.TimeZone.getTimeZone(zone.getID()));date.setTimeInMillis(occurrence);
+                date.add(android.icu.util.Calendar.MONTH,signed);return date.getTimeInMillis();
+            }
             Calendar date=Calendar.getInstance(zone);date.setTimeInMillis(occurrence);
             date.add(unit.equals("month")?Calendar.MONTH:unit.equals("week")?Calendar.WEEK_OF_YEAR:Calendar.DAY_OF_YEAR,signed);
             return date.getTimeInMillis();
@@ -46,7 +52,7 @@ final class EventReminderRules {
     static boolean valid(Rule rule){
         int max=rule.unit.equals("month")?120:rule.unit.equals("week")?520:rule.unit.equals("day")?3650:
                 rule.unit.equals("hour")?87600:rule.unit.equals("minute")?5256000:0;
-        return rule.amount>0 && rule.amount<=max;
+        return rule.amount>0 && rule.amount<=max && rule.calendarType>=0 && rule.calendarType<=2;
     }
     static List<Rule> parse(int mode,String json,boolean legacyBefore){
         ArrayList<Rule> result=new ArrayList<>();
@@ -63,7 +69,7 @@ final class EventReminderRules {
             JSONArray array=root.getJSONArray("rules");Set<String> seen=new HashSet<>();int custom=0;
             for(int i=0;i<Math.min(array.length(),MAX_RULES);i++){
                 JSONObject o=array.optJSONObject(i);if(o==null)continue;
-                Rule rule=new Rule(o.optBoolean("before"),o.optString("unit"),o.optInt("amount"),o.optBoolean("custom"));
+                Rule rule=new Rule(o.optBoolean("before"),o.optString("unit"),o.optInt("amount"),o.optBoolean("custom"),o.optInt("calendar",CalendarUtils.GREGORIAN));
                 if(valid(rule) && !seen.contains(rule.key()) && (!rule.custom || custom<MAX_CUSTOM)){
                     result.add(rule);seen.add(rule.key());if(rule.custom)custom++;
                 }
@@ -75,7 +81,7 @@ final class EventReminderRules {
         JSONArray array=new JSONArray();Set<String> seen=new HashSet<>();int custom=0;
         for(Rule rule:rules)try{
             if(!valid(rule) || !seen.add(rule.key()) || (rule.custom && custom++>=MAX_CUSTOM))continue;
-            array.put(new JSONObject().put("before",rule.before).put("unit",rule.unit).put("amount",rule.amount).put("custom",rule.custom));
+            array.put(new JSONObject().put("before",rule.before).put("unit",rule.unit).put("amount",rule.amount).put("custom",rule.custom).put("calendar",rule.calendarType));
             if(array.length()>=MAX_RULES)break;
         }catch(JSONException ignored){}
         try{return new JSONObject().put("v",1).put("rules",array).toString();}catch(JSONException impossible){return "{}";}
