@@ -14,13 +14,18 @@ final class AppMotion {
         if(parent==null || !parent.isLaidOut() || !enabled())return;
 
         TransitionSet set=new TransitionSet().setOrdering(TransitionSet.ORDERING_TOGETHER);
-        set.addTransition(new ChangeBounds());set.addTransition(new Fade());set.setDuration(360);
+        set.addTransition(new ChangeBounds());set.addTransition(new Fade());set.setDuration(220);
         set.setInterpolator(new android.view.animation.PathInterpolator(.42f,0,.58f,1));
         TransitionManager.beginDelayedTransition(parent,set);
     }
     static void launch(Activity host,Intent intent,View origin){
         if(enabled() && origin!=null && origin.isLaidOut())host.startActivity(intent,ActivityOptions.makeCustomAnimation(host,R.anim.editor_enter,R.anim.editor_stay).toBundle());
         else {host.startActivity(intent);if(!enabled())host.overridePendingTransition(0,0);}
+    }
+    static void appear(View view){
+        if(!enabled())return;
+        view.animate().cancel();view.setAlpha(0);view.setTranslationY(8*view.getResources().getDisplayMetrics().density);
+        view.animate().alpha(1).translationY(0).setDuration(220).setInterpolator(new android.view.animation.PathInterpolator(.42f,0,.58f,1)).start();
     }
     static boolean editor(Activity host){return host instanceof AlarmEditorActivity || host instanceof NoForgetEditorActivity || host instanceof AlarmAttachmentEditorActivity || host instanceof AlarmPhotoCropActivity;}
     static void activity(Activity host){

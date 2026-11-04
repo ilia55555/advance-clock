@@ -196,12 +196,16 @@ final class StopwatchPanelController {
     }
 
     private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
-    private void addLap(){long elapsed=currentElapsed();if(!running||elapsed==0)return;laps.add(0,elapsed);save();renderLaps();}
+    private void addLap(){long elapsed=currentElapsed();if(!running||elapsed==0)return;laps.add(0,elapsed);save();renderLaps(true);}
     private long currentElapsed(){return running?accumulatedMillis+Math.max(0,System.currentTimeMillis()-startedAtWall):accumulatedMillis;}
     private long readLimit() { return durationFields.readMillis(); }
 
     private void updateControls() {
         boolean configurable = !running && accumulatedMillis == 0L;
+        if(modeButtons.getVisibility()!=(configurable?View.VISIBLE:View.GONE)
+                || limitInputs.getVisibility()!=(configurable && mode==1?View.VISIBLE:View.GONE)
+                || dateTimeInputs.getVisibility()!=(configurable && mode==2?View.VISIBLE:View.GONE))
+            AppMotion.expand((android.view.ViewGroup)modeButtons.getParent());
         if (presets != null) presets.refresh();
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : accumulatedMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
         lapButton.setEnabled(running);
@@ -223,7 +227,8 @@ final class StopwatchPanelController {
 
     private void populateLimitInputs(){if(limitMillis<=0 || mode != 1)return;long total=limitMillis/1000;hoursInput.setText(String.valueOf(total/3600));minutesInput.setText(String.valueOf((total/60)%60));secondsInput.setText(String.valueOf(total%60));}
     private void renderTime(long millis){timeView.setText(format(millis));}
-    private void renderLaps() {
+    private void renderLaps(){renderLaps(false);}
+    private void renderLaps(boolean animateNew) {
         lapList.removeAllViews();
         for (int i = 0; i < laps.size(); i++) {
             TextView row = new TextView(host);
@@ -234,6 +239,7 @@ final class StopwatchPanelController {
             row.setGravity(android.view.Gravity.CENTER);
             row.setPadding(dp(12), dp(12), dp(12), dp(12));
             lapList.addView(row, new LinearLayout.LayoutParams(-1, -2));
+            if(animateNew && i==0)AppMotion.appear(row);
             View divider = new View(host);
             divider.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             divider.setBackgroundColor(AppSettings.field(host));

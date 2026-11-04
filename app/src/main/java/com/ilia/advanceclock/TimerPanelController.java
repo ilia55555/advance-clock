@@ -184,6 +184,10 @@ final class TimerPanelController {
 
     private void updateControls() {
         boolean configured = !running && remainingMillis == 0L;
+        if(modeButtons.getVisibility()!=(configured?View.VISIBLE:View.GONE)
+                || durationInputs.getVisibility()!=(configured && !dateTimeMode?View.VISIBLE:View.GONE)
+                || dateTimeInputs.getVisibility()!=(configured && dateTimeMode?View.VISIBLE:View.GONE))
+            AppMotion.expand((android.view.ViewGroup)modeButtons.getParent());
         if (presets != null) presets.refresh();
         modeButtons.setVisibility(configured ? View.VISIBLE : View.GONE);
         durationInputs.setVisibility(configured && !dateTimeMode ? View.VISIBLE : View.GONE);

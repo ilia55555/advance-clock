@@ -31,7 +31,7 @@ final class TaskCelebration {
             public void setAlpha(int a){} public void setColorFilter(ColorFilter f){} public int getOpacity(){return PixelFormat.TRANSLUCENT;}
         };
         line.setBounds(0,0,text.getWidth(),text.getHeight());text.getOverlay().add(line);
-        ValueAnimator animator=ValueAnimator.ofFloat(done?0:1,done?1:0);animator.setDuration(380);
+        ValueAnimator animator=ValueAnimator.ofFloat(done?0:1,done?1:0);animator.setDuration(220);
         animator.addUpdateListener(a->{float value=(float)a.getAnimatedValue();line.setLevel((int)(value*10000));text.setAlpha(1-.45f*value);});
         View.OnAttachStateChangeListener detach=new View.OnAttachStateChangeListener(){public void onViewAttachedToWindow(View v){}public void onViewDetachedFromWindow(View v){animator.cancel();}};
         text.addOnAttachStateChangeListener(detach);text.setTag(R.id.task_animation_tag,animator);
@@ -55,7 +55,7 @@ final class TaskCelebration {
             public void setAlpha(int a){} public void setColorFilter(ColorFilter f){} public int getOpacity(){return PixelFormat.TRANSLUCENT;}
         };
         particles.setBounds(0,0,root.getWidth(),root.getHeight());root.getOverlay().add(particles);
-        ValueAnimator animator=ValueAnimator.ofInt(0,10000);animator.setDuration(1050);animator.addUpdateListener(a->particles.setLevel((int)a.getAnimatedValue()));
+        ValueAnimator animator=ValueAnimator.ofInt(0,10000);animator.setDuration(250);animator.addUpdateListener(a->particles.setLevel((int)a.getAnimatedValue()));
         View.OnAttachStateChangeListener detach=new View.OnAttachStateChangeListener(){public void onViewAttachedToWindow(View v){}public void onViewDetachedFromWindow(View v){animator.cancel();}};card.addOnAttachStateChangeListener(detach);
         animator.addListener(new AnimatorListenerAdapter(){public void onAnimationEnd(Animator a){root.getOverlay().remove(particles);card.removeOnAttachStateChangeListener(detach);card.setTag(R.id.task_celebration_tag,null);}});card.setTag(R.id.task_celebration_tag,animator);animator.start();
     }

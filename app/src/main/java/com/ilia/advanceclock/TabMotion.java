@@ -97,7 +97,7 @@ final class TabMotion {
         incoming.setTranslationX(distance);
         incoming.postOnAnimation(() -> {
             if (token != generation) return;
-            animatePages(previous, tab, outgoing, incoming, distance, 0, -distance, 420,
+            animatePages(previous, tab, outgoing, incoming, distance, 0, -distance, 230,
                     () -> { if (token == generation) finish(); });
         });
     }
@@ -140,7 +140,7 @@ final class TabMotion {
         View outgoing = panels.get(selected), incoming = panels.get(target);
         int token = ++generation;
         float end = commit ? -dragDistance : 0;
-        long duration = (long) (240 + 180 * Math.abs(end - dragOffset) / Math.abs(dragDistance));
+        long duration = (long) (200 + 50 * Math.abs(end - dragOffset) / Math.abs(dragDistance));
         dragTarget = null;
         Runnable complete = () -> {
             if (token != generation) return;

@@ -1389,7 +1389,7 @@ public final class MainActivity extends Activity {
             if (tabMotion != null) tabMotion.finish();
             tabSwipeX = event.getRawX(); tabSwipeY = event.getRawY();
             tabDragging = false;
-            tabSwipeAllowed = !blocksTabSwipe(getWindow().getDecorView(), tabSwipeX, tabSwipeY);
+            tabSwipeAllowed = insideTabBar(tabSwipeX,tabSwipeY) || !blocksTabSwipe(getWindow().getDecorView(), tabSwipeX, tabSwipeY);
             if (tabVelocity != null) tabVelocity.recycle();
             tabVelocity = android.view.VelocityTracker.obtain();
         }
@@ -1426,6 +1426,12 @@ public final class MainActivity extends Activity {
             if (consumed) return true;
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    private boolean insideTabBar(float x,float y){
+        View bar=findViewById(R.id.tab_bar);if(bar==null || !bar.isShown())return false;
+        int[] location=new int[2];bar.getLocationOnScreen(location);
+        return x>=location[0] && x<location[0]+bar.getWidth() && y>=location[1] && y<location[1]+bar.getHeight();
     }
 
     private boolean blocksTabSwipe(View view, float x, float y) {
