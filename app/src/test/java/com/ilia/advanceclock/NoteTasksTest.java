@@ -80,6 +80,29 @@ public class NoteTasksTest {
             item.taskMode=false;LinearLayout ordinary=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item));assertNull(ordinary.findViewWithTag("task_check_107"));
         }
     }
+    @Test public void noteAlarmButtonDisablesAllRemindersAndReactivatesTheSavedAlarm(){
+        NoForgetItem item=task(108,RecurrenceUtils.WEEKLY);item.taskMode=false;new NoForgetStore(c).save(item);
+        try(var controller=Robolectric.buildActivity(MainActivity.class).setup().visible()){
+            MainActivity host=controller.get();
+            LinearLayout card=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item));
+            Button enabled=card.findViewWithTag("note_alarm_enabled_108");assertNotNull(enabled);assertTrue(enabled.isEnabled());enabled.performClick();
+            NoForgetItem disabled=new NoForgetStore(c).find(item.id);assertFalse(disabled.reminderEnabled);assertTrue(disabled.hasDue);assertEquals(item.reminderMinutesJson,disabled.reminderMinutesJson);
+            assertFalse(EventReminderScheduler.hasPending(c,"note",item.id,now));
+            card=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,disabled));
+            ((Button)card.findViewWithTag("note_alarm_enabled_108")).performClick();assertTrue(new NoForgetStore(c).find(item.id).reminderEnabled);
+            assertTrue(EventReminderScheduler.hasPending(c,"note",item.id,now));
+            disabled.hasDue=false;card=ReflectionHelpers.callInstanceMethod(host,"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,disabled));assertNull(card.findViewWithTag("note_alarm_enabled_108"));
+        }
+    }
+    @Test public void completedOneShotCannotBeRearmedWithoutUncheckingTheTask(){
+        NoForgetItem item=task(109,RecurrenceUtils.NONE);NoForgetItem done=NoteTasks.setCompleted(c,item.id,true,now);
+        try(var controller=Robolectric.buildActivity(MainActivity.class).setup().visible()){
+            LinearLayout card=ReflectionHelpers.callInstanceMethod(controller.get(),"noteCard",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,done));
+            Button enabled=card.findViewWithTag("note_alarm_enabled_109");assertFalse(enabled.isEnabled());assertFalse(new NoForgetStore(c).find(item.id).reminderEnabled);
+            ((CheckBox)card.findViewWithTag("task_check_109")).setChecked(false);assertTrue(enabled.isEnabled());
+            assertEquals(c.getString(R.string.runtime_text_0212),enabled.getText().toString());
+        }
+    }
     @Test public void completedStylingCanRenderWithoutAnyAnimationOrOverlay(){
         TextView title=new TextView(c);title.setText("Task");TaskCelebration.strike(title,true,false);
         assertTrue((title.getPaintFlags()&Paint.STRIKE_THRU_TEXT_FLAG)!=0);assertEquals(.55f,title.getAlpha(),.01f);

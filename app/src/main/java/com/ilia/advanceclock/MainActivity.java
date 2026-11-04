@@ -1761,6 +1761,14 @@ public final class MainActivity extends Activity {
         return view == parent;
     }
 
+    private void updateNoteAlarmState(Button button,NoForgetItem item){
+        button.setText(AppString.get(item.reminderEnabled?R.string.runtime_text_0212:R.string.runtime_text_0213));
+        applyAlarmStateStyle(button,item.reminderEnabled);
+        long now=System.currentTimeMillis();long activation=AlarmTimePolicy.next(item.dueAtMillis,item.applyDate,item.recurrenceMode,item.intervalDays,item.customDatesJson,now);
+        boolean available=item.reminderEnabled || (activation>now && !(item.taskDone(now) && item.recurrenceMode==RecurrenceUtils.NONE));
+        button.setEnabled(available);button.setAlpha(available?1f:.45f);
+    }
+
     private LinearLayout noteCard(NoForgetItem item) {
         LinearLayout card = baseCard(priorityStroke(item.priority));
 
@@ -1779,6 +1787,7 @@ public final class MainActivity extends Activity {
             check.setOnCheckedChangeListener((button,done)->{
                 NoForgetItem updated=NoteTasks.setCompleted(this,item.id,done);if(updated==null)return;
                 check.setContentDescription(getString(done?R.string.task_reopen:R.string.task_complete));
+                Button alarmState=card.findViewWithTag("note_alarm_enabled_"+item.id);if(alarmState!=null)updateNoteAlarmState(alarmState,updated);
                 for(TextView text:taskTexts)TaskCelebration.strike(text,done,true);
                 if(done){TaskCelebration.celebrate(card);LogoToast.makeText(this,R.string.task_congratulations,android.widget.Toast.LENGTH_SHORT).show();}
             });
@@ -1845,6 +1854,28 @@ public final class MainActivity extends Activity {
 
         actions.addView(delete);
         actions.addView(edit);
+        if(item.hasDue){
+            Button enabled=actionButton(AppString.get(item.reminderEnabled?R.string.runtime_text_0212:R.string.runtime_text_0213));
+            enabled.setTag("note_alarm_enabled_"+item.id);updateNoteAlarmState(enabled,item);
+            enabled.setOnClickListener(v->{
+                NoForgetStore store=new NoForgetStore(this);NoForgetItem current=store.find(item.id);if(current==null)return;
+                if(!current.reminderEnabled){
+                    long next=AlarmTimePolicy.next(current.dueAtMillis,current.applyDate,current.recurrenceMode,current.intervalDays,current.customDatesJson,System.currentTimeMillis());
+                    if(next<=System.currentTimeMillis() || (current.taskDone(System.currentTimeMillis()) && current.recurrenceMode==RecurrenceUtils.NONE)){
+                        LogoToast.makeText(this,R.string.runtime_text_0147,Toast.LENGTH_SHORT).show();return;
+                    }
+                    if(next!=current.dueAtMillis){current.dueAtMillis=next;current.reminderAnchorMillis=next;}
+                }
+                current.reminderEnabled=!current.reminderEnabled;if(current.taskCompleted)current.taskReminderBeforeCompletion=current.reminderEnabled;store.save(current);
+                if(current.reminderEnabled){
+                    if(!NoForgetScheduler.schedule(this,current))LogoToast.makeText(this,R.string.runtime_text_0470,Toast.LENGTH_LONG).show();
+                }else{
+                    NoForgetScheduler.cancel(this,current.id);NoForgetSoundService.stopTask(current.id);NoteReminderActivity.finishIfShowing(current.id);
+                }
+                NoForgetWidgetProvider.updateAll(this);renderNoForget();
+            });
+            actions.addView(new View(this),new LinearLayout.LayoutParams(0,1,1f));actions.addView(enabled);
+        }
         card.addView(actions);
         return card;
     }
