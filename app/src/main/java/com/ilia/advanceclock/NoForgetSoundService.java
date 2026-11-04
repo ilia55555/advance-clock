@@ -84,6 +84,7 @@ public final class NoForgetSoundService extends Service {
         NoForgetSoundService service=runningService.get();
         return service!=null && service.active && service.currentItem != null && service.currentItem.id == id ? service : null;
     }
+    static void stopTask(long id){NoForgetSoundService service=output(id);if(service!=null){service.stopReminder();service.stopSelf();}}
     static boolean outputMuted(long id) { NoForgetSoundService service=output(id);return service!=null && service.muted; }
     static boolean outputVibrating(long id) { NoForgetSoundService service=output(id);return service!=null && service.vibrationEnabled; }
     static void setOutputMuted(long id,boolean value) {
@@ -119,7 +120,7 @@ public final class NoForgetSoundService extends Service {
         }
         long id = intent.getLongExtra("noteId", -1L);
         NoForgetItem item = new NoForgetStore(this).find(id);
-        if (item == null) { stopSelf(); return START_NOT_STICKY; }
+        if (item == null || item.completedOccurrence(intent.getLongExtra(EventReminderScheduler.OCCURRENCE,intent.getLongExtra("taskOccurrence",item.dueAtMillis)))) { stopSelf(); return START_NOT_STICKY; }
         stopReminder();
         currentItem=item;
         reminderOccurrence=intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);

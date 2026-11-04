@@ -21,6 +21,7 @@ final class ScheduleOrder {
                 ? RecurrenceUtils.next(item.dueAtMillis, item.recurrenceMode,
                 item.intervalDays, item.customDatesJson, now) : -1L);
         items.sort((a, b) -> {
+            if(a.taskDone(now)!=b.taskDone(now))return a.taskDone(now)?1:-1;
             int order = compare(next.get(a.id), a.createdAt, next.get(b.id), b.createdAt);
             return order != 0 ? order : Long.compare(b.id, a.id);
         });

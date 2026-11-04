@@ -15,6 +15,11 @@ public final class NoForgetItem {
     public long lastFiredAtMillis;
     public long id;
     public boolean taskMode;
+    public boolean taskCompleted,taskReminderBeforeCompletion;
+    public long taskCompletedOccurrence,taskPreviousCompletedOccurrence;
+    public boolean taskDone(long now){return taskMode && taskCompleted && (recurrenceMode==RecurrenceUtils.NONE || dueAtMillis<=taskCompletedOccurrence || now<dueAtMillis);}
+    public boolean completedOccurrence(long occurrence){return taskMode && (recurrenceMode==RecurrenceUtils.NONE?taskCompleted:taskCompletedOccurrence>0 && occurrence<=taskCompletedOccurrence);}
+
     public boolean applyDate = true;
     public String title;
     public String body;
@@ -74,7 +79,8 @@ public final class NoForgetItem {
         o.put("reminderAnchorMillis",reminderAnchorMillis);
         o.put("lastFiredAtMillis",lastFiredAtMillis);
         o.put("applyDate", applyDate);
-        o.put("taskMode",taskMode);
+        o.put("taskMode",taskMode);o.put("taskCompleted",taskCompleted);
+        o.put("taskPreviousCompletedOccurrence",taskPreviousCompletedOccurrence);o.put("taskCompletedOccurrence",taskCompletedOccurrence);o.put("taskReminderBeforeCompletion",taskReminderBeforeCompletion);
         o.put("id",id);o.put("title",title);o.put("body",body);o.put("sketchJson",sketchJson);
         o.put("priority",priority);o.put("priorityVersion",2);
         o.put("hasDue",hasDue);o.put("dueAtMillis",dueAtMillis);
@@ -100,7 +106,8 @@ public final class NoForgetItem {
                 o.optBoolean("reminderEnabled",false),o.optLong("createdAt",System.currentTimeMillis()),
                 o.optInt("recurrenceMode",RecurrenceUtils.NONE),o.optInt("intervalDays",1),o.optString("customDatesJson","[]")
         );
-        item.taskMode=o.optBoolean("taskMode",false);
+        item.taskMode=o.optBoolean("taskMode",false);item.taskCompleted=o.optBoolean("taskCompleted",false);
+        item.taskPreviousCompletedOccurrence=o.optLong("taskPreviousCompletedOccurrence",0);item.taskCompletedOccurrence=o.optLong("taskCompletedOccurrence",0);item.taskReminderBeforeCompletion=o.optBoolean("taskReminderBeforeCompletion",false);
         item.reminderAnchorMillis=o.optLong("reminderAnchorMillis",item.dueAtMillis);
         item.lastFiredAtMillis=o.optLong("lastFiredAtMillis",0);
         item.applyDate = o.optBoolean("applyDate", true); // Preserve explicit dates in existing records.

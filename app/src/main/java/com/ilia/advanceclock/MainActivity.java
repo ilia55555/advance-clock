@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -1766,13 +1767,30 @@ public final class MainActivity extends Activity {
         String titleText = item.title.trim().isEmpty()
                 ? (item.body.trim().isEmpty() ? AppString.get(R.string.runtime_text_0214) : item.body)
                 : item.title;
-        card.addView(cardTitle(titleText));
+        TextView taskTitle=cardTitle(titleText);
+        java.util.List<TextView> taskTexts=new java.util.ArrayList<>();taskTexts.add(taskTitle);
+        if(item.taskMode){
+            LinearLayout titleRow=new LinearLayout(this);titleRow.setGravity(Gravity.CENTER_VERTICAL);titleRow.setLayoutDirection(AppSettings.layoutDirection(this));
+            CheckBox check=new CheckBox(this);check.setTag("task_check_"+item.id);check.setChecked(item.taskDone(System.currentTimeMillis()));
+            check.setButtonTintList(android.content.res.ColorStateList.valueOf(AppSettings.primaryColor(this)));
+            check.setContentDescription(getString(check.isChecked()?R.string.task_reopen:R.string.task_complete));
+            titleRow.addView(check,new LinearLayout.LayoutParams(dp(48),dp(48)));titleRow.addView(taskTitle,new LinearLayout.LayoutParams(0,-2,1));card.addView(titleRow);
+            TaskCelebration.strike(taskTitle,check.isChecked(),false);
+            check.setOnCheckedChangeListener((button,done)->{
+                NoForgetItem updated=NoteTasks.setCompleted(this,item.id,done);if(updated==null)return;
+                check.setContentDescription(getString(done?R.string.task_reopen:R.string.task_complete));
+                for(TextView text:taskTexts)TaskCelebration.strike(text,done,true);
+                if(done){TaskCelebration.celebrate(card);LogoToast.makeText(this,R.string.task_congratulations,android.widget.Toast.LENGTH_SHORT).show();}
+            });
+        }else card.addView(taskTitle);
+
 
         if (!item.body.trim().isEmpty() && !item.body.equals(titleText)) {
             TextView body = smallText(item.body);
             body.setMaxLines(2);
             body.setEllipsize(android.text.TextUtils.TruncateAt.END);
             body.setPadding(0, dp(5), 0, dp(4));
+            taskTexts.add(body);if(item.taskMode)TaskCelebration.strike(body,item.taskDone(System.currentTimeMillis()),false);
             card.addView(body);
         }
 

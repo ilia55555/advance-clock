@@ -1456,4 +1456,7 @@
     <string name="note_mode_note">ملاحظة</string>
     <string name="note_mode_tasks">المهام</string>
     <string name="note_mode_selector">ملاحظة أو مهمة</string>
+    <string name="task_complete">إكمال المهمة</string>
+    <string name="task_reopen">وضع علامة غير مكتملة</string>
+    <string name="task_congratulations">أحسنت! اكتملت المهمة.</string>
 </resources>

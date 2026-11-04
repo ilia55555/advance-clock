@@ -281,6 +281,8 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                             : item.body)
                             : item.title);
 
+            row.setInt(R.id.noforget_row_title,"setPaintFlags",android.graphics.Paint.ANTI_ALIAS_FLAG
+                    | (item.taskDone(System.currentTimeMillis())?android.graphics.Paint.STRIKE_THRU_TEXT_FLAG:0));
             String meta = item.hasDue
                     ? CalendarUtils.formatDate(
                     item.dueAtMillis,

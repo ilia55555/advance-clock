@@ -1,0 +1,4 @@
+<resources>
+    <item name="task_animation_tag" type="id"/>
+    <item name="task_celebration_tag" type="id"/>
+</resources>

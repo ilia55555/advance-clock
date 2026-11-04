@@ -1442,4 +1442,7 @@
     <string name="note_mode_note">Note</string>
     <string name="note_mode_tasks">Tasks</string>
     <string name="note_mode_selector">Note or task</string>
+    <string name="task_complete">Mark as done</string>
+    <string name="task_reopen">Mark as not done</string>
+    <string name="task_congratulations">Well done! Task completed.</string>
 </resources>

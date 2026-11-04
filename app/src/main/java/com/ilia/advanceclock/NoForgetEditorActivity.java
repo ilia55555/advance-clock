@@ -931,6 +931,12 @@ public final class NoForgetEditorActivity extends Activity {
         item.vibrate=vibrate.isChecked();
         item.soundUri=soundUri;
         item.taskMode=taskMode.isChecked();
+        NoForgetItem previous=new NoForgetStore(this).find(id);
+        if(previous!=null && item.taskMode && previous.taskMode && previous.dueAtMillis==item.dueAtMillis){
+            item.taskPreviousCompletedOccurrence=previous.taskPreviousCompletedOccurrence;
+            item.taskCompleted=previous.taskCompleted;item.taskCompletedOccurrence=previous.taskCompletedOccurrence;
+            item.taskReminderBeforeCompletion=previous.taskReminderBeforeCompletion;
+        }
         item.fullscreenUnlocked=true;
         item.fullscreenLocked=true;
         item.reminderMode=reminderMode;

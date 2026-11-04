@@ -43,9 +43,17 @@ final class EventReminderScheduler {
     }
     static synchronized void sync(Context c,NoForgetItem item){sync(c,item,System.currentTimeMillis());}
     static synchronized void sync(Context c,NoForgetItem item,long now){
-        sync(c,"note",item.id,item.reminderAnchorMillis>0?item.reminderAnchorMillis:item.dueAtMillis,
+        sync(c,"note",item.id,noteAnchor(item),
                 item.recurrenceMode,item.intervalDays,item.customDatesJson,AppTime.zone(),item.reminderMode,item.reminderMinutesJson,
-                item.hasDue && (item.reminderEnabled || item.lastFiredAtMillis>0),now);
+                item.hasDue && !(item.taskMode && item.taskCompleted && item.recurrenceMode==RecurrenceUtils.NONE) && (item.reminderEnabled || item.lastFiredAtMillis>0),now);
+    }
+    private static long noteAnchor(NoForgetItem item){
+        long anchor=item.reminderAnchorMillis>0?item.reminderAnchorMillis:item.dueAtMillis;
+        if(item.taskMode && item.taskCompletedOccurrence>0 && item.recurrenceMode!=RecurrenceUtils.NONE){
+            long next=RecurrenceUtils.next(anchor,item.recurrenceMode,item.intervalDays,item.customDatesJson,item.taskCompletedOccurrence,AppTime.zone());
+            return next>0?next:anchor;
+        }
+        return anchor;
     }
     private static void sync(Context c,String kind,long id,long anchor,int recurrence,int interval,String dates,
                              TimeZone zone,int mode,String json,boolean active,long now){
@@ -118,7 +126,7 @@ final class EventReminderScheduler {
             AlarmItem alarm=kind.equals("alarm")?new AlarmStore(c).find(id):null;
             NoForgetItem note=kind.equals("note")?new NoForgetStore(c).find(id):null;
             if(alarm==null && note==null){cancel(c,kind,id);return;}
-            long anchor=alarm!=null?alarm.reminderAnchorMillis:note.reminderAnchorMillis;
+            long anchor=alarm!=null?alarm.reminderAnchorMillis:noteAnchor(note);
             int recurrence=alarm!=null?alarm.recurrenceMode:note.recurrenceMode,interval=alarm!=null?alarm.intervalDays:note.intervalDays;
             String dates=alarm!=null?alarm.customDatesJson:note.customDatesJson;
             TimeZone zone=alarm!=null?alarm.timeZone():AppTime.zone();
@@ -146,7 +154,9 @@ final class EventReminderScheduler {
                     else delivered.edit().putString(key,delivery).commit();
                 }
             }
+            if(note!=null && note.completedOccurrence(occurrence))shouldRing=false;
             if(!shouldRing)return;
+            if(note!=null)NoteTasks.reopenForOccurrence(c,note,occurrence);
             if(alarm!=null)AlarmSoundService.ring(c,alarm,occurrence);
             else {
                 Intent service=NoForgetSoundService.startIntent(c,id).putExtra(OCCURRENCE,occurrence);

@@ -15,7 +15,7 @@ public final class NoForgetScheduler {
 
     public static boolean schedule(Context context,NoForgetItem item){
         cancelScheduled(context,item.id);
-        if(!item.reminderEnabled||!item.hasDue)return false;
+        if(!item.reminderEnabled||!item.hasDue || item.completedOccurrence(item.dueAtMillis))return false;
 
         long now=System.currentTimeMillis();
         long next=RecurrenceUtils.next(
@@ -108,7 +108,8 @@ public final class NoForgetScheduler {
     }
 
     public static boolean snooze(Context context, long id, long delay) {
-        if (delay <= 0 || new NoForgetStore(context).find(id) == null || !PermissionHelper.exactAlarmsGranted(context)) return false;
+        NoForgetItem item=new NoForgetStore(context).find(id);
+        if (delay <= 0 || item==null || item.completedOccurrence(item.dueAtMillis) || !PermissionHelper.exactAlarmsGranted(context)) return false;
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager == null) return false;
         long deadline = System.currentTimeMillis() + delay;

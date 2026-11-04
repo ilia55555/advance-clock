@@ -10,18 +10,21 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         long id=intent==null?-1L:intent.getLongExtra("noteId",-1L);
         NoForgetStore store=new NoForgetStore(context);
         NoForgetItem item=store.find(id);
-        if(item==null)return;
+        if(item==null || item.completedOccurrence(item.dueAtMillis))return;
+        NoteTasks.reopenForOccurrence(context,item,item.dueAtMillis);
 
         boolean preReminder = intent.getBooleanExtra("preReminder", false);
+        if(!preReminder && !intent.getBooleanExtra("snooze",false) && item.dueAtMillis>System.currentTimeMillis()+1000)return;
         if (preReminder) {
             int minutes = intent.getIntExtra("reminderMinutes", 0);
+            if(item.dueAtMillis-minutes*60000L>System.currentTimeMillis()+1000)return;
             if (!item.reminderEnabled || !item.hasDue
                     || !AppSettings.noteReminderNotificationsEnabled(context)
                     || !AlarmReminderUtils.effective(item.reminderMode, item.reminderMinutesJson)
                     .contains(minutes)) return;
         }
 
-        Intent service=NoForgetSoundService.startIntent(context,id);
+        Intent service=NoForgetSoundService.startIntent(context,id).putExtra("taskOccurrence",item.dueAtMillis);
         if(Build.VERSION.SDK_INT>=26)context.startForegroundService(service);
         else context.startService(service);
 
@@ -33,8 +36,11 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
     }
 
     private void afterRing(Context context,Intent intent,NoForgetItem item){
+        synchronized(NoteTasks.class){
         long id=item.id;
         NoForgetStore store=new NoForgetStore(context);
+        NoForgetItem latest=store.find(id);
+        if(latest==null || latest.completedOccurrence(item.dueAtMillis))return;
         if (intent.getBooleanExtra("snooze", false)) {
             context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();
             return; // Snoozing never moves the note's normal recurrence schedule.
@@ -58,6 +64,7 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
             store.save(item);
         }
         NoForgetWidgetProvider.updateAll(context);
+        }
     }
 
 }
