@@ -37,8 +37,20 @@ final class OccurrenceSkips {
             NoForgetWidgetProvider.updateAll(c);return true;
         }
     }
+    static void addBeside(android.widget.LinearLayout row,Button skip,Button active){
+        Context c=row.getContext();active.setMinWidth(ReminderModalStyle.dp(c,72));active.setMinimumWidth(ReminderModalStyle.dp(c,72));
+        row.addView(new android.view.View(c),new android.widget.LinearLayout.LayoutParams(0,1,1));
+        android.widget.LinearLayout.LayoutParams lp=new android.widget.LinearLayout.LayoutParams(ReminderModalStyle.dp(c,64),ReminderModalStyle.dp(c,32));lp.setMarginEnd(ReminderModalStyle.dp(c,8));
+        row.addView(skip,lp);row.addView(active);
+    }
     static Button button(android.app.Activity host,String kind,long id,long at,int recurrence,boolean enabled,TimeZone zone,Runnable refresh){
-        Button button=new Button(host);button.setTag("skip_today_"+kind+"_"+id);button.setText(R.string.skip_today_occurrence);button.setAllCaps(false);button.setTextSize(11);button.setMaxLines(2);button.setEllipsize(android.text.TextUtils.TruncateAt.END);button.setMinWidth(0);button.setMinimumWidth(0);button.setPadding(8,0,8,0);button.setTextColor(AppSettings.primaryColor(host));button.setBackground(ReminderModalStyle.shape(host,AppSettings.field(host),AppSettings.primaryColor(host),10));
+        Button button=new Button(host);button.setTag("skip_today_"+kind+"_"+id);button.setText(R.string.skip_today_occurrence);
+        button.setAllCaps(false);button.setTextSize(10);button.setMaxLines(2);button.setIncludeFontPadding(false);button.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        button.setMinWidth(0);button.setMinimumWidth(0);button.setMinHeight(0);button.setMinimumHeight(0);
+        button.setPadding(ReminderModalStyle.dp(host,4),0,ReminderModalStyle.dp(host,4),0);button.setTextColor(AppSettings.textPrimary(host));
+        button.setElevation(0);button.setStateListAnimator(null);button.setBackgroundTintList(null);
+        button.setBackground(ReminderModalStyle.shape(host,android.graphics.Color.TRANSPARENT,AppSettings.primaryColor(host),8));
+        button.setContentDescription(host.getString(R.string.skip_today_occurrence));button.setTooltipText(host.getString(R.string.skip_today_occurrence));
         button.setEnabled(enabled && recurrence!=RecurrenceUtils.NONE && today(at,System.currentTimeMillis(),zone));button.setAlpha(button.isEnabled()?1:.4f);
         button.setOnClickListener(v->{button.setEnabled(false);Context app=host.getApplicationContext();NoteTasks.WORK.execute(()->{
             try{skip(app,kind,id,System.currentTimeMillis());}catch(RuntimeException error){android.util.Log.e("OccurrenceSkips","Cannot skip occurrence",error);}

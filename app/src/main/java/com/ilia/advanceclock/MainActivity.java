@@ -1688,8 +1688,7 @@ public final class MainActivity extends Activity {
         actions.addView(delete);
         actions.addView(edit);
         Button skip=OccurrenceSkips.button(this,"alarm",item.id,item.triggerAtMillis,item.recurrenceMode,item.enabled,item.timeZone(),this::renderAlarms);
-        LinearLayout.LayoutParams skipParams=new LinearLayout.LayoutParams(0,dp(48),1);skipParams.setMarginEnd(dp(6));actions.addView(skip,skipParams);
-        actions.addView(enabled);
+        OccurrenceSkips.addBeside(actions,skip,enabled);
         card.addView(actions);
         return card;
     }
@@ -1914,7 +1913,7 @@ public final class MainActivity extends Activity {
                 NoForgetWidgetProvider.updateAll(this);renderNoForget();
             });
             Button skip=OccurrenceSkips.button(this,"note",item.id,item.dueAtMillis,item.recurrenceMode,item.reminderEnabled,AppTime.zone(),this::renderNoForget);
-            LinearLayout.LayoutParams skipParams=new LinearLayout.LayoutParams(0,dp(48),1);skipParams.setMarginEnd(dp(6));actions.addView(skip,skipParams);actions.addView(enabled);
+            OccurrenceSkips.addBeside(actions,skip,enabled);
         }
         card.addView(actions);
         return card;
