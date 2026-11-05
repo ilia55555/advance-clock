@@ -26,6 +26,7 @@ final class ReminderScreen extends FrameLayout {
     static final class Content {
         String title = "", body = "", image1 = "", image2 = "", openLabel = "";
         boolean background;
+        boolean allowDrawing=true;
         List<NoteAttachment> attachments = new ArrayList<>();
         int priority = -1;
         int snoozeMinutes = 15;
@@ -171,7 +172,7 @@ final class ReminderScreen extends FrameLayout {
         footer.addView(dismissal,dismissParams);
         screen.addView(footer, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
         boolean hasAttachments=!photos.isEmpty() || !data.attachments.isEmpty();
-        AlertDrawingView board=(style==0 || style==1) && !hasAttachments
+        AlertDrawingView board=data.allowDrawing && (style==0 || style==1) && !hasAttachments
                 ?new AlertDrawingView(host,style==1):null;
         if(board!=null) {
             board.setTag("alert_drawing_board");

@@ -1463,4 +1463,5 @@
     <string name="task_completed_label">مكتملة</string>
     <string name="task_pending_label">غير مكتملة</string>
     <string name="skip_today_occurrence">تخطي موعد اليوم</string>
+    <string name="note_view_details">عرض الملاحظة</string>
 </resources>

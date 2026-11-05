@@ -1445,4 +1445,5 @@ Lock screen</string>
     <string name="task_completed_label">Completed</string>
     <string name="task_pending_label">To do</string>
     <string name="skip_today_occurrence">Skip today’s occurrence</string>
+    <string name="note_view_details">View note</string>
 </resources>

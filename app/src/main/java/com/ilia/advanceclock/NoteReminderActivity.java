@@ -14,6 +14,7 @@ public final class NoteReminderActivity extends Activity {
         return activity!=null && !activity.isFinishing() && !activity.isDestroyed() && activity.screenVisible && activity.noteId==id;
     }
     private long noteId = -1;
+    private android.app.Dialog detailsDialog;
     static void finishIfShowing(long id) {
         NoteReminderActivity activity = showing.get();
         if (activity != null && activity.noteId == id) activity.runOnUiThread(activity::finishAndRemoveTask);
@@ -24,23 +25,27 @@ public final class NoteReminderActivity extends Activity {
         ReminderScreen.prepareWindow(this); bind(getIntent());
     }
     @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); NoForgetSoundService.onRingVisibilityChanged(); }
-    @Override protected void onResume() { super.onResume(); screenVisible=true; NoForgetSoundService.onRingVisibilityChanged(); ReminderScreen.hideSystemBars(this); }
+    @Override protected void onResume() { super.onResume(); screenVisible=true; NoForgetSoundService.onRingVisibilityChanged(); ReminderScreen.hideSystemBars(this);NoteDetailDialog.refresh(detailsDialog); }
     @Override public void onWindowFocusChanged(boolean focused) { super.onWindowFocusChanged(focused); if (focused) ReminderScreen.hideSystemBars(this); }
     private void bind(Intent intent) {
+        if(detailsDialog!=null){detailsDialog.dismiss();detailsDialog=null;}
         noteId = intent == null ? -1 : intent.getLongExtra("noteId", -1);
         NoForgetItem item = new NoForgetStore(this).find(noteId);
         if (item == null) { finish(); return; }
         ReminderScreen.Content data = new ReminderScreen.Content();
         data.title = item.title;
         data.priority = item.priority;
-        data.openLabel = getString(R.string.reminder_open_destination,getString(R.string.tab_notes));
+        data.openLabel = getString(R.string.note_view_details);
         data.output = AlertOutput.note(noteId);
         long eventTime=intent==null?0:intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
-        data.body = eventTime>0?getString(R.string.event_at,CalendarUtils.formatDate(eventTime,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,eventTime)):item.body; data.attachments = NoteAttachment.parse(item.attachmentsJson);
-        data.image1 = item.imageUri1; data.image2 = item.imageUri2; data.background = item.imagesAsBackground;
+        data.body = eventTime>0?getString(R.string.event_at,CalendarUtils.formatDate(eventTime,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,eventTime)):"";
+        data.allowDrawing=false;
         setContentView(new ReminderScreen(this, data, this::stopAndClose, () -> {
-            startActivity(new Intent(this, NoForgetEditorActivity.class).putExtra("noteId", noteId));
-            stopAndClose();
+            if(detailsDialog==null || !detailsDialog.isShowing()){
+                android.app.Dialog shown=NoteDetailDialog.show(this,noteId);
+                detailsDialog=shown;
+                if(shown!=null)shown.setOnDismissListener(d->{if(detailsDialog==d)detailsDialog=null;});
+            }
         }, minutes -> {
             if (AlertSnoozes.schedule(this,"note",noteId,data.title,"",minutes)) stopAndClose();
             else LogoToast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
@@ -56,10 +61,10 @@ public final class NoteReminderActivity extends Activity {
         if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) return true;
         return super.onKeyUp(code, event);
     }
-    private void stopAndClose() { stopService(NoForgetSoundService.stopIntent(this)); finishAndRemoveTask(); }
+    private void stopAndClose() { if(detailsDialog!=null)detailsDialog.dismiss();stopService(NoForgetSoundService.stopIntent(this)); finishAndRemoveTask(); }
     // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
     @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { /* Dismiss explicitly, consistently with other alerts. */ }
     @Override protected void onStop() { screenVisible=false; NoForgetSoundService.onRingVisibilityChanged(); super.onStop(); }
-    @Override protected void onDestroy() { screenVisible=false; if (showing.get() == this) showing.clear(); NoForgetSoundService.onRingVisibilityChanged(); super.onDestroy(); }
+    @Override protected void onDestroy() { if(detailsDialog!=null){detailsDialog.dismiss();detailsDialog=null;}screenVisible=false; if (showing.get() == this) showing.clear(); NoForgetSoundService.onRingVisibilityChanged(); super.onDestroy(); }
 }
