@@ -20,6 +20,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
             if (item == null || !item.enabled) return;
 
             long firedAt = item.triggerAtMillis;
+            if(firedAt>System.currentTimeMillis()+1000 || OccurrenceSkips.contains(context,"alarm",id,firedAt))return;
 
             AlarmSoundService.ring(context, item);
 
@@ -27,7 +28,7 @@ public final class AlarmReceiver extends BroadcastReceiver {
             AlarmScheduler.schedulePostReminders(context, item, firedAt);
 
             long now = System.currentTimeMillis() + 1000L;
-            long next = RecurrenceUtils.next(
+            long next = OccurrenceSkips.next(context,"alarm",id,
                     firedAt,
                     item.recurrenceMode,
                     item.intervalDays,

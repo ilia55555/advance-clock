@@ -18,12 +18,12 @@ public final class NoForgetScheduler {
         if(!item.reminderEnabled||!item.hasDue || item.completedOccurrence(item.dueAtMillis))return false;
 
         long now=System.currentTimeMillis();
-        long next=RecurrenceUtils.next(
+        long next=OccurrenceSkips.next(context,"note",item.id,
                 item.dueAtMillis,
                 item.recurrenceMode,
                 item.intervalDays,
                 item.customDatesJson,
-                now);
+                now,AppTime.zone());
         if(next<=now)return false;
         if(next!=item.dueAtMillis){
             item.dueAtMillis=next;
@@ -67,6 +67,11 @@ public final class NoForgetScheduler {
         cancelScheduled(context,id);
     }
 
+    static void cancelPrimaryOccurrence(Context context,long id){
+        AlarmManager manager=context.getSystemService(AlarmManager.class);if(manager==null)return;
+        manager.cancel(mainPendingIntent(context,id));
+        for(int i=0;i<AlarmReminderUtils.VALUES.length;i++)manager.cancel(preReminderPendingIntent(context,id,i,0));
+    }
     private static void cancelScheduled(Context context,long id){
         AlarmManager manager=context.getSystemService(AlarmManager.class);
         context.getSharedPreferences("note_snoozes", Context.MODE_PRIVATE).edit().remove(Long.toString(id)).apply();

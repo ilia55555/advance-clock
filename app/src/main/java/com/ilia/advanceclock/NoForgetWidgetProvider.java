@@ -347,7 +347,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
             Intent edit = new Intent(
                     context,
-                    NoForgetEditorActivity.class)
+                    NoteDetailActivity.class)
                     .putExtra("noteId", item.id);
 
             row.setOnClickPendingIntent(

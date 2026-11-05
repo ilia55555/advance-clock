@@ -125,7 +125,7 @@ public final class NoForgetSoundService extends Service {
         }
         long id = intent.getLongExtra("noteId", -1L);
         NoForgetItem item = new NoForgetStore(this).find(id);
-        if (item == null || item.completedOccurrence(intent.getLongExtra(EventReminderScheduler.OCCURRENCE,intent.getLongExtra("taskOccurrence",item.dueAtMillis)))) { stopSelf(); return START_NOT_STICKY; }
+        if (item == null || OccurrenceSkips.contains(this,"note",id,intent.getLongExtra(EventReminderScheduler.OCCURRENCE,intent.getLongExtra("taskOccurrence",item.dueAtMillis))) || item.completedOccurrence(intent.getLongExtra(EventReminderScheduler.OCCURRENCE,intent.getLongExtra("taskOccurrence",item.dueAtMillis)))) { stopSelf(); return START_NOT_STICKY; }
         stopReminder();
         currentItem=item;
         reminderOccurrence=intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);

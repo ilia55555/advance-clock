@@ -34,6 +34,8 @@ public final class SketchView extends View {
     private int penColor=0xFF087C77;
     private float penWidthDp=4f;
     private boolean gridVisible=true;
+    private boolean readOnly;
+    public void setReadOnly(boolean value){readOnly=value;setFocusable(!value);}
     private final float density;
 
     public SketchView(Context context){this(context,null);}
@@ -96,6 +98,7 @@ public final class SketchView extends View {
     }
 
     @Override public boolean onTouchEvent(MotionEvent event){
+        if(readOnly)return super.onTouchEvent(event);
         if(getWidth()<=0||getHeight()<=0)return false;
         switch(event.getActionMasked()){
             case MotionEvent.ACTION_DOWN:

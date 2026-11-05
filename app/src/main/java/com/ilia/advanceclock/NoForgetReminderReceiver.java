@@ -10,7 +10,7 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         long id=intent==null?-1L:intent.getLongExtra("noteId",-1L);
         NoForgetStore store=new NoForgetStore(context);
         NoForgetItem item=store.find(id);
-        if(item==null || item.completedOccurrence(item.dueAtMillis))return;
+        if(item==null || item.completedOccurrence(item.dueAtMillis) || OccurrenceSkips.contains(context,"note",id,item.dueAtMillis))return;
         NoteTasks.reopenForOccurrence(context,item,item.dueAtMillis);
 
         boolean preReminder = intent.getBooleanExtra("preReminder", false);
@@ -48,12 +48,12 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         item.lastFiredAtMillis=item.dueAtMillis;
         EventReminderScheduler.sync(context,item);
         long now=System.currentTimeMillis()+1000L;
-        long next=RecurrenceUtils.next(
+        long next=OccurrenceSkips.next(context,"note",id,
                 item.dueAtMillis,
                 item.recurrenceMode,
                 item.intervalDays,
                 item.customDatesJson,
-                now);
+                now,AppTime.zone());
         if(next>now){
             item.dueAtMillis=next;
             item.reminderEnabled=true;

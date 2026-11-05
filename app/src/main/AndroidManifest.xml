@@ -133,6 +133,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AlarmEditorActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".NoteDetailActivity" android:exported="false" />
         <activity android:name=".NoForgetEditorActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".NoteReminderActivity" android:enableOnBackInvokedCallback="true"

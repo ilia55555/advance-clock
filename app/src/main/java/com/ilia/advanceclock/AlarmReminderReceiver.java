@@ -20,6 +20,7 @@ public final class AlarmReminderReceiver extends BroadcastReceiver {
             int minutes = intent.getIntExtra("delayMinutes", 0);
             long occurrence = intent.getLongExtra("firedAtMillis", 0L);
             AlarmItem item = new AlarmStore(context).find(alarmId);
+            if(OccurrenceSkips.contains(context,"alarm",alarmId,occurrence))return;
             if (!AppSettings.alarmReminderNotificationsEnabled(context)
                     || !AlarmReminderUtils.isScheduledReminder(item, occurrence, minutes)) return;
 

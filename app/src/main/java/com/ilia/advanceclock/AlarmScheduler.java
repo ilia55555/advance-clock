@@ -23,7 +23,7 @@ public final class AlarmScheduler {
 
         long now = System.currentTimeMillis();
         if (normalize) {
-            long normalized = RecurrenceUtils.next(
+            long normalized = OccurrenceSkips.next(context,"alarm",item.id,
                     item.triggerAtMillis,
                     item.recurrenceMode,
                     item.intervalDays,
@@ -164,7 +164,7 @@ public final class AlarmScheduler {
         }
     }
 
-    private static void cancelPrimary(Context context, long id) {
+    static void cancelPrimary(Context context, long id) {
         AlarmPreparationReceiver.cancel(context, AlarmPreparationReceiver.CLOCK, id);
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager != null) manager.cancel(alarmPendingIntent(context, id));
@@ -184,7 +184,7 @@ public final class AlarmScheduler {
             }
             if (!item.enabled) continue;
 
-            long next = RecurrenceUtils.next(
+            long next = OccurrenceSkips.next(context,"alarm",item.id,
                     item.triggerAtMillis,
                     item.recurrenceMode,
                     item.intervalDays,

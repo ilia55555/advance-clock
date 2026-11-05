@@ -59,6 +59,7 @@ public final class AlarmStore {
     }
 
     public void delete(long id) {
+        OccurrenceSkips.clear(context,"alarm",id);
         EventReminderScheduler.cancel(context,"alarm",id);
         synchronized (LOCK) {
             List<AlarmItem> items = all();

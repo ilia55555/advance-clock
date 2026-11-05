@@ -1687,7 +1687,8 @@ public final class MainActivity extends Activity {
 
         actions.addView(delete);
         actions.addView(edit);
-        actions.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
+        Button skip=OccurrenceSkips.button(this,"alarm",item.id,item.triggerAtMillis,item.recurrenceMode,item.enabled,item.timeZone(),this::renderAlarms);
+        LinearLayout.LayoutParams skipParams=new LinearLayout.LayoutParams(0,dp(48),1);skipParams.setMarginEnd(dp(6));actions.addView(skip,skipParams);
         actions.addView(enabled);
         card.addView(actions);
         return card;
@@ -1785,6 +1786,7 @@ public final class MainActivity extends Activity {
     private LinearLayout noteCard(NoForgetItem item) {
         LinearLayout card = baseCard(priorityStroke(item.priority));
 
+        card.setOnClickListener(v->AppMotion.launch(this,new Intent(this,NoteDetailActivity.class).putExtra("noteId",item.id),card));
         String titleText = item.title.trim().isEmpty()
                 ? (item.body.trim().isEmpty() ? AppString.get(R.string.runtime_text_0214) : item.body)
                 : item.title;
@@ -1833,6 +1835,11 @@ public final class MainActivity extends Activity {
             body.setPadding(0, dp(5), 0, dp(4));
             taskTexts.add(body);if(item.taskMode)TaskCelebration.strike(body,item.taskDone(System.currentTimeMillis()),false);
             card.addView(body);
+        }
+
+        if(!"[]".equals(item.sketchJson)){
+            SketchView preview=new SketchView(this);preview.setTag("note_sketch_preview_"+item.id);preview.setReadOnly(true);preview.setGridVisible(false);preview.load(item.sketchJson);
+            preview.setOnClickListener(v->card.performClick());LinearLayout.LayoutParams sketchParams=new LinearLayout.LayoutParams(dp(128),dp(88));sketchParams.topMargin=dp(8);card.addView(preview,sketchParams);
         }
 
         StringBuilder meta = new StringBuilder();
@@ -1906,7 +1913,8 @@ public final class MainActivity extends Activity {
                 }
                 NoForgetWidgetProvider.updateAll(this);renderNoForget();
             });
-            actions.addView(new View(this),new LinearLayout.LayoutParams(0,1,1f));actions.addView(enabled);
+            Button skip=OccurrenceSkips.button(this,"note",item.id,item.dueAtMillis,item.recurrenceMode,item.reminderEnabled,AppTime.zone(),this::renderNoForget);
+            LinearLayout.LayoutParams skipParams=new LinearLayout.LayoutParams(0,dp(48),1);skipParams.setMarginEnd(dp(6));actions.addView(skip,skipParams);actions.addView(enabled);
         }
         card.addView(actions);
         return card;

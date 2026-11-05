@@ -1462,4 +1462,5 @@
     <string name="task_save_error">تعذّر حفظ حالة المهمة. حاول مرة أخرى.</string>
     <string name="task_completed_label">مكتملة</string>
     <string name="task_pending_label">غير مكتملة</string>
+    <string name="skip_today_occurrence">تخطي موعد اليوم</string>
 </resources>

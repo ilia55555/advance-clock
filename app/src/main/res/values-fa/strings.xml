@@ -1394,4 +1394,5 @@
     <string name="task_save_error">وضعیت وظیفه ذخیره نشد. دوباره تلاش کنید.</string>
     <string name="task_completed_label">انجام‌شده</string>
     <string name="task_pending_label">انجام‌نشده</string>
+    <string name="skip_today_occurrence">رد نوبت امروز</string>
 </resources>

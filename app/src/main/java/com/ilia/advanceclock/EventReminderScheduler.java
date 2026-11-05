@@ -58,7 +58,7 @@ final class EventReminderScheduler {
     private static void sync(Context c,String kind,long id,long anchor,int recurrence,int interval,String dates,
                              TimeZone zone,int mode,String json,boolean active,long now){
         if(!active || !EventReminderRules.rich(json) || !PermissionHelper.exactAlarmsGranted(c)){cancel(c,kind,id);return;}
-        String signature=signature(anchor,recurrence,interval,dates,zone,json);
+        String signature=signature(anchor,recurrence,interval,dates,zone,json+OccurrenceSkips.raw(c,kind,id));
         android.content.SharedPreferences prefs=c.getSharedPreferences(PREFS,0);
         List<EventReminderRules.Rule> rules=EventReminderRules.parse(mode,json,false);
         Set<String> wanted=new HashSet<>();for(EventReminderRules.Rule rule:rules)wanted.add(prefix(kind,id)+rule.key());
@@ -74,7 +74,7 @@ final class EventReminderScheduler {
                 }
             }catch(JSONException ignored){}
             if(!restored){
-                long occurrence=rule.next(anchor,recurrence,interval,dates,zone,now);
+                long occurrence=OccurrenceSkips.nextReminder(c,kind,id,rule,anchor,recurrence,interval,dates,zone,now);
                 if(occurrence>0)schedule(c,kind,id,rule,occurrence,rule.at(occurrence,zone),signature);
                 else {
                     prefs.edit().remove(token).apply();
@@ -133,7 +133,7 @@ final class EventReminderScheduler {
             int mode=alarm!=null?alarm.reminderMode:note.reminderMode;
             String json=alarm!=null?alarm.reminderMinutesJson:note.reminderMinutesJson;
             boolean active=alarm!=null?(alarm.enabled || alarm.lastFiredAtMillis>0):(note.hasDue && (note.reminderEnabled || note.lastFiredAtMillis>0));
-            if(!active || !record.getString("signature").equals(signature(anchor,recurrence,interval,dates,zone,json))){cancel(c,kind,id);return;}
+            if(!active || !record.getString("signature").equals(signature(anchor,recurrence,interval,dates,zone,json+OccurrenceSkips.raw(c,kind,id)))){cancel(c,kind,id);return;}
             EventReminderRules.Rule selected=null;
             for(EventReminderRules.Rule rule:EventReminderRules.parse(mode,json,false))if(rule.key().equals(parts[2]))selected=rule;
             if(selected==null)return;
@@ -144,7 +144,7 @@ final class EventReminderScheduler {
                 if(!raw.equals(c.getSharedPreferences(PREFS,0).getString(token,"")))return;
                 c.getSharedPreferences(PREFS,0).edit().remove(token).commit();
                 // Advance this rule independently: offsets longer than the repeat period still recur correctly.
-                long next=selected.next(anchor,recurrence,interval,dates,zone,Math.max(now,when));
+                long next=OccurrenceSkips.nextReminder(c,kind,id,selected,anchor,recurrence,interval,dates,zone,Math.max(now,when));
                 if(next>0)schedule(c,kind,id,selected,next,selected.at(next,zone),record.getString("signature"));
                 armNext(c,kind,id);
                 if(shouldRing){
@@ -155,6 +155,7 @@ final class EventReminderScheduler {
                 }
             }
             if(note!=null && note.completedOccurrence(occurrence))shouldRing=false;
+            if(OccurrenceSkips.contains(c,kind,id,occurrence))shouldRing=false;
             if(!shouldRing)return;
             if(note!=null)NoteTasks.reopenForOccurrence(c,note,occurrence);
             if(alarm!=null)AlarmSoundService.ring(c,alarm,occurrence);
