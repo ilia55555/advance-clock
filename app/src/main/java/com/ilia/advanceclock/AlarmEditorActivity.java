@@ -78,6 +78,7 @@ public final class AlarmEditorActivity extends Activity {
         dateOption = new DateOption(this, dateButton, R.id.date_option_alarm_editor);
         autoDelete = dateOption.addAutoDelete(R.id.auto_delete_alarm_editor);
         timeButton = findViewById(R.id.pick_time);
+        DateTimeFieldStyle.apply(this,dateButton,timeButton);
         repeatButton = findViewById(R.id.alarm_repeat);
         remindersButton = findViewById(R.id.alarm_reminders);
         priority = findViewById(R.id.alarm_priority);

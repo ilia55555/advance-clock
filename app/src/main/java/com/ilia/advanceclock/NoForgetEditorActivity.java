@@ -100,6 +100,7 @@ public final class NoForgetEditorActivity extends Activity {
         dateOption = new DateOption(this, dateButton, R.id.date_option_note_editor);
         dateOption.setApplied(true);
         timeButton=findViewById(R.id.note_time);
+        DateTimeFieldStyle.apply(this,dateButton,timeButton);
         repeatButton=findViewById(R.id.note_repeat);
         deleteButton=findViewById(R.id.delete_note);
         ButtonStyles.destructive(deleteButton);

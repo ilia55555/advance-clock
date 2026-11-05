@@ -65,6 +65,7 @@ final class TimerPanelController {
         startButton = root.findViewById(R.id.timer_start);
         dateButton = root.findViewById(R.id.timer_date);
         timeButton = root.findViewById(R.id.timer_clock);
+        DateTimeFieldStyle.apply(host,dateButton,timeButton);
         durationModeButton = root.findViewById(R.id.timer_mode_duration);
         dateTimeModeButton = root.findViewById(R.id.timer_mode_datetime);
         restoreDraft();

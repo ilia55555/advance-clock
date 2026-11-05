@@ -307,6 +307,7 @@ public final class MainActivity extends Activity {
         quickNoteDateOption = new DateOption(this, quickNoteDate, R.id.date_option_quick_note);
         quickNoteDateOption.setApplied(true);
         quickNoteTime = findViewById(R.id.quick_note_time);
+        DateTimeFieldStyle.apply(this,quickNoteDate,quickNoteTime);
         quickNoteRepeat = findViewById(R.id.quick_note_repeat);
         quickNoteSketch = findViewById(R.id.quick_note_sketch);
         penSizeSpinner = findViewById(R.id.pen_size_spinner);

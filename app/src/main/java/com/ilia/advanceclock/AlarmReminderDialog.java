@@ -60,6 +60,7 @@ public final class AlarmReminderDialog {
             int[] calendarType={AppSettings.defaultCalendar(c)};
             LinearLayout entry=new LinearLayout(c);entry.setGravity(Gravity.CENTER_VERTICAL);entry.setBaselineAligned(false);
             Button date=fieldButton("event_"+key+"_date"),time=fieldButton("event_"+key+"_time");
+            DateTimeFieldStyle.apply(c,date,time);
             Runnable render=()->{date.setText(CalendarUtils.formatDate(picked.getTimeInMillis(),calendarType[0],zone));time.setText(CalendarUtils.fa(TimeFormat.formatter(c,false,zone).format(picked.getTime())));};
             LinearLayout.LayoutParams dateLp=new LinearLayout.LayoutParams(0,dp(56),1);dateLp.setMarginEnd(dp(6));entry.addView(date,dateLp);
             entry.addView(time,new LinearLayout.LayoutParams(0,dp(56),1));custom.content.addView(entry);render.run();

@@ -618,6 +618,7 @@ public final class SmartAlarmActivity extends Activity {
         dateRow.addView(date, new LinearLayout.LayoutParams(0, dp(52), 1f));
 
         Button time = fieldButton(draft.baseTimeText());
+        DateTimeFieldStyle.apply(this,date,time);
         LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(dp(112), dp(52));
         timeParams.setMarginStart(dp(8));
         dateRow.addView(time, timeParams);
