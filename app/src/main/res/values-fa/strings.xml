@@ -1409,4 +1409,6 @@
     <string name="sound_preview_play">پخش %1$s</string>
     <string name="sound_preview_pause">مکث %1$s</string>
     <string name="sound_preview_error">پخش این صدا ممکن نیست.</string>
+    <string name="online_sounds_checking">در حال بررسی صداها…</string>
+    <string name="online_sounds_checked">فهرست صداها به‌روز شد.</string>
 </resources>

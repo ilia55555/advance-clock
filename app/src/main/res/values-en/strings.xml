@@ -1459,4 +1459,6 @@ Lock screen</string>
     <string name="sound_preview_play">Play %1$s</string>
     <string name="sound_preview_pause">Pause %1$s</string>
     <string name="sound_preview_error">This sound could not be played.</string>
+    <string name="online_sounds_checking">Checking sounds…</string>
+    <string name="online_sounds_checked">Sound list updated.</string>
 </resources>

@@ -1477,4 +1477,6 @@
     <string name="sound_preview_play">تشغيل %1$s</string>
     <string name="sound_preview_pause">إيقاف %1$s مؤقتًا</string>
     <string name="sound_preview_error">تعذر تشغيل هذا الصوت.</string>
+    <string name="online_sounds_checking">جارٍ التحقق من الأصوات…</string>
+    <string name="online_sounds_checked">تم تحديث قائمة الأصوات.</string>
 </resources>
