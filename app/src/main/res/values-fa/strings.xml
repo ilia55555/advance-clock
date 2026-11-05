@@ -1398,4 +1398,5 @@
     <string name="note_view_details">نمایش یادداشت</string>
     <string name="recurrence_added_count">%1$s تکرار افزوده شده</string>
     <string name="recurrence_offset_hint">فاصله از زمان اصلی هشدار</string>
+    <string name="enable_today_occurrence">امروز فعال شود</string>
 </resources>

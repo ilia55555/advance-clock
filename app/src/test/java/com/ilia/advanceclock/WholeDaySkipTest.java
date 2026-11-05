@@ -67,6 +67,34 @@ public class WholeDaySkipTest {
         assertTrue(OccurrenceSkips.skip(c,"alarm",804,now));assertFalse(p.contains("today"));assertTrue(p.contains("tomorrow"));assertTrue(p.contains("other"));
         OccurrenceSkips.clear(c,"alarm",804);assertFalse(OccurrenceSkips.dayContains(c,"alarm",804,now));
     }
+    @Test public void pauseButtonCanEnableTodayAgainAndRestoreRemainingClockAndWorldOccurrences(){
+        for(int i=0;i<2;i++){
+            TimeZone z=i==0?zone:TimeZone.getTimeZone("America/New_York");long finish=OccurrenceSkips.dayWindow(now,z)[1];
+            long first=now+(finish-now)/4,later=now+(finish-now)/2;
+            AlarmItem item=new AlarmItem(810+i,"Restore",first,RecurrenceUtils.INTERVAL_MINUTES,true);
+            item.customDatesJson=RecurrenceUtils.intervalDatesJson(Collections.singletonList(later));item.referenceZoneId=z.getID();item.createdFromWorld=i==1;new AlarmStore(c).save(item);
+            assertTrue(OccurrenceSkips.skip(c,"alarm",item.id,now));assertFalse(new AlarmStore(c).find(item.id).enabled);
+            try(var host=Robolectric.buildActivity(Activity.class).setup().visible()){
+                android.widget.Button button=OccurrenceSkips.button(host.get(),"alarm",item.id,first,item.recurrenceMode,false,z,()->{});
+                assertTrue(button.isEnabled());assertEquals(c.getString(R.string.enable_today_occurrence),button.getText().toString());
+            }
+            // The first time passed while paused. Only the remaining occurrence returns.
+            assertTrue(OccurrenceSkips.enableToday(c,"alarm",item.id,first+1));AlarmItem saved=new AlarmStore(c).find(item.id);
+            assertTrue(saved.enabled);assertEquals(later,saved.triggerAtMillis);assertFalse(OccurrenceSkips.dayContains(c,"alarm",item.id,now));
+        }
+    }
+    @Test public void enablingNoteTodayRestoresPrimaryAndRichRemindersWithoutReplayingPastTimes(){
+        long first=now+(end-now)/4,later=now+(end-now)/2;
+        NoForgetItem item=new NoForgetItem(812,"Restore note","Body","[]",2,true,first,true,now,RecurrenceUtils.INTERVAL_MINUTES,3,
+                RecurrenceUtils.intervalDatesJson(Collections.singletonList(later)));
+        item.reminderMode=2;item.reminderMinutesJson=EventReminderRules.encode(Arrays.asList(new EventReminderRules.Rule(false,"minute",1,false)));
+        new NoForgetStore(c).save(item);assertTrue(OccurrenceSkips.skip(c,"note",item.id,now));assertFalse(new NoForgetStore(c).find(item.id).reminderEnabled);
+        assertTrue(OccurrenceSkips.enableToday(c,"note",item.id,first+1));NoForgetItem saved=new NoForgetStore(c).find(item.id);
+        assertTrue(saved.reminderEnabled);assertEquals(later,saved.dueAtMillis);
+        EventReminderScheduler.sync(c,saved,first+1);assertTrue(EventReminderScheduler.hasPending(c,"note",item.id,first+1));
+        assertFalse(OccurrenceSkips.enableToday(c,"note",item.id,first+1));
+    }
+
     @Test public void worldDaysUseLocalMidnightAndRespectDstRatherThanFixed24Hours(){
         TimeZone ny=TimeZone.getTimeZone("America/New_York");Calendar day=Calendar.getInstance(ny);day.clear();day.set(2026,Calendar.MARCH,8,12,0);
         long[] spring=OccurrenceSkips.dayWindow(day.getTimeInMillis(),ny);assertEquals(23*3600000L,spring[1]-spring[0]);

@@ -1448,4 +1448,5 @@ Lock screen</string>
     <string name="note_view_details">View note</string>
     <string name="recurrence_added_count">%1$s repeats added</string>
     <string name="recurrence_offset_hint">Time after the main alert</string>
+    <string name="enable_today_occurrence">Enable for today</string>
 </resources>

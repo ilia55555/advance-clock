@@ -68,6 +68,32 @@ final class OccurrenceSkips {
             NoForgetWidgetProvider.updateAll(c);return true;
         }
     }
+    private static boolean forgetDay(Context c,String kind,long id,long now){
+        List<long[]> windows=windows(c,kind,id);boolean removed=windows.removeIf(w->now>=w[0] && now<w[1]);
+        if(!removed)return false;
+        JSONArray a=new JSONArray();for(long[] w:windows)a.put(new JSONArray().put(w[0]).put(w[1]));
+        return c.getSharedPreferences("occurrence_skips",0).edit().putString(kind+"/"+id+"/days",a.toString()).commit();
+    }
+    static boolean enableToday(Context c,String kind,long id,long now){
+        if("alarm".equals(kind))synchronized(AlarmStore.transactionLock()){
+            AlarmStore store=new AlarmStore(c);AlarmItem item=store.find(id);if(item==null || !forgetDay(c,kind,id,now))return false;
+            long anchor=item.reminderAnchorMillis>0?item.reminderAnchorMillis:item.triggerAtMillis;
+            long next=next(c,kind,id,anchor,item.recurrenceMode,item.intervalDays,item.customDatesJson,Math.max(now,item.lastFiredAtMillis),item.timeZone());
+            item.enabled=next>0;if(next>0)item.triggerAtMillis=next;store.save(item);
+            if(item.enabled)AlarmScheduler.schedule(c,item);else AlarmScheduler.cancelPrimary(c,id);
+            if(item.lastFiredAtMillis>0)AlarmScheduler.schedulePostReminders(c,item,item.lastFiredAtMillis);
+            EventReminderScheduler.sync(c,item);ClockWidgetProvider.updateAll(c);return true;
+        }
+        synchronized(NoteTasks.class){
+            NoForgetStore store=new NoForgetStore(c);NoForgetItem item=store.find(id);if(item==null || !forgetDay(c,kind,id,now))return false;
+            long anchor=item.reminderAnchorMillis>0?item.reminderAnchorMillis:item.dueAtMillis;
+            long cutoff=Math.max(now,Math.max(item.lastFiredAtMillis,item.taskCompletedOccurrence));
+            long next=next(c,kind,id,anchor,item.recurrenceMode,item.intervalDays,item.customDatesJson,cutoff,AppTime.zone());
+            item.reminderEnabled=item.hasDue && next>0;if(next>0)item.dueAtMillis=next;store.save(item);
+            if(item.reminderEnabled)NoForgetScheduler.scheduleKeepingSnoozes(c,item);else NoForgetScheduler.cancelPrimaryOccurrence(c,id);
+            EventReminderScheduler.sync(c,item);NoForgetWidgetProvider.updateAll(c);return true;
+        }
+    }
     static void addBeside(android.widget.LinearLayout row,Button skip,Button active){
         Context c=row.getContext();active.setMinWidth(ReminderModalStyle.dp(c,72));active.setMinimumWidth(ReminderModalStyle.dp(c,72));
         row.addView(new android.view.View(c),new android.widget.LinearLayout.LayoutParams(0,1,1));
@@ -75,16 +101,18 @@ final class OccurrenceSkips {
         row.addView(skip,lp);row.addView(active);
     }
     static Button button(android.app.Activity host,String kind,long id,long at,int recurrence,boolean enabled,TimeZone zone,Runnable refresh){
-        Button button=new Button(host);button.setTag("skip_today_"+kind+"_"+id);button.setText(R.string.skip_today_occurrence);
+        boolean paused=dayContains(host,kind,id,System.currentTimeMillis());
+        int label=paused?R.string.enable_today_occurrence:R.string.skip_today_occurrence;
+        Button button=new Button(host);button.setTag("skip_today_"+kind+"_"+id);button.setText(label);
         button.setAllCaps(false);button.setTextSize(10);button.setMaxLines(2);button.setIncludeFontPadding(false);button.setEllipsize(android.text.TextUtils.TruncateAt.END);
         button.setMinWidth(0);button.setMinimumWidth(0);button.setMinHeight(0);button.setMinimumHeight(0);
         button.setPadding(ReminderModalStyle.dp(host,4),0,ReminderModalStyle.dp(host,4),0);button.setTextColor(AppSettings.textPrimary(host));
         button.setElevation(0);button.setStateListAnimator(null);button.setBackgroundTintList(null);
         button.setBackground(ReminderModalStyle.shape(host,android.graphics.Color.TRANSPARENT,AppSettings.primaryColor(host),8));
-        button.setContentDescription(host.getString(R.string.skip_today_occurrence));button.setTooltipText(host.getString(R.string.skip_today_occurrence));
-        button.setEnabled(enabled && recurrence!=RecurrenceUtils.NONE && !dayContains(host,kind,id,System.currentTimeMillis()));button.setAlpha(button.isEnabled()?1:.4f);
+        button.setContentDescription(host.getString(label));button.setTooltipText(host.getString(label));
+        button.setEnabled(paused || (enabled && recurrence!=RecurrenceUtils.NONE));button.setAlpha(button.isEnabled()?1:.4f);
         button.setOnClickListener(v->{button.setEnabled(false);Context app=host.getApplicationContext();NoteTasks.WORK.execute(()->{
-            try{skip(app,kind,id,System.currentTimeMillis());}catch(RuntimeException error){android.util.Log.e("OccurrenceSkips","Cannot skip occurrence",error);}
+            try{if(dayContains(app,kind,id,System.currentTimeMillis()))enableToday(app,kind,id,System.currentTimeMillis());else skip(app,kind,id,System.currentTimeMillis());}catch(RuntimeException error){android.util.Log.e("OccurrenceSkips","Cannot skip occurrence",error);}
             host.runOnUiThread(()->{if(!host.isFinishing()&&!host.isDestroyed())refresh.run();});
         });});return button;
     }

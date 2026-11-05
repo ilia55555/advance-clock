@@ -1466,4 +1466,5 @@
     <string name="note_view_details">عرض الملاحظة</string>
     <string name="recurrence_added_count">تمت إضافة %1$s تكرارات</string>
     <string name="recurrence_offset_hint">المدة بعد موعد التنبيه الأساسي</string>
+    <string name="enable_today_occurrence">تفعيل اليوم</string>
 </resources>
