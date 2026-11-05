@@ -34,10 +34,14 @@ public final class NoteReminderActivity extends Activity {
         data.title = item.title;
         data.priority = item.priority;
         data.output = AlertOutput.note(noteId);
+        data.openLabel=getString(R.string.reminder_open_destination,getString(R.string.tab_notes));
         long eventTime=intent==null?0:intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
         data.body = eventTime>0?getString(R.string.event_at,CalendarUtils.formatDate(eventTime,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,eventTime)):"";
         data.allowDrawing=false;data.noteId=noteId;
-        setContentView(new ReminderScreen(this, data, this::stopAndClose, null, minutes -> {
+        setContentView(new ReminderScreen(this, data, this::stopAndClose, ()->{
+            startActivity(new Intent(this,NoForgetEditorActivity.class).putExtra("noteId",noteId));
+            stopAndClose();
+        }, minutes -> {
             if (AlertSnoozes.schedule(this,"note",noteId,data.title,"",minutes)) stopAndClose();
             else LogoToast.makeText(this, R.string.runtime_text_0587, Toast.LENGTH_LONG).show();
         }));

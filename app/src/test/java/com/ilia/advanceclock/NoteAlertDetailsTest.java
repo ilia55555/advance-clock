@@ -24,7 +24,7 @@ public class NoteAlertDetailsTest {
    var service=Robolectric.buildService(NoForgetSoundService.class).create();ReflectionHelpers.setField(service.get(),"currentItem",note);ReflectionHelpers.setField(service.get(),"active",true);
    try(var controller=Robolectric.buildActivity(NoteReminderActivity.class,new Intent(c,NoteReminderActivity.class).putExtra("noteId",note.id)).setup().visible()){
     NoteReminderActivity host=controller.get();View root=host.findViewById(android.R.id.content);
-    for(String tag:new String[]{"alert_drawing_board","alert_note_details","alert_open","note_detail_close","note_detail_edit","note_detail_actions"})assertNull(tag,root.findViewWithTag(tag));
+    for(String tag:new String[]{"alert_drawing_board","alert_note_details","note_detail_close","note_detail_edit","note_detail_actions"})assertNull(tag,root.findViewWithTag(tag));
     assertEquals(note.title,((TextView)root.findViewWithTag("note_detail_title")).getText().toString());
     assertEquals(body,((TextView)root.findViewWithTag("note_detail_body")).getText().toString());
     assertNotNull(root.findViewWithTag("note_detail_sketch"));assertTrue(hasText(root,"Meeting file"));assertNotNull(root.findViewWithTag("alert_snooze"));
@@ -33,8 +33,11 @@ public class NoteAlertDetailsTest {
     }
     ScrollView scroll=root.findViewWithTag("note_detail_scroll");assertTrue(scroll.getHeight()>100);assertTrue(scroll.canScrollVertically(1));scroll.fullScroll(View.FOCUS_DOWN);
     assertTrue(ReflectionHelpers.<Boolean>getField(service.get(),"active"));assertFalse(host.isFinishing());assertNull(Shadows.shadowOf(host).getNextStartedActivity());
+    assertNotNull(root.findViewWithTag("alert_sound"));assertNotNull(root.findViewWithTag("alert_vibration"));assertNotNull(root.findViewWithTag("alert_open"));
     // Coming back from an attachment refreshes the same inline viewer.
     note.body="Updated body";new NoForgetStore(c).save(note);controller.pause().resume();assertEquals("Updated body",((TextView)root.findViewWithTag("note_detail_body")).getText().toString());note.body=body;new NoForgetStore(c).save(note);
+    root.findViewWithTag("alert_open").performClick();Intent opened=Shadows.shadowOf(host).getNextStartedActivity();
+    assertEquals(NoForgetEditorActivity.class.getName(),opened.getComponent().getClassName());assertEquals(note.id,opened.getLongExtra("noteId",-1));assertTrue(host.isFinishing());
    }finally{service.destroy();}
   }
  }
