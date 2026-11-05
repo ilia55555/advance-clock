@@ -28,22 +28,37 @@ final class ReminderModalStyle {
         if(parent instanceof ViewGroup){parent.setBackgroundColor(Color.TRANSPARENT);parent.setPadding(dp(c,2),dp(c,2),dp(c,2),dp(c,2));((ViewGroup)parent).setClipChildren(true);}
         content.setPadding(dp(c,2),0,dp(c,2),dp(c,4));
         dialog.getWindow().setLayout(Math.min(dp(c,560),c.getResources().getDisplayMetrics().widthPixels-dp(c,28)),-2);
-        for(int which:new int[]{AlertDialog.BUTTON_POSITIVE,AlertDialog.BUTTON_NEGATIVE}){
-            Button b=dialog.getButton(which);if(b==null)continue;boolean filled=which==AlertDialog.BUTTON_POSITIVE;
-            b.setAllCaps(false);b.setTextSize(14);b.setMinHeight(dp(c,48));b.setMinimumHeight(dp(c,48));b.setPadding(dp(c,18),dp(c,8),dp(c,18),dp(c,8));
-            b.setElevation(0);b.setStateListAnimator(null);
-            b.setTextColor(filled?(Color.luminance(primary)>.179f?Color.BLACK:Color.WHITE):primary);
-            b.setBackground(shape(c,filled?primary:Color.TRANSPARENT,primary,12));
-            if(b.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){ViewGroup.MarginLayoutParams lp=(ViewGroup.MarginLayoutParams)b.getLayoutParams();lp.height=dp(c,48);lp.setMargins(dp(c,6),dp(c,4),dp(c,6),dp(c,4));b.setLayoutParams(lp);}
+        if(!(content.getParent() instanceof ViewGroup))return;
+        ViewGroup holder=(ViewGroup)content.getParent();
+        if("reminder_dialog_body".equals(holder.getTag()))return;
+        Button positive=dialog.getButton(AlertDialog.BUTTON_POSITIVE),negative=dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        LinearLayout footer=new LinearLayout(c);footer.setTag("reminder_dialog_actions");
+        footer.setOrientation(LinearLayout.HORIZONTAL);footer.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        footer.setGravity(Gravity.CENTER_VERTICAL);footer.setBaselineAligned(false);
+        footer.setPadding(dp(c,14),dp(c,10),dp(c,14),dp(c,14));
+        for(Button button:new Button[]{negative,positive}){
+            if(button==null)continue;boolean filled=button==positive;
+            if(button.getParent() instanceof ViewGroup)((ViewGroup)button.getParent()).removeView(button);
+            button.setAllCaps(false);button.setTextSize(14);button.setMinHeight(dp(c,48));button.setMinimumHeight(dp(c,48));
+            button.setMinWidth(0);button.setMinimumWidth(0);button.setSingleLine(false);button.setMaxLines(2);
+            button.setGravity(Gravity.CENTER);button.setLayoutDirection(AppSettings.layoutDirection(c));
+            button.setPadding(dp(c,12),dp(c,8),dp(c,12),dp(c,8));button.setElevation(0);button.setStateListAnimator(null);
+            button.setTextColor(filled?(Color.luminance(primary)>.179f?Color.BLACK:Color.WHITE):primary);
+            button.setBackgroundTintList(null);button.setBackground(shape(c,filled?primary:Color.TRANSPARENT,primary,12));
+            if(footer.getChildCount()>0)footer.addView(new Space(c),new LinearLayout.LayoutParams(dp(c,8),1));
+            footer.addView(button,new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1));
         }
-        // The framework button bar has a fixed theme height on some phones. Its height must
-        // include the custom button backgrounds, margins and accessibility/font padding.
+        // Use our own footer: OEM alert button bars may enforce a fixed inner height and clip
+        // custom backgrounds even after the outer button panel is enlarged.
         View panel=dialog.findViewById(c.getResources().getIdentifier("buttonPanel","id","android"));
-        if(panel instanceof ViewGroup){
-            panel.setBackgroundColor(Color.TRANSPARENT);panel.setMinimumHeight(dp(c,76));panel.setPadding(dp(c,12),dp(c,10),dp(c,12),dp(c,10));
-            ViewGroup.LayoutParams lp=panel.getLayoutParams();lp.height=ViewGroup.LayoutParams.WRAP_CONTENT;panel.setLayoutParams(lp);
-        }
+        if(panel!=null)panel.setVisibility(View.GONE);
+        LinearLayout body=new LinearLayout(c);body.setTag("reminder_dialog_body");body.setOrientation(LinearLayout.VERTICAL);
+        ViewGroup.LayoutParams original=content.getLayoutParams();int index=holder.indexOfChild(content);holder.removeView(content);
+        body.addView(content,new LinearLayout.LayoutParams(-1,0,1));
+        body.addView(footer,new LinearLayout.LayoutParams(-1,-2));
+        holder.addView(body,index,original);
     }
+
     static GradientDrawable shape(Context c,int fill,int border,int radius){GradientDrawable s=new GradientDrawable();s.setColor(fill);s.setCornerRadius(dp(c,radius));s.setStroke(dp(c,1),border);return s;}
     static int dp(Context c,int n){return Math.round(n*c.getResources().getDisplayMetrics().density);}
 }

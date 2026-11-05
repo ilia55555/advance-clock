@@ -39,6 +39,30 @@ public class NoteModeAndModalTest {
         }finally{controller.destroy();AppSettings.setAlarmFullscreenUnlocked(c,true);AppSettings.setAlarmFullscreenLocked(c,true);}
     }
     private Notification notification(NoForgetSoundService service,NoForgetItem item){return ReflectionHelpers.callInstanceMethod(service,"buildNotification",ReflectionHelpers.ClassParameter.from(NoForgetItem.class,item),ReflectionHelpers.ClassParameter.from(boolean.class,true));}
+    @Test public void customFooterSurvivesAConstrainedNativeButtonBarAndLargeText(){
+        Context c=RuntimeEnvironment.getApplication();AppString.init(c);
+        try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()){
+            Activity host=controller.get();LinearLayout fields=new LinearLayout(host);fields.setOrientation(LinearLayout.VERTICAL);
+            for(int i=0;i<30;i++){TextView label=new TextView(host);label.setText("Reminder option "+i);fields.addView(label,new LinearLayout.LayoutParams(-1,ReminderModalStyle.dp(host,48)));}
+            ScrollView scroll=ReminderModalStyle.scroll(host,fields);int[] saved={0};
+            AlertDialog dialog=new MotionDialogs.Builder(host).setTitle("Reminders").setView(scroll)
+                    .setPositiveButton(R.string.runtime_text_0004,(d,w)->saved[0]++)
+                    .setNegativeButton(R.string.runtime_text_0003,null).create();dialog.show();
+            View old=(View)dialog.getButton(AlertDialog.BUTTON_POSITIVE).getParent();ViewGroup.LayoutParams fixed=old.getLayoutParams();fixed.height=ReminderModalStyle.dp(host,20);old.setLayoutParams(fixed);
+            ReminderModalStyle.apply(dialog,scroll);
+            for(int which:new int[]{AlertDialog.BUTTON_POSITIVE,AlertDialog.BUTTON_NEGATIVE})dialog.getButton(which).setTextSize(28);
+            View decor=dialog.getWindow().getDecorView();decor.measure(View.MeasureSpec.makeMeasureSpec(ReminderModalStyle.dp(host,300),View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(ReminderModalStyle.dp(host,400),View.MeasureSpec.AT_MOST));decor.layout(0,0,decor.getMeasuredWidth(),decor.getMeasuredHeight());
+            View footer=decor.findViewWithTag("reminder_dialog_actions");assertNotNull(footer);
+            assertTrue("Content remains scrollable above the fixed footer",scroll.getHeight()>=ReminderModalStyle.dp(host,96));
+            for(int which:new int[]{AlertDialog.BUTTON_POSITIVE,AlertDialog.BUTTON_NEGATIVE}){
+                Button button=dialog.getButton(which);assertSame(footer,button.getParent());
+                assertTrue(button.getHeight()>=button.getLineHeight()+button.getCompoundPaddingTop()+button.getCompoundPaddingBottom());
+                assertTrue(button.getBottom()<=footer.getHeight()-footer.getPaddingBottom());
+                int[] at=new int[2];button.getLocationInWindow(at);assertTrue(at[1]+button.getHeight()<=decor.getHeight());
+            }
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();assertEquals(1,saved[0]);assertFalse(dialog.isShowing());
+        }
+    }
     @Test public void expandedReminderActionsHaveSpaceForTheirFullHeight(){
         Context c=RuntimeEnvironment.getApplication();AppString.init(c);
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()){
