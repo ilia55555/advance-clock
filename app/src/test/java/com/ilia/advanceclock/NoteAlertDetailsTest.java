@@ -36,8 +36,12 @@ public class NoteAlertDetailsTest {
     assertNotNull(root.findViewWithTag("alert_sound"));assertNotNull(root.findViewWithTag("alert_vibration"));assertNotNull(root.findViewWithTag("alert_open"));
     // Coming back from an attachment refreshes the same inline viewer.
     note.body="Updated body";new NoForgetStore(c).save(note);controller.pause().resume();assertEquals("Updated body",((TextView)root.findViewWithTag("note_detail_body")).getText().toString());note.body=body;new NoForgetStore(c).save(note);
-    root.findViewWithTag("alert_open").performClick();Intent opened=Shadows.shadowOf(host).getNextStartedActivity();
-    assertEquals(NoForgetEditorActivity.class.getName(),opened.getComponent().getClassName());assertEquals(note.id,opened.getLongExtra("noteId",-1));assertTrue(host.isFinishing());
+    root.findViewWithTag("alert_open").performClick();Dialog dialog=ReflectionHelpers.getField(host,"detailsDialog");assertNotNull(dialog);assertTrue(dialog.isShowing());
+    View details=dialog.getWindow().getDecorView();assertEquals(body,((TextView)details.findViewWithTag("note_detail_body")).getText().toString());assertNotNull(details.findViewWithTag("note_detail_sketch"));assertTrue(hasText(details,"Meeting file"));
+    assertNotNull(details.findViewWithTag("note_detail_edit"));assertNotNull(details.findViewWithTag("note_detail_close"));
+    assertNull(Shadows.shadowOf(host).getNextStartedActivity());assertFalse(host.isFinishing());assertTrue(ReflectionHelpers.<Boolean>getField(service.get(),"active"));
+    details.findViewWithTag("note_detail_close").performClick();assertFalse(dialog.isShowing());assertFalse(host.isFinishing());assertTrue(ReflectionHelpers.<Boolean>getField(service.get(),"active"));
+    root.findViewWithTag("alert_open").performClick();Dialog reopened=ReflectionHelpers.getField(host,"detailsDialog");assertTrue(reopened.isShowing());host.finish();controller.pause().stop().destroy();assertFalse(reopened.isShowing());
    }finally{service.destroy();}
   }
  }
