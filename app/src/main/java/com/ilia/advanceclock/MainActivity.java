@@ -1623,13 +1623,18 @@ public final class MainActivity extends Activity {
 
         LinearLayout actions = actionRow();
 
-        Button enabled = actionButton(item.enabled ? AppString.get(R.string.runtime_text_0212) : AppString.get(R.string.runtime_text_0213));
-        applyAlarmStateStyle(enabled, item.enabled);
+        boolean pausedToday=OccurrenceSkips.dayContains(this,"alarm",item.id,System.currentTimeMillis());
+        Button enabled = actionButton(item.enabled && !pausedToday ? AppString.get(R.string.runtime_text_0212) : AppString.get(R.string.runtime_text_0213));
+        enabled.setTag("alarm_enabled_"+item.id);
+        applyAlarmStateStyle(enabled, item.enabled && !pausedToday);
         long activation = AlarmTimePolicy.next(item.triggerAtMillis, item.applyDate,
                 item.recurrenceMode, item.intervalDays, item.customDatesJson, System.currentTimeMillis(),item.timeZone());
-        enabled.setEnabled(item.enabled || activation > System.currentTimeMillis());
+        enabled.setEnabled(pausedToday || item.enabled || activation > System.currentTimeMillis());
         enabled.setAlpha(enabled.isEnabled() ? 1f : .45f);
         enabled.setOnClickListener(v -> {
+            if(OccurrenceSkips.dayContains(this,"alarm",item.id,System.currentTimeMillis())){
+                OccurrenceSkips.enableToday(this,"alarm",item.id,System.currentTimeMillis());renderAlarms();return;
+            }
             if (!item.enabled) {
                 long next = AlarmTimePolicy.next(item.triggerAtMillis, item.applyDate, item.recurrenceMode,
                         item.intervalDays, item.customDatesJson, System.currentTimeMillis(),item.timeZone());
@@ -1775,10 +1780,11 @@ public final class MainActivity extends Activity {
     }
 
     private void updateNoteAlarmState(Button button,NoForgetItem item){
-        button.setText(AppString.get(item.reminderEnabled?R.string.runtime_text_0212:R.string.runtime_text_0213));
-        applyAlarmStateStyle(button,item.reminderEnabled);
+        boolean pausedToday=OccurrenceSkips.dayContains(this,"note",item.id,System.currentTimeMillis());
+        button.setText(AppString.get(item.reminderEnabled && !pausedToday?R.string.runtime_text_0212:R.string.runtime_text_0213));
+        applyAlarmStateStyle(button,item.reminderEnabled && !pausedToday);
         long now=System.currentTimeMillis();long activation=AlarmTimePolicy.next(item.dueAtMillis,item.applyDate,item.recurrenceMode,item.intervalDays,item.customDatesJson,now);
-        boolean available=item.reminderEnabled || (activation>now && !(item.taskDone(now) && item.recurrenceMode==RecurrenceUtils.NONE));
+        boolean available=pausedToday || item.reminderEnabled || (activation>now && !(item.taskDone(now) && item.recurrenceMode==RecurrenceUtils.NONE));
         button.setEnabled(available);button.setAlpha(available?1f:.45f);
     }
 
@@ -1897,6 +1903,9 @@ public final class MainActivity extends Activity {
             enabled.setTag("note_alarm_enabled_"+item.id);updateNoteAlarmState(enabled,item);
             enabled.setOnClickListener(v->{
                 NoForgetStore store=new NoForgetStore(this);NoForgetItem current=store.find(item.id);if(current==null)return;
+                if(OccurrenceSkips.dayContains(this,"note",current.id,System.currentTimeMillis())){
+                    OccurrenceSkips.enableToday(this,"note",current.id,System.currentTimeMillis());renderNoForget();return;
+                }
                 if(!current.reminderEnabled){
                     long next=AlarmTimePolicy.next(current.dueAtMillis,current.applyDate,current.recurrenceMode,current.intervalDays,current.customDatesJson,System.currentTimeMillis());
                     if(next<=System.currentTimeMillis() || (current.taskDone(System.currentTimeMillis()) && current.recurrenceMode==RecurrenceUtils.NONE)){

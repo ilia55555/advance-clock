@@ -95,6 +95,42 @@ public class WholeDaySkipTest {
         assertFalse(OccurrenceSkips.enableToday(c,"note",item.id,first+1));
     }
 
+    @Test public void mainClockAndWorldActiveButtonsClearTodaysPauseForDailyAndFiniteRepeats(){
+        for(int i=0;i<4;i++){
+            boolean world=i%2==1,finite=i>=2;TimeZone z=world?TimeZone.getTimeZone("America/New_York"):zone;
+            long first=now+(OccurrenceSkips.dayWindow(now,z)[1]-now)/2;
+            AlarmItem item=new AlarmItem(820+i,"Main toggle",first,finite?RecurrenceUtils.INTERVAL_MINUTES:RecurrenceUtils.DAILY,true);
+            if(finite)item.customDatesJson=RecurrenceUtils.intervalDatesJson(Collections.emptyList());
+            item.createdFromWorld=world;item.referenceZoneId=z.getID();new AlarmStore(c).save(item);
+            assertTrue(OccurrenceSkips.skip(c,"alarm",item.id,now));AlarmItem paused=new AlarmStore(c).find(item.id);
+            try(var host=Robolectric.buildActivity(MainActivity.class).setup().visible()){
+                android.widget.LinearLayout card=org.robolectric.util.ReflectionHelpers.callInstanceMethod(host.get(),"alarmCard",org.robolectric.util.ReflectionHelpers.ClassParameter.from(AlarmItem.class,paused));
+                android.widget.Button active=card.findViewWithTag("alarm_enabled_"+item.id);
+                assertTrue(active.isEnabled());assertEquals(c.getString(R.string.runtime_text_0213),active.getText().toString());active.performClick();
+                AlarmItem restored=new AlarmStore(c).find(item.id);assertTrue(restored.enabled);assertEquals(first,restored.triggerAtMillis);
+                assertFalse(OccurrenceSkips.dayContains(c,"alarm",item.id,now));
+                card=org.robolectric.util.ReflectionHelpers.callInstanceMethod(host.get(),"alarmCard",org.robolectric.util.ReflectionHelpers.ClassParameter.from(AlarmItem.class,restored));
+                active=card.findViewWithTag("alarm_enabled_"+item.id);assertEquals(c.getString(R.string.runtime_text_0212),active.getText().toString());active.performClick();assertFalse(new AlarmStore(c).find(item.id).enabled);
+            }
+        }
+    }
+    @Test public void mainNoteActiveButtonClearsTodaysPauseEvenWhenNoOtherOccurrencesRemain(){
+        for(boolean finite:new boolean[]{false,true}){
+            long id=finite?826:825,first=now+(end-now)/2;
+            NoForgetItem item=new NoForgetItem(id,"Main note toggle","","[]",2,true,first,true,now,
+                    finite?RecurrenceUtils.INTERVAL_MINUTES:RecurrenceUtils.DAILY,3,finite?RecurrenceUtils.intervalDatesJson(Collections.emptyList()):"[]");
+            new NoForgetStore(c).save(item);assertTrue(OccurrenceSkips.skip(c,"note",id,now));NoForgetItem paused=new NoForgetStore(c).find(id);
+            try(var host=Robolectric.buildActivity(MainActivity.class).setup().visible()){
+                android.widget.LinearLayout card=org.robolectric.util.ReflectionHelpers.callInstanceMethod(host.get(),"noteCard",org.robolectric.util.ReflectionHelpers.ClassParameter.from(NoForgetItem.class,paused));
+                android.widget.Button active=card.findViewWithTag("note_alarm_enabled_"+id);
+                assertTrue(active.isEnabled());assertEquals(c.getString(R.string.runtime_text_0213),active.getText().toString());active.performClick();
+                NoForgetItem restored=new NoForgetStore(c).find(id);assertTrue(restored.reminderEnabled);assertEquals(first,restored.dueAtMillis);assertFalse(OccurrenceSkips.dayContains(c,"note",id,now));
+                card=org.robolectric.util.ReflectionHelpers.callInstanceMethod(host.get(),"noteCard",org.robolectric.util.ReflectionHelpers.ClassParameter.from(NoForgetItem.class,restored));
+                active=card.findViewWithTag("note_alarm_enabled_"+id);assertEquals(c.getString(R.string.runtime_text_0212),active.getText().toString());active.performClick();assertFalse(new NoForgetStore(c).find(id).reminderEnabled);
+            }
+        }
+    }
+
     @Test public void worldDaysUseLocalMidnightAndRespectDstRatherThanFixed24Hours(){
         TimeZone ny=TimeZone.getTimeZone("America/New_York");Calendar day=Calendar.getInstance(ny);day.clear();day.set(2026,Calendar.MARCH,8,12,0);
         long[] spring=OccurrenceSkips.dayWindow(day.getTimeInMillis(),ny);assertEquals(23*3600000L,spring[1]-spring[0]);
