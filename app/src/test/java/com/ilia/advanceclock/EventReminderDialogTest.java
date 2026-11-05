@@ -91,15 +91,41 @@ public class EventReminderDialogTest {
     @Test public void recurrenceHoursRoundTripAsMinutesWithoutChangingStoredMode(){
         Application app=RuntimeEnvironment.getApplication();AppString.init(app);
         try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()) {
-            int[] value={0};
-            RecurrenceDialog.show(controller.get(),System.currentTimeMillis()+86400000L,RecurrenceUtils.INTERVAL_MINUTES,120,"[]",
-                    (mode,interval,dates)->{assertEquals(RecurrenceUtils.INTERVAL_MINUTES,mode);value[0]=interval;});
+            int[] value={0};String[] saved={null};long base=System.currentTimeMillis()+86400000L;
+            RecurrenceDialog.show(controller.get(),base,RecurrenceUtils.INTERVAL_MINUTES,120,"[]",
+                    (mode,interval,dates)->{assertEquals(RecurrenceUtils.INTERVAL_MINUTES,mode);value[0]=interval;saved[0]=dates;});
             AlertDialog dialog=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
             View root=dialog.findViewById(android.R.id.content);
             assertEquals(1,((Spinner)root.findViewWithTag("recurrence_interval_unit")).getSelectedItemPosition());
             NumberPicker number=root.findViewWithTag("recurrence_interval_value");assertEquals(2,number.getValue());
-            number.setValue(3);dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
-            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();assertEquals(180,value[0]);
+            number.setValue(3);root.findViewWithTag("recurrence_interval_add").performClick();
+            // Duplicate adds do not duplicate an occurrence; an unadded draft is ignored.
+            root.findViewWithTag("recurrence_interval_add").performClick();number.setValue(4);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();assertEquals(240,value[0]);
+            assertTrue(RecurrenceUtils.finiteIntervals(saved[0]));
+            assertEquals(java.util.Collections.singletonList(base+180*60_000L),RecurrenceUtils.parseDates(saved[0]));
+            long next=RecurrenceUtils.next(base,RecurrenceUtils.INTERVAL_MINUTES,value[0],saved[0],base);
+            assertEquals(base+180*60_000L,next);
+            assertEquals(-1L,RecurrenceUtils.next(next,RecurrenceUtils.INTERVAL_MINUTES,value[0],saved[0],next));
+        }
+    }
+
+    @Test public void finiteRepeatsCanBeRemovedAndDraftsAreNotSaved(){
+        Application app=RuntimeEnvironment.getApplication();AppString.init(app);
+        long base=System.currentTimeMillis()+86400000L;
+        String stored=RecurrenceUtils.intervalDatesJson(java.util.Collections.singletonList(base+180000L));
+        try(var controller=Robolectric.buildActivity(Activity.class).setup().visible()){
+            String[] saved={null};
+            RecurrenceDialog.show(controller.get(),base,RecurrenceUtils.INTERVAL_MINUTES,3,stored,(m,i,j)->saved[0]=j);
+            AlertDialog dialog=(AlertDialog)org.robolectric.shadows.ShadowDialog.getLatestDialog();
+            View root=dialog.findViewById(android.R.id.content);
+            LinearLayout list=root.findViewWithTag("recurrence_interval_list");assertEquals(1,list.getChildCount());
+            ((LinearLayout)list.getChildAt(0)).getChildAt(1).performClick();assertEquals(0,list.getChildCount());
+            ((NumberPicker)root.findViewWithTag("recurrence_interval_value")).setValue(6);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+            Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+            assertTrue(RecurrenceUtils.finiteIntervals(saved[0]));assertTrue(RecurrenceUtils.parseDates(saved[0]).isEmpty());
         }
     }
 

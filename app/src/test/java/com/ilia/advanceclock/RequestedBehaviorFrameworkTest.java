@@ -98,7 +98,7 @@ public final class RequestedBehaviorFrameworkTest {
         LinearLayout content = (LinearLayout) card.invoke(controller.get(), item);
         LinearLayout actions = (LinearLayout) content.getChildAt(content.getChildCount() - 1);
         assertEquals(View.LAYOUT_DIRECTION_LTR, actions.getLayoutDirection());
-        assertEquals(4, actions.getChildCount());
+        assertEquals(5, actions.getChildCount());
         assertEquals(1f, ((LinearLayout.LayoutParams) actions.getChildAt(2).getLayoutParams()).weight, 0f);
         assertTrue(actions.getChildAt(0) instanceof ImageButton);
         ImageButton delete = (ImageButton) actions.getChildAt(0);
@@ -108,9 +108,9 @@ public final class RequestedBehaviorFrameworkTest {
                 View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST));
         content.layout(0, 0, 1080, content.getMeasuredHeight());
         assertTrue(delete.getRight() <= actions.getChildAt(1).getLeft());
-        assertTrue(actions.getChildAt(1).getRight() <= actions.getChildAt(3).getLeft());
+        assertTrue(actions.getChildAt(1).getRight() <= actions.getChildAt(4).getLeft());
 
-        assertEquals(Math.round(actions.getChildAt(3).getLayoutParams().height * 0.9f), delete.getLayoutParams().height);
+        assertEquals(Math.round(actions.getChildAt(4).getLayoutParams().height * 0.9f), delete.getLayoutParams().height);
         assertEquals(delete.getLayoutParams().height, delete.getLayoutParams().width);
         assertFalse(delete.isSelected());
         assertTrue(delete.getBackground() instanceof android.graphics.drawable.GradientDrawable);

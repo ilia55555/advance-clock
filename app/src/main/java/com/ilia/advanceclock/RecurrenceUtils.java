@@ -33,13 +33,13 @@ public final class RecurrenceUtils {
 
     public static long next(long base,int mode,int intervalDays,String customDatesJson,long now,java.util.TimeZone zone){
         if (mode == NONE) return base > now ? base : -1L;
-        if (mode == INTERVAL_MINUTES) {
-            if (base > now) return base;
-            long period = Math.max(1L, intervalDays) * 60_000L;
-            try { return Math.addExact(base, Math.multiplyExact((now - base) / period + 1, period)); }
-            catch (ArithmeticException invalid) { return -1L; }
+        // Existing continuous schedules keep their old semantics until edited.
+        if(mode==INTERVAL_MINUTES && !finiteIntervals(customDatesJson)){
+            if(base>now)return base;
+            long period=Math.max(1L,intervalDays)*60_000L;
+            try{return Math.addExact(base,Math.multiplyExact((now-base)/period+1,period));}
+            catch(ArithmeticException invalid){return -1L;}
         }
-
 
         if (mode == WEEKDAYS) {
             List<Integer> weekdays = parseWeekdays(customDatesJson);
@@ -62,7 +62,7 @@ public final class RecurrenceUtils {
             return -1L;
         }
 
-        if (mode == CUSTOM_DATES) {
+        if (mode == CUSTOM_DATES || mode == INTERVAL_MINUTES) {
             long best = base > now ? base : Long.MAX_VALUE;
             for (long candidate : parseDates(customDatesJson)) {
                 if (candidate > now && candidate < best) best = candidate;
@@ -96,10 +96,19 @@ public final class RecurrenceUtils {
         catch(org.json.JSONException impossible){return "{}";}
     }
 
+    static boolean finiteIntervals(String raw){
+        try{return new org.json.JSONObject(raw).optJSONArray("dates")!=null;}
+        catch(Exception ignored){return false;}
+    }
+    static String intervalDatesJson(List<Long> dates){
+        try{return new org.json.JSONObject().put("dates",new JSONArray(toJson(dates))).toString();}
+        catch(org.json.JSONException impossible){return "{\"dates\":[]}";}
+    }
+
     public static List<Long> parseDates(String raw) {
         ArrayList<Long> out = new ArrayList<>();
         try {
-            JSONArray a = new JSONArray(raw == null ? "[]" : raw);
+            JSONArray a = finiteIntervals(raw)?new org.json.JSONObject(raw).getJSONArray("dates"):new JSONArray(raw == null ? "[]" : raw);
             for (int i = 0; i < a.length(); i++) {
                 long value = a.optLong(i, -1L);
                 if (value > 0) out.add(value);
@@ -161,6 +170,7 @@ public final class RecurrenceUtils {
     }
 
     public static String summary(int mode, int intervalDays, String customDatesJson) {
+        if (mode == INTERVAL_MINUTES && finiteIntervals(customDatesJson)) return AppString.get(R.string.recurrence_added_count,CalendarUtils.fa(parseDates(customDatesJson).size()));
         if (mode == INTERVAL_MINUTES) return AppString.get(R.string.runtime_text_0553).trim()+" "
                 + (intervalDays>=60 && intervalDays%60==0
                     ? AppString.get(R.string.event_unit_hour,CalendarUtils.fa(intervalDays/60))

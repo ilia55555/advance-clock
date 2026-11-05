@@ -21,6 +21,19 @@ public class EventReminderRulesTest {
     long calendarDate(int type,int year,int month,int day){
         android.icu.util.Calendar c=CalendarUtils.create(type);c.setTimeZone(android.icu.util.TimeZone.getTimeZone(zone.getID()));c.clear();c.set(year,month-1,day,10,0);return c.getTimeInMillis();
     }
+    @Test public void explicitMinuteRepeatsEndAfterTheAddedOccurrencesAndSurviveSerialization(){
+        long base=date(2026,11,5,8);
+        String dates=RecurrenceUtils.intervalDatesJson(Arrays.asList(base+180000,base+7200000));
+        AlarmItem alarm=new AlarmItem(998,"Finite",base,RecurrenceUtils.INTERVAL_MINUTES,true);
+        alarm.customDatesJson=dates;alarm.intervalDays=999;
+        try{alarm=AlarmItem.fromJson(alarm.toJson());}catch(Exception e){throw new AssertionError(e);}
+        long next=RecurrenceUtils.next(base,alarm.recurrenceMode,alarm.intervalDays,alarm.customDatesJson,base,zone);
+        assertEquals(base+180000,next);
+        next=RecurrenceUtils.next(next,alarm.recurrenceMode,alarm.intervalDays,alarm.customDatesJson,next,zone);
+        assertEquals(base+7200000,next);
+        assertEquals(-1L,RecurrenceUtils.next(next,alarm.recurrenceMode,alarm.intervalDays,alarm.customDatesJson,next,zone));
+        assertEquals(-1L,RecurrenceUtils.next(base,RecurrenceUtils.INTERVAL_MINUTES,3,RecurrenceUtils.intervalDatesJson(Collections.emptyList()),base,zone));
+    }
     @Test public void thirtyDaysAreNotAcalendarMonthAndPersianMonthsFollowTheSelectedCalendar(){
         int type=CalendarUtils.PERSIAN;long esfand=calendarDate(type,1405,12,1);
         EventReminderRules.Rule days=new EventReminderRules.Rule(false,"day",30,false);

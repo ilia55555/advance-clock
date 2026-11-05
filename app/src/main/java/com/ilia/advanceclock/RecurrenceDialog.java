@@ -103,7 +103,13 @@ public final class RecurrenceDialog {
         }
         root.addView(weekdayGrid);
 
-        ArrayList<Long> customDates = new ArrayList<>(RecurrenceUtils.parseDates(customDatesJson));
+        ArrayList<Long> customDates = new ArrayList<>(mode==RecurrenceUtils.CUSTOM_DATES?RecurrenceUtils.parseDates(customDatesJson):java.util.Collections.emptyList());
+        ArrayList<Long> intervalDates = new ArrayList<>(mode==RecurrenceUtils.INTERVAL_MINUTES?RecurrenceUtils.parseDates(customDatesJson):java.util.Collections.emptyList());
+        Button addInterval=new Button(context);addInterval.setTag("recurrence_interval_add");
+        addInterval.setText(R.string.event_add);addInterval.setAllCaps(false);addInterval.setTextColor(AppSettings.primaryColor(context));
+        addInterval.setBackground(ReminderModalStyle.shape(context,AppSettings.field(context),AppSettings.primaryColor(context),12));
+        root.addView(addInterval,new LinearLayout.LayoutParams(-1,dp(context,50)));
+        LinearLayout intervalList=new LinearLayout(context);intervalList.setOrientation(LinearLayout.VERTICAL);intervalList.setTag("recurrence_interval_list");root.addView(intervalList);
         TextView customSummary = new TextView(context);
         customSummary.setTextColor(AppSettings.textPrimary(context));
         customSummary.setPadding(0, dp(context,8),0,dp(context,8));
@@ -124,10 +130,12 @@ public final class RecurrenceDialog {
             interval.setMaxValue(selectedMode == RecurrenceUtils.INTERVAL_MINUTES
                     ? (intervalUnit.getSelectedItemPosition()==1?8760:525600) : Math.max(Math.max(365,intervalDays),initialPeriod));
             intervalUnit.setVisibility(selectedMode==RecurrenceUtils.INTERVAL_MINUTES?View.VISIBLE:View.GONE);
+            addInterval.setVisibility(selectedMode==RecurrenceUtils.INTERVAL_MINUTES?View.VISIBLE:View.GONE);
+            intervalList.setVisibility(selectedMode==RecurrenceUtils.INTERVAL_MINUTES?View.VISIBLE:View.GONE);
             boolean intervalVisible = selectedMode == RecurrenceUtils.INTERVAL_DAYS || selectedMode == RecurrenceUtils.INTERVAL_MINUTES
                     || selectedMode==RecurrenceUtils.WEEKLY || selectedMode==RecurrenceUtils.MONTHLY || selectedMode==RecurrenceUtils.YEARLY;
             intervalLabel.setText(selectedMode == RecurrenceUtils.INTERVAL_MINUTES
-                    ? R.string.recurrence_interval_minutes : selectedMode==RecurrenceUtils.WEEKLY?R.string.runtime_text_0289:
+                    ? R.string.recurrence_offset_hint : selectedMode==RecurrenceUtils.WEEKLY?R.string.runtime_text_0289:
                     selectedMode==RecurrenceUtils.MONTHLY?R.string.recurrence_interval_months:
                     selectedMode==RecurrenceUtils.YEARLY?R.string.recurrence_interval_years:R.string.runtime_text_0288);
             boolean datesVisible = selectedMode == RecurrenceUtils.CUSTOM_DATES;
@@ -156,6 +164,32 @@ public final class RecurrenceDialog {
             }
             customSummary.setText(sb.length() == 0 ? AppString.get(R.string.runtime_text_0292) : sb.toString());
         };
+
+        Runnable[] renderIntervals=new Runnable[1];
+        renderIntervals[0]=()->{
+            intervalList.removeAllViews();
+            for(long date:new ArrayList<>(intervalDates)){
+                LinearLayout row=new LinearLayout(context);row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                TextView label=new TextView(context);label.setTextColor(AppSettings.textPrimary(context));label.setTextSize(15);
+                java.text.SimpleDateFormat clock=new java.text.SimpleDateFormat("HH:mm",java.util.Locale.getDefault());clock.setTimeZone(zone);
+                label.setText(CalendarUtils.formatDate(date,AppSettings.defaultCalendar(context),zone)+"  "+clock.format(new java.util.Date(date)));
+                row.addView(label,new LinearLayout.LayoutParams(0,-2,1));
+                Button remove=new Button(context);remove.setText(R.string.tool_delete);remove.setAllCaps(false);remove.setTextColor(AppSettings.primaryColor(context));
+                remove.setBackground(ReminderModalStyle.shape(context,AppSettings.field(context),AppSettings.primaryColor(context),10));
+                remove.setOnClickListener(v->{intervalDates.remove(Long.valueOf(date));renderIntervals[0].run();});row.addView(remove,new LinearLayout.LayoutParams(-2,dp(context,48)));
+                LinearLayout.LayoutParams rowParams=new LinearLayout.LayoutParams(-1,-2);rowParams.topMargin=dp(context,8);intervalList.addView(row,rowParams);
+            }
+        };
+        addInterval.setOnClickListener(v->{
+            interval.clearFocus();
+            long minutes=(long)interval.getValue()*(intervalUnit.getSelectedItemPosition()==1?60:1);
+            long date=baseMillis+minutes*60_000L;
+            if(date<=System.currentTimeMillis()){
+                LogoToast.makeText(context,R.string.runtime_text_0293,Toast.LENGTH_SHORT).show();return;
+            }
+            if(!intervalDates.contains(date)){intervalDates.add(date);java.util.Collections.sort(intervalDates);renderIntervals[0].run();}
+        });
+        renderIntervals[0].run();
 
         modeSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
@@ -235,7 +269,7 @@ public final class RecurrenceDialog {
                                     ? RecurrenceUtils.weekdaysToJson(
                                             weekdays, permanentWeekdays.isChecked())
                                     : (selectedMode==RecurrenceUtils.WEEKLY || selectedMode==RecurrenceUtils.MONTHLY || selectedMode==RecurrenceUtils.YEARLY)
-                                        ? RecurrenceUtils.periodJson(interval.getValue()):RecurrenceUtils.toJson(customDates));
+                                        ? RecurrenceUtils.periodJson(interval.getValue()):selectedMode==RecurrenceUtils.INTERVAL_MINUTES?RecurrenceUtils.intervalDatesJson(intervalDates):RecurrenceUtils.toJson(customDates));
                 })
                 .create();
         dialog.show();ReminderModalStyle.apply(dialog,scroll);

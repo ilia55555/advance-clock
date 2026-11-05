@@ -1450,4 +1450,6 @@
     <string name="task_pending_label">To do</string>
     <string name="skip_today_occurrence">Skip today’s occurrence</string>
     <string name="note_view_details">View note</string>
+    <string name="recurrence_added_count">%1$s repeats added</string>
+    <string name="recurrence_offset_hint">Time after the main alert</string>
 </resources>
