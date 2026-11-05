@@ -61,40 +61,12 @@ public final class AdhanSoundService extends Service {
     private boolean muted;
     private int type;
 
-    private static final String ACTION_VOLUME_CHANGED =
-            "android.media.VOLUME_CHANGED_ACTION";
-    private static final String EXTRA_VOLUME_STREAM_TYPE =
-            "android.media.EXTRA_VOLUME_STREAM_TYPE";
-    private static final String EXTRA_VOLUME_STREAM_VALUE =
-            "android.media.EXTRA_VOLUME_STREAM_VALUE";
-    private static final String EXTRA_PREV_VOLUME_STREAM_VALUE =
-            "android.media.EXTRA_PREV_VOLUME_STREAM_VALUE";
     private final Handler stopHandler = new Handler(Looper.getMainLooper());
     private final Runnable maximumDuration = this::stopSelf;
 
     private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) silence();
-        }
-    };
-
-    private final BroadcastReceiver volumeReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) {
-            if (intent == null || !ACTION_VOLUME_CHANGED.equals(intent.getAction())) return;
-            int stream = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1);
-            int current = intent.getIntExtra(EXTRA_VOLUME_STREAM_VALUE, -1);
-            int previous = intent.getIntExtra(EXTRA_PREV_VOLUME_STREAM_VALUE, -1);
-            if (current < 0 || previous < 0
-                    || (stream != AudioManager.STREAM_ALARM
-                    && stream != AudioManager.STREAM_MUSIC
-                    && stream != AudioManager.STREAM_RING)) {
-                return;
-            }
-            if (current < previous) {
-                silence();
-            } else if (current > previous) {
-                setMuted(false);
-            }
         }
     };
 
@@ -122,18 +94,24 @@ public final class AdhanSoundService extends Service {
         AlertOutputEvents.changed();
     }
 
+    private void stopRing(){playing=false;foreground=false;stopHandler.removeCallbacks(maximumDuration);stopPlayback();stopForeground(STOP_FOREGROUND_REMOVE);AlertOutputEvents.changed();}
+    static void stopRing(int type){AdhanSoundService service=output(type);if(service!=null){service.stopRing();service.stopSelf();}}
+    @Override public void onTaskRemoved(Intent rootIntent){stopRing();stopSelf();super.onTaskRemoved(rootIntent);}
+
+    static void refreshVolume(Context context,int changedType){
+        AdhanSoundService service=running.get();if(service==null || !service.playing || (changedType!=899 && changedType!=service.type))return;
+        service.volume=AppSettings.adhanVolume(context,service.type)/100f;service.applyVolume();
+    }
+
     @Override public void onCreate() {
         super.onCreate();
         running = new java.lang.ref.WeakReference<>(this);
         NotificationHelper.ensureChannels(this);
         IntentFilter screenFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-        IntentFilter volumeFilter = new IntentFilter(ACTION_VOLUME_CHANGED);
         if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(screenReceiver, screenFilter, RECEIVER_NOT_EXPORTED);
-            registerReceiver(volumeReceiver, volumeFilter, RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(screenReceiver, screenFilter);
-            registerReceiver(volumeReceiver, volumeFilter);
         }
     }
 
@@ -141,7 +119,7 @@ public final class AdhanSoundService extends Service {
         if (intent == null) return START_NOT_STICKY;
         String action = intent.getAction();
         if (ACTION_STOP.equals(action)) {
-            playing = false;
+            stopRing();
             stopSelf();
             return START_NOT_STICKY;
         }
@@ -294,7 +272,7 @@ public final class AdhanSoundService extends Service {
 
     private void lowerVolume() {
         muted = false;
-        volume = Math.max(0.10f, volume - 0.10f);
+        volume = Math.max(0f, volume - 0.10f);
         applyVolume();
         AlertOutputEvents.changed();
     }
@@ -307,7 +285,7 @@ public final class AdhanSoundService extends Service {
     }
 
     private void applyVolume() {
-        if (player != null) player.setVolume(muted ? 0f : volume, muted ? 0f : volume);
+        if (player != null) try{player.setVolume(muted ? 0f : volume, muted ? 0f : volume);}catch(RuntimeException ignored){}
     }
 
     private void stopPlayback() {
@@ -327,7 +305,6 @@ public final class AdhanSoundService extends Service {
         stopPlayback();
         AdhanRingActivity.finishIfShowing(type);
         try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
-        try { unregisterReceiver(volumeReceiver); } catch (Exception ignored) {}
         stopForeground(STOP_FOREGROUND_REMOVE);
         super.onDestroy();
     }

@@ -20,6 +20,8 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application = Application.class, sdk = {28, 35})
 public final class AdhanPresentationFrameworkTest {
+ private void asleep(android.content.Context context){Shadows.shadowOf(context.getSystemService(android.os.PowerManager.class)).setIsInteractive(false);}
+
     private Context init() {
         Context c = RuntimeEnvironment.getApplication();
         AppString.init(c);
@@ -112,7 +114,7 @@ public final class AdhanPresentationFrameworkTest {
                 Robolectric.buildActivity(AdhanRingActivity.class,
                         new Intent(c, AdhanRingActivity.class).putExtra("adhanType", AdhanScheduler.FAJR)).setup();
         assertNull(Shadows.shadowOf(manager).getNotification(id));
-        screen.pause().stop();
+        asleep(c);screen.pause().stop();
         Notification restored = Shadows.shadowOf(manager).getNotification(id);
         assertNotNull(restored);
         assertNull(restored.fullScreenIntent);

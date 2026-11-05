@@ -21,7 +21,6 @@ public class PrayerReliabilityTest {
         Context context=RuntimeEnvironment.getApplication();
         AlarmManager manager=context.getSystemService(AlarmManager.class);
         Shadows.shadowOf(manager).setCanScheduleExactAlarms(true);
-        AppSettings.setAdhanEnabled(context,true);
         AppSettings.setFajrAdhanEnabled(context,true);
         AppSettings.setPrayerLocation(context,35.69,51.39,"Tehran","Asia/Tehran");
         assertTrue(AdhanScheduler.scheduleNext(context,AdhanScheduler.FAJR));
@@ -29,7 +28,7 @@ public class PrayerReliabilityTest {
         assertNotNull(next);
         assertTrue(next.getTriggerTime()>System.currentTimeMillis());
         assertNotNull(next.getShowIntent());
-        AppSettings.setAdhanEnabled(context,false);
+        AppSettings.setFajrAdhanEnabled(context,false);AppSettings.setDhuhrAdhanEnabled(context,false);AppSettings.setAsrAdhanEnabled(context,false);AppSettings.setMaghribAdhanEnabled(context,false);AppSettings.setIshaAdhanEnabled(context,false);
         AdhanScheduler.rescheduleAll(context);
         assertNull(manager.getNextAlarmClock());
     }

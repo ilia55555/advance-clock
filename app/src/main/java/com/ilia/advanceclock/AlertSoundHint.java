@@ -33,7 +33,7 @@ final class AlertSoundHint {
         message.setOrientation(LinearLayout.VERTICAL);
         message.setGravity(Gravity.CENTER);
         TextView text = new TextView(host);
-        text.setText(R.string.alert_sound_hint);
+        text.setText("adhan".equals(kind)?R.string.adhan_sound_hint:R.string.alert_sound_hint);
         text.setTextColor(0xFFFFFFFF);
         text.setTextSize(18);
         text.setGravity(Gravity.CENTER);

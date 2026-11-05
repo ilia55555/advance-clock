@@ -31,10 +31,6 @@ public final class AdhanScheduler {
     private AdhanScheduler() {}
 
     public static void rescheduleAll(Context context) {
-        if (!AppSettings.adhanEnabled(context)) {
-            for (int type = FAJR; type <= ISHA; type++) cancel(context, type);
-            return;
-        }
         for (int type = FAJR; type <= ISHA; type++) {
             cancel(context, type);
             if (isEnabled(context, type)) scheduleNext(context, type);
@@ -42,8 +38,7 @@ public final class AdhanScheduler {
     }
 
     public static boolean scheduleNext(Context context, int type) {
-        if (!AppSettings.adhanEnabled(context)
-                || !AppSettings.prayerLocationSet(context) || !isEnabled(context, type)) {
+        if (!AppSettings.prayerLocationSet(context) || !isEnabled(context, type)) {
             setScheduled(context, type, false);
             return false;
         }
@@ -80,7 +75,7 @@ public final class AdhanScheduler {
     }
 
     public static Status status(Context context) {
-        if (!AppSettings.adhanEnabled(context) || !anyEnabled(context)) return Status.DISABLED;
+        if (!anyEnabled(context)) return Status.DISABLED;
         if (!AppSettings.prayerLocationSet(context)) return Status.LOCATION_MISSING;
         if (!PermissionHelper.exactAlarmsGranted(context)) {
             return Status.EXACT_PERMISSION_MISSING;

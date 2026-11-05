@@ -64,10 +64,11 @@ public final class NoteReminderActivity extends Activity {
         if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) return true;
         return super.onKeyUp(code, event);
     }
-    private void stopAndClose() { if(detailsDialog!=null)detailsDialog.dismiss();stopService(NoForgetSoundService.stopIntent(this)); finishAndRemoveTask(); }
+    private void stopAndClose() { if(detailsDialog!=null)detailsDialog.dismiss();NoForgetSoundService.stopTask(noteId); finishAndRemoveTask(); }
     // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
     @android.annotation.SuppressLint("GestureBackNavigation")
-    @Override public void onBackPressed() { /* Dismiss explicitly, consistently with other alerts. */ }
-    @Override protected void onStop() { screenVisible=false; NoForgetSoundService.onRingVisibilityChanged(); super.onStop(); }
+    @Override public void onBackPressed() { stopAndClose(); }
+    @Override protected void onUserLeaveHint(){super.onUserLeaveHint();if(!isChangingConfigurations())stopAndClose();}
+    @Override protected void onStop() { screenVisible=false; if(ReminderScreen.stopWhenHidden(this))stopAndClose();else NoForgetSoundService.onRingVisibilityChanged(); super.onStop(); }
     @Override protected void onDestroy() { if(detailsDialog!=null){detailsDialog.dismiss();detailsDialog=null;}screenVisible=false; if (showing.get() == this) showing.clear(); NoForgetSoundService.onRingVisibilityChanged(); super.onDestroy(); }
 }

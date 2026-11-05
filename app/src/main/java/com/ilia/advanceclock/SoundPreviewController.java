@@ -21,6 +21,7 @@ final class SoundPreviewController implements AutoCloseable {
     private volatile boolean closed;
     private String active;
     private boolean prepared,wanted;
+    private float gain=1f;
     private AudioFocusRequest focus;
     private final AudioManager manager;
     SoundPreviewController(Activity host){this.host=host;manager=host.getSystemService(AudioManager.class);}
@@ -60,9 +61,10 @@ final class SoundPreviewController implements AutoCloseable {
         try{
             if(manager!=null){focus=new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT).setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()).setWillPauseWhenDucked(true).setOnAudioFocusChangeListener(change->{if(change<0)pause();},main).build();
                 if(manager.requestAudioFocus(focus)!=AudioManager.AUDIOFOCUS_REQUEST_GRANTED){wanted=false;abandonFocus();update(active);return;}}
-            host.setVolumeControlStream(AudioManager.STREAM_ALARM);Clip clip=clips.get(active);if(clip!=null)player.seekTo(clip.position);player.start();main.removeCallbacks(tick);main.postDelayed(tick,250);
+            host.setVolumeControlStream(AudioManager.STREAM_ALARM);Clip clip=clips.get(active);if(clip!=null)player.seekTo(clip.position);player.setVolume(gain,gain);player.start();main.removeCallbacks(tick);main.postDelayed(tick,250);
         }catch(Exception error){failed();}
     }
+    void setGain(float value){gain=Math.max(0f,Math.min(1f,value));if(player!=null && prepared)try{player.setVolume(gain,gain);}catch(Exception e){failed();}}
     void seek(SoundPreviewRow row,int position){Clip clip=clips.get(row.uri);if(clip==null || closed)return;clip.position=Math.max(0,Math.min(position,clip.duration));if(Objects.equals(active,row.uri) && prepared && player!=null)try{player.seekTo(clip.position);}catch(Exception e){failed();}update(row.uri);}
     private final Runnable tick=new Runnable(){public void run(){if(closed || !prepared || !wanted || player==null)return;try{clips.get(active).position=player.getCurrentPosition();update(active);main.postDelayed(this,250);}catch(Exception e){failed();}}};
     void pause(){

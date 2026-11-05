@@ -90,6 +90,7 @@ public final class NoForgetSoundService extends Service {
         }
         NoForgetSoundService service=output(id);if(service!=null){service.stopReminder();service.stopSelf();}
     }
+    @Override public void onTaskRemoved(Intent rootIntent){stopReminder();stopSelf();super.onTaskRemoved(rootIntent);}
     static boolean outputMuted(long id) { NoForgetSoundService service=output(id);return service!=null && service.muted; }
     static boolean outputVibrating(long id) { NoForgetSoundService service=output(id);return service!=null && service.vibrationEnabled; }
     static void setOutputMuted(long id,boolean value) {

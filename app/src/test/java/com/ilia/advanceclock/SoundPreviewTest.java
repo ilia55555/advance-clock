@@ -21,9 +21,10 @@ import static org.junit.Assert.*;
 public class SoundPreviewTest {
  @Implements(MediaPlayer.class) public static class Player {
   @RealObject MediaPlayer real;static final List<MediaPlayer> instances=new ArrayList<>();static boolean deferred;
-  MediaPlayer.OnPreparedListener prepared;MediaPlayer.OnCompletionListener complete;int position;boolean playing,released;
+  MediaPlayer.OnPreparedListener prepared;MediaPlayer.OnCompletionListener complete;int position;boolean playing,released;float volume=1f;
   @Implementation protected void __constructor__(){instances.add(real);}
   @Implementation protected void setAudioAttributes(AudioAttributes a){assertEquals(AudioAttributes.USAGE_ALARM,a.getUsage());}
+  @Implementation protected void setVolume(float left,float right){assertEquals(left,right,0);volume=left;}
   @Implementation protected void setLooping(boolean b){assertFalse(b);}
   @Implementation protected void setDataSource(Context c,Uri uri){LocalMedia.require(uri);}
   @Implementation protected void setOnPreparedListener(MediaPlayer.OnPreparedListener p){prepared=p;}
@@ -92,8 +93,12 @@ public class SoundPreviewTest {
    PrayerSettingsPanel panel=ReflectionHelpers.getField(host.get(),"prayerPanel");SoundPreviewController c=ReflectionHelpers.getField(panel,"soundPreviews");controllers.add(c);
    LinearLayout root=new LinearLayout(host.get());root.setOrientation(LinearLayout.VERTICAL);host.get().setContentView(root);
    ReflectionHelpers.callInstanceMethod(panel,"showAdhanSettings",ReflectionHelpers.ClassParameter.from(String.class,"Adhan"),ReflectionHelpers.ClassParameter.from(int.class,AdhanScheduler.FAJR),ReflectionHelpers.ClassParameter.from(LinearLayout.class,root));
-   LinearLayout list=ReflectionHelpers.getField(panel,"activeMuezzinList");assertTrue(list.getChildCount()>=3);SoundPreviewRow row=(SoundPreviewRow)list.getChildAt(1);
+   LinearLayout list=ReflectionHelpers.getField(panel,"activeMuezzinList");assertTrue(list.getChildCount()>=2);SoundPreviewRow row=(SoundPreviewRow)list.getChildAt(1);
    String before=AppSettings.adhanSoundUri(host.get(),AdhanScheduler.FAJR);play(row);drain(c);assertTrue(player(c).playing);assertEquals(before,AppSettings.adhanSoundUri(host.get(),AdhanScheduler.FAJR));
+   SeekBar volume=root.findViewWithTag("adhan_volume_seek");assertNotNull(volume);
+   SeekBar.OnSeekBarChangeListener listener=ReflectionHelpers.getField(volume,"mOnSeekBarChangeListener");
+   listener.onProgressChanged(volume,19,true);assertEquals(.19f,player(c).volume,.001f);assertEquals(19,AppSettings.adhanVolume(host.get(),AdhanScheduler.FAJR));
+   listener.onProgressChanged(volume,0,true);assertEquals(0f,player(c).volume,0f);
    assertNotNull(row.findViewWithTag("sound_preview_seek"));host.pause().stop();drain(c);assertNull(ReflectionHelpers.getField(c,"player"));
   }
  }

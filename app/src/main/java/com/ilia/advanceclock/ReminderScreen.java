@@ -50,9 +50,15 @@ final class ReminderScreen extends FrameLayout {
 
     private int textColor, mutedColor, primary, secondary, background;
 
+    static boolean stopWhenHidden(Activity host){
+        if(host.isChangingConfigurations())return false;
+        android.os.PowerManager power=host.getSystemService(android.os.PowerManager.class);
+        android.app.KeyguardManager keyguard=host.getSystemService(android.app.KeyguardManager.class);
+        return (power==null || power.isInteractive()) && (keyguard==null || !keyguard.isKeyguardLocked());
+    }
     static void prepareWindow(Activity host) {
         if (Build.VERSION.SDK_INT >= 33) host.getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, () -> { /* Stop explicitly. */ });
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, host::onBackPressed);
         if (Build.VERSION.SDK_INT >= 27) { host.setShowWhenLocked(true); host.setTurnScreenOn(true); }
         else host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         host.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

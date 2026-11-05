@@ -102,14 +102,15 @@ public final class AlarmRingActivity extends Activity {
     }
     // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
     @android.annotation.SuppressLint("GestureBackNavigation")
-    @Override public void onBackPressed() { /* Dismiss explicitly. */ }
+    @Override public void onBackPressed() { stopAndClose(); }
     private void stopAndClose() {
-        stopService(AlarmSoundService.stopIntent(this));
+        AlarmSoundService.stopRing(alarmId);
         NotificationManager manager = getSystemService(NotificationManager.class);
         if (manager != null && alarmId != -1) manager.cancel(NotificationHelper.notificationId(alarmId));
         finishAndRemoveTask();
     }
-    @Override protected void onStop() { screenVisible=false; AlarmSoundService.onRingVisibilityChanged(); super.onStop(); }
+    @Override protected void onUserLeaveHint(){super.onUserLeaveHint();if(!isChangingConfigurations())stopAndClose();}
+    @Override protected void onStop() { screenVisible=false; if(ReminderScreen.stopWhenHidden(this))stopAndClose();else AlarmSoundService.onRingVisibilityChanged(); super.onStop(); }
     @Override protected void onDestroy() { screenVisible=false; if (showing.get() == this) showing.clear(); AlarmSoundService.onRingVisibilityChanged(); super.onDestroy(); }
     public static void finishIfShowing(long id) {
         AlarmRingActivity activity = showing.get();

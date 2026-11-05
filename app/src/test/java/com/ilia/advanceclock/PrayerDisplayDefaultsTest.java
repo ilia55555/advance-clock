@@ -21,17 +21,15 @@ public class PrayerDisplayDefaultsTest {
         }
         return null;
     }
-    @Test public void freshDefaultsAreOnAndExplicitOffChoicesArePreserved(){
-        Application app=RuntimeEnvironment.getApplication();assertTrue(AppSettings.adhanEnabled(app));assertTrue(AppSettings.showPrayerTimes(app));
-        AppSettings.setAdhanEnabled(app,false);assertTrue(AppSettings.showPrayerTimes(app));
-        AppSettings.setShowPrayerTimes(app,false);assertFalse(AppSettings.showPrayerTimes(app));assertFalse(AppSettings.adhanEnabled(app));
+    @Test public void adhanVibrationDefaultsOffAndExplicitChoicesArePreserved(){
+        Application app=RuntimeEnvironment.getApplication();assertTrue(AppSettings.showPrayerTimes(app));
+        for(int type=AdhanScheduler.FAJR;type<=AdhanScheduler.ISHA;type++)assertFalse(AppSettings.adhanVibrate(app,type));
+        AppSettings.setAdhanVibrate(app,AdhanScheduler.FAJR,true);assertTrue(AppSettings.adhanVibrate(app,AdhanScheduler.FAJR));assertFalse(AppSettings.adhanVibrate(app,AdhanScheduler.DHUHR));
     }
-    @Test public void firstSetupShowsEnabledAdhanWithLargerLabel(){
+    @Test public void firstSetupDoesNotContainTheRemovedAdhanVisibilitySwitch(){
         try(var controller=Robolectric.buildActivity(Activity.class).setup()){
             AppSettings.applyTheme(controller.get());FirstRunSetupDialog.show(controller.get(),changed->{});
-            AlertDialog dialog=org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog();
-            Switch toggle=find(dialog.getWindow().getDecorView(),null);assertNotNull(toggle);assertTrue(toggle.isChecked());
-            assertEquals(18f*controller.get().getResources().getDisplayMetrics().density,toggle.getTextSize(),.1f);dialog.dismiss();
+            AlertDialog dialog=org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog();assertNull(find(dialog.getWindow().getDecorView(),null));dialog.dismiss();
         }
     }
     @Test public void prayerLabelsUseRequestedSizes(){
@@ -39,9 +37,9 @@ public class PrayerDisplayDefaultsTest {
         try(var controller=Robolectric.buildActivity(SettingsActivity.class,new Intent(app,SettingsActivity.class).putExtra(SettingsActivity.EXTRA_SECTION,"prayer")).setup()){
             View root=controller.get().findViewById(android.R.id.content);
             Switch section=find(root,AppString.get(R.string.runtime_text_0361)),bar=find(root,AppString.get(R.string.runtime_text_0351));
-            assertNotNull(section);assertNotNull(bar);assertTrue(section.isChecked());assertTrue(bar.isChecked());
+            assertNull(section);assertNotNull(bar);assertTrue(bar.isChecked());
             float density=root.getResources().getDisplayMetrics().density;
-            assertEquals(18*density,section.getTextSize(),.1f);assertEquals(16*density,bar.getTextSize(),.1f);
+            assertEquals(16*density,bar.getTextSize(),.1f);
         }
     }
 }

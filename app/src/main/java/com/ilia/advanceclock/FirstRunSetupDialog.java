@@ -128,21 +128,6 @@ final class FirstRunSetupDialog {
                 calendar,
                 fieldParams(activity));
 
-        Switch adhan = new Switch(activity);
-        adhan.setTextColor(AppSettings.textPrimary(activity));
-        adhan.setChecked(AppSettings.adhanEnabled(activity));
-        adhan.setTextSize(18);
-        adhan.setPadding(
-                0,
-                dp(activity, 12),
-                0,
-                0);
-        content.addView(
-                adhan,
-                new LinearLayout.LayoutParams(
-                        -1,
-                        dp(activity, 56)));
-
         Button continueButton = new Button(activity);
         continueButton.setAllCaps(false);
         continueButton.setTextSize(15);
@@ -207,9 +192,6 @@ final class FirstRunSetupDialog {
                 calendarLabel.setText(
                         localized.getString(
                                 R.string.calendar_label));
-                adhan.setText(
-                        localized.getString(
-                                R.string.runtime_text_0360));
                 continueButton.setText(
                         localized.getString(
                                 R.string.continue_label));
@@ -249,8 +231,6 @@ final class FirstRunSetupDialog {
                 calendarLabel.setTextDirection(textDirection);
                 language.setLayoutDirection(direction);
                 calendar.setLayoutDirection(direction);
-                adhan.setLayoutDirection(direction);
-                adhan.setTextDirection(textDirection);
                 continueButton.setLayoutDirection(direction);
                 continueButton.setTextDirection(textDirection);
             } finally {
@@ -314,9 +294,6 @@ final class FirstRunSetupDialog {
             AppSettings.setDefaultCalendar(
                     activity,
                     calendar.getSelectedItemPosition());
-            AppSettings.setAdhanEnabled(
-                    activity,
-                    adhan.isChecked());
 
             dialog.dismiss();
             completed.onCompleted(languageChanged);

@@ -1465,4 +1465,5 @@
     <string name="sound_preview_error">This sound could not be played.</string>
     <string name="online_sounds_checking">Checking sounds…</string>
     <string name="online_sounds_checked">Sound list updated.</string>
+    <string name="adhan_sound_hint">Use the volume keys to adjust Adhan loudness. Use the sound button at the bottom to mute or unmute.</string>
 </resources>

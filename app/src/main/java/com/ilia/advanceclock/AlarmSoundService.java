@@ -147,6 +147,8 @@ public final class AlarmSoundService extends Service {
         AlarmSoundService service=runningService.get();
         return service!=null && service.playing && service.currentAlarmId == id ? service : null;
     }
+    static void stopRing(long id){AlarmSoundService service=output(id);if(service!=null){service.stopAlarm();service.stopSelf();}}
+    @Override public void onTaskRemoved(Intent rootIntent){stopAlarm();stopSelf();super.onTaskRemoved(rootIntent);}
     static boolean outputMuted(long id) { AlarmSoundService service=output(id);return service!=null && service.muted; }
     static boolean outputVibrating(long id) { AlarmSoundService service=output(id);return service!=null && service.currentVibrate; }
     static void setOutputMuted(long id,boolean value) {

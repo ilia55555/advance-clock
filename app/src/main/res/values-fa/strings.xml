@@ -1411,4 +1411,5 @@
     <string name="sound_preview_error">پخش این صدا ممکن نیست.</string>
     <string name="online_sounds_checking">در حال بررسی صداها…</string>
     <string name="online_sounds_checked">فهرست صداها به‌روز شد.</string>
+    <string name="adhan_sound_hint">با کلیدهای صدا، بلندی اذان را تنظیم کنید. برای بی‌صدا کردن یا وصل صدا، دکمهٔ صدا در پایین صفحه را بزنید.</string>
 </resources>

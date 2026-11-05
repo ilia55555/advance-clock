@@ -79,6 +79,8 @@ public final class AdhanRingActivity
     protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         super.onCreate(savedInstanceState);
+        setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
+        if(android.os.Build.VERSION.SDK_INT>=33)getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,this::stopAndClose);
         showing = new java.lang.ref.WeakReference<>(this);
 
         if (android.os.Build.VERSION.SDK_INT >= 27) {
@@ -222,10 +224,12 @@ public final class AdhanRingActivity
         }
     }
 
+    @Override protected void onUserLeaveHint(){super.onUserLeaveHint();if(!isChangingConfigurations())stopAndClose();}
+
     @Override
     protected void onStop() {
         screenVisible = false;
-        AdhanSoundService.onRingVisibilityChanged();
+        if(ReminderScreen.stopWhenHidden(this))stopAndClose();else AdhanSoundService.onRingVisibilityChanged();
         super.onStop();
     }
 
@@ -423,50 +427,7 @@ public final class AdhanRingActivity
 
 
     @Override
-    public boolean onKeyDown(
-            int keyCode,
-            KeyEvent event) {
-        if (keyCode
-                == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            send(
-                    AdhanSoundService.ACTION_MUTE);
-            if(alertActions!=null)alertActions.refreshState();
-            return true;
-        }
-
-        if (keyCode
-                == KeyEvent.KEYCODE_VOLUME_UP) {
-            send(
-                    AdhanSoundService.ACTION_RAISE);
-            if(alertActions!=null)alertActions.refreshState();
-            return true;
-        }
-
-        return super.onKeyDown(
-                keyCode,
-                event);
-    }
-
-    @Override
-    public boolean onKeyUp(
-            int keyCode,
-            KeyEvent event) {
-        if (keyCode
-                == KeyEvent.KEYCODE_VOLUME_DOWN
-                || keyCode
-                == KeyEvent.KEYCODE_VOLUME_UP) {
-            return true;
-        }
-
-        return super.onKeyUp(
-                keyCode,
-                event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        // The dedicated Adhan must be stopped explicitly.
-    }
+    public void onBackPressed() { stopAndClose(); }
 
     private void send(String action) {
         startService(
@@ -476,8 +437,7 @@ public final class AdhanRingActivity
     }
 
     private void stopAndClose() {
-        send(
-                AdhanSoundService.ACTION_STOP);
+        AdhanSoundService.stopRing(getIntent().getIntExtra("adhanType",AdhanScheduler.FAJR));
         finishAndRemoveTask();
     }
 }

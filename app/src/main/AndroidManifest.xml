@@ -160,7 +160,7 @@
             android:turnScreenOn="true" />
 
         <activity
-            android:name=".AdhanRingActivity"
+            android:name=".AdhanRingActivity" android:enableOnBackInvokedCallback="true"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="false"

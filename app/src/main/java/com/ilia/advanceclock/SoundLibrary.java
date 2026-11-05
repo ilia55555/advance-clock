@@ -27,7 +27,7 @@ final class SoundLibrary {
 
     static List<Sound> all(Context context, boolean adhan) {
         ArrayList<Sound> sounds = new ArrayList<>();
-        sounds.add(new Sound(AppString.get(R.string.runtime_text_0144), ""));
+        if(!adhan)sounds.add(new Sound(AppString.get(R.string.runtime_text_0144), ""));
         if (adhan) {
             addNamedBundledSound(context, sounds, "rawadhan_1", AppString.get(R.string.runtime_text_0680));
             addNamedBundledSound(context, sounds, "rawadhan_2", AppString.get(R.string.runtime_text_0681));

@@ -10,6 +10,8 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(application=Application.class,sdk={28,35},shadows=ReminderScreenFrameworkTest.PlainStore.class)
 public class AlertNotificationVisibilityTest {
+ private void asleep(android.content.Context context){Shadows.shadowOf(context.getSystemService(android.os.PowerManager.class)).setIsInteractive(false);}
+
  @Test @Config(sdk=35) public void initialAlarmNoteAndAdhanNotificationsRequestImmediatePresentation(){
   Application app=RuntimeEnvironment.getApplication();AppString.init(app);NotificationHelper.ensureChannels(app);
   var alarm=Robolectric.buildService(AlarmSoundService.class).create();
@@ -45,7 +47,7 @@ public class AlertNotificationVisibilityTest {
      assertTrue(AlarmRingActivity.isVisible(id));assertFalse(AlarmRingActivity.isVisible(id+1));
      // A paused screen may still be visible behind a dialog; do not restore until stopped.
      activity.pause();assertFalse(ReflectionHelpers.<Boolean>getField(service,"foreground"));
-     activity.stop();assertTrue(ReflectionHelpers.<Boolean>getField(service,"foreground"));
+     asleep(app);activity.stop();assertTrue(ReflectionHelpers.<Boolean>getField(service,"foreground"));
      Notification restored=Shadows.shadowOf(service).getLastForegroundNotification();
      assertNotNull(restored);assertNull(restored.fullScreenIntent);
      activity.restart().start().resume();assertFalse(ReflectionHelpers.<Boolean>getField(service,"foreground"));
@@ -69,7 +71,7 @@ public class AlertNotificationVisibilityTest {
     assertFalse(ReflectionHelpers.<Boolean>getField(service,"foreground"));
     assertFalse(NoteReminderActivity.isVisible(item.id+1));
     assertNull(Shadows.shadowOf(manager).getNotification(NotificationHelper.reminderNotificationId(item.id)));
-    activity.pause().stop();assertTrue(ReflectionHelpers.<Boolean>getField(service,"foreground"));
+    asleep(app);activity.pause().stop();assertTrue(ReflectionHelpers.<Boolean>getField(service,"foreground"));
     assertNull(Shadows.shadowOf(service).getLastForegroundNotification().fullScreenIntent);
     ReflectionHelpers.callInstanceMethod(service,"stopReminder");
     activity.restart().start().resume();activity.pause().stop();

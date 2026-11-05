@@ -177,15 +177,6 @@ public final class AppSettings {
         prefs(context).edit().putBoolean("additional_events_" + calendarType, value).apply();
     }
 
-    public static boolean adhanEnabled(Context context) {
-        return prefs(context).getBoolean("adhan_enabled", true);
-    }
-
-    public static void setAdhanEnabled(Context context, boolean value) {
-        prefs(context).edit().putBoolean("adhan_enabled", value).apply();
-        AdhanScheduler.rescheduleAll(context);
-    }
-
     public static boolean showPrayerTimes(Context context) {
         return prefs(context).getBoolean("show_prayer_times",true);
     }
@@ -816,7 +807,7 @@ public final class AppSettings {
     public static String adhanSoundUri(Context context, int type) {
         String key = "adhan_sound_uri_" + type;
         if (prefs(context).contains(key)) {
-            return prefs(context).getString(key, "");
+            String selected=prefs(context).getString(key, "");if(selected!=null && !selected.isEmpty())return selected;
         }
         int resource = context.getResources().getIdentifier(
                 "rawadhan_2", "raw", context.getPackageName());
@@ -874,6 +865,7 @@ public final class AppSettings {
             editor.putInt("adhan_volume_" + type, safe);
         }
         editor.apply();
+        AdhanSoundService.refreshVolume(context,type);
     }
 
     public static String defaultAlarmSoundUri(Context context) {
@@ -889,7 +881,7 @@ public final class AppSettings {
     }
     public static boolean adhanVibrate(Context context, int type) {
         return adhanBooleanForType(
-                context, "adhan_vibrate", type, true);
+                context, "adhan_vibrate", type, false);
     }
     public static void setAdhanVibrate(Context context, boolean value) {
         setAdhanVibrate(context, 899, value);

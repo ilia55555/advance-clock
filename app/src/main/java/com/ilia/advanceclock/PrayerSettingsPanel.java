@@ -60,7 +60,6 @@ final class PrayerSettingsPanel {
     private QiblaLocationClient qiblaLocationClient;
     private int activeAdhanType = -1;
     private LinearLayout activeMuezzinList;
-    private Switch adhanFeatureSwitch;
     private Switch masterAdhanSwitch;
     private Switch allAdhanSwitch;
     private final Switch[] adhanTypeSwitches = new Switch[5];
@@ -75,16 +74,6 @@ final class PrayerSettingsPanel {
     PrayerSettingsPanel(Activity host, LinearLayout root) {
         this.host = host;this.soundPreviews=new SoundPreviewController(host);
         qiblaLocationClient = new QiblaLocationClient(host);
-        adhanFeatureSwitch = toggle(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(host));
-        adhanFeatureSwitch.setTextSize(18);
-        adhanFeatureSwitch.setOnCheckedChangeListener((button, checked) -> {
-            if (syncingAdhanSwitches) return;
-            AppSettings.setAdhanEnabled(host, checked);
-            host.setResult(Activity.RESULT_OK);
-            refresh();
-            AdvanceClockApplication.refreshOpenActivities(host, false);
-        });
-        root.addView(adhanFeatureSwitch, new LinearLayout.LayoutParams(-1, -2));
         LinearLayout masterCard = card();
         masterAdhanSwitch = toggle(
                 AppString.get(R.string.runtime_text_0351),
@@ -792,7 +781,6 @@ final class PrayerSettingsPanel {
     private void syncAdhanSwitches() {
         syncingAdhanSwitches = true;
         try {
-            adhanFeatureSwitch.setChecked(AppSettings.adhanEnabled(host));
             if (masterAdhanSwitch != null) {
                 masterAdhanSwitch.setChecked(AppSettings.showPrayerTimes(host));
             }
@@ -834,8 +822,7 @@ final class PrayerSettingsPanel {
     }
 
     private boolean adhanTypeEnabled(int type) {
-        if (type == 899) return AppSettings.adhanEnabled(host)
-                && AppSettings.fajrAdhanEnabled(host)
+        if (type == 899) return AppSettings.fajrAdhanEnabled(host)
                 && AppSettings.dhuhrAdhanEnabled(host)
                 && AppSettings.asrAdhanEnabled(host)
                 && AppSettings.maghribAdhanEnabled(host)
@@ -849,16 +836,12 @@ final class PrayerSettingsPanel {
 
     private void setAdhanTypeEnabled(int type, boolean enabled) {
         if (type == 899) {
-            AppSettings.setAdhanEnabled(host, enabled);
             AppSettings.setFajrAdhanEnabled(host, enabled);
             AppSettings.setDhuhrAdhanEnabled(host, enabled);
             AppSettings.setAsrAdhanEnabled(host, enabled);
             AppSettings.setMaghribAdhanEnabled(host, enabled);
             AppSettings.setIshaAdhanEnabled(host, enabled);
             return;
-        }
-        if (enabled && !AppSettings.adhanEnabled(host)) {
-            AppSettings.setAdhanEnabled(host, true);
         }
         if (type == AdhanScheduler.FAJR) AppSettings.setFajrAdhanEnabled(host, enabled);
         else if (type == AdhanScheduler.DHUHR) AppSettings.setDhuhrAdhanEnabled(host, enabled);
@@ -877,6 +860,7 @@ final class PrayerSettingsPanel {
         boolean mixedVolume = type == 899
                 && !AppSettings.allAdhanVolumesMatch(host);
         int initialVolume = AppSettings.adhanVolume(host, type);
+        soundPreviews.setGain(initialVolume/100f);
         TextView volumeLabel = text(
                 mixedVolume
                         ? AppString.get(R.string.runtime_text_0344)
@@ -888,7 +872,7 @@ final class PrayerSettingsPanel {
         volumeLabel.setPadding(0, dp(8), 0, 0);
         output.addView(volumeLabel);
 
-        SeekBar volume = new SeekBar(host);
+        SeekBar volume = new SeekBar(host);volume.setTag("adhan_volume_seek");
         volume.setMax(100);
         volume.setProgress(initialVolume);
         volume.setContentDescription(
@@ -899,6 +883,7 @@ final class PrayerSettingsPanel {
                 if (!fromUser) return;
                 AppSettings.setAdhanVolume(
                         host, type, progress);
+                soundPreviews.setGain(progress/100f);
                 refreshSummaries();
                 volumeLabel.setText(
                         AppString.get(R.string.runtime_text_0348)
