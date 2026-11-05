@@ -17,9 +17,12 @@ final class SoundPreviewRow extends LinearLayout {
     private boolean tracking;
     SoundPreviewRow(Context c,SoundPreviewController controller,String uri,String name,boolean available,View selection,View extra){
         super(c);this.controller=controller;this.uri=uri;this.name=name;this.available=available;
-        setOrientation(VERTICAL);setTag("sound_preview:"+uri);setBackgroundResource(R.drawable.bg_card);
+        setOrientation(VERTICAL);setTag("sound_preview:"+uri);setBackgroundResource(R.drawable.bg_card);setPadding(dp(4),dp(4),dp(4),dp(4));
         LinearLayout top=new LinearLayout(c);top.setGravity(Gravity.CENTER_VERTICAL);top.setLayoutDirection(AppSettings.layoutDirection(c));
-        top.addView(selection,new LayoutParams(0,dp(54),1));if(extra!=null)top.addView(extra,new LayoutParams(-2,dp(54)));
+        flatten(selection);selection.setPadding(dp(12),0,dp(8),0);
+        if(selection instanceof TextView){TextView title=(TextView)selection;title.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);title.setTextSize(14);title.setMaxLines(2);title.setEllipsize(android.text.TextUtils.TruncateAt.END);}
+        top.addView(selection,new LayoutParams(0,dp(48),1));
+        if(extra!=null){flatten(extra);extra.setPadding(dp(10),0,dp(10),0);if(extra instanceof TextView)((TextView)extra).setTextColor(AppSettings.primaryColor(c));top.addView(extra,new LayoutParams(-2,dp(48)));}
         play=new ImageButton(c);play.setTag("sound_preview_play");play.setPadding(dp(14),dp(14),dp(14),dp(14));play.setElevation(0);play.setStateListAnimator(null);play.setBackgroundTintList(null);play.setImageTintList(ColorStateList.valueOf(Color.WHITE));
         GradientDrawable circle=new GradientDrawable();circle.setShape(GradientDrawable.OVAL);circle.setColor(AppSettings.primaryColor(c));
         play.setBackground(new InsetDrawable(new RippleDrawable(ColorStateList.valueOf(0x44FFFFFF),circle,null),dp(8)));play.setEnabled(available);play.setAlpha(available?1:.35f);
@@ -34,6 +37,12 @@ final class SoundPreviewRow extends LinearLayout {
             public void onStopTrackingTouch(SeekBar bar){tracking=false;controller.seek(SoundPreviewRow.this,bar.getProgress());}
         });
         controller.register(this);
+    }
+    private void flatten(View view){
+        view.setBackgroundTintList(null);view.setElevation(0);view.setStateListAnimator(null);view.setMinimumWidth(0);view.setMinimumHeight(0);
+        if(view instanceof TextView){((TextView)view).setMinWidth(0);((TextView)view).setMinHeight(0);}
+        GradientDrawable mask=new GradientDrawable();mask.setColor(Color.WHITE);mask.setCornerRadius(dp(12));
+        view.setBackground(new RippleDrawable(ColorStateList.valueOf((AppSettings.primaryColor(getContext())&0x00FFFFFF)|0x16000000),null,mask));
     }
     private TextView label(Context c,String tag){TextView text=new TextView(c);text.setTag(tag);text.setTextSize(11);text.setGravity(Gravity.CENTER);text.setTextColor(AppSettings.textSecondary(c));text.setIncludeFontPadding(false);return text;}
     void update(int position,int length,boolean playing){

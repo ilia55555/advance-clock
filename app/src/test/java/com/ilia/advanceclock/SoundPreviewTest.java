@@ -23,7 +23,7 @@ public class SoundPreviewTest {
   @RealObject MediaPlayer real;static final List<MediaPlayer> instances=new ArrayList<>();static boolean deferred;
   MediaPlayer.OnPreparedListener prepared;MediaPlayer.OnCompletionListener complete;int position;boolean playing,released;
   @Implementation protected void __constructor__(){instances.add(real);}
-  @Implementation protected void setAudioAttributes(AudioAttributes a){}
+  @Implementation protected void setAudioAttributes(AudioAttributes a){assertEquals(AudioAttributes.USAGE_ALARM,a.getUsage());}
   @Implementation protected void setLooping(boolean b){assertFalse(b);}
   @Implementation protected void setDataSource(Context c,Uri uri){LocalMedia.require(uri);}
   @Implementation protected void setOnPreparedListener(MediaPlayer.OnPreparedListener p){prepared=p;}
@@ -54,10 +54,10 @@ public class SoundPreviewTest {
  @Test public void switchingPausesPreviousAndResumesItsSavedPositionWithOnlyOneAudiblePlayer()throws Exception{
   try(var host=Robolectric.buildActivity(Activity.class).setup().visible()){
    SoundPreviewController c=controller(host.get());SoundPreviewRow first=row(host.get(),c,"file:///first.mp3"),second=row(host.get(),c,"file:///second.mp3");
-   play(first);drain(c);Player old=player(c);assertTrue(old.playing);old.position=17000;
+   play(first);drain(c);Player old=player(c);assertTrue(old.playing);assertEquals(AudioManager.STREAM_ALARM,host.get().getVolumeControlStream());old.position=17000;
    play(second);assertFalse(old.playing);drain(c);assertTrue(player(c).playing);
    play(first);drain(c);assertTrue(player(c).playing);assertEquals(17000,player(c).position);
-   play(first);drain(c);assertNull(ReflectionHelpers.getField(c,"player"));
+   play(first);drain(c);assertNull(ReflectionHelpers.getField(c,"player"));assertEquals(AudioManager.USE_DEFAULT_STREAM_TYPE,host.get().getVolumeControlStream());
   }
  }
  @Test public void timelinesShowDurationAllowPausedAndPlayingSeekingAndResetAtCompletion()throws Exception{
