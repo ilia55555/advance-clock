@@ -103,7 +103,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
         int rowCount = Math.max(
                 0,
-                (height - reserved) / 62);
+                (height - reserved) / 64);
         rowCount = Math.min(
                 WidgetPrefs.maxItems(context, widgetId),
                 Math.min(10, rowCount));
@@ -281,6 +281,15 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                             : item.body)
                             : item.title);
 
+            row.setInt(R.id.noforget_row_root,"setLayoutDirection",AppSettings.layoutDirection(context));
+            boolean done=item.taskDone(System.currentTimeMillis());
+            row.setViewVisibility(R.id.noforget_row_task,item.taskMode?View.VISIBLE:View.GONE);
+            if(item.taskMode){
+                row.setImageViewResource(R.id.noforget_row_task,done?R.drawable.ic_task_checked:R.drawable.ic_task_unchecked);
+                row.setInt(R.id.noforget_row_task,"setColorFilter",done?muted:primary);
+                row.setContentDescription(R.id.noforget_row_task,context.getString(done?R.string.task_reopen:R.string.task_complete)+": "+item.title);
+                row.setOnClickPendingIntent(R.id.noforget_row_task,NoteWidgetTaskReceiver.pending(context,widgetId,item));
+            }
             row.setInt(R.id.noforget_row_title,"setPaintFlags",android.graphics.Paint.ANTI_ALIAS_FLAG
                     | (item.taskDone(System.currentTimeMillis())?android.graphics.Paint.STRIKE_THRU_TEXT_FLAG:0));
             String meta = item.hasDue
@@ -292,6 +301,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                 meta = AppString.get(R.string.runtime_text_0019) + " • " + meta;
             }
 
+            if(item.taskMode)meta=context.getString(done?R.string.task_completed_label:R.string.task_pending_label)+" • "+meta;
             row.setTextViewText(
                     R.id.noforget_row_meta,
                     meta);
@@ -312,7 +322,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
 
             row.setTextColor(
                     R.id.noforget_row_title,
-                    text);
+                    done?muted:text);
             row.setTextColor(
                     R.id.noforget_row_meta,
                     muted);
@@ -556,6 +566,9 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
             }
         }
 
+        long now=System.currentTimeMillis();
+        // Stable partition retains the chosen order within pending and completed groups.
+        items.sort((a,b)->Boolean.compare(a.taskDone(now),b.taskDone(now)));
         if (items.size() <= limit) {
             return items;
         }

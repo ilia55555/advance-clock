@@ -1392,4 +1392,6 @@
     <string name="task_reopen">بازگرداندن به انجام‌نشده</string>
     <string name="task_congratulations">آفرین! وظیفه انجام شد.</string>
     <string name="task_save_error">وضعیت وظیفه ذخیره نشد. دوباره تلاش کنید.</string>
+    <string name="task_completed_label">انجام‌شده</string>
+    <string name="task_pending_label">انجام‌نشده</string>
 </resources>

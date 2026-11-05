@@ -233,6 +233,7 @@
         <receiver android:name=".AlarmReminderReceiver" android:exported="false" />
         <receiver android:name=".AlertSnoozeReceiver" android:exported="false" />
         <receiver android:name=".AlarmSnoozeReceiver" android:exported="false" />
+        <receiver android:name=".NoteWidgetTaskReceiver" android:exported="false" />
         <receiver android:name=".EventReminderReceiver" android:exported="false" />
         <receiver android:name=".AdhanReceiver" android:exported="false" />
         <receiver android:name=".StopAlarmReceiver" android:exported="false" />

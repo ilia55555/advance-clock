@@ -1460,4 +1460,6 @@
     <string name="task_reopen">وضع علامة غير مكتملة</string>
     <string name="task_congratulations">أحسنت! اكتملت المهمة.</string>
     <string name="task_save_error">تعذّر حفظ حالة المهمة. حاول مرة أخرى.</string>
+    <string name="task_completed_label">مكتملة</string>
+    <string name="task_pending_label">غير مكتملة</string>
 </resources>

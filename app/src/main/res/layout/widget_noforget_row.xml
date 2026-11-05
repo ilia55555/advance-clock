@@ -2,12 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/noforget_row_root"
     android:layout_width="match_parent"
-    android:layout_height="58dp"
+    android:layout_height="60dp"
     android:layout_marginBottom="4dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingHorizontal="10dp"
     android:paddingVertical="6dp">
+
+    <ImageButton
+        android:id="@+id/noforget_row_task"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="4dp"
+        android:padding="12dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_task_unchecked"
+        android:contentDescription="@string/task_complete"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="0dp"
