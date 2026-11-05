@@ -33,6 +33,8 @@ final class SoundLibrary {
             addNamedBundledSound(context, sounds, "rawadhan_2", AppString.get(R.string.runtime_text_0681));
             addBundledSounds(context, sounds, "adhan", AppString.get(R.string.runtime_text_0682), 10);
         } else addBundledSounds(context, sounds, "alarm", AppString.get(R.string.runtime_text_0683), 10);
+        if(!adhan)for(DownloadableSounds.Entry entry:DownloadableSounds.installed(context))
+            if(DownloadableSounds.available(context,entry))sounds.add(new Sound(entry.name,DownloadableSounds.uri(context,entry)));
         try {
             JSONArray array = new JSONArray(context.getSharedPreferences(adhan ? PREFS + "_adhan" : PREFS, 0)
                     .getString(KEY, "[]"));
@@ -78,7 +80,7 @@ final class SoundLibrary {
         for (Sound sound : current) if (value.equals(sound.uri)) return;
         JSONArray array = new JSONArray();
         for (Sound sound : current) {
-            if (sound.uri.isEmpty() || sound.uri.startsWith("android.resource://")) continue;
+            if (sound.uri.isEmpty() || sound.uri.startsWith("android.resource://") || DownloadableSounds.owns(context,sound.uri)) continue;
             JSONObject item = new JSONObject();
             try { item.put("name", sound.name); item.put("uri", sound.uri); array.put(item); }
             catch (Exception ignored) {}

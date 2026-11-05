@@ -54,6 +54,9 @@ final class ReadOnlyNetwork {
     static HttpURLConnection update(URL url)throws IOException{
         if(!updateUrl(url))throw new IOException("Unapproved update destination");return connect(url);
     }
+    static HttpURLConnection sound(URL url)throws IOException{
+        if(!DownloadableSounds.allowed(url))throw new IOException("Unapproved sound destination");return connect(url);
+    }
     static HttpURLConnection location(String address)throws IOException{URL url=new URL(address);locationUrl(url);return connect(url);}
     private static HttpURLConnection connect(URL url)throws IOException{
         HttpsURLConnection delegate=(HttpsURLConnection)url.openConnection();

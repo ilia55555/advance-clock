@@ -18,6 +18,11 @@ public final class SoundPickerActivity extends Activity {
     public static final String EXTRA_NAME = "soundName";
     private static final int REQ_AUDIO = 810;
     private LinearLayout list;
+    private Button checkSounds;
+    private boolean busy;
+    private android.app.AlertDialog downloadDialog;
+    private DownloadableSounds.Request soundRequest;
+    private final java.util.concurrent.ExecutorService soundWorker=java.util.concurrent.Executors.newSingleThreadExecutor();
 
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); AppSettings.applyModalOverlay(this); super.onCreate(state);
@@ -35,6 +40,8 @@ public final class SoundPickerActivity extends Activity {
         top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1)); root.addView(top);
         Button upload = button(AppString.get(R.string.runtime_text_0151)); upload.setOnClickListener(v -> upload());
         root.addView(upload, new LinearLayout.LayoutParams(-1, dp(54)));
+        checkSounds=button(getString(R.string.online_sounds_check));checkSounds.setTag("online_sounds_check");checkSounds.setOnClickListener(v->checkOnlineSounds());
+        root.addView(checkSounds,new LinearLayout.LayoutParams(-1,dp(54)));
         ScrollView scroll = new ScrollView(this); list = new LinearLayout(this);
         list.setOrientation(LinearLayout.VERTICAL); scroll.addView(list, new ScrollView.LayoutParams(-1, -2));
         LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(-1, 0, 1); sp.topMargin=dp(10); root.addView(scroll, sp);
@@ -44,6 +51,7 @@ public final class SoundPickerActivity extends Activity {
     private void render() {
         list.removeAllViews();
         for (SoundLibrary.Sound sound : SoundLibrary.all(this)) {
+            if(DownloadableSounds.owns(this,sound.uri))continue;
             Button row = button(sound.name); row.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
             row.setOnClickListener(v -> {
                 setResult(RESULT_OK, new Intent().putExtra(EXTRA_URI, sound.uri).putExtra(EXTRA_NAME, sound.name));
@@ -51,7 +59,52 @@ public final class SoundPickerActivity extends Activity {
             });
             LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(58));p.bottomMargin=dp(7);list.addView(row,p);
         }
+        java.util.LinkedHashMap<String,DownloadableSounds.Entry> catalog=new java.util.LinkedHashMap<>();
+        for(DownloadableSounds.Entry e:DownloadableSounds.cached(this))catalog.put(e.id,e);
+        java.util.Map<String,DownloadableSounds.Entry> local=new java.util.HashMap<>();
+        for(DownloadableSounds.Entry e:DownloadableSounds.installed(this)){
+            if(!catalog.containsKey(e.id))catalog.put(e.id,e);
+            if(DownloadableSounds.available(this,e))local.put(e.id,e);
+        }
+        if(!catalog.isEmpty()){
+            TextView heading=new TextView(this);heading.setText(R.string.online_sounds_title);heading.setTextColor(AppSettings.textPrimary(this));heading.setTextSize(18);heading.setPadding(0,dp(14),0,dp(8));list.addView(heading);
+        }
+        for(DownloadableSounds.Entry entry:catalog.values()){
+            DownloadableSounds.Entry installed=local.get(entry.id);
+            LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);
+            Button select=button(entry.name);select.setEnabled(installed!=null);select.setOnClickListener(v->{
+                setResult(RESULT_OK,new Intent().putExtra(EXTRA_URI,DownloadableSounds.uri(this,entry)).putExtra(EXTRA_NAME,installed.name));finish();
+            });row.addView(select,new LinearLayout.LayoutParams(0,dp(58),1));
+            boolean current=DownloadableSounds.current(this,entry,installed) || (installed!=null && installed.version>entry.version);
+            Button download=button(getString(installed==null?R.string.online_sound_download:current?R.string.online_sound_ready:R.string.online_sound_update));
+            download.setEnabled(!busy && !current);download.setOnClickListener(v->downloadSound(entry));row.addView(download,new LinearLayout.LayoutParams(-2,dp(58)));
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.bottomMargin=dp(7);list.addView(row,params);
+        }
     }
+    private boolean alive(){return !isFinishing() && !isDestroyed();}
+    private void checkOnlineSounds(){
+        if(busy)return;busy=true;checkSounds.setEnabled(false);render();soundRequest=new DownloadableSounds.Request();DownloadableSounds.Request request=soundRequest;
+        android.content.Context context=getApplicationContext();soundWorker.execute(()->{
+            Exception error=null;try{DownloadableSounds.refresh(context,request);}catch(Exception e){error=e;}Exception result=error;
+            runOnUiThread(()->{if(!alive() || request.cancelled)return;busy=false;checkSounds.setEnabled(true);render();if(result!=null)LogoToast.makeText(this,R.string.online_sounds_error,android.widget.Toast.LENGTH_LONG).show();});
+        });
+    }
+    private void downloadSound(DownloadableSounds.Entry entry){
+        if(busy)return;busy=true;checkSounds.setEnabled(false);render();soundRequest=new DownloadableSounds.Request();DownloadableSounds.Request request=soundRequest;
+        LinearLayout panel=new LinearLayout(this);panel.setOrientation(LinearLayout.VERTICAL);panel.setPadding(dp(20),dp(16),dp(20),dp(16));
+        android.widget.ProgressBar bar=new android.widget.ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);bar.setMax(1000);bar.setIndeterminate(false);panel.addView(bar,new LinearLayout.LayoutParams(-1,dp(12)));
+        TextView progress=new TextView(this);progress.setTextColor(AppSettings.textPrimary(this));progress.setPadding(0,dp(12),0,0);panel.addView(progress);
+        android.app.AlertDialog dialog=new MotionDialogs.Builder(this).setTitle(entry.name).setView(panel).setNegativeButton(R.string.runtime_text_0003,(d,w)->request.cancel()).create();
+        downloadDialog=dialog;dialog.setCanceledOnTouchOutside(false);dialog.setOnCancelListener(d->request.cancel());dialog.show();
+        android.content.Context context=getApplicationContext();soundWorker.execute(()->{
+            Exception error=null;long[] last={0};try{DownloadableSounds.download(context,entry,request,(done,total)->{
+                long now=android.os.SystemClock.elapsedRealtime();if(done!=total && now-last[0]<100)return;last[0]=now;
+                runOnUiThread(()->{if(!alive() || request.cancelled)return;bar.setProgress((int)(done*1000/total));progress.setText(String.format(java.util.Locale.getDefault(),"%.2f / %.2f MB",done/1048576.0,total/1048576.0));});
+            });}catch(Exception e){error=e;}Exception result=error;
+            runOnUiThread(()->{if(!alive())return;dialog.dismiss();downloadDialog=null;busy=false;checkSounds.setEnabled(true);render();if(result!=null && !request.cancelled)LogoToast.makeText(this,result instanceof SecurityException?R.string.online_sounds_security_error:R.string.online_sounds_error,android.widget.Toast.LENGTH_LONG).show();});
+        });
+    }
+    @Override protected void onDestroy(){if(downloadDialog!=null)downloadDialog.dismiss();if(soundRequest!=null)soundRequest.cancel();soundWorker.shutdownNow();super.onDestroy();}
 
     private void upload() {
         Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("audio/*")

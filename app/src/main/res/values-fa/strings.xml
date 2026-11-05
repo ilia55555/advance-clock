@@ -1399,4 +1399,11 @@
     <string name="recurrence_added_count">%1$s تکرار افزوده شده</string>
     <string name="recurrence_offset_hint">فاصله از زمان اصلی هشدار</string>
     <string name="enable_today_occurrence">امروز فعال شود</string>
+    <string name="online_sounds_check">بررسی صداهای قابل دانلود</string>
+    <string name="online_sounds_title">صداهای قابل دانلود</string>
+    <string name="online_sound_download">دانلود</string>
+    <string name="online_sound_update">به‌روزرسانی</string>
+    <string name="online_sound_ready">دریافت شده</string>
+    <string name="online_sounds_error">دریافت صداها انجام نشد. اینترنت و فضای ذخیره‌سازی را بررسی کنید و دوباره تلاش کنید.</string>
+    <string name="online_sounds_security_error">اعتبارسنجی صدا ناموفق بود؛ صدای قبلی حفظ شد.</string>
 </resources>

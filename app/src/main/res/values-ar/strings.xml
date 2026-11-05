@@ -1467,4 +1467,11 @@
     <string name="recurrence_added_count">تمت إضافة %1$s تكرارات</string>
     <string name="recurrence_offset_hint">المدة بعد موعد التنبيه الأساسي</string>
     <string name="enable_today_occurrence">تفعيل اليوم</string>
+    <string name="online_sounds_check">التحقق من الأصوات المتاحة</string>
+    <string name="online_sounds_title">أصوات قابلة للتنزيل</string>
+    <string name="online_sound_download">تنزيل</string>
+    <string name="online_sound_update">تحديث</string>
+    <string name="online_sound_ready">تم التنزيل</string>
+    <string name="online_sounds_error">تعذر استلام الأصوات. تحقق من الإنترنت ومساحة التخزين وحاول مجددًا.</string>
+    <string name="online_sounds_security_error">فشل التحقق من الصوت. تم الاحتفاظ بالصوت السابق.</string>
 </resources>

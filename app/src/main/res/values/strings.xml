@@ -1453,4 +1453,11 @@
     <string name="recurrence_added_count">%1$s repeats added</string>
     <string name="recurrence_offset_hint">Time after the main alert</string>
     <string name="enable_today_occurrence">Enable for today</string>
+    <string name="online_sounds_check">Check downloadable sounds</string>
+    <string name="online_sounds_title">Downloadable sounds</string>
+    <string name="online_sound_download">Download</string>
+    <string name="online_sound_update">Update</string>
+    <string name="online_sound_ready">Downloaded</string>
+    <string name="online_sounds_error">Could not receive sounds. Check your internet connection, available storage and try again.</string>
+    <string name="online_sounds_security_error">Sound verification failed. The previous sound was kept.</string>
 </resources>
