@@ -55,38 +55,9 @@ public final class AlarmSoundService extends Service {
     private boolean muted;
     private String currentToolPayload;
 
-    private static final String ACTION_VOLUME_CHANGED =
-            "android.media.VOLUME_CHANGED_ACTION";
-    private static final String EXTRA_VOLUME_STREAM_TYPE =
-            "android.media.EXTRA_VOLUME_STREAM_TYPE";
-    private static final String EXTRA_VOLUME_STREAM_VALUE =
-            "android.media.EXTRA_VOLUME_STREAM_VALUE";
-    private static final String EXTRA_PREV_VOLUME_STREAM_VALUE =
-            "android.media.EXTRA_PREV_VOLUME_STREAM_VALUE";
-
     private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) silenceCurrentAlarm();
-        }
-    };
-
-    private final BroadcastReceiver volumeReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) {
-            if (intent == null || !ACTION_VOLUME_CHANGED.equals(intent.getAction())) return;
-            int stream = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1);
-            int current = intent.getIntExtra(EXTRA_VOLUME_STREAM_VALUE, -1);
-            int previous = intent.getIntExtra(EXTRA_PREV_VOLUME_STREAM_VALUE, -1);
-            if (current < 0 || previous < 0
-                    || (stream != AudioManager.STREAM_ALARM
-                    && stream != AudioManager.STREAM_MUSIC
-                    && stream != AudioManager.STREAM_RING)) {
-                return;
-            }
-            if (current < previous) {
-                silenceCurrentAlarm();
-            } else if (current > previous) {
-                unmuteCurrentAlarm();
-            }
         }
     };
 
@@ -166,13 +137,10 @@ public final class AlarmSoundService extends Service {
         runningService=new java.lang.ref.WeakReference<>(this);
         NotificationHelper.ensureChannel(this);
         IntentFilter screenFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-        IntentFilter volumeFilter = new IntentFilter(ACTION_VOLUME_CHANGED);
         if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(screenReceiver, screenFilter, RECEIVER_NOT_EXPORTED);
-            registerReceiver(volumeReceiver, volumeFilter, RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(screenReceiver, screenFilter);
-            registerReceiver(volumeReceiver, volumeFilter);
         }
     }
 
@@ -409,7 +377,6 @@ public final class AlarmSoundService extends Service {
         if(runningService.get()==this) runningService.clear();
         stopAlarm();
         try { unregisterReceiver(screenReceiver); } catch (Exception ignored) {}
-        try { unregisterReceiver(volumeReceiver); } catch (Exception ignored) {}
         super.onDestroy();
     }
 

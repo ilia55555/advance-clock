@@ -53,8 +53,7 @@ public class AlertHardwareControlsTest {
                         .putExtra("android.media.EXTRA_PREV_VOLUME_STREAM_VALUE",5)
                         .putExtra("android.media.EXTRA_VOLUME_STREAM_VALUE",4));
                     Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
-                    if(i==2){assertFalse(output.muted());assertTrue(output.vibrating());}
-                    else assertSilenced(output,sound,vibration);
+                    assertFalse(output.muted());assertTrue(output.vibrating());
                 }
             }
         } finally {alarm.destroy();note.destroy();adhan.destroy();}

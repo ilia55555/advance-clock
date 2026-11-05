@@ -45,13 +45,7 @@ public final class NoForgetSoundService extends Service {
     private final android.content.BroadcastReceiver muteEvents = new android.content.BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) silence();
-            else {
-                int current = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_VALUE", -1);
-                int previous = intent.getIntExtra("android.media.EXTRA_PREV_VOLUME_STREAM_VALUE", -1);
-                int stream = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", -1);
-                if (current >= 0 && previous >= 0 && current != previous
-                        && (stream == android.media.AudioManager.STREAM_ALARM || stream == android.media.AudioManager.STREAM_MUSIC || stream == android.media.AudioManager.STREAM_RING)) { if(current<previous)silence();else setMuted(false); }
-            }
+
         }
     };
     static Intent volumeIntent(Context context, boolean mute) {
@@ -108,7 +102,7 @@ public final class NoForgetSoundService extends Service {
         runningService=new java.lang.ref.WeakReference<>(this);
         NotificationHelper.ensureChannels(this);
         android.content.IntentFilter filter = new android.content.IntentFilter(Intent.ACTION_SCREEN_OFF);
-        filter.addAction("android.media.VOLUME_CHANGED_ACTION");
+
         if (Build.VERSION.SDK_INT >= 33) registerReceiver(muteEvents, filter, RECEIVER_NOT_EXPORTED);
         else registerReceiver(muteEvents, filter);
     }

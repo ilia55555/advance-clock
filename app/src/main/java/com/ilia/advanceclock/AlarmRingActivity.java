@@ -9,6 +9,7 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 
 public final class AlarmRingActivity extends Activity {
+    private AlertVolumeKeys volumeKeys;
     private static WeakReference<AlarmRingActivity> showing = new WeakReference<>(null);
     private boolean screenVisible;
     static boolean isVisible(long id) {
@@ -19,6 +20,7 @@ public final class AlarmRingActivity extends Activity {
     private String toolKind, label;
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); ReminderScreen.applyWindowTheme(this); super.onCreate(state);
+        volumeKeys=new AlertVolumeKeys(this,()->{AlertOutput.alarm(alarmId).mute(true);AlertOutput.alarm(alarmId).vibrate(false);},()->AlertOutput.alarm(alarmId).mute(false));
         showing = new WeakReference<>(this); ReminderScreen.prepareWindow(this); bind(getIntent());
     }
     @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); bind(intent); AlarmSoundService.onRingVisibilityChanged(); }
@@ -91,15 +93,9 @@ public final class AlarmRingActivity extends Activity {
         }));
         AlertSoundHint.show(this, "alarm");
     }
-    @Override public boolean onKeyDown(int code, KeyEvent event) {
-        if (code == KeyEvent.KEYCODE_VOLUME_DOWN) { startService(AlarmSoundService.muteIntent(this)); return true; }
-        if (code == KeyEvent.KEYCODE_VOLUME_UP) { startService(AlarmSoundService.unmuteIntent(this)); return true; }
-        return super.onKeyDown(code, event);
-    }
-    @Override public boolean onKeyUp(int code, KeyEvent event) {
-        if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) return true;
-        return super.onKeyUp(code, event);
-    }
+    @Override public boolean onKeyDown(int code,KeyEvent event){return volumeKeys.down(code,event) || super.onKeyDown(code,event);}
+    @Override public boolean onKeyUp(int code,KeyEvent event){return volumeKeys.up(code,event) || super.onKeyUp(code,event);}
+
     // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
     @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { stopAndClose(); }
@@ -110,8 +106,9 @@ public final class AlarmRingActivity extends Activity {
         finishAndRemoveTask();
     }
     @Override protected void onUserLeaveHint(){super.onUserLeaveHint();if(!isChangingConfigurations())stopAndClose();}
+    @Override protected void onPause(){if(volumeKeys!=null)volumeKeys.cancel();super.onPause();}
     @Override protected void onStop() { screenVisible=false; if(ReminderScreen.stopWhenHidden(this))stopAndClose();else AlarmSoundService.onRingVisibilityChanged(); super.onStop(); }
-    @Override protected void onDestroy() { screenVisible=false; if (showing.get() == this) showing.clear(); AlarmSoundService.onRingVisibilityChanged(); super.onDestroy(); }
+    @Override protected void onDestroy() { if(volumeKeys!=null)volumeKeys.cancel(); screenVisible=false; if (showing.get() == this) showing.clear(); AlarmSoundService.onRingVisibilityChanged(); super.onDestroy(); }
     public static void finishIfShowing(long id) {
         AlarmRingActivity activity = showing.get();
         if (activity != null && (id < 0 || activity.alarmId == id)) activity.runOnUiThread(activity::finishAndRemoveTask);

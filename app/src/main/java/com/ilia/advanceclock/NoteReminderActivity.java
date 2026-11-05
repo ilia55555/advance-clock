@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 public final class NoteReminderActivity extends Activity {
+    private AlertVolumeKeys volumeKeys;
     private static java.lang.ref.WeakReference<NoteReminderActivity> showing = new java.lang.ref.WeakReference<>(null);
     private boolean screenVisible;
     static boolean isVisible(long id) {
@@ -21,6 +22,7 @@ public final class NoteReminderActivity extends Activity {
     }
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); ReminderScreen.applyWindowTheme(this); super.onCreate(state);
+        volumeKeys=new AlertVolumeKeys(this,()->{AlertOutput.note(noteId).mute(true);AlertOutput.note(noteId).vibrate(false);},()->AlertOutput.note(noteId).mute(false));
         showing = new java.lang.ref.WeakReference<>(this);
         ReminderScreen.prepareWindow(this); bind(getIntent());
     }
@@ -54,21 +56,15 @@ public final class NoteReminderActivity extends Activity {
         android.view.View view=findViewById(android.R.id.content).findViewWithTag("note_detail_view");
         if(view instanceof NoteDetailView)((NoteDetailView)view).render();
     }
-    @Override public boolean onKeyDown(int code, KeyEvent event) {
-        if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) {
-            startService(NoForgetSoundService.volumeIntent(this, code == KeyEvent.KEYCODE_VOLUME_DOWN)); return true;
-        }
-        return super.onKeyDown(code, event);
-    }
-    @Override public boolean onKeyUp(int code, KeyEvent event) {
-        if (code == KeyEvent.KEYCODE_VOLUME_DOWN || code == KeyEvent.KEYCODE_VOLUME_UP) return true;
-        return super.onKeyUp(code, event);
-    }
+    @Override public boolean onKeyDown(int code,KeyEvent event){return volumeKeys.down(code,event) || super.onKeyDown(code,event);}
+    @Override public boolean onKeyUp(int code,KeyEvent event){return volumeKeys.up(code,event) || super.onKeyUp(code,event);}
+
     private void stopAndClose() { if(detailsDialog!=null)detailsDialog.dismiss();NoForgetSoundService.stopTask(noteId); finishAndRemoveTask(); }
     // ReminderScreen registers the Android 13+ back callback; keep older devices covered.
     @android.annotation.SuppressLint("GestureBackNavigation")
     @Override public void onBackPressed() { stopAndClose(); }
     @Override protected void onUserLeaveHint(){super.onUserLeaveHint();if(!isChangingConfigurations())stopAndClose();}
+    @Override protected void onPause(){if(volumeKeys!=null)volumeKeys.cancel();super.onPause();}
     @Override protected void onStop() { screenVisible=false; if(ReminderScreen.stopWhenHidden(this))stopAndClose();else NoForgetSoundService.onRingVisibilityChanged(); super.onStop(); }
-    @Override protected void onDestroy() { if(detailsDialog!=null){detailsDialog.dismiss();detailsDialog=null;}screenVisible=false; if (showing.get() == this) showing.clear(); NoForgetSoundService.onRingVisibilityChanged(); super.onDestroy(); }
+    @Override protected void onDestroy() { if(volumeKeys!=null)volumeKeys.cancel(); if(detailsDialog!=null){detailsDialog.dismiss();detailsDialog=null;}screenVisible=false; if (showing.get() == this) showing.clear(); NoForgetSoundService.onRingVisibilityChanged(); super.onDestroy(); }
 }

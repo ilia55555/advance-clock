@@ -27,6 +27,7 @@ import java.util.Date;
 public final class AdhanRingActivity
         extends Activity
         implements SensorEventListener {
+    private AlertVolumeKeys volumeKeys;
 
     private static java.lang.ref.WeakReference<AdhanRingActivity> showing =
             new java.lang.ref.WeakReference<>(null);
@@ -59,7 +60,7 @@ public final class AdhanRingActivity
         }
     }
 
-    @Override protected void onDestroy() {
+    @Override protected void onDestroy() { if(volumeKeys!=null)volumeKeys.cancel();
         screenVisible=false;
         if (showing.get() == this) showing.clear();
         AdhanSoundService.onRingVisibilityChanged();
@@ -79,6 +80,7 @@ public final class AdhanRingActivity
     protected void onCreate(Bundle savedInstanceState) {
         AppSettings.applyTheme(this);
         super.onCreate(savedInstanceState);
+        volumeKeys=new AlertVolumeKeys(this,()->{AlertOutput.adhan(getIntent().getIntExtra("adhanType",AdhanScheduler.FAJR)).mute(true);AlertOutput.adhan(getIntent().getIntExtra("adhanType",AdhanScheduler.FAJR)).vibrate(false);},()->AlertOutput.adhan(getIntent().getIntExtra("adhanType",AdhanScheduler.FAJR)).mute(false));
         setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
         if(android.os.Build.VERSION.SDK_INT>=33)getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,this::stopAndClose);
         showing = new java.lang.ref.WeakReference<>(this);
@@ -235,6 +237,7 @@ public final class AdhanRingActivity
 
     @Override
     protected void onPause() {
+        volumeKeys.cancel();
         if (sensorManager != null) {
             sensorManager.unregisterListener(
                     this);
@@ -426,6 +429,8 @@ public final class AdhanRingActivity
     }
 
 
+    @Override public boolean onKeyDown(int code,KeyEvent event){return volumeKeys.down(code,event) || super.onKeyDown(code,event);}
+    @Override public boolean onKeyUp(int code,KeyEvent event){return volumeKeys.up(code,event) || super.onKeyUp(code,event);}
     @Override
     public void onBackPressed() { stopAndClose(); }
 

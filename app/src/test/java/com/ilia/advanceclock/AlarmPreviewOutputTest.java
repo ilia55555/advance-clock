@@ -26,11 +26,13 @@ public class AlarmPreviewOutputTest {
             assertEquals(1,AlarmPreparationFrameworkTest.FakePlayer.started);
             assertFalse(output.muted());assertTrue(output.vibrating());
             host.onKeyDown(KeyEvent.KEYCODE_VOLUME_DOWN,new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_VOLUME_DOWN));
+            host.onKeyUp(KeyEvent.KEYCODE_VOLUME_DOWN,new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_VOLUME_DOWN));
             assertTrue(output.muted());assertFalse(output.vibrating());
             output.mute(false);output.vibrate(true);assertFalse(output.muted());assertTrue(output.vibrating());
             host.sendBroadcast(new Intent(Intent.ACTION_SCREEN_OFF));Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
             assertTrue(output.muted());assertFalse(output.vibrating());
             host.onKeyDown(KeyEvent.KEYCODE_VOLUME_UP,new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_VOLUME_UP));
+            host.onKeyUp(KeyEvent.KEYCODE_VOLUME_UP,new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_VOLUME_UP));
             assertFalse(output.muted());assertFalse(output.vibrating());
             host.finish();assertTrue(output.muted());assertFalse(output.vibrating());
             assertEquals(1,AlarmPreparationFrameworkTest.FakePlayer.released);

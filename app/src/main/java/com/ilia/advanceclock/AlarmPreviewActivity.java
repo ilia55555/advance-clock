@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 /** Full-size alert preview with its own audio and vibration, independent of live alerts. */
 public final class AlarmPreviewActivity extends Activity {
+    private AlertVolumeKeys volumeKeys;
     private PreviewAlertOutput output;
     private boolean registered;
     private final BroadcastReceiver screenOff=new BroadcastReceiver(){
@@ -17,6 +18,7 @@ public final class AlarmPreviewActivity extends Activity {
         AppSettings.applyTheme(this);ReminderScreen.applyWindowTheme(this);super.onCreate(state);
         ReminderScreen.prepareWindow(this);setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
         output=new PreviewAlertOutput(this);
+        volumeKeys=new AlertVolumeKeys(this,output::silence,()->output.mute(false));
         ReminderScreen.Content sample=new ReminderScreen.Content();
         sample.title=AppString.get(R.string.alarm_dismiss_preview_title);
         sample.openLabel=getString(R.string.reminder_open_destination,getString(R.string.ui_alarm));
@@ -37,21 +39,16 @@ public final class AlarmPreviewActivity extends Activity {
         else registerReceiver(screenOff,filter);
         registered=true;output.start();
     }
-    @Override public boolean onKeyDown(int code,KeyEvent event){
-        if(code==KeyEvent.KEYCODE_VOLUME_DOWN){output.silence();return true;}
-        if(code==KeyEvent.KEYCODE_VOLUME_UP){output.mute(false);return true;}
-        return super.onKeyDown(code,event);
-    }
-    @Override public boolean onKeyUp(int code,KeyEvent event){
-        if(code==KeyEvent.KEYCODE_VOLUME_DOWN||code==KeyEvent.KEYCODE_VOLUME_UP)return true;
-        return super.onKeyUp(code,event);
-    }
+    @Override public boolean onKeyDown(int code,KeyEvent event){return volumeKeys.down(code,event) || super.onKeyDown(code,event);}
+    @Override public boolean onKeyUp(int code,KeyEvent event){return volumeKeys.up(code,event) || super.onKeyUp(code,event);}
+
     @Override public void onWindowFocusChanged(boolean focused){
         super.onWindowFocusChanged(focused);if(focused)ReminderScreen.hideSystemBars(this);
     }
     @Override public void finish(){if(output!=null)output.close();super.finish();}
+    @Override protected void onPause(){if(volumeKeys!=null)volumeKeys.cancel();super.onPause();}
     @Override protected void onStop(){if(output!=null)output.close();super.onStop();if(!isFinishing())finish();}
-    @Override protected void onDestroy(){
+    @Override protected void onDestroy(){ if(volumeKeys!=null)volumeKeys.cancel();
         if(output!=null)output.close();if(registered)unregisterReceiver(screenOff);super.onDestroy();
     }
     @Override public void onBackPressed(){finish();}
