@@ -32,7 +32,10 @@ final class SoundLibrary {
             addNamedBundledSound(context, sounds, "rawadhan_1", AppString.get(R.string.runtime_text_0680));
             addNamedBundledSound(context, sounds, "rawadhan_2", AppString.get(R.string.runtime_text_0681));
             addBundledSounds(context, sounds, "adhan", AppString.get(R.string.runtime_text_0682), 10);
-        } else addBundledSounds(context, sounds, "alarm", AppString.get(R.string.runtime_text_0683), 10);
+        } else {
+            addBundledSounds(context, sounds, "alarm", AppString.get(R.string.runtime_text_0683), 10);
+            addCatalogBundledSounds(context,sounds);
+        }
         if(!adhan)for(DownloadableSounds.Entry entry:DownloadableSounds.installed(context))
             if(DownloadableSounds.available(context,entry))sounds.add(new Sound(entry.name,DownloadableSounds.uri(context,entry)));
         try {
@@ -46,6 +49,20 @@ final class SoundLibrary {
             }
         } catch (Exception ignored) {}
         return sounds;
+    }
+
+    private static void addCatalogBundledSounds(Context context,List<Sound> sounds){
+        try(java.io.InputStream input=context.getResources().openRawResource(R.raw.bundled_alarms);
+            java.io.ByteArrayOutputStream buffer=new java.io.ByteArrayOutputStream()){
+            byte[] bytes=new byte[2048];int count;while((count=input.read(bytes))!=-1)buffer.write(bytes,0,count);
+            JSONArray entries=new JSONObject(buffer.toString("UTF-8")).getJSONArray("alarms");
+            String language=java.util.Locale.forLanguageTag(AppSettings.language(context)).getLanguage();
+            for(int i=0;i<entries.length();i++){
+                JSONObject entry=entries.getJSONObject(i),names=entry.getJSONObject("name");
+                String resource=entry.getString("resource"),label=names.optString(language,names.getString("en"));
+                addNamedBundledSound(context,sounds,resource,label);
+            }
+        }catch(Exception ignored){}
     }
 
     private static void addBundledSounds(

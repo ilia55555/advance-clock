@@ -1,0 +1,124 @@
+{
+  "alarms": [
+    {
+      "id": "a_quiet_thought",
+      "file": "A Quiet Thought.mp3",
+      "name": {
+        "en": "A Quiet Thought",
+        "fa": "اندیشه‌ای آرام",
+        "ar": "خاطرة هادئة"
+      },
+      "resource": "alarm_a_quiet_thought"
+    },
+    {
+      "id": "aegean_sea",
+      "file": "Aegean Sea.mp3",
+      "name": {
+        "en": "Aegean Sea",
+        "fa": "دریای اژه",
+        "ar": "بحر إيجة"
+      },
+      "resource": "alarm_aegean_sea"
+    },
+    {
+      "id": "ballerina",
+      "file": "Ballerina.mp3",
+      "name": {
+        "en": "Ballerina",
+        "fa": "رقصندهٔ باله",
+        "ar": "راقصة باليه"
+      },
+      "resource": "alarm_ballerina"
+    },
+    {
+      "id": "bells",
+      "file": "Bells.mp3",
+      "name": {
+        "en": "Bells",
+        "fa": "ناقوس‌ها",
+        "ar": "أجراس"
+      },
+      "resource": "alarm_bells"
+    },
+    {
+      "id": "cute_bells",
+      "file": "Cute Bells.mp3",
+      "name": {
+        "en": "Cute Bells",
+        "fa": "زنگوله‌های دلنشین",
+        "ar": "أجراس لطيفة"
+      },
+      "resource": "alarm_cute_bells"
+    },
+    {
+      "id": "for_love",
+      "file": "For Love.mp3",
+      "name": {
+        "en": "For Love",
+        "fa": "برای عشق",
+        "ar": "من أجل الحب"
+      },
+      "resource": "alarm_for_love"
+    },
+    {
+      "id": "i_dont_wanna_live_forever",
+      "file": "I Don't Wanna Live Forever.mp3",
+      "name": {
+        "en": "I Don't Wanna Live Forever",
+        "fa": "نمی‌خواهم تا ابد زندگی کنم",
+        "ar": "لا أريد أن أعيش إلى الأبد"
+      },
+      "resource": "alarm_i_dont_wanna_live_forever"
+    },
+    {
+      "id": "metamorphosis",
+      "file": "Metamorphosis.mp3",
+      "name": {
+        "en": "Metamorphosis",
+        "fa": "دگردیسی",
+        "ar": "تحوّل"
+      },
+      "resource": "alarm_metamorphosis"
+    },
+    {
+      "id": "morning_flower",
+      "file": "Morning Flower.mp3",
+      "name": {
+        "en": "Morning Flower",
+        "fa": "گل صبحگاهی",
+        "ar": "زهرة الصباح"
+      },
+      "resource": "alarm_morning_flower"
+    },
+    {
+      "id": "new_york",
+      "file": "New York.mp3",
+      "name": {
+        "en": "New York",
+        "fa": "نیویورک",
+        "ar": "نيويورك"
+      },
+      "resource": "alarm_new_york"
+    },
+    {
+      "id": "piano",
+      "file": "Piano.mp3",
+      "name": {
+        "en": "Piano",
+        "fa": "پیانو",
+        "ar": "بيانو"
+      },
+      "resource": "alarm_piano"
+    },
+    {
+      "id": "nature",
+      "file": "Nature.mp3",
+      "name": {
+        "en": "Nature",
+        "fa": "طبیعت",
+        "ar": "الطبيعة"
+      },
+      "resource": "alarm_nature"
+    }
+  ]
+}
