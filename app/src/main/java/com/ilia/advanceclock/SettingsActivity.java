@@ -519,6 +519,8 @@ public final class SettingsActivity extends Activity {
         if (prayerPanel != null) prayerPanel.onRequestPermissionsResult(request, permissions, results);
     }
 
+    @Override protected void onStop(){if(prayerPanel!=null)prayerPanel.onStop();super.onStop();}
+
     @Override protected void onDestroy() {
         if (prayerPanel != null) prayerPanel.onDestroy();
         super.onDestroy();

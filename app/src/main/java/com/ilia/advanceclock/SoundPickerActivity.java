@@ -18,6 +18,7 @@ public final class SoundPickerActivity extends Activity {
     public static final String EXTRA_NAME = "soundName";
     private static final int REQ_AUDIO = 810;
     private LinearLayout list;
+    private SoundPreviewController previews;
     private Button checkSounds;
     private boolean busy;
     private android.app.AlertDialog downloadDialog;
@@ -26,6 +27,7 @@ public final class SoundPickerActivity extends Activity {
 
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); AppSettings.applyModalOverlay(this); super.onCreate(state);
+        previews=new SoundPreviewController(this);
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL); root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(18)); root.setBackgroundColor(AppSettings.background(this));
@@ -57,7 +59,7 @@ public final class SoundPickerActivity extends Activity {
                 setResult(RESULT_OK, new Intent().putExtra(EXTRA_URI, sound.uri).putExtra(EXTRA_NAME, sound.name));
                 finish();
             });
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(58));p.bottomMargin=dp(7);list.addView(row,p);
+            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.bottomMargin=dp(7);list.addView(new SoundPreviewRow(this,previews,sound.uri,sound.name,true,row,null),p);
         }
         java.util.LinkedHashMap<String,DownloadableSounds.Entry> catalog=new java.util.LinkedHashMap<>();
         for(DownloadableSounds.Entry e:DownloadableSounds.cached(this))catalog.put(e.id,e);
@@ -71,14 +73,13 @@ public final class SoundPickerActivity extends Activity {
         }
         for(DownloadableSounds.Entry entry:catalog.values()){
             DownloadableSounds.Entry installed=local.get(entry.id);
-            LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);
             Button select=button(entry.name);select.setEnabled(installed!=null);select.setOnClickListener(v->{
                 setResult(RESULT_OK,new Intent().putExtra(EXTRA_URI,DownloadableSounds.uri(this,entry)).putExtra(EXTRA_NAME,installed.name));finish();
-            });row.addView(select,new LinearLayout.LayoutParams(0,dp(58),1));
+            });
             boolean current=DownloadableSounds.current(this,entry,installed) || (installed!=null && installed.version>entry.version);
             Button download=button(getString(installed==null?R.string.online_sound_download:current?R.string.online_sound_ready:R.string.online_sound_update));
-            download.setEnabled(!busy && !current);download.setOnClickListener(v->downloadSound(entry));row.addView(download,new LinearLayout.LayoutParams(-2,dp(58)));
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.bottomMargin=dp(7);list.addView(row,params);
+            download.setEnabled(!busy && !current);download.setOnClickListener(v->downloadSound(entry));
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.bottomMargin=dp(7);list.addView(new SoundPreviewRow(this,previews,DownloadableSounds.uri(this,entry),entry.name,installed!=null,select,download),params);
         }
     }
     private boolean alive(){return !isFinishing() && !isDestroyed();}
@@ -104,7 +105,8 @@ public final class SoundPickerActivity extends Activity {
             runOnUiThread(()->{if(!alive())return;dialog.dismiss();downloadDialog=null;busy=false;checkSounds.setEnabled(true);render();if(result!=null && !request.cancelled)LogoToast.makeText(this,result instanceof SecurityException?R.string.online_sounds_security_error:R.string.online_sounds_error,android.widget.Toast.LENGTH_LONG).show();});
         });
     }
-    @Override protected void onDestroy(){if(downloadDialog!=null)downloadDialog.dismiss();if(soundRequest!=null)soundRequest.cancel();soundWorker.shutdownNow();super.onDestroy();}
+    @Override protected void onStop(){if(previews!=null)previews.pause();super.onStop();}
+    @Override protected void onDestroy(){if(previews!=null)previews.close();if(downloadDialog!=null)downloadDialog.dismiss();if(soundRequest!=null)soundRequest.cancel();soundWorker.shutdownNow();super.onDestroy();}
 
     private void upload() {
         Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("audio/*")

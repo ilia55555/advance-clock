@@ -1474,4 +1474,7 @@
     <string name="online_sound_ready">تم التنزيل</string>
     <string name="online_sounds_error">تعذر استلام الأصوات. تحقق من الإنترنت ومساحة التخزين وحاول مجددًا.</string>
     <string name="online_sounds_security_error">فشل التحقق من الصوت. تم الاحتفاظ بالصوت السابق.</string>
+    <string name="sound_preview_play">تشغيل %1$s</string>
+    <string name="sound_preview_pause">إيقاف %1$s مؤقتًا</string>
+    <string name="sound_preview_error">تعذر تشغيل هذا الصوت.</string>
 </resources>

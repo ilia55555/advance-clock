@@ -1456,4 +1456,7 @@ Lock screen</string>
     <string name="online_sound_ready">Downloaded</string>
     <string name="online_sounds_error">Could not receive sounds. Check your internet connection, available storage and try again.</string>
     <string name="online_sounds_security_error">Sound verification failed. The previous sound was kept.</string>
+    <string name="sound_preview_play">Play %1$s</string>
+    <string name="sound_preview_pause">Pause %1$s</string>
+    <string name="sound_preview_error">This sound could not be played.</string>
 </resources>

@@ -1406,4 +1406,7 @@
     <string name="online_sound_ready">دریافت شده</string>
     <string name="online_sounds_error">دریافت صداها انجام نشد. اینترنت و فضای ذخیره‌سازی را بررسی کنید و دوباره تلاش کنید.</string>
     <string name="online_sounds_security_error">اعتبارسنجی صدا ناموفق بود؛ صدای قبلی حفظ شد.</string>
+    <string name="sound_preview_play">پخش %1$s</string>
+    <string name="sound_preview_pause">مکث %1$s</string>
+    <string name="sound_preview_error">پخش این صدا ممکن نیست.</string>
 </resources>

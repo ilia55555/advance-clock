@@ -70,9 +70,10 @@ final class PrayerSettingsPanel {
     private final java.util.Map<Integer, TextView> summaries = new java.util.HashMap<>();
 
     private final Activity host;
+    private final SoundPreviewController soundPreviews;
 
     PrayerSettingsPanel(Activity host, LinearLayout root) {
-        this.host = host;
+        this.host = host;this.soundPreviews=new SoundPreviewController(host);
         qiblaLocationClient = new QiblaLocationClient(host);
         adhanFeatureSwitch = toggle(AppString.get(R.string.runtime_text_0361), AppSettings.adhanEnabled(host));
         adhanFeatureSwitch.setTextSize(18);
@@ -1027,9 +1028,11 @@ final class PrayerSettingsPanel {
                 renderMuezzinList(type);
                 host.setResult(Activity.RESULT_OK);
             });
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(54));
+            SoundPreviewRow preview=new SoundPreviewRow(host,soundPreviews,item.uri,item.name,true,row,null);
+            preview.setBackground(soundRowBackground(checked));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
             params.bottomMargin = dp(6);
-            activeMuezzinList.addView(row, params);
+            activeMuezzinList.addView(preview, params);
         }
     }
 
@@ -1400,7 +1403,9 @@ final class PrayerSettingsPanel {
         }
     }
 
+    void onStop(){soundPreviews.pause();}
     void onDestroy() {
+        soundPreviews.close();
         if(optionalPermissionWarning!=null)optionalPermissionWarning.dismiss();
         cancelLocationRequest();
     }
