@@ -27,7 +27,7 @@ final class ReminderScreen extends FrameLayout {
         String title = "", body = "", image1 = "", image2 = "", openLabel = "";
         boolean background;
         boolean allowDrawing=true;
-        boolean showDetailsButton;
+        long noteId=-1;
         List<NoteAttachment> attachments = new ArrayList<>();
         int priority = -1;
         int snoozeMinutes = 15;
@@ -151,7 +151,7 @@ final class ReminderScreen extends FrameLayout {
             LinearLayout.LayoutParams params=matchWrap();params.topMargin=dp(12);
             headingContent.addView(importance,params);
         }
-        if(data.title!=null && !data.title.trim().isEmpty()) {
+        if(data.noteId<0 && data.title!=null && !data.title.trim().isEmpty()) {
             TextView title=text(data.title,18);title.setTag("alert_title");title.setGravity(Gravity.CENTER);
             headingContent.addView(title,matchWrap());
             if(data.body!=null && !data.body.trim().isEmpty()) {
@@ -159,13 +159,8 @@ final class ReminderScreen extends FrameLayout {
                 LinearLayout.LayoutParams bp=matchWrap();bp.topMargin=dp(4);headingContent.addView(body,bp);
             }
         }
-        if(data.showDetailsButton && open!=null){
-            Button details=new Button(host);details.setTag("alert_note_details");details.setText(data.openLabel);details.setAllCaps(false);
-            details.setTextSize(15);details.setTextColor(textColor);details.setMinHeight(dp(48));details.setMinimumHeight(dp(48));
-            details.setPadding(dp(16),dp(8),dp(16),dp(8));details.setElevation(0);details.setStateListAnimator(null);details.setBackgroundTintList(null);
-            details.setBackground(ReminderModalStyle.shape(host,Color.TRANSPARENT,textColor,12));details.setOnClickListener(v->open.run());
-            LinearLayout.LayoutParams params=matchWrap();params.topMargin=dp(12);headingContent.addView(details,params);
-            View title=headingContent.findViewWithTag("alert_title");if(title!=null)title.setOnClickListener(v->open.run());
+        if(data.noteId>=0 && data.body!=null && !data.body.trim().isEmpty()){
+            TextView event=text(data.body,16);event.setGravity(Gravity.CENTER);event.setTextColor(mutedColor);headingContent.addView(event,matchWrap());
         }
         ScrollView header = new ScrollView(host); header.addView(headingContent);
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
@@ -187,9 +182,12 @@ final class ReminderScreen extends FrameLayout {
             board.setTag("alert_drawing_board");
             screen.addView(board,0,new FrameLayout.LayoutParams(-1,0,Gravity.TOP));
         }
-        View shortcuts = attachmentStrip(values);
+        boolean inlineNote=data.noteId>=0;
+        View shortcuts;
+        if(inlineNote){NoteDetailView note=new NoteDetailView(host,data.noteId,textColor);note.render();shortcuts=note;}
+        else shortcuts=attachmentStrip(values);
         screen.addView(shortcuts, new FrameLayout.LayoutParams(-1, dp(164), Gravity.CENTER));
-        if (values.isEmpty()) shortcuts.setVisibility(View.GONE);
+        if (!inlineNote && values.isEmpty()) shortcuts.setVisibility(View.GONE);
         boolean hasImages = false; for (NoteAttachment value : values) if (value.isImage()) hasImages = true;
         final boolean hasPhotoAttachments=hasImages;
         final int preferredHeight = dp(112);
@@ -209,7 +207,7 @@ final class ReminderScreen extends FrameLayout {
                     bounds.topMargin=top;bounds.height=boardHeight;board.setLayoutParams(bounds);
                 }
             }
-            ReminderLayout.Placement placement = ReminderLayout.centered(height,top,bottom,hasPhotoAttachments?Math.max(0,bottom-top):preferredHeight);
+            ReminderLayout.Placement placement = ReminderLayout.centered(height,top,bottom,(inlineNote || hasPhotoAttachments)?Math.max(0,bottom-top):preferredHeight);
             int shortcutHeight = placement.height, shortcutTop = placement.top;
             FrameLayout.LayoutParams cp = (FrameLayout.LayoutParams) shortcuts.getLayoutParams();
             if (cp.height != shortcutHeight || cp.topMargin != shortcutTop || cp.gravity != Gravity.TOP) {

@@ -39,9 +39,8 @@ final class AlertActions extends LinearLayout {
         vibration=action("alert_vibration",R.drawable.ic_alert_vibration_off,AppString.get(R.string.alert_vibration_off),()->{
             if(output!=null) output.vibrate(!output.vibrating());refreshState();
         });
-        LinearLayout destination=action("alert_open",R.drawable.ic_alert_open,openLabel,open);
-        row.addView(sound,column());row.addView(vibration,column());row.addView(destination,column());
-        if(open==null) destination.setVisibility(INVISIBLE);
+        row.addView(sound,column());row.addView(vibration,column());
+        if(open!=null)row.addView(action("alert_open",R.drawable.ic_alert_open,openLabel,open),column());
         addView(row,new LayoutParams(-1,-2));
         Button later=new Button(host);later.setTag("alert_snooze");
         later.setText(AppString.get(R.string.ui_snooze));later.setAllCaps(false);
