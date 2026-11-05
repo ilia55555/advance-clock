@@ -69,6 +69,8 @@ final class AlertActions extends LinearLayout {
         label.setMaxLines(1);label.setEllipsize(null);label.setIncludeFontPadding(false);
         label.setHorizontallyScrolling(false);
         label.setAutoSizeTextTypeUniformWithConfiguration(2,10,1,android.util.TypedValue.COMPLEX_UNIT_SP);
+        label.setOnClickListener(v->{if(click!=null)click.run();});
+        column.setOnClickListener(v->{if(click!=null)click.run();});
         column.addView(label,new LayoutParams(-1,-2));return column;
     }
     private android.graphics.drawable.Drawable border() {

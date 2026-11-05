@@ -39,7 +39,7 @@ public final class NoteReminderActivity extends Activity {
         data.output = AlertOutput.note(noteId);
         long eventTime=intent==null?0:intent.getLongExtra(EventReminderScheduler.OCCURRENCE,0);
         data.body = eventTime>0?getString(R.string.event_at,CalendarUtils.formatDate(eventTime,AppSettings.defaultCalendar(this))+" "+TimeFormat.clock(this,eventTime)):"";
-        data.allowDrawing=false;
+        data.allowDrawing=false;data.showDetailsButton=true;
         setContentView(new ReminderScreen(this, data, this::stopAndClose, () -> {
             if(detailsDialog==null || !detailsDialog.isShowing()){
                 android.app.Dialog shown=NoteDetailDialog.show(this,noteId);

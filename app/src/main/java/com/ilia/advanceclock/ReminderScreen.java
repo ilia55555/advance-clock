@@ -27,6 +27,7 @@ final class ReminderScreen extends FrameLayout {
         String title = "", body = "", image1 = "", image2 = "", openLabel = "";
         boolean background;
         boolean allowDrawing=true;
+        boolean showDetailsButton;
         List<NoteAttachment> attachments = new ArrayList<>();
         int priority = -1;
         int snoozeMinutes = 15;
@@ -157,6 +158,14 @@ final class ReminderScreen extends FrameLayout {
                 TextView body=text(data.body,16);body.setGravity(Gravity.CENTER);body.setTextColor(mutedColor);
                 LinearLayout.LayoutParams bp=matchWrap();bp.topMargin=dp(4);headingContent.addView(body,bp);
             }
+        }
+        if(data.showDetailsButton && open!=null){
+            Button details=new Button(host);details.setTag("alert_note_details");details.setText(data.openLabel);details.setAllCaps(false);
+            details.setTextSize(15);details.setTextColor(textColor);details.setMinHeight(dp(48));details.setMinimumHeight(dp(48));
+            details.setPadding(dp(16),dp(8),dp(16),dp(8));details.setElevation(0);details.setStateListAnimator(null);details.setBackgroundTintList(null);
+            details.setBackground(ReminderModalStyle.shape(host,Color.TRANSPARENT,textColor,12));details.setOnClickListener(v->open.run());
+            LinearLayout.LayoutParams params=matchWrap();params.topMargin=dp(12);headingContent.addView(details,params);
+            View title=headingContent.findViewWithTag("alert_title");if(title!=null)title.setOnClickListener(v->open.run());
         }
         ScrollView header = new ScrollView(host); header.addView(headingContent);
         screen.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));

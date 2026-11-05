@@ -13,11 +13,15 @@ final class NoteDetailDialog {
         if(!details.render())return null;
         details.setBackground(ReminderModalStyle.shape(host,AppSettings.background(host),AppSettings.primaryColor(host),18));details.setClipToOutline(true);
         int inset=ReminderModalStyle.dp(host,1);details.setPadding(inset,inset,inset,inset);
-        dialog.setContentView(details);dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(details,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));dialog.setCanceledOnTouchOutside(false);
         dialog.setOnKeyListener((d,code,event)->{
             if(code!=KeyEvent.KEYCODE_VOLUME_DOWN && code!=KeyEvent.KEYCODE_VOLUME_UP)return false;
             return event.getAction()==KeyEvent.ACTION_DOWN?host.onKeyDown(code,event):host.onKeyUp(code,event);
         });
+        Window prepared=dialog.getWindow();if(prepared!=null){
+            prepared.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            prepared.setDimAmount(.55f);
+        }
         dialog.show();
         Window window=dialog.getWindow();if(window!=null){
             window.setBackgroundDrawable(ReminderModalStyle.shape(host,AppSettings.surface(host),AppSettings.primaryColor(host),18));
