@@ -84,7 +84,7 @@ public final class AlarmScheduler {
         for (int i = 0; i < reminders.size(); i++) {
             int minutes = reminders.get(i);
             long when = firedAtMillis + minutes * 60_000L;
-            if (when <= System.currentTimeMillis()) continue;
+            if (when <= System.currentTimeMillis() || OccurrenceSkips.reminderBlocked(context,"alarm",item.id,firedAtMillis,when)) continue;
 
             Intent intent = new Intent(context, AlarmReminderReceiver.class)
                     .putExtra("alarmId", item.id)
@@ -104,6 +104,18 @@ public final class AlarmScheduler {
                 manager.setAlarmClock(new AlarmManager.AlarmClockInfo(when, show), pi);
             } catch (SecurityException ignored) {
             }
+        }
+    }
+
+    static void cancelSkippedDayReminders(Context context,AlarmItem item){
+        AlarmManager manager=context.getSystemService(AlarmManager.class);if(manager==null)return;
+        if(item.lastFiredAtMillis>0)for(int minutes:AlarmReminderUtils.VALUES){
+            if(!OccurrenceSkips.reminderBlocked(context,"alarm",item.id,item.lastFiredAtMillis,item.lastFiredAtMillis+minutes*60_000L))continue;
+            manager.cancel(PendingIntent.getBroadcast(context,reminderRequestCode(item.id,item.lastFiredAtMillis,minutes),new Intent(context,AlarmReminderReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE));
+        }
+        if(item.pendingSnoozeAtMillis>0 && OccurrenceSkips.dayContains(context,"alarm",item.id,item.pendingSnoozeAtMillis)){
+            manager.cancel(PendingIntent.getBroadcast(context,2_050_000+(int)Math.abs(item.id%800_000L),new Intent(context,AlarmSnoozeReceiver.class).putExtra("alarmId",item.id),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE));
+            item.pendingSnoozeAtMillis=0;
         }
     }
 

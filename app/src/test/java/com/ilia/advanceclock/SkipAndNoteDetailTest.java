@@ -26,14 +26,16 @@ public class SkipAndNoteDetailTest {
    for(Object value:c.getSharedPreferences("event_reminder_schedule_v1",0).getAll().values())try{assertNotEquals(original,new org.json.JSONObject(value.toString()).getLong("occurrence"));}catch(Exception e){throw new AssertionError(e);}
   }
  }
- @Test public void intervalNoteSkipsOneOccurrenceRatherThanTheEntireDay(){
+ @Test public void intervalNoteSkipsTheEntireDay(){
   NoForgetItem item=new NoForgetItem(303,"Note","Body","[]",2,true,today(AppTime.zone()),true,now,RecurrenceUtils.INTERVAL_MINUTES,60,"[]");new NoForgetStore(c).save(item);
-  assertTrue(OccurrenceSkips.skip(c,"note",item.id,now));NoForgetItem saved=new NoForgetStore(c).find(item.id);assertTrue(saved.reminderEnabled);assertEquals(item.dueAtMillis+3600000L,saved.dueAtMillis);assertEquals(1,OccurrenceSkips.values(c,"note",item.id).size());
+  assertTrue(OccurrenceSkips.skip(c,"note",item.id,now));NoForgetItem saved=new NoForgetStore(c).find(item.id);assertTrue(saved.reminderEnabled);long midnight=OccurrenceSkips.dayWindow(now,AppTime.zone())[1];assertTrue(saved.dueAtMillis>=midnight);assertTrue(saved.dueAtMillis<midnight+3600000L);
+  assertTrue(OccurrenceSkips.contains(c,"note",item.id,item.dueAtMillis));assertTrue(OccurrenceSkips.contains(c,"note",item.id,midnight-1));assertFalse(OccurrenceSkips.contains(c,"note",item.id,midnight));
+  assertFalse(OccurrenceSkips.skip(c,"note",item.id,now));NoForgetScheduler.rescheduleAll(c);assertEquals(saved.dueAtMillis,new NoForgetStore(c).find(item.id).dueAtMillis);
   assertFalse(OccurrenceSkips.skip(c,"note",999,now));
  }
- @Test public void oneShotOrNonTodayOccurrencesCannotBeSkipped(){
+ @Test public void oneShotsCannotBeSkippedButTodaysRemindersOfFutureEventsCan(){
   AlarmItem item=new AlarmItem(304,"One shot",today(AppTime.zone()),RecurrenceUtils.NONE,true);new AlarmStore(c).save(item);assertFalse(OccurrenceSkips.skip(c,"alarm",item.id,now));
-  item.recurrenceMode=RecurrenceUtils.DAILY;item.triggerAtMillis=now+2*86400000L;new AlarmStore(c).save(item);assertFalse(OccurrenceSkips.skip(c,"alarm",item.id,now));
+  item.recurrenceMode=RecurrenceUtils.DAILY;item.triggerAtMillis=now+2*86400000L;new AlarmStore(c).save(item);assertTrue(OccurrenceSkips.skip(c,"alarm",item.id,now));assertEquals(item.triggerAtMillis,new AlarmStore(c).find(item.id).triggerAtMillis);
  }
  @Test public void skipControlIsSmallerThanActiveAndDetailActionsStayBelowScrollableContent(){
   AlarmItem alarm=new AlarmItem(306,"Alarm",today(AppTime.zone()),RecurrenceUtils.DAILY,true);new AlarmStore(c).save(alarm);

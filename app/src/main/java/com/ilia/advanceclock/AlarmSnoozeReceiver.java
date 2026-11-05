@@ -16,7 +16,7 @@ public final class AlarmSnoozeReceiver extends BroadcastReceiver {
         synchronized (AlarmStore.transactionLock()) {
             long alarmId = intent.getLongExtra("alarmId", -1L);
             AlarmItem item = new AlarmStore(context).find(alarmId);
-            if (item == null) return;
+            if (item == null || OccurrenceSkips.dayContains(context,"alarm",alarmId,System.currentTimeMillis())) return;
 
             AlarmSoundService.ring(context, item);
             item.pendingSnoozeAtMillis = 0L;

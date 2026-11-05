@@ -1444,7 +1444,7 @@ Lock screen</string>
     <string name="task_save_error">Could not save task status. Please try again.</string>
     <string name="task_completed_label">Completed</string>
     <string name="task_pending_label">To do</string>
-    <string name="skip_today_occurrence">Skip today’s occurrence</string>
+    <string name="skip_today_occurrence">Disable for today</string>
     <string name="note_view_details">View note</string>
     <string name="recurrence_added_count">%1$s repeats added</string>
     <string name="recurrence_offset_hint">Time after the main alert</string>

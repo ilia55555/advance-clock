@@ -13,8 +13,10 @@ public final class NoForgetScheduler {
 
     private NoForgetScheduler(){}
 
-    public static boolean schedule(Context context,NoForgetItem item){
-        cancelScheduled(context,item.id);
+    public static boolean schedule(Context context,NoForgetItem item){return schedule(context,item,false);}
+    static boolean scheduleKeepingSnoozes(Context context,NoForgetItem item){return schedule(context,item,true);}
+    private static boolean schedule(Context context,NoForgetItem item,boolean preserveSnoozes){
+        if(preserveSnoozes)cancelPrimaryOccurrence(context,item.id);else cancelScheduled(context,item.id);
         if(!item.reminderEnabled||!item.hasDue || item.completedOccurrence(item.dueAtMillis))return false;
 
         long now=System.currentTimeMillis();
@@ -45,7 +47,7 @@ public final class NoForgetScheduler {
             for(int i=0;i<reminders.size();i++){
                 int minutes=reminders.get(i);
                 long at=item.dueAtMillis-minutes*60_000L;
-                if(at<=now)continue;
+                if(at<=now || OccurrenceSkips.reminderBlocked(context,"note",item.id,item.dueAtMillis,at))continue;
                 manager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         at,
@@ -71,6 +73,13 @@ public final class NoForgetScheduler {
         AlarmManager manager=context.getSystemService(AlarmManager.class);if(manager==null)return;
         manager.cancel(mainPendingIntent(context,id));
         for(int i=0;i<AlarmReminderUtils.VALUES.length;i++)manager.cancel(preReminderPendingIntent(context,id,i,0));
+    }
+    static void cancelSkippedDaySnooze(Context context,long id){
+        long when=context.getSharedPreferences("note_snoozes",0).getLong(Long.toString(id),0);
+        if(when>0 && OccurrenceSkips.dayContains(context,"note",id,when)){
+            context.getSharedPreferences("note_snoozes",0).edit().remove(Long.toString(id)).apply();
+            AlarmManager manager=context.getSystemService(AlarmManager.class);if(manager!=null)manager.cancel(snoozePendingIntent(context,id));
+        }
     }
     private static void cancelScheduled(Context context,long id){
         AlarmManager manager=context.getSystemService(AlarmManager.class);

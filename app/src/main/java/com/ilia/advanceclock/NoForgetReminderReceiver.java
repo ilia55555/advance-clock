@@ -11,6 +11,9 @@ public final class NoForgetReminderReceiver extends BroadcastReceiver {
         NoForgetStore store=new NoForgetStore(context);
         NoForgetItem item=store.find(id);
         if(item==null || item.completedOccurrence(item.dueAtMillis) || OccurrenceSkips.contains(context,"note",id,item.dueAtMillis))return;
+        long scheduled=intent.getBooleanExtra("preReminder",false)?item.dueAtMillis-intent.getIntExtra("reminderMinutes",0)*60000L:
+                intent.getBooleanExtra("snooze",false)?context.getSharedPreferences("note_snoozes",0).getLong(Long.toString(id),System.currentTimeMillis()):item.dueAtMillis;
+        if(OccurrenceSkips.dayContains(context,"note",id,scheduled))return;
         NoteTasks.reopenForOccurrence(context,item,item.dueAtMillis);
 
         boolean preReminder = intent.getBooleanExtra("preReminder", false);

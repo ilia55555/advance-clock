@@ -69,7 +69,9 @@ final class AlertSnoozes {
             Map<String,String> overdue=new HashMap<>();Map<String,Long> latest=new HashMap<>();
             Map<String,JSONObject> records=new LinkedHashMap<>();long now=nowMillis();
             for(Map.Entry<String,?> entry:prefs(context).getAll().entrySet())try {
-                JSONObject record=new JSONObject((String)entry.getValue());records.put(entry.getKey(),record);
+                JSONObject record=new JSONObject((String)entry.getValue());
+                if(OccurrenceSkips.dayContains(context,record.optString("kind"),record.optLong("id"),record.optLong("when"))){remove(context,entry.getKey());continue;}
+                records.put(entry.getKey(),record);
                 String source=record.optString("kind")+":"+record.optLong("id");long when=record.optLong("when");
                 if(when<=now && when>latest.getOrDefault(source,0L)){latest.put(source,when);overdue.put(source,entry.getKey());}
             }catch(Exception ignored){}
@@ -90,6 +92,12 @@ final class AlertSnoozes {
             }catch(Exception ignored){}
         }
     }
+    static void cancelBlocked(Context context,String kind,long id){
+        synchronized(LOCK){for(Map.Entry<String,?> entry:prefs(context).getAll().entrySet())try{
+            JSONObject record=new JSONObject((String)entry.getValue());
+            if(kind.equals(record.optString("kind")) && id==record.optLong("id") && OccurrenceSkips.dayContains(context,kind,id,record.optLong("when")))remove(context,entry.getKey());
+        }catch(Exception ignored){}}
+    }
     private static void remove(Context context,String key) {
         AlarmManager manager=context.getSystemService(AlarmManager.class);
         if(manager!=null)manager.cancel(operation(context,key));prefs(context).edit().remove(key).commit();
@@ -102,6 +110,7 @@ final class AlertSnoozes {
                 JSONObject record=new JSONObject(encoded);
                 if(record.optLong("when")>nowMillis()+1000)return;
                 String kind=record.getString("kind");long id=record.getLong("id");
+                if(OccurrenceSkips.dayContains(context,kind,id,record.optLong("when"))){remove(context,key);return;}
                 Intent service;
                 if("alarm".equals(kind)) {
                     AlarmItem item=AlarmItem.fromJson(new JSONObject(record.getString("payload")));
