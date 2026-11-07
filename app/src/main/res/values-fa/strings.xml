@@ -1414,4 +1414,5 @@
     <string name="adhan_sound_hint">برای قطع صدا، دکمهٔ کاهش صدا و برای وصل صدا، دکمهٔ افزایش صدا را کوتاه بزنید. برای تغییر ولوم آلارم، دکمه را نگه دارید. دکمهٔ روشن/خاموش هم هشدار را بی‌صدا می‌کند.</string>
     <string name="world_time_ruler">مرور زمان جهانی</string>
     <string name="world_time_now">اکنون</string>
+    <string name="alarm_volume">بلندی صدای هشدار</string>
 </resources>

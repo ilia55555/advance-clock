@@ -67,6 +67,7 @@ public final class AlarmSoundService extends Service {
     static void ring(Context context,AlarmItem item,long occurrence) {
         if(OccurrenceSkips.contains(context,"alarm",item.id,occurrence>0?occurrence:item.triggerAtMillis) || OccurrenceSkips.dayContains(context,"alarm",item.id,System.currentTimeMillis()))return;
         Intent service = startIntent(context, item.id, item.label, item.vibrate, item.soundUri);
+        service.putExtra("volumePercent",item.volumePercent);
         try {
             String payload = item.toJson().toString();
             if (payload.length() <= 64_000) service.putExtra("alarmPayload", payload);
@@ -187,7 +188,9 @@ public final class AlarmSoundService extends Service {
             stopSelf();
         });
         acquireWakeLock();
+        AlarmVolume.apply(this,intent.getIntExtra("volumePercent",-1));
         startSound();
+        if(intent.getIntExtra("volumePercent",-1)==0)muteCurrentAlarm();
         if (currentVibrate) {
             startVibration();
         } else {

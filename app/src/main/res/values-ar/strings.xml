@@ -1482,4 +1482,5 @@
     <string name="adhan_sound_hint">اضغط خفض الصوت لكتمه ورفع الصوت لإعادته. اضغط مطولًا لضبط مستوى صوت المنبه. زر الطاقة يكتم التنبيه أيضًا.</string>
     <string name="world_time_ruler">استكشاف التوقيت العالمي</string>
     <string name="world_time_now">الآن</string>
+    <string name="alarm_volume">مستوى صوت التنبيه</string>
 </resources>

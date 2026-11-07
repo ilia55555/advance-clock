@@ -33,10 +33,11 @@ public class AlarmEditorRefinementTest {
             assertEquals(View.VISIBLE,option.getVisibility());
             View sound=host.findViewById(R.id.alarm_sound_button);
             View vibration=(View)host.findViewById(R.id.alarm_vibrate).getParent();
-            assertSame(sound.getParent(),vibration.getParent());
+            assertSame(sound.getParent(),priority.getParent());
+            assertSame(vibration.getParent(),host.findViewById(R.id.alarm_volume).getParent().getParent());
             assertSame(host.findViewById(R.id.alarm_repeat).getParent(),host.findViewById(R.id.alarm_reminders).getParent());
-            ViewGroup card=(ViewGroup)priority.getParent();
-            assertTrue(card.indexOfChild((View)sound.getParent())<card.indexOfChild(priority));
+            ViewGroup card=(ViewGroup)priority.getParent().getParent();
+            assertTrue(card.indexOfChild((View)sound.getParent())<card.indexOfChild((View)vibration.getParent()));
             Button attach=host.findViewById(R.id.alarm_image1_button);
             String key=ReflectionHelpers.getField(host,"attachmentKey");
             AlarmAttachments.prefs(host).edit().putString(key+"_image1","content://test/photo").apply();

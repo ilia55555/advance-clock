@@ -41,6 +41,7 @@ public final class AlarmItem {
     public String imageSource1 = "";
     public String imageSource2 = "";
     public String soundUri;
+    public int volumePercent = -1;
     public String attachmentsJson = "[]";
     public boolean imagesAsBackground;
 
@@ -104,6 +105,7 @@ public final class AlarmItem {
         o.put("imageSource1",imageSource1);
         o.put("imageSource2",imageSource2);
         o.put("soundUri",soundUri);
+        o.put("volumePercent",AlarmVolume.normalize(volumePercent));
         o.put("attachmentsJson",attachmentsJson);
         o.put("imagesAsBackground",imagesAsBackground);
         return o;
@@ -138,6 +140,7 @@ public final class AlarmItem {
         item.imageSource1 = o.optString("imageSource1", item.imageUri1);
         item.imageSource2 = o.optString("imageSource2", item.imageUri2);
         item.soundUri = o.optString("soundUri", "");
+        item.volumePercent = AlarmVolume.normalize(o.optInt("volumePercent", -1));
         item.attachmentsJson = o.optString("attachmentsJson", "[]");
         item.imagesAsBackground = o.optBoolean("imagesAsBackground", false);
         return item;

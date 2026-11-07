@@ -43,6 +43,7 @@ public final class AlarmEditorActivity extends Activity {
     private String referenceZone="";
     private Button deleteButton;
     private Switch vibrate;
+    private android.widget.SeekBar volume;
     private Switch autoDelete;
     private Button image1Button;
     private Button image2Button;
@@ -85,6 +86,14 @@ public final class AlarmEditorActivity extends Activity {
         deleteButton = findViewById(R.id.delete_alarm);
         ButtonStyles.destructive(deleteButton);
         vibrate = findViewById(R.id.alarm_vibrate);
+        volume = findViewById(R.id.alarm_volume);
+        volume.setProgress(AlarmVolume.current(this));
+        volume.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener(){
+            public void onProgressChanged(android.widget.SeekBar bar,int progress,boolean user){updateVolumeLabel();}
+            public void onStartTrackingTouch(android.widget.SeekBar bar){}
+            public void onStopTrackingTouch(android.widget.SeekBar bar){}
+        });
+        updateVolumeLabel();
         image1Button = findViewById(R.id.alarm_image1_button);
         image2Button = findViewById(R.id.alarm_image2_button);
         image1Preview = findViewById(R.id.alarm_image1_preview);
@@ -134,6 +143,7 @@ public final class AlarmEditorActivity extends Activity {
         }
 
         if (savedInstanceState != null && savedInstanceState.containsKey("selectedTime")) {
+            volume.setProgress(savedInstanceState.getInt("volumePercent",volume.getProgress()));
             selected.setTimeInMillis(savedInstanceState.getLong("selectedTime"));
             updateButtons();
         }
@@ -206,6 +216,7 @@ public final class AlarmEditorActivity extends Activity {
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
+        out.putInt("volumePercent",volume.getProgress());
         out.putLong("selectedTime", selected.getTimeInMillis());
         out.putString("referenceZone",referenceZone);
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
@@ -218,6 +229,10 @@ public final class AlarmEditorActivity extends Activity {
                 ClockWidgetProvider.updateAll(this);
         }
         super.onDestroy();
+    }
+
+    private void updateVolumeLabel(){
+        ((TextView)findViewById(R.id.alarm_volume_label)).setText(getString(R.string.alarm_volume)+"  "+java.text.NumberFormat.getPercentInstance().format(volume.getProgress()/100.0));
     }
 
     private void applySystemBarInsets(View root) {
@@ -245,6 +260,7 @@ public final class AlarmEditorActivity extends Activity {
         storedPriority=item.priority;
         if(!worldReference)priority.setSelection(item.priority+1);
         vibrate.setChecked(item.vibrate);
+        volume.setProgress(item.volumePercent<0?AlarmVolume.current(this):item.volumePercent);
 
         recurrenceMode = item.recurrenceMode;
         intervalDays = item.intervalDays;
@@ -368,6 +384,7 @@ public final class AlarmEditorActivity extends Activity {
         item.imageUri2 = imageUri2;
         AlarmAttachments.read(this, attachmentKey, item);
         item.soundUri = soundUri;
+        item.volumePercent = volume.getProgress();
 
         new AlarmStore(this).save(item);
         boolean scheduled = AlarmScheduler.schedule(this, item);
