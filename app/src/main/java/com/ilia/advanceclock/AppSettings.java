@@ -1259,11 +1259,18 @@ public final class AppSettings {
         int end = root.getPaddingEnd();
         int bottom = root.getPaddingBottom();
         root.setOnApplyWindowInsetsListener((view, insets) -> {
+            int safeTop=insets.getSystemWindowInsetTop(),safeBottom=insets.getSystemWindowInsetBottom();
+            if(android.os.Build.VERSION.SDK_INT>=30){
+                android.graphics.Insets safe=insets.getInsets(android.view.WindowInsets.Type.systemBars()|android.view.WindowInsets.Type.displayCutout());
+                safeTop=safe.top;safeBottom=safe.bottom;
+            }else if(insets.getStableInsetBottom()>0){
+                safeBottom=Math.min(safeBottom,insets.getStableInsetBottom());
+            }
             view.setPaddingRelative(
                     start,
-                    top + insets.getSystemWindowInsetTop(),
+                    top + safeTop,
                     end,
-                    bottom + insets.getSystemWindowInsetBottom());
+                    bottom + safeBottom);
             return insets;
         });
         root.requestApplyInsets();

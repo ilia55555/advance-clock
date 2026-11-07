@@ -345,6 +345,7 @@ public final class MainActivity extends Activity {
         View root = findViewById(R.id.root_main);
         root.setOnApplyWindowInsetsListener((view, insets) -> {
             int bottomInset = insets.getSystemWindowInsetBottom();
+            if(Build.VERSION.SDK_INT>=30)bottomInset=insets.getInsets(android.view.WindowInsets.Type.systemBars()).bottom;
             applyFabBottomMargin(clockFab, bottomInset);
             applyFabBottomMargin(noteFab, bottomInset);
             applyFabBottomMargin(findViewById(R.id.world_fab), bottomInset);
