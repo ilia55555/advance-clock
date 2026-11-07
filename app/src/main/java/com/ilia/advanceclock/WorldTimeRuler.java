@@ -16,8 +16,8 @@ import java.util.Date;
 
 /** Physical left is the past in every locale. Drag freely; settle near wall-clock anchors. */
 public final class WorldTimeRuler extends View {
-    static final long MINUTE = 60_000L, RANGE = 24 * 60 * MINUTE, VISIBLE = 12 * 60 * MINUTE;
-    private static final int[] LABEL_HOURS = {-24, -12, -8, -6, 0, 6, 8, 12, 24};
+    static final long MINUTE = 60_000L, RANGE = 24 * 60 * MINUTE, VISIBLE = 8 * 60 * MINUTE;
+    private static final int[] LABEL_HOURS = {-24, -18, -16, -12, -8, -6, 0, 6, 8, 12, 16, 18, 24};
     interface Listener { void selected(long millis, boolean now); }
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private long origin = System.currentTimeMillis(), selected = origin;
@@ -98,18 +98,17 @@ public final class WorldTimeRuler extends View {
             paint.setColor(hour==0?primary:muted);paint.setAlpha((int)(255*edgeAlpha(px)));
             paint.setTextAlign(hour==-24?Paint.Align.LEFT:hour==24?Paint.Align.RIGHT:Paint.Align.CENTER);
             // Keep endpoint labels inside the viewport without adding a separate header.
-            String label=hour==0?AppString.get(R.string.world_time_now):(hour<0?"−":"+")+Math.abs(hour)+" h";
+            String label=hour==0?AppString.get(R.string.world_time_now):(hour<0?"−":"+")+Math.abs(hour);
             float half=paint.measureText(label)/2;
             if(hour!=24 && hour!=-24)px=Math.max(left()+half,Math.min(left()+span()-half,px));
-            // Stagger the nearby six/eight-hour labels so they stay legible on small phones.
-            canvas.drawText(label,px,dp(Math.abs(hour)==8?82:63),paint);
+            canvas.drawText(label,px,dp(63),paint);
         }
         paint.setAlpha(255);
     }
     private float edgeAlpha(float px){return .3f+.7f*Math.min(1,Math.max(0,Math.min(px-left(),left()+span()-px))/dp(18));}
-    @Override protected int computeHorizontalScrollRange(){return getWidth()*3;}
+    @Override protected int computeHorizontalScrollRange(){return Math.round(getWidth()*(1f+(float)RANGE/VISIBLE));}
     @Override protected int computeHorizontalScrollExtent(){return getWidth();}
-    @Override protected int computeHorizontalScrollOffset(){return Math.round((float)((viewport-origin+RANGE)/(2.0*RANGE))*getWidth()*2);}
+    @Override protected int computeHorizontalScrollOffset(){return Math.round((float)((viewport-origin+RANGE)/(2.0*VISIBLE))*getWidth());}
     @Override public boolean onTouchEvent(MotionEvent event) {
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:

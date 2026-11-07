@@ -58,11 +58,11 @@ public class WorldTimeRulerTest {
             WorldTimeRuler view=root.findViewById(R.id.world_time_ruler);view.layout(0,0,1000,200);
             android.view.ViewGroup parent=(android.view.ViewGroup)view.getParent();
             assertEquals(parent.indexOfChild(root.findViewById(R.id.world_reference_now))+1,parent.indexOfChild(view));
-            assertEquals(12*60*60_000L,WorldTimeRuler.VISIBLE);
+            assertEquals(8*60*60_000L,WorldTimeRuler.VISIBLE);
             int alarms=new AlarmStore(host).all().size();
             touch(view,MotionEvent.ACTION_DOWN,500);touch(view,MotionEvent.ACTION_MOVE,-100);long shown=ReflectionHelpers.getField(panel,"referenceMillis");
             assertTrue(ReflectionHelpers.<Boolean>getField(panel,"referenceMode"));
-            assertTrue(shown>System.currentTimeMillis()+12*60*60_000L);
+            assertTrue(shown>System.currentTimeMillis()+8*60*60_000L);
             java.util.ArrayList<?> rows=ReflectionHelpers.getField(panel,"clockRows");
             for(Object row:rows){
                 android.widget.TextView time=ReflectionHelpers.getField(row,"timeView");
