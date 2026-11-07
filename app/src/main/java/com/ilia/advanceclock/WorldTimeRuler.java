@@ -16,23 +16,31 @@ import java.util.Date;
 
 /** Physical left is the past in every locale. Drag freely; settle near wall-clock anchors. */
 public final class WorldTimeRuler extends View {
-    static final long MINUTE = 60_000L, RANGE = 24 * 60 * MINUTE;
+    static final long MINUTE = 60_000L, RANGE = 24 * 60 * MINUTE, VISIBLE = 12 * 60 * MINUTE;
     interface Listener { void selected(long millis, boolean now); }
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private long origin = System.currentTimeMillis(), selected = origin;
     private boolean live = true, dragging;
     private Listener listener;
     private ValueAnimator settle;
+    private long viewport;
+    private float downX;
+    private long downViewport;
+    private boolean moved;
 
     public WorldTimeRuler(Context c, AttributeSet attrs) {
         super(c, attrs);
         setFocusable(true); setClickable(true);
         setLayoutDirection(LAYOUT_DIRECTION_LTR);
+        viewport=origin;
+        setHorizontalScrollBarEnabled(true);
+        setScrollbarFadingEnabled(true);
     }
     void setListener(Listener value) { listener = value; }
     void display(long now, long shown, boolean isLive) {
         if (dragging || settle != null) return;
         origin = now; selected = shown; live = isLive;
+        viewport=Math.max(origin-RANGE,Math.min(origin+RANGE,shown));
         describe(); invalidate();
     }
     static long anchor(long millis) {
@@ -46,12 +54,13 @@ public final class WorldTimeRuler extends View {
     private float dp(float value) { return value * getResources().getDisplayMetrics().density; }
     private float left() { return dp(12); }
     private float span() { return Math.max(1, getWidth() - 2 * left()); }
-    private float x(long millis) { return left() + (float)((millis - origin + RANGE) / (2.0 * RANGE)) * span(); }
+    private float x(long millis) { return getWidth()/2f + (float)((millis-viewport)/(2.0*VISIBLE))*span(); }
     private long time(float x) {
-        return origin + Math.round((Math.max(0, Math.min(1, (x-left())/span())) * 2 - 1) * RANGE);
+        return clamp(viewport + Math.round((x-getWidth()/2f)/span()*2*VISIBLE));
     }
+    private long clamp(long value){return Math.max(origin-RANGE,Math.min(origin+RANGE,value));}
     private void choose(long millis, boolean isNow) {
-        selected = millis; live = isNow; describe(); invalidate();
+        selected = millis; viewport=clamp(millis);live = isNow; describe(); invalidate();
         if (listener != null) listener.selected(selected, live);
     }
     private void describe() {
@@ -61,46 +70,58 @@ public final class WorldTimeRuler extends View {
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int primary = AppSettings.primaryColor(getContext()), muted = AppSettings.textSecondary(getContext());
-        float y=dp(44), mid=getWidth()/2f;
+        float y=dp(20), mid=getWidth()/2f;
         paint.setStrokeWidth(dp(1)); paint.setColor(muted); paint.setAlpha(65);
-        canvas.drawLine(left(),y,left()+span(),y,paint); paint.setAlpha(255);
+        canvas.drawLine(Math.max(left(),x(origin-RANGE)),y,Math.min(left()+span(),x(origin+RANGE)),y,paint); paint.setAlpha(255);
         // Tick positions and magnets share local wall-clock hours, including fractional zones.
         Calendar local=Calendar.getInstance(AppTime.zone());local.setTimeInMillis(origin);
         long floor=origin-(local.get(Calendar.MINUTE)%30)*MINUTE-local.get(Calendar.SECOND)*1000L-local.get(Calendar.MILLISECOND);
         for (int half=-48; half<=49; half++) {
             long tick=floor+half*30*MINUTE;if(tick<origin-RANGE || tick>origin+RANGE)continue;
-            float px=x(tick);local.setTimeInMillis(tick);
-            paint.setColor(muted);paint.setAlpha(150);
+            float px=x(tick);if(px<left() || px>left()+span())continue;local.setTimeInMillis(tick);
+            paint.setColor(muted);paint.setAlpha((int)(150*edgeAlpha(px)));
             if(local.get(Calendar.MINUTE)==0)canvas.drawCircle(px,y,dp(1.35f),paint);
             else canvas.drawLine(px,y-dp(2.3f),px,y+dp(2.3f),paint);
         }
-        paint.setAlpha(255);paint.setColor(primary);canvas.drawCircle(mid,y,dp(3.7f),paint);
+        paint.setAlpha(255);paint.setColor(primary);
+        if(x(origin)>=left() && x(origin)<=left()+span())canvas.drawCircle(x(origin),y,dp(3.7f),paint);
         // A separate thumb leaves the current-time dot visible when exploring other times.
         if (selected>=origin-RANGE && selected<=origin+RANGE) {
             float px=x(selected);paint.setColor(primary);paint.setStrokeWidth(dp(2));
             canvas.drawLine(px,y-dp(11),px,y+dp(11),paint);
             canvas.drawCircle(px,y-dp(12),dp(3),paint);
         }
-        paint.setColor(AppSettings.textPrimary(getContext()));
-        paint.setTextSize(dp(15)); paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(TimeFormat.formatter(getContext(), false, AppTime.zone()).format(new Date(selected)),mid,dp(22),paint);
-        paint.setColor(muted);paint.setTextSize(dp(11));
-        paint.setTextAlign(Paint.Align.LEFT);canvas.drawText("−24 h",left(),dp(72),paint);
-        paint.setTextAlign(Paint.Align.RIGHT);canvas.drawText("+24 h",left()+span(),dp(72),paint);
-        paint.setTextAlign(Paint.Align.CENTER);paint.setColor(primary);
-        canvas.drawText(AppString.get(R.string.world_time_now),mid,dp(72),paint);
+        paint.setTextSize(dp(11));
+        for(int hour=-24;hour<=24;hour+=12){
+            float px=x(origin+hour*60*MINUTE);if(px<left()-1 || px>left()+span()+1)continue;
+            paint.setColor(hour==0?primary:muted);paint.setAlpha((int)(255*edgeAlpha(px)));
+            paint.setTextAlign(hour==-24?Paint.Align.LEFT:hour==24?Paint.Align.RIGHT:Paint.Align.CENTER);
+            // Keep endpoint labels inside the viewport without adding a separate header.
+            String label=hour==0?AppString.get(R.string.world_time_now):(hour<0?"−":"+")+Math.abs(hour)+" h";
+            float half=paint.measureText(label)/2;
+            if(hour!=24 && hour!=-24)px=Math.max(left()+half,Math.min(left()+span()-half,px));
+            canvas.drawText(label,px,dp(47),paint);
+        }
+        paint.setAlpha(255);
     }
+    private float edgeAlpha(float px){return .3f+.7f*Math.min(1,Math.max(0,Math.min(px-left(),left()+span()-px))/dp(18));}
+    @Override protected int computeHorizontalScrollRange(){return getWidth()*3;}
+    @Override protected int computeHorizontalScrollExtent(){return getWidth();}
+    @Override protected int computeHorizontalScrollOffset(){return Math.round((float)((viewport-origin+RANGE)/(2.0*RANGE))*getWidth()*2);}
     @Override public boolean onTouchEvent(MotionEvent event) {
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 cancelSettle(); dragging=true;
                 if (getParent()!=null) getParent().requestDisallowInterceptTouchEvent(true);
                 // Freeze the origin for this gesture so the range cannot drift under the finger.
-                origin=System.currentTimeMillis(); choose(time(event.getX()),false);return true;
+                origin=System.currentTimeMillis();downX=event.getX();downViewport=viewport;moved=false;return true;
             case MotionEvent.ACTION_MOVE:
-                if(dragging)choose(time(event.getX()),false);return true;
+                if(dragging){
+                    if(Math.abs(event.getX()-downX)>android.view.ViewConfiguration.get(getContext()).getScaledTouchSlop())moved=true;
+                    if(moved){choose(clamp(downViewport-Math.round((event.getX()-downX)/span()*2*VISIBLE)),false);awakenScrollBars();}
+                }return true;
             case MotionEvent.ACTION_UP:
-                if(dragging){choose(time(event.getX()),false);dragging=false;finishSelection();performClick();}
+                if(dragging){if(moved)choose(clamp(downViewport-Math.round((event.getX()-downX)/span()*2*VISIBLE)),false);else choose(time(event.getX()),false);dragging=false;finishSelection();performClick();}
                 if(getParent()!=null)getParent().requestDisallowInterceptTouchEvent(false);return true;
             case MotionEvent.ACTION_CANCEL:
                 dragging=false;cancelSettle();

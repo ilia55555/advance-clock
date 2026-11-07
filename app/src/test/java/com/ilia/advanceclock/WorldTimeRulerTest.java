@@ -40,13 +40,14 @@ public class WorldTimeRulerTest {
             // Pick a known wall-clock half-hour plus three minutes, away from now.
             java.util.Calendar c=java.util.Calendar.getInstance(AppTime.zone());c.setTimeInMillis(origin);
             c.set(java.util.Calendar.MINUTE,33);c.set(java.util.Calendar.SECOND,0);c.set(java.util.Calendar.MILLISECOND,0);c.add(java.util.Calendar.HOUR_OF_DAY,2);long target=c.getTimeInMillis();
-            float x=padding+(float)((target-origin+WorldTimeRuler.RANGE)/(2.0*WorldTimeRuler.RANGE))*(1000-2*padding);
+            float x=500-(float)((target-origin)/(2.0*WorldTimeRuler.VISIBLE))*(1000-2*padding);
             touch(view,MotionEvent.ACTION_MOVE,x);assertTrue(Math.abs(value[0]-target)<100);
             long raw=value[0];assertNotEquals(WorldTimeRuler.anchor(raw),raw);
             touch(view,MotionEvent.ACTION_UP,x);Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(300));
             assertEquals(WorldTimeRuler.anchor(raw),value[0]);
-            touch(view,MotionEvent.ACTION_DOWN,-100);origin=ReflectionHelpers.getField(view,"origin");assertEquals(origin-WorldTimeRuler.RANGE,value[0]);
-            touch(view,MotionEvent.ACTION_MOVE,1100);assertEquals(origin+WorldTimeRuler.RANGE,value[0]);
+            touch(view,MotionEvent.ACTION_DOWN,500);origin=ReflectionHelpers.getField(view,"origin");
+            touch(view,MotionEvent.ACTION_MOVE,5000);assertEquals(origin-WorldTimeRuler.RANGE,value[0]);
+            touch(view,MotionEvent.ACTION_MOVE,-5000);assertEquals(origin+WorldTimeRuler.RANGE,value[0]);
             touch(view,MotionEvent.ACTION_CANCEL,1100);long stopped=value[0];Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(1));assertEquals(stopped,value[0]);
         }
     }
@@ -55,8 +56,11 @@ public class WorldTimeRulerTest {
             Activity host=activity.get();View root=host.getLayoutInflater().inflate(R.layout.panel_world_clock,null);host.setContentView(root);
             WorldClockPanelController panel=new WorldClockPanelController(host,root);
             WorldTimeRuler view=root.findViewById(R.id.world_time_ruler);view.layout(0,0,1000,200);
+            android.view.ViewGroup parent=(android.view.ViewGroup)view.getParent();
+            assertEquals(parent.indexOfChild(root.findViewById(R.id.world_reference_now))+1,parent.indexOfChild(view));
+            assertEquals(12*60*60_000L,WorldTimeRuler.VISIBLE);
             int alarms=new AlarmStore(host).all().size();
-            touch(view,MotionEvent.ACTION_DOWN,900);long shown=ReflectionHelpers.getField(panel,"referenceMillis");
+            touch(view,MotionEvent.ACTION_DOWN,500);touch(view,MotionEvent.ACTION_MOVE,-100);long shown=ReflectionHelpers.getField(panel,"referenceMillis");
             assertTrue(ReflectionHelpers.<Boolean>getField(panel,"referenceMode"));
             assertTrue(shown>System.currentTimeMillis()+12*60*60_000L);
             java.util.ArrayList<?> rows=ReflectionHelpers.getField(panel,"clockRows");
