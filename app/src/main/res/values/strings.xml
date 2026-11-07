@@ -1466,4 +1466,6 @@
     <string name="online_sounds_checking">Checking sounds…</string>
     <string name="online_sounds_checked">Sound list updated.</string>
     <string name="adhan_sound_hint">Tap volume down to mute and volume up to unmute. Hold either key to adjust alarm volume. The power button also silences the alert.</string>
+    <string name="world_time_ruler">World time explorer</string>
+    <string name="world_time_now">Now</string>
 </resources>

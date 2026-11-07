@@ -71,6 +71,7 @@ final class WorldClockPanelController {
     private final LinearLayout alarms;
     private final TextView referenceSummary;
     private final Button nowButton;
+    private final WorldTimeRuler timeRuler;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final ArrayList<ZoneOption> allZones = new ArrayList<>();
     private final ArrayList<ZoneOption> filteredZones = new ArrayList<>();
@@ -99,6 +100,12 @@ final class WorldClockPanelController {
         refreshAlarms();
         referenceSummary = root.findViewById(R.id.world_reference_summary);
         nowButton = root.findViewById(R.id.world_reference_now);
+        timeRuler = root.findViewById(R.id.world_time_ruler);
+        timeRuler.setListener((millis, now) -> {
+            referenceMode = !now;
+            referenceMillis = now ? 0L : millis;
+            updateClockTimes();
+        });
 
 
         root.findViewById(R.id.world_fab).setOnClickListener(v -> showAddDialog());
@@ -1017,10 +1024,12 @@ final class WorldClockPanelController {
     }
 
     private void updateClockTimes() {
+        long now = System.currentTimeMillis();
         long shownMillis =
                 referenceMode
                         ? referenceMillis
-                        : System.currentTimeMillis();
+                        : now;
+        timeRuler.display(now, shownMillis, !referenceMode);
 
         referenceSummary.setText(
                 referenceMode

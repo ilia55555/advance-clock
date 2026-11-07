@@ -1480,4 +1480,6 @@
     <string name="online_sounds_checking">جارٍ التحقق من الأصوات…</string>
     <string name="online_sounds_checked">تم تحديث قائمة الأصوات.</string>
     <string name="adhan_sound_hint">اضغط خفض الصوت لكتمه ورفع الصوت لإعادته. اضغط مطولًا لضبط مستوى صوت المنبه. زر الطاقة يكتم التنبيه أيضًا.</string>
+    <string name="world_time_ruler">استكشاف التوقيت العالمي</string>
+    <string name="world_time_now">الآن</string>
 </resources>

@@ -22,6 +22,12 @@
             android:paddingEnd="16dp"
             android:paddingBottom="92dp">
 
+            <com.ilia.advanceclock.WorldTimeRuler
+                android:id="@+id/world_time_ruler"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:layoutDirection="ltr" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
