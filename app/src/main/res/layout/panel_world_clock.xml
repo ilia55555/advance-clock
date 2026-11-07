@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:clipToPadding="false"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
@@ -106,7 +107,9 @@
             <com.ilia.advanceclock.WorldTimeRuler
                 android:id="@+id/world_time_ruler"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="94dp"
+                android:layout_marginStart="-12dp"
+                android:layout_marginEnd="-12dp"
                 android:layoutDirection="ltr" />
 
             <LinearLayout

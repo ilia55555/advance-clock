@@ -36,7 +36,7 @@ public class WorldTimeRulerTest {
             long[] value={0};view.setListener((time,now)->value[0]=time);
             touch(view,MotionEvent.ACTION_DOWN,500);
             long origin=ReflectionHelpers.getField(view,"origin");
-            float padding=12*view.getResources().getDisplayMetrics().density;
+            float padding=6*view.getResources().getDisplayMetrics().density;
             // Pick a known wall-clock half-hour plus three minutes, away from now.
             java.util.Calendar c=java.util.Calendar.getInstance(AppTime.zone());c.setTimeInMillis(origin);
             c.set(java.util.Calendar.MINUTE,33);c.set(java.util.Calendar.SECOND,0);c.set(java.util.Calendar.MILLISECOND,0);c.add(java.util.Calendar.HOUR_OF_DAY,2);long target=c.getTimeInMillis();

@@ -17,6 +17,7 @@ import java.util.Date;
 /** Physical left is the past in every locale. Drag freely; settle near wall-clock anchors. */
 public final class WorldTimeRuler extends View {
     static final long MINUTE = 60_000L, RANGE = 24 * 60 * MINUTE, VISIBLE = 12 * 60 * MINUTE;
+    private static final int[] LABEL_HOURS = {-24, -12, -8, -6, 0, 6, 8, 12, 24};
     interface Listener { void selected(long millis, boolean now); }
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private long origin = System.currentTimeMillis(), selected = origin;
@@ -52,7 +53,7 @@ public final class WorldTimeRuler extends View {
         return Math.abs(delta) < 5 * MINUTE ? millis + delta : millis;
     }
     private float dp(float value) { return value * getResources().getDisplayMetrics().density; }
-    private float left() { return dp(12); }
+    private float left() { return dp(6); }
     private float span() { return Math.max(1, getWidth() - 2 * left()); }
     private float x(long millis) { return getWidth()/2f + (float)((millis-viewport)/(2.0*VISIBLE))*span(); }
     private long time(float x) {
@@ -70,8 +71,8 @@ public final class WorldTimeRuler extends View {
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int primary = AppSettings.primaryColor(getContext()), muted = AppSettings.textSecondary(getContext());
-        float y=dp(20), mid=getWidth()/2f;
-        paint.setStrokeWidth(dp(1)); paint.setColor(muted); paint.setAlpha(65);
+        float y=dp(28);
+        paint.setStrokeWidth(dp(1.7f)); paint.setColor(muted); paint.setAlpha(95);
         canvas.drawLine(Math.max(left(),x(origin-RANGE)),y,Math.min(left()+span(),x(origin+RANGE)),y,paint); paint.setAlpha(255);
         // Tick positions and magnets share local wall-clock hours, including fractional zones.
         Calendar local=Calendar.getInstance(AppTime.zone());local.setTimeInMillis(origin);
@@ -79,20 +80,20 @@ public final class WorldTimeRuler extends View {
         for (int half=-48; half<=49; half++) {
             long tick=floor+half*30*MINUTE;if(tick<origin-RANGE || tick>origin+RANGE)continue;
             float px=x(tick);if(px<left() || px>left()+span())continue;local.setTimeInMillis(tick);
-            paint.setColor(muted);paint.setAlpha((int)(150*edgeAlpha(px)));
-            if(local.get(Calendar.MINUTE)==0)canvas.drawCircle(px,y,dp(1.35f),paint);
-            else canvas.drawLine(px,y-dp(2.3f),px,y+dp(2.3f),paint);
+            paint.setColor(muted);paint.setAlpha((int)(190*edgeAlpha(px)));
+            if(local.get(Calendar.MINUTE)==0)canvas.drawCircle(px,y,dp(2.2f),paint);
+            else canvas.drawLine(px,y-dp(4),px,y+dp(4),paint);
         }
         paint.setAlpha(255);paint.setColor(primary);
-        if(x(origin)>=left() && x(origin)<=left()+span())canvas.drawCircle(x(origin),y,dp(3.7f),paint);
+        if(x(origin)>=left() && x(origin)<=left()+span())canvas.drawCircle(x(origin),y,dp(5.2f),paint);
         // A separate thumb leaves the current-time dot visible when exploring other times.
         if (selected>=origin-RANGE && selected<=origin+RANGE) {
-            float px=x(selected);paint.setColor(primary);paint.setStrokeWidth(dp(2));
-            canvas.drawLine(px,y-dp(11),px,y+dp(11),paint);
-            canvas.drawCircle(px,y-dp(12),dp(3),paint);
+            float px=x(selected);paint.setColor(primary);paint.setStrokeWidth(dp(2.8f));
+            canvas.drawLine(px,y-dp(15),px,y+dp(15),paint);
+            canvas.drawCircle(px,y-dp(16),dp(4),paint);
         }
-        paint.setTextSize(dp(11));
-        for(int hour=-24;hour<=24;hour+=12){
+        paint.setTextSize(dp(13));
+        for(int hour:LABEL_HOURS){
             float px=x(origin+hour*60*MINUTE);if(px<left()-1 || px>left()+span()+1)continue;
             paint.setColor(hour==0?primary:muted);paint.setAlpha((int)(255*edgeAlpha(px)));
             paint.setTextAlign(hour==-24?Paint.Align.LEFT:hour==24?Paint.Align.RIGHT:Paint.Align.CENTER);
@@ -100,7 +101,8 @@ public final class WorldTimeRuler extends View {
             String label=hour==0?AppString.get(R.string.world_time_now):(hour<0?"−":"+")+Math.abs(hour)+" h";
             float half=paint.measureText(label)/2;
             if(hour!=24 && hour!=-24)px=Math.max(left()+half,Math.min(left()+span()-half,px));
-            canvas.drawText(label,px,dp(47),paint);
+            // Stagger the nearby six/eight-hour labels so they stay legible on small phones.
+            canvas.drawText(label,px,dp(Math.abs(hour)==8?82:63),paint);
         }
         paint.setAlpha(255);
     }
