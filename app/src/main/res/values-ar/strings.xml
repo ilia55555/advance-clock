@@ -1483,4 +1483,18 @@
     <string name="world_time_ruler">استكشاف التوقيت العالمي</string>
     <string name="world_time_now">الآن</string>
     <string name="alarm_volume">مستوى صوت التنبيه</string>
+    <string name="munajat_title">مناجاة</string>
+    <string name="munajat_all">كل الصلوات</string>
+    <string name="munajat_description">اختر صوتًا منفصلًا قبل الأذان وبعده. كلاهما اختياري.</string>
+    <string name="munajat_before">قبل الأذان</string>
+    <string name="munajat_after">بعد الأذان</string>
+    <string name="munajat_minutes">الدقائق قبل الأذان (١–١٤٤٠)</string>
+    <string name="munajat_after_hint">يبدأ بعد انتهاء صوت الأذان دون تداخل.</string>
+    <string name="munajat_gradual">تغيير مستوى الصوت تدريجيًا خلال المناجاة</string>
+    <string name="munajat_start_volume">مستوى البداية</string>
+    <string name="munajat_end_volume">مستوى النهاية</string>
+    <string name="munajat_choose">اختيار صوت المناجاة</string>
+    <string name="munajat_empty">أضف ملف المناجاة من جهازك. هذه القائمة منفصلة عن التنبيهات والمؤذنين.</string>
+    <string name="munajat_save">حفظ إعدادات المناجاة</string>
+    <string name="munajat_invalid_minutes">أدخل رقمًا من ١ إلى ١٤٤٠.</string>
 </resources>

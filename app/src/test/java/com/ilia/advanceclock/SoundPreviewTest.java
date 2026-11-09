@@ -97,7 +97,7 @@ public class SoundPreviewTest {
    String before=AppSettings.adhanSoundUri(host.get(),AdhanScheduler.FAJR);play(row);drain(c);assertTrue(player(c).playing);assertEquals(before,AppSettings.adhanSoundUri(host.get(),AdhanScheduler.FAJR));
    SeekBar volume=root.findViewWithTag("adhan_volume_seek");assertNotNull(volume);
    SeekBar.OnSeekBarChangeListener listener=ReflectionHelpers.getField(volume,"mOnSeekBarChangeListener");
-   listener.onProgressChanged(volume,19,true);assertEquals(.19f,player(c).volume,.001f);assertEquals(19,AppSettings.adhanVolume(host.get(),AdhanScheduler.FAJR));
+   listener.onProgressChanged(volume,19,true);assertEquals(1f,player(c).volume,.001f);assertEquals(19,AppSettings.adhanVolume(host.get(),AdhanScheduler.FAJR));
    listener.onProgressChanged(volume,0,true);assertEquals(0f,player(c).volume,0f);
    assertNotNull(row.findViewWithTag("sound_preview_seek"));host.pause().stop();drain(c);assertNull(ReflectionHelpers.getField(c,"player"));
   }

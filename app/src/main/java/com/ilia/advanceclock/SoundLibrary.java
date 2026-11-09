@@ -23,6 +23,21 @@ final class SoundLibrary {
 
     private SoundLibrary() {}
 
+    static List<Sound> munajat(Context context){
+        ArrayList<Sound> result=new ArrayList<>();addBundledSounds(context,result,"munajat",AppString.get(R.string.munajat_title),30);
+        addNamedBundledSound(context,result,"munajat_before",AppString.get(R.string.munajat_before));addNamedBundledSound(context,result,"munajat_after",AppString.get(R.string.munajat_after));
+        try{JSONArray array=new JSONArray(context.getSharedPreferences(PREFS+"_munajat",0).getString(KEY,"[]"));
+            for(int i=0;i<array.length();i++){JSONObject item=array.optJSONObject(i);if(item==null)continue;String uri=item.optString("uri","");if(!uri.isEmpty())result.add(new Sound(item.optString("name",AppString.get(R.string.munajat_title)),uri));}
+        }catch(Exception ignored){}return result;
+    }
+    static void addMunajat(Context context,Uri uri){
+        LocalMedia.require(uri);List<Sound> sounds=munajat(context);for(Sound sound:sounds)if(sound.uri.equals(uri.toString()))return;
+        JSONArray array=new JSONArray();for(Sound sound:sounds)if(!sound.uri.startsWith("android.resource://"))try{array.put(new JSONObject().put("name",sound.name).put("uri",sound.uri));}catch(Exception ignored){}
+        try{array.put(new JSONObject().put("name",displayName(context,uri)).put("uri",uri.toString()));}catch(Exception ignored){}
+        context.getSharedPreferences(PREFS+"_munajat",0).edit().putString(KEY,array.toString()).apply();
+    }
+    static String munajatName(Context c,String uri){for(Sound sound:munajat(c))if(sound.uri.equals(uri))return sound.name;return AppString.get(R.string.munajat_choose);}
+
     static List<Sound> all(Context context) { return all(context, false); }
 
     static List<Sound> all(Context context, boolean adhan) {

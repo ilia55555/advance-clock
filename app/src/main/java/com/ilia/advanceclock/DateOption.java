@@ -95,6 +95,21 @@ final class DateOption {
         return controls;
     }
 
+    View combineWithDate(Button date) {
+        LinearLayout parent=(LinearLayout)controls.getParent();int position=parent.indexOfChild(controls);
+        parent.removeView(controls);
+        ((android.view.ViewGroup)dateSwitch.getParent()).removeView(dateSwitch);
+        ((android.view.ViewGroup)date.getParent()).removeView(date);
+        LinearLayout box=new LinearLayout(host);box.setOrientation(LinearLayout.HORIZONTAL);
+        box.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);box.setGravity(Gravity.CENTER_VERTICAL);
+        box.setBackgroundResource(R.drawable.bg_field);box.setPadding(dp(4),0,dp(4),0);
+        dateSwitch.setMinimumHeight(dp(48));box.addView(dateSwitch,new LinearLayout.LayoutParams(-2,-1));
+        date.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        box.addView(date,new LinearLayout.LayoutParams(0,-1,1));
+        parent.addView(box,position,new LinearLayout.LayoutParams(-1,dp(64)));
+        return box;
+    }
+
     boolean isApplied() { return dateSwitch.isChecked(); }
     void setApplied(boolean applied) {
         updating = true;

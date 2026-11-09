@@ -24,6 +24,7 @@ public final class AdhanSoundService extends Service {
     public static final String AUDIO_RESOURCE_NAME = "adhan";
     public static final String AUDIO_FILE_NAME = "adhan.mp3";
     public static final String ACTION_START = "com.ilia.advanceclock.ADHAN_START";
+    public static final String ACTION_MUNAJAT_BEFORE = "com.ilia.advanceclock.MUNAJAT_BEFORE_START";
     public static final String ACTION_STOP = "com.ilia.advanceclock.ADHAN_STOP";
     public static final String ACTION_MUTE = "com.ilia.advanceclock.ADHAN_MUTE";
     public static final String ACTION_UNMUTE = "com.ilia.advanceclock.ADHAN_UNMUTE";
@@ -34,6 +35,16 @@ public final class AdhanSoundService extends Service {
             new java.lang.ref.WeakReference<>(null);
     private boolean playing;
     private boolean foreground;
+    private int phase; // 0 adhan, 1 before, 2 after
+    private MunajatConfig munajat;
+    private long munajatRampDuration;
+    private long prayerAt;
+    private final Runnable munajatBoundary=()->{if(phase==1){stopRing();stopSelf();}};
+    private final Runnable munajatRamp=new Runnable(){public void run(){
+        if(phase==0 || player==null || munajat==null)return;
+        try{float position=munajatRampDuration>0?player.getCurrentPosition()/(float)munajatRampDuration:0;float gain=muted?0:munajat.gain(position);player.setVolume(gain,gain);if(munajat.gradual && !muted)stopHandler.postDelayed(this,200);}catch(RuntimeException ignored){}
+    }};
+    static void stopMunajatIfDisabled(Context c){AdhanSoundService service=running.get();if(service!=null && service.phase!=0 && !MunajatConfig.load(c,service.type,service.phase==1).playable()){service.stopRing();service.stopSelf();}}
 
     static void onRingVisibilityChanged() {
         AdhanSoundService service = running.get();
@@ -42,6 +53,7 @@ public final class AdhanSoundService extends Service {
 
     private void updateNotificationVisibility() {
         if (!playing) return;
+        if(phase!=0)return;
         if (AdhanRingActivity.isVisible(type)) {
             if (foreground) {
                 stopForeground(STOP_FOREGROUND_REMOVE);
@@ -100,7 +112,12 @@ public final class AdhanSoundService extends Service {
 
     static void refreshVolume(Context context,int changedType){
         AdhanSoundService service=running.get();if(service==null || !service.playing || (changedType!=899 && changedType!=service.type))return;
-        service.volume=AppSettings.adhanVolume(context,service.type)/100f;service.applyVolume();
+        if(service.phase!=0)return;
+        float previous=service.volume;
+        int percent=AppSettings.adhanVolume(context,service.type);service.volume=percent/100f;
+        AlarmVolume.apply(context,percent);
+        if(percent==0)service.muted=true;else if(previous==0)service.muted=false;
+        service.applyVolume();
     }
 
     @Override public void onCreate() {
@@ -128,6 +145,7 @@ public final class AdhanSoundService extends Service {
         else if (ACTION_LOWER.equals(action)) lowerVolume();
         else if (ACTION_RAISE.equals(action)) raiseVolume();
         else if (ACTION_START.equals(action)) {
+            phase=0;
             type = intent.getIntExtra("adhanType", AdhanScheduler.FAJR);
             boolean openWhileUnlocked = shouldOpenFullscreenWhileUnlocked();
             playing = true;
@@ -136,11 +154,24 @@ public final class AdhanSoundService extends Service {
             if (openWhileUnlocked && !AdhanRingActivity.isVisible(type)) openRingActivity();
             startPlayback();
             updateNotificationVisibility();
+        }else if(ACTION_MUNAJAT_BEFORE.equals(action)){
+            if(playing){if(!foreground){startForeground(3_300_000+type,notification(false));foreground=true;}return START_NOT_STICKY;}
+            type=intent.getIntExtra("adhanType",0);prayerAt=intent.getLongExtra("prayerAt",0);
+            if(prayerAt<=System.currentTimeMillis()){stopSelf();return START_NOT_STICKY;}
+            startMunajat(true,prayerAt);
         }
         return START_NOT_STICKY;
     }
 
     private Notification notification(boolean allowFullscreen) {
+        if(phase!=0){
+            PendingIntent open=PendingIntent.getActivity(this,3_600_000+type,new Intent(this,MunajatSettingsActivity.class).putExtra("adhanType",type),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent stop=PendingIntent.getService(this,3_400_000+type,command(this,ACTION_STOP),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+            Notification.Builder builder=new Notification.Builder(this,NotificationHelper.ADHAN_CHANNEL).setSmallIcon(R.drawable.ic_alarm)
+                    .setContentTitle(getString(R.string.munajat_title)+" • "+AdhanScheduler.title(type)).setContentText(getString(phase==1?R.string.munajat_before:R.string.munajat_after))
+                    .setContentIntent(open).setOngoing(true).setOnlyAlertOnce(true).addAction(0,getString(R.string.runtime_text_0307),stop);
+            if(Build.VERSION.SDK_INT>=31)builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);return builder.build();
+        }
         Intent ring = new Intent(this, AdhanRingActivity.class)
                 .putExtra("adhanType", type)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -208,7 +239,8 @@ public final class AdhanSoundService extends Service {
     private void startPlayback() {
         stopPlayback();
         volume = AppSettings.adhanVolume(this, type) / 100f;
-        muted = false;
+        muted = volume==0;
+        if(AppSettings.adhanSound(this,type))AlarmVolume.apply(this,Math.round(volume*100));
         stopHandler.removeCallbacks(maximumDuration);
         if (!AppSettings.adhanSound(this, type)) {
             stopHandler.postDelayed(maximumDuration, 10 * 60_000L);
@@ -236,7 +268,7 @@ public final class AdhanSoundService extends Service {
                         applyVolume();value.start();
                     });
                     player.setWakeMode(this, android.os.PowerManager.PARTIAL_WAKE_LOCK);
-                    player.setOnCompletionListener(value -> stopSelf());
+                    player.setOnCompletionListener(value -> {if(player!=value || phase!=0)return;if(MunajatConfig.load(this,type,false).playable())startMunajat(false,0);else stopSelf();});
                     player.setOnErrorListener((value, what, extra) -> {
                         stopSelf();
                         return true;
@@ -247,6 +279,7 @@ public final class AdhanSoundService extends Service {
         }
         vibrationEnabled=AppSettings.adhanVibrate(this,type);
         if(vibrationEnabled)startVibration();
+        if(!AppSettings.adhanSound(this,type) && MunajatConfig.load(this,type,false).playable())startMunajat(false,0);
         AlertOutputEvents.changed();
     }
 
@@ -273,6 +306,7 @@ public final class AdhanSoundService extends Service {
     private void lowerVolume() {
         muted = false;
         volume = Math.max(0f, volume - 0.10f);
+        AlarmVolume.apply(this,Math.round(volume*100));muted=volume==0;
         applyVolume();
         AlertOutputEvents.changed();
     }
@@ -280,15 +314,39 @@ public final class AdhanSoundService extends Service {
     private void raiseVolume() {
         muted = false;
         volume = Math.min(1f, volume + 0.10f);
+        AlarmVolume.apply(this,Math.round(volume*100));muted=volume==0;
         applyVolume();
         AlertOutputEvents.changed();
     }
 
     private void applyVolume() {
-        if (player != null) try{player.setVolume(muted ? 0f : volume, muted ? 0f : volume);}catch(RuntimeException ignored){}
+        if(phase!=0 && player!=null){stopHandler.removeCallbacks(munajatRamp);munajatRamp.run();return;}
+        if (player != null) try{player.setVolume(muted ? 0f : 1f, muted ? 0f : 1f);}catch(RuntimeException ignored){}
+    }
+
+    private void startMunajat(boolean before,long boundary){
+        stopPlayback();stopHandler.removeCallbacks(maximumDuration);
+        phase=before?1:2;munajat=MunajatConfig.load(this,type,before);
+        if(!munajat.playable() || AppSettings.isAdhanSuppressedNow(this,type)){stopRing();stopSelf();return;}
+        playing=true;foreground=true;muted=false;vibrationEnabled=false;
+        startForeground(3_300_000+type,notification(false));
+        AlarmVolume.apply(this,munajat.ceiling());
+        if(before)stopHandler.postDelayed(munajatBoundary,Math.max(1,boundary-System.currentTimeMillis()));
+        // Bound a missing/failed preparation; a prepared file gets its own full duration below.
+        stopHandler.postDelayed(maximumDuration,30_000L);
+        try{
+            MediaPlayer value=new MediaPlayer();player=value;
+            value.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
+            value.setDataSource(this,LocalMedia.require(Uri.parse(munajat.uri)));value.setLooping(false);value.setWakeMode(this,android.os.PowerManager.PARTIAL_WAKE_LOCK);
+            value.setOnPreparedListener(ready->{if(player!=ready || phase==0)return;int duration=ready.getDuration();munajatRampDuration=duration;if(before)munajatRampDuration=Math.max(1,Math.min(duration>0?duration:Long.MAX_VALUE,boundary-System.currentTimeMillis()));if(duration>0){stopHandler.removeCallbacks(maximumDuration);stopHandler.postDelayed(maximumDuration,duration+10_000L);}float gain=muted?0:munajat.gain(0);ready.setVolume(gain,gain);ready.start();munajatRamp.run();});
+            value.setOnCompletionListener(done->{if(player==done && phase!=0){stopRing();stopSelf();}});
+            value.setOnErrorListener((failed,what,extra)->{if(player==failed){stopRing();stopSelf();}return true;});value.prepareAsync();
+        }catch(Exception ignored){stopRing();stopSelf();}
+        AlertOutputEvents.changed();
     }
 
     private void stopPlayback() {
+        stopHandler.removeCallbacks(munajatRamp);stopHandler.removeCallbacks(munajatBoundary);
         try { if (player != null) player.stop(); } catch (Exception ignored) {}
         try { if (player != null) player.release(); } catch (Exception ignored) {}
         player = null;

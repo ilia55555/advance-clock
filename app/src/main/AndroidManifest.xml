@@ -64,6 +64,7 @@
         <activity android:name=".AboutActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity android:name=".PrayerSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".MunajatSettingsActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".CalendarWidgetConfigActivity"
             android:screenOrientation="portrait"

@@ -55,6 +55,7 @@ public final class NoForgetEditorActivity extends Activity {
     private Spinner penSize;
     private ImageButton gridToggle;
     private Switch vibrate;
+    private android.widget.SeekBar volume;
     private Switch taskMode;
     private Switch fullscreenUnlocked;
     private Switch fullscreenLocked;
@@ -108,6 +109,9 @@ public final class NoForgetEditorActivity extends Activity {
         penSize=findViewById(R.id.editor_pen_size);
         gridToggle=findViewById(R.id.editor_grid_toggle);
         vibrate=findViewById(R.id.note_vibrate);
+        volume=new android.widget.SeekBar(this);volume.setId(R.id.alarm_volume);volume.setMax(100);
+        volume.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);volume.setProgress(AlarmVolume.current(this));
+        volume.setContentDescription(getString(R.string.alarm_volume));
         fullscreenUnlocked=findViewById(R.id.note_fullscreen_unlocked);
         fullscreenLocked=findViewById(R.id.note_fullscreen_locked);
         fullscreenUnlocked.setVisibility(View.GONE);fullscreenLocked.setVisibility(View.GONE);
@@ -129,6 +133,7 @@ public final class NoForgetEditorActivity extends Activity {
         if(noteId>=0)loadExisting();
         else deleteButton.setVisibility(View.GONE);
         if(savedInstanceState!=null)taskMode.setChecked(savedInstanceState.getBoolean("taskMode",taskMode.isChecked()));
+        if(savedInstanceState!=null)volume.setProgress(savedInstanceState.getInt("volumePercent",volume.getProgress()));
 
         attachmentKey = savedInstanceState == null ? null : savedInstanceState.getString("attachmentKey");
         if (attachmentKey == null || attachmentKey.isEmpty()) {
@@ -180,12 +185,19 @@ public final class NoForgetEditorActivity extends Activity {
         compactRow(priority,sketchAction,filesAction);
         ((android.view.ViewGroup)attachmentRow.getParent()).removeView(attachmentRow);
         View dateRow=(View)dateButton.getParent();
-        compactRow(dateOption.compactInlineView(),dateButton,timeButton);
+        compactRow(dateOption.combineWithDate(dateButton),timeButton);
         ((android.view.ViewGroup)dateRow.getParent()).removeView(dateRow);
         compactRow(repeatButton,remindersButton);
         vibrate.setTextSize(13);
         vibrate.setPadding(dp(8),0,dp(8),0);
         compactRow(soundButton,vibrate);
+        LinearLayout parent=(LinearLayout)((View)soundButton.getParent()).getParent();
+        LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);box.setBackgroundResource(R.drawable.bg_field);box.setPadding(dp(8),dp(4),dp(8),0);
+        TextView caption=new TextView(this);caption.setGravity(Gravity.CENTER);caption.setTextColor(AppSettings.textPrimary(this));caption.setTextSize(13);
+        box.addView(caption,new LinearLayout.LayoutParams(-1,-2));box.addView(volume,new LinearLayout.LayoutParams(-1,dp(48)));
+        Runnable label=()->caption.setText(getString(R.string.alarm_volume)+"  "+java.text.NumberFormat.getPercentInstance().format(volume.getProgress()/100.0));
+        volume.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener(){public void onProgressChanged(android.widget.SeekBar b,int p,boolean u){label.run();}public void onStartTrackingTouch(android.widget.SeekBar b){}public void onStopTrackingTouch(android.widget.SeekBar b){}});label.run();
+        LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.topMargin=dp(8);parent.addView(box,parent.indexOfChild((View)soundButton.getParent())+1,lp);
     }
 
     private void compactRow(View... fields) {
@@ -210,6 +222,7 @@ public final class NoForgetEditorActivity extends Activity {
     }
 
     @Override protected void onSaveInstanceState(Bundle out) {
+        out.putInt("volumePercent",volume.getProgress());
         out.putBoolean("taskMode",taskMode.isChecked());
         out.putLong("selectedTime", due.getTimeInMillis());
         out.putString("attachmentKey", attachmentKey); super.onSaveInstanceState(out);
@@ -854,6 +867,7 @@ public final class NoForgetEditorActivity extends Activity {
         attachments.addAll(
                 NoteAttachment.parse(item.attachmentsJson));
         vibrate.setChecked(item.vibrate);
+        volume.setProgress(item.volumePercent<0?AlarmVolume.current(this):item.volumePercent);
         fullscreenUnlocked.setChecked(true);
         fullscreenLocked.setChecked(true);
         soundUri=item.soundUri;
@@ -931,6 +945,7 @@ public final class NoForgetEditorActivity extends Activity {
         AlarmAttachments.read(this, attachmentKey, item);
         item.vibrate=vibrate.isChecked();
         item.soundUri=soundUri;
+        item.volumePercent=volume.getProgress();
         item.taskMode=taskMode.isChecked();
         NoForgetItem previous=new NoForgetStore(this).find(id);
         if(previous!=null && item.taskMode && previous.taskMode && previous.dueAtMillis==item.dueAtMillis){

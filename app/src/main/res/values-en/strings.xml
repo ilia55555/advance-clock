@@ -1465,4 +1465,18 @@ Lock screen</string>
     <string name="world_time_ruler">World time explorer</string>
     <string name="world_time_now">Now</string>
     <string name="alarm_volume">Alarm volume</string>
+    <string name="munajat_title">Munajat</string>
+    <string name="munajat_all">All prayers</string>
+    <string name="munajat_description">Choose separate audio before and after the adhan. Both are optional.</string>
+    <string name="munajat_before">Before the adhan</string>
+    <string name="munajat_after">After the adhan</string>
+    <string name="munajat_minutes">Minutes before the adhan (1–1440)</string>
+    <string name="munajat_after_hint">Starts after the adhan audio finishes; never overlaps it.</string>
+    <string name="munajat_gradual">Gradual volume throughout the audio</string>
+    <string name="munajat_start_volume">Starting volume</string>
+    <string name="munajat_end_volume">Ending volume</string>
+    <string name="munajat_choose">Choose munajat audio</string>
+    <string name="munajat_empty">Add munajat audio from your device. This list is separate from alarms and muezzins.</string>
+    <string name="munajat_save">Save munajat settings</string>
+    <string name="munajat_invalid_minutes">Enter a number from 1 to 1440.</string>
 </resources>

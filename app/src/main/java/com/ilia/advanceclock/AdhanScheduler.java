@@ -38,6 +38,7 @@ public final class AdhanScheduler {
     }
 
     public static boolean scheduleNext(Context context, int type) {
+        cancelMunajat(context,type);
         if (!AppSettings.prayerLocationSet(context) || !isEnabled(context, type)) {
             setScheduled(context, type, false);
             return false;
@@ -63,6 +64,11 @@ public final class AdhanScheduler {
                 // User-visible prayer alarms must wake from Doze like clock alarms.
                 manager.setAlarmClock(new AlarmManager.AlarmClockInfo(when, show),
                         operation(context, type));
+                MunajatConfig before=MunajatConfig.load(context,type,true);
+                long early=when-before.minutes*60_000L;
+                if(before.playable() && early>now){
+                    manager.setAlarmClock(new AlarmManager.AlarmClockInfo(early,show),munajatOperation(context,type,when));
+                }
             } catch (SecurityException ignored) {
                 setScheduled(context, type, false);
                 return false;
@@ -122,7 +128,7 @@ public final class AdhanScheduler {
         return result.getTimeInMillis();
     }
 
-    private static boolean isEnabled(Context context, int type) {
+    static boolean isEnabled(Context context, int type) {
         if (type == FAJR) return AppSettings.fajrAdhanEnabled(context);
         if (type == DHUHR) return AppSettings.dhuhrAdhanEnabled(context);
         if (type == ASR) return AppSettings.asrAdhanEnabled(context);
@@ -156,8 +162,14 @@ public final class AdhanScheduler {
     }
 
     private static void cancel(Context context, int type) {
+        cancelMunajat(context,type);
         AlarmManager manager = context.getSystemService(AlarmManager.class);
         if (manager != null) manager.cancel(operation(context, type));
         setScheduled(context, type, false);
     }
+    static PendingIntent munajatOperation(Context c,int type,long prayerAt){
+        Intent intent=new Intent(c,AdhanReceiver.class).setAction("com.ilia.advanceclock.MUNAJAT_BEFORE").putExtra("adhanType",type).putExtra("munajatBefore",true).putExtra("prayerAt",prayerAt);
+        return PendingIntent.getBroadcast(c,3_500_000+type,intent,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+    }
+    private static void cancelMunajat(Context c,int type){AlarmManager manager=c.getSystemService(AlarmManager.class);if(manager!=null)manager.cancel(munajatOperation(c,type,0));}
 }

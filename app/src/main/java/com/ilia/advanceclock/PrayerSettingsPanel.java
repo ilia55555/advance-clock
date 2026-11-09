@@ -851,6 +851,7 @@ final class PrayerSettingsPanel {
     }
 
     private void showAdhanSettings(String title, int type, LinearLayout root) {
+        AppSettings.ensureAdhanVolume(host,type);
         LinearLayout output = card();
         TextView outputTitle = text(AppString.get(R.string.runtime_text_0345), 16,
                 AppSettings.textPrimary(host));
@@ -860,7 +861,7 @@ final class PrayerSettingsPanel {
         boolean mixedVolume = type == 899
                 && !AppSettings.allAdhanVolumesMatch(host);
         int initialVolume = AppSettings.adhanVolume(host, type);
-        soundPreviews.setGain(initialVolume/100f);
+        soundPreviews.setAlarmVolumePercent(initialVolume);
         TextView volumeLabel = text(
                 mixedVolume
                         ? AppString.get(R.string.runtime_text_0344)
@@ -883,7 +884,7 @@ final class PrayerSettingsPanel {
                 if (!fromUser) return;
                 AppSettings.setAdhanVolume(
                         host, type, progress);
-                soundPreviews.setGain(progress/100f);
+                soundPreviews.setAlarmVolumePercent(progress);
                 refreshSummaries();
                 volumeLabel.setText(
                         AppString.get(R.string.runtime_text_0348)
@@ -933,6 +934,9 @@ final class PrayerSettingsPanel {
         output.addView(vibrate);
         output.addView(sound);
         root.addView(output, cardParams());
+        Button munajat=new Button(host);munajat.setText(R.string.munajat_title);munajat.setAllCaps(false);munajat.setBackgroundResource(R.drawable.bg_soft_button);munajat.setTextColor(AppSettings.primaryColor(host));
+        munajat.setOnClickListener(v->host.startActivity(new Intent(host,MunajatSettingsActivity.class).putExtra("adhanType",type)));
+        root.addView(munajat,new LinearLayout.LayoutParams(-1,dp(54)));
 
         addAdhanSkipSection(root, type);
 

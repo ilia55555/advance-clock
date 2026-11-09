@@ -38,6 +38,7 @@ public final class NoForgetItem {
     public boolean imagesAsBackground;
     public boolean vibrate = true;
     public String soundUri = "";
+    public int volumePercent = -1;
     public boolean fullscreenUnlocked = true;
     public boolean fullscreenLocked = true;
     public int reminderMode = AlarmReminderUtils.MODE_NONE;
@@ -90,6 +91,7 @@ public final class NoForgetItem {
         o.put("imageSource1", imageSource1); o.put("imageSource2", imageSource2);
         o.put("imagesAsBackground", imagesAsBackground);
         o.put("attachmentsJson",attachmentsJson);o.put("vibrate",vibrate);o.put("soundUri",soundUri);
+        o.put("volumePercent",AlarmVolume.normalize(volumePercent));
         o.put("fullscreenUnlocked",fullscreenUnlocked);o.put("fullscreenLocked",fullscreenLocked);
         o.put("reminderMode",reminderMode);o.put("reminderMinutesJson",reminderMinutesJson);
         return o;
@@ -116,6 +118,7 @@ public final class NoForgetItem {
         item.imageSource1=o.optString("imageSource1", item.imageUri1); item.imageSource2=o.optString("imageSource2", item.imageUri2);
         item.imagesAsBackground=o.optBoolean("imagesAsBackground", false);
         item.vibrate=o.optBoolean("vibrate",true); item.soundUri=o.optString("soundUri","");
+        item.volumePercent=AlarmVolume.normalize(o.optInt("volumePercent",-1));
         item.fullscreenUnlocked=o.optBoolean("fullscreenUnlocked",true);
         item.fullscreenLocked=o.optBoolean("fullscreenLocked",true);
         item.reminderMode=o.optInt("reminderMode",AlarmReminderUtils.MODE_NONE);

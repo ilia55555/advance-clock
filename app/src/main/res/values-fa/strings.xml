@@ -1415,4 +1415,18 @@
     <string name="world_time_ruler">مرور زمان جهانی</string>
     <string name="world_time_now">اکنون</string>
     <string name="alarm_volume">بلندی صدای هشدار</string>
+    <string name="munajat_title">مناجات</string>
+    <string name="munajat_all">همهٔ اذان‌ها</string>
+    <string name="munajat_description">برای قبل و بعد از اذان، صدای جداگانه انتخاب کنید. هر دو اختیاری هستند.</string>
+    <string name="munajat_before">پیش از اذان</string>
+    <string name="munajat_after">پس از اذان</string>
+    <string name="munajat_minutes">چند دقیقه پیش از اذان؟ (۱ تا ۱۴۴۰)</string>
+    <string name="munajat_after_hint">پس از پایان صدای اذان پخش می‌شود و با آن هم‌زمان نیست.</string>
+    <string name="munajat_gradual">تغییر تدریجی صدا در طول مناجات</string>
+    <string name="munajat_start_volume">صدای شروع</string>
+    <string name="munajat_end_volume">صدای پایان</string>
+    <string name="munajat_choose">انتخاب صدای مناجات</string>
+    <string name="munajat_empty">فایل مناجات را از گوشی اضافه کنید. این فهرست از هشدارها و مؤذن‌ها جداست.</string>
+    <string name="munajat_save">ذخیرهٔ تنظیمات مناجات</string>
+    <string name="munajat_invalid_minutes">عددی از ۱ تا ۱۴۴۰ وارد کنید.</string>
 </resources>

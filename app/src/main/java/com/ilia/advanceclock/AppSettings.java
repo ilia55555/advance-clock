@@ -839,7 +839,16 @@ public final class AppSettings {
                     : adhanVolume(context, AdhanScheduler.FAJR);
         }
         return Math.max(0, Math.min(100,
-                prefs(context).getInt("adhan_volume_" + type, 100)));
+                prefs(context).getInt("adhan_volume_" + type, AlarmVolume.current(context))));
+    }
+
+    static void ensureAdhanVolume(Context context,int type){
+        android.content.SharedPreferences.Editor editor=prefs(context).edit();
+        int initial=AlarmVolume.current(context);
+        for(int prayer=AdhanScheduler.FAJR;prayer<=AdhanScheduler.ISHA;prayer++){
+            if((type==899 || type==prayer) && !prefs(context).contains("adhan_volume_"+prayer))editor.putInt("adhan_volume_"+prayer,initial);
+        }
+        editor.apply();
     }
 
     public static int commonAdhanVolume(Context context) {

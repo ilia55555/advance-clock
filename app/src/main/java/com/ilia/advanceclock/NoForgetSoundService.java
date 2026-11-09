@@ -140,7 +140,9 @@ public final class NoForgetSoundService extends Service {
             stopSelf();
         });
         muted = false;
+        AlarmVolume.apply(this,item.volumePercent);
         play(item.soundUri);
+        if(item.volumePercent==0)setMuted(true);
         vibrationEnabled=item.vibrate;
         if (vibrationEnabled) vibrate();
         AlertOutputEvents.changed();

@@ -26,10 +26,10 @@ public class AlertExitAndAdhanVolumeTest {
   try(var service=service(AdhanSoundService.class)){
    AdhanSoundService output=service.get();MediaPlayer player=new MediaPlayer();ReflectionHelpers.setField(output,"player",player);ReflectionHelpers.setField(output,"playing",true);ReflectionHelpers.setField(output,"type",AdhanScheduler.FAJR);
    SoundPreviewTest.Player fake=org.robolectric.shadow.api.Shadow.extract(player);
-   AppSettings.setAdhanVolume(c,AdhanScheduler.FAJR,23);assertEquals(.23f,fake.volume,.001f);
-   AppSettings.setAdhanVolume(c,AdhanScheduler.DHUHR,99);assertEquals(.23f,fake.volume,.001f);
+   AppSettings.setAdhanVolume(c,AdhanScheduler.FAJR,23);assertEquals(Math.round(c.getSystemService(android.media.AudioManager.class).getStreamMaxVolume(android.media.AudioManager.STREAM_ALARM)*.23f),c.getSystemService(android.media.AudioManager.class).getStreamVolume(android.media.AudioManager.STREAM_ALARM));assertEquals(1f,fake.volume,.001f);
+   AppSettings.setAdhanVolume(c,AdhanScheduler.DHUHR,99);assertEquals(1f,fake.volume,.001f);
    AppSettings.setAdhanVolume(c,899,0);assertEquals(0f,fake.volume,0);
-   AppSettings.setAdhanVolume(c,899,41);assertEquals(.41f,fake.volume,.001f);
+   AppSettings.setAdhanVolume(c,899,41);assertEquals(1f,fake.volume,.001f);
   }
  }
  @Test public void muezzinsExcludeSystemDefaultAndOldEmptyChoiceResolvesToBundledAdhan(){

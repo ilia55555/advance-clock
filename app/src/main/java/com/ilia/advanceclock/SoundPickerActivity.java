@@ -16,6 +16,7 @@ import android.widget.TextView;
 public final class SoundPickerActivity extends Activity {
     public static final String EXTRA_URI = "soundUri";
     public static final String EXTRA_NAME = "soundName";
+    public static final String EXTRA_MUNAJAT = "munajat";
     private static final int REQ_AUDIO = 810;
     private LinearLayout list;
     private SoundPreviewController previews;
@@ -29,6 +30,7 @@ public final class SoundPickerActivity extends Activity {
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); AppSettings.applyModalOverlay(this); super.onCreate(state);
         previews=new SoundPreviewController(this);
+        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false))previews.setAlarmVolumePercent(getIntent().getIntExtra("previewVolume",10));
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL); root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(18)); root.setBackgroundColor(AppSettings.background(this));
@@ -37,7 +39,7 @@ public final class SoundPickerActivity extends Activity {
         close.setColorFilter(AppSettings.textPrimary(this), PorterDuff.Mode.SRC_IN);
         close.setBackgroundColor(0); close.setOnClickListener(v -> finish());
         top.addView(close, new LinearLayout.LayoutParams(dp(48), dp(48)));
-        TextView title = new TextView(this); title.setText(AppString.get(R.string.runtime_text_0150)); title.setTextSize(24);
+        TextView title = new TextView(this); title.setText(AppString.get(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false)?R.string.munajat_title:R.string.runtime_text_0150)); title.setTextSize(24);
         title.setTextColor(AppSettings.textPrimary(this)); title.setTypeface(null, 1);
         title.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL); title.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
         top.addView(title, new LinearLayout.LayoutParams(0, dp(56), 1)); root.addView(top);
@@ -47,6 +49,7 @@ public final class SoundPickerActivity extends Activity {
         android.widget.FrameLayout checkPanel=new android.widget.FrameLayout(this);checkPanel.addView(checkSounds,new android.widget.FrameLayout.LayoutParams(-1,-1));
         checkLoading=new InfinityLoadingView(this);checkLoading.setTag("online_sounds_loading");checkLoading.setVisibility(View.GONE);
         checkPanel.addView(checkLoading,new android.widget.FrameLayout.LayoutParams(dp(72),dp(36),Gravity.CENTER));root.addView(checkPanel,new LinearLayout.LayoutParams(-1,dp(54)));
+        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false))checkPanel.setVisibility(View.GONE);
         ScrollView scroll = new ScrollView(this); list = new LinearLayout(this);
         list.setOrientation(LinearLayout.VERTICAL); scroll.addView(list, new ScrollView.LayoutParams(-1, -2));
         LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(-1, 0, 1); sp.topMargin=dp(10); root.addView(scroll, sp);
@@ -55,6 +58,11 @@ public final class SoundPickerActivity extends Activity {
 
     private void render() {
         list.removeAllViews();
+        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false)){
+            java.util.List<SoundLibrary.Sound> sounds=SoundLibrary.munajat(this);
+            if(sounds.isEmpty()){TextView empty=new TextView(this);empty.setText(R.string.munajat_empty);empty.setTextColor(AppSettings.textSecondary(this));empty.setPadding(dp(8),dp(16),dp(8),dp(16));list.addView(empty);}
+            for(SoundLibrary.Sound sound:sounds)addLocalSound(sound);return;
+        }
         java.util.List<SoundLibrary.Sound> sounds=SoundLibrary.all(this);
         for(SoundLibrary.Sound sound:sounds)if(sound.uri.isEmpty()){addLocalSound(sound);break;}
         java.util.LinkedHashMap<String,DownloadableSounds.Entry> catalog=new java.util.LinkedHashMap<>();
@@ -122,7 +130,7 @@ public final class SoundPickerActivity extends Activity {
     @Override protected void onActivityResult(int requestCode,int resultCode,Intent data){super.onActivityResult(requestCode,resultCode,data);
         if(requestCode!=REQ_AUDIO||resultCode!=RESULT_OK||data==null||data.getData()==null)return;
         Uri uri=data.getData();try{getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION);}catch(Exception ignored){}
-        SoundLibrary.add(this,uri);render();}
+        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false))SoundLibrary.addMunajat(this,uri);else SoundLibrary.add(this,uri);render();}
     private Button button(String text){Button b=new Button(this);b.setText(text);b.setAllCaps(false);b.setTextColor(AppSettings.textPrimary(this));b.setPadding(dp(16),0,dp(16),0);b.setBackgroundResource(R.drawable.bg_card);return b;}
     private int dp(int v){return Math.round(v*getResources().getDisplayMetrics().density);}
     @Override public void finish(){super.finish();AppSettings.playFullscreenExit(this);}
