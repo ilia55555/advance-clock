@@ -1488,4 +1488,6 @@ Lock screen</string>
     <string name="time_format_tool_result">Result</string>
     <string name="time_format_tool_morning">Before noon (AM)</string>
     <string name="time_format_tool_afternoon">After noon (PM)</string>
+    <string name="time_picker_mode_clock">Clock</string>
+    <string name="time_picker_mode_wheel">Wheel</string>
 </resources>

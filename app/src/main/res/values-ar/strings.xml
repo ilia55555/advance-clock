@@ -1506,4 +1506,6 @@
     <string name="time_format_tool_result">النتيجة</string>
     <string name="time_format_tool_morning">قبل الظهر (AM)</string>
     <string name="time_format_tool_afternoon">بعد الظهر (PM)</string>
+    <string name="time_picker_mode_clock">ساعة</string>
+    <string name="time_picker_mode_wheel">عجلة</string>
 </resources>
