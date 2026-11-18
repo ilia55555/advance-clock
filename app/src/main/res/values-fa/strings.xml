@@ -1429,4 +1429,13 @@
     <string name="munajat_empty">فایل مناجات را از گوشی اضافه کنید. این فهرست از هشدارها و مؤذن‌ها جداست.</string>
     <string name="munajat_save">ذخیرهٔ تنظیمات مناجات</string>
     <string name="munajat_invalid_minutes">عددی از ۱ تا ۱۴۴۰ وارد کنید.</string>
+    <string name="time_format_tool_title">تبدیل ساعت ۱۲ و ۲۴ ساعته</string>
+    <string name="time_format_tool_description">تبدیل AM/PM به ۲۴ ساعته و برعکس</string>
+    <string name="time_format_tool_direction">نوع تبدیل</string>
+    <string name="time_format_tool_12_to_24">۱۲ ساعته (AM/PM) به ۲۴ ساعته</string>
+    <string name="time_format_tool_24_to_12">۲۴ ساعته به ۱۲ ساعته (AM/PM)</string>
+    <string name="time_format_tool_input">ساعت ورودی</string>
+    <string name="time_format_tool_result">نتیجه</string>
+    <string name="time_format_tool_morning">قبل از ظهر (AM)</string>
+    <string name="time_format_tool_afternoon">بعد از ظهر (PM)</string>
 </resources>

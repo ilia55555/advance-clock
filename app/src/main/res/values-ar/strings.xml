@@ -1497,4 +1497,13 @@
     <string name="munajat_empty">أضف ملف المناجاة من جهازك. هذه القائمة منفصلة عن التنبيهات والمؤذنين.</string>
     <string name="munajat_save">حفظ إعدادات المناجاة</string>
     <string name="munajat_invalid_minutes">أدخل رقمًا من ١ إلى ١٤٤٠.</string>
+    <string name="time_format_tool_title">تحويل الساعة 12/24</string>
+    <string name="time_format_tool_description">تحويل AM/PM إلى نظام 24 ساعة والعكس</string>
+    <string name="time_format_tool_direction">نوع التحويل</string>
+    <string name="time_format_tool_12_to_24">12 ساعة (AM/PM) إلى 24 ساعة</string>
+    <string name="time_format_tool_24_to_12">24 ساعة إلى 12 ساعة (AM/PM)</string>
+    <string name="time_format_tool_input">الوقت المدخل</string>
+    <string name="time_format_tool_result">النتيجة</string>
+    <string name="time_format_tool_morning">قبل الظهر (AM)</string>
+    <string name="time_format_tool_afternoon">بعد الظهر (PM)</string>
 </resources>

@@ -943,4 +943,13 @@ Sperrbildschirm</string>
     <string name="clock_format_label">Time format</string>
     <string name="clock_format_24">24-hour — 23:00</string>
     <string name="clock_format_12">12-hour — 11:00 PM</string>
+    <string name="time_format_tool_title">12h / 24h Converter</string>
+    <string name="time_format_tool_description">Convert AM/PM to 24-hour time and back</string>
+    <string name="time_format_tool_direction">Conversion</string>
+    <string name="time_format_tool_12_to_24">12-hour (AM/PM) to 24-hour</string>
+    <string name="time_format_tool_24_to_12">24-hour to 12-hour (AM/PM)</string>
+    <string name="time_format_tool_input">Input time</string>
+    <string name="time_format_tool_result">Result</string>
+    <string name="time_format_tool_morning">Before noon (AM)</string>
+    <string name="time_format_tool_afternoon">After noon (PM)</string>
 </resources>

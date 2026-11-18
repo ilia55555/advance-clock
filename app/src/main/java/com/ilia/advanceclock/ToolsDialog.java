@@ -71,7 +71,8 @@ public final class ToolsDialog {
         LinearLayout compass = toolCard(
                 host,
                 AppString.get(R.string.runtime_text_0318),
-                AppString.get(R.string.tools_dialog_compass_description));
+                AppString.get(R.string.tools_dialog_compass_description),
+                "N");
         compass.setOnClickListener(v -> {
             dialog.dismiss();
             host.startActivity(
@@ -86,6 +87,25 @@ public final class ToolsDialog {
                         LinearLayout.LayoutParams.WRAP_CONTENT);
         toolParams.topMargin = dp(host, 8);
         root.addView(compass, toolParams);
+
+        LinearLayout timeFormat = toolCard(
+                host,
+                AppString.get(R.string.time_format_tool_title),
+                AppString.get(R.string.time_format_tool_description),
+                "24");
+        timeFormat.setOnClickListener(v -> {
+            dialog.dismiss();
+            host.startActivity(
+                    new Intent(
+                            host,
+                            TimeFormatToolActivity.class));
+        });
+        LinearLayout.LayoutParams timeParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        timeParams.topMargin = dp(host, 8);
+        root.addView(timeFormat, timeParams);
 
         dialog.setContentView(root);
         dialog.setCanceledOnTouchOutside(true);
@@ -110,7 +130,8 @@ public final class ToolsDialog {
     private static LinearLayout toolCard(
             Activity host,
             String titleValue,
-            String descriptionValue) {
+            String descriptionValue,
+            String markValue) {
         LinearLayout row = new LinearLayout(host);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -126,8 +147,8 @@ public final class ToolsDialog {
 
         TextView compassMark = text(
                 host,
-                "N",
-                22,
+                markValue,
+                markValue.length() > 1 ? 18 : 22,
                 AppSettings.primaryColor(host));
         compassMark.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         compassMark.setGravity(Gravity.CENTER);

@@ -91,6 +91,7 @@
             android:excludeFromRecents="true"
             android:taskAffinity="" />
         <activity android:name=".CompassToolActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".TimeFormatToolActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".PrayerTimesWidgetConfigActivity"
             android:screenOrientation="portrait"
