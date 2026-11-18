@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -39,7 +37,12 @@ class TimeEntryDialog extends Dialog {
 
     private final TimePickerDialog.OnTimeSetListener listener;
     private final boolean app24;
-    private final android.widget.TimePicker clockView;
+    private final View clockView;
+    private final ClockDialView dial;
+    private final TextView headerHour;
+    private final TextView headerMinute;
+    private final Button amButton;
+    private final Button pmButton;
     private final View wheelView;
     private final Button[] tabs = new Button[2];
     private int mode;
@@ -87,11 +90,60 @@ class TimeEntryDialog extends Dialog {
         }
         root.addView(tabRow, new LinearLayout.LayoutParams(-1, -2));
 
-        clockView = new android.widget.TimePicker(context);
-        clockView.setIs24HourView(full);
-        clockView.setHour(hour);
-        clockView.setMinute(minute);
-        styleClock(clockView);
+        LinearLayout clockPanel = new LinearLayout(context);
+        clockPanel.setOrientation(LinearLayout.VERTICAL);
+        clockPanel.setGravity(Gravity.CENTER_HORIZONTAL);
+        LinearLayout header = new LinearLayout(context);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER);
+        header.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        headerHour = headerText(context);
+        headerMinute = headerText(context);
+        TextView headerColon = headerText(context);
+        headerColon.setText(":");
+        headerColon.setTextColor(AppSettings.textSecondary(context));
+        header.addView(headerHour, new LinearLayout.LayoutParams(-2, -2));
+        header.addView(headerColon, new LinearLayout.LayoutParams(-2, -2));
+        header.addView(headerMinute, new LinearLayout.LayoutParams(-2, -2));
+        if (app24) {
+            amButton = null;
+            pmButton = null;
+        } else {
+            LinearLayout periods = new LinearLayout(context);
+            periods.setOrientation(LinearLayout.VERTICAL);
+            String[] periodNames = periodLabels();
+            amButton = periodButton(context, periodNames[0]);
+            pmButton = periodButton(context, periodNames[1]);
+            periods.addView(amButton, new LinearLayout.LayoutParams(dp(56), dp(32)));
+            LinearLayout.LayoutParams pmParams = new LinearLayout.LayoutParams(dp(56), dp(32));
+            pmParams.topMargin = dp(4);
+            periods.addView(pmButton, pmParams);
+            LinearLayout.LayoutParams periodsParams = new LinearLayout.LayoutParams(-2, -2);
+            periodsParams.leftMargin = dp(12);
+            header.addView(periods, periodsParams);
+        }
+        clockPanel.addView(header, new LinearLayout.LayoutParams(-2, -2));
+        dial = new ClockDialView(context);
+        dial.setTime(hour, minute);
+        LinearLayout.LayoutParams dialParams = new LinearLayout.LayoutParams(-2, -2);
+        dialParams.topMargin = dp(12);
+        clockPanel.addView(dial, dialParams);
+        clockView = clockPanel;
+        dial.setListener(new ClockDialView.Listener() {
+            @Override public void onTimeChanged(int h, int m) { renderHeader(); }
+            @Override public void onModeChanged(boolean minutes) { renderHeader(); }
+        });
+        headerHour.setOnClickListener(v -> dial.setMinuteMode(false, true));
+        headerMinute.setOnClickListener(v -> dial.setMinuteMode(true, true));
+        if (amButton != null) {
+            amButton.setOnClickListener(v -> {
+                if (dial.hour() >= 12) dial.changeHour(dial.hour() - 12);
+            });
+            pmButton.setOnClickListener(v -> {
+                if (dial.hour() < 12) dial.changeHour(dial.hour() + 12);
+            });
+        }
+        renderHeader();
 
         LinearLayout row = new LinearLayout(context);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -148,7 +200,7 @@ class TimeEntryDialog extends Dialog {
 
         // Both modes share one frame so the dialog keeps the same size.
         FrameLayout content = new FrameLayout(context);
-        content.addView(clockView, new FrameLayout.LayoutParams(-2, -2, Gravity.CENTER));
+        content.addView(clockView, new FrameLayout.LayoutParams(-1, -2, Gravity.CENTER));
         content.addView(row, new FrameLayout.LayoutParams(-1, -2, Gravity.CENTER));
         LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(-1, -2);
         contentParams.topMargin = dp(12);
@@ -188,11 +240,12 @@ class TimeEntryDialog extends Dialog {
     private void switchMode(int target) {
         if (target == mode) return;
         commitWheel();
-        int hour = mode == MODE_CLOCK ? clockView.getHour() : wheelHour();
-        int minute = mode == MODE_CLOCK ? clockView.getMinute() : minutePicker.getValue();
+        int hour = mode == MODE_CLOCK ? dial.hour() : wheelHour();
+        int minute = mode == MODE_CLOCK ? dial.minute() : minutePicker.getValue();
         if (target == MODE_CLOCK) {
-            clockView.setHour(hour);
-            clockView.setMinute(minute);
+            dial.setTime(hour, minute);
+            dial.setMinuteMode(false, false);
+            renderHeader();
         } else {
             setWheel(hour, minute);
         }
@@ -216,25 +269,49 @@ class TimeEntryDialog extends Dialog {
         wheelView.setVisibility(mode == MODE_WHEEL ? View.VISIBLE : View.INVISIBLE);
     }
 
-    /** Removes the keyboard toggle and the coloured header from the clock. */
-    private void styleClock(android.widget.TimePicker picker) {
+    private void renderHeader() {
         Context c = getContext();
-        Resources system = Resources.getSystem();
-        View toggle = picker.findViewById(system.getIdentifier("toggle_mode", "id", "android"));
-        if (toggle != null) toggle.setVisibility(View.GONE);
-        View header = picker.findViewById(system.getIdentifier("time_header", "id", "android"));
-        if (header != null) header.setBackgroundColor(Color.TRANSPARENT);
-        ColorStateList colors = new ColorStateList(
-                new int[][]{{android.R.attr.state_activated}, {}},
-                new int[]{AppSettings.primaryColor(c), AppSettings.textSecondary(c)});
-        for (String id : new String[]{"hours", "minutes", "am_label", "pm_label"}) {
-            View view = picker.findViewById(system.getIdentifier(id, "id", "android"));
-            if (view instanceof TextView) ((TextView) view).setTextColor(colors);
+        int h = dial.hour();
+        int shown = app24 ? h : (h % 12 == 0 ? 12 : h % 12);
+        headerHour.setText(String.format(Locale.US, "%02d", shown));
+        headerMinute.setText(String.format(Locale.US, "%02d", dial.minute()));
+        boolean minutes = dial.isMinuteMode();
+        headerHour.setTextColor(minutes ? AppSettings.textSecondary(c) : AppSettings.primaryColor(c));
+        headerMinute.setTextColor(minutes ? AppSettings.primaryColor(c) : AppSettings.textSecondary(c));
+        if (amButton != null) {
+            paintPeriod(amButton, h < 12);
+            paintPeriod(pmButton, h >= 12);
         }
-        View separator = picker.findViewById(system.getIdentifier("separator", "id", "android"));
-        if (separator instanceof TextView) {
-            ((TextView) separator).setTextColor(AppSettings.textSecondary(c));
-        }
+    }
+
+    private TextView headerText(Context c) {
+        TextView view = new TextView(c);
+        view.setTextSize(44);
+        view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        view.setGravity(Gravity.CENTER);
+        view.setIncludeFontPadding(false);
+        view.setPadding(dp(4), 0, dp(4), 0);
+        return view;
+    }
+
+    private Button periodButton(Context c, String label) {
+        Button button = new Button(c);
+        button.setText(label);
+        button.setAllCaps(false);
+        button.setTextSize(13);
+        button.setPadding(0, 0, 0, 0);
+        button.setStateListAnimator(null);
+        return button;
+    }
+
+    private void paintPeriod(Button button, boolean active) {
+        Context c = getContext();
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(dp(10));
+        shape.setColor(active ? AppSettings.primaryColor(c) : Color.TRANSPARENT);
+        shape.setStroke(dp(1), AppSettings.primaryColor(c));
+        button.setBackground(shape);
+        button.setTextColor(active ? Color.WHITE : AppSettings.primaryColor(c));
     }
 
     private int wheelHour() {
@@ -295,9 +372,9 @@ class TimeEntryDialog extends Dialog {
 
     private void confirm() {
         commitWheel();
-        int hour = mode == MODE_CLOCK ? clockView.getHour() : wheelHour();
-        int minute = mode == MODE_CLOCK ? clockView.getMinute() : minutePicker.getValue();
-        if (listener != null) listener.onTimeSet(clockView, hour, minute);
+        int hour = mode == MODE_CLOCK ? dial.hour() : wheelHour();
+        int minute = mode == MODE_CLOCK ? dial.minute() : minutePicker.getValue();
+        if (listener != null) listener.onTimeSet(null, hour, minute);
         dismiss();
     }
 
