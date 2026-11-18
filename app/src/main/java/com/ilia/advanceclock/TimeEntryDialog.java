@@ -97,7 +97,6 @@ class TimeEntryDialog extends Dialog {
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER);
         row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-        row.setBackgroundResource(R.drawable.bg_field);
         row.setPadding(dp(8), dp(4), dp(8), dp(4));
 
         NumberPicker.Formatter twoDigits = v -> String.format(Locale.US, "%02d", v);
@@ -120,6 +119,8 @@ class TimeEntryDialog extends Dialog {
         minutePicker.setValue(minute);
         styleTypeable(hourPicker);
         styleTypeable(minutePicker);
+        enlarge(hourPicker, 30);
+        enlarge(minutePicker, 30);
 
         row.addView(hourPicker, wheelParams());
         TextView colon = new TextView(context);
@@ -140,6 +141,7 @@ class TimeEntryDialog extends Dialog {
             periodPicker.setDisplayedValues(periodLabels());
             periodPicker.setValue(hour >= 12 ? 1 : 0);
             periodPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+            enlarge(periodPicker, 22);
             row.addView(periodPicker, wheelParams());
         }
         wheelView = row;
@@ -263,6 +265,14 @@ class TimeEntryDialog extends Dialog {
 
     private SharedPreferences prefs() {
         return getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    }
+
+    /** Bigger wheel numbers; the wheel's own paint is only settable from API 29. */
+    private void enlarge(NumberPicker picker, int sp) {
+        float px = sp * getContext().getResources().getDisplayMetrics().scaledDensity;
+        if (android.os.Build.VERSION.SDK_INT >= 29) picker.setTextSize(px);
+        EditText input = input(picker);
+        if (input != null) input.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, sp);
     }
 
     /** Lets a tap on the centre value open the numeric keyboard. */
