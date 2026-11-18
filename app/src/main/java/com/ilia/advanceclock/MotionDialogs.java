@@ -6,7 +6,8 @@ final class MotionDialogs {
         Builder(Context c){super(c);}
         @Override public AlertDialog create(){AlertDialog dialog=super.create();KeyboardAvoidance.install(dialog.getWindow());AppMotion.window(dialog.getWindow(),R.style.MotionDialog);return dialog;}
     }
-    static class TimePicker extends TimePickerDialog {
-        TimePicker(Context c,OnTimeSetListener listener,int hour,int minute,boolean full){super(c,listener,hour,minute,full);AppMotion.window(getWindow(),R.style.MotionPicker);}
+    /** Time picker with analog clock, typed and wheel modes. */
+    static class TimePicker extends TimeEntryDialog {
+        TimePicker(Context c,TimePickerDialog.OnTimeSetListener listener,int hour,int minute,boolean full){super(c,listener,hour,minute,full);AppMotion.window(getWindow(),R.style.MotionPicker);}
     }
 }

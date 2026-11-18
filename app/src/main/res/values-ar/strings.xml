@@ -1506,4 +1506,10 @@
     <string name="time_format_tool_result">النتيجة</string>
     <string name="time_format_tool_morning">قبل الظهر (AM)</string>
     <string name="time_format_tool_afternoon">بعد الظهر (PM)</string>
+    <string name="time_picker_mode_clock">ساعة دائرية</string>
+    <string name="time_picker_mode_typed">كتابة</string>
+    <string name="time_picker_mode_wheel">عجلة</string>
+    <string name="time_picker_hour">الساعة</string>
+    <string name="time_picker_minute">الدقيقة</string>
+    <string name="time_picker_invalid">قيمة غير صالحة</string>
 </resources>
