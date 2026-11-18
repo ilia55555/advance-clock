@@ -32,8 +32,7 @@ import java.util.Locale;
  */
 class TimeEntryDialog extends Dialog {
     static final int MODE_CLOCK = 0;
-    static final int MODE_TYPED = 1;
-    static final int MODE_WHEEL = 2;
+    static final int MODE_WHEEL = 1;
 
     private static final String PREFS = "time_entry_dialog";
     private static final String KEY_MODE = "mode";
@@ -46,14 +45,12 @@ class TimeEntryDialog extends Dialog {
     private int minute;
     private int mode;
 
-    private final Button[] tabs = new Button[3];
+    private final Button[] tabs = new Button[2];
     private FrameLayout content;
     private android.widget.TimePicker clockView;
     private EditText hourField;
     private EditText minuteField;
-    private int typedPeriod;
-    private Button amButton;
-    private Button pmButton;
+    private boolean syncing;
     private NumberPicker wheelHour;
     private NumberPicker wheelMinute;
     private NumberPicker wheelPeriod;
@@ -68,7 +65,7 @@ class TimeEntryDialog extends Dialog {
         this.app24 = AppSettings.clock24Hour(context);
         this.periods = periodLabels();
         int saved = prefs().getInt(KEY_MODE, MODE_CLOCK);
-        this.mode = saved >= MODE_CLOCK && saved <= MODE_WHEEL ? saved : MODE_CLOCK;
+        this.mode = saved == MODE_CLOCK ? MODE_CLOCK : MODE_WHEEL;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(build());
         setCanceledOnTouchOutside(true);
@@ -94,9 +91,8 @@ class TimeEntryDialog extends Dialog {
         tabRow.setOrientation(LinearLayout.HORIZONTAL);
         tabRow.setPadding(dp(4), dp(4), dp(4), dp(4));
         tabRow.setBackgroundResource(R.drawable.bg_field);
-        int[] labels = {R.string.time_picker_mode_clock, R.string.time_picker_mode_typed,
-                R.string.time_picker_mode_wheel};
-        for (int i = 0; i < 3; i++) {
+        int[] labels = {R.string.time_picker_mode_clock, R.string.time_picker_mode_wheel};
+        for (int i = 0; i < tabs.length; i++) {
             final int target = i;
             Button tab = new Button(c);
             tab.setText(AppString.get(labels[i]));
@@ -142,6 +138,10 @@ class TimeEntryDialog extends Dialog {
         if (!readCurrent(false)) return;
         mode = target;
         prefs().edit().putInt(KEY_MODE, mode).apply();
+        hourField = null;
+        minuteField = null;
+        wheelHour = null;
+        clockView = null;
         showMode();
     }
 
@@ -157,7 +157,7 @@ class TimeEntryDialog extends Dialog {
             tabs[i].setTypeface(Typeface.DEFAULT, active ? Typeface.BOLD : Typeface.NORMAL);
         }
         content.removeAllViews();
-        View view = mode == MODE_CLOCK ? clockMode() : mode == MODE_TYPED ? typedMode() : wheelMode();
+        View view = mode == MODE_CLOCK ? clockMode() : wheelMode();
         content.addView(view, new FrameLayout.LayoutParams(-1, -2, Gravity.CENTER_HORIZONTAL));
     }
 
@@ -169,17 +169,16 @@ class TimeEntryDialog extends Dialog {
         return clockView;
     }
 
-    private View typedMode() {
+    private View wheelMode() {
         Context c = getContext();
         LinearLayout column = new LinearLayout(c);
         column.setOrientation(LinearLayout.VERTICAL);
         column.setGravity(Gravity.CENTER_HORIZONTAL);
-        column.setPadding(0, dp(12), 0, dp(12));
 
-        LinearLayout row = new LinearLayout(c);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        LinearLayout typed = new LinearLayout(c);
+        typed.setOrientation(LinearLayout.HORIZONTAL);
+        typed.setGravity(Gravity.CENTER);
+        typed.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         hourField = numberField(String.format(Locale.US, "%02d", app24 ? hour : hour12(hour)),
                 AppString.get(R.string.time_picker_hour));
         minuteField = numberField(String.format(Locale.US, "%02d", minute),
@@ -189,43 +188,14 @@ class TimeEntryDialog extends Dialog {
             if (action == EditorInfo.IME_ACTION_DONE) { confirm(); return true; }
             return false;
         });
-        row.addView(fieldColumn(hourField, AppString.get(R.string.time_picker_hour)));
-        TextView colon = label(":", 32, AppSettings.primaryColor(c));
-        colon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        colon.setGravity(Gravity.CENTER);
-        row.addView(colon, new LinearLayout.LayoutParams(dp(24), dp(72)));
-        row.addView(fieldColumn(minuteField, AppString.get(R.string.time_picker_minute)));
-        column.addView(row, new LinearLayout.LayoutParams(-2, -2));
+        typed.addView(fieldColumn(hourField, AppString.get(R.string.time_picker_hour)));
+        TextView typedColon = label(":", 32, AppSettings.primaryColor(c));
+        typedColon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        typedColon.setGravity(Gravity.CENTER);
+        typed.addView(typedColon, new LinearLayout.LayoutParams(dp(24), dp(72)));
+        typed.addView(fieldColumn(minuteField, AppString.get(R.string.time_picker_minute)));
+        column.addView(typed, new LinearLayout.LayoutParams(-2, -2));
 
-        if (!app24) {
-            typedPeriod = hour >= 12 ? 1 : 0;
-            LinearLayout periodRow = new LinearLayout(c);
-            periodRow.setOrientation(LinearLayout.HORIZONTAL);
-            periodRow.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-            amButton = actionButton(periods[0]);
-            pmButton = actionButton(periods[1]);
-            amButton.setOnClickListener(v -> { typedPeriod = 0; paintPeriod(); });
-            pmButton.setOnClickListener(v -> { typedPeriod = 1; paintPeriod(); });
-            periodRow.addView(amButton, new LinearLayout.LayoutParams(dp(96), dp(44)));
-            LinearLayout.LayoutParams pm = new LinearLayout.LayoutParams(dp(96), dp(44));
-            pm.leftMargin = dp(8);
-            periodRow.addView(pmButton, pm);
-            LinearLayout.LayoutParams pr = new LinearLayout.LayoutParams(-2, -2);
-            pr.topMargin = dp(12);
-            column.addView(periodRow, pr);
-            paintPeriod();
-        }
-        hourField.requestFocus();
-        hourField.selectAll();
-        Window window = getWindow();
-        if (window != null) window.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
-                        | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        return column;
-    }
-
-    private View wheelMode() {
-        Context c = getContext();
         LinearLayout row = new LinearLayout(c);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER);
@@ -264,7 +234,17 @@ class TimeEntryDialog extends Dialog {
             wheelPeriod.setValue(hour >= 12 ? 1 : 0);
             row.addView(wheelPeriod, wheelParams());
         }
-        return row;
+        for (NumberPicker picker : new NumberPicker[]{wheelHour, wheelMinute}) {
+            picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        }
+        wheelHour.setOnValueChangedListener((p, o, n) -> syncFields());
+        wheelMinute.setOnValueChangedListener((p, o, n) -> syncFields());
+        hourField.addTextChangedListener(watcher());
+        minuteField.addTextChangedListener(watcher());
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, -2);
+        rowParams.topMargin = dp(12);
+        column.addView(row, rowParams);
+        return column;
     }
 
     /** Reads the active mode into hour/minute. Returns false if typed input is invalid. */
@@ -272,27 +252,23 @@ class TimeEntryDialog extends Dialog {
         if (mode == MODE_CLOCK && clockView != null) {
             hour = clockView.getHour();
             minute = clockView.getMinute();
-        } else if (mode == MODE_WHEEL && wheelHour != null) {
-            wheelHour.clearFocus();
-            wheelMinute.clearFocus();
-            int h = wheelHour.getValue();
-            if (!app24) h = to24(h, wheelPeriod != null ? wheelPeriod.getValue() : 0);
-            hour = h;
-            minute = wheelMinute.getValue();
-        } else if (mode == MODE_TYPED && hourField != null) {
+        } else if (mode == MODE_WHEEL && hourField != null) {
             int h = parse(hourField);
             int m = parse(minuteField);
             boolean hourOk = app24 ? h >= 0 && h <= 23 : h >= 1 && h <= 12;
             boolean minuteOk = m >= 0 && m <= 59;
             if (!hourOk || !minuteOk) {
-                if (showErrors) {
+                if (!showErrors) {
+                    h = wheelHour.getValue();
+                    m = wheelMinute.getValue();
+                } else {
                     String error = AppString.get(R.string.time_picker_invalid);
                     if (!hourOk) { hourField.setError(error); hourField.requestFocus(); }
                     else { minuteField.setError(error); minuteField.requestFocus(); }
+                    return false;
                 }
-                return !showErrors;
             }
-            hour = app24 ? h : to24(h, typedPeriod);
+            hour = app24 ? h : to24(h, wheelPeriod != null ? wheelPeriod.getValue() : 0);
             minute = m;
         }
         return true;
@@ -308,19 +284,32 @@ class TimeEntryDialog extends Dialog {
         dismiss();
     }
 
-    private void paintPeriod() {
-        Context c = getContext();
-        paintToggle(amButton, typedPeriod == 0, c);
-        paintToggle(pmButton, typedPeriod == 1, c);
+    private void syncFields() {
+        if (syncing || hourField == null) return;
+        syncing = true;
+        hourField.setText(String.format(Locale.US, "%02d", wheelHour.getValue()));
+        minuteField.setText(String.format(Locale.US, "%02d", wheelMinute.getValue()));
+        hourField.setError(null);
+        minuteField.setError(null);
+        syncing = false;
     }
 
-    private void paintToggle(Button button, boolean active, Context c) {
-        GradientDrawable shape = new GradientDrawable();
-        shape.setCornerRadius(dp(12));
-        shape.setColor(active ? AppSettings.primaryColor(c) : AppSettings.field(c));
-        shape.setStroke(dp(1), AppSettings.primaryColor(c));
-        button.setBackground(shape);
-        button.setTextColor(active ? Color.WHITE : AppSettings.primaryColor(c));
+    private void syncWheels() {
+        if (syncing || wheelHour == null) return;
+        syncing = true;
+        int h = parse(hourField);
+        int m = parse(minuteField);
+        if (h >= wheelHour.getMinValue() && h <= wheelHour.getMaxValue()) wheelHour.setValue(h);
+        if (m >= 0 && m <= 59) wheelMinute.setValue(m);
+        syncing = false;
+    }
+
+    private android.text.TextWatcher watcher() {
+        return new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void afterTextChanged(android.text.Editable e) { syncWheels(); }
+        };
     }
 
     private LinearLayout fieldColumn(EditText field, String caption) {
