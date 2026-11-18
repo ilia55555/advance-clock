@@ -1438,9 +1438,4 @@
     <string name="time_format_tool_result">نتیجه</string>
     <string name="time_format_tool_morning">قبل از ظهر (AM)</string>
     <string name="time_format_tool_afternoon">بعد از ظهر (PM)</string>
-    <string name="time_picker_mode_clock">ساعت گرد</string>
-    <string name="time_picker_mode_wheel">چرخشی و تایپی</string>
-    <string name="time_picker_hour">ساعت</string>
-    <string name="time_picker_minute">دقیقه</string>
-    <string name="time_picker_invalid">مقدار نامعتبر است</string>
 </resources>

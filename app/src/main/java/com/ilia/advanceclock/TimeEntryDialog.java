@@ -3,21 +3,18 @@ package com.ilia.advanceclock;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -26,95 +23,86 @@ import java.text.DateFormatSymbols;
 import java.util.Locale;
 
 /**
- * Shared time-entry dialog offering three input methods: the round clock,
- * typed digits and a wheel. Typed and wheel modes follow the app's
- * 12/24-hour setting; the last used mode is remembered.
+ * Shared wheel time picker. Drag a wheel to spin it, tap its value to type
+ * with the numeric keyboard. Follows the app's 12/24-hour setting.
  */
 class TimeEntryDialog extends Dialog {
-    static final int MODE_CLOCK = 0;
-    static final int MODE_WHEEL = 1;
-
-    private static final String PREFS = "time_entry_dialog";
-    private static final String KEY_MODE = "mode";
-
     private final TimePickerDialog.OnTimeSetListener listener;
-    private final boolean clock24;
     private final boolean app24;
-    private final String[] periods;
-    private int hour;
-    private int minute;
-    private int mode;
-
-    private final Button[] tabs = new Button[2];
-    private FrameLayout content;
-    private android.widget.TimePicker clockView;
-    private EditText hourField;
-    private EditText minuteField;
-    private boolean syncing;
-    private NumberPicker wheelHour;
-    private NumberPicker wheelMinute;
-    private NumberPicker wheelPeriod;
+    private final NumberPicker hourPicker;
+    private final NumberPicker minutePicker;
+    private final NumberPicker periodPicker;
 
     TimeEntryDialog(Context context, TimePickerDialog.OnTimeSetListener listener,
                     int hour, int minute, boolean full) {
         super(context);
         this.listener = listener;
-        this.hour = clamp(hour, 0, 23);
-        this.minute = clamp(minute, 0, 59);
-        this.clock24 = full;
         this.app24 = AppSettings.clock24Hour(context);
-        this.periods = periodLabels();
-        int saved = prefs().getInt(KEY_MODE, MODE_CLOCK);
-        this.mode = saved == MODE_CLOCK ? MODE_CLOCK : MODE_WHEEL;
+        hour = Math.max(0, Math.min(23, hour));
+        minute = Math.max(0, Math.min(59, minute));
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(build());
-        setCanceledOnTouchOutside(true);
-        Window window = getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        }
-    }
 
-    private View build() {
-        Context c = getContext();
-        LinearLayout root = new LinearLayout(c);
+        LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutDirection(AppSettings.layoutDirection(c));
-        root.setPadding(dp(16), dp(16), dp(16), dp(10));
+        root.setLayoutDirection(AppSettings.layoutDirection(context));
+        root.setPadding(dp(16), dp(18), dp(16), dp(10));
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(AppSettings.surface(c));
+        bg.setColor(AppSettings.surface(context));
         bg.setCornerRadius(dp(24));
         root.setBackground(bg);
 
-        LinearLayout tabRow = new LinearLayout(c);
-        tabRow.setOrientation(LinearLayout.HORIZONTAL);
-        tabRow.setPadding(dp(4), dp(4), dp(4), dp(4));
-        tabRow.setBackgroundResource(R.drawable.bg_field);
-        int[] labels = {R.string.time_picker_mode_clock, R.string.time_picker_mode_wheel};
-        for (int i = 0; i < tabs.length; i++) {
-            final int target = i;
-            Button tab = new Button(c);
-            tab.setText(AppString.get(labels[i]));
-            tab.setAllCaps(false);
-            tab.setTextSize(13);
-            tab.setSingleLine(true);
-            tab.setPadding(dp(4), 0, dp(4), 0);
-            tab.setStateListAnimator(null);
-            tab.setOnClickListener(v -> switchMode(target));
-            tabs[i] = tab;
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(0, dp(40), 1f);
-            if (i > 0) p.setMarginStart(dp(4));
-            tabRow.addView(tab, p);
+        LinearLayout row = new LinearLayout(context);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER);
+        row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        row.setBackgroundResource(R.drawable.bg_field);
+        row.setPadding(dp(8), dp(4), dp(8), dp(4));
+
+        NumberPicker.Formatter twoDigits = v -> String.format(Locale.US, "%02d", v);
+        hourPicker = new NumberPicker(context);
+        if (app24) {
+            hourPicker.setMinValue(0);
+            hourPicker.setMaxValue(23);
+            hourPicker.setFormatter(twoDigits);
+            hourPicker.setValue(hour);
+        } else {
+            int h12 = hour % 12;
+            hourPicker.setMinValue(1);
+            hourPicker.setMaxValue(12);
+            hourPicker.setValue(h12 == 0 ? 12 : h12);
         }
-        root.addView(tabRow, new LinearLayout.LayoutParams(-1, -2));
+        minutePicker = new NumberPicker(context);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        minutePicker.setFormatter(twoDigits);
+        minutePicker.setValue(minute);
+        styleTypeable(hourPicker);
+        styleTypeable(minutePicker);
 
-        content = new FrameLayout(c);
-        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(-1, -2);
-        contentParams.topMargin = dp(12);
-        root.addView(content, contentParams);
+        row.addView(hourPicker, wheelParams());
+        TextView colon = new TextView(context);
+        colon.setText(":");
+        colon.setTextSize(26);
+        colon.setTextColor(AppSettings.primaryColor(context));
+        colon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        colon.setGravity(Gravity.CENTER);
+        row.addView(colon, new LinearLayout.LayoutParams(dp(18), -2));
+        row.addView(minutePicker, wheelParams());
 
-        LinearLayout actions = new LinearLayout(c);
+        if (app24) {
+            periodPicker = null;
+        } else {
+            periodPicker = new NumberPicker(context);
+            periodPicker.setMinValue(0);
+            periodPicker.setMaxValue(1);
+            periodPicker.setDisplayedValues(periodLabels());
+            periodPicker.setValue(hour >= 12 ? 1 : 0);
+            periodPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+            row.addView(periodPicker, wheelParams());
+        }
+        root.addView(row, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout actions = new LinearLayout(context);
         actions.setOrientation(LinearLayout.HORIZONTAL);
         actions.setGravity(Gravity.END);
         Button cancel = actionButton(AppString.get(R.string.runtime_text_0003));
@@ -126,223 +114,56 @@ class TimeEntryDialog extends Dialog {
         okParams.setMarginStart(dp(8));
         actions.addView(ok, okParams);
         LinearLayout.LayoutParams actionParams = new LinearLayout.LayoutParams(-1, -2);
-        actionParams.topMargin = dp(8);
+        actionParams.topMargin = dp(10);
         root.addView(actions, actionParams);
 
-        showMode();
-        return root;
+        setContentView(root);
+        setCanceledOnTouchOutside(true);
+        Window window = getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            int width = Math.min(
+                    context.getResources().getDisplayMetrics().widthPixels - dp(32), dp(360));
+            window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
-    private void switchMode(int target) {
-        if (target == mode) return;
-        if (!readCurrent(false)) return;
-        mode = target;
-        prefs().edit().putInt(KEY_MODE, mode).apply();
-        hourField = null;
-        minuteField = null;
-        wheelHour = null;
-        clockView = null;
-        showMode();
+    /** Lets a tap on the centre value open the numeric keyboard. */
+    private void styleTypeable(NumberPicker picker) {
+        picker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
+        EditText input = input(picker);
+        if (input != null) {
+            input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            input.setTextDirection(View.TEXT_DIRECTION_LTR);
+        }
     }
 
-    private void showMode() {
-        Context c = getContext();
-        for (int i = 0; i < tabs.length; i++) {
-            boolean active = i == mode;
-            GradientDrawable shape = new GradientDrawable();
-            shape.setCornerRadius(dp(12));
-            shape.setColor(active ? AppSettings.primaryColor(c) : Color.TRANSPARENT);
-            tabs[i].setBackground(shape);
-            tabs[i].setTextColor(active ? Color.WHITE : AppSettings.textPrimary(c));
-            tabs[i].setTypeface(Typeface.DEFAULT, active ? Typeface.BOLD : Typeface.NORMAL);
+    private static EditText input(NumberPicker picker) {
+        for (int i = 0; i < picker.getChildCount(); i++) {
+            View child = picker.getChildAt(i);
+            if (child instanceof EditText) return (EditText) child;
         }
-        content.removeAllViews();
-        View view = mode == MODE_CLOCK ? clockMode() : wheelMode();
-        content.addView(view, new FrameLayout.LayoutParams(-1, -2, Gravity.CENTER_HORIZONTAL));
-    }
-
-    private View clockMode() {
-        clockView = new android.widget.TimePicker(getContext());
-        clockView.setIs24HourView(clock24);
-        clockView.setHour(hour);
-        clockView.setMinute(minute);
-        return clockView;
-    }
-
-    private View wheelMode() {
-        Context c = getContext();
-        LinearLayout column = new LinearLayout(c);
-        column.setOrientation(LinearLayout.VERTICAL);
-        column.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        LinearLayout typed = new LinearLayout(c);
-        typed.setOrientation(LinearLayout.HORIZONTAL);
-        typed.setGravity(Gravity.CENTER);
-        typed.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-        hourField = numberField(String.format(Locale.US, "%02d", app24 ? hour : hour12(hour)),
-                AppString.get(R.string.time_picker_hour));
-        minuteField = numberField(String.format(Locale.US, "%02d", minute),
-                AppString.get(R.string.time_picker_minute));
-        minuteField.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        minuteField.setOnEditorActionListener((v, action, event) -> {
-            if (action == EditorInfo.IME_ACTION_DONE) { confirm(); return true; }
-            return false;
-        });
-        typed.addView(fieldColumn(hourField, AppString.get(R.string.time_picker_hour)));
-        TextView typedColon = label(":", 32, AppSettings.primaryColor(c));
-        typedColon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        typedColon.setGravity(Gravity.CENTER);
-        typed.addView(typedColon, new LinearLayout.LayoutParams(dp(24), dp(72)));
-        typed.addView(fieldColumn(minuteField, AppString.get(R.string.time_picker_minute)));
-        column.addView(typed, new LinearLayout.LayoutParams(-2, -2));
-
-        LinearLayout row = new LinearLayout(c);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER);
-        row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-        row.setBackgroundResource(R.drawable.bg_field);
-        row.setPadding(dp(8), dp(4), dp(8), dp(4));
-        NumberPicker.Formatter twoDigits = v -> String.format(Locale.US, "%02d", v);
-        wheelHour = new NumberPicker(c);
-        if (app24) {
-            wheelHour.setMinValue(0);
-            wheelHour.setMaxValue(23);
-            wheelHour.setFormatter(twoDigits);
-            wheelHour.setValue(hour);
-        } else {
-            wheelHour.setMinValue(1);
-            wheelHour.setMaxValue(12);
-            wheelHour.setValue(hour12(hour));
-        }
-        wheelMinute = new NumberPicker(c);
-        wheelMinute.setMinValue(0);
-        wheelMinute.setMaxValue(59);
-        wheelMinute.setFormatter(twoDigits);
-        wheelMinute.setValue(minute);
-        row.addView(wheelHour, wheelParams());
-        TextView colon = label(":", 26, AppSettings.primaryColor(c));
-        colon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        colon.setGravity(Gravity.CENTER);
-        row.addView(colon, new LinearLayout.LayoutParams(dp(18), -2));
-        row.addView(wheelMinute, wheelParams());
-        wheelPeriod = null;
-        if (!app24) {
-            wheelPeriod = new NumberPicker(c);
-            wheelPeriod.setMinValue(0);
-            wheelPeriod.setMaxValue(1);
-            wheelPeriod.setDisplayedValues(periods);
-            wheelPeriod.setValue(hour >= 12 ? 1 : 0);
-            row.addView(wheelPeriod, wheelParams());
-        }
-        for (NumberPicker picker : new NumberPicker[]{wheelHour, wheelMinute}) {
-            picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        }
-        wheelHour.setOnValueChangedListener((p, o, n) -> syncFields());
-        wheelMinute.setOnValueChangedListener((p, o, n) -> syncFields());
-        hourField.addTextChangedListener(watcher());
-        minuteField.addTextChangedListener(watcher());
-        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, -2);
-        rowParams.topMargin = dp(12);
-        column.addView(row, rowParams);
-        return column;
-    }
-
-    /** Reads the active mode into hour/minute. Returns false if typed input is invalid. */
-    private boolean readCurrent(boolean showErrors) {
-        if (mode == MODE_CLOCK && clockView != null) {
-            hour = clockView.getHour();
-            minute = clockView.getMinute();
-        } else if (mode == MODE_WHEEL && hourField != null) {
-            int h = parse(hourField);
-            int m = parse(minuteField);
-            boolean hourOk = app24 ? h >= 0 && h <= 23 : h >= 1 && h <= 12;
-            boolean minuteOk = m >= 0 && m <= 59;
-            if (!hourOk || !minuteOk) {
-                if (!showErrors) {
-                    h = wheelHour.getValue();
-                    m = wheelMinute.getValue();
-                } else {
-                    String error = AppString.get(R.string.time_picker_invalid);
-                    if (!hourOk) { hourField.setError(error); hourField.requestFocus(); }
-                    else { minuteField.setError(error); minuteField.requestFocus(); }
-                    return false;
-                }
-            }
-            hour = app24 ? h : to24(h, wheelPeriod != null ? wheelPeriod.getValue() : 0);
-            minute = m;
-        }
-        return true;
+        return null;
     }
 
     private void confirm() {
-        if (!readCurrent(true)) return;
+        // Commit any value still being typed into a wheel.
+        for (NumberPicker picker : new NumberPicker[]{hourPicker, minutePicker}) {
+            EditText input = input(picker);
+            if (input != null && input.hasFocus()) input.clearFocus();
+            picker.clearFocus();
+        }
+        int hour = hourPicker.getValue();
+        if (!app24) {
+            int h = hour % 12;
+            hour = periodPicker != null && periodPicker.getValue() == 1 ? h + 12 : h;
+        }
         if (listener != null) {
-            android.widget.TimePicker view = clockView != null
-                    ? clockView : new android.widget.TimePicker(getContext());
-            listener.onTimeSet(view, hour, minute);
+            listener.onTimeSet(new android.widget.TimePicker(getContext()), hour,
+                    minutePicker.getValue());
         }
         dismiss();
-    }
-
-    private void syncFields() {
-        if (syncing || hourField == null) return;
-        syncing = true;
-        hourField.setText(String.format(Locale.US, "%02d", wheelHour.getValue()));
-        minuteField.setText(String.format(Locale.US, "%02d", wheelMinute.getValue()));
-        hourField.setError(null);
-        minuteField.setError(null);
-        syncing = false;
-    }
-
-    private void syncWheels() {
-        if (syncing || wheelHour == null) return;
-        syncing = true;
-        int h = parse(hourField);
-        int m = parse(minuteField);
-        if (h >= wheelHour.getMinValue() && h <= wheelHour.getMaxValue()) wheelHour.setValue(h);
-        if (m >= 0 && m <= 59) wheelMinute.setValue(m);
-        syncing = false;
-    }
-
-    private android.text.TextWatcher watcher() {
-        return new android.text.TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void afterTextChanged(android.text.Editable e) { syncWheels(); }
-        };
-    }
-
-    private LinearLayout fieldColumn(EditText field, String caption) {
-        Context c = getContext();
-        LinearLayout column = new LinearLayout(c);
-        column.setOrientation(LinearLayout.VERTICAL);
-        column.setGravity(Gravity.CENTER_HORIZONTAL);
-        column.addView(field, new LinearLayout.LayoutParams(dp(96), dp(72)));
-        TextView text = label(caption, 12, AppSettings.textSecondary(c));
-        text.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(-1, -2);
-        p.topMargin = dp(4);
-        column.addView(text, p);
-        return column;
-    }
-
-    private EditText numberField(String value, String hint) {
-        Context c = getContext();
-        EditText field = new EditText(c);
-        field.setText(value);
-        field.setHint(hint);
-        field.setInputType(InputType.TYPE_CLASS_NUMBER);
-        field.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        field.setTextSize(32);
-        field.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        field.setTextColor(AppSettings.textPrimary(c));
-        field.setHintTextColor(AppSettings.textSecondary(c));
-        field.setGravity(Gravity.CENTER);
-        field.setTextDirection(View.TEXT_DIRECTION_LTR);
-        field.setSelectAllOnFocus(true);
-        field.setBackgroundResource(R.drawable.bg_field);
-        field.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        return field;
     }
 
     private Button actionButton(String value) {
@@ -354,14 +175,6 @@ class TimeEntryDialog extends Dialog {
         button.setBackgroundColor(Color.TRANSPARENT);
         button.setPadding(dp(14), 0, dp(14), 0);
         return button;
-    }
-
-    private TextView label(String value, int size, int color) {
-        TextView view = new TextView(getContext());
-        view.setText(value);
-        view.setTextSize(size);
-        view.setTextColor(color);
-        return view;
     }
 
     private LinearLayout.LayoutParams wheelParams() {
@@ -379,41 +192,6 @@ class TimeEntryDialog extends Dialog {
         if ("en".equals(language)) return new String[]{"AM", "PM"};
         String[] symbols = new DateFormatSymbols(locale).getAmPmStrings();
         return symbols != null && symbols.length == 2 ? symbols : new String[]{"AM", "PM"};
-    }
-
-    private static int parse(EditText field) {
-        String text = latinDigits(field.getText().toString().trim());
-        if (text.isEmpty()) return -1;
-        try { return Integer.parseInt(text); } catch (NumberFormatException e) { return -1; }
-    }
-
-    private static String latinDigits(String value) {
-        StringBuilder out = new StringBuilder(value.length());
-        for (int i = 0; i < value.length(); i++) {
-            char ch = value.charAt(i);
-            if (ch >= '\u06F0' && ch <= '\u06F9') ch = (char) ('0' + ch - '\u06F0');
-            else if (ch >= '\u0660' && ch <= '\u0669') ch = (char) ('0' + ch - '\u0660');
-            out.append(ch);
-        }
-        return out.toString();
-    }
-
-    private static int hour12(int hour24) {
-        int h = hour24 % 12;
-        return h == 0 ? 12 : h;
-    }
-
-    private static int to24(int hour12, int period) {
-        int h = hour12 % 12;
-        return period == 1 ? h + 12 : h;
-    }
-
-    private static int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    private SharedPreferences prefs() {
-        return getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
     private int dp(int value) {
