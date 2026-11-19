@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.text.DateFormatSymbols;
@@ -46,9 +45,9 @@ class TimeEntryDialog extends Dialog {
     private final View wheelView;
     private final Button[] tabs = new Button[2];
     private int mode;
-    private final NumberPicker hourPicker;
-    private final NumberPicker minutePicker;
-    private final NumberPicker periodPicker;
+    private final WheelPickerView hourPicker;
+    private final WheelPickerView minutePicker;
+    private final WheelPickerView periodPicker;
 
     TimeEntryDialog(Context context, TimePickerDialog.OnTimeSetListener listener,
                     int hour, int minute, boolean full) {
@@ -151,28 +150,20 @@ class TimeEntryDialog extends Dialog {
         row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         row.setPadding(dp(8), dp(4), dp(8), dp(4));
 
-        NumberPicker.Formatter twoDigits = v -> String.format(Locale.US, "%02d", v);
-        hourPicker = new NumberPicker(context);
+        hourPicker = new WheelPickerView(context);
         if (app24) {
-            hourPicker.setMinValue(0);
-            hourPicker.setMaxValue(23);
-            hourPicker.setFormatter(twoDigits);
+            hourPicker.setRange(0, 23, true);
             hourPicker.setValue(hour);
         } else {
             int h12 = hour % 12;
-            hourPicker.setMinValue(1);
-            hourPicker.setMaxValue(12);
+            hourPicker.setRange(1, 12, false);
             hourPicker.setValue(h12 == 0 ? 12 : h12);
         }
-        minutePicker = new NumberPicker(context);
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
-        minutePicker.setFormatter(twoDigits);
+        minutePicker = new WheelPickerView(context);
+        minutePicker.setRange(0, 59, true);
         minutePicker.setValue(minute);
-        styleTypeable(hourPicker);
-        styleTypeable(minutePicker);
-        enlarge(hourPicker, 30);
-        enlarge(minutePicker, 30);
+        hourPicker.setTypeable(true);
+        minutePicker.setTypeable(true);
 
         row.addView(hourPicker, wheelParams());
         TextView colon = new TextView(context);
@@ -187,13 +178,11 @@ class TimeEntryDialog extends Dialog {
         if (app24) {
             periodPicker = null;
         } else {
-            periodPicker = new NumberPicker(context);
-            periodPicker.setMinValue(0);
-            periodPicker.setMaxValue(1);
-            periodPicker.setDisplayedValues(periodLabels());
+            periodPicker = new WheelPickerView(context);
+            periodPicker.setLabels(periodLabels());
+            periodPicker.setWrap(false);
+            periodPicker.setTextSize(22);
             periodPicker.setValue(hour >= 12 ? 1 : 0);
-            periodPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-            enlarge(periodPicker, 22);
             row.addView(periodPicker, wheelParams());
         }
         wheelView = row;
@@ -333,41 +322,12 @@ class TimeEntryDialog extends Dialog {
     }
 
     private void commitWheel() {
-        for (NumberPicker picker : new NumberPicker[]{hourPicker, minutePicker}) {
-            EditText input = input(picker);
-            if (input != null && input.hasFocus()) input.clearFocus();
-            picker.clearFocus();
-        }
+        hourPicker.commitTyping();
+        minutePicker.commitTyping();
     }
 
     private SharedPreferences prefs() {
         return getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-    }
-
-    /** Bigger wheel numbers; the wheel's own paint is only settable from API 29. */
-    private void enlarge(NumberPicker picker, int sp) {
-        float px = sp * getContext().getResources().getDisplayMetrics().scaledDensity;
-        if (android.os.Build.VERSION.SDK_INT >= 29) picker.setTextSize(px);
-        EditText input = input(picker);
-        if (input != null) input.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, sp);
-    }
-
-    /** Lets a tap on the centre value open the numeric keyboard. */
-    private void styleTypeable(NumberPicker picker) {
-        picker.setDescendantFocusability(NumberPicker.FOCUS_AFTER_DESCENDANTS);
-        EditText input = input(picker);
-        if (input != null) {
-            input.setInputType(InputType.TYPE_CLASS_NUMBER);
-            input.setTextDirection(View.TEXT_DIRECTION_LTR);
-        }
-    }
-
-    private static EditText input(NumberPicker picker) {
-        for (int i = 0; i < picker.getChildCount(); i++) {
-            View child = picker.getChildAt(i);
-            if (child instanceof EditText) return (EditText) child;
-        }
-        return null;
     }
 
     private void confirm() {
