@@ -14,8 +14,7 @@ import java.io.IOException;
  */
 final class WheelTickSound {
     private static final int RATE = 44100;
-    /** Fixed loudness target (about -24 dB of full scale), independent of media volume. */
-    private static final double TARGET_GAIN = Math.pow(10, -24 / 20.0);
+    private static final float VOLUME = 0.35f;
     private static final long MIN_GAP_MS = 30;
 
     private static SoundPool pool;
@@ -33,7 +32,7 @@ final class WheelTickSound {
         pool = new SoundPool.Builder()
                 .setMaxStreams(1)
                 .setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build())
                 .build();
@@ -49,40 +48,16 @@ final class WheelTickSound {
 
     static synchronized void play() {
         if (pool == null || !loaded) return;
-        // Stay quiet when the phone is silent/vibrate or media volume is muted.
-        if (audio != null && (audio.getRingerMode() != android.media.AudioManager.RINGER_MODE_NORMAL
-                || audio.getStreamVolume(android.media.AudioManager.STREAM_MUSIC) == 0
-                || audio.isStreamMute(android.media.AudioManager.STREAM_MUSIC))) return;
+        // Only silent/vibrate mode mutes the tick; media volume plays no part.
+        if (audio != null && audio.getRingerMode() != android.media.AudioManager.RINGER_MODE_NORMAL) return;
         long now = android.os.SystemClock.uptimeMillis();
         if (now - lastPlay < MIN_GAP_MS) return;
         lastPlay = now;
         // One stream only, fixed volume: fast spins never stack into a louder sound.
-        float volume = compensatedVolume();
-        pool.play(soundId, volume, volume, 1, 0, 1f);
+        pool.play(soundId, VOLUME, VOLUME, 1, 0, 1f);
     }
 
     /** A clean, short "tick": a mid-high tone with a very fast decay, no noise. */
-    /**
-     * Cancels the media volume so the tick sounds the same at any media level.
-     * It can only attenuate, so at very low media volume it stays a bit quieter.
-     */
-    private static float compensatedVolume() {
-        if (audio == null) return 0.35f;
-        int stream = android.media.AudioManager.STREAM_MUSIC;
-        int index = audio.getStreamVolume(stream);
-        double streamGain;
-        if (android.os.Build.VERSION.SDK_INT >= 28) {
-            float db = audio.getStreamVolumeDb(stream, index,
-                    android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER);
-            streamGain = Float.isNaN(db) || Float.isInfinite(db) ? 0 : Math.pow(10, db / 20.0);
-        } else {
-            double fraction = index / (double) Math.max(1, audio.getStreamMaxVolume(stream));
-            streamGain = Math.pow(10, (-50 * (1 - fraction)) / 20.0);
-        }
-        if (streamGain <= 0) return 1f;
-        return (float) Math.max(0.0, Math.min(1.0, TARGET_GAIN / streamGain));
-    }
-
     private static short[] synth() {
         int n = RATE * 12 / 1000;
         short[] pcm = new short[n];
