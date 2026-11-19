@@ -185,7 +185,10 @@ public final class NoForgetEditorActivity extends Activity {
         compactRow(priority,sketchAction,filesAction);
         ((android.view.ViewGroup)attachmentRow.getParent()).removeView(attachmentRow);
         View dateRow=(View)dateButton.getParent();
-        compactRow(dateOption.combineWithDate(dateButton),timeButton);
+        // Time sits on the right and date on the left, whatever the layout direction.
+        View dateField=dateOption.combineWithDate(dateButton);
+        if(AppSettings.layoutDirection(this)==View.LAYOUT_DIRECTION_RTL) compactRow(timeButton,dateField);
+        else compactRow(dateField,timeButton);
         ((android.view.ViewGroup)dateRow.getParent()).removeView(dateRow);
         compactRow(repeatButton,remindersButton);
         vibrate.setTextSize(13);
