@@ -65,6 +65,7 @@ final class ClockDialView extends View {
     private ValueAnimator hourAngleAnim;
     private ValueAnimator minuteAngleAnim;
     private boolean dragging;
+    private boolean centerTap;
 
     ClockDialView(Context context) {
         super(context);
@@ -132,56 +133,77 @@ final class ClockDialView extends View {
         canvas.drawCircle(cx, cy, r, facePaint);
 
         float p = minuteProgress;
-        float hourScale = 1f - 0.65f * p;
-        int hourAlpha = Math.round(255 * (1f - p));
-        float outerR = r * lerp(0.70f, 0.82f, outerWeight) * hourScale;
-        float innerR = r * lerp(0.54f, 0.47f, outerWeight) * hourScale;
-        float outerText = sp(lerp(12f, 17f, outerWeight)) * hourScale;
-        float innerText = sp(lerp(17f, 12f, outerWeight)) * hourScale;
+        // In minute mode the hour rings shrink to about a third and stay in the centre.
+        float radiusScale = lerp(1f, 0.36f, p);
+        float textScale = lerp(1f, 0.5f, p);
+        float outerR = r * outerRadius(outerWeight) * radiusScale;
+        float innerR = r * innerRadius(outerWeight) * radiusScale;
+        float outerText = sp(lerp(12f, 17f, outerWeight)) * textScale;
+        float innerText = sp(lerp(17f, 12f, outerWeight)) * textScale;
         float outerFade = lerp(0.5f, 1f, outerWeight);
         float innerFade = lerp(1f, 0.5f, outerWeight);
 
-        float minuteR = r * lerp(1.25f, 0.80f, p);
+        float minuteR = r * lerp(1.25f, 0.82f, p);
         int minuteAlpha = Math.round(255 * p);
         float minuteText = sp(17f);
 
-        // Selector position: blend between hour and minute targets.
-        float hourSelR = isOuter(hour) ? outerR : innerR;
+        boolean outerHour = isOuter(hour);
+        float hourSelR = outerHour ? outerR : innerR;
         float hx = cx + (float) Math.sin(Math.toRadians(hourAngle)) * hourSelR;
         float hy = cy - (float) Math.cos(Math.toRadians(hourAngle)) * hourSelR;
+        float hourSel = 20 * density * textScale
+                * lerp(0.9f, 1f, outerHour ? outerWeight : 1f - outerWeight);
         float mx = cx + (float) Math.sin(Math.toRadians(minuteAngle)) * minuteR;
         float my = cy - (float) Math.cos(Math.toRadians(minuteAngle)) * minuteR;
-        float sx = lerp(hx, mx, p);
-        float sy = lerp(hy, my, p);
-        float selRadius = 20 * density * lerp(lerp(0.9f, 1f, isOuter(hour) ? outerWeight : 1f - outerWeight), 1f, p);
+        float minuteSel = 20 * density;
 
-        if (hourAlpha > 0) {
-            drawRing(canvas, cx, cy, OUTER, outerR, outerText, Math.round(hourAlpha * outerFade));
-            drawRing(canvas, cx, cy, INNER, innerR, innerText, Math.round(hourAlpha * innerFade));
-        }
+        drawRing(canvas, cx, cy, OUTER, outerR, outerText, Math.round(255 * outerFade));
+        drawRing(canvas, cx, cy, INNER, innerR, innerText, Math.round(255 * innerFade));
         if (minuteAlpha > 0) drawRing(canvas, cx, cy, MINUTES, minuteR, minuteText, minuteAlpha);
 
-        canvas.drawLine(cx, cy, sx, sy, linePaint);
-        canvas.drawCircle(cx, cy, 4 * density, selectorPaint);
-        canvas.drawCircle(sx, sy, selRadius, selectorPaint);
-
-        // Redraw the number under the selector in white, clipped to it.
-        canvas.save();
-        android.graphics.Path clip = selectorClip;
-        clip.rewind();
-        clip.addCircle(sx, sy, selRadius, android.graphics.Path.Direction.CW);
-        canvas.clipPath(clip);
-        if (hourAlpha > 0) {
-            drawRingColored(canvas, cx, cy, OUTER, outerR, outerText, hourAlpha, Color.WHITE);
-            drawRingColored(canvas, cx, cy, INNER, innerR, innerText, hourAlpha, Color.WHITE);
+        int hourLineAlpha = Math.round(255 * (1f - p));
+        if (hourLineAlpha > 0) {
+            linePaint.setAlpha(hourLineAlpha);
+            canvas.drawLine(cx, cy, hx, hy, linePaint);
         }
-        if (minuteAlpha > 0) drawRingColored(canvas, cx, cy, MINUTES, minuteR, minuteText, minuteAlpha, Color.WHITE);
+        if (minuteAlpha > 0) {
+            linePaint.setAlpha(minuteAlpha);
+            canvas.drawLine(cx, cy, mx, my, linePaint);
+        }
+        linePaint.setAlpha(255);
+        canvas.drawCircle(cx, cy, 4 * density * (1f - p), selectorPaint);
+        canvas.drawCircle(hx, hy, hourSel, selectorPaint);
+        if (minuteAlpha > 0) {
+            selectorPaint.setAlpha(minuteAlpha);
+            canvas.drawCircle(mx, my, minuteSel, selectorPaint);
+            selectorPaint.setAlpha(255);
+        }
+
+        // Redraw the numbers under each selector in white, clipped to it.
+        android.graphics.Path clip = selectorClip;
+        canvas.save();
+        clip.rewind();
+        clip.addCircle(hx, hy, hourSel, android.graphics.Path.Direction.CW);
+        canvas.clipPath(clip);
+        drawRingColored(canvas, cx, cy, OUTER, outerR, outerText, 255, Color.WHITE);
+        drawRingColored(canvas, cx, cy, INNER, innerR, innerText, 255, Color.WHITE);
         canvas.restore();
-        if (p > 0.5f && minute % 5 != 0) {
-            textPaint.setColor(Color.WHITE);
-            canvas.drawCircle(sx, sy, 3 * density, textPaint);
+        if (minuteAlpha > 0) {
+            canvas.save();
+            clip.rewind();
+            clip.addCircle(mx, my, minuteSel, android.graphics.Path.Direction.CW);
+            canvas.clipPath(clip);
+            drawRingColored(canvas, cx, cy, MINUTES, minuteR, minuteText, minuteAlpha, Color.WHITE);
+            canvas.restore();
+            if (p > 0.5f && minute % 5 != 0) {
+                textPaint.setColor(Color.WHITE);
+                canvas.drawCircle(mx, my, 3 * density, textPaint);
+            }
         }
     }
+
+    private static float outerRadius(float weight) { return lerp(0.86f, 0.80f, weight); }
+    private static float innerRadius(float weight) { return lerp(0.56f, 0.50f, weight); }
 
     private final android.graphics.Path selectorClip = new android.graphics.Path();
 
@@ -214,15 +236,21 @@ final class ClockDialView extends View {
         float dist = (float) Math.hypot(dx, dy);
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                dragging = true;
                 getParent().requestDisallowInterceptTouchEvent(true);
+                centerTap = minuteMode && dist < Math.min(cx, cy) * 0.36f * 0.86f + 16 * density;
+                if (centerTap) return true;
+                dragging = true;
                 handle(angle, dist, false);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 if (dragging) handle(angle, dist, true);
                 return true;
             case MotionEvent.ACTION_UP:
-                if (dragging) {
+                if (centerTap) {
+                    centerTap = false;
+                    setMinuteMode(false, true);
+                    performClick();
+                } else if (dragging) {
                     handle(angle, dist, true);
                     dragging = false;
                     if (!minuteMode) setMinuteMode(true, true);
@@ -231,6 +259,7 @@ final class ClockDialView extends View {
                 return true;
             case MotionEvent.ACTION_CANCEL:
                 dragging = false;
+                centerTap = false;
                 return true;
             default:
                 return super.onTouchEvent(event);
@@ -253,7 +282,7 @@ final class ClockDialView extends View {
             // Follow the finger directly while dragging for zero lag.
             setAngle(false, m * 6f, !moving);
         } else {
-            float split = r * (lerp(0.70f, 0.82f, outerWeight) + lerp(0.54f, 0.47f, outerWeight)) / 2f;
+            float split = r * (outerRadius(outerWeight) + innerRadius(outerWeight)) / 2f;
             boolean outer = dist > split;
             int index = Math.round(angle / 30f) % 12;
             int h = outer ? (index == 0 ? 0 : index + 12) : (index == 0 ? 12 : index);
