@@ -954,4 +954,5 @@ Kilit ekranı</string>
     <string name="time_format_tool_afternoon">After noon (PM)</string>
     <string name="time_picker_mode_clock">Clock</string>
     <string name="time_picker_mode_wheel">Wheel</string>
+    <string name="time_picker_wheel_sound">Time picker wheel sound</string>
 </resources>

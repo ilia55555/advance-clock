@@ -22,10 +22,12 @@ final class WheelTickSound {
     private static boolean loaded;
     private static long lastPlay;
     private static android.media.AudioManager audio;
+    private static Context appContext;
 
     private WheelTickSound() {}
 
     static synchronized void prepare(Context context) {
+        appContext = context.getApplicationContext();
         if (pool != null) return;
         audio = (android.media.AudioManager) context.getApplicationContext()
                 .getSystemService(Context.AUDIO_SERVICE);
@@ -48,6 +50,7 @@ final class WheelTickSound {
 
     static synchronized void play() {
         if (pool == null || !loaded) return;
+        if (appContext != null && !AppSettings.wheelTickSound(appContext)) return;
         // Only silent/vibrate mode mutes the tick; media volume plays no part.
         if (audio != null && audio.getRingerMode() != android.media.AudioManager.RINGER_MODE_NORMAL) return;
         long now = android.os.SystemClock.uptimeMillis();

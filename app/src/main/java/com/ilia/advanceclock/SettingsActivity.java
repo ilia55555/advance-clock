@@ -126,6 +126,13 @@ public final class SettingsActivity extends Activity {
         Spinner clockFormat=spinner(new String[]{AppString.get(R.string.clock_format_24),AppString.get(R.string.clock_format_12)});
         clockFormat.setSelection(AppSettings.clock24Hour(this)?0:1);
         generalSettings.addView(clockFormat,new LinearLayout.LayoutParams(-1,dp(54)));
+        Switch wheelSound = settingSwitch(
+                AppString.get(R.string.time_picker_wheel_sound),
+                AppSettings.wheelTickSound(this));
+        wheelSound.setTag("time_picker_wheel_sound");
+        generalSettings.addView(wheelSound);
+        wheelSound.setOnCheckedChangeListener((button, checked) ->
+                AppSettings.setWheelTickSound(this, checked));
 
         calendarSettings.addView(label(getString(R.string.calendar_label)));
         Spinner calendar = spinner(getResources().getStringArray(R.array.calendar_options));

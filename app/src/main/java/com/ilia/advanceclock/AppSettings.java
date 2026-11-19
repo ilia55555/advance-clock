@@ -105,6 +105,8 @@ public final class AppSettings {
 
     public static boolean clock24Hour(Context context) { return prefs(context).getBoolean("clock_24_hour",true); }
     public static void setClock24Hour(Context context,boolean enabled) { prefs(context).edit().putBoolean("clock_24_hour",enabled).apply(); }
+    public static boolean wheelTickSound(Context context) { return prefs(context).getBoolean("wheel_tick_sound",true); }
+    public static void setWheelTickSound(Context context,boolean enabled) { prefs(context).edit().putBoolean("wheel_tick_sound",enabled).apply(); }
 
     public static int dateDisplayFormat(Context context) {
         return prefs(context).getInt("date_display_format", 0) == 1 ? 1 : 0;

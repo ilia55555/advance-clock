@@ -1440,4 +1440,5 @@
     <string name="time_format_tool_afternoon">بعد از ظهر (PM)</string>
     <string name="time_picker_mode_clock">ساعت</string>
     <string name="time_picker_mode_wheel">چرخشی</string>
+    <string name="time_picker_wheel_sound">صدای چرخش انتخابگر ساعت</string>
 </resources>
