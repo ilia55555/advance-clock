@@ -212,6 +212,19 @@
             android:exported="false" />
 
         <service
+            android:name=".NoForgetWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <activity
+            android:name=".NoteWidgetClickActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:exported="false" />
+
+        <service
             android:name=".CalendarPrayerWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />

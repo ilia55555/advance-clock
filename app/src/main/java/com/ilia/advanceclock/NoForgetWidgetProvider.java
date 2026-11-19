@@ -64,6 +64,9 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     id,
                     manager.getAppWidgetOptions(id));
         }
+        if (ids.length > 0) {
+            manager.notifyAppWidgetViewDataChanged(ids, R.id.noforget_widget_list);
+        }
     }
 
     private static void update(
@@ -95,11 +98,6 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                 WidgetPrefs.showHeader(context, widgetId);
         boolean showSection =
                 WidgetPrefs.showSectionLabel(context, widgetId);
-
-        // Always render the configured number of rows; the list simply clips at the
-        // widget's bottom edge. Estimating rows from the reported size hid every
-        // note on common 2-row widgets.
-        int rowCount = WidgetPrefs.maxItems(context, widgetId);
 
         RemoteViews root = new RemoteViews(
                 context.getPackageName(),
@@ -224,25 +222,80 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                         System.currentTimeMillis(),
                         AppSettings.defaultCalendar(context)));
 
-        root.removeAllViews(
-                R.id.noforget_widget_list);
-
-        List<NoForgetItem> items = widgetOrder(
-                new NoForgetStore(context).all(),
-                rowCount,
-                WidgetPrefs.sortMode(
-                        context,
-                        widgetId));
 
         root.setTextViewText(
                 R.id.noforget_widget_empty,
                 AppString.get(R.string.runtime_text_0402));
-        root.setViewVisibility(
-                R.id.noforget_widget_empty,
-                items.isEmpty()
-                        ? View.VISIBLE
-                        : View.GONE);
 
+        // Scrollable list: every note is served by NoForgetWidgetService.
+        Intent service = new Intent(context, NoForgetWidgetService.class)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        service.setData(android.net.Uri.parse(service.toUri(Intent.URI_INTENT_SCHEME)));
+        root.setRemoteAdapter(R.id.noforget_widget_list, service);
+        root.setEmptyView(R.id.noforget_widget_list, R.id.noforget_widget_empty);
+        root.setPendingIntentTemplate(
+                R.id.noforget_widget_list,
+                PendingIntent.getActivity(
+                        context,
+                        1_550_000 + widgetId,
+                        new Intent(context, NoteWidgetClickActivity.class),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_MUTABLE));
+
+        root.setOnClickPendingIntent(
+                R.id.noforget_widget_add,
+                PendingIntent.getActivity(
+                        context,
+                        1_600_000 + widgetId,
+                        new Intent(
+                                context,
+                                NoForgetQuickAddActivity.class),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE));
+
+        Intent openApp = new Intent(
+                context,
+                MainActivity.class)
+                .putExtra("openTab", "noforget")
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        root.setOnClickPendingIntent(
+                R.id.noforget_widget_header,
+                PendingIntent.getActivity(
+                        context,
+                        1_700_000 + widgetId,
+                        openApp,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE));
+
+        Intent settings = new Intent(
+                context,
+                WidgetSettingsActivity.class)
+                .putExtra(
+                        AppWidgetManager.EXTRA_APPWIDGET_ID,
+                        widgetId)
+                .putExtra("widgetKind", "note")
+                .putExtra("editExisting", true);
+
+        root.setOnClickPendingIntent(
+                R.id.noforget_widget_theme,
+                PendingIntent.getActivity(
+                        context,
+                        1_800_000 + widgetId,
+                        settings,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE));
+
+        return root;
+    }
+
+    /** Builds one list row; clicks are filled into the list's activity template. */
+    static RemoteViews buildRow(Context context, int widgetId, NoForgetItem item) {
+        boolean dark = WidgetPrefs.isDark(context, widgetId);
+        int text = dark ? 0xFFF2F5F4 : 0xFF173F3B;
+        int muted = dark ? 0xFFAFBCB8 : 0xFF758783;
+        int primary = WidgetPrefs.primary(context, widgetId);
+        float[] sizes = fontSizes(WidgetPrefs.fontSizeMode(context, widgetId));
         boolean showPriority =
                 WidgetPrefs.showPriority(
                         context,
@@ -252,7 +305,6 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                         context,
                         widgetId);
 
-        for (NoForgetItem item : items) {
             RemoteViews row = new RemoteViews(
                     context.getPackageName(),
                     R.layout.widget_noforget_row);
@@ -272,7 +324,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                 row.setImageViewResource(R.id.noforget_row_task,done?R.drawable.ic_task_checked:R.drawable.ic_task_unchecked);
                 row.setInt(R.id.noforget_row_task,"setColorFilter",done?muted:primary);
                 row.setContentDescription(R.id.noforget_row_task,context.getString(done?R.string.task_reopen:R.string.task_complete)+": "+item.title);
-                row.setOnClickPendingIntent(R.id.noforget_row_task,NoteWidgetTaskReceiver.pending(context,widgetId,item));
+                row.setOnClickFillInIntent(R.id.noforget_row_task,NoteWidgetTaskReceiver.intent(context,widgetId,item).putExtra(NoteWidgetClickActivity.EXTRA_KIND,NoteWidgetClickActivity.KIND_TASK));
             }
             row.setInt(R.id.noforget_row_title,"setPaintFlags",android.graphics.Paint.ANTI_ALIAS_FLAG
                     | (item.taskDone(System.currentTimeMillis())?android.graphics.Paint.STRIKE_THRU_TEXT_FLAG:0));
@@ -329,72 +381,11 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                     TypedValue.COMPLEX_UNIT_SP,
                     sizes[5]);
 
-            Intent edit = new Intent(
-                    context,
-                    NoteDetailActivity.class)
-                    .putExtra("noteId", item.id);
-
-            row.setOnClickPendingIntent(
+            row.setOnClickFillInIntent(
                     R.id.noforget_row_root,
-                    PendingIntent.getActivity(
-                            context,
-                            1_500_000
-                                    + (int) Math.abs(
-                                    item.id % 1_000_000),
-                            edit,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                                    | PendingIntent.FLAG_IMMUTABLE));
-
-            root.addView(
-                    R.id.noforget_widget_list,
-                    row);
-        }
-
-        root.setOnClickPendingIntent(
-                R.id.noforget_widget_add,
-                PendingIntent.getActivity(
-                        context,
-                        1_600_000 + widgetId,
-                        new Intent(
-                                context,
-                                NoForgetQuickAddActivity.class),
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE));
-
-        Intent openApp = new Intent(
-                context,
-                MainActivity.class)
-                .putExtra("openTab", "noforget")
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        root.setOnClickPendingIntent(
-                R.id.noforget_widget_header,
-                PendingIntent.getActivity(
-                        context,
-                        1_700_000 + widgetId,
-                        openApp,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE));
-
-        Intent settings = new Intent(
-                context,
-                WidgetSettingsActivity.class)
-                .putExtra(
-                        AppWidgetManager.EXTRA_APPWIDGET_ID,
-                        widgetId)
-                .putExtra("widgetKind", "note")
-                .putExtra("editExisting", true);
-
-        root.setOnClickPendingIntent(
-                R.id.noforget_widget_theme,
-                PendingIntent.getActivity(
-                        context,
-                        1_800_000 + widgetId,
-                        settings,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE));
-
-        return root;
+                    new Intent().putExtra(NoteWidgetClickActivity.EXTRA_KIND, NoteWidgetClickActivity.KIND_OPEN)
+                            .putExtra("noteId", item.id));
+            return row;
     }
 
     @Override public void onDeleted(
@@ -473,7 +464,7 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
         };
     }
 
-    private static List<NoForgetItem> widgetOrder(
+    static List<NoForgetItem> widgetOrder(
             List<NoForgetItem> source,
             int limit,
             int sortMode) {
