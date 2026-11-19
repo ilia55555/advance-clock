@@ -885,24 +885,24 @@
                             android:layoutDirection="rtl">
 
                             <Button
-                                android:id="@+id/quick_note_date"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_field"
-                                android:text="@string/runtime_text_0014"
-                                android:textAllCaps="false"
-                                android:textColor="?attr/appPrimary" />
-
-                            <Space android:layout_width="8dp" android:layout_height="1dp" />
-
-                            <Button
                                 android:id="@+id/quick_note_time"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_field"
                                 android:text="@string/runtime_text_0013"
+                                android:textAllCaps="false"
+                                android:textColor="?attr/appPrimary" />
+
+                            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+                            <Button
+                                android:id="@+id/quick_note_date"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_field"
+                                android:text="@string/runtime_text_0014"
                                 android:textAllCaps="false"
                                 android:textColor="?attr/appPrimary" />
                         </LinearLayout>
