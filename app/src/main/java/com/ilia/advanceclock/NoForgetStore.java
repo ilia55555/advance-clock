@@ -69,5 +69,7 @@ public final class NoForgetStore {
         }
         SecurePreferences.write(context, PREFS, KEY, array.toString());
         context.sendBroadcast(new android.content.Intent(ACTION_CHANGED).setPackage(context.getPackageName()));
+        // Keep the home-screen widget in sync with every change, wherever it comes from.
+        try { NoForgetWidgetProvider.updateAll(context); } catch (RuntimeException ignored) {}
     }
 }

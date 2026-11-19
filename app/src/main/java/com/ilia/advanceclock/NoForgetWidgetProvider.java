@@ -90,23 +90,16 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
             float widthDp,
             float heightDp) {
         int width = Math.max(1, Math.round(widthDp));
-        int height = Math.max(1, Math.round(heightDp));
 
         boolean showHeader =
                 WidgetPrefs.showHeader(context, widgetId);
         boolean showSection =
                 WidgetPrefs.showSectionLabel(context, widgetId);
 
-        int reserved = 24
-                + (showHeader ? 45 : 0)
-                + (showSection ? 20 : 0);
-
-        int rowCount = Math.max(
-                0,
-                (height - reserved) / 64);
-        rowCount = Math.min(
-                WidgetPrefs.maxItems(context, widgetId),
-                Math.min(10, rowCount));
+        // Always render the configured number of rows; the list simply clips at the
+        // widget's bottom edge. Estimating rows from the reported size hid every
+        // note on common 2-row widgets.
+        int rowCount = WidgetPrefs.maxItems(context, widgetId);
 
         RemoteViews root = new RemoteViews(
                 context.getPackageName(),
@@ -241,23 +234,14 @@ public final class NoForgetWidgetProvider extends AppWidgetProvider {
                         context,
                         widgetId));
 
-        if (rowCount <= 0) {
-            root.setTextViewText(
-                    R.id.noforget_widget_empty,
-                    AppString.get(R.string.runtime_text_0400));
-            root.setViewVisibility(
-                    R.id.noforget_widget_empty,
-                    View.VISIBLE);
-        } else {
-            root.setTextViewText(
-                    R.id.noforget_widget_empty,
-                    AppString.get(R.string.runtime_text_0402));
-            root.setViewVisibility(
-                    R.id.noforget_widget_empty,
-                    items.isEmpty()
-                            ? View.VISIBLE
-                            : View.GONE);
-        }
+        root.setTextViewText(
+                R.id.noforget_widget_empty,
+                AppString.get(R.string.runtime_text_0402));
+        root.setViewVisibility(
+                R.id.noforget_widget_empty,
+                items.isEmpty()
+                        ? View.VISIBLE
+                        : View.GONE);
 
         boolean showPriority =
                 WidgetPrefs.showPriority(
