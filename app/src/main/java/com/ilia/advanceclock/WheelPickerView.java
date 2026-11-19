@@ -30,6 +30,7 @@ final class WheelPickerView extends FrameLayout {
     private static final float MIN_FLING = 1.5f;  // items per second
 
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint divider = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final float density;
     private final int touchSlop;
     private final EditText input;
@@ -63,6 +64,8 @@ final class WheelPickerView extends FrameLayout {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setColor(AppSettings.textPrimary(context));
         setTextSize(30);
+        divider.setColor(AppSettings.primaryColor(context));
+        divider.setStrokeWidth(1.5f * density);
         WheelTickSound.prepare(context);
 
         input = new EditText(context);
@@ -162,6 +165,10 @@ final class WheelPickerView extends FrameLayout {
         }
         paint.setTextSize(baseSize);
         paint.setAlpha(255);
+        float inset = getWidth() * 0.12f;
+        float half = itemHeight / 2f;
+        canvas.drawLine(inset, cy - half, getWidth() - inset, cy - half, divider);
+        canvas.drawLine(inset, cy + half, getWidth() - inset, cy + half, divider);
         if (animating) postInvalidateOnAnimation();
     }
 

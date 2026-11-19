@@ -15,27 +15,30 @@ import java.io.IOException;
 final class WheelTickSound {
     private static final int RATE = 44100;
     private static final float VOLUME = 0.35f;
-    private static final long MIN_GAP_MS = 18;
+    private static final long MIN_GAP_MS = 30;
 
     private static SoundPool pool;
     private static int soundId;
     private static boolean loaded;
     private static long lastPlay;
+    private static android.media.AudioManager audio;
 
     private WheelTickSound() {}
 
     static synchronized void prepare(Context context) {
         if (pool != null) return;
+        audio = (android.media.AudioManager) context.getApplicationContext()
+                .getSystemService(Context.AUDIO_SERVICE);
         pool = new SoundPool.Builder()
-                .setMaxStreams(3)
+                .setMaxStreams(1)
                 .setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build())
                 .build();
         pool.setOnLoadCompleteListener((p, id, status) -> loaded = status == 0);
         try {
-            File file = new File(context.getApplicationContext().getCacheDir(), "wheel_tick_v2.wav");
+            File file = new File(context.getApplicationContext().getCacheDir(), "wheel_tick_v3.wav");
             if (!file.exists()) writeWav(file, synth());
             soundId = pool.load(file.getAbsolutePath(), 1);
         } catch (IOException ignored) {
@@ -45,9 +48,14 @@ final class WheelTickSound {
 
     static synchronized void play() {
         if (pool == null || !loaded) return;
+        // Stay quiet when the phone is silent/vibrate or media volume is muted.
+        if (audio != null && (audio.getRingerMode() != android.media.AudioManager.RINGER_MODE_NORMAL
+                || audio.getStreamVolume(android.media.AudioManager.STREAM_MUSIC) == 0
+                || audio.isStreamMute(android.media.AudioManager.STREAM_MUSIC))) return;
         long now = android.os.SystemClock.uptimeMillis();
         if (now - lastPlay < MIN_GAP_MS) return;
         lastPlay = now;
+        // One stream only, fixed volume: fast spins never stack into a louder sound.
         pool.play(soundId, VOLUME, VOLUME, 1, 0, 1f);
     }
 
@@ -59,8 +67,8 @@ final class WheelTickSound {
             double t = i / (double) RATE;
             double attack = Math.min(1.0, t / 0.0003);
             double env = attack * Math.exp(-t / 0.0022);
-            double v = Math.sin(2 * Math.PI * 2400 * t) * 0.8
-                    + Math.sin(2 * Math.PI * 3600 * t) * 0.2;
+            double v = Math.sin(2 * Math.PI * 3400 * t) * 0.8
+                    + Math.sin(2 * Math.PI * 5200 * t) * 0.2;
             pcm[i] = (short) (v * env * 0.6 * 32767);
         }
         return pcm;

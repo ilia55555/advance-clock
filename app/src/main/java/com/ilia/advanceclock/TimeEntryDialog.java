@@ -168,11 +168,11 @@ class TimeEntryDialog extends Dialog {
         row.addView(hourPicker, wheelParams());
         TextView colon = new TextView(context);
         colon.setText(":");
-        colon.setTextSize(26);
+        colon.setTextSize(36);
         colon.setTextColor(AppSettings.primaryColor(context));
         colon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         colon.setGravity(Gravity.CENTER);
-        row.addView(colon, new LinearLayout.LayoutParams(dp(18), -2));
+        row.addView(colon, new LinearLayout.LayoutParams(dp(24), -2));
         row.addView(minutePicker, wheelParams());
 
         if (app24) {
