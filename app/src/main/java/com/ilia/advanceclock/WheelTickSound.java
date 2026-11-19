@@ -7,12 +7,10 @@ import android.media.SoundPool;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Random;
 
 /**
- * Subtle metallic "lock click" for wheel ticks. The sample is synthesised once
- * (noise through a band-pass body and a high-pass snap) and always played at
- * the same fixed volume, however fast the wheel spins.
+ * Subtle "tick" for wheel steps. The sample is synthesised once and always
+ * played at the same fixed volume, however fast the wheel spins.
  */
 final class WheelTickSound {
     private static final int RATE = 44100;
@@ -37,7 +35,7 @@ final class WheelTickSound {
                 .build();
         pool.setOnLoadCompleteListener((p, id, status) -> loaded = status == 0);
         try {
-            File file = new File(context.getApplicationContext().getCacheDir(), "wheel_tick_v1.wav");
+            File file = new File(context.getApplicationContext().getCacheDir(), "wheel_tick_v2.wav");
             if (!file.exists()) writeWav(file, synth());
             soundId = pool.load(file.getAbsolutePath(), 1);
         } catch (IOException ignored) {
@@ -53,30 +51,18 @@ final class WheelTickSound {
         pool.play(soundId, VOLUME, VOLUME, 1, 0, 1f);
     }
 
+    /** A clean, short "tick": a mid-high tone with a very fast decay, no noise. */
     private static short[] synth() {
-        int n = RATE * 30 / 1000;
-        float[] out = new float[n];
-        Random random = new Random(7);
-        float[] body = biquad(bandPass(1800, 4f));
-        float[] snap = biquad(highPass(5200, 0.8f));
-        float b1 = 0, b2 = 0, a1 = 0, a2 = 0;
-        float s1 = 0, s2 = 0, c1 = 0, c2 = 0;
-        float peak = 0;
-        for (int i = 0; i < n; i++) {
-            float t = i / (float) RATE;
-            float noise = random.nextFloat() * 2f - 1f;
-            float yb = body[0] * noise + body[1] * b1 + body[2] * b2 - body[3] * a1 - body[4] * a2;
-            b2 = b1; b1 = noise; a2 = a1; a1 = yb;
-            float ys = snap[0] * noise + snap[1] * s1 + snap[2] * s2 - snap[3] * c1 - snap[4] * c2;
-            s2 = s1; s1 = noise; c2 = c1; c1 = ys;
-            float v = yb * 0.9f * (float) Math.exp(-t / 0.007f)
-                    + ys * 0.5f * (float) Math.exp(-t / 0.0018f);
-            out[i] = v;
-            peak = Math.max(peak, Math.abs(v));
-        }
+        int n = RATE * 12 / 1000;
         short[] pcm = new short[n];
-        float scale = peak > 0 ? 0.6f / peak : 0;
-        for (int i = 0; i < n; i++) pcm[i] = (short) (out[i] * scale * 32767);
+        for (int i = 0; i < n; i++) {
+            double t = i / (double) RATE;
+            double attack = Math.min(1.0, t / 0.0003);
+            double env = attack * Math.exp(-t / 0.0022);
+            double v = Math.sin(2 * Math.PI * 2400 * t) * 0.8
+                    + Math.sin(2 * Math.PI * 3600 * t) * 0.2;
+            pcm[i] = (short) (v * env * 0.6 * 32767);
+        }
         return pcm;
     }
 
