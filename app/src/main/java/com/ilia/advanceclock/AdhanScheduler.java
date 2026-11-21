@@ -65,7 +65,7 @@ public final class AdhanScheduler {
                 manager.setAlarmClock(new AlarmManager.AlarmClockInfo(when, show),
                         operation(context, type));
                 MunajatConfig before=MunajatConfig.load(context,type,true);
-                long early=when-before.minutes*60_000L;
+                long early=when-before.leadMillis(context);
                 if(before.playable() && early>now){
                     manager.setAlarmClock(new AlarmManager.AlarmClockInfo(early,show),munajatOperation(context,type,when));
                 }

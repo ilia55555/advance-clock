@@ -23,6 +23,8 @@ final class SoundPreviewController implements AutoCloseable {
     private boolean prepared,wanted;
     private float gain=1f;
     private int alarmVolumePercent=-1;
+    /** Optional gradual preview (percent of the alarm stream); -1 = off. */
+    private int rampStart=-1,rampEnd=-1;
     private AudioFocusRequest focus;
     private final AudioManager manager;
     SoundPreviewController(Activity host){this.host=host;manager=host.getSystemService(AudioManager.class);}
@@ -62,13 +64,24 @@ final class SoundPreviewController implements AutoCloseable {
         try{
             if(manager!=null){focus=new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT).setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()).setWillPauseWhenDucked(true).setOnAudioFocusChangeListener(change->{if(change<0)pause();},main).build();
                 if(manager.requestAudioFocus(focus)!=AudioManager.AUDIOFOCUS_REQUEST_GRANTED){wanted=false;abandonFocus();update(active);return;}}
-            host.setVolumeControlStream(AudioManager.STREAM_ALARM);AlarmVolume.apply(host,alarmVolumePercent);Clip clip=clips.get(active);if(clip!=null)player.seekTo(clip.position);player.setVolume(gain,gain);player.start();main.removeCallbacks(tick);main.postDelayed(tick,250);
+            host.setVolumeControlStream(AudioManager.STREAM_ALARM);AlarmVolume.apply(host,alarmVolumePercent);Clip clip=clips.get(active);if(clip!=null)player.seekTo(clip.position);player.setVolume(gain,gain);player.start();applyRamp();main.removeCallbacks(tick);main.postDelayed(tick,250);
         }catch(Exception error){failed();}
     }
     void setAlarmVolumePercent(int value){alarmVolumePercent=AlarmVolume.normalize(value);if(player!=null && prepared)AlarmVolume.apply(host,alarmVolumePercent);setGain(value==0?0f:1f);}
+    void setRamp(int start,int end){
+        rampStart=Math.max(0,Math.min(100,start));rampEnd=Math.max(0,Math.min(100,end));
+        int ceiling=Math.max(rampStart,rampEnd);alarmVolumePercent=AlarmVolume.normalize(ceiling);
+        if(player!=null && prepared)AlarmVolume.apply(host,alarmVolumePercent);applyRamp();
+    }
+    private void applyRamp(){
+        if(rampStart<0 || player==null || !prepared)return;
+        Clip clip=clips.get(active);float fraction=clip==null || clip.duration<=0?0:Math.max(0,Math.min(1,player.getCurrentPosition()/(float)clip.duration));
+        int ceiling=Math.max(rampStart,rampEnd);float percent=rampStart+(rampEnd-rampStart)*fraction;
+        gain=ceiling==0?0:Math.max(0,Math.min(1,percent/ceiling));try{player.setVolume(gain,gain);}catch(Exception ignored){}
+    }
     void setGain(float value){gain=Math.max(0f,Math.min(1f,value));if(player!=null && prepared)try{player.setVolume(gain,gain);}catch(Exception e){failed();}}
     void seek(SoundPreviewRow row,int position){Clip clip=clips.get(row.uri);if(clip==null || closed)return;clip.position=Math.max(0,Math.min(position,clip.duration));if(Objects.equals(active,row.uri) && prepared && player!=null)try{player.seekTo(clip.position);}catch(Exception e){failed();}update(row.uri);}
-    private final Runnable tick=new Runnable(){public void run(){if(closed || !prepared || !wanted || player==null)return;try{clips.get(active).position=player.getCurrentPosition();update(active);main.postDelayed(this,250);}catch(Exception e){failed();}}};
+    private final Runnable tick=new Runnable(){public void run(){if(closed || !prepared || !wanted || player==null)return;try{clips.get(active).position=player.getCurrentPosition();applyRamp();update(active);main.postDelayed(this,250);}catch(Exception e){failed();}}};
     void pause(){
         main.removeCallbacks(tick);wanted=false;
         MediaPlayer old=player;

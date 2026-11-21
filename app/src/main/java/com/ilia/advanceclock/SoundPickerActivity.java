@@ -30,7 +30,11 @@ public final class SoundPickerActivity extends Activity {
     @Override protected void onCreate(Bundle state) {
         AppSettings.applyTheme(this); AppSettings.applyModalOverlay(this); super.onCreate(state);
         previews=new SoundPreviewController(this);
-        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false))previews.setAlarmVolumePercent(getIntent().getIntExtra("previewVolume",10));
+        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false)){
+            previews.setAlarmVolumePercent(getIntent().getIntExtra("previewVolume",10));
+            // Preview the munajat with the same gradual volume it will use before/after the adhan.
+            if(getIntent().getIntExtra("rampStart",-1)>=0)previews.setRamp(getIntent().getIntExtra("rampStart",10),getIntent().getIntExtra("rampEnd",60));
+        }
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL); root.setLayoutDirection(AppSettings.layoutDirection(this));
         root.setPadding(dp(18), dp(12), dp(18), dp(18)); root.setBackgroundColor(AppSettings.background(this));
