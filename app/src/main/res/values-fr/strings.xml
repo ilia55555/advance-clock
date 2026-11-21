@@ -988,4 +988,5 @@ Sans rappel</string>
     <string name="munajat_minutes_rule">The audio is %1$s long; 0 ends it exactly at the adhan, otherwise at least %2$s minutes.</string>
     <string name="munajat_minutes_too_short">Shorter than the audio; use at least %1$s minutes or 0</string>
     <string name="munajat_row_summary">Plays with every enabled adhan; adjust in settings</string>
+    <string name="adhan_setup_hint">Adhan is on. Adjust it now, or tap “Later” to keep the default settings.</string>
 </resources>

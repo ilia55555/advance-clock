@@ -1229,6 +1229,7 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (UpdatePrompt.onActivityResult(this, requestCode, resultCode, data)) return;
         if (requestCode == PermissionCenterActivity.REQUEST) {
+            boolean firstOnboarding = !getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(PERMISSION_ONBOARDING, false);
             getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                     .putBoolean(PERMISSION_ONBOARDING, true).apply();
             if (PermissionHelper.exactAlarmsGranted(this)) {
@@ -1239,10 +1240,14 @@ public final class MainActivity extends Activity {
             }
             DateNotificationService.start(this);
             getWindow().getDecorView().post(() -> {
-                if (!isFinishing() && !isDestroyed() && PermissionCenterActivity.requiredIncomplete(this)) {
+                if (isFinishing() || isDestroyed()) return;
+                if (PermissionCenterActivity.requiredIncomplete(this)) {
                     if (permissionWarning != null) permissionWarning.dismiss();
                     permissionWarning=PermissionWarning.show(this);
                 }
+                // First run: with adhan on, offer the full adhan settings once.
+                if (firstOnboarding && AdhanSetupActivity.shouldPrompt(this))
+                    startActivity(new Intent(this, AdhanSetupActivity.class));
             });
             return;
         }
