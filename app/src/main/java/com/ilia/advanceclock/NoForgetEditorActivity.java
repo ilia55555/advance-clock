@@ -187,8 +187,15 @@ public final class NoForgetEditorActivity extends Activity {
         View dateRow=(View)dateButton.getParent();
         // Time sits on the right and date on the left, whatever the layout direction.
         View dateField=dateOption.combineWithDate(dateButton);
-        if(AppSettings.layoutDirection(this)==View.LAYOUT_DIRECTION_RTL) compactRow(timeButton,dateField);
-        else compactRow(dateField,timeButton);
+        compactRow(dateField,timeButton);
+        if(AppSettings.layoutDirection(this)==View.LAYOUT_DIRECTION_RTL){
+            // Build the row in its usual place first, then reverse it so time is on the right.
+            LinearLayout timeRow=(LinearLayout)timeButton.getParent();
+            java.util.ArrayList<View> children=new java.util.ArrayList<>();
+            for(int i=timeRow.getChildCount()-1;i>=0;i--)children.add(timeRow.getChildAt(i));
+            timeRow.removeAllViews();
+            for(View child:children)timeRow.addView(child);
+        }
         ((android.view.ViewGroup)dateRow.getParent()).removeView(dateRow);
         compactRow(repeatButton,remindersButton);
         vibrate.setTextSize(13);
