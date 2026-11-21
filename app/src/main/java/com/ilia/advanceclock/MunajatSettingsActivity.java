@@ -21,7 +21,11 @@ public final class MunajatSettingsActivity extends Activity {
         if(type!=899 && (type<0 || type>4)){finish();return;}
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);
         LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setLayoutDirection(AppSettings.layoutDirection(this));root.setPadding(dp(16),dp(16),dp(16),dp(24));root.setBackgroundColor(AppSettings.background(this));scroll.addView(root);
-        TextView title=text(getString(R.string.munajat_title)+" "+(type==899?getString(R.string.munajat_all):AdhanScheduler.title(type)),22);title.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);title.setPadding(0,0,0,dp(14));root.addView(title);
+        // "Munajat" with the prayer scope beside it in its own smaller, coloured style.
+        LinearLayout heading=new LinearLayout(this);heading.setOrientation(LinearLayout.HORIZONTAL);heading.setGravity(Gravity.BOTTOM);heading.setPadding(0,0,0,dp(14));
+        TextView title=text(getString(R.string.munajat_title),22);title.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);heading.addView(title);
+        TextView subtitle=text(type==899?getString(R.string.munajat_all):AdhanScheduler.title(type),14);subtitle.setTextColor(AppSettings.primaryColor(this));subtitle.setPadding(dp(8),0,dp(8),dp(3));heading.addView(subtitle);
+        root.addView(heading);
         for(int i=0;i<2;i++){
             final int side=i;MunajatConfig v=MunajatConfig.load(this,type==899?0:type,i==0);values[i]=v;
             if(state!=null){v.uri=state.getString("uri"+i,v.uri);v.enabled=state.getBoolean("enabled"+i,v.enabled);v.gradual=state.getBoolean("gradual"+i,v.gradual);v.start=state.getInt("start"+i,v.start);v.end=state.getInt("end"+i,v.end);v.minutes=state.getInt("minutes",v.minutes);}
