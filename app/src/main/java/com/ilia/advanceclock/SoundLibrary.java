@@ -25,7 +25,7 @@ final class SoundLibrary {
 
     static List<Sound> munajat(Context context){
         ArrayList<Sound> result=new ArrayList<>();addBundledSounds(context,result,"munajat",AppString.get(R.string.munajat_title),30);
-        addNamedBundledSound(context,result,"munajat_before",AppString.get(R.string.munajat_before));addNamedBundledSound(context,result,"munajat_after",AppString.get(R.string.munajat_after));
+        addNamedBundledSound(context,result,"munajat_before",AppString.get(R.string.munajat_default_name));addNamedBundledSound(context,result,"munajat_after",AppString.get(R.string.munajat_after));
         for(DownloadableSounds.Entry entry:DownloadableSounds.installed(context,DownloadableSounds.Kind.MUNAJAT))
             if(DownloadableSounds.available(context,DownloadableSounds.Kind.MUNAJAT,entry))
                 result.add(new Sound(entry.name,DownloadableSounds.uri(context,DownloadableSounds.Kind.MUNAJAT,entry)));

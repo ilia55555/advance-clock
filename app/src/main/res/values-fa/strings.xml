@@ -1468,4 +1468,5 @@
     <string name="stopwatch_record_category_change">(تغییر)</string>
     <string name="stopwatch_record_title_hint">عنوان (اختیاری)</string>
     <string name="stopwatch_records_close">بستن</string>
+    <string name="munajat_default_name">ربنا - شجریان</string>
 </resources>
