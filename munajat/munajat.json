@@ -2,12 +2,20 @@
   "schemaVersion": 1,
   "sounds": [
     {
-      "id": "shajarian-rabbana",
-      "name": "ربنا - شجریان",
-      "file": "Shajaryan Rabanna.mp3",
+      "id": "shajarian-rabbana-full",
+      "name": "ربنا کامل - شجریان",
+      "file": "Shajaryan - Rabanna Full.mp3",
       "version": 1,
-      "size": 6282330,
-      "sha256": "ba6125383ccbe2889e7c50eaebe93340ff0c2ce002f817f3abe9c48a27edfbc0"
+      "size": 4304444,
+      "sha256": "44d54d76f92eaf6a14111e67771acd8fcf50e3eacea737913bb61d1107142336"
+    },
+    {
+      "id": "soltani-rabbana",
+      "name": "ربنا - محمدحسین سلطانی",
+      "file": "Mohammad Hosein Soltani - Rabbana.mp3",
+      "version": 1,
+      "size": 11407447,
+      "sha256": "652f52db3e453f683d7a250e585c3828d9ed8414b1cbb080bf363c28ba1039ea"
     }
   ]
 }
