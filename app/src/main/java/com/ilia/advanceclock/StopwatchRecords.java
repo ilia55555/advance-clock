@@ -14,7 +14,10 @@ final class StopwatchRecords {
     static final class Record {
         final long millis;
         final long at;
-        Record(long millis, long at) { this.millis = millis; this.at = at; }
+        final String title;
+        Record(long millis, long at, String title) {
+            this.millis = millis; this.at = at; this.title = title == null ? "" : title;
+        }
     }
 
     static final class Activity {
@@ -58,7 +61,7 @@ final class StopwatchRecords {
                 JSONArray recs = o.optJSONArray("records");
                 if (recs != null) for (int j = 0; j < recs.length(); j++) {
                     JSONObject r = recs.getJSONObject(j);
-                    a.records.add(new Record(r.getLong("ms"), r.getLong("at")));
+                    a.records.add(new Record(r.getLong("ms"), r.getLong("at"), r.optString("title", "")));
                 }
                 out.add(a);
             }
@@ -78,7 +81,7 @@ final class StopwatchRecords {
         try {
             for (Activity a : activities) {
                 JSONArray recs = new JSONArray();
-                for (Record r : a.records) recs.put(new JSONObject().put("ms", r.millis).put("at", r.at));
+                for (Record r : a.records) recs.put(new JSONObject().put("ms", r.millis).put("at", r.at).put("title", r.title));
                 array.put(new JSONObject().put("id", a.id).put("name", a.name)
                         .put("longerBetter", a.longerBetter).put("records", recs));
             }
@@ -87,7 +90,7 @@ final class StopwatchRecords {
     }
 
     /** Adds a record and returns the previous best (null if this is the first). */
-    synchronized Record add(String name, boolean longerBetterIfNew, long millis) {
+    synchronized Record add(String name, boolean longerBetterIfNew, long millis, String title) {
         List<Activity> all = all();
         Activity target = null;
         for (Activity a : all) if (a.name.equalsIgnoreCase(name.trim())) target = a;
@@ -99,7 +102,7 @@ final class StopwatchRecords {
             all.add(target);
         }
         Record previous = target.best();
-        target.records.add(new Record(millis, System.currentTimeMillis()));
+        target.records.add(new Record(millis, System.currentTimeMillis(), title));
         save(all);
         return previous;
     }

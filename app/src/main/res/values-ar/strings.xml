@@ -1534,4 +1534,6 @@
     <string name="stopwatch_record_uncategorized">بلا تصنيف</string>
     <string name="stopwatch_record_category">تصنيف هذا التشغيل:</string>
     <string name="stopwatch_record_category_change">(تغيير)</string>
+    <string name="stopwatch_record_title_hint">العنوان (اختياري)</string>
+    <string name="stopwatch_records_close">إغلاق</string>
 </resources>

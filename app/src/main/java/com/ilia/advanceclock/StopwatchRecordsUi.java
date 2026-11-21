@@ -15,7 +15,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -41,8 +40,12 @@ final class StopwatchRecordsUi {
 
     /** Saves straight into a known category and reports whether the record was beaten. */
     static void saveDirect(Activity host, long millis, String category, boolean longerIfNew) {
+        saveDirect(host, millis, category, longerIfNew, "");
+    }
+
+    static void saveDirect(Activity host, long millis, String category, boolean longerIfNew, String title) {
         StopwatchRecords store = new StopwatchRecords(host);
-        StopwatchRecords.Record previous = store.add(category, longerIfNew, millis);
+        StopwatchRecords.Record previous = store.add(category, longerIfNew, millis, title);
         StopwatchRecords.Activity saved = store.find(category);
         String message;
         if (previous == null) {
@@ -68,6 +71,15 @@ final class StopwatchRecordsUi {
         time.setTextDirection(View.TEXT_DIRECTION_LTR);
         sheet.content.addView(time, new LinearLayout.LayoutParams(-1, -2));
 
+        EditText titleField = new EditText(host);
+        titleField.setHint(AppString.get(R.string.stopwatch_record_title_hint));
+        titleField.setSingleLine(true);
+        titleField.setTextColor(AppSettings.textPrimary(host));
+        titleField.setHintTextColor(AppSettings.textSecondary(host));
+        titleField.setBackgroundResource(R.drawable.bg_field);
+        titleField.setPadding(dp(host, 14), 0, dp(host, 14), 0);
+        sheet.content.addView(titleField, params(host, 56, 12));
+
         AutoCompleteTextView name = new AutoCompleteTextView(host);
         name.setHint(AppString.get(R.string.stopwatch_record_activity_hint));
         name.setText(defaultName == null ? "" : defaultName.trim());
@@ -77,9 +89,14 @@ final class StopwatchRecordsUi {
         name.setHintTextColor(AppSettings.textSecondary(host));
         name.setBackgroundResource(R.drawable.bg_field);
         name.setPadding(dp(host, 14), 0, dp(host, 14), 0);
-        name.setAdapter(new ArrayAdapter<>(host, android.R.layout.simple_dropdown_item_1line, names));
-        name.setOnClickListener(v -> name.showDropDown());
-        sheet.content.addView(name, params(host, 56, 12));
+        name.setAdapter(new CategoryAdapter(host, names));
+        // Show three rows at a time; the rest scroll.
+        name.setDropDownHeight(dp(host, 48) * Math.min(3, Math.max(1, names.size())));
+        name.setDropDownBackgroundDrawable(fieldShape(host));
+        Runnable open = () -> { if (!names.isEmpty()) name.showDropDown(); };
+        name.setOnClickListener(v -> open.run());
+        name.setOnFocusChangeListener((v, focused) -> { if (focused) v.post(open); });
+        sheet.content.addView(name, params(host, 56, 8));
 
         CheckBox longer = new CheckBox(host);
         longer.setText(AppString.get(R.string.stopwatch_record_longer_better));
@@ -100,7 +117,7 @@ final class StopwatchRecordsUi {
         sheet.action(AppString.get(R.string.runtime_text_0003), false, v -> sheet.dialog.dismiss());
         sheet.action(AppString.get(R.string.runtime_text_0005), true, v -> {
             String value = category(name.getText().toString());
-            saveDirect(host, millis, value, longer.isChecked());
+            saveDirect(host, millis, value, longer.isChecked(), titleField.getText().toString().trim());
             sheet.dialog.dismiss();
             if (onSaved != null) onSaved.onSaved(value);
         });
@@ -120,6 +137,7 @@ final class StopwatchRecordsUi {
         if (activities.isEmpty()) {
             sheet.content.addView(text(host, AppString.get(R.string.stopwatch_records_empty), 14,
                     AppSettings.textSecondary(host)));
+            sheet.action(AppString.get(R.string.stopwatch_records_close), false, v -> sheet.dialog.dismiss());
             sheet.show();
             return;
         }
@@ -140,7 +158,8 @@ final class StopwatchRecordsUi {
             });
             sheet.content.addView(row, params(host, -2, 8));
         }
-        sheet.action(AppString.get(R.string.stopwatch_records_filter), false, v -> {
+        sheet.action(AppString.get(R.string.stopwatch_records_close), false, v -> sheet.dialog.dismiss());
+        sheet.action(AppString.get(R.string.stopwatch_records_filter), true, v -> {
             sheet.dialog.dismiss();
             chooseFilter(host, activities, onChanged);
         });
@@ -166,7 +185,8 @@ final class StopwatchRecordsUi {
         for (StopwatchRecords.Record r : sorted) {
             String when = CalendarUtils.formatDate(r.at, AppSettings.defaultCalendar(host))
                     + "  " + TimeFormat.clock(host, r.at);
-            View row = card(host, (rank == 1 ? "🏆 " : CalendarUtils.fa(String.valueOf(rank)) + ".  ") + format(r.millis), when, false);
+            String subtitle = r.title.isEmpty() ? when : r.title + "   •   " + when;
+            View row = card(host, (rank == 1 ? "🏆 " : CalendarUtils.fa(String.valueOf(rank)) + ".  ") + format(r.millis), subtitle, false);
             row.setOnClickListener(v -> confirm(host, AppString.get(R.string.stopwatch_record_delete_confirm), () -> {
                 current.records.remove(r);
                 store.save(all);
@@ -305,7 +325,7 @@ final class StopwatchRecordsUi {
         host.getSharedPreferences(FILTER_PREFS, Activity.MODE_PRIVATE).edit().putString(FILTER_KEY, out.toString()).apply();
     }
 
-    /** Centred modal in the app's style: close button, bold title, cards, actions. */
+    /** Centred modal in the app style: bold title, cards, actions. */
     private static final class Sheet {
         final Dialog dialog;
         final LinearLayout content;
@@ -320,28 +340,18 @@ final class StopwatchRecordsUi {
             LinearLayout root = new LinearLayout(host);
             root.setOrientation(LinearLayout.VERTICAL);
             root.setLayoutDirection(AppSettings.layoutDirection(host));
-            root.setPadding(dp(host, 18), dp(host, 12), dp(host, 18), dp(host, 18));
+            root.setPadding(dp(host, 18), dp(host, 14), dp(host, 18), dp(host, 18));
             GradientDrawable bg = new GradientDrawable();
             bg.setColor(AppSettings.surface(host));
             bg.setCornerRadius(dp(host, 24));
             root.setBackground(bg);
 
-            LinearLayout header = new LinearLayout(host);
-            header.setOrientation(LinearLayout.HORIZONTAL);
-            header.setGravity(Gravity.CENTER_VERTICAL);
-            header.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-            ImageButton close = new ImageButton(host);
-            close.setImageResource(R.drawable.ic_md_close);
-            close.setColorFilter(AppSettings.textPrimary(host));
-            close.setBackgroundColor(Color.TRANSPARENT);
-            close.setPadding(dp(host, 12), dp(host, 12), dp(host, 12), dp(host, 12));
-            close.setContentDescription(AppString.get(R.string.runtime_text_0002));
-            close.setOnClickListener(v -> dialog.dismiss());
-            header.addView(close, new LinearLayout.LayoutParams(dp(host, 48), dp(host, 48)));
-            TextView titleView = text(host, title, 20, AppSettings.textPrimary(host));
-            titleView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-            titleView.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
-            header.addView(titleView, new LinearLayout.LayoutParams(0, -2, 1f));
+            // Title only, aligned to the reading start (right in Persian, left in English).
+            TextView header = text(host, title, 20, AppSettings.textPrimary(host));
+            header.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            header.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            header.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            header.setPadding(dp(host, 4), dp(host, 8), dp(host, 4), dp(host, 8));
             root.addView(header);
 
             content = new LinearLayout(host);
@@ -387,6 +397,65 @@ final class StopwatchRecordsUi {
                 p.gravity = Gravity.CENTER;
                 window.setAttributes(p);
             }
+        }
+    }
+
+    private static GradientDrawable fieldShape(Activity host) {
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(AppSettings.field(host));
+        bg.setCornerRadius(dp(host, 12));
+        bg.setStroke(dp(host, 1), AppSettings.themeMode(host) == AppSettings.THEME_DARK ? 0xFF343D3A : 0xFFD8E8E7);
+        return bg;
+    }
+
+    /** Category suggestions that match anywhere in the name, like a search. */
+    private static final class CategoryAdapter extends ArrayAdapter<String> {
+        private final List<String> all;
+        private final List<String> shown = new ArrayList<>();
+        private final Activity host;
+
+        CategoryAdapter(Activity host, List<String> names) {
+            super(host, android.R.layout.simple_list_item_1);
+            this.host = host;
+            this.all = new ArrayList<>(names);
+            shown.addAll(all);
+        }
+
+        @Override public int getCount() { return shown.size(); }
+        @Override public String getItem(int position) { return shown.get(position); }
+
+        @Override public View getView(int position, View convert, android.view.ViewGroup parent) {
+            TextView view = convert instanceof TextView ? (TextView) convert : new TextView(host);
+            view.setText(shown.get(position));
+            view.setTextColor(AppSettings.textPrimary(host));
+            view.setTextSize(15);
+            view.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            view.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG);
+            view.setPadding(dp(host, 14), 0, dp(host, 14), 0);
+            view.setMinHeight(dp(host, 48));
+            view.setLayoutParams(new android.widget.AbsListView.LayoutParams(-1, dp(host, 48)));
+            return view;
+        }
+
+        @Override public android.widget.Filter getFilter() {
+            return new android.widget.Filter() {
+                @Override protected FilterResults performFiltering(CharSequence query) {
+                    String q = query == null ? "" : query.toString().trim().toLowerCase(Locale.ROOT);
+                    ArrayList<String> out = new ArrayList<>();
+                    for (String name : all) if (q.isEmpty() || name.toLowerCase(Locale.ROOT).contains(q)) out.add(name);
+                    FilterResults results = new FilterResults();
+                    results.values = out;
+                    results.count = out.size();
+                    return results;
+                }
+
+                @SuppressWarnings("unchecked")
+                @Override protected void publishResults(CharSequence query, FilterResults results) {
+                    shown.clear();
+                    if (results.values != null) shown.addAll((List<String>) results.values);
+                    notifyDataSetChanged();
+                }
+            };
         }
     }
 

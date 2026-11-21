@@ -1520,4 +1520,6 @@
     <string name="stopwatch_record_uncategorized">بدون دسته</string>
     <string name="stopwatch_record_category">دسته این کرنومتر:</string>
     <string name="stopwatch_record_category_change">(تغییر)</string>
+    <string name="stopwatch_record_title_hint">عنوان (اختیاری)</string>
+    <string name="stopwatch_records_close">بستن</string>
 </resources>

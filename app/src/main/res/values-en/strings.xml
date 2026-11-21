@@ -1516,4 +1516,6 @@ Lock screen</string>
     <string name="stopwatch_record_uncategorized">Uncategorized</string>
     <string name="stopwatch_record_category">Category for this run:</string>
     <string name="stopwatch_record_category_change">(change)</string>
+    <string name="stopwatch_record_title_hint">Title (optional)</string>
+    <string name="stopwatch_records_close">Close</string>
 </resources>
