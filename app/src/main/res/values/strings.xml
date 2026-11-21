@@ -1498,7 +1498,6 @@
     <string name="stopwatch_record_save">ثبت رکورد</string>
     <string name="stopwatch_records">رکوردهای من</string>
     <string name="stopwatch_records_empty">هنوز رکوردی ثبت نشده. کرنومتر را متوقف کنید و «ثبت رکورد» را بزنید.</string>
-    <string name="stopwatch_record_activity_hint">نام فعالیت (مثلاً کد زدن، آشپزی)</string>
     <string name="stopwatch_record_longer_better">زمان بیشتر بهتر است</string>
     <string name="stopwatch_record_shorter_better">زمان کمتر بهتر است</string>
     <string name="stopwatch_record_first">اولین رکورد این فعالیت ثبت شد</string>
@@ -1517,4 +1516,8 @@
     <string name="stopwatch_records_filter_all">نمایش همه فعالیت‌ها</string>
     <string name="stopwatch_records_filter_some">فقط فعالیت‌های انتخاب‌شده نمایش داده می‌شوند</string>
     <string name="stopwatch_record_entry">رکورد %1$d:  %2$s</string>
+    <string name="stopwatch_record_activity_hint">دسته‌بندی (اختیاری)</string>
+    <string name="stopwatch_record_uncategorized">بدون دسته</string>
+    <string name="stopwatch_record_category">دسته این کرنومتر:</string>
+    <string name="stopwatch_record_category_change">(تغییر)</string>
 </resources>

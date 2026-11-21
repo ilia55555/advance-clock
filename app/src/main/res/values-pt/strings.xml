@@ -958,7 +958,6 @@ Tela de bloqueio</string>
     <string name="stopwatch_record_save">Save record</string>
     <string name="stopwatch_records">My records</string>
     <string name="stopwatch_records_empty">No records yet. Stop the stopwatch and tap “Save record”.</string>
-    <string name="stopwatch_record_activity_hint">Activity name (e.g. coding, cooking)</string>
     <string name="stopwatch_record_longer_better">Longer time is better</string>
     <string name="stopwatch_record_shorter_better">Shorter time is better</string>
     <string name="stopwatch_record_first">First record saved for this activity</string>
@@ -977,4 +976,8 @@ Tela de bloqueio</string>
     <string name="stopwatch_records_filter_all">Show all activities</string>
     <string name="stopwatch_records_filter_some">Showing selected activities only</string>
     <string name="stopwatch_record_entry">Record %1$d:  %2$s</string>
+    <string name="stopwatch_record_activity_hint">Category (optional)</string>
+    <string name="stopwatch_record_uncategorized">Uncategorized</string>
+    <string name="stopwatch_record_category">Category for this run:</string>
+    <string name="stopwatch_record_category_change">(change)</string>
 </resources>

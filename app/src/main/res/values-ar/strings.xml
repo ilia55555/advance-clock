@@ -1512,7 +1512,6 @@
     <string name="stopwatch_record_save">حفظ الرقم</string>
     <string name="stopwatch_records">أرقامي</string>
     <string name="stopwatch_records_empty">لا توجد أرقام بعد. أوقف ساعة الإيقاف واضغط «حفظ الرقم».</string>
-    <string name="stopwatch_record_activity_hint">اسم النشاط (مثل البرمجة، الطبخ)</string>
     <string name="stopwatch_record_longer_better">الوقت الأطول أفضل</string>
     <string name="stopwatch_record_shorter_better">الوقت الأقصر أفضل</string>
     <string name="stopwatch_record_first">تم حفظ أول رقم لهذا النشاط</string>
@@ -1531,4 +1530,8 @@
     <string name="stopwatch_records_filter_all">عرض كل الأنشطة</string>
     <string name="stopwatch_records_filter_some">عرض الأنشطة المختارة فقط</string>
     <string name="stopwatch_record_entry">الرقم %1$d:  %2$s</string>
+    <string name="stopwatch_record_activity_hint">التصنيف (اختياري)</string>
+    <string name="stopwatch_record_uncategorized">بلا تصنيف</string>
+    <string name="stopwatch_record_category">تصنيف هذا التشغيل:</string>
+    <string name="stopwatch_record_category_change">(تغيير)</string>
 </resources>

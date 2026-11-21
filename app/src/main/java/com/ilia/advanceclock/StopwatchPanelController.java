@@ -198,7 +198,7 @@ final class StopwatchPanelController {
         summary.setText(TimeFormat.endTime(host, target, calendarType));
     }
 
-    private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();savedLaps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
+    private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();savedLaps.clear();host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().remove("stopwatch_record_category").apply();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
     private void addLap(){long elapsed=currentElapsed();if(elapsed<=0||(!laps.isEmpty()&&laps.get(0)==elapsed))return;laps.add(0,elapsed);save();renderLaps(true);}
     /** Adds "save record" / "my records" buttons and a best-record hint under the clock. */
     private void buildRecordControls() {
@@ -294,7 +294,65 @@ final class StopwatchPanelController {
     private void renderLaps(){renderLaps(false);}
     private final java.util.HashSet<Long> savedLaps = new java.util.HashSet<>();
 
+    /** Category chosen for the current stopwatch run; reused for every later entry. */
+    private String sessionCategory() {
+        return host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).getString("stopwatch_record_category", null);
+    }
+
+    private void setSessionCategory(String category) {
+        host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
+                .putString("stopwatch_record_category", category).apply();
+        renderCategory();
+    }
+
+    private void saveEntry(long value) {
+        String category = sessionCategory();
+        if (category == null) { askCategory(value); return; }
+        StopwatchRecordsUi.saveDirect(host, value, category, false);
+        markSaved(value);
+    }
+
+    private void askCategory(long value) {
+        String current = sessionCategory();
+        StopwatchRecordsUi.showSave(host, value,
+                current != null ? current : labelInput.getText().toString(), category -> {
+                    setSessionCategory(category);
+                    markSaved(value);
+                });
+    }
+
+    private void markSaved(long value) {
+        savedLaps.add(value);
+        renderLaps();
+        renderRecordHint();
+    }
+
+    private void renderCategory() {
+        if (categoryView == null) return;
+        String category = sessionCategory();
+        if (category == null || laps.isEmpty()) { categoryView.setVisibility(View.GONE); return; }
+        categoryView.setText(AppString.get(R.string.stopwatch_record_category) + "  «" + category + "»   "
+                + AppString.get(R.string.stopwatch_record_category_change));
+        categoryView.setVisibility(View.VISIBLE);
+    }
+
+    private TextView categoryView;
+
     private void renderLaps(boolean animateNew) {
+        if (categoryView == null) {
+            categoryView = new TextView(host);
+            categoryView.setTextColor(AppSettings.primaryColor(host));
+            categoryView.setTextSize(13);
+            categoryView.setGravity(android.view.Gravity.CENTER);
+            categoryView.setPadding(dp(8), dp(8), dp(8), dp(4));
+            categoryView.setOnClickListener(v -> {
+                if (laps.isEmpty()) return;
+                askCategory(laps.get(0));
+            });
+            LinearLayout listParent = (LinearLayout) lapList.getParent();
+            listParent.addView(categoryView, listParent.indexOfChild(lapList), new LinearLayout.LayoutParams(-1, -2));
+        }
+        renderCategory();
         lapList.removeAllViews();
         for (int i = 0; i < laps.size(); i++) {
             long value = laps.get(i);
@@ -318,13 +376,15 @@ final class StopwatchPanelController {
             save.setEnabled(!saved);
             save.setBackgroundResource(R.drawable.bg_field);
             save.setTextColor(AppSettings.primaryColor(host));
-            save.setOnClickListener(v -> StopwatchRecordsUi.showSave(host, value,
-                    labelInput.getText().toString(), () -> {
-                        savedLaps.add(value);
-                        renderLaps();
-                        renderRecordHint();
-                    }));
-            row.addView(save, new LinearLayout.LayoutParams(dp(84), dp(44)));
+            save.setOnClickListener(v -> saveEntry(value));
+            save.setOnLongClickListener(v -> { askCategory(value); return true; });
+            save.setTextSize(12);
+            save.setPadding(0, 0, 0, 0);
+            save.setMinWidth(0);
+            save.setMinimumWidth(0);
+            save.setMinHeight(0);
+            save.setMinimumHeight(0);
+            row.addView(save, new LinearLayout.LayoutParams(dp(60), dp(34)));
             lapList.addView(row, new LinearLayout.LayoutParams(-1, -2));
             if(animateNew && i==0)AppMotion.appear(row);
             View divider = new View(host);
