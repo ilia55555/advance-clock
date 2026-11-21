@@ -28,6 +28,19 @@ final class FirstRunSetupDialog {
 
     private FirstRunSetupDialog() {}
 
+    /** Turns off the prayer bar, every adhan and munajat; all can be re-enabled in Settings. */
+    static void disableAdhan(Activity activity) {
+        AppSettings.setShowPrayerTimes(activity, false);
+        AppSettings.setFajrAdhanEnabled(activity, false);
+        AppSettings.setDhuhrAdhanEnabled(activity, false);
+        AppSettings.setAsrAdhanEnabled(activity, false);
+        AppSettings.setMaghribAdhanEnabled(activity, false);
+        AppSettings.setIshaAdhanEnabled(activity, false);
+        MunajatConfig.prefs(activity).edit().putBoolean("master", false).apply();
+        AdhanSetupActivity.markPrompted(activity);
+        AdhanScheduler.rescheduleAll(activity);
+    }
+
     static void show(Activity activity, Callback completed) {
         int padding = dp(activity, 22);
 
@@ -128,6 +141,26 @@ final class FirstRunSetupDialog {
                 calendar,
                 fieldParams(activity));
 
+        // Adhan & prayer times: on by default; off disables everything adhan-related.
+        LinearLayout adhanRow = new LinearLayout(activity);
+        adhanRow.setOrientation(LinearLayout.HORIZONTAL);
+        adhanRow.setGravity(Gravity.CENTER_VERTICAL);
+        adhanRow.setBackgroundResource(R.drawable.bg_field);
+        adhanRow.setPadding(dp(activity, 12), dp(activity, 4), dp(activity, 8), dp(activity, 4));
+        TextView adhanLabel = new TextView(activity);
+        adhanLabel.setTextSize(14);
+        adhanLabel.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        adhanLabel.setTextColor(AppSettings.textPrimary(activity));
+        adhanRow.addView(adhanLabel, new LinearLayout.LayoutParams(0, -2, 1f));
+        Switch adhanSwitch = new Switch(activity);
+        adhanSwitch.setChecked(true);
+        adhanSwitch.setTag("first_run_adhan");
+        adhanRow.addView(adhanSwitch, new LinearLayout.LayoutParams(dp(activity, 56), dp(activity, 52)));
+        adhanLabel.setOnClickListener(v -> adhanSwitch.toggle());
+        LinearLayout.LayoutParams adhanParams = new LinearLayout.LayoutParams(-1, -2);
+        adhanParams.topMargin = dp(activity, 10);
+        content.addView(adhanRow, adhanParams);
+
         Button continueButton = new Button(activity);
         continueButton.setAllCaps(false);
         continueButton.setTextSize(15);
@@ -195,6 +228,9 @@ final class FirstRunSetupDialog {
                 continueButton.setText(
                         localized.getString(
                                 R.string.continue_label));
+                adhanLabel.setText(localized.getString(R.string.first_run_adhan));
+                adhanRow.setLayoutDirection(direction);
+                adhanLabel.setTextDirection(textDirection);
 
                 int calendarPosition =
                         Math.max(
@@ -294,6 +330,8 @@ final class FirstRunSetupDialog {
             AppSettings.setDefaultCalendar(
                     activity,
                     calendar.getSelectedItemPosition());
+
+            if (!adhanSwitch.isChecked()) disableAdhan(activity);
 
             dialog.dismiss();
             completed.onCompleted(languageChanged);

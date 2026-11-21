@@ -21,7 +21,9 @@ public final class AdhanSetupActivity extends Activity {
 
     /** True once per install, only while the adhan master switch is on. */
     static boolean shouldPrompt(Activity host) {
-        return AppSettings.showPrayerTimes(host)
+        boolean anyAdhan = false;
+        for (int t = AdhanScheduler.FAJR; t <= AdhanScheduler.ISHA; t++) anyAdhan |= AdhanScheduler.isEnabled(host, t);
+        return (AppSettings.showPrayerTimes(host) || anyAdhan)
                 && !host.getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_PROMPTED, false);
     }
 

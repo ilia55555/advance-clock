@@ -1535,4 +1535,5 @@
     <string name="permissions_missing_location">اوقات شرعی و جهت قبله خودکار تعیین نمی‌شود و باید شهر و افق را دستی تنظیم کنید.</string>
     <string name="permissions_missing_install">به‌روزرسانی‌های بعدی خودکار نصب نمی‌شوند و باید آن‌ها را دستی دانلود و نصب کنید.</string>
     <string name="permissions_continue_anyway">ادامه بدون مجوز</string>
+    <string name="first_run_adhan">اذان و اوقات شرعی</string>
 </resources>

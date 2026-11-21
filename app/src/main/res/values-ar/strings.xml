@@ -1549,4 +1549,5 @@
     <string name="permissions_missing_location">لن تُحدَّد أوقات الصلاة واتجاه القبلة تلقائيًا، وعليك ضبط المدينة والأفق يدويًا.</string>
     <string name="permissions_missing_install">لن تُثبَّت التحديثات القادمة تلقائيًا، وعليك تنزيلها وتثبيتها يدويًا.</string>
     <string name="permissions_continue_anyway">المتابعة بدونها</string>
+    <string name="first_run_adhan">الأذان وأوقات الصلاة</string>
 </resources>

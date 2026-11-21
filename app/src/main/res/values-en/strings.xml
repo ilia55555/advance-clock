@@ -1531,4 +1531,5 @@ Lock screen</string>
     <string name="permissions_missing_location">Prayer times and Qibla direction won’t be set automatically; you’ll need to set the city and horizon manually.</string>
     <string name="permissions_missing_install">Future updates won’t install automatically; you’ll need to download and install them manually.</string>
     <string name="permissions_continue_anyway">Continue without</string>
+    <string name="first_run_adhan">Adhan and prayer times</string>
 </resources>
