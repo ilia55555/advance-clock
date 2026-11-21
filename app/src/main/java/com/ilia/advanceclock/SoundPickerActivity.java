@@ -49,7 +49,6 @@ public final class SoundPickerActivity extends Activity {
         android.widget.FrameLayout checkPanel=new android.widget.FrameLayout(this);checkPanel.addView(checkSounds,new android.widget.FrameLayout.LayoutParams(-1,-1));
         checkLoading=new InfinityLoadingView(this);checkLoading.setTag("online_sounds_loading");checkLoading.setVisibility(View.GONE);
         checkPanel.addView(checkLoading,new android.widget.FrameLayout.LayoutParams(dp(72),dp(36),Gravity.CENTER));root.addView(checkPanel,new LinearLayout.LayoutParams(-1,dp(54)));
-        if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false))checkPanel.setVisibility(View.GONE);
         ScrollView scroll = new ScrollView(this); list = new LinearLayout(this);
         list.setOrientation(LinearLayout.VERTICAL); scroll.addView(list, new ScrollView.LayoutParams(-1, -2));
         LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(-1, 0, 1); sp.topMargin=dp(10); root.addView(scroll, sp);
@@ -60,24 +59,34 @@ public final class SoundPickerActivity extends Activity {
         list.removeAllViews();
         if(getIntent().getBooleanExtra(EXTRA_MUNAJAT,false)){
             java.util.List<SoundLibrary.Sound> sounds=SoundLibrary.munajat(this);
-            if(sounds.isEmpty()){TextView empty=new TextView(this);empty.setText(R.string.munajat_empty);empty.setTextColor(AppSettings.textSecondary(this));empty.setPadding(dp(8),dp(16),dp(8),dp(16));list.addView(empty);}
+            addDownloads(DownloadableSounds.Kind.MUNAJAT);
+            java.util.List<SoundLibrary.Sound> localOnly=new java.util.ArrayList<>();
+            for(SoundLibrary.Sound sound:sounds)if(!DownloadableSounds.owns(this,sound.uri))localOnly.add(sound);
+            sounds=localOnly;
+            if(sounds.isEmpty() && DownloadableSounds.cached(this,DownloadableSounds.Kind.MUNAJAT).isEmpty()){TextView empty=new TextView(this);empty.setText(R.string.munajat_empty);empty.setTextColor(AppSettings.textSecondary(this));empty.setPadding(dp(8),dp(16),dp(8),dp(16));list.addView(empty);}
             for(SoundLibrary.Sound sound:sounds)addLocalSound(sound);return;
         }
         java.util.List<SoundLibrary.Sound> sounds=SoundLibrary.all(this);
         for(SoundLibrary.Sound sound:sounds)if(sound.uri.isEmpty()){addLocalSound(sound);break;}
-        java.util.LinkedHashMap<String,DownloadableSounds.Entry> catalog=new java.util.LinkedHashMap<>();
-        for(DownloadableSounds.Entry e:DownloadableSounds.cached(this))catalog.put(e.id,e);
-        java.util.Map<String,DownloadableSounds.Entry> local=new java.util.HashMap<>();
-        java.util.List<DownloadableSounds.Entry> installed=new java.util.ArrayList<>(DownloadableSounds.installed(this));
-        for(DownloadableSounds.Entry e:installed){if(!catalog.containsKey(e.id))catalog.put(e.id,e);if(DownloadableSounds.available(this,e))local.put(e.id,e);}
-        // Installed metadata is appended on every successful download/update: reverse it for newest first.
-        java.util.Collections.reverse(installed);java.util.Set<String> shown=new java.util.HashSet<>();
-        for(DownloadableSounds.Entry e:installed)if(local.containsKey(e.id)){addDownloadSound(catalog.get(e.id),local.get(e.id));shown.add(e.id);}
-        for(DownloadableSounds.Entry e:catalog.values())if(!shown.contains(e.id))addDownloadSound(e,local.get(e.id));
+        addDownloads(DownloadableSounds.Kind.ALARM);
         java.util.List<SoundLibrary.Sound> added=new java.util.ArrayList<>();
         for(SoundLibrary.Sound sound:sounds)if(!sound.uri.isEmpty() && !sound.uri.startsWith("android.resource://") && !DownloadableSounds.owns(this,sound.uri))added.add(sound);
         java.util.Collections.reverse(added);for(SoundLibrary.Sound sound:added)addLocalSound(sound);
         for(SoundLibrary.Sound sound:sounds)if(sound.uri.startsWith("android.resource://"))addLocalSound(sound);
+    }
+    private DownloadableSounds.Kind kind(){
+        return getIntent().getBooleanExtra(EXTRA_MUNAJAT,false)?DownloadableSounds.Kind.MUNAJAT:DownloadableSounds.Kind.ALARM;
+    }
+    private void addDownloads(DownloadableSounds.Kind k){
+        java.util.LinkedHashMap<String,DownloadableSounds.Entry> catalog=new java.util.LinkedHashMap<>();
+        for(DownloadableSounds.Entry e:DownloadableSounds.cached(this,k))catalog.put(e.id,e);
+        java.util.Map<String,DownloadableSounds.Entry> local=new java.util.HashMap<>();
+        java.util.List<DownloadableSounds.Entry> installed=new java.util.ArrayList<>(DownloadableSounds.installed(this,k));
+        for(DownloadableSounds.Entry e:installed){if(!catalog.containsKey(e.id))catalog.put(e.id,e);if(DownloadableSounds.available(this,k,e))local.put(e.id,e);}
+        // Installed metadata is appended on every successful download/update: reverse it for newest first.
+        java.util.Collections.reverse(installed);java.util.Set<String> shown=new java.util.HashSet<>();
+        for(DownloadableSounds.Entry e:installed)if(local.containsKey(e.id)){addDownloadSound(catalog.get(e.id),local.get(e.id));shown.add(e.id);}
+        for(DownloadableSounds.Entry e:catalog.values())if(!shown.contains(e.id))addDownloadSound(e,local.get(e.id));
     }
     private void addLocalSound(SoundLibrary.Sound sound){
         Button row=button(sound.name);row.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
@@ -85,11 +94,11 @@ public final class SoundPickerActivity extends Activity {
         LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.bottomMargin=dp(7);list.addView(new SoundPreviewRow(this,previews,sound.uri,sound.name,true,row,null),params);
     }
     private void addDownloadSound(DownloadableSounds.Entry entry,DownloadableSounds.Entry installed){
-        Button select=button(entry.name);select.setEnabled(installed!=null);select.setOnClickListener(v->{setResult(RESULT_OK,new Intent().putExtra(EXTRA_URI,DownloadableSounds.uri(this,entry)).putExtra(EXTRA_NAME,installed.name));finish();});
-        boolean current=DownloadableSounds.current(this,entry,installed) || (installed!=null && installed.version>entry.version);
+        Button select=button(entry.name);select.setEnabled(installed!=null);select.setOnClickListener(v->{setResult(RESULT_OK,new Intent().putExtra(EXTRA_URI,DownloadableSounds.uri(this,kind(),entry)).putExtra(EXTRA_NAME,installed.name));finish();});
+        boolean current=DownloadableSounds.current(this,kind(),entry,installed) || (installed!=null && installed.version>entry.version);
         Button download=button(getString(installed==null?R.string.online_sound_download:current?R.string.online_sound_ready:R.string.online_sound_update));
         download.setEnabled(!busy && !current);download.setOnClickListener(v->downloadSound(entry));
-        LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.bottomMargin=dp(7);list.addView(new SoundPreviewRow(this,previews,DownloadableSounds.uri(this,entry),entry.name,installed!=null,select,download),params);
+        LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.bottomMargin=dp(7);list.addView(new SoundPreviewRow(this,previews,DownloadableSounds.uri(this,kind(),entry),entry.name,installed!=null,select,download),params);
     }
     private void checking(boolean loading){
         checkSounds.setText(loading?"":getString(R.string.online_sounds_check));
@@ -100,7 +109,7 @@ public final class SoundPickerActivity extends Activity {
     private void checkOnlineSounds(){
         if(busy)return;busy=true;checkSounds.setEnabled(false);checking(true);render();soundRequest=new DownloadableSounds.Request();DownloadableSounds.Request request=soundRequest;
         android.content.Context context=getApplicationContext();soundWorker.execute(()->{
-            Exception error=null;try{DownloadableSounds.refresh(context,request);}catch(Exception e){error=e;}Exception result=error;
+            Exception error=null;DownloadableSounds.Kind k=kind();try{DownloadableSounds.refresh(context,k,request);}catch(Exception e){error=e;}Exception result=error;
             runOnUiThread(()->{if(!alive() || request.cancelled)return;busy=false;checking(false);checkSounds.setEnabled(true);render();LogoToast.makeText(this,result!=null?R.string.online_sounds_error:R.string.online_sounds_checked,android.widget.Toast.LENGTH_LONG).show();});
         });
     }
@@ -112,7 +121,7 @@ public final class SoundPickerActivity extends Activity {
         android.app.AlertDialog dialog=new MotionDialogs.Builder(this).setTitle(entry.name).setView(panel).setNegativeButton(R.string.runtime_text_0003,(d,w)->request.cancel()).create();
         downloadDialog=dialog;dialog.setCanceledOnTouchOutside(false);dialog.setOnCancelListener(d->request.cancel());dialog.show();
         android.content.Context context=getApplicationContext();soundWorker.execute(()->{
-            Exception error=null;long[] last={0};try{DownloadableSounds.download(context,entry,request,(done,total)->{
+            Exception error=null;long[] last={0};DownloadableSounds.Kind k=kind();try{DownloadableSounds.download(context,k,entry,request,(done,total)->{
                 long now=android.os.SystemClock.elapsedRealtime();if(done!=total && now-last[0]<100)return;last[0]=now;
                 runOnUiThread(()->{if(!alive() || request.cancelled)return;bar.setProgress((int)(done*1000/total));progress.setText(String.format(java.util.Locale.getDefault(),"%.2f / %.2f MB",done/1048576.0,total/1048576.0));});
             });}catch(Exception e){error=e;}Exception result=error;

@@ -13,7 +13,10 @@ final class MunajatConfig {
     static MunajatConfig load(Context c,int type,boolean before){
         SharedPreferences p=prefs(c);String k=prefix(type,before);MunajatConfig v=new MunajatConfig();
         v.enabled=p.getBoolean(k+"enabled",false);v.gradual=p.getBoolean(k+"gradual",true);
-        v.uri=p.getString(k+"uri","");v.minutes=Math.max(1,Math.min(1440,p.getInt(k+"minutes",10)));
+        v.uri=p.getString(k+"uri","");
+        // Default before-adhan munajat bundled with the app (res/raw/munajat_before.mp3), if present.
+        if(v.uri.isEmpty() && before){int id=c.getResources().getIdentifier("munajat_before","raw",c.getPackageName());
+            if(id!=0)v.uri="android.resource://"+c.getPackageName()+"/"+id;}v.minutes=Math.max(1,Math.min(1440,p.getInt(k+"minutes",10)));
         v.start=Math.max(0,Math.min(100,p.getInt(k+"start",10)));v.end=Math.max(0,Math.min(100,p.getInt(k+"end",60)));return v;
     }
     void write(SharedPreferences.Editor editor,int type,boolean before){
