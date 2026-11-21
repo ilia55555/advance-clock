@@ -127,9 +127,33 @@ public final class PermissionCenterActivity extends Activity {
             action.setTag("permission_"+i);action.setOnClickListener(v->startBatch(kind));
             content=previous;
         }
-        button(getString(R.string.permissions_close),AppSettings.primaryColor(this)).setOnClickListener(v->finish());
+        button(getString(R.string.permissions_close),AppSettings.primaryColor(this)).setOnClickListener(v->leave());
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);scroll.addView(content);
         setContentView(scroll);AlertWindowInsets.apply(getWindow(),scroll);
+    }
+    /** Leaving with missing permissions first explains what will not work. */
+    private void leave() {
+        if(!incomplete(this)){finish();return;}
+        int[] effects={R.string.permissions_missing_notifications,R.string.permissions_missing_alarms,
+                R.string.permissions_missing_fullscreen,R.string.permissions_missing_location,R.string.permissions_missing_install};
+        int[] titles={R.string.permissions_notifications,R.string.permissions_alarms,R.string.permissions_fullscreen,R.string.permissions_location,R.string.permissions_install};
+        StringBuilder message=new StringBuilder();int first=-1;
+        for(int i=0;i<effects.length;i++)if(!granted(this,i)){
+            if(first<0)first=i;if(message.length()>0)message.append("\n\n");
+            message.append("• ").append(getString(titles[i])).append(":\n").append(getString(effects[i]));
+        }
+        int start=first;
+        android.app.AlertDialog dialog=new MotionDialogs.Builder(this)
+                .setTitle(getString(R.string.permissions_missing_title))
+                .setMessage(message.toString())
+                .setPositiveButton(getString(R.string.permissions_allow),(d,w)->startBatch(start))
+                .setNegativeButton(getString(R.string.permissions_continue_anyway),(d,w)->finish())
+                .create();
+        dialog.setOnShowListener(d->ButtonStyles.destructive(dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)));
+        dialog.show();
+    }
+    @Override public void onBackPressed() {
+        if(incomplete(this))leave();else super.onBackPressed();
     }
     private void request(int kind) {
         try {

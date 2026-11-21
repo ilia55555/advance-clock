@@ -1542,4 +1542,11 @@
     <string name="munajat_minutes_too_short">أقصر من مدة الملف؛ استخدم %1$s دقيقة على الأقل أو ٠</string>
     <string name="munajat_row_summary">مع كل أذان مفعّل؛ اضبطه من الإعدادات</string>
     <string name="adhan_setup_hint">الأذان مفعّل. اضبط ما تريد أو اضغط «لاحقًا» لتطبيق الإعدادات الافتراضية.</string>
+    <string name="permissions_missing_title">بعض الأذونات غير ممنوحة</string>
+    <string name="permissions_missing_notifications">لن تظهر إشعارات المنبّهات والأذان وتاريخ اليوم، وقد تفوتك التنبيهات.</string>
+    <string name="permissions_missing_alarms">قد ترنّ المنبّهات والمؤقّت وتذكيرات الملاحظات والأذان متأخرة أو لا ترنّ إطلاقًا.</string>
+    <string name="permissions_missing_fullscreen">عندما يكون الهاتف مقفلًا لن تُفتح شاشة المنبّه والأذان، وسترى إشعارًا فقط.</string>
+    <string name="permissions_missing_location">لن تُحدَّد أوقات الصلاة واتجاه القبلة تلقائيًا، وعليك ضبط المدينة والأفق يدويًا.</string>
+    <string name="permissions_missing_install">لن تُثبَّت التحديثات القادمة تلقائيًا، وعليك تنزيلها وتثبيتها يدويًا.</string>
+    <string name="permissions_continue_anyway">المتابعة بدونها</string>
 </resources>

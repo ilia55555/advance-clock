@@ -989,4 +989,11 @@ Sans rappel</string>
     <string name="munajat_minutes_too_short">Shorter than the audio; use at least %1$s minutes or 0</string>
     <string name="munajat_row_summary">Plays with every enabled adhan; adjust in settings</string>
     <string name="adhan_setup_hint">Adhan is on. Adjust it now, or tap “Later” to keep the default settings.</string>
+    <string name="permissions_missing_title">Some permissions are missing</string>
+    <string name="permissions_missing_notifications">Alarm, adhan and daily date notifications won’t appear, and you may miss alerts.</string>
+    <string name="permissions_missing_alarms">Alarms, timers, note reminders and adhan may ring late or not at all.</string>
+    <string name="permissions_missing_fullscreen">When the phone is locked, the alarm and adhan screen won’t open; you’ll only see a notification.</string>
+    <string name="permissions_missing_location">Prayer times and Qibla direction won’t be set automatically; you’ll need to set the city and horizon manually.</string>
+    <string name="permissions_missing_install">Future updates won’t install automatically; you’ll need to download and install them manually.</string>
+    <string name="permissions_continue_anyway">Continue without</string>
 </resources>

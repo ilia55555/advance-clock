@@ -1474,4 +1474,11 @@
     <string name="munajat_minutes_too_short">کمتر از مدت فایل است؛ حداقل %1$s دقیقه یا ۰</string>
     <string name="munajat_row_summary">روی همه اذان‌های روشن؛ با دکمه تنظیمات انتخاب کنید</string>
     <string name="adhan_setup_hint">اذان روشن است. تنظیمات دلخواه را انجام دهید یا «بعداً» را بزنید تا تنظیمات پیش‌فرض اعمال شود.</string>
+    <string name="permissions_missing_title">بعضی مجوزها داده نشده</string>
+    <string name="permissions_missing_notifications">اعلان هشدارها، اذان و تاریخ روز نمایش داده نمی‌شود و ممکن است هشدارها را از دست بدهید.</string>
+    <string name="permissions_missing_alarms">هشدارها، تایمر، یادآور یادداشت‌ها و اذان ممکن است با تأخیر زنگ بزنند یا اصلاً زنگ نزنند.</string>
+    <string name="permissions_missing_fullscreen">وقتی گوشی قفل است، صفحه هشدار و اذان باز نمی‌شود و فقط یک اعلان می‌بینید.</string>
+    <string name="permissions_missing_location">اوقات شرعی و جهت قبله خودکار تعیین نمی‌شود و باید شهر و افق را دستی تنظیم کنید.</string>
+    <string name="permissions_missing_install">به‌روزرسانی‌های بعدی خودکار نصب نمی‌شوند و باید آن‌ها را دستی دانلود و نصب کنید.</string>
+    <string name="permissions_continue_anyway">ادامه بدون مجوز</string>
 </resources>
