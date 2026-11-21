@@ -46,12 +46,7 @@ public final class AdhanSetupActivity extends Activity {
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setTextColor(AppSettings.textPrimary(this));
         page.addView(title);
-        TextView hint = new TextView(this);
-        hint.setText(AppString.get(R.string.adhan_setup_hint));
-        hint.setTextSize(13);
-        hint.setTextColor(AppSettings.textSecondary(this));
-        hint.setPadding(0, dp(4), 0, dp(10));
-        page.addView(hint);
+        title.setPadding(0, 0, 0, dp(10));
 
         ScrollView scroll = new ScrollView(this);
         LinearLayout content = new LinearLayout(this);
