@@ -26,17 +26,10 @@ final class ClockDialView extends View {
     }
 
     private static final PathInterpolator EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
-    private static final String[] INNER = new String[12];
-    private static final String[] OUTER = new String[12];
-    private static final String[] MINUTES = new String[12];
-
-    static {
-        for (int i = 0; i < 12; i++) {
-            INNER[i] = String.valueOf(i == 0 ? 12 : i);
-            OUTER[i] = i == 0 ? "00" : String.valueOf(i + 12);
-            MINUTES[i] = String.format(Locale.US, "%02d", i * 5);
-        }
-    }
+    // Labels use the app language's digits (Persian/Arabic/Latin).
+    private final String[] INNER = new String[12];
+    private final String[] OUTER = new String[12];
+    private final String[] MINUTES = new String[12];
 
     private final Paint facePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -80,6 +73,11 @@ final class ClockDialView extends View {
         linePaint.setColor(primary);
         linePaint.setStrokeWidth(2 * density);
         setLayoutDirection(LAYOUT_DIRECTION_LTR);
+        for (int i = 0; i < 12; i++) {
+            INNER[i] = CalendarUtils.fa(String.valueOf(i == 0 ? 12 : i));
+            OUTER[i] = CalendarUtils.fa(i == 0 ? "00" : String.valueOf(i + 12));
+            MINUTES[i] = CalendarUtils.fa(String.format(Locale.US, "%02d", i * 5));
+        }
     }
 
     void setListener(Listener listener) { this.listener = listener; }

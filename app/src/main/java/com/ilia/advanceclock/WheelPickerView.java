@@ -96,8 +96,8 @@ final class WheelPickerView extends FrameLayout {
         this.min = min;
         labels = new String[max - min + 1];
         for (int i = 0; i < labels.length; i++) {
-            labels[i] = twoDigits ? String.format(java.util.Locale.US, "%02d", min + i)
-                    : String.valueOf(min + i);
+            labels[i] = CalendarUtils.fa(twoDigits ? String.format(java.util.Locale.US, "%02d", min + i)
+                    : String.valueOf(min + i));
         }
         invalidate();
     }

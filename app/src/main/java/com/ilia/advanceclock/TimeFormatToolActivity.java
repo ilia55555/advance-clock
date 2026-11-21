@@ -83,11 +83,11 @@ public final class TimeFormatToolActivity extends Activity {
         minutePicker = new NumberPicker(this);
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(59);
-        minutePicker.setFormatter(v -> String.format(Locale.US, "%02d", v));
+        minutePicker.setFormatter(v -> CalendarUtils.fa(String.format(Locale.US, "%02d", v)));
         periodPicker = new NumberPicker(this);
         periodPicker.setMinValue(0);
         periodPicker.setMaxValue(1);
-        periodPicker.setDisplayedValues(new String[]{"AM", "PM"});
+        periodPicker.setDisplayedValues(TimeEntryDialog.periodLabels());
         pickers.addView(hourPicker, pickerParams());
         TextView colon = text(":", 26, AppSettings.primaryColor(this));
         colon.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -154,7 +154,7 @@ public final class TimeFormatToolActivity extends Activity {
         if (mode == MODE_12_TO_24) {
             hourPicker.setMinValue(1);
             hourPicker.setMaxValue(12);
-            hourPicker.setFormatter(null);
+            hourPicker.setFormatter(v -> CalendarUtils.fa(String.valueOf(v)));
             int h12 = hour24 % 12;
             hourPicker.setValue(h12 == 0 ? 12 : h12);
             periodPicker.setValue(hour24 >= 12 ? 1 : 0);
@@ -162,7 +162,7 @@ public final class TimeFormatToolActivity extends Activity {
         } else {
             hourPicker.setMinValue(0);
             hourPicker.setMaxValue(23);
-            hourPicker.setFormatter(v -> String.format(Locale.US, "%02d", v));
+            hourPicker.setFormatter(v -> CalendarUtils.fa(String.format(Locale.US, "%02d", v)));
             hourPicker.setValue(hour24);
             periodPicker.setVisibility(View.GONE);
         }
@@ -172,10 +172,12 @@ public final class TimeFormatToolActivity extends Activity {
         int hour24 = currentHour24();
         int minute = minutePicker.getValue();
         if (mode == MODE_12_TO_24) {
-            result.setText(String.format(Locale.US, "%02d:%02d", hour24, minute));
+            result.setText(CalendarUtils.fa(String.format(Locale.US, "%02d:%02d", hour24, minute)));
         } else {
             int h12 = hour24 % 12;
-            result.setText(String.format(Locale.US, "%d:%02d %s", h12 == 0 ? 12 : h12, minute, hour24 >= 12 ? "PM" : "AM"));
+            String[] periods = TimeEntryDialog.periodLabels();
+            result.setText(CalendarUtils.fa(String.format(Locale.US, "%d:%02d", h12 == 0 ? 12 : h12, minute))
+                    + " " + periods[hour24 >= 12 ? 1 : 0]);
         }
         resultHint.setText(AppString.get(hour24 >= 12
                 ? R.string.time_format_tool_afternoon

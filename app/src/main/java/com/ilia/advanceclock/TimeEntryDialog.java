@@ -262,8 +262,8 @@ class TimeEntryDialog extends Dialog {
         Context c = getContext();
         int h = dial.hour();
         int shown = app24 ? h : (h % 12 == 0 ? 12 : h % 12);
-        headerHour.setText(String.format(Locale.US, "%02d", shown));
-        headerMinute.setText(String.format(Locale.US, "%02d", dial.minute()));
+        headerHour.setText(CalendarUtils.fa(String.format(Locale.US, "%02d", shown)));
+        headerMinute.setText(CalendarUtils.fa(String.format(Locale.US, "%02d", dial.minute())));
         boolean minutes = dial.isMinuteMode();
         headerHour.setTextColor(minutes ? AppSettings.textSecondary(c) : AppSettings.primaryColor(c));
         headerMinute.setTextColor(minutes ? AppSettings.primaryColor(c) : AppSettings.textSecondary(c));
@@ -356,7 +356,7 @@ class TimeEntryDialog extends Dialog {
         return params;
     }
 
-    private static String[] periodLabels() {
+    static String[] periodLabels() {
         Locale locale = AppString.locale();
         String language = locale.getLanguage();
         if ("fa".equals(language)) return new String[]{"ق.ظ", "ب.ظ"};
