@@ -68,9 +68,10 @@ public final class PermissionCenterActivity extends Activity {
         finish();
         return true;
     }
+    /** Requests only the tapped permission; nothing is chained after it. */
     private void startBatch(int first) {
-        if(batchRunning)return;
-        batchRunning=true;attemptedMask=0;
+        if(pendingKind>=0)return;
+        batchRunning=false;attemptedMask=0;
         launchStep(first);
     }
     private void launchStep(int kind) {
@@ -88,7 +89,7 @@ public final class PermissionCenterActivity extends Activity {
             }
             batchRunning=false;
             if(!incomplete(this)) { setResult(RESULT_OK);finish(); }
-            else { render();leave(); }
+            else render();
         });
     }
     private void stepReturned() {
@@ -98,7 +99,7 @@ public final class PermissionCenterActivity extends Activity {
     }
     @Override protected void onActivityResult(int request,int result,Intent data) {
         super.onActivityResult(request,result,data);
-        if(request==SETTINGS_REQUEST && batchRunning && pendingKind>=0)stepReturned();
+        if(request==SETTINGS_REQUEST && pendingKind>=0)stepReturned();
     }
     private void openSettings(Intent intent) {
         startActivityForResult(intent,SETTINGS_REQUEST);
@@ -210,7 +211,7 @@ public final class PermissionCenterActivity extends Activity {
     }
     @Override public void onRequestPermissionsResult(int request,String[] permissions,int[] results) {
         super.onRequestPermissionsResult(request,permissions,results);
-        if(batchRunning && pendingKind>=0 && request==pendingKind+100)stepReturned();
+        if(pendingKind>=0 && request==pendingKind+100)stepReturned();
         else render();
     }
     private void text(String value,int size,int color) {
