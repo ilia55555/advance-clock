@@ -27,6 +27,8 @@ final class StopwatchPanelController {
     private TextView timeView, summary;
     private Button startButton, lapButton;
     private LinearLayout lapList;
+    private Button saveRecordButton;
+    private TextView recordHint;
     private View limitInputs, dateTimeInputs, modeButtons;
     private EditText hoursInput, minutesInput, secondsInput, labelInput;
     private Button unlimitedModeButton, durationModeButton, dateTimeModeButton;
@@ -87,6 +89,7 @@ final class StopwatchPanelController {
         startButton.setOnClickListener(v -> toggleRunning());
         root.findViewById(R.id.stopwatch_reset).setOnClickListener(v -> reset());
         lapButton.setOnClickListener(v -> addLap());
+        buildRecordControls();
         unlimitedModeButton.setOnClickListener(v -> setMode(0));
         durationModeButton.setOnClickListener(v -> setMode(1));
         dateTimeModeButton.setOnClickListener(v -> setMode(2));
@@ -197,6 +200,61 @@ final class StopwatchPanelController {
 
     private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
     private void addLap(){long elapsed=currentElapsed();if(!running||elapsed==0)return;laps.add(0,elapsed);save();renderLaps(true);}
+    /** Adds "save record" / "my records" buttons and a best-record hint under the clock. */
+    private void buildRecordControls() {
+        LinearLayout parent = (LinearLayout) lapButton.getParent();
+        LinearLayout row = new LinearLayout(host);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setLayoutDirection(AppSettings.layoutDirection(host));
+        saveRecordButton = recordButton(AppString.get(R.string.stopwatch_record_save));
+        Button records = recordButton(AppString.get(R.string.stopwatch_records));
+        row.addView(saveRecordButton, new LinearLayout.LayoutParams(0, -1, 1f));
+        View gap = new View(host);
+        row.addView(gap, new LinearLayout.LayoutParams(dp(8), 1));
+        row.addView(records, new LinearLayout.LayoutParams(0, -1, 1f));
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(52));
+        rowParams.topMargin = dp(8);
+        parent.addView(row, parent.indexOfChild(lapButton), rowParams);
+        saveRecordButton.setOnClickListener(v -> {
+            long elapsed = currentElapsed();
+            if (running || elapsed <= 0) return;
+            StopwatchRecordsUi.showSave(host, elapsed, labelInput.getText().toString(), this::renderRecordHint);
+        });
+        records.setOnClickListener(v -> StopwatchRecordsUi.showList(host, this::renderRecordHint));
+
+        recordHint = new TextView(host);
+        recordHint.setGravity(android.view.Gravity.CENTER);
+        recordHint.setTextColor(AppSettings.textSecondary(host));
+        recordHint.setTextSize(14);
+        recordHint.setVisibility(View.GONE);
+        LinearLayout timeParent = (LinearLayout) timeView.getParent();
+        timeParent.addView(recordHint, timeParent.indexOfChild(timeView) + 1, new LinearLayout.LayoutParams(-1, -2));
+        labelInput.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s,int a,int b,int c) {}
+            public void onTextChanged(CharSequence s,int a,int b,int c) {}
+            public void afterTextChanged(android.text.Editable e) { renderRecordHint(); }
+        });
+        renderRecordHint();
+    }
+
+    private Button recordButton(String text) {
+        Button button = new Button(host);
+        button.setText(text);
+        button.setAllCaps(false);
+        button.setBackgroundResource(R.drawable.bg_field);
+        button.setTextColor(AppSettings.primaryColor(host));
+        return button;
+    }
+
+    private void renderRecordHint() {
+        if (recordHint == null) return;
+        StopwatchRecords.Activity activity = new StopwatchRecords(host).find(labelInput.getText().toString());
+        StopwatchRecords.Record best = activity == null ? null : activity.best();
+        if (best == null) { recordHint.setVisibility(View.GONE); return; }
+        recordHint.setText("🏆 " + activity.name + "  " + StopwatchRecordsUi.format(best.millis));
+        recordHint.setVisibility(View.VISIBLE);
+    }
+
     private long currentElapsed(){return running?accumulatedMillis+Math.max(0,System.currentTimeMillis()-startedAtWall):accumulatedMillis;}
     private long readLimit() { return durationFields.readMillis(); }
 
@@ -209,6 +267,8 @@ final class StopwatchPanelController {
         if (presets != null) presets.refresh();
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : accumulatedMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
         lapButton.setEnabled(running);
+        if (saveRecordButton != null) saveRecordButton.setEnabled(!running && accumulatedMillis > 0L);
+        if (saveRecordButton != null) saveRecordButton.setAlpha(!running && accumulatedMillis > 0L ? 1f : 0.45f);
         lapButton.setVisibility(configurable ? View.GONE : View.VISIBLE);
         renderEndTime();
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);

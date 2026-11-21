@@ -955,4 +955,22 @@ Kilit ekranı</string>
     <string name="time_picker_mode_clock">Clock</string>
     <string name="time_picker_mode_wheel">Wheel</string>
     <string name="time_picker_wheel_sound">Time picker wheel sound</string>
+    <string name="stopwatch_record_save">Save record</string>
+    <string name="stopwatch_records">My records</string>
+    <string name="stopwatch_records_empty">No records yet. Stop the stopwatch and tap “Save record”.</string>
+    <string name="stopwatch_record_activity_hint">Activity name (e.g. coding, cooking)</string>
+    <string name="stopwatch_record_longer_better">Longer time is better</string>
+    <string name="stopwatch_record_shorter_better">Shorter time is better</string>
+    <string name="stopwatch_record_first">First record saved for this activity</string>
+    <string name="stopwatch_record_new_best">🎉 New record! Difference</string>
+    <string name="stopwatch_record_not_beaten">Saved. Best record is still</string>
+    <string name="stopwatch_record_best">Best:</string>
+    <string name="stopwatch_record_count">records</string>
+    <string name="stopwatch_record_delete">Delete</string>
+    <string name="stopwatch_record_delete_confirm">Delete this record?</string>
+    <string name="stopwatch_record_manage">Manage</string>
+    <string name="stopwatch_records_back">Back</string>
+    <string name="stopwatch_record_rename">Rename</string>
+    <string name="stopwatch_record_delete_activity">Delete activity and all records</string>
+    <string name="stopwatch_record_delete_activity_confirm">Delete this activity and all its records?</string>
 </resources>

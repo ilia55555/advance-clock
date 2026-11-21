@@ -1509,4 +1509,22 @@
     <string name="time_picker_mode_clock">ساعة</string>
     <string name="time_picker_mode_wheel">عجلة</string>
     <string name="time_picker_wheel_sound">صوت عجلة اختيار الوقت</string>
+    <string name="stopwatch_record_save">حفظ الرقم</string>
+    <string name="stopwatch_records">أرقامي</string>
+    <string name="stopwatch_records_empty">لا توجد أرقام بعد. أوقف ساعة الإيقاف واضغط «حفظ الرقم».</string>
+    <string name="stopwatch_record_activity_hint">اسم النشاط (مثل البرمجة، الطبخ)</string>
+    <string name="stopwatch_record_longer_better">الوقت الأطول أفضل</string>
+    <string name="stopwatch_record_shorter_better">الوقت الأقصر أفضل</string>
+    <string name="stopwatch_record_first">تم حفظ أول رقم لهذا النشاط</string>
+    <string name="stopwatch_record_new_best">🎉 رقم جديد! الفرق</string>
+    <string name="stopwatch_record_not_beaten">تم الحفظ. أفضل رقم لا يزال</string>
+    <string name="stopwatch_record_best">الأفضل:</string>
+    <string name="stopwatch_record_count">أرقام</string>
+    <string name="stopwatch_record_delete">حذف</string>
+    <string name="stopwatch_record_delete_confirm">حذف هذا الرقم؟</string>
+    <string name="stopwatch_record_manage">إدارة</string>
+    <string name="stopwatch_records_back">رجوع</string>
+    <string name="stopwatch_record_rename">إعادة التسمية</string>
+    <string name="stopwatch_record_delete_activity">حذف النشاط وكل أرقامه</string>
+    <string name="stopwatch_record_delete_activity_confirm">حذف هذا النشاط وكل أرقامه؟</string>
 </resources>

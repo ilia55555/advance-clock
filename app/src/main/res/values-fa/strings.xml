@@ -1441,4 +1441,22 @@
     <string name="time_picker_mode_clock">ساعت</string>
     <string name="time_picker_mode_wheel">چرخشی</string>
     <string name="time_picker_wheel_sound">صدای چرخش انتخابگر ساعت</string>
+    <string name="stopwatch_record_save">ثبت رکورد</string>
+    <string name="stopwatch_records">رکوردهای من</string>
+    <string name="stopwatch_records_empty">هنوز رکوردی ثبت نشده. کرنومتر را متوقف کنید و «ثبت رکورد» را بزنید.</string>
+    <string name="stopwatch_record_activity_hint">نام فعالیت (مثلاً کد زدن، آشپزی)</string>
+    <string name="stopwatch_record_longer_better">زمان بیشتر بهتر است</string>
+    <string name="stopwatch_record_shorter_better">زمان کمتر بهتر است</string>
+    <string name="stopwatch_record_first">اولین رکورد این فعالیت ثبت شد</string>
+    <string name="stopwatch_record_new_best">🎉 رکورد جدید! اختلاف</string>
+    <string name="stopwatch_record_not_beaten">ثبت شد. بهترین رکورد هنوز</string>
+    <string name="stopwatch_record_best">بهترین:</string>
+    <string name="stopwatch_record_count">رکورد</string>
+    <string name="stopwatch_record_delete">حذف</string>
+    <string name="stopwatch_record_delete_confirm">این رکورد حذف شود؟</string>
+    <string name="stopwatch_record_manage">مدیریت</string>
+    <string name="stopwatch_records_back">بازگشت</string>
+    <string name="stopwatch_record_rename">تغییر نام</string>
+    <string name="stopwatch_record_delete_activity">حذف فعالیت و همه رکوردها</string>
+    <string name="stopwatch_record_delete_activity_confirm">این فعالیت و همه رکوردهایش حذف شود؟</string>
 </resources>
