@@ -39,7 +39,18 @@ final class SoundLibrary {
         try{array.put(new JSONObject().put("name",displayName(context,uri)).put("uri",uri.toString()));}catch(Exception ignored){}
         context.getSharedPreferences(PREFS+"_munajat",0).edit().putString(KEY,array.toString()).apply();
     }
-    static String munajatName(Context c,String uri){for(Sound sound:munajat(c))if(sound.uri.equals(uri))return sound.name;return AppString.get(R.string.munajat_choose);}
+    static String munajatName(Context c,String uri){
+        String wanted=normalizeResource(c,uri);
+        for(Sound sound:munajat(c))if(sound.uri.equals(uri) || normalizeResource(c,sound.uri).equals(wanted))return sound.name;
+        return AppString.get(R.string.munajat_choose);
+    }
+    /** android.resource://pkg/123 and android.resource://pkg/raw/name refer to the same file. */
+    private static String normalizeResource(Context c,String uri){
+        if(uri==null)return "";String prefix="android.resource://"+c.getPackageName()+"/";
+        if(!uri.startsWith(prefix))return uri;String rest=uri.substring(prefix.length());
+        if(rest.matches("[0-9]+"))try{return prefix+"raw/"+c.getResources().getResourceEntryName(Integer.parseInt(rest));}catch(Exception ignored){}
+        return uri;
+    }
 
     static List<Sound> all(Context context) { return all(context, false); }
 

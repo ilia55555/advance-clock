@@ -36,7 +36,6 @@ public final class MunajatSettingsActivity extends Activity {
                 TextView label=text(getString(R.string.munajat_minutes),14);row.addView(label,new LinearLayout.LayoutParams(0,-2,1f));
                 minutes=new EditText(this);minutes.setId(View.generateViewId());minutes.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);minutes.setSingleLine(true);minutes.setGravity(Gravity.CENTER);minutes.setText(Integer.toString(v.minutes));minutes.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(4)});minutes.setTextColor(AppSettings.textPrimary(this));minutes.setBackgroundResource(R.drawable.bg_field);minutes.setTag("munajat_minutes");
                 row.addView(minutes,new LinearLayout.LayoutParams(dp(88),dp(48)));LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,-2);rp.topMargin=dp(6);body.addView(row,rp);
-                minutesHint=text("",12);minutesHint.setTextColor(AppSettings.textSecondary(this));minutesHint.setPadding(0,dp(4),0,0);body.addView(minutesHint);
                 // Caret goes to the end so a single backspace clears the value.
                 View.OnClickListener toEnd=view->minutes.post(()->minutes.setSelection(minutes.getText().length()));
                 minutes.setOnClickListener(toEnd);
