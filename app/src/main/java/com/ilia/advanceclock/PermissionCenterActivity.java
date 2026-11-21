@@ -21,6 +21,7 @@ public final class PermissionCenterActivity extends Activity {
     private boolean batchRunning;
     private int attemptedMask;
     private int pendingKind = -1;
+    private boolean resumedOnce;
     private static final int SETTINGS_REQUEST = 620;
 
     static boolean granted(Context c,int kind) {
@@ -57,6 +58,10 @@ public final class PermissionCenterActivity extends Activity {
     }
     @Override protected void onResume() {
         super.onResume();
+        // Back from a system prompt or settings page: never leave a request "stuck",
+        // otherwise later taps on the permission buttons would be ignored.
+        if(resumedOnce && pendingKind>=0){pendingKind=-1;batchRunning=false;}
+        resumedOnce=true;
         if (closeIfComplete()) return;
         if(content!=null)render();
         if(batchRunning && pendingKind<0)postNext();
@@ -70,7 +75,6 @@ public final class PermissionCenterActivity extends Activity {
     }
     /** Requests only the tapped permission; nothing is chained after it. */
     private void startBatch(int first) {
-        if(pendingKind>=0)return;
         batchRunning=false;attemptedMask=0;
         launchStep(first);
     }
