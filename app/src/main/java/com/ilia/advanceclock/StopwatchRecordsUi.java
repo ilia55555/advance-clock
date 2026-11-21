@@ -117,9 +117,15 @@ final class StopwatchRecordsUi {
                     .show();
             return;
         }
+        java.util.Set<Long> filter = filter(host);
         LinearLayout list = column(host);
         AlertDialog[] holder = new AlertDialog[1];
+        TextView filterInfo = text(host, filter.isEmpty()
+                ? AppString.get(R.string.stopwatch_records_filter_all)
+                : AppString.get(R.string.stopwatch_records_filter_some), 13, AppSettings.textSecondary(host));
+        list.addView(filterInfo);
         for (StopwatchRecords.Activity a : activities) {
+            if (!filter.isEmpty() && !filter.contains(a.id)) continue;
             StopwatchRecords.Record best = a.best();
             View row = row(host, a.name,
                     AppString.get(R.string.stopwatch_record_best) + "  " + (best == null ? "—" : format(best.millis))
@@ -134,9 +140,59 @@ final class StopwatchRecordsUi {
         holder[0] = new MotionDialogs.Builder(host)
                 .setTitle(AppString.get(R.string.stopwatch_records))
                 .setView(scroll(host, list))
+                .setNeutralButton(AppString.get(R.string.stopwatch_records_filter), (d, w) ->
+                        chooseFilter(host, activities, onChanged))
                 .setPositiveButton(AppString.get(R.string.runtime_text_0004), null)
                 .create();
         holder[0].show();
+    }
+
+    private static final String FILTER_PREFS = "stopwatch_records";
+    private static final String FILTER_KEY = "filter_ids";
+
+    private static java.util.Set<Long> filter(Activity host) {
+        java.util.HashSet<Long> out = new java.util.HashSet<>();
+        String raw = host.getSharedPreferences(FILTER_PREFS, Activity.MODE_PRIVATE).getString(FILTER_KEY, "");
+        for (String part : raw.split(",")) {
+            try { if (!part.isEmpty()) out.add(Long.parseLong(part)); } catch (NumberFormatException ignored) {}
+        }
+        // Forget ids of deleted activities.
+        java.util.HashSet<Long> existing = new java.util.HashSet<>();
+        for (StopwatchRecords.Activity a : new StopwatchRecords(host).all()) existing.add(a.id);
+        out.retainAll(existing);
+        return out;
+    }
+
+    /** Lets the user show only some activities (none selected = show all). */
+    private static void chooseFilter(Activity host, List<StopwatchRecords.Activity> activities, Runnable onChanged) {
+        java.util.Set<Long> current = filter(host);
+        String[] names = new String[activities.size()];
+        boolean[] checked = new boolean[activities.size()];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = activities.get(i).name;
+            checked[i] = current.contains(activities.get(i).id);
+        }
+        new MotionDialogs.Builder(host)
+                .setTitle(AppString.get(R.string.stopwatch_records_filter))
+                .setMultiChoiceItems(names, checked, (d, which, isChecked) -> checked[which] = isChecked)
+                .setNeutralButton(AppString.get(R.string.stopwatch_records_filter_all), (d, w) -> {
+                    saveFilter(host, new java.util.HashSet<>());
+                    showList(host, onChanged);
+                })
+                .setPositiveButton(AppString.get(R.string.runtime_text_0004), (d, w) -> {
+                    java.util.HashSet<Long> picked = new java.util.HashSet<>();
+                    for (int i = 0; i < checked.length; i++) if (checked[i]) picked.add(activities.get(i).id);
+                    saveFilter(host, picked);
+                    showList(host, onChanged);
+                })
+                .setOnCancelListener(d -> showList(host, onChanged))
+                .show();
+    }
+
+    private static void saveFilter(Activity host, java.util.Set<Long> ids) {
+        StringBuilder out = new StringBuilder();
+        for (Long id : ids) { if (out.length() > 0) out.append(','); out.append(id); }
+        host.getSharedPreferences(FILTER_PREFS, Activity.MODE_PRIVATE).edit().putString(FILTER_KEY, out.toString()).apply();
     }
 
     private static void showActivity(Activity host, long id, Runnable onChanged) {

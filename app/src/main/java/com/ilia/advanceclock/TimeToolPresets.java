@@ -55,6 +55,8 @@ final class TimeToolPresets {
         actions.addView(saved, savedLayout);
         save.setOnClickListener(v -> savePreset());
         saved.setOnClickListener(v -> showSaved());
+        // The stopwatch uses personal records instead of saved presets.
+        if (stopwatch) actions.setVisibility(View.GONE);
         refresh();
     }
 
@@ -66,6 +68,8 @@ final class TimeToolPresets {
         button.setBackgroundResource(R.drawable.bg_soft_button);
         return button;
     }
+
+    View controlsView() { return controls; }
 
     void refresh() {
         boolean busy = editor.busy();

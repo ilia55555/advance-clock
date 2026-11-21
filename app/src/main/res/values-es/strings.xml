@@ -973,4 +973,7 @@ Pantalla de bloqueo</string>
     <string name="stopwatch_record_rename">Rename</string>
     <string name="stopwatch_record_delete_activity">Delete activity and all records</string>
     <string name="stopwatch_record_delete_activity_confirm">Delete this activity and all its records?</string>
+    <string name="stopwatch_records_filter">Filter activities</string>
+    <string name="stopwatch_records_filter_all">Show all activities</string>
+    <string name="stopwatch_records_filter_some">Showing selected activities only</string>
 </resources>

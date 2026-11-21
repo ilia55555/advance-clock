@@ -214,10 +214,13 @@ final class StopwatchPanelController {
         row.addView(records, new LinearLayout.LayoutParams(0, -1, 1f));
         LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, dp(52));
         rowParams.topMargin = dp(8);
-        parent.addView(row, parent.indexOfChild(lapButton), rowParams);
+        // Records replace the old save row, right under the photo/file controls.
+        View controls = presets.controlsView();
+        parent.addView(row, controls.getParent() == parent
+                ? parent.indexOfChild(controls) + 1 : parent.indexOfChild(lapButton) + 1, rowParams);
         saveRecordButton.setOnClickListener(v -> {
             long elapsed = currentElapsed();
-            if (running || elapsed <= 0) return;
+            if (elapsed <= 0) return;
             StopwatchRecordsUi.showSave(host, elapsed, labelInput.getText().toString(), this::renderRecordHint);
         });
         records.setOnClickListener(v -> StopwatchRecordsUi.showList(host, this::renderRecordHint));
@@ -267,8 +270,9 @@ final class StopwatchPanelController {
         if (presets != null) presets.refresh();
         startButton.setText(running ? AppString.get(R.string.runtime_text_0011) : accumulatedMillis > 0 ? AppString.get(R.string.runtime_text_0012) : AppString.get(R.string.runtime_text_0010));
         lapButton.setEnabled(running);
-        if (saveRecordButton != null) saveRecordButton.setEnabled(!running && accumulatedMillis > 0L);
-        if (saveRecordButton != null) saveRecordButton.setAlpha(!running && accumulatedMillis > 0L ? 1f : 0.45f);
+        boolean canSave = running || accumulatedMillis > 0L;
+        if (saveRecordButton != null) saveRecordButton.setEnabled(canSave);
+        if (saveRecordButton != null) saveRecordButton.setAlpha(canSave ? 1f : 0.45f);
         lapButton.setVisibility(configurable ? View.GONE : View.VISIBLE);
         renderEndTime();
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);

@@ -1527,4 +1527,7 @@
     <string name="stopwatch_record_rename">إعادة التسمية</string>
     <string name="stopwatch_record_delete_activity">حذف النشاط وكل أرقامه</string>
     <string name="stopwatch_record_delete_activity_confirm">حذف هذا النشاط وكل أرقامه؟</string>
+    <string name="stopwatch_records_filter">تصفية الأنشطة</string>
+    <string name="stopwatch_records_filter_all">عرض كل الأنشطة</string>
+    <string name="stopwatch_records_filter_some">عرض الأنشطة المختارة فقط</string>
 </resources>

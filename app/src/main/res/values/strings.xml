@@ -1513,4 +1513,7 @@
     <string name="stopwatch_record_rename">تغییر نام</string>
     <string name="stopwatch_record_delete_activity">حذف فعالیت و همه رکوردها</string>
     <string name="stopwatch_record_delete_activity_confirm">این فعالیت و همه رکوردهایش حذف شود؟</string>
+    <string name="stopwatch_records_filter">فیلتر فعالیت‌ها</string>
+    <string name="stopwatch_records_filter_all">نمایش همه فعالیت‌ها</string>
+    <string name="stopwatch_records_filter_some">فقط فعالیت‌های انتخاب‌شده نمایش داده می‌شوند</string>
 </resources>
