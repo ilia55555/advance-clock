@@ -98,14 +98,38 @@ final class StopwatchRecordsUi {
         name.setOnFocusChangeListener((v, focused) -> { if (focused) v.post(open); });
         sheet.content.addView(name, params(host, 56, 8));
 
-        CheckBox longer = new CheckBox(host);
-        longer.setText(AppString.get(R.string.stopwatch_record_longer_better));
-        longer.setTextColor(AppSettings.textPrimary(host));
-        sheet.content.addView(longer, params(host, -2, 8));
+        // "Shorter is better"  [switch]  "Longer is better", styled like the adhan rows.
+        LinearLayout direction = new LinearLayout(host);
+        direction.setOrientation(LinearLayout.HORIZONTAL);
+        direction.setGravity(Gravity.CENTER_VERTICAL);
+        direction.setLayoutDirection(AppSettings.layoutDirection(host));
+        direction.setBackgroundResource(R.drawable.bg_field);
+        direction.setPadding(dp(host, 12), dp(host, 4), dp(host, 12), dp(host, 4));
+        TextView shorterLabel = text(host, AppString.get(R.string.stopwatch_record_shorter_better), 13, AppSettings.textPrimary(host));
+        shorterLabel.setGravity(Gravity.CENTER);
+        TextView longerLabel = text(host, AppString.get(R.string.stopwatch_record_longer_better), 13, AppSettings.textPrimary(host));
+        longerLabel.setGravity(Gravity.CENTER);
+        android.widget.Switch longer = new android.widget.Switch(host);
+        direction.addView(shorterLabel, new LinearLayout.LayoutParams(0, -2, 1f));
+        direction.addView(longer, new LinearLayout.LayoutParams(dp(host, 60), dp(host, 52)));
+        direction.addView(longerLabel, new LinearLayout.LayoutParams(0, -2, 1f));
+        shorterLabel.setOnClickListener(v -> { if (longer.isEnabled()) longer.setChecked(false); });
+        longerLabel.setOnClickListener(v -> { if (longer.isEnabled()) longer.setChecked(true); });
+        Runnable paintDirection = () -> {
+            boolean on = longer.isChecked();
+            shorterLabel.setTextColor(on ? AppSettings.textSecondary(host) : AppSettings.primaryColor(host));
+            longerLabel.setTextColor(on ? AppSettings.primaryColor(host) : AppSettings.textSecondary(host));
+            shorterLabel.setTypeface(Typeface.DEFAULT, on ? Typeface.NORMAL : Typeface.BOLD);
+            longerLabel.setTypeface(Typeface.DEFAULT, on ? Typeface.BOLD : Typeface.NORMAL);
+            direction.setAlpha(longer.isEnabled() ? 1f : 0.6f);
+        };
+        longer.setOnCheckedChangeListener((b, c) -> paintDirection.run());
+        sheet.content.addView(direction, params(host, -2, 8));
         Runnable sync = () -> {
             StopwatchRecords.Activity existing = store.find(category(name.getText().toString()));
             longer.setEnabled(existing == null);
             if (existing != null) longer.setChecked(existing.longerBetter);
+            paintDirection.run();
         };
         name.addTextChangedListener(new android.text.TextWatcher() {
             public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
