@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 /** Separate, opt-in configuration for each prayer and each side of its adhan. */
 final class MunajatConfig {
-    boolean enabled, gradual=true;
+    boolean enabled, gradual=true, master=true;
     String uri="";
     int minutes=0,start=10,end=60;
     /** Audio length in ms, cached when saved; 0 = unknown. */
@@ -14,7 +14,7 @@ final class MunajatConfig {
     static String prefix(int type,boolean before){return type+"_"+(before?"before_":"after_");}
     static MunajatConfig load(Context c,int type,boolean before){
         SharedPreferences p=prefs(c);String k=prefix(type,before);MunajatConfig v=new MunajatConfig();
-        v.enabled=p.getBoolean(k+"enabled",false);v.gradual=p.getBoolean(k+"gradual",true);
+        v.enabled=p.getBoolean(k+"enabled",false);v.master=masterEnabled(c);v.gradual=p.getBoolean(k+"gradual",true);
         v.uri=p.getString(k+"uri","");
         // Default before-adhan munajat bundled with the app (res/raw/munajat_before.mp3), if present.
         if(v.uri.isEmpty() && before){int id=c.getResources().getIdentifier("munajat_before","raw",c.getPackageName());
@@ -39,7 +39,21 @@ final class MunajatConfig {
         long length=duration>0?duration:durationOf(c,uri);
         return Math.max(1_000L,length);
     }
-    boolean playable(){if(!enabled || uri.isEmpty())return false;try{LocalMedia.require(android.net.Uri.parse(uri));return true;}catch(Exception e){return false;}}
+    /** Master switch in the adhan list: off = no munajat for any prayer. */
+    static boolean masterEnabled(Context c){
+        SharedPreferences p=prefs(c);if(p.contains("master"))return p.getBoolean("master",false);
+        // Older installs: keep munajat on if any side was already enabled.
+        for(int t=0;t<=4;t++)if(p.getBoolean(prefix(t,true)+"enabled",false)||p.getBoolean(prefix(t,false)+"enabled",false))return true;
+        return false;
+    }
+    static void setMasterEnabled(Context c,boolean on){
+        SharedPreferences p=prefs(c);SharedPreferences.Editor e=p.edit().putBoolean("master",on);
+        // First time on with nothing configured: play the default munajat before every adhan.
+        if(on){boolean any=false;for(int t=0;t<=4;t++)any|=p.getBoolean(prefix(t,true)+"enabled",false)||p.getBoolean(prefix(t,false)+"enabled",false);
+            if(!any)for(int t=0;t<=4;t++)e.putBoolean(prefix(t,true)+"enabled",true);}
+        e.apply();
+    }
+    boolean playable(){if(!master || !enabled || uri.isEmpty())return false;try{LocalMedia.require(android.net.Uri.parse(uri));return true;}catch(Exception e){return false;}}
     int ceiling(){return gradual?Math.max(start,end):end;}
     float gain(float fraction){
         int max=ceiling();if(max==0)return 0;

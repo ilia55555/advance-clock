@@ -259,6 +259,7 @@ final class PrayerSettingsPanel {
         addAdhanSettingRow(azanCard, AppString.get(R.string.adhan_asr_name), AdhanScheduler.ASR);
         addAdhanSettingRow(azanCard, AppString.get(R.string.runtime_text_0080), AdhanScheduler.MAGHRIB);
         addAdhanSettingRow(azanCard, AppString.get(R.string.adhan_isha_name), AdhanScheduler.ISHA);
+        addMunajatRow(azanCard);
 
         adhanScheduleStatus = text(
                 "",
@@ -778,6 +779,50 @@ final class PrayerSettingsPanel {
         parent.addView(details, new LinearLayout.LayoutParams(-1, -2));
     }
 
+    /** One munajat row for every enabled adhan: a master switch and a settings button (no accordion). */
+    private void addMunajatRow(LinearLayout parent) {
+        LinearLayout row = new LinearLayout(host);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setLayoutDirection(AppSettings.layoutDirection(host));
+        row.setPadding(dp(10), dp(4), dp(10), dp(4));
+        row.setBackgroundResource(R.drawable.bg_field);
+
+        LinearLayout labels = new LinearLayout(host);
+        labels.setOrientation(LinearLayout.VERTICAL);
+        labels.setPadding(0, dp(10), dp(6), dp(10));
+        TextView name = text(AppString.get(R.string.munajat_title), 14, AppSettings.textPrimary(host));
+        name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        labels.addView(name, new LinearLayout.LayoutParams(-1, -2));
+        TextView summary = text(AppString.get(R.string.munajat_row_summary), 11, AppSettings.textSecondary(host));
+        labels.addView(summary, new LinearLayout.LayoutParams(-1, -2));
+        row.addView(labels, new LinearLayout.LayoutParams(0, -2, 1f));
+
+        ImageView settings = new ImageView(host);
+        settings.setImageResource(R.drawable.ic_md_settings);
+        settings.setColorFilter(AppSettings.primaryColor(host));
+        settings.setPadding(dp(10), dp(10), dp(10), dp(10));
+        settings.setBackgroundResource(R.drawable.bg_soft_button);
+        settings.setContentDescription(AppString.get(R.string.munajat_title));
+        settings.setOnClickListener(v -> host.startActivity(
+                new Intent(host, MunajatSettingsActivity.class).putExtra("adhanType", 899)));
+        row.addView(settings, new LinearLayout.LayoutParams(dp(44), dp(44)));
+
+        Switch enabled = new Switch(host);
+        enabled.setChecked(MunajatConfig.masterEnabled(host));
+        enabled.setContentDescription(AppString.get(R.string.munajat_title));
+        enabled.setOnCheckedChangeListener((button, checked) -> {
+            MunajatConfig.setMasterEnabled(host, checked);
+            AdhanScheduler.rescheduleAll(host);
+            AdhanSoundService.stopMunajatIfDisabled(host);
+        });
+        row.addView(enabled, new LinearLayout.LayoutParams(dp(52), dp(52)));
+
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, -2);
+        rowParams.topMargin = dp(7);
+        parent.addView(row, rowParams);
+    }
+
     private void syncAdhanSwitches() {
         syncingAdhanSwitches = true;
         try {
@@ -934,9 +979,6 @@ final class PrayerSettingsPanel {
         output.addView(vibrate);
         output.addView(sound);
         root.addView(output, cardParams());
-        Button munajat=new Button(host);munajat.setText(R.string.munajat_title);munajat.setAllCaps(false);munajat.setBackgroundResource(R.drawable.bg_soft_button);munajat.setTextColor(AppSettings.primaryColor(host));
-        munajat.setOnClickListener(v->host.startActivity(new Intent(host,MunajatSettingsActivity.class).putExtra("adhanType",type)));
-        root.addView(munajat,new LinearLayout.LayoutParams(-1,dp(54)));
 
         addAdhanSkipSection(root, type);
 
