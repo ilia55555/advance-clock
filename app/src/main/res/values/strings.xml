@@ -1516,4 +1516,5 @@
     <string name="stopwatch_records_filter">فیلتر فعالیت‌ها</string>
     <string name="stopwatch_records_filter_all">نمایش همه فعالیت‌ها</string>
     <string name="stopwatch_records_filter_some">فقط فعالیت‌های انتخاب‌شده نمایش داده می‌شوند</string>
+    <string name="stopwatch_record_entry">رکورد %1$d:  %2$s</string>
 </resources>

@@ -1530,4 +1530,5 @@
     <string name="stopwatch_records_filter">تصفية الأنشطة</string>
     <string name="stopwatch_records_filter_all">عرض كل الأنشطة</string>
     <string name="stopwatch_records_filter_some">عرض الأنشطة المختارة فقط</string>
+    <string name="stopwatch_record_entry">الرقم %1$d:  %2$s</string>
 </resources>

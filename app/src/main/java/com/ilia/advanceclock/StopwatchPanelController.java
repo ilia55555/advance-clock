@@ -198,8 +198,8 @@ final class StopwatchPanelController {
         summary.setText(TimeFormat.endTime(host, target, calendarType));
     }
 
-    private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
-    private void addLap(){long elapsed=currentElapsed();if(!running||elapsed==0)return;laps.add(0,elapsed);save();renderLaps(true);}
+    private void reset(){running=false;accumulatedMillis=0L;startedAtWall=0L;limitMillis=0L;laps.clear();savedLaps.clear();ToolAlarmScheduler.cancel(host,ToolAlarmScheduler.STOPWATCH);handler.removeCallbacks(ticker);save();renderTime(0);renderLaps();updateControls();}
+    private void addLap(){long elapsed=currentElapsed();if(elapsed<=0||(!laps.isEmpty()&&laps.get(0)==elapsed))return;laps.add(0,elapsed);save();renderLaps(true);}
     /** Adds "save record" / "my records" buttons and a best-record hint under the clock. */
     private void buildRecordControls() {
         LinearLayout parent = (LinearLayout) lapButton.getParent();
@@ -219,9 +219,8 @@ final class StopwatchPanelController {
         parent.addView(row, controls.getParent() == parent
                 ? parent.indexOfChild(controls) + 1 : parent.indexOfChild(lapButton) + 1, rowParams);
         saveRecordButton.setOnClickListener(v -> {
-            long elapsed = currentElapsed();
-            if (elapsed <= 0) return;
-            StopwatchRecordsUi.showSave(host, elapsed, labelInput.getText().toString(), this::renderRecordHint);
+            // Capture the time into the list below; each entry has its own save button.
+            addLap();
         });
         records.setOnClickListener(v -> StopwatchRecordsUi.showList(host, this::renderRecordHint));
 
@@ -273,7 +272,8 @@ final class StopwatchPanelController {
         boolean canSave = running || accumulatedMillis > 0L;
         if (saveRecordButton != null) saveRecordButton.setEnabled(canSave);
         if (saveRecordButton != null) saveRecordButton.setAlpha(canSave ? 1f : 0.45f);
-        lapButton.setVisibility(configurable ? View.GONE : View.VISIBLE);
+        // The separate lap button is replaced by "save record".
+        lapButton.setVisibility(View.GONE);
         renderEndTime();
         modeButtons.setVisibility(configurable ? View.VISIBLE : View.GONE);
         limitInputs.setVisibility(configurable && mode == 1 ? View.VISIBLE : View.GONE);
@@ -292,16 +292,39 @@ final class StopwatchPanelController {
     private void populateLimitInputs(){if(limitMillis<=0 || mode != 1)return;long total=limitMillis/1000;hoursInput.setText(String.valueOf(total/3600));minutesInput.setText(String.valueOf((total/60)%60));secondsInput.setText(String.valueOf(total%60));}
     private void renderTime(long millis){timeView.setText(format(millis));}
     private void renderLaps(){renderLaps(false);}
+    private final java.util.HashSet<Long> savedLaps = new java.util.HashSet<>();
+
     private void renderLaps(boolean animateNew) {
         lapList.removeAllViews();
         for (int i = 0; i < laps.size(); i++) {
-            TextView row = new TextView(host);
-            row.setText(CalendarUtils.fa(String.format(Locale.US,
-                    AppString.get(R.string.runtime_text_0437), laps.size() - i, format(laps.get(i)))));
-            row.setTextColor(AppSettings.textPrimary(host));
-            row.setTextSize(17);
-            row.setGravity(android.view.Gravity.CENTER);
-            row.setPadding(dp(12), dp(12), dp(12), dp(12));
+            long value = laps.get(i);
+            LinearLayout row = new LinearLayout(host);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            row.setLayoutDirection(AppSettings.layoutDirection(host));
+            row.setPadding(dp(12), dp(6), dp(12), dp(6));
+            TextView label = new TextView(host);
+            label.setText(CalendarUtils.fa(String.format(Locale.US,
+                    AppString.get(R.string.stopwatch_record_entry), laps.size() - i, format(value))));
+            label.setTextColor(AppSettings.textPrimary(host));
+            label.setTextSize(17);
+            label.setGravity(android.view.Gravity.CENTER);
+            row.addView(label, new LinearLayout.LayoutParams(0, -2, 1f));
+            Button save = new Button(host);
+            boolean saved = savedLaps.contains(value);
+            save.setText(saved ? "✓" : AppString.get(R.string.runtime_text_0005));
+            save.setAllCaps(false);
+            save.setTextSize(13);
+            save.setEnabled(!saved);
+            save.setBackgroundResource(R.drawable.bg_field);
+            save.setTextColor(AppSettings.primaryColor(host));
+            save.setOnClickListener(v -> StopwatchRecordsUi.showSave(host, value,
+                    labelInput.getText().toString(), () -> {
+                        savedLaps.add(value);
+                        renderLaps();
+                        renderRecordHint();
+                    }));
+            row.addView(save, new LinearLayout.LayoutParams(dp(84), dp(44)));
             lapList.addView(row, new LinearLayout.LayoutParams(-1, -2));
             if(animateNew && i==0)AppMotion.appear(row);
             View divider = new View(host);

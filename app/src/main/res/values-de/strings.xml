@@ -976,4 +976,5 @@ Sperrbildschirm</string>
     <string name="stopwatch_records_filter">Filter activities</string>
     <string name="stopwatch_records_filter_all">Show all activities</string>
     <string name="stopwatch_records_filter_some">Showing selected activities only</string>
+    <string name="stopwatch_record_entry">Record %1$d:  %2$s</string>
 </resources>
