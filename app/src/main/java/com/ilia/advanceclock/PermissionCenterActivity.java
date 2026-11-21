@@ -87,8 +87,8 @@ public final class PermissionCenterActivity extends Activity {
                 }
             }
             batchRunning=false;
-            if(!requiredIncomplete(this)) { setResult(RESULT_OK);finish(); }
-            else render();
+            if(!incomplete(this)) { setResult(RESULT_OK);finish(); }
+            else { render();leave(); }
         });
     }
     private void stepReturned() {
@@ -137,20 +137,45 @@ public final class PermissionCenterActivity extends Activity {
         int[] effects={R.string.permissions_missing_notifications,R.string.permissions_missing_alarms,
                 R.string.permissions_missing_fullscreen,R.string.permissions_missing_location,R.string.permissions_missing_install};
         int[] titles={R.string.permissions_notifications,R.string.permissions_alarms,R.string.permissions_fullscreen,R.string.permissions_location,R.string.permissions_install};
-        StringBuilder message=new StringBuilder();int first=-1;
+        android.app.Dialog dialog=new android.app.Dialog(this);
+        AppMotion.window(dialog.getWindow(),R.style.MotionDialog);
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+        LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);
+        box.setLayoutDirection(AppSettings.layoutDirection(this));box.setPadding(dp(18),dp(16),dp(18),dp(16));
+        GradientDrawable bg=new GradientDrawable();bg.setColor(AppSettings.surface(this));bg.setCornerRadius(dp(24));box.setBackground(bg);
+        TextView title=new TextView(this);title.setText(getString(R.string.permissions_missing_title));title.setTextSize(20);
+        title.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);title.setTextColor(AppSettings.textPrimary(this));
+        title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);box.addView(title);
+        LinearLayout list=new LinearLayout(this);list.setOrientation(LinearLayout.VERTICAL);
+        ScrollView scroll=new ScrollView(this);scroll.addView(list);
+        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,0,1f);sp.topMargin=dp(6);box.addView(scroll,sp);
+        int first=-1;
         for(int i=0;i<effects.length;i++)if(!granted(this,i)){
-            if(first<0)first=i;if(message.length()>0)message.append("\n\n");
-            message.append("• ").append(getString(titles[i])).append(":\n").append(getString(effects[i]));
+            if(first<0)first=i;boolean optional=i>=3;
+            int color=optional?(AppSettings.themeMode(this)==AppSettings.THEME_DARK?0xFFFFB74D:0xFFEF6C00):0xFFC62828;
+            LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setPadding(dp(14),dp(10),dp(14),dp(10));
+            GradientDrawable cb=new GradientDrawable();cb.setColor(AppSettings.field(this));cb.setCornerRadius(dp(16));cb.setStroke(dp(1),color);card.setBackground(cb);
+            TextView name=new TextView(this);name.setText(getString(titles[i]));name.setTextSize(15);name.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);name.setTextColor(color);card.addView(name);
+            TextView effect=new TextView(this);effect.setText(getString(effects[i]));effect.setTextSize(13);effect.setTextColor(AppSettings.textSecondary(this));effect.setPadding(0,dp(3),0,0);card.addView(effect);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.topMargin=dp(8);list.addView(card,lp);
         }
         int start=first;
-        android.app.AlertDialog dialog=new MotionDialogs.Builder(this)
-                .setTitle(getString(R.string.permissions_missing_title))
-                .setMessage(message.toString())
-                .setPositiveButton(getString(R.string.permissions_allow),(d,w)->startBatch(start))
-                .setNegativeButton(getString(R.string.permissions_continue_anyway),(d,w)->finish())
-                .create();
-        dialog.setOnShowListener(d->ButtonStyles.destructive(dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)));
-        dialog.show();
+        // Red "continue anyway" on the left, "grant" on the right, in every language.
+        LinearLayout actions=new LinearLayout(this);actions.setOrientation(LinearLayout.HORIZONTAL);actions.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        Button skip=new Button(this);skip.setText(getString(R.string.permissions_continue_anyway));skip.setAllCaps(false);skip.setTextColor(0xFFFFFFFF);
+        GradientDrawable red=new GradientDrawable();red.setColor(0xFFC62828);red.setCornerRadius(dp(14));skip.setBackground(red);skip.setStateListAnimator(null);
+        skip.setOnClickListener(v->{dialog.dismiss();finish();});
+        Button grant=new Button(this);grant.setText(getString(R.string.permissions_allow));grant.setAllCaps(false);grant.setTextColor(0xFFFFFFFF);
+        grant.setBackgroundResource(R.drawable.bg_teal_button);grant.setStateListAnimator(null);
+        grant.setOnClickListener(v->{dialog.dismiss();startBatch(start);});
+        actions.addView(skip,new LinearLayout.LayoutParams(0,dp(52),1f));
+        LinearLayout.LayoutParams gp=new LinearLayout.LayoutParams(0,dp(52),1f);gp.leftMargin=dp(8);actions.addView(grant,gp);
+        LinearLayout.LayoutParams ap=new LinearLayout.LayoutParams(-1,-2);ap.topMargin=dp(14);box.addView(actions,ap);
+        dialog.setContentView(box);dialog.setCanceledOnTouchOutside(true);dialog.show();
+        android.view.Window window=dialog.getWindow();
+        if(window!=null){window.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0));
+            int width=Math.min(getResources().getDisplayMetrics().widthPixels-dp(32),dp(480));
+            window.setLayout(width,android.view.ViewGroup.LayoutParams.WRAP_CONTENT);}
     }
     @Override public void onBackPressed() {
         if(incomplete(this))leave();else super.onBackPressed();
