@@ -305,7 +305,7 @@ final class StopwatchRecordsUi {
         host.getSharedPreferences(FILTER_PREFS, Activity.MODE_PRIVATE).edit().putString(FILTER_KEY, out.toString()).apply();
     }
 
-    /** Bottom sheet matching the app's Tools sheet: close button, bold title, cards, actions. */
+    /** Centred modal in the app's style: close button, bold title, cards, actions. */
     private static final class Sheet {
         final Dialog dialog;
         final LinearLayout content;
@@ -315,7 +315,7 @@ final class StopwatchRecordsUi {
         Sheet(Activity host, String title) {
             this.host = host;
             dialog = new Dialog(host);
-            AppMotion.window(dialog.getWindow(), R.style.MotionSheet);
+            AppMotion.window(dialog.getWindow(), R.style.MotionDialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             LinearLayout root = new LinearLayout(host);
             root.setOrientation(LinearLayout.VERTICAL);
@@ -323,8 +323,7 @@ final class StopwatchRecordsUi {
             root.setPadding(dp(host, 18), dp(host, 12), dp(host, 18), dp(host, 18));
             GradientDrawable bg = new GradientDrawable();
             bg.setColor(AppSettings.surface(host));
-            float r = dp(host, 24);
-            bg.setCornerRadii(new float[]{r, r, r, r, 0, 0, 0, 0});
+            bg.setCornerRadius(dp(host, 24));
             root.setBackground(bg);
 
             LinearLayout header = new LinearLayout(host);
@@ -382,9 +381,10 @@ final class StopwatchRecordsUi {
                 window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 WindowManager.LayoutParams p = new WindowManager.LayoutParams();
                 p.copyFrom(window.getAttributes());
-                p.width = WindowManager.LayoutParams.MATCH_PARENT;
+                int screen = host.getResources().getDisplayMetrics().widthPixels;
+                p.width = Math.min(screen - dp(host, 32), dp(host, 480));
                 p.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                p.gravity = Gravity.BOTTOM;
+                p.gravity = Gravity.CENTER;
                 window.setAttributes(p);
             }
         }
