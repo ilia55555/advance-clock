@@ -997,4 +997,7 @@
     <string name="permissions_missing_install">Future updates won’t install automatically; you’ll need to download and install them manually.</string>
     <string name="permissions_continue_anyway">Continue without</string>
     <string name="first_run_adhan">Adhan and prayer times</string>
+    <string name="timer_start_later">Start at a future date and time</string>
+    <string name="timer_end_at">End</string>
+    <string name="timer_start_invalid">Start must be in the future and before the end</string>
 </resources>

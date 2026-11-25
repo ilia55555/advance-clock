@@ -29,6 +29,12 @@ final class TimerPanelController {
     private boolean resumed;
     private boolean active;
     private long remainingMillis, deadline, selectedTarget, initialDurationMillis;
+    /** Optional future start: before it the timer shows the full span without counting down. */
+    private boolean startLater;
+    private long startTarget, startAt;
+    private android.widget.Switch startSwitch;
+    private Button startDateButton, startTimeButton;
+    private LinearLayout startRow;
     private int calendarType;
 
     private final Runnable ticker = new Runnable() {
@@ -107,6 +113,7 @@ final class TimerPanelController {
                 renderSelection();
             }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
         });
+        buildDateRows();
         startButton.setOnClickListener(v -> toggleTimer());
         root.findViewById(R.id.timer_reset).setOnClickListener(v -> reset());
         android.text.TextWatcher durationWatcher = new android.text.TextWatcher() {
@@ -127,25 +134,32 @@ final class TimerPanelController {
         if (running || remainingMillis > 0) return;
         dateTimeMode = dateMode;
         updateControls(); renderSelection(); save();
-        renderTime(dateTimeMode ? Math.max(0L, selectedTarget - System.currentTimeMillis()) : readDuration());
+        renderTime(dateTimeMode ? dateSpan() : readDuration());
     }
 
     private void toggleTimer() {
         if (running) {
-            remainingMillis = currentRemaining(); running = false;
+            remainingMillis = currentRemaining(); running = false; startAt = 0L;
             ToolAlarmScheduler.cancel(host, ToolAlarmScheduler.TIMER);
             handler.removeCallbacks(ticker); save(); updateControls(); return;
         }
+        long now = System.currentTimeMillis();
+        boolean delayed = remainingMillis == 0L && dateTimeMode && startLater;
+        if (delayed && (startTarget <= now || selectedTarget <= startTarget)) {
+            LogoToast.makeText(host, AppString.get(R.string.timer_start_invalid), Toast.LENGTH_SHORT).show();
+            return;
+        }
         long value = remainingMillis > 0 ? remainingMillis
-                : dateTimeMode ? selectedTarget - System.currentTimeMillis() : readDuration();
+                : dateTimeMode ? selectedTarget - now : readDuration();
         if (value <= 0L) {
             LogoToast.makeText(host, dateTimeMode ? AppString.get(R.string.runtime_text_0165) : AppString.get(R.string.runtime_text_0166), Toast.LENGTH_SHORT).show();
             return;
         }
         if (remainingMillis == 0L) host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
                 .remove("timer_active_preset_id").apply();
-        if (remainingMillis == 0L) initialDurationMillis = value;
-        deadline = System.currentTimeMillis() + value;
+        if (remainingMillis == 0L) initialDurationMillis = delayed ? selectedTarget - startTarget : value;
+        startAt = delayed ? startTarget : 0L;
+        deadline = now + value;
         remainingMillis = value; running = true;
         String label = labelInput.getText().toString().trim();
         boolean scheduled = ToolAlarmScheduler.schedule(host, ToolAlarmScheduler.TIMER, deadline, label);
@@ -154,7 +168,7 @@ final class TimerPanelController {
     }
 
     private void stopTimer() {
-        running = false; remainingMillis = 0L; deadline = 0L;
+        running = false; remainingMillis = 0L; deadline = 0L; startAt = 0L;
         ToolAlarmScheduler.cancel(host, ToolAlarmScheduler.TIMER);
         handler.removeCallbacks(ticker);
         host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit()
@@ -168,11 +182,11 @@ final class TimerPanelController {
             dateTimeMode = false;
             initialDurationMillis = 0L;
             hoursInput.setText("0"); minutesInput.setText("0"); secondsInput.setText("0");
-        } else if (dateTimeMode && initialDurationMillis > 0) {
+        } else if (dateTimeMode && initialDurationMillis > 0 && !startLater) {
             selectedTarget = System.currentTimeMillis() + initialDurationMillis;
         }
         saveDraft(); save(); updateControls(); renderSelection();
-        renderTime(dateTimeMode ? Math.max(0L, selectedTarget - System.currentTimeMillis()) : readDuration());
+        renderTime(dateTimeMode ? dateSpan() : readDuration());
     }
 
     private void completeLocally() {
@@ -180,7 +194,117 @@ final class TimerPanelController {
         handler.removeCallbacks(ticker); save(); updateControls(); renderTime(0L);
     }
 
-    private long currentRemaining() { return running ? Math.max(0L, deadline - System.currentTimeMillis()) : remainingMillis; }
+    private long currentRemaining() {
+        if (!running) return remainingMillis;
+        long now = System.currentTimeMillis();
+        // Waiting for the chosen start: hold the full span.
+        if (startAt > now) return Math.max(0L, deadline - startAt);
+        return Math.max(0L, deadline - now);
+    }
+
+    /** Idle value shown in date mode: full span if a future start is set, otherwise until the end. */
+    private long dateSpan() {
+        long from = startLater ? startTarget : System.currentTimeMillis();
+        return Math.max(0L, selectedTarget - from);
+    }
+
+    /** Rebuilds the date inputs as two rows (time right, date left); the first row has a switch. */
+    private void buildDateRows() {
+        LinearLayout box = (LinearLayout) dateTimeInputs;
+        android.view.ViewGroup.LayoutParams old = box.getLayoutParams();
+        old.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+        box.setLayoutParams(old);
+        box.removeAllViews();
+        box.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout header = new LinearLayout(host);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        header.setLayoutDirection(AppSettings.layoutDirection(host));
+        header.setBackgroundResource(R.drawable.bg_field);
+        header.setPadding(dp(12), 0, dp(8), 0);
+        android.widget.TextView label = new android.widget.TextView(host);
+        label.setText(AppString.get(R.string.timer_start_later));
+        label.setTextColor(AppSettings.textPrimary(host));
+        label.setTextSize(14);
+        header.addView(label, new LinearLayout.LayoutParams(0, -2, 1f));
+        startSwitch = new android.widget.Switch(host);
+        startSwitch.setChecked(startLater);
+        header.addView(startSwitch, new LinearLayout.LayoutParams(dp(56), dp(48)));
+        label.setOnClickListener(v -> startSwitch.toggle());
+        box.addView(header, new LinearLayout.LayoutParams(-1, -2));
+
+        startDateButton = fieldButton();
+        startTimeButton = fieldButton();
+        startRow = pairRow(startDateButton, startTimeButton);
+        LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(-1, dp(56));
+        sp.topMargin = dp(6);
+        box.addView(startRow, sp);
+
+        android.widget.TextView endLabel = new android.widget.TextView(host);
+        endLabel.setText(AppString.get(R.string.timer_end_at));
+        endLabel.setTextColor(AppSettings.textSecondary(host));
+        endLabel.setTextSize(13);
+        endLabel.setPadding(dp(4), dp(10), dp(4), dp(4));
+        box.addView(endLabel);
+        LinearLayout endRow = pairRow(dateButton, timeButton);
+        box.addView(endRow, new LinearLayout.LayoutParams(-1, dp(56)));
+
+        startSwitch.setOnCheckedChangeListener((b, on) -> {
+            startLater = on;
+            if (on && startTarget <= System.currentTimeMillis()) startTarget = System.currentTimeMillis() + 60_000L;
+            renderSelection(); save();
+            if (!running && remainingMillis == 0L) renderTime(dateSpan());
+        });
+        startDateButton.setOnClickListener(v -> CalendarPickerDialog.showDate(
+                host, startTarget, calendarType, (millis, type) -> {
+                    Calendar picked = Calendar.getInstance(AppTime.zone());
+                    picked.setTimeInMillis(millis);
+                    Calendar prev = Calendar.getInstance(AppTime.zone());
+                    prev.setTimeInMillis(startTarget);
+                    picked.set(Calendar.HOUR_OF_DAY, prev.get(Calendar.HOUR_OF_DAY));
+                    picked.set(Calendar.MINUTE, prev.get(Calendar.MINUTE));
+                    picked.set(Calendar.SECOND, 0);
+                    startTarget = picked.getTimeInMillis();
+                    calendarType = type;
+                    renderSelection(); save(); renderTime(dateSpan());
+                }));
+        startTimeButton.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance(AppTime.zone());
+            c.setTimeInMillis(startTarget);
+            new MotionDialogs.TimePicker(host, (view, hour, minute) -> {
+                c.set(Calendar.HOUR_OF_DAY, hour);
+                c.set(Calendar.MINUTE, minute);
+                c.set(Calendar.SECOND, 0);
+                startTarget = c.getTimeInMillis();
+                renderSelection(); save(); renderTime(dateSpan());
+            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
+        });
+    }
+
+    private Button fieldButton() {
+        Button b = new Button(host);
+        b.setAllCaps(false);
+        b.setBackgroundResource(R.drawable.bg_field);
+        b.setTextColor(AppSettings.primaryColor(host));
+        return b;
+    }
+
+    /** Date on the left, time on the right, in every language. */
+    private LinearLayout pairRow(Button date, Button time) {
+        if (date.getParent() instanceof android.view.ViewGroup) ((android.view.ViewGroup) date.getParent()).removeView(date);
+        if (time.getParent() instanceof android.view.ViewGroup) ((android.view.ViewGroup) time.getParent()).removeView(time);
+        LinearLayout row = new LinearLayout(host);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        row.addView(date, new LinearLayout.LayoutParams(0, -1, 1f));
+        LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(0, -1, 1f);
+        tp.leftMargin = dp(8);
+        row.addView(time, tp);
+        return row;
+    }
+
+    private int dp(int v) { return Math.round(v * host.getResources().getDisplayMetrics().density); }
     private long readDuration() { return durationFields.readMillis(); }
 
     private void updateControls() {
@@ -211,7 +335,17 @@ final class TimerPanelController {
     private void renderSelection() {
         dateButton.setText(CalendarUtils.formatDate(selectedTarget, calendarType));
         Calendar c=Calendar.getInstance(AppTime.zone()); c.setTimeInMillis(selectedTarget);
-        timeButton.setText(String.format(Locale.US,"%02d:%02d",c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)));
+        timeButton.setText(CalendarUtils.fa(String.format(Locale.US,"%02d:%02d",c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE))));
+        if (startRow != null) {
+            if (startTarget <= 0L) startTarget = System.currentTimeMillis() + 60_000L;
+            startDateButton.setText(CalendarUtils.formatDate(startTarget, calendarType));
+            Calendar s0 = Calendar.getInstance(AppTime.zone()); s0.setTimeInMillis(startTarget);
+            startTimeButton.setText(CalendarUtils.fa(String.format(Locale.US,"%02d:%02d",s0.get(Calendar.HOUR_OF_DAY),s0.get(Calendar.MINUTE))));
+            startRow.setAlpha(startLater ? 1f : 0.4f);
+            startDateButton.setEnabled(startLater);
+            startTimeButton.setEnabled(startLater);
+            if (startSwitch.isChecked() != startLater) startSwitch.setChecked(startLater);
+        }
         renderEndTime();
     }
 
@@ -228,9 +362,9 @@ final class TimerPanelController {
         renderEndTime();
     }
 
-    private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_initial_duration",initialDurationMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).apply();     TimeToolsWidgetProvider.updateAll(host);
+    private void save() { host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit().putBoolean("timer_running",running).putBoolean("timer_date_mode",dateTimeMode).putLong("timer_remaining",remainingMillis).putLong("timer_initial_duration",initialDurationMillis).putLong("timer_end",deadline).putLong("timer_target",selectedTarget).putInt("timer_calendar",calendarType).putBoolean("timer_start_later",startLater).putLong("timer_start_target",startTarget).putLong("timer_start_at",startAt).apply();     TimeToolsWidgetProvider.updateAll(host);
     }
-    private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); initialDurationMillis=p.getLong("timer_initial_duration",remainingMillis); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
+    private void restore() { SharedPreferences p=host.getSharedPreferences(PREFS, Activity.MODE_PRIVATE); running=p.getBoolean("timer_running",false); dateTimeMode=p.getBoolean("timer_date_mode",false); remainingMillis=p.getLong("timer_remaining",0); initialDurationMillis=p.getLong("timer_initial_duration",remainingMillis); deadline=p.getLong("timer_end",0); selectedTarget=p.getLong("timer_target",0); calendarType=p.getInt("timer_calendar",AppSettings.defaultCalendar(host)); startLater=p.getBoolean("timer_start_later",false); startTarget=p.getLong("timer_start_target",0); startAt=p.getLong("timer_start_at",0); if(running&&deadline<=System.currentTimeMillis()){running=false;remainingMillis=0;deadline=0;save();} }
     void setActive(boolean value) {
         if (active && !value) KeyboardDismiss.hide(host);
         active = value;
@@ -239,7 +373,7 @@ final class TimerPanelController {
             renderTime(running || remainingMillis > 0
                     ? currentRemaining()
                     : dateTimeMode
-                    ? Math.max(0, selectedTarget - System.currentTimeMillis())
+                    ? dateSpan()
                     : readDuration());
             if (running) handler.post(ticker);
         }
@@ -251,7 +385,7 @@ final class TimerPanelController {
         restore();
         updateControls();
         renderSelection();
-        renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?Math.max(0,selectedTarget-System.currentTimeMillis()):readDuration());
+        renderTime(running||remainingMillis>0?currentRemaining():dateTimeMode?dateSpan():readDuration());
         handler.removeCallbacks(ticker);
         if(active && running) handler.post(ticker);
     }
