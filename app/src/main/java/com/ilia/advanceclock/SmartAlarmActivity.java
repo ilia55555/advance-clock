@@ -50,6 +50,11 @@ public final class SmartAlarmActivity extends Activity {
     private Button saveAll;
     private Spinner bulkMode;
     private EditText bulkMinutes;
+    private Spinner bulkAnchor;
+    private Button bulkRepeat, bulkReminder;
+    /** Reminders applied to every saved alarm. */
+    private int bulkReminderMode = AlarmReminderUtils.MODE_NONE;
+    private String bulkReminderJson = "[]";
     static final String GOOGLE_SPEECH_PACKAGE="com.google.android.googlequicksearchbox";
     private Button voiceButton;
     private SmartSpeechLanguages speechLanguages;
@@ -346,11 +351,55 @@ public final class SmartAlarmActivity extends Activity {
         }
         card.addView(presets);
 
-        Button apply = softButton(AppString.get(R.string.runtime_text_0648));
-        LinearLayout.LayoutParams applyParams = new LinearLayout.LayoutParams(-1, dp(48));
-        applyParams.topMargin = dp(8);
-        apply.setOnClickListener(v -> applyBulkTiming());
-        card.addView(apply, applyParams);
+        // Which time to ring for when a start and an end were found.
+        bulkAnchor = spinner(new String[]{AppString.get(R.string.smart_anchor_start), AppString.get(R.string.smart_anchor_end)});
+        LinearLayout.LayoutParams anchorParams = new LinearLayout.LayoutParams(-1, dp(52));
+        anchorParams.topMargin = dp(8);
+        card.addView(bulkAnchor, anchorParams);
+
+        LinearLayout extras = new LinearLayout(this);
+        extras.setOrientation(LinearLayout.HORIZONTAL);
+        extras.setLayoutDirection(AppSettings.layoutDirection(this));
+        bulkRepeat = softButton(AppString.get(R.string.smart_bulk_repeat));
+        bulkReminder = softButton(AppString.get(R.string.smart_bulk_reminder));
+        extras.addView(bulkRepeat, new LinearLayout.LayoutParams(0, dp(48), 1f));
+        LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(0, dp(48), 1f);
+        rp.setMarginStart(dp(8));
+        extras.addView(bulkReminder, rp);
+        LinearLayout.LayoutParams ep = new LinearLayout.LayoutParams(-1, -2);
+        ep.topMargin = dp(8);
+        card.addView(extras, ep);
+        bulkRepeat.setOnClickListener(v -> {
+            if (candidates.isEmpty()) { LogoToast.makeText(this, AppString.get(R.string.runtime_text_0283), Toast.LENGTH_SHORT).show(); return; }
+            SmartAlarmParser.Candidate first = candidates.get(0);
+            RecurrenceDialog.show(this, first.triggerMillis(), first.recurrenceMode, first.intervalDays, first.customDatesJson,
+                    (mode, interval, dates) -> {
+                        for (SmartAlarmParser.Candidate c : candidates) {
+                            c.recurrenceMode = mode; c.intervalDays = interval; c.customDatesJson = dates;
+                        }
+                        refreshPreview();
+                    });
+        });
+        bulkReminder.setOnClickListener(v -> {
+            if (candidates.isEmpty()) { LogoToast.makeText(this, AppString.get(R.string.runtime_text_0283), Toast.LENGTH_SHORT).show(); return; }
+            AlarmReminderDialog.show(this, bulkReminderMode, bulkReminderJson, false,
+                    Math.max(candidates.get(0).triggerMillis(), System.currentTimeMillis() + 60_000L), AppTime.zone(),
+                    (mode, json) -> {
+                        bulkReminderMode = mode; bulkReminderJson = json;
+                        bulkReminder.setText(AppString.get(R.string.smart_bulk_reminder) + ": " + AlarmReminderUtils.summary(mode, json));
+                    });
+        });
+
+        // Changes apply to every alarm immediately; no separate "apply" step.
+        bulkAnchor.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) { applyBulkTiming(); }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+        bulkMinutes.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence x, int a, int b, int c) {}
+            public void onTextChanged(CharSequence x, int a, int b, int c) {}
+            public void afterTextChanged(android.text.Editable e) { applyBulkTiming(); }
+        });
         return card;
     }
 
@@ -476,18 +525,17 @@ public final class SmartAlarmActivity extends Activity {
     }
 
     private void applyBulkTiming() {
-        if (candidates.isEmpty()) {
-            LogoToast.makeText(this, AppString.get(R.string.runtime_text_0283), Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (candidates.isEmpty()) return;
 
         int mode = bulkMode.getSelectedItemPosition();
         int minutes = readPositiveInt(bulkMinutes, 5);
         if (mode == SmartAlarmParser.OFFSET_EXACT) minutes = 0;
 
+        boolean useEnd = bulkAnchor != null && bulkAnchor.getSelectedItemPosition() == 1;
         for (SmartAlarmParser.Candidate candidate : candidates) {
             candidate.offsetMode = mode;
             candidate.offsetMinutes = minutes;
+            candidate.useEnd = useEnd && candidate.endHour >= 0;
         }
         refreshPreview();
     }
@@ -564,6 +612,12 @@ public final class SmartAlarmActivity extends Activity {
         Button edit = softButton(AppString.get(R.string.runtime_text_0007));
         edit.setOnClickListener(v -> editCandidate(index));
         actions.addView(edit, weightedButtonParams());
+
+        if (candidate.endHour >= 0) {
+            Button anchor = softButton(AppString.get(candidate.useEnd ? R.string.smart_anchor_end : R.string.smart_anchor_start));
+            anchor.setOnClickListener(v -> { candidate.useEnd = !candidate.useEnd; refreshPreview(); });
+            actions.addView(anchor, weightedButtonParams());
+        }
 
         Button duplicate = softButton(AppString.get(R.string.runtime_text_0660));
         duplicate.setOnClickListener(v -> {
@@ -755,8 +809,8 @@ public final class SmartAlarmActivity extends Activity {
                     candidate.intervalDays,
                     candidate.customDatesJson,
                     15,
-                    AlarmReminderUtils.MODE_NONE,
-                    "[]");
+                    bulkReminderMode,
+                    bulkReminderJson);
 
             item.applyDate = true;
             try {
@@ -885,6 +939,7 @@ public final class SmartAlarmActivity extends Activity {
         target.endMinute = source.endMinute;
         target.offsetMode = source.offsetMode;
         target.offsetMinutes = source.offsetMinutes;
+        target.useEnd = source.useEnd;
         target.source = source.source;
         target.recurrenceMode = source.recurrenceMode;
         target.intervalDays = source.intervalDays;
@@ -905,6 +960,7 @@ public final class SmartAlarmActivity extends Activity {
         c.endMinute = source.endMinute;
         c.offsetMode = source.offsetMode;
         c.offsetMinutes = source.offsetMinutes;
+        c.useEnd = source.useEnd;
         c.source = source.source;
         c.recurrenceMode = source.recurrenceMode;
         c.intervalDays = source.intervalDays;

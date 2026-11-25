@@ -1000,4 +1000,8 @@ Pantalla de bloqueo</string>
     <string name="timer_start_later">Start at a future date and time</string>
     <string name="timer_end_at">End</string>
     <string name="timer_start_invalid">Start must be in the future and before the end</string>
+    <string name="smart_anchor_start">Ring for start time</string>
+    <string name="smart_anchor_end">Ring for end time</string>
+    <string name="smart_bulk_repeat">Repeat for all</string>
+    <string name="smart_bulk_reminder">Reminders for all</string>
 </resources>

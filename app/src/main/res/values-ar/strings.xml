@@ -1553,4 +1553,8 @@
     <string name="timer_start_later">البدء في تاريخ ووقت لاحقين</string>
     <string name="timer_end_at">النهاية</string>
     <string name="timer_start_invalid">يجب أن يكون البدء في المستقبل وقبل النهاية</string>
+    <string name="smart_anchor_start">التنبيه لوقت البدء</string>
+    <string name="smart_anchor_end">التنبيه لوقت الانتهاء</string>
+    <string name="smart_bulk_repeat">تكرار للجميع</string>
+    <string name="smart_bulk_reminder">تذكيرات للجميع</string>
 </resources>

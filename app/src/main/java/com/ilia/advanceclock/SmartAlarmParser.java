@@ -37,8 +37,15 @@ public final class SmartAlarmParser {
         public int recurrenceMode = RecurrenceUtils.NONE;
         public int intervalDays = 1;
         public String customDatesJson = "[]";
+        /** When a start and end time exist: ring relative to the end instead of the start. */
+        public boolean useEnd;
 
         public long baseMillis() {
+            if (useEnd && endHour >= 0) {
+                long end = CalendarUtils.toMillis(calendarType, year, month - 1, day, endHour, endMinute);
+                long start = CalendarUtils.toMillis(calendarType, year, month - 1, day, hour, minute);
+                return end < start ? end + 86_400_000L : end;
+            }
             return CalendarUtils.toMillis(
                     calendarType, year, month - 1, day, hour, minute);
         }
@@ -137,6 +144,10 @@ public final class SmartAlarmParser {
             }
         }
 
+        if (parseOutageSchedule(latinDigits(raw), result)) {
+            dedupe(result);
+            return result;
+        }
         parseNatural(context, text, result);
         Iterator<Candidate> schedules = result.candidates.iterator();
         while (schedules.hasNext()) {
@@ -875,19 +886,73 @@ public final class SmartAlarmParser {
         return s.length() > 100 ? s.substring(0, 100).trim() + "…" : s;
     }
 
+    /** The same date and time mentioned twice is one alarm, whatever text surrounds it. */
     private static void dedupe(Result result) {
         Set<String> seen = new HashSet<>();
         ArrayList<Candidate> unique = new ArrayList<>();
         for (Candidate c : result.candidates) {
-            String key = c.calendarType + ":" + c.year + ":" + c.month + ":" + c.day
-                    + ":" + c.hour + ":" + c.minute
-                    + ":" + c.endHour + ":" + c.endMinute
-                    + ":" + c.offsetMode + ":" + c.offsetMinutes
-                    + ":" + c.recurrenceMode + ":" + c.intervalDays + ":" + c.customDatesJson + ":" + c.label;
+            String key;
+            try { key = String.valueOf(c.baseMillis()); }
+            catch (RuntimeException e) { key = c.calendarType + ":" + c.year + ":" + c.month + ":" + c.day + ":" + c.hour + ":" + c.minute; }
             if (seen.add(key)) unique.add(c);
         }
         result.candidates.clear();
         result.candidates.addAll(unique);
+    }
+
+    private static final Pattern OUTAGE_DATE = Pattern.compile(
+            "تاریخ[^\\n:：]*قطع[^\\n:：]*[:：]\\s*(\\d{4})\\s*/\\s*(\\d{1,2})\\s*/\\s*(\\d{1,2})");
+    private static final Pattern OUTAGE_START = Pattern.compile(
+            "ساعت\\s*شروع[^\\n:：]*[:：]\\s*(\\d{1,2})\\s*:\\s*(\\d{2})");
+    private static final Pattern OUTAGE_END = Pattern.compile(
+            "ساعت\\s*پایان[^\\n:：]*[:：]\\s*(\\d{1,2})\\s*:\\s*(\\d{2})");
+
+    /**
+     * Power-outage schedules ("برنامه خاموشی"): one alarm per date at its start time,
+     * 5 minutes early, titled simply "قطع برق"; everything else in the message is ignored.
+     */
+    private static String latinDigits(String raw) {
+        StringBuilder b = new StringBuilder(raw.length());
+        for (char ch : raw.toCharArray()) {
+            if (ch >= '\u06F0' && ch <= '\u06F9') ch = (char) ('0' + ch - '\u06F0');
+            else if (ch >= '\u0660' && ch <= '\u0669') ch = (char) ('0' + ch - '\u0660');
+            else if (ch == '\u064A') ch = '\u06CC';
+            else if (ch == '\u0643') ch = '\u06A9';
+            b.append(ch);
+        }
+        return b.toString();
+    }
+
+    static boolean parseOutageSchedule(String text, Result result) {
+        if (!text.contains("قطع برق")) return false;
+        Matcher dates = OUTAGE_DATE.matcher(text);
+        ArrayList<int[]> positions = new ArrayList<>();
+        while (dates.find()) positions.add(new int[]{dates.start(), dates.end()});
+        if (positions.isEmpty()) return false;
+        for (int i = 0; i < positions.size(); i++) {
+            int from = positions.get(i)[0];
+            int to = i + 1 < positions.size() ? positions.get(i + 1)[0] : text.length();
+            String block = text.substring(from, to);
+            Matcher d = OUTAGE_DATE.matcher(block);
+            Matcher s = OUTAGE_START.matcher(block);
+            if (!d.find() || !s.find()) continue;
+            Candidate c = new Candidate();
+            c.label = "قطع برق";
+            c.year = Integer.parseInt(d.group(1));
+            c.month = Integer.parseInt(d.group(2));
+            c.day = Integer.parseInt(d.group(3));
+            c.calendarType = c.year < 1700 ? CalendarUtils.PERSIAN : CalendarUtils.GREGORIAN;
+            c.hour = Integer.parseInt(s.group(1));
+            c.minute = Integer.parseInt(s.group(2));
+            Matcher e = OUTAGE_END.matcher(block);
+            if (e.find()) { c.endHour = Integer.parseInt(e.group(1)); c.endMinute = Integer.parseInt(e.group(2)); }
+            c.offsetMode = OFFSET_BEFORE;
+            c.offsetMinutes = 5;
+            c.source = block.trim();
+            if (c.hour > 23 || c.minute > 59 || c.month < 1 || c.month > 12 || c.day < 1 || c.day > 31) continue;
+            result.candidates.add(c);
+        }
+        return !result.candidates.isEmpty();
     }
 
     private static JSONArray firstArray(JSONObject o, String... keys) {

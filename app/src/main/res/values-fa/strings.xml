@@ -1485,4 +1485,8 @@
     <string name="timer_start_later">شروع در تاریخ و ساعت آینده</string>
     <string name="timer_end_at">پایان</string>
     <string name="timer_start_invalid">زمان شروع باید در آینده و قبل از زمان پایان باشد</string>
+    <string name="smart_anchor_start">زنگ برای ساعت شروع</string>
+    <string name="smart_anchor_end">زنگ برای ساعت پایان</string>
+    <string name="smart_bulk_repeat">تکرار برای همه</string>
+    <string name="smart_bulk_reminder">یادآوری برای همه</string>
 </resources>
